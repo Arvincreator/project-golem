@@ -43,6 +43,7 @@ Headless browser agent powered by Node.js, Web Gemini & Gemini API (Multi-Key Ro
 1.  **⚡ 第一層：Node.js 反射層 (The Reflex)**
     * **職責**：處理 `/help`, `/callme`, `/patch` 等系統指令。
     * **特點**：**零延遲**，不經過 AI 思考，就像膝跳反應一樣快。
+    * 📱 介面 (Telegram)：唯一的指令入口。你在捷運上傳個訊息，家裡的電腦就開始工作。
 2.  **🧠 第二層：Web Gemini 主大腦 (The Primary Brain)**
     * **職責**：處理複雜對話、聯網搜索、邏輯推演、角色扮演。
     * **特點**：負責思考並生成標準化的 JSON 操作指令。
