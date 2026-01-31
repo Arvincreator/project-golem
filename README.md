@@ -45,11 +45,8 @@ Headless browser agent powered by Gemini &amp; Ollama.
 
 ### 🧠 雙腦協作核心 (The Dual-Brain Core)
 
-* 
 **大腦 (Gemini Web)**：負責自然語言理解、複雜邏輯推演與情緒化對話 。透過 Puppeteer 自動化操作，**零 API 成本**。
 
-
-* 
 **小腦 (Ollama/Llama3)**：負責將大腦的抽象意圖「翻譯」為標準化、可執行的 Shell 指令 JSON，去除雜訊與幻覺 。
 
 
