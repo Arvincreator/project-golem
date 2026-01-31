@@ -282,7 +282,7 @@ class DOMDoctor {
             const currentKey = this.keyChain.getKey();
             try {
                 const genAI = new GoogleGenerativeAI(currentKey);
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
                 const result = await model.generateContent(prompt);
                 const newSelector = result.response.text().trim().replace(/`/g, '');
                 console.log(`✅ [Doctor] 診斷成功！建議使用: ${newSelector}`);
