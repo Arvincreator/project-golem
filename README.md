@@ -21,13 +21,11 @@ Headless browser agent powered by Gemini &amp; Ollama.
 
 ### 💬 Telegram 指令中樞 (Telegram Command Center)
 
-* 
-**隨處控制**：透過 Telegram App，無論你身在何處，都能安全地監控與操作家中電腦 。
-
+* **隨處控制**：透過 Telegram App，無論你身在何處，都能安全地監控與操作家中電腦 。
 
 * **雙模互動 (Dual-Mode UI)**：
-* 
-**GUI 按鈕**：提供 [ 🚀 部署 ] [ 🗑️ 丟棄 ] 等直觀按鈕，一鍵決定 AI 的進化方向 。
+  
+* **GUI 按鈕**：提供 [ 🚀 部署 ] [ 🗑️ 丟棄 ] 等直觀按鈕，一鍵決定 AI 的進化方向 。
 
 
 * **NLP 意圖識別**：支援自然語言決策。只需回覆 *"好"*, *"OK"*, *"不要"*, *"爛透了"*，Golem 就能理解。
