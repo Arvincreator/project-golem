@@ -1,8 +1,8 @@
 /**
- * 🦞 Project Golem v6.1 (Modular Fortress Edition)
+ * 🦞 Project Golem v6.2 (Dynamic Fortress Edition)
  * ---------------------------------------------------
  * 架構：[Gemini 大腦] -> [Ollama 翻譯官] -> [Security 審計官] -> [Node.js 執行者]
- * 特性：情緒回饋、指令拆解、風險分級、中斷確認、模組化技能書
+ * 特性：情緒回饋、指令拆解、風險分級、中斷確認、模組化技能、環境感知
  */
 
 require('dotenv').config();
@@ -11,8 +11,9 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const { Ollama } = require('ollama');
 const { exec } = require('child_process');
-const { v4: uuidv4 } = require('uuid'); // 用於生成唯一的審核 ID
-const skills = require('./skills'); // 👈 新增：引入外部技能書
+const { v4: uuidv4 } = require('uuid');
+const os = require('os'); // 👈 新增：用於偵測系統環境
+const skills = require('./skills'); // 引入技能書
 
 // --- ⚙️ 全域配置 ---
 const CONFIG = {
@@ -30,16 +31,47 @@ const bot = new TelegramBot(CONFIG.TOKEN, { polling: true });
 const pendingTasks = new Map(); // 暫存等待審核的任務
 
 // ============================================================
+// 🔍 System Fingerprint (環境指紋生成)
+// ============================================================
+function getSystemFingerprint() {
+    try {
+        const platform = os.platform(); // 'win32', 'linux', 'darwin'
+        const release = os.release();
+        const totalMem = (os.totalmem() / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+        const freeMem = (os.freemem() / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+        const cpuModel = os.cpus()[0] ? os.cpus()[0].model : 'Unknown CPU';
+        const arch = os.arch();
+
+        // 判斷 Shell 類型與建議
+        let shellType = 'Bash';
+        if (platform === 'win32') shellType = 'PowerShell / CMD';
+
+        return `
+    - 作業系統 (OS): ${platform} (${release})
+    - 系統架構 (Arch): ${arch}
+    - 處理器 (CPU): ${cpuModel}
+    - 記憶體 (RAM): Total ${totalMem} / Free ${freeMem}
+    - 建議指令集: ${shellType}
+    - 工作目錄: ${process.cwd()}
+    `;
+    } catch (e) {
+        return "無法取得詳細系統資訊，請預設使用 Linux Bash。";
+    }
+}
+
+// ============================================================
 // 🛡️ Security Manager (風險審計官)
 // ============================================================
 class SecurityManager {
     constructor() {
-        this.SAFE_COMMANDS = ['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head'];
+        this.SAFE_COMMANDS = ['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'Get-ChildItem', 'Get-Content', 'Select-String'];
         this.BLOCK_PATTERNS = [
-            /rm\s+-rf\s+\//, // 禁止刪根目錄
+            /rm\s+-rf\s+\//, // 禁止 Linux 刪根目錄
+            /rd\s+\/s\s+\/q\s+[c-zC-Z]:\\$/, // 禁止 Windows 刪根目錄
             />\s*\/dev\/sd/, // 禁止寫入硬碟裝置
             /:(){:|:&};:/,   // 禁止 Fork Bomb
-            /mkfs/           // 禁止格式化
+            /mkfs/,          // 禁止格式化
+            /Format-Volume/  // 禁止 PowerShell 格式化
         ];
     }
 
@@ -57,7 +89,10 @@ class SecurityManager {
         }
 
         // 3. 高風險判定 (🔴)
-        const dangerousOps = ['rm', 'mv', 'chmod', 'chown', 'sudo', 'su', 'shutdown', 'reboot'];
+        const dangerousOps = [
+            'rm', 'mv', 'chmod', 'chown', 'sudo', 'su', 'shutdown', 'reboot',
+            'Remove-Item', 'Move-Item', 'Restart-Computer', 'Stop-Computer' // PowerShell 關鍵字
+        ];
         if (dangerousOps.includes(baseCmd)) {
             return { level: 'DANGER', reason: '涉及檔案刪除或系統變更' };
         }
@@ -89,12 +124,17 @@ class GolemBrain {
         this.page = pages.length > 0 ? pages[0] : await this.browser.newPage();
         await this.page.goto('https://gemini.google.com/app', { waitUntil: 'networkidle2' });
 
-        // 👇 修改處：使用 skills.js 載入系統提示詞
-        console.log('📚 [Brain] 正在載入技能模組...');
-        const systemPrompt = skills.getSystemPrompt();
+        // 👇 1. 掃描環境
+        console.log('🔍 [System] 正在掃描本機環境...');
+        const fingerprint = getSystemFingerprint();
+        console.log(fingerprint); 
+
+        // 👇 2. 注入包含環境資訊的 Prompt
+        console.log('📚 [Brain] 正在載入動態技能模組...');
+        const systemPrompt = skills.getSystemPrompt(fingerprint);
 
         await this.sendMessage(systemPrompt, true);
-        console.log('🧠 [Brain] 雙重人格與技能已就緒。');
+        console.log('🧠 [Brain] 環境感知與雙腦連結已就緒。');
     }
 
     async sendMessage(text, isSystem = false) {
@@ -138,7 +178,7 @@ class GolemTranslator {
         console.log('🦎 [Translator] 解析指令中...');
 
         const prompt = `
-        【任務】從下方文字提取 Shell 指令。
+        【任務】從下方文字提取 Shell/PowerShell 指令。
         【文字】"${planText}"
         【格式】JSON Array: [{"cmd": "ls", "desc": "說明"}]
         【規則】只輸出 JSON，忽略解釋。
@@ -234,6 +274,7 @@ class Executor {
     run(cmd) {
         return new Promise((resolve, reject) => {
             console.log(`⚡ Exec: ${cmd}`);
+            // 注意：Windows 下 exec 預設使用 cmd.exe，但可執行 PowerShell 指令
             exec(cmd, { cwd: process.cwd() }, (err, stdout, stderr) => {
                 if (err) reject(stderr || err.message);
                 else resolve(stdout);
@@ -330,5 +371,5 @@ bot.on('callback_query', async (query) => {
     }
 });
 
-console.log('📡 Golem v6.1 (Modular Fortress) is Online.');
+console.log('📡 Golem v6.2 (Dynamic Fortress) is Online.');
 console.log('🛡️ Security Protocols Active.');
