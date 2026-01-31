@@ -1,7 +1,7 @@
 # project-golem
 Headless browser agent powered by Gemini &amp; Ollama.
 
-# 🦞 Project Golem v6.3 (Ouroboros Edition) 魔像計畫
+# 🦞 Project Golem v6.4 (Ouroboros Edition) 魔像計畫
 
 ![GitHub license](https://img.shields.io/github/license/Arvincreator/project-golem)
 ![GitHub repo size](https://img.shields.io/github/repo-size/Arvincreator/project-golem)
@@ -13,7 +13,7 @@ Headless browser agent powered by Gemini &amp; Ollama.
 
 **Project Golem** 是一個基於 **雙腦架構 (Dual-Brain Architecture)** 的本機自動化 Agent。它打破了傳統自動化腳本的限制，利用 **Google Gemini** 的強大認知能力作為「大腦」，配合 **Ollama (Local LLM)** 作為「小腦」，並透過 **Telegram** 作為唯一的安全指令中樞。
 
-**v6.3 Ouroboros Edition** 引入了革命性的 **遞迴自我改進 (Recursive Self-Improvement)** 機制。Golem 現在能透過 Telegram 接收你的指令，讀取自身源碼、主動構思優化、並在對話視窗中傳送「測試補丁」供你審核，實現真正的互動式進化。
+**v6.4 Ouroboros Edition** 引入了革命性的 **遞迴自我改進 (Recursive Self-Improvement)** 機制。Golem 現在能透過 Telegram 接收你的指令，讀取自身源碼、主動構思優化、並在對話視窗中傳送「測試補丁」供你審核，實現真正的互動式進化。
 
 ---
 
