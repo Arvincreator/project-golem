@@ -70,23 +70,23 @@ Golem 終於學會了「公私分明」。
 
 ```mermaid
 graph TD
-    User[📱 使用者 (Telegram)] -->|1. 發送訊息| NodeRouter{⚡ Node.js 反射層};
+    User["📱 使用者 (Telegram)"] -->|"1. 發送訊息"| NodeRouter{"⚡ Node.js 反射層"}
     
-    NodeRouter -->|簡單指令 /help| DirectReply[直接回覆];
-    NodeRouter -->|複雜任務| WebGemini[🧠 Web Gemini 主大腦];
+    NodeRouter -->|"簡單指令 /help"| DirectReply["直接回覆"]
+    NodeRouter -->|"複雜任務"| WebGemini["🧠 Web Gemini 主大腦"]
     
-    WebGemini -->|正常操作| JSON[📝 JSON 指令];
-    WebGemini --❌ 找不到元素--> Doctor[🚑 API 維修技師];
+    WebGemini -->|"正常操作"| JSON["📝 JSON 指令"]
+    WebGemini --"❌ 找不到元素"--> Doctor["🚑 API 維修技師"]
     
-    Doctor -->|分析 DOM| KeyChain[🗝️ API Key Pool];
-    KeyChain -->|Key 1 忙碌| Key2[免費 Key #2];
-    KeyChain -->|Key 2 忙碌| Key3[免費 Key #3];
+    Doctor -->|"分析 DOM"| KeyChain["🗝️ API Key Pool"]
+    KeyChain -->|"Key 1 忙碌"| Key2["免費 Key #2"]
+    KeyChain -->|"Key 2 忙碌"| Key3["免費 Key #3"]
     
-    Key2 -->|回傳新 Selector| WebGemini;
-    Key3 -->|回傳新 Selector| WebGemini;
+    Key2 -->|"回傳新 Selector"| WebGemini
+    Key3 -->|"回傳新 Selector"| WebGemini
     
-    JSON -->|解析| Executor[💻 Shell 執行者];
-    Executor -->|結果| User;
+    JSON -->|"解析"| Executor["💻 Shell 執行者"]
+    Executor -->|"結果"| User
 
 ```
 
@@ -204,7 +204,7 @@ MIT License
 
 ---
 
-Created with 🧠 by **Arvin_Chen**
+Created with 🧠 by **Arvin_Chen** 
 <a href="https://www.buymeacoffee.com/arvincreator" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 ```
