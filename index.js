@@ -630,7 +630,8 @@ class AutonomyManager {
         }
 
         if (isVerified) {
-          global.pendingPatch = { path: testFile, target: targetPath, name: targetName };
+          // ✨ 紀錄 Description 以便在對話中顯示
+          global.pendingPatch = { path: testFile, target: targetPath, name: targetName, description: patch.description };
 
           const msgText = `💡 **自主進化提案** (${proposalType})\n目標：${targetName}\n內容：${patch.description}`;
           const options = {
@@ -679,6 +680,27 @@ async function handleUnifiedMessage(ctx) {
   if (global.pendingPatch && ['ok', 'deploy', 'y', '部署'].includes(ctx.text.toLowerCase())) return executeDeploy(ctx);
   if (global.pendingPatch && ['no', 'drop', 'n', '丟棄'].includes(ctx.text.toLowerCase())) return executeDrop(ctx);
 
+  // ✨ 2.5 待處理 Patch 提醒 (Discord/Telegram 通用)
+  // 當有累積的 Patch 且使用者不是在進行部署操作時，主動提醒
+  if (global.pendingPatch) {
+    const { name, description } = global.pendingPatch;
+    await ctx.reply(
+        `🔔 **系統插播：發現未部署的進化提案**\n` +
+        `目標：\`${name}\`\n` +
+        `內容：${description || '無描述'}\n\n` +
+        `請點擊下方按鈕或輸入 \`部署\` / \`丟棄\`。`,
+        {
+            reply_markup: {
+                inline_keyboard: [[
+                    { text: '🚀 部署', callback_data: 'PATCH_DEPLOY' },
+                    { text: '🗑️ 丟棄', callback_data: 'PATCH_DROP' }
+                ]]
+            }
+        }
+    );
+    // 提醒後繼續執行原本的對話邏輯，不 return，讓 Golem 回覆使用者的主要問題
+  }
+
   // 3. 手動 Patch 請求
   if (ctx.text.startsWith('/patch') || ctx.text.includes('優化代碼')) {
     const req = ctx.text.replace('/patch', '').trim() || "優化代碼";
@@ -705,7 +727,7 @@ async function handleUnifiedMessage(ctx) {
       }
 
       if (isVerified) {
-        global.pendingPatch = { path: testFile, target: targetPath, name: targetName };
+        global.pendingPatch = { path: testFile, target: targetPath, name: targetName, description: patch.description };
         await ctx.reply(`💡 提案就緒 (目標: ${targetName})。`, {
           reply_markup: { inline_keyboard: [[{ text: '🚀 部署', callback_data: 'PATCH_DEPLOY' }, { text: '🗑️ 丟棄', callback_data: 'PATCH_DROP' }]] }
         });
