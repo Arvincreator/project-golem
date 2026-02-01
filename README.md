@@ -78,6 +78,9 @@ graph TD
 * **防護原理**：在 `index.js` 源碼中劃定了 `// === [KERNEL PROTECTED START] ===` 禁區。
 * **運作方式**：`PatchManager` 在應用任何 AI 生成的補丁前，會先掃描該補丁是否試圖修改禁區內的代碼（如安全過濾器）。一旦觸發，立即拋出異常並中止進化。
 
+#### ☁️ OTA Upgrader: 
+* 支援輸入 `/update` 指令，即可自動從 GitHub 拉取最新代碼或恢復官方源碼並熱重啟。
+
 ---
 
 ## 💸 關於費用的秘密：如何達成 100% 免費？ (The Zero-Cost Strategy)
