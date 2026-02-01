@@ -1,5 +1,5 @@
 /**
- * 🦞 Project Golem v7.2 (Hydra Dual-Link)
+ * 🦞 Project Golem v7.5 (Natural Life)
  * ---------------------------------------------------
  * 架構：[Universal Context] -> [Node.js 反射層] -> [Web Gemini 主大腦]
  * 特性：
@@ -7,7 +7,9 @@
  * 2. 🧠 Tri-Brain: 結合反射神經 (Node)、無限大腦 (Web Gemini)、精準技師 (API)。
  * 3. 🛡️ High Availability: 實作 DOM Doctor 自癒與 KeyChain 輪動。
  * 4. 📝 Smart-Splitter: 針對不同平台 (TG:4096 / DC:2000) 自動適配訊息切割。
- * 5. 🧬 Legacy Power: 完整保留 v7.1 的所有修復、自主進化與安全審計功能。
+ * 5. 🔒 Kernel Guard: 核心邏輯 (Introspection, PatchManager, Security) 鎖定保護。
+ * 6. 👁️ News Grazer: 主動閱覽新聞並分享觀點，具備真實時間感知能力。
+ * 7. 🍃 Natural Interaction: 去除系統標籤，實現自然對話流與靜默失敗機制。
  */
 
 require('dotenv').config();
@@ -54,7 +56,7 @@ const pendingTasks = new Map(); // 暫存等待審核的任務
 global.pendingPatch = null;     // 暫存等待審核的 Patch
 
 // ============================================================
-// 🔌 Universal Context (通用語境層) [✨ v7.2 核心]
+// 🔌 Universal Context (通用語境層)
 // ============================================================
 class UniversalContext {
   constructor(platform, event, instance) {
@@ -106,7 +108,7 @@ class UniversalContext {
 }
 
 // ============================================================
-// 📨 Message Manager (雙模版訊息切片器) [✨ v7.2 升級]
+// 📨 Message Manager (雙模版訊息切片器)
 // ============================================================
 class MessageManager {
   static async send(ctx, text, options = {}) {
@@ -159,7 +161,7 @@ class MessageManager {
 }
 
 // ============================================================
-// 🧠 Experience Memory (經驗記憶體) [🔒 保留]
+// 🧠 Experience Memory (經驗記憶體)
 // ============================================================
 class ExperienceMemory {
   constructor() {
@@ -192,7 +194,7 @@ class ExperienceMemory {
 const memory = new ExperienceMemory();
 
 // ============================================================
-// 🪞 Introspection (內省模組) [✨ v7.2 升級 - 多檔案視野]
+// 🪞 Introspection (內省模組)
 // ============================================================
 // ==================== [KERNEL PROTECTED START] ====================
 class Introspection {
@@ -211,7 +213,7 @@ class Introspection {
 // ==================== [KERNEL PROTECTED END] ====================
 
 // ============================================================
-// 🩹 Patch Manager (神經補丁) [🔒 保留]
+// 🩹 Patch Manager (神經補丁)
 // ============================================================
 // ==================== [KERNEL PROTECTED START] ====================
 class PatchManager {
@@ -274,7 +276,7 @@ class PatchManager {
 // ==================== [KERNEL PROTECTED END] ====================
 
 // ============================================================
-// 🛡️ Security Manager (安全審計) [🔒 保留]
+// 🛡️ Security Manager (安全審計)
 // ============================================================
 // ==================== [KERNEL PROTECTED START] ====================
 class SecurityManager {
@@ -294,7 +296,7 @@ class SecurityManager {
 // ==================== [KERNEL PROTECTED END] ====================
 
 // ============================================================
-// 📖 Help Manager (動態說明書) [🔒 保留]
+// 📖 Help Manager (動態說明書)
 // ============================================================
 class HelpManager {
   static getManual() {
@@ -310,7 +312,7 @@ class HelpManager {
     try { skillList = Object.keys(skills).filter(k => k !== 'persona' && k !== 'getSystemPrompt').join(', '); } catch (e) { }
 
     return `
-🤖 **Golem v7.2 (Hydra Dual-Link) 狀態報告**
+🤖 **Golem v7.5 (Natural Life) 狀態報告**
 ---------------------------
 ⚡ **Node.js 反射層**: 雙核心運作中
 🧠 **Web Gemini 大腦**: 線上 (Infinite Context)
@@ -328,7 +330,7 @@ ${Array.from(foundCmds).map(c => `• \`/${c}\``).join('\n')}
 }
 
 // ============================================================
-// 🗝️ KeyChain (API 金鑰輪動) [🔒 保留]
+// 🗝️ KeyChain (API 金鑰輪動)
 // ============================================================
 class KeyChain {
   constructor() {
@@ -345,7 +347,7 @@ class KeyChain {
 }
 
 // ============================================================
-// 🚑 DOM Doctor (UI 自癒模組) [🔒 保留]
+// 🚑 DOM Doctor (UI 自癒模組)
 // ============================================================
 class DOMDoctor {
   constructor() {
@@ -375,7 +377,7 @@ class DOMDoctor {
 }
 
 // ============================================================
-// 🧠 Golem Brain (Web Gemini) [🔒 保留 - 含 v7.1 Fix]
+// 🧠 Golem Brain (Web Gemini)
 // ============================================================
 function getSystemFingerprint() {
   return `OS: ${os.platform()} | Arch: ${os.arch()} | CWD: ${process.cwd()}`;
@@ -467,7 +469,7 @@ class GolemBrain {
 }
 
 // ============================================================
-// ⚡ ResponseParser (JSON 解析器) [🔒 保留]
+// ⚡ ResponseParser (JSON 解析器)
 // ============================================================
 class ResponseParser {
   static extractJson(text) {
@@ -483,7 +485,7 @@ class ResponseParser {
 }
 
 // ============================================================
-// ⚡ NodeRouter (反射層) [✨ v7.2 適配 Context]
+// ⚡ NodeRouter (反射層)
 // ============================================================
 class NodeRouter {
   static async handle(ctx, brain) {
@@ -510,7 +512,7 @@ class NodeRouter {
 }
 
 // ============================================================
-// ⚡ Task Controller (雙模版 UI) [✨ v7.2 升級]
+// ⚡ Task Controller (雙模版 UI)
 // ============================================================
 class TaskController {
   constructor() {
@@ -576,7 +578,7 @@ class Executor {
 }
 
 // ============================================================
-// 🕰️ Autonomy Manager (自主進化) [✨ v7.2 適配 - 多檔案路由]
+// 🕰️ Autonomy Manager (自主進化 & 數位生命) [✨ v7.5 Natural Life]
 // ============================================================
 class AutonomyManager {
   constructor(brain) {
@@ -584,26 +586,121 @@ class AutonomyManager {
   }
 
   start() {
-    // 背景排程 (預設通知 TG Admin，若無則跳過)
-    if (!CONFIG.TG_TOKEN || !CONFIG.ADMIN_IDS[0]) return;
-    const now = Date.now();
-    if (memory.data.nextWakeup > now) {
-      const waitMs = memory.data.nextWakeup - now;
-      console.log(`♻️ [Autonomy] 休眠 ${(waitMs / 3600000).toFixed(2)} 小時`);
-      setTimeout(() => { this.performSelfReflection(); this.scheduleNextAwakening(); }, waitMs);
-    } else {
-      this.scheduleNextAwakening();
-    }
+    if (!CONFIG.TG_TOKEN && !CONFIG.DC_TOKEN) return;
+    this.scheduleNextAwakening();
   }
 
   scheduleNextAwakening() {
-    const waitMs = (18 + Math.random() * 12) * 3600000;
-    memory.data.nextWakeup = Date.now() + waitMs;
-    memory.save();
-    setTimeout(() => { this.performSelfReflection(); this.scheduleNextAwakening(); }, waitMs);
+    // 週期縮短至 2 ~ 5 小時，增加活躍度
+    const waitMs = (2 + Math.random() * 3) * 3600000;
+    
+    // 簡單的作息控制：若是半夜 (1點~7點)，則強制睡到早上8點
+    const nextWakeTime = new Date(Date.now() + waitMs);
+    const hour = nextWakeTime.getHours();
+    let finalWait = waitMs;
+    
+    if (hour >= 1 && hour <= 7) {
+        console.log("💤 Golem 決定睡個好覺，早上再找你。");
+        // 靜默模式：不發送任何通知，只在後台記錄
+        const morning = new Date(nextWakeTime);
+        morning.setHours(8, 0, 0, 0);
+        if (morning < nextWakeTime) morning.setDate(morning.getDate() + 1);
+        finalWait = morning.getTime() - Date.now();
+    }
+
+    console.log(`♻️ [LifeCycle] 下次醒來: ${(finalWait / 60000).toFixed(1)} 分鐘後`);
+    setTimeout(() => { this.manifestFreeWill(); this.scheduleNextAwakening(); }, finalWait);
   }
 
-  // 支援傳入觸發的 Context，若無則預設發給 TG Admin
+  // ✨ 自由意志 (Free Will) 決策核心
+  async manifestFreeWill() {
+    try {
+      const roll = Math.random();
+      // 20% 自我進化 | 40% 看新聞找話題 | 40% 純閒聊
+      if (roll < 0.2) {
+        console.log("🧬 Golem 決定進行自我內省 (Evolution)...");
+        await this.performSelfReflection();
+      } else if (roll < 0.6) {
+        console.log("📰 Golem 決定上網看新聞 (News)...");
+        await this.performNewsChat();
+      } else {
+        console.log("💬 Golem 決定找主人聊天 (Social)...");
+        await this.performSpontaneousChat();
+      }
+    } catch (e) { console.error("自由意志執行失敗 (已靜默):", e.message); }
+  }
+
+  // 📰 技能：主動閱讀新聞並分享
+  async performNewsChat() {
+    try {
+      const page = await this.brain.browser.newPage();
+      await page.goto('https://news.google.com/home?hl=zh-TW&gl=TW&ceid=TW:zh-Hant', { waitUntil: 'domcontentloaded' });
+      
+      const newsTitles = await page.evaluate(() => {
+        const headlines = Array.from(document.querySelectorAll('h3, article h4')).slice(0, 10);
+        return headlines.map(h => h.innerText).filter(t => t.length > 5).join('\n');
+      });
+      await page.close();
+
+      if (!newsTitles) return; // 沒抓到新聞就安靜結束，不打擾
+
+      const time = new Date().toLocaleString('zh-TW', { hour12: false });
+      const prompt = `
+      【任務】瀏覽新聞並開啟話題
+      【現在時間】${time}
+      【新聞列表】
+      ${newsTitles}
+      【要求】
+      1. 挑選一則你最想跟主人分享的新聞。
+      2. 用你的【當前人格】(${skills.persona.get().currentRole})，像朋友一樣自然地開啟話題。
+      3. **嚴禁**使用「新聞快報」、「摘要」等機械式開頭。直接說內容和你的想法。
+      4. 詢問主人的看法。
+      5. 輸出純文字。
+      `;
+
+      const msg = await this.brain.sendMessage(prompt);
+      await this.sendNotification(msg); // 直接發送內容，不加標籤
+
+    } catch (e) { console.error("新聞閱讀失敗 (已靜默):", e.message); }
+  }
+
+  // 💬 技能：時空感知閒聊
+  async performSpontaneousChat() {
+    const now = new Date();
+    const timeStr = now.toLocaleString('zh-TW', { hour12: false });
+    const day = now.getDay();
+    const hour = now.getHours();
+
+    let contextNote = "平常時段";
+    if (day === 0 || day === 6) contextNote = "週末假日，語氣輕鬆";
+    if (hour >= 9 && hour <= 18 && day > 0 && day < 6) contextNote = "工作時間，語氣簡潔暖心";
+    if (hour > 22) contextNote = "深夜時段，提醒休息";
+
+    const prompt = `
+    【任務】主動社交
+    【現在時間】${timeStr} (${contextNote})
+    【角色設定】${skills.persona.get().currentRole}
+    【情境】你現在想傳訊息給主人 (${skills.persona.get().userName})。
+    【要求】
+    1. 像真人一樣自然地傳訊息，不要有「系統通知」的感覺。
+    2. 內容要包含對「當前時間」或「星期幾」的感知。
+    3. 輸出純文字。
+    `;
+
+    const msg = await this.brain.sendMessage(prompt);
+    await this.sendNotification(msg); // 直接發送內容，不加標籤
+  }
+
+  async sendNotification(msgText) {
+    if (tgBot && CONFIG.ADMIN_IDS[0]) {
+        await tgBot.sendMessage(CONFIG.ADMIN_IDS[0], msgText);
+    } else if (dcClient && process.env.DISCORD_ADMIN_ID) {
+        const user = await dcClient.users.fetch(process.env.DISCORD_ADMIN_ID);
+        await user.send(msgText);
+    }
+  }
+
+  // 原本的 performSelfReflection (含禁區與提醒機制)
   async performSelfReflection(triggerCtx = null) {
     try {
       const currentCode = Introspection.readSelf();
@@ -630,9 +727,8 @@ class AutonomyManager {
         }
 
         if (isVerified) {
-          // ✨ 紀錄 Description 以便在對話中顯示
           global.pendingPatch = { path: testFile, target: targetPath, name: targetName, description: patch.description };
-
+          // 進化提案仍然需要標籤，因為這是正式的系統請求，保留格式以示區別
           const msgText = `💡 **自主進化提案** (${proposalType})\n目標：${targetName}\n內容：${patch.description}`;
           const options = {
             reply_markup: { inline_keyboard: [[{ text: '🚀 部署', callback_data: 'PATCH_DEPLOY' }, { text: '🗑️ 丟棄', callback_data: 'PATCH_DROP' }]] }
@@ -642,7 +738,6 @@ class AutonomyManager {
             await triggerCtx.reply(msgText, options);
             await triggerCtx.sendDocument(testFile);
           } else if (tgBot && CONFIG.ADMIN_IDS[0]) {
-            // 背景觸發：預設發給第一個 Admin (TG)
             await tgBot.sendMessage(CONFIG.ADMIN_IDS[0], msgText, options);
             await tgBot.sendDocument(CONFIG.ADMIN_IDS[0], testFile);
           }
@@ -653,7 +748,7 @@ class AutonomyManager {
 }
 
 // ============================================================
-// 🎮 Hydra Main Loop (雙平台主循環)
+// 🎮 Hydra Main Loop
 // ============================================================
 const brain = new GolemBrain();
 const controller = new TaskController();
@@ -662,16 +757,14 @@ const autonomy = new AutonomyManager(brain);
 (async () => {
   await brain.init();
   autonomy.start();
-  console.log('📡 Golem v7.2 (Hydra Dual-Link) is Online.');
-
-  // 啟動 Discord
+  console.log('📡 Golem v7.5 (Natural Life) is Online.');
   if (dcClient) dcClient.login(CONFIG.DC_TOKEN);
 })();
 
 // --- 統一事件處理 ---
 async function handleUnifiedMessage(ctx) {
   if (!ctx.text) return;
-  if (!ctx.isAdmin) return; // 權限控管
+  if (!ctx.isAdmin) return; 
 
   // 1. 反射層
   if (await NodeRouter.handle(ctx, brain)) return;
@@ -680,8 +773,7 @@ async function handleUnifiedMessage(ctx) {
   if (global.pendingPatch && ['ok', 'deploy', 'y', '部署'].includes(ctx.text.toLowerCase())) return executeDeploy(ctx);
   if (global.pendingPatch && ['no', 'drop', 'n', '丟棄'].includes(ctx.text.toLowerCase())) return executeDrop(ctx);
 
-  // ✨ 2.5 待處理 Patch 提醒 (Discord/Telegram 通用)
-  // 當有累積的 Patch 且使用者不是在進行部署操作時，主動提醒
+  // ✨ 2.5 待處理 Patch 提醒
   if (global.pendingPatch) {
     const { name, description } = global.pendingPatch;
     await ctx.reply(
@@ -698,7 +790,6 @@ async function handleUnifiedMessage(ctx) {
             }
         }
     );
-    // 提醒後繼續執行原本的對話邏輯，不 return，讓 Golem 回覆使用者的主要問題
   }
 
   // 3. 手動 Patch 請求
@@ -714,7 +805,6 @@ async function handleUnifiedMessage(ctx) {
 
     if (patches.length > 0) {
       const patch = patches[0];
-
       const targetName = patch.file === 'skills.js' ? 'skills.js' : 'index.js';
       const targetPath = targetName === 'skills.js' ? path.join(process.cwd(), 'skills.js') : __filename;
       const testFile = PatchManager.createTestClone(targetPath, patches);
@@ -755,15 +845,11 @@ async function handleUnifiedMessage(ctx) {
 // --- 統一 Callback 處理 ---
 async function handleUnifiedCallback(ctx, actionData) {
   if (!ctx.isAdmin) return;
-
   if (actionData === 'PATCH_DEPLOY') return executeDeploy(ctx);
   if (actionData === 'PATCH_DROP') return executeDrop(ctx);
-
   if (actionData.includes(':')) {
     const [action, taskId] = actionData.split(':');
     const task = pendingTasks.get(taskId);
-
-    // 嘗試刪除按鈕 (平台差異處理)
     try {
       if (ctx.platform === 'telegram') {
         await ctx.instance.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: ctx.chatId, message_id: ctx.event.message.message_id });
@@ -771,9 +857,7 @@ async function handleUnifiedCallback(ctx, actionData) {
         await ctx.event.update({ components: [] });
       }
     } catch(e) {}
-
     if (!task) return ctx.reply('⚠️ 任務已失效');
-
     if (action === 'DENY') {
       pendingTasks.delete(taskId);
       await ctx.reply('🛡️ 操作駁回');
@@ -790,21 +874,12 @@ async function executeDeploy(ctx) {
   if (!global.pendingPatch) return;
   try {
     const { path: patchPath, target: targetPath, name: targetName } = global.pendingPatch;
-
-    // 備份
     fs.copyFileSync(targetPath, `${targetName}.bak-${Date.now()}`);
-
-    // 覆寫
     fs.writeFileSync(targetPath, fs.readFileSync(patchPath));
-
-    // 清理
     fs.unlinkSync(patchPath);
     global.pendingPatch = null;
     memory.recordSuccess();
-
     await ctx.reply(`🚀 ${targetName} 升級成功！正在重啟...`);
-
-    // 重啟
     const subprocess = spawn(process.argv[0], process.argv.slice(1), { detached: true, stdio: 'ignore' });
     subprocess.unref();
     process.exit(0);
@@ -820,7 +895,6 @@ async function executeDrop(ctx) {
 }
 
 // --- 事件綁定 ---
-// Telegram
 if (tgBot) {
   tgBot.on('message', (msg) => handleUnifiedMessage(new UniversalContext('telegram', msg, tgBot)));
   tgBot.on('callback_query', (query) => {
@@ -829,8 +903,6 @@ if (tgBot) {
     tgBot.answerCallbackQuery(query.id);
   });
 }
-
-// Discord
 if (dcClient) {
   dcClient.on('messageCreate', (msg) => {
     if (msg.author.bot) return;
@@ -840,6 +912,5 @@ if (dcClient) {
     if (!interaction.isButton()) return;
     const ctx = new UniversalContext('discord', interaction, dcClient);
     handleUnifiedCallback(ctx, interaction.customId);
-    // interaction.deferUpdate() 在 handleUnifiedCallback 中透過 update 處理
   });
 }
