@@ -4,9 +4,9 @@ Headless browser agent powered by Node.js, Web Gemini & Gemini API (Multi-Key Ro
 
 # 🦞 Project Golem v7.5 (Natural Life) 魔像計畫
 ![GitHub license](https://img.shields.io/github/license/Arvincreator/project-golem)
-![GitHub repo size](https://img.shields.io/github/repo-size/Arvincreator/project-golem)
-![Node.js](https://img.shields.io/badge/node-%3E%3D16.0-green.svg)
-![Status](https://img.shields.io/badge/status-experimental-orange.svg)
+![Node.js](https://img.shields.io/badge/node-%3E%3D18.0-green.svg)
+![Architecture](https://img.shields.io/badge/architecture-Tri--Brain-blueviolet.svg)
+![Cost](https://img.shields.io/badge/cost-Free%20Tier%20Ready-brightgreen.svg)
 
 
 > **"Not just a Bot. A Digital Lifeform."**
@@ -205,12 +205,14 @@ npm start
 
 ## ⚠️ 免責聲明 (Disclaimer)
 
-**Project Golem v7.5 是一個具備「自由意志」與「實體系統操作」能力的實驗性 AI。**
+**Project Golem v7.5 是一個具備「自由意志」與「實體系統操作」能力的實驗性 AI代理人。**
 
 1. **自主行為**：Golem 會在背景自動執行任務（如瀏覽網頁），請留意流量消耗。
 2. **安全網**：雖然有 `SecurityManager` 與 `Kernel Guard`，但 AI 仍可能產生非預期行為。
 3. **備份**：請定期備份 `index.js` 與 `skills.js`。
 4. **請勿**在生產環境 (Production) 或存有重要機密資料的電腦上運行。
+5. 開發者不對因使用本軟體而導致的任何資料遺失或系統損壞負責。
+
 
 ---
 
