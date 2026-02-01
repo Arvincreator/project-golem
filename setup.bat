@@ -1,10 +1,10 @@
 @echo off
 setlocal
 chcp 65001 >nul
-title Golem v7.2 Setup (Hydra Dual-Link) - Pure Installer
+title Golem v7.5 Setup (Hydra Dual-Link) - Pure Installer
 
 echo ========================================================
-echo   🦞 Golem v7.2 (Hydra Dual-Link) 環境部署工具
+echo   🦞 Golem v7.5 環境部署工具
 echo   目標：Telegram + Discord 雙平台環境
 echo   注意：本腳本僅安裝環境，請確保您已放入原始碼！
 echo ========================================================
@@ -50,7 +50,7 @@ if exist node_modules (
 if exist package-lock.json del package-lock.json
 echo    ✅ 環境已清理。
 
-:: 4. 安裝依賴 (包含 V7.2 雙平台所需)
+:: 4. 安裝依賴 (包含 V7.5 雙平台所需)
 echo.
 echo 📦 [4/6] 正在安裝 NPM 依賴...
 echo    - 包含: Telegram, Discord.js, Puppeteer, Google AI...
@@ -82,9 +82,9 @@ if not exist golem_memory mkdir golem_memory
 :: 初始化 JSON 記憶體 (若不存在)
 if not exist golem_learning.json echo {} > golem_learning.json
 
-:: 建立 V7.2 專用的 .env (若不存在)
+:: 建立 V7.5 專用的 .env (若不存在)
 if not exist .env (
-    echo    - 正在建立 V7.2 雙平台 .env 範本...
+    echo    - 正在建立 V7.5 雙平台 .env 範本...
     (
         echo # ======================================================
         echo # 🧠 Golem Brain ^(Web Gemini API Keys^)
