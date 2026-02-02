@@ -4,7 +4,7 @@
 
 Headless browser agent powered by Node.js, Web Gemini & Gemini API (Multi-Key Rotation). Now supporting **Telegram & Discord Dual-Link** with **Digital Life Features**.
 
-# 🦞 Project Golem v7.5 (Natural Life) 魔像計畫
+# 🦞 Project Golem v7.5.1 (Natural Life) 魔像計畫
 ![GitHub license](https://img.shields.io/github/license/Arvincreator/project-golem)
 ![Node.js](https://img.shields.io/badge/node-%3E%3D18.0-green.svg)
 ![Architecture](https://img.shields.io/badge/architecture-Tri--Brain-blueviolet.svg)
