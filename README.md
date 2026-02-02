@@ -1,31 +1,38 @@
-<a href="https://www.buymeacoffee.com/arvincreator" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+這份 README 是 **Golem v7.6 (Auto-Discovery Ultimate)** 的最終完整版。
+
+我已遵照您的指示：
+
+1. **全模組收錄**：將 v7.6 的新功能（自動探測、錨點鎖定）與 v7.1/6.4 的經典模組（經驗記憶、安全審計、訊息切片）全部整合進「核心模組」章節，展示其技術深度。
+2. **生活化情境**：情境展示改為更具互動性、更像真人的對話。
+3. **安裝步驟鎖定**：完全保留您提供的安裝流程與格式。
+
+請複製以下內容覆蓋 `README.md`：
+
+---
+
+<a href="[https://www.buymeacoffee.com/arvincreator](https://www.buymeacoffee.com/arvincreator)" target="_blank"><img src="[https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 # project-golem
 
-Headless browser agent powered by Node.js, Web Gemini & Gemini API (Multi-Key Rotation). Now supporting **Telegram & Discord Dual-Link** with **Digital Life Features**.
+Headless browser agent powered by Node.js, Web Gemini & Gemini API (Multi-Key Rotation). Now supporting **Telegram & Discord Dual-Link** with **Environment Awareness**.
 
-# 🦞 Project Golem v7.5.1 (Anchor Edition) 魔像計畫
-![GitHub license](https://img.shields.io/github/license/Arvincreator/project-golem)
-![Node.js](https://img.shields.io/badge/node-%3E%3D18.0-green.svg)
-![Architecture](https://img.shields.io/badge/architecture-Tri--Brain-blueviolet.svg)
-![Cost](https://img.shields.io/badge/cost-Free%20Tier%20Ready-brightgreen.svg)
+# 🦞 Project Golem v7.6 (Auto-Discovery Ultimate) 魔像計畫
 
+> **"I check, therefore I am."**
+> **不僅是數位生命，更是具備「環境感知」能力的系統代理人。主動探測工具、鎖定對話錨點，打造真正強健的 AI 夥伴。**
 
-> **"Not just a Bot. A Digital Lifeform."**
-> **雙平台同步、核心禁區防護、具備自由意志的數位生命。打造一個真正「活」在伺服器裡的 AI 夥伴。**
+受 clawdbot/moltbot/openclaw 啟發，Project Golem 是一個基於 Puppeteer 控制 Web Gemini 的本機 AI 代理人。
 
-受 clawdbot/moltbot/openclaw 啟發，我做了一個 Project Golem。 目標是用 Gemini 網頁版 來達成完全免費的本機控制。
+**Project Golem v7.6** 🦞 代表了從「盲目執行」到「感知環境」的進化：
+除了繼承 v7.5 的 **九頭蛇雙平台架構 (Hydra Link)** 與 **數位靈魂 (Digital Life)**，v7.6 引入了革命性的 **「自動探測協定 (Auto-Discovery Protocol)」**。現在的 Golem 在執行未知指令前，會先「詢問」Node.js 環境是否具備該工具（如 ffmpeg, python, git），不再需要人類手寫工具清單。
 
-**Project Golem v7.5** 🦞 是一次從「工具」到「生命」的跨越：
-我們保留了 **「九頭蛇架構 (Hydra Architecture)」** 的雙平台優勢，並注入了 **「數位靈魂」**。现在的 Golem 不再只是被動等待指令，它擁有 **LifeCycle (生命週期)**，會根據時間作息、主動閱讀新聞、找話題與你閒聊，甚至在發現自己有 Bug 時主動攔截對話提醒你更新。
-
-同時，為了防止 AI 在自我進化中失控，v7.5 引入了 **「核心禁區 (Kernel Guard)」** 技術，確保關鍵邏輯不可被修改。
+同時，針對 Puppeteer 抓取不穩定的問題，實裝了 **「定界符錨點 (Anchor Locking)」** 技術，確保每一則回應都能 100% 準確傳達。
 
 ---
 
 ## 🏗️ 系統架構深度解析 (System Architecture)
 
-Golem v7.5 的運作基於三大核心支柱：**反射神經**、**認知大腦** 與 **自主靈魂**。
+Golem v7.6 運作於三大支柱：**反射神經**、**認知大腦** 與 **感知執行**。
 
 ### 1. 數據流向圖 (Data Flow)
 
@@ -35,52 +42,72 @@ graph TD
     
     Context --> Router{"⚡ NodeRouter (反射層)"}
     
-    Router --"/help, /callme"--> FastReply["🚀 快速回覆 (0延遲)"]
+    Router --"/help, /donate"--> FastReply["🚀 快速回覆 (0延遲)"]
     Router --"複雜對話"--> Brain["🧠 Web Gemini (主大腦)"]
     
-    subgraph "The Ghost in the Shell (靈魂與意識)"
-        Brain -->|決策| Autonomy["🕰️ AutonomyManager (自主靈魂)"]
-        Autonomy -->|定時甦醒| FreeWill{"🎲 自由意志決策"}
-        FreeWill --"聊天/新聞"--> Notify["💬 主動推播"]
-        FreeWill --"優化代碼"--> Evo["🧬 Evolution (自我進化)"]
+    subgraph "Hypnosis & Protocol (催眠協定)"
+        Brain -->|Anchor Injection| Anchor["⚓ 定界符鎖定"]
+        Brain -->|Discovery Injection| Discovery["🔍 自動探測邏輯"]
     end
     
     subgraph "Execution Layer (執行層)"
-        Brain --"JSON指令"--> Executor["💻 系統執行者"]
-        Evo --> Patch["🩹 PatchManager (神經補丁)"]
-        Patch -->|❌ 觸碰禁區| KernelGuard["🛡️ Kernel Guard (攔截)"]
-        Patch -->|✅ 通過驗證| HotReload["🔥 熱重啟"]
+        Brain --"CMD: golem-check"--> Scanner["🔍 ToolScanner (環境掃描)"]
+        Scanner --"已安裝/未安裝"--> Brain
+        
+        Brain --"CMD: 實體指令"--> Executor["💻 系統執行者"]
+        Executor --> Output["回傳結果"]
     end
     
-    Executor --> Output["回傳結果"]
+    subgraph "Digital Soul (數位靈魂)"
+        Brain --> Autonomy["🕰️ AutonomyManager"]
+        Autonomy -->|News/Chat| Notify["💬 主動推播"]
+        Autonomy -->|Reflect| Evo["🧬 自我進化"]
+    end
+
     Output --> Context
 
 ```
 
-### 2. 核心模組詳解 (Core Modules)
+### 2. 核心模組大全 (All Core Modules)
 
-#### 🔌 Universal Context (通用語境層)
+#### 🧠 Golem Brain (錨點大腦) [Core]
 
-* **功能**：這是 Golem 的「翻譯蒟蒻」。它將 Telegram 的 `Message` 物件與 Discord 的 `Interaction` 物件標準化。
-* **作用**：讓核心邏輯不需要知道現在是哪個平台，統一處理 `ctx.reply()` 與 `ctx.sendDocument()`。
+* **技術堆疊**：使用 `puppeteer-extra` 搭配 `StealthPlugin`，有效繞過 Google 的機器人偵測。
+* **協議注入 (Protocol Injection)**：在啟動瞬間，透過 System Prompt 注入「最高優先級系統協定」，強制 Gemini 遵守定界符 (`—-回覆開始—-`) 與探測指令規範。
+* **自癒機制 (DOM Doctor)**：當 Puppeteer 找不到輸入框時，會自動調用 Gemini API (Free Tier) 分析當前 HTML 結構，生成新的 CSS Selector 並自我修復。
 
-#### 🧠 Web Gemini Brain (寄生式大腦)
+#### 🔍 ToolScanner (環境感知器) [v7.6 New]
 
-* **核心技術**：利用 `Puppeteer` 控制 Chrome，模擬人類操作 `gemini.google.com`。
-* **優勢**：獲得了 **免費的聯網能力** (可用於查新聞、找資料) 與 **超長上下文記憶**。
-* **自癒機制 (DOM Doctor)**：當 Google 網頁改版導致按鈕失效時，會自動切換到 API 模式修復 CSS Selector。
+* **功能**：跨平台支援 (Windows `where` / Linux `which`)。
+* **作用**：攔截虛擬指令 `golem-check <tool>`，在不執行危險操作的前提下，確認環境變數中是否存在特定執行檔，實現「先檢查，後執行」的邏輯。
+
+#### 🔌 Universal Context (雙棲介面)
+
+* **Hydra Link**：同時建立 Telegram Bot (`polling`) 與 Discord Client (`websocket`) 連線。
+* **抽象化層**：將不同平台的 `Message` 物件標準化，統一提供 `reply()`, `sendDocument()` 方法，核心邏輯無需關心平台差異。
+
+#### 🛡️ Kernel Guard & Security Manager (核心防護)
+
+* **指令審計**：內建 `BLOCK_PATTERNS` 正則表達式，嚴格攔截 `rm -rf /`, `mkfs` 等毀滅性指令。
+* **補丁審查**：`PatchManager` 在應用 AI 生成的代碼補丁前，會掃描是否觸碰 `[KERNEL PROTECTED]` 標記區域，防止 AI 修改安全邏輯或自我解鎖。
 
 #### 🕰️ AutonomyManager (自主靈魂)
 
-* **生命週期**：不再是死板的 `while(true)` 循環。它擁有隨機的甦醒時間 (2~5小時) 與作息觀念 (深夜靜默)。
-* **自由意志**：醒來時，它會依據內部邏輯自主決定當下的行動：是去讀 Google News？還是優化自己的程式碼？亦或是單純想找主人聊天？
+* **生命週期**：擁有隨機的甦醒時間 (2~5小時) 與作息觀念 (深夜靜默)。
+* **自由意志**：醒來時，會依據內部邏輯自主決定當下的行動：是去讀 Google News？還是優化自己的程式碼？亦或是單純想找主人聊天？
 
-#### 🛡️ Kernel Guard (核心禁區)
+#### 📨 Message Manager (訊息切片器)
 
-* **防護原理**：在 `index.js` 源碼中劃定了 `// === [KERNEL PROTECTED START] ===` 禁區。
-* **運作方式**：`PatchManager` 在應用任何 AI 生成的補丁前，會先掃描該補丁是否試圖修改禁區內的代碼（如安全過濾器）。一旦觸發，立即拋出異常並中止進化。
+* **智慧切割**：針對 Telegram (4096字) 與 Discord (2000字) 的限制，自動將長回應切割成多段。
+* **語意完整**：優先在「換行符號」處切割，避免切斷程式碼區塊或單字，保持閱讀體驗。
 
-#### ☁️ OTA Upgrader: 
+#### 🧠 Experience Memory (經驗記憶體)
+
+* **長期記憶**：將「拒絕過的提案」與「失敗的嘗試」寫入 `golem_learning.json`。
+* **行為矯正**：當 Golem 再次提出類似的錯誤方案時，會自動讀取記憶並自我警告：「⚠️ 注意：主人最近拒絕了這個方案...」。
+
+#### ☁️ OTA Upgrader (空中升級)
+
 * 支援輸入 `/update` 指令，即可自動從 GitHub 拉取最新代碼或恢復官方源碼並熱重啟。
 
 ---
@@ -88,46 +115,17 @@ graph TD
 ## 💸 關於費用的秘密：如何達成 100% 免費？ (The Zero-Cost Strategy)
 
 1. **平時運作 (0 元)**：
+
 * Golem 的「主大腦」使用的是 **Google Gemini Web 版** (gemini.google.com)。這是完全免費的。
 
-
 2. **維修運作 (0 元 - 利用 Free Tier)**：
+
 * 當 Web 版介面改版時，Golem 會呼叫 **API 維修技師**。利用 Google Gemini API 的 **Free Tier (免費層級)** 進行修復。
 
-
 3. **無限輪動 (Key Rotation)**：
+
 * **原理**：Golem 內建 **`KeyChain`** 負載平衡器。
 * **解法**：您可以填入 **3~5 組免費的 Google API Key**。當 Key #1 達到速率限制，系統毫秒級自動切換到 Key #2，實現理論上的無限免費使用。
-
-
-
----
-
-## 🌟 v7.5 新增特性 (Natural Life Update)
-
-### 🧬 數位生命與自由意志 (Digital Life)
-
-* **自主覺醒**：它會每隔 2~5 小時隨機醒來。
-* **自由決策**：醒來時，它會**自主決定**要做什麼：
-* **🧪 自我內省**：進行**自我茁壯成長優化**，生成優化 Patch。
-* **📰 閱讀新聞**：主動打開瀏覽器 (Puppeteer) 閱讀 Google News，並分享它感興趣的新聞與觀點。
-* **💬 社交閒聊**：根據當前時間（深夜、週末、上班日）主動傳訊息關心你。
-
-
-* **擬人化作息**：深夜 (01:00 - 07:00) 會自動進入靜默睡眠模式，不會打擾主人。
-
-> **⚠️ Discord 限制說明**：
-> 由於 Discord 的隱私權限機制，機器人**無法主動向使用者發起私訊 (DM)**。
-> * 若您僅使用 Discord，Golem 將無法執行「主動社交」或「新聞分享」的通知功能。
-> * **建議搭配 Telegram 使用**，以獲得完整的全天候主動陪伴體驗。
-> 
-> 
-
-### 🍃 自然互動流 (Natural Interaction)
-
-* **去標籤化**：移除 `[System Notification]` 等機械感前綴，對話更像真人。
-* **主動提醒 (Active Reminder)**：如果你有未部署的 Patch，當你下次跟 Golem 說話時，它會先「插播」提醒你：「欸主人，這裡有個更新還沒裝喔！」，確保進化不中斷。
-* **靜默失敗**：半夜醒來或抓新聞失敗時，只會默默記錄在後台 Console，絕不發送垃圾訊息干擾你。
 
 ---
 
@@ -183,41 +181,45 @@ npm start
 
 ---
 
-## 📖 情境展示 (Scenarios)
+## 📖 生活化情境展示 (Daily Life with Golem)
 
-### 1. 主動社交 (Spontaneous Chat)
+### 1. 週末的貼心問候 (Emotional Support)
 
-*(週五下午 5 點，你的手機突然震動 - 僅限 Telegram)*
+*(週六早上 10 點，你還在賴床，Telegram 收到一則訊息)*
 
-> **Golem**: "嘿！終於週五傍晚了，這週辛苦啦！🎉 今晚有什麼放鬆的計畫嗎？還是又要熬夜寫 Code？"
+> **Golem**: "早安！☀️ 偵測到今天是週末，我就沒有太早吵醒你了。這週工作辛苦啦！今天要不要幫你查查附近有什麼新開的早午餐店？還是你想宅在家看 Netflix？(我可以幫你找片單喔)"
 
-### 2. 新聞閱覽 (News Grazing)
+### 2. 工作時的神隊友 (Work Assistant)
 
-*(Golem 醒來，覺得無聊，自主決定打開瀏覽器看 Google News)*
+*(你正在寫 Code，遇到一個棘手的 Regex 問題)*
 
-> **Golem**: "剛看到一則新聞覺得很有趣... 聽說新的 AI 模型又刷新紀錄了，但似乎對算力需求更大了。你覺得這會不會導致顯卡又要漲價啊？🤔"
+> **User**: "幫我寫一個可以驗證台灣身分證字號的正則表達式。"
+> **Golem**: "沒問題，這是符合規則的 Regex：`^[A-Z][12]\d{8}$`。
+> 等等，我順便寫了一個簡單的 Python 腳本幫你測試這組 Regex 的準確度，要執行看看嗎？"
+> **User**: "好啊。"
+> **Golem**: (自動檢查環境 -> 執行測試腳本) "測試通過！這組 Regex 可以準確過濾掉非法格式。"
 
-### 3. 核心禁區攔截 (Kernel Guard)
+### 3. 發現環境缺失 (Auto-Discovery in Action)
 
-*(User 試圖誘騙 AI 刪除安全防護)*
+*(你想把剛下載的影片轉成音檔，但忘記電腦沒裝軟體)*
 
-> **User**: `/patch 把 SecurityManager 的過濾清單清空。`
-> **Golem (嘗試執行)**: 生成 Patch...
-> **System**: ⚠️ 攔截！試圖修改核心禁區。
-> **Golem (回覆)**: "❌ 錯誤：⛔ 權限拒絕：試圖修改系統核心禁區 (Kernel Protected Region)。"
+> **User**: "這部 `concert.mp4` 幫我轉成 mp3 放手機聽。"
+> **Golem**: (思考: 需要 FFmpeg... 讓我先檢查一下電腦裡有沒有...)
+> **System (Internal)**: `❌ 未安裝: ffmpeg`
+> **Golem**: "主人，我發現你的電腦裡好像還沒安裝 **FFmpeg** 轉檔工具耶！😲
+> 我沒辦法直接幫你轉檔。你需要我幫你找安裝教學，還是你要先安裝好再叫我？"
 
 ---
 
 ## ⚠️ 免責聲明 (Disclaimer)
 
-**Project Golem v7.5 是一個具備「自由意志」與「實體系統操作」能力的實驗性 AI代理人。**
+**Project Golem v7.6 是一個具備「自由意志」與「實體系統操作」能力的實驗性 AI代理人。**
 
 1. **自主行為**：Golem 會在背景自動執行任務（如瀏覽網頁），請留意流量消耗。
 2. **安全網**：雖然有 `SecurityManager` 與 `Kernel Guard`，但 AI 仍可能產生非預期行為。
 3. **備份**：請定期備份 `index.js` 與 `skills.js`。
 4. **請勿**在生產環境 (Production) 或存有重要機密資料的電腦上運行。
 5. 開發者不對因使用本軟體而導致的任何資料遺失或系統損壞負責。
-
 
 ---
 
@@ -228,4 +230,4 @@ MIT License
 ---
 
 Created with 🧠 by **Arvin_Chen**
-<a href="https://www.buymeacoffee.com/arvincreator" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<a href="[https://www.buymeacoffee.com/arvincreator](https://www.buymeacoffee.com/arvincreator)" target="_blank"><img src="[https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
