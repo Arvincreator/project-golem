@@ -2,118 +2,104 @@
 
 # project-golem
 
-Headless browser agent powered by Node.js, Web Gemini & Gemini API (Multi-Key Rotation). Now supporting **Telegram & Discord Dual-Link** with **Environment Awareness**.
+**Headless Browser Agent** powered by Node.js, Web Gemini & **Local Neural Memory**. Now featuring **Infinite Long-Term Memory (RAG)** & **Tri-Stream Protocol**.
 
-# 🦞 Project Golem v7.6 (Auto-Discovery Ultimate) 魔像計畫
+# 🦞 Project Golem v8.0 (Neural Memory Edition) 魔像計畫
 
-> **"I check, therefore I am."**
-> **不僅是數位生命，更是具備「環境感知」能力的系統代理人。主動探測工具、鎖定對話錨點，打造真正強健的 AI 夥伴。**
+> **"I remember, therefore I serve."**
+> **不僅是環境感知的代理人，更是擁有「無限記憶」的數位伴侶。搭載本地海馬迴，讓每一段對話都成為永恆。**
 
 受 clawdbot/moltbot/openclaw 啟發，Project Golem 是一個基於 Puppeteer 控制 Web Gemini 的本機 AI 代理人。
 
-**Project Golem v7.6** 🦞 代表了從「盲目執行」到「感知環境」的進化：
-除了繼承 v7.5 的 **九頭蛇雙平台架構 (Hydra Link)** 與 **數位靈魂 (Digital Life)**，v7.6 引入了革命性的 **「自動探測協定 (Auto-Discovery Protocol)」**。現在的 Golem 在執行未知指令前，會先「詢問」Node.js 環境是否具備該工具（如 ffmpeg, python, git），不再需要人類手寫工具清單。
+**Project Golem v8.0** 🦞 代表了從「短期互動」到「長期陪伴」的終極進化：
+除了繼承 v7.6 的 **自動探測 (Auto-Discovery)** 與 **視神經 (OpticNerve)**，v8.0 引入了震撼的 **「神經海馬迴 (Neural Cortex)」**。
+利用 **Transformers.js** 與 **IndexedDB**，Golem 現在能在您的瀏覽器背景建立一個**本地向量資料庫**。它能記住您的喜好、習慣與過往對話，並在適當的時候「想起來」——完全**離線運行**，無需昂貴的向量雲端服務。
 
-同時，針對 Puppeteer 抓取不穩定的問題，實裝了 **「定界符錨點 (Anchor Locking)」** 技術，確保每一則回應都能 100% 準確傳達。
+同時，為了處理這種複雜思維，我們實裝了 **「三匯流協定 (Tri-Stream Protocol)」**，讓 Golem 能在一次思考中同時處理「記憶寫入」、「外部行動」與「對話回覆」。
 
 ---
 
 ## 🏗️ 系統架構深度解析 (System Architecture)
 
-Golem v7.6 運作於三大支柱：**反射神經**、**認知大腦** 與 **感知執行**。
+Golem v8.0 運作於四大支柱：**反射神經**、**認知大腦**、**感知執行** 與 **深層記憶**。
 
 ### 1. 數據流向圖 (Data Flow)
 
 ```mermaid
 graph TD
-    User["📱 使用者 (TG/DC)"] -->|訊息/指令| Context["🔌 Universal Context (通用語境層)"]
+    User["📱 使用者 (TG/DC)"] -->|訊息/圖片| Context["🔌 Universal Context (通用語境層)"]
     
-    Context --> Router{"⚡ NodeRouter (反射層)"}
-    
-    Router --"/help, /donate"--> FastReply["🚀 快速回覆 (0延遲)"]
-    Router --"複雜對話"--> Brain["🧠 Web Gemini (主大腦)"]
-    
-    subgraph "Hypnosis & Protocol (催眠協定)"
-        Brain -->|Anchor Injection| Anchor["⚓ 定界符鎖定"]
-        Brain -->|Discovery Injection| Discovery["🔍 自動探測邏輯"]
+    subgraph "The Cortex (海馬迴)"
+        Context --"Recall (檢索)"--> VectorDB[("🐘 Neural Memory (IndexedDB)")]
+        VectorDB --"相關記憶 (RAG)"--> PromptInjection["💉 Prompt 注入層"]
     end
     
-    subgraph "Execution Layer (執行層)"
-        Brain --"CMD: golem-check"--> Scanner["🔍 ToolScanner (環境掃描)"]
-        Scanner --"已安裝/未安裝"--> Brain
-        
-        Brain --"CMD: 實體指令"--> Executor["💻 系統執行者"]
-        Executor --> Output["回傳結果"]
+    PromptInjection --> Brain["🧠 Web Gemini (主大腦)"]
+    
+    subgraph "Tri-Stream Protocol (三流協定)"
+        Brain -->|Stream 1: [MEMORY]| MemWrite["💾 寫入長期記憶"]
+        Brain -->|Stream 2: [ACTION]| Executor["💻 系統執行者"]
+        Brain -->|Stream 3: [REPLY]| Reply["💬 對話回覆"]
     end
     
+    MemWrite --> VectorDB
+    Executor --"golem-check / cmd"--> Output["執行結果"]
+    Output --> Brain
+    Reply --> User
+
     subgraph "Digital Soul (數位靈魂)"
         Brain --> Autonomy["🕰️ AutonomyManager"]
         Autonomy -->|News/Chat| Notify["💬 主動推播"]
         Autonomy -->|Reflect| Evo["🧬 自我進化"]
     end
 
-    Output --> Context
-
 ```
 
 ### 2. 核心模組大全 (All Core Modules)
 
-#### 🧠 Golem Brain (錨點大腦) [Core]
+#### 🐘 Neural Memory (神經海馬迴) [v8.0 Core]
 
-* **技術堆疊**：使用 `puppeteer-extra` 搭配 `StealthPlugin`，有效繞過 Google 的機器人偵測。
-* **協議注入 (Protocol Injection)**：在啟動瞬間，透過 System Prompt 注入「最高優先級系統協定」，強制 Gemini 遵守定界符 (`—-回覆開始—-`) 與探測指令規範。
-* **自癒機制 (DOM Doctor)**：當 Puppeteer 找不到輸入框時，會自動調用 Gemini API (Free Tier) 分析當前 HTML 結構，生成新的 CSS Selector 並自我修復。
+* **技術核心**：利用 `Transformers.js` (all-MiniLM-L6-v2) 在本地瀏覽器中執行 Embedding 運算。
+* **零成本 RAG**：完全不依賴 OpenAI 或 Pinecone。所有記憶儲存於您本機 Chrome 的 `IndexedDB` 中，永久保存且隱私安全。
+* **沉默記憶 (Silent Imprint)**：Golem 會自動判斷對話中的重要資訊（如「我不吃辣」），並默默寫入記憶，不需要您刻意下指令。
 
-#### 🔍 ToolScanner (環境感知器) [v7.6 New]
+#### ⚓ Tri-Stream Anchors (三匯流協定) [v8.0 New]
 
-* **功能**：跨平台支援 (Windows `where` / Linux `which`)。
-* **作用**：攔截虛擬指令 `golem-check <tool>`，在不執行危險操作的前提下，確認環境變數中是否存在特定執行檔，實現「先檢查，後執行」的邏輯。
+* **多工思維**：強制 Gemini 輸出特定格式，將單次回應拆解為三條平行串流：
+1. `[🧠 MEMORY_IMPRINT]`: 給海馬迴看的筆記。
+2. `[🤖 ACTION_PLAN]`: 給 Node.js 執行的指令。
+3. `[💬 REPLY]`: 給人類看的對話。
 
-#### 🔌 Universal Context (雙棲介面)
 
-* **Hydra Link**：同時建立 Telegram Bot (`polling`) 與 Discord Client (`websocket`) 連線。
-* **抽象化層**：將不同平台的 `Message` 物件標準化，統一提供 `reply()`, `sendDocument()` 方法，核心邏輯無需關心平台差異。
 
-#### 🛡️ Kernel Guard & Security Manager (核心防護)
+#### 🧠 Golem Brain (Web Gemini)
 
-* **指令審計**：內建 `BLOCK_PATTERNS` 正則表達式，嚴格攔截 `rm -rf /`, `mkfs` 等毀滅性指令。
-* **補丁審查**：`PatchManager` 在應用 AI 生成的代碼補丁前，會掃描是否觸碰 `[KERNEL PROTECTED]` 標記區域，防止 AI 修改安全邏輯或自我解鎖。
+* **無限文本 (Infinite Context)**：利用 Web 版 Gemini 的長文本優勢，結合本地 RAG，實現理論上的無限記憶長度。
+* **自癒機制 (DOM Doctor)**：當 Puppeteer 失效時，自動調用 Gemini API 修復 CSS Selector。
+
+#### 🔍 ToolScanner (環境感知器) [v7.6]
+
+* **主動探測**：執行未知指令前，先用 `golem-check` 確認環境（如 ffmpeg, python, git），避免盲目報錯。
+
+#### 🔮 OpticNerve (視神經) [v7.6]
+
+* **視覺理解**：整合 Gemini 2.5 Flash API。當您傳送圖片或文件時，Golem 能「看見」並進行分析，甚至能讀懂程式碼截圖。
 
 #### 🕰️ AutonomyManager (自主靈魂)
 
-* **生命週期**：擁有隨機的甦醒時間 (2~5小時) 與作息觀念 (深夜靜默)。
-* **自由意志**：醒來時，會依據內部邏輯自主決定當下的行動：是去讀 Google News？還是優化自己的程式碼？亦或是單純想找主人聊天？
-
-#### 📨 Message Manager (訊息切片器)
-
-* **智慧切割**：針對 Telegram (4096字) 與 Discord (2000字) 的限制，自動將長回應切割成多段。
-* **語意完整**：優先在「換行符號」處切割，避免切斷程式碼區塊或單字，保持閱讀體驗。
-
-#### 🧠 Experience Memory (經驗記憶體)
-
-* **成長記憶**：將「拒絕過的成長提案」與「失敗的嘗試」寫入 `golem_learning.json`。
-* **行為矯正**：當 Golem 再次提出類似的錯誤方案時，會自動讀取記憶並自我警告：「⚠️ 注意：主人最近拒絕了這個方案...」。
-
-#### ☁️ OTA Upgrader (空中升級)
-
-* 支援輸入 `/update` 指令，即可自動從 GitHub 拉取最新代碼或恢復官方源碼並熱重啟。
+* **自由意志**：擁有隨機的甦醒時間與作息。它會主動上網看新聞、根據記憶找話題聊天，或自我優化代碼。
 
 ---
 
 ## 💸 關於費用的秘密：如何達成 100% 免費？ (The Zero-Cost Strategy)
 
-1. **平時運作 (0 元)**：
+**v8.0 依然保持 100% 免費神話，甚至更進一步：**
 
-* Golem 的「主大腦」使用的是 **Google Gemini Web 版** (gemini.google.com)。這是完全免費的。
-
-2. **維修運作 (0 元 - 利用 Free Tier)**：
-
-* 當 Web 版介面改版時，Golem 會呼叫 **API 維修技師**。利用 Google Gemini API 的 **Free Tier (免費層級)** 進行修復。
-
-3. **無限輪動 (Key Rotation)**：
-
-* **原理**：Golem 內建 **`KeyChain`** 負載平衡器。
-* **解法**：您可以填入 **3~5 組免費的 Google API Key**。當 Key #1 達到速率限制，系統毫秒級自動切換到 Key #2，實現理論上的無限免費使用。
+1. **大腦 (Generation)**：使用 **Google Gemini Web** (免費)。
+2. **記憶 (Embedding)**：使用 **Transformers.js** (本地 CPU 運算，免費)。
+3. **儲存 (Vector DB)**：使用 **IndexedDB** (本機硬碟，免費)。
+4. **視覺 (Vision)**：使用 **Gemini API Free Tier** (免費)。
+5. **無限輪動 (Key Rotation)**：內建 `KeyChain`，支援多組 API Key 自動切換，突破速率限制。
 
 ---
 
@@ -121,9 +107,8 @@ graph TD
 
 ### 1. 準備必要 Token
 
-1. **Google Gemini API Key** (必備)：前往 [Google AI Studio](https://aistudio.google.com/app/apikey) 申請。
-2. **Telegram Bot Token** (選填)：向 [@BotFather](https://t.me/botfather) 申請。
-3. **Discord Bot Token** (選填)：前往 Discord Developer Portal 申請。
+1. **Google Gemini API Key** (必備)：[Google AI Studio](https://aistudio.google.com/app/apikey) 申請 (Free Tier 即可)。
+2. **Telegram/Discord Token** (選填)。
 
 ### 2. 下載原始碼
 
@@ -133,9 +118,9 @@ cd project-golem
 
 ```
 
-### 3. 自動化安裝
+### 3. 自動化安裝 (v8.0)
 
-* **Windows**: 雙擊 `setup.bat`。
+* **Windows**: 雙擊 `setup.bat` (會自動檢查 `memory.html` 是否存在)。
 * **Mac / Linux**:
 
 ```bash
@@ -144,70 +129,75 @@ chmod +x setup.sh
 
 ```
 
+* **注意**：首次啟動時，系統會自動下載約 **50MB** 的 AI 模型到本地快取，請耐心等候。
+
 ### 4. 設定檔 `.env`
 
 ```ini
-# 1. Gemini API Keys (輪動池)
-GEMINI_API_KEYS=你的Key1,你的Key2,你的Key3
-
-# 2. Telegram 設定
-TELEGRAM_TOKEN=123456:ABC-DEF...
-ADMIN_ID=12345678
-
-# 3. Discord 設定
-DISCORD_TOKEN=MTE2...
-DISCORD_ADMIN_ID=987654321
+GEMINI_API_KEYS=你的Key1,你的Key2
+TELEGRAM_TOKEN=123...
+DISCORD_TOKEN=MTE...
+# v8.0 Update: 不需要 HuggingFace Token
 
 ```
 
 ### 5. 啟動
 
 ```bash
-npm start
+node index.js
 
 ```
 
+*(看到 `📡 Golem v8.0 (Neural Memory) is Online` 即代表海馬迴已上線)*
+
 ---
 
-## 📖 生活化情境展示 (Daily Life with Golem)
+## 📖 生活化情境展示 (Daily Life with v8.0)
 
-### 1. 週末的貼心問候 (Emotional Support)
+### 1. 跨越時間的記憶 (The Long-Term Memory)
 
-*(週六早上 10 點，你還在賴床，Telegram 收到一則訊息)*
+*(兩個月前，你隨口提了一句...)*
 
-> **Golem**: "早安！☀️ 偵測到今天是週末，我就沒有太早吵醒你了。這週工作辛苦啦！今天要不要幫你查查附近有什麼新開的早午餐店？還是你想宅在家看 Netflix？(我可以幫你找片單喔)"
+> **User**: "我喝咖啡只喝燕麥奶拿鐵，千萬別加糖，會過敏。"
+> **Golem (v8.0)**: "好的，記住了。" *(默默寫入向量資料庫)*
 
-### 2. 工作時的神隊友 (Work Assistant)
+*(兩個月後，你電腦重灌了，Golem 也重啟了無數次...)*
 
-*(你正在寫 Code，遇到一個棘手的 Regex 問題)*
+> **User**: "幫我查一下星巴克有沒有我想喝的那種咖啡，有的話多少錢。"
+> **Golem**: *(觸發 RAG 檢索 -> 發現「燕麥奶/無糖/過敏」記憶)*
+> "早安！幫你查到了，星巴克有提供 **燕麥奶拿鐵** 喔。
+> 大杯價格約 $160，我也確認過可以做 **完全無糖**，不用擔心過敏問題！要幫你找附近的店嗎？"
 
-> **User**: "幫我寫一個可以驗證台灣身分證字號的正則表達式。"
-> **Golem**: "沒問題，這是符合規則的 Regex：`^[A-Z][12]\d{8}$`。
-> 等等，我順便寫了一個簡單的 Python 腳本幫你測試這組 Regex 的準確度，要執行看看嗎？"
-> **User**: "好啊。"
-> **Golem**: (自動檢查環境 -> 執行測試腳本) "測試通過！這組 Regex 可以準確過濾掉非法格式。"
+### 2. 複雜任務的多工處理 (Tri-Stream Processing)
 
-### 3. 發現環境缺失 (Auto-Discovery in Action)
+*(你想知道天氣並要求它記住你的穿衣風格)*
 
-*(你想把剛下載的影片轉成音檔，但忘記電腦沒裝軟體)*
+> **User**: "今天好冷喔幾度啊？記住我喜歡穿休閒一點的衣服，以後給我建議時參考一下。"
+> **Golem**:
+> *(Stream 1 [MEMORY]): 寫入「使用者偏好休閒風格穿搭」。*
+> *(Stream 2 [ACTION]): 執行 `golem-check weather` 查詢氣溫。*
+> *(Stream 3 [REPLY]): "收到！正在幫你查氣溫，我也把你的穿衣風格記在腦海裡了！"*
 
-> **User**: "這部 `concert.mp4` 幫我轉成 mp3 放手機聽。"
-> **Golem**: (思考: 需要 FFmpeg... 讓我先檢查一下電腦裡有沒有...)
-> **System (Internal)**: `❌ 未安裝: ffmpeg`
-> **Golem**: "主人，我發現你的電腦裡好像還沒安裝 **FFmpeg** 轉檔工具耶！😲
-> 我沒辦法直接幫你轉檔。你需要我幫你找安裝教學，還是你要先安裝好再叫我？"
+### 3. 視覺與探測的結合 (Vision + Discovery)
+
+*(你傳了一張 Python 錯誤截圖)*
+
+> **User**: [圖片] "這要怎麼修？"
+> **Golem**: *(OpticNerve 分析圖片 -> 發現是 `ModuleNotFoundError: pandas`)*
+> "這看起來是缺少 `pandas` 套件。稍等，我檢查一下你的環境..."
+> *(Auto-Discovery: 執行 `golem-check pip`)*
+> "確認你已安裝 pip。請執行以下指令來修復：`pip install pandas`。要我幫你執行嗎？"
 
 ---
 
 ## ⚠️ 免責聲明 (Disclaimer)
 
-**Project Golem v7.6 是一個具備「自由意志」與「實體系統操作」能力的實驗性 AI代理人。**
+**Project Golem v8.0 是一個具備「長期記憶」與「實體操作」能力的 AI 代理人。**
 
-1. **自主行為**：Golem 會在背景自動執行任務（如瀏覽網頁），請留意流量消耗。
-2. **安全網**：雖然有 `SecurityManager` 與 `Kernel Guard`，但 AI 仍可能產生非預期行為。
-3. **備份**：請定期備份 `index.js` 與 `skills.js`。
-4. **請勿**在生產環境 (Production) 或存有重要機密資料的電腦上運行。
-5. 開發者不對因使用本軟體而導致的任何資料遺失或系統損壞負責。
+1. **記憶隱私**：所有的對話記憶與向量數據皆儲存於**您本機的 User Data Dir**，不會上傳至任何第三方向量雲端。
+2. **自主行為**：Golem 會根據記憶主動發起話題，請勿感到驚慌。
+3. **資料安全**：請勿讓 Golem 記憶您的密碼或信用卡號 (雖然它在本地，但明文儲存仍有風險)。
+4. **請勿**在生產環境 (Production) 運行。
 
 ---
 
@@ -217,5 +207,5 @@ MIT License
 
 ---
 
-Created with 🧠 by **Arvin_Chen**
+Created with Gemini by **Arvin_Chen**
 <a href="https://www.buymeacoffee.com/arvincreator" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
