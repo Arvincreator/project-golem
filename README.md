@@ -27,7 +27,7 @@ Golem v8.0 運作於四大支柱：**反射神經**、**認知大腦**、**感�
 
 ```mermaid
 graph TD
-    User["📱 使用者 (TG/DC)"] -->|訊息/圖片| Context["🔌 Universal Context (通用語境層)"]
+    User["📱 使用者 (TG/DC)"] -->|"訊息/圖片"| Context["🔌 Universal Context (通用語境層)"]
     
     subgraph "The Cortex (海馬迴)"
         Context --"Recall (檢索)"--> VectorDB[("🐘 Neural Memory (IndexedDB)")]
@@ -37,9 +37,9 @@ graph TD
     PromptInjection --> Brain["🧠 Web Gemini (主大腦)"]
     
     subgraph "Tri-Stream Protocol (三流協定)"
-        Brain -->|Stream 1: [MEMORY]| MemWrite["💾 寫入長期記憶"]
-        Brain -->|Stream 2: [ACTION]| Executor["💻 系統執行者"]
-        Brain -->|Stream 3: [REPLY]| Reply["💬 對話回覆"]
+        Brain -->|"Stream 1: [MEMORY]"| MemWrite["💾 寫入長期記憶"]
+        Brain -->|"Stream 2: [ACTION]"| Executor["💻 系統執行者"]
+        Brain -->|"Stream 3: [REPLY]"| Reply["💬 對話回覆"]
     end
     
     MemWrite --> VectorDB
@@ -49,8 +49,8 @@ graph TD
 
     subgraph "Digital Soul (數位靈魂)"
         Brain --> Autonomy["🕰️ AutonomyManager"]
-        Autonomy -->|News/Chat| Notify["💬 主動推播"]
-        Autonomy -->|Reflect| Evo["🧬 自我進化"]
+        Autonomy -->|"News/Chat"| Notify["💬 主動推播"]
+        Autonomy -->|"Reflect"| Evo["🧬 自我進化"]
     end
 
 ```
