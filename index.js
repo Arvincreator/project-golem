@@ -1,5 +1,5 @@
 /**
- * 🦞 Project Golem v7.5.1 (Anchor Edition) - Donation Edition
+ * 🦞 Project Golem v7.6 (Auto-Discovery Ultimate) - Donation Edition
  * ---------------------------------------------------
  * 架構：[Universal Context] -> [Node.js 反射層] <==> [Web Gemini 主大腦]
  * 特性：
@@ -10,6 +10,7 @@
  * 5. 💰 Sponsor Core: 內建贊助連結與 `/donate` 指令，支持創造者。
  * 6. 👁️ Agentic Grazer: 利用 LLM 自主聯網搜尋新聞/趣聞，具備情緒與觀點分享能力。
  * 7. ⚓ Anchor Locking: 採用「定界符工程」技術，強制 Gemini 輸出定位點，徹底解決抓取失敗問題。
+ * 8. 🔍 Auto-Discovery: (New) 實作工具自動探測協定，Gemini 可主動確認環境工具是否存在。
  */
 
 require('dotenv').config();
@@ -267,7 +268,11 @@ class PatchManager {
 // ==================== [KERNEL PROTECTED START] ====================
 class SecurityManager {
     constructor() {
-        this.SAFE_COMMANDS = ['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String'];
+        this.SAFE_COMMANDS = [
+            'ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 
+            'Get-ChildItem', 'Select-String',
+            'golem-check' // ✨ [v7.6] 允許自動探測指令
+        ];
         this.BLOCK_PATTERNS = [/rm\s+-rf\s+\//, /rd\s+\/s\s+\/q\s+[c-zC-Z]:\\$/, />\s*\/dev\/sd/, /:(){:|:&};:/, /mkfs/, /Format-Volume/, /dd\s+if=/, /chmod\s+[-]x\s+/];
     }
     assess(cmd) {
@@ -280,6 +285,22 @@ class SecurityManager {
     }
 }
 // ==================== [KERNEL PROTECTED END] ====================
+
+// ============================================================
+// 🔍 ToolScanner (工具自動探測器) [✨ v7.6 Auto-Discovery]
+// ============================================================
+class ToolScanner {
+    static check(toolName) {
+        const isWin = os.platform() === 'win32';
+        const checkCmd = isWin ? `where ${toolName}` : `which ${toolName}`;
+        try {
+            const path = execSync(checkCmd, { encoding: 'utf-8', stdio: 'pipe' }).trim().split('\n')[0];
+            return `✅ **已安裝**: \`${toolName}\`\n路徑: ${path}`;
+        } catch (e) {
+            return `❌ **未安裝**: \`${toolName}\`\n(系統找不到此指令)`;
+        }
+    }
+}
 
 // ============================================================
 // 📖 Help Manager (動態說明書)
@@ -297,11 +318,12 @@ class HelpManager {
         try { skillList = Object.keys(skills).filter(k => k !== 'persona' && k !== 'getSystemPrompt').join(', '); } catch (e) { }
 
         return `
-🤖 **Golem v7.5 (Anchor Edition) - Donation Edition**
+🤖 **Golem v7.6 (Auto-Discovery) - Donation Edition**
 ---------------------------
 ⚡ **Node.js 反射層**: 雙核心運作中
 🧠 **Web Gemini 大腦**: 線上 (Infinite Context)
 ⚓ **同步模式**: Anchor Locking (定界符錨點)
+🔍 **工具探測**: Auto-Discovery Active
 📡 **連線狀態**:
 • Telegram: ${CONFIG.TG_TOKEN ? '✅ 線上' : '⚪ 未啟用'}
 • Discord: ${CONFIG.DC_TOKEN ? '✅ 線上' : '⚪ 未啟用'}
@@ -356,7 +378,7 @@ class DOMDoctor {
 }
 
 // ============================================================
-// 🧠 Golem Brain (Web Gemini) - Anchor Strategy Implemented
+// 🧠 Golem Brain (Web Gemini) - Anchor Strategy + Auto Discovery
 // ============================================================
 function getSystemFingerprint() { return `OS: ${os.platform()} | Arch: ${os.arch()} | CWD: ${process.cwd()}`; }
 
@@ -383,17 +405,23 @@ class GolemBrain {
         if (forceReload || !this.page) {
             let systemPrompt = skills.getSystemPrompt(getSystemFingerprint());
             
-            // ⚓ [ANCHOR INJECTION] 強制注入定界符指令
-            // 即使 skills.js 沒改，這裡也會強制生效
-            const anchorProtocol = `
+            // ⚓ [ANCHOR + DISCOVERY INJECTION] 強制注入雙重協定
+            const superProtocol = `
             \n\n【⚠️ 系統通訊協定 - 最高優先級】
-            為了讓我的 Node.js 接收端能準確判斷回應何時結束，你必須遵守以下輸出格式：
-            1. 在你回答的**每一個**回應的「最開頭」，必須加上 "—-回覆開始—- " (包含空格)。
-            2. 在你回答的**每一個**回應的「最結尾」，必須加上 " —-回覆結束—-" (包含空格)。
-            3. 不論回答什麼內容（閒聊、寫代碼、報錯），都必須嚴格遵守此包覆格式。
+            1. **Anchor Protocol (對話錨點)**: 
+               - 回應開頭必須加上 "—-回覆開始—- " (包含空格)。
+               - 回應結尾必須加上 " —-回覆結束—-" (包含空格)。
+               - 這是為了確保 Node.js 能準確讀取你的回應，請務必遵守。
+
+            2. **Auto-Discovery Protocol (工具探測)**:
+               - 當你需要使用外部工具 (如 ffmpeg, python, git, docker 等)，但我不確定電腦是否有安裝時：
+               - 請先生成指令：\`golem-check <工具名>\` (例如 \`golem-check ffmpeg\`)
+               - 等待我回報「已安裝」或「未安裝」。
+               - 若未安裝，請告知我需要安裝該工具。
+               - **不要**自己假設工具存在。
             `;
             
-            await this.sendMessage(systemPrompt + anchorProtocol, true);
+            await this.sendMessage(systemPrompt + superProtocol, true);
         }
     }
     async sendMessage(text, isSystem = false) {
@@ -417,7 +445,7 @@ class GolemBrain {
                     if (bubbles.length <= n) return false; // 必須要有新氣泡
                     const lastBubble = bubbles[bubbles.length - 1];
                     const text = lastBubble.innerText;
-                    // 只要看到結束標記，就視為成功 (無論是否還在轉圈)
+                    // 只要看到結束標記，就視為成功
                     return text.includes('—-回覆結束—-');
                 }, { timeout: 180000, polling: 1000 }, sel.response, preCount); // 給予 3 分鐘寬限期
             } catch (timeoutErr) {
@@ -584,6 +612,18 @@ class TaskController {
         for (let i = startIndex; i < steps.length; i++) {
             const step = steps[i];
             const risk = this.security.assess(step.cmd);
+
+            // ✨ [v7.6] Tool Discovery Interceptor
+            if (step.cmd.startsWith('golem-check')) {
+                const toolName = step.cmd.split(' ')[1];
+                if (!toolName) {
+                     reportBuffer.push(`⚠️ [ToolCheck] 缺少參數。用法: golem-check <tool>`);
+                } else {
+                    const result = ToolScanner.check(toolName);
+                    reportBuffer.push(`🔍 [ToolCheck] ${result}`);
+                }
+                continue; // 虛擬指令不走 Executor
+            }
 
             if (risk.level === 'BLOCKED') {
                 return `⛔ 指令被系統攔截：${step.cmd} (原因: ${risk.reason})`;
@@ -758,7 +798,7 @@ const autonomy = new AutonomyManager(brain);
 (async () => {
     await brain.init();
     autonomy.start();
-    console.log('📡 Golem v7.5 (Anchor Edition) - Donation Edition is Online.');
+    console.log('📡 Golem v7.6 (Auto-Discovery Ultimate) - Donation Edition is Online.');
     if (dcClient) dcClient.login(CONFIG.DC_TOKEN);
 })();
 
