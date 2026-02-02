@@ -108,7 +108,8 @@ graph TD
 ### 1. 準備必要 Token
 
 1. **Google Gemini API Key** (必備)：[Google AI Studio](https://aistudio.google.com/app/apikey) 申請 (Free Tier 即可)。
-2. **Telegram/Discord Token** (選填)。
+2. **Telegram Bot Token** (選填)：向 [@BotFather](https://t.me/botfather) 申請。
+3. **Discord Bot Token** (選填)：前往 Discord Developer Portal 申請。
 
 ### 2. 下載原始碼
 
