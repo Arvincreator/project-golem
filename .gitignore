@@ -1,8 +1,9 @@
 # ========================
-# 1. 核心安全 (Security)
+# 1. 核心安全 (Security) - 絕對禁止上傳
 # ========================
-# 環境變數與金鑰，絕對禁止上傳
 .env
+.env.local
+.DS_Store
 
 # ========================
 # 2. Node.js 標準依賴
@@ -14,39 +15,38 @@ yarn-error.log*
 package-lock.json
 
 # ========================
-# 3. Golem 核心記憶體 (Runtime Data)
+# 3. Golem 記憶體資料庫 (Memory Data)
 # ========================
-# Puppeteer 瀏覽器暫存與 Login Session 
-# 包含 IndexedDB (向量記憶) 與 Chrome Profile
+# [v8.0] Browser Mode: Puppeteer 的瀏覽器暫存 (Cookies/Session/IndexedDB)
+# [v8.3] System Mode:  qmd 生成的 Markdown 知識庫 (golem_memory/knowledge/*.md)
 golem_memory/
 
-# 經驗學習記憶庫 (Experience Memory) 
+# [v8.0] 經驗學習記憶庫 (Experience Memory)
 golem_learning.json
 
-# DOM Doctor 元素選擇器快取 
+# [v8.0] DOM Doctor 元素選擇器快取
 golem_selectors.json
 
-# 人格狀態存檔 (Persona State) 
-# 若希望保留預設人格，建議提交 golem_persona.default.json，而忽略此運行時檔案
+# [v8.0] 人格狀態存檔 (Persona State)
+# 若您希望分享預設人格，請提交 golem_persona.default.json
 golem_persona.json
 
 # ========================
 # 4. 自癒與更新機制 (System & Patching)
 # ========================
-# PatchManager 生成的測試檔案 
+# PatchManager 生成的測試檔案
 *.test.js
 
-# SystemUpgrader 下載的暫存檔 
+# SystemUpgrader 下載的暫存檔
 *.new
 
-# 自主進化或熱修復產生的備份檔 
+# 自主進化或熱修復產生的備份檔
 *.bak
 *.bak-*
 
 # ========================
-# 5. 作業系統與編輯器雜項
+# 5. 其他雜項
 # ========================
-.DS_Store
 Thumbs.db
 .vscode/
 .idea/
