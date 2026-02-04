@@ -15,6 +15,22 @@
  * 10. 🌗 Dual-Engine Memory: (v8.2) 支援 Browser (Transformers.js) 與 System (qmd) 兩種記憶核心切換。
  */
 
+// ==========================================
+// 📟 儀表板外掛 (Dashboard Switch)
+// 用法：npm start dashboard (開啟)
+//       npm start           (關閉)
+// ==========================================
+if (process.argv.includes('dashboard')) {
+    try {
+        require('./dashboard');
+        console.log("✅ 戰術控制台已啟動 (繁體中文版)");
+    } catch (e) {
+        console.error("❌ 無法載入 Dashboard:", e.message);
+    }
+} else {
+    console.log("ℹ️  以標準模式啟動 (無 Dashboard)。若需介面請輸入 'npm start dashboard'");
+}
+// ==========================================
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const { Client, GatewayIntentBits, Partials, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
