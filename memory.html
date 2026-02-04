@@ -3,25 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golem Neural Cortex v8.0</title>
+    <title>Golem Neural Cortex v8.2</title>
     <style>
-        body { font-family: monospace; background: #0d1117; color: #c9d1d9; padding: 20px; }
-        .status { padding: 10px; border: 1px solid #30363d; margin-bottom: 10px; border-radius: 6px; }
-        .log { color: #8b949e; font-size: 0.9em; }
-        h1 { color: #58a6ff; }
+        body { font-family: 'Segoe UI', monospace; background: #0d1117; color: #c9d1d9; padding: 20px; }
+        .status { padding: 12px; border: 1px solid #30363d; margin-bottom: 10px; border-radius: 6px; background: #161b22; }
+        .log { color: #8b949e; font-size: 0.9em; margin-top: 20px; font-family: monospace; border-top: 1px solid #30363d; padding-top: 10px;}
+        h1 { color: #58a6ff; font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-left: 10px; }
+        .badge-browser { background: #1f6feb; color: white; }
     </style>
 </head>
 <body>
-    <h1>🧠 Golem Neural Cortex</h1>
-    <div id="model-status" class="status">Initializing Neural Network...</div>
-    <div id="db-status" class="status">Connecting to Memory Bank...</div>
+    <h1>🧠 Golem Neural Cortex <span class="badge badge-browser">v8.2</span></h1>
+    <div style="color: #8b949e; margin-bottom: 20px;">Browser-based Vector Memory Engine</div>
+    
+    <div id="model-status" class="status">⚡ Initializing Transformers.js...</div>
+    <div id="db-status" class="status">💾 Connecting to IndexedDB...</div>
     <div id="logs" class="log"></div>
 
     <script type="module">
         // 使用 CDN 載入 Transformers.js (版本固定以確保穩定性)
         import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.16.0';
 
-        // 設定：不使用本地快取模型檔案 (直接從 CDN 拉取，避免 Node.js 檔案系統權限問題)
+        // 設定：不使用本地快取模型檔案 (直接從 CDN 拉取)
         env.allowLocalModels = false;
         env.useBrowserCache = true;
 
@@ -29,13 +33,13 @@
         let db = null;
         const DB_NAME = 'GolemMemoryDB';
         const STORE_NAME = 'memories';
-        const MODEL_NAME = 'Xenova/all-MiniLM-L6-v2'; // 輕量級、速度快、效果好的 Embedding 模型
+        const MODEL_NAME = 'Xenova/all-MiniLM-L6-v2'; // 輕量級 Embedding 模型
 
         // UI Helper
         const log = (msg) => {
-            console.log(`[Cortex] ${msg}`);
+            console.log(`[Cortex v8.2] ${msg}`);
             const logDiv = document.getElementById('logs');
-            logDiv.innerHTML = `<div>${new Date().toLocaleTimeString()} - ${msg}</div>` + logDiv.innerHTML;
+            logDiv.innerHTML = `<div><span style="color:#58a6ff">${new Date().toLocaleTimeString()}</span> - ${msg}</div>` + logDiv.innerHTML;
         };
 
         // 1. 初始化 AI 模型
@@ -46,9 +50,11 @@
                 extractor = await pipeline('feature-extraction', MODEL_NAME);
                 document.getElementById('model-status').innerText = "✅ Model Active (all-MiniLM-L6-v2)";
                 document.getElementById('model-status').style.borderColor = "#238636";
-                log("Model Ready.");
+                document.getElementById('model-status').style.color = "#3fb950";
+                log("Neural Engine Ready.");
             } catch (e) {
                 document.getElementById('model-status').innerText = "❌ Model Failed: " + e.message;
+                document.getElementById('model-status').style.borderColor = "#da3633";
                 log("Model Error: " + e.message);
             }
         }
@@ -57,11 +63,10 @@
         function initDB() {
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open(DB_NAME, 1);
-                
+
                 request.onupgradeneeded = (e) => {
                     const db = e.target.result;
                     if (!db.objectStoreNames.contains(STORE_NAME)) {
-                        // 建立 Store，使用自動遞增 ID
                         db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
                     }
                 };
@@ -70,7 +75,8 @@
                     db = e.target.result;
                     document.getElementById('db-status').innerText = "✅ Memory Bank Connected";
                     document.getElementById('db-status').style.borderColor = "#238636";
-                    log("DB Ready.");
+                    document.getElementById('db-status').style.color = "#3fb950";
+                    log("Storage Ready.");
                     resolve();
                 };
 
@@ -81,8 +87,7 @@
             });
         }
 
-        // 數學工具：餘弦相似度 (Cosine Similarity)
-        // 用來計算兩個向量 (兩句話) 的相似程度
+        // 數學工具：餘弦相似度
         function cosineSimilarity(vecA, vecB) {
             let dotProduct = 0;
             let normA = 0;
@@ -101,21 +106,19 @@
 
         /**
          * 寫入記憶
-         * @param {string} text - 要記住的文字內容
-         * @param {object} metadata - 額外資訊 (例如來源、時間、標籤)
          */
         window.addMemory = async (text, metadata = {}) => {
             if (!extractor || !db) return { success: false, error: "System not ready" };
-            
+
             try {
                 // 1. 轉向量
                 const output = await extractor(text, { pooling: 'mean', normalize: true });
-                const embedding = Array.from(output.data); // Tensor 轉 Array
+                const embedding = Array.from(output.data);
 
                 // 2. 存入 DB
                 const tx = db.transaction(STORE_NAME, 'readwrite');
                 const store = tx.objectStore(STORE_NAME);
-                
+
                 const memoryItem = {
                     text: text,
                     embedding: embedding,
@@ -124,7 +127,7 @@
                 };
 
                 store.add(memoryItem);
-                log(`Memorized: "${text.substring(0, 20)}..."`);
+                log(`Memorized: "${text.substring(0, 30)}..."`);
                 return { success: true };
             } catch (e) {
                 return { success: false, error: e.message };
@@ -132,20 +135,17 @@
         };
 
         /**
-         * 讀取/搜尋記憶 (RAG Core)
-         * @param {string} text - 查詢語句 (User 的輸入)
-         * @param {number} topK - 回傳前幾筆最相似的
+         * 讀取/搜尋記憶
          */
         window.queryMemory = async (text, topK = 3) => {
             if (!extractor || !db) return [];
 
             try {
-                // 1. 把查詢字串也轉成向量
+                // 1. Query 轉向量
                 const output = await extractor(text, { pooling: 'mean', normalize: true });
                 const queryVec = Array.from(output.data);
 
-                // 2. 讀取所有記憶
-                // (註：對於個人級別的資料量，< 10萬筆，在瀏覽器做全量掃描速度是極快的)
+                // 2. 全量掃描 (瀏覽器端 < 10萬筆資料毫秒級完成)
                 return new Promise((resolve) => {
                     const tx = db.transaction(STORE_NAME, 'readonly');
                     const store = tx.objectStore(STORE_NAME);
@@ -153,26 +153,27 @@
 
                     request.onsuccess = () => {
                         const allMemories = request.result;
-                        
-                        // 3. 計算分數
+
+                        // 3. 計算相似度
                         const scored = allMemories.map(mem => ({
                             text: mem.text,
                             metadata: mem.metadata,
                             score: cosineSimilarity(queryVec, mem.embedding)
                         }));
 
-                        // 4. 排序與過濾
-                        // 過濾掉相似度低於 0.25 的雜訊 (閾值可自行調整)
+                        // 4. 排序與過濾 (Threshold: 0.25)
                         scored.sort((a, b) => b.score - a.score);
-                        
+
                         const results = scored
-                            .filter(m => m.score > 0.25) 
+                            .filter(m => m.score > 0.25)
                             .slice(0, topK);
-                        
+
                         if (results.length > 0) {
                             log(`Recall hit: "${results[0].text.substring(0, 20)}..." (${(results[0].score*100).toFixed(0)}%)`);
+                        } else {
+                            log(`Recall miss for: "${text.substring(0,15)}..."`);
                         }
-                        
+
                         resolve(results);
                     };
                 });
