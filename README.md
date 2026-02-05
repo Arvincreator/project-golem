@@ -50,7 +50,11 @@ graph TD
     end
 
     Reflex --> GeminiUI
-    GeminiUI <==> Web Neuro-Link
+    
+    %% 修正點：直接連線到內部節點，避免 Subgraph ID 空白報錯
+    GeminiUI ==> CDP
+    GeminiUI ==> DOM
+    
     Race -->|"解析回應"| Reflex
     
     Reflex --> Stream1 & Stream2 & Stream3
@@ -99,7 +103,7 @@ v8.5 內建駭客風格的終端機儀表板，即時視覺化 **Web Neuro-Link*
 ### 🐙 Git Master (版本控制大師) `v8.5 NEW`
 
 * **全自動版控**：Golem 能自主執行 `git init`, `add`, `commit`, `push` 等操作。
-  
+
 * **環境感知**：操作前自動檢查 `.gitignore` 與 Remote 狀態，避免發生災難性覆蓋。
 
 ### 🌗 Dual-Engine Memory (雙模記憶引擎)
