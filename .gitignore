@@ -6,13 +6,16 @@
 .DS_Store
 
 # ========================
-# 2. Node.js 標準依賴
+# 2. Node.js & Bun 標準依賴
 # ========================
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
+bun.lockb
+
+# ⚠️ 注意：保留 package-lock.json 是為了確保 Puppeteer 版本一致性
+# package-lock.json  <-- 已移除此行，讓它被 Git 追蹤
 
 # ========================
 # 3. Golem 記憶體資料庫 (Memory Data)
@@ -28,7 +31,7 @@ golem_learning.json
 golem_selectors.json
 
 # [v8.0] 人格狀態存檔 (Persona State)
-# 若您希望分享預設人格，請提交 golem_persona.default.json
+# 若您希望分享預設人格，請提交 golem_persona.default.json，但忽略使用中的：
 golem_persona.json
 
 # ========================
@@ -48,5 +51,10 @@ golem_persona.json
 # 5. 其他雜項
 # ========================
 Thumbs.db
-.vscode/
 .idea/
+
+# 只忽略 VS Code 的使用者設定，但保留 Codespaces 設定
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.devcontainer/
