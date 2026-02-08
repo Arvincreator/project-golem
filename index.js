@@ -1,25 +1,20 @@
 /**
- * 🦞 Project Golem v8.5 (Neuro-Link Edition) - Donation Edition
+ * 🦞 Project Golem v8.5 (Titan Edition)
  * ---------------------------------------------------
  * 架構：[Universal Context] -> [Node.js 反射層 + 雙模記憶引擎] <==> [Web Gemini 主大腦]
- * 特性：
- * 1. 🐍 Hydra Link: 同時支援 Telegram 與 Discord 雙平台 (Dual-Stack)。
- * 2. 🧠 Tri-Brain: 結合反射神經 (Node)、無限大腦 (Web Gemini)、精準技師 (API)。
- * 3. 🛡️ High Availability: 實作 DOM Doctor 自癒 (v2.0 緩存版) 與 KeyChain 輪動。
- * 4. ☁️ OTA Upgrader: 支援 `/update` 指令，自動從 GitHub 拉取最新代碼並熱重啟。
- * 5. 💰 Sponsor Core: 內建贊助連結與 `/donate` 指令，支持創造者。
- * 6. 👁️ Agentic Grazer: 利用 LLM 自主聯網搜尋新聞/趣聞，具備情緒與觀點分享能力。
- * 7. ⚓ Tri-Stream Anchors: (v8.0) 採用「三流協定」(Memory/Action/Reply)，實現多工並行。
- * 8. 🔍 Auto-Discovery: 實作工具自動探測協定，Gemini 可主動確認環境工具是否存在。
- * 9. 🔮 OpticNerve: 整合 Gemini 2.5 Flash 視神經，支援圖片與文件解讀。
- * 10. 🌗 Dual-Engine Memory: (v8.2) 支援 Browser (Transformers.js) 與 System (qmd) 兩種記憶核心切換。
- * 11. ⚡ Neuro-Link: (v8.5) 導入 CDP 網路神經直連，與 DOM 視覺進行雙軌並行監聽 (Dual-Track)，穩定性提升 99%。
+ * 核心升級：
+ * 1. 🛡️ Titan Protocol: 採用純英文大寫標籤 ([GOLEM_ACTION])，移除 Emoji 降低解析干擾。
+ * 2. 🥪 Envelope Lock: 實作「三明治信封」鎖定機制 ([[BEGIN]]...[[END]])，徹底解決非同步競態與截斷問題。
+ * 3. ⚡ Robust Parser: 寬鬆格式解析器，支援斷尾 JSON 修復與模糊匹配。
+ * ---------------------------------------------------
+ * 原有特性保留：
+ * 🐍 Hydra Link | 🧠 Tri-Brain | 🛡️ High Availability | ☁️ OTA Upgrader
+ * 💰 Sponsor Core | 👁️ Agentic Grazer | 🔍 Auto-Discovery | 🔮 OpticNerve
+ * 🌗 Dual-Engine Memory | ⚡ Neuro-Link (CDP Integration)
  */
 
 // ==========================================
 // 📟 儀表板外掛 (Dashboard Switch)
-// 用法：npm start dashboard (開啟)
-//       npm start           (關閉)
 // ==========================================
 if (process.argv.includes('dashboard')) {
     try {
@@ -31,6 +26,7 @@ if (process.argv.includes('dashboard')) {
 } else {
     console.log("ℹ️  以標準模式啟動 (無 Dashboard)。若需介面請輸入 'npm start dashboard'");
 }
+
 // ==========================================
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
@@ -49,7 +45,6 @@ const skills = require('./skills');
 // --- ⚙️ 全域配置 ---
 const cleanEnv = (str, allowSpaces = false) => {
     if (!str) return "";
-    // 只保留可列印的 ASCII 字元 (32-126)
     let cleaned = str.replace(/[^\x20-\x7E]/g, "");
     if (!allowSpaces) cleaned = cleaned.replace(/\s/g, "");
     return cleaned.trim();
@@ -65,45 +60,30 @@ const CONFIG = {
     DC_TOKEN: cleanEnv(process.env.DISCORD_TOKEN),
     USER_DATA_DIR: cleanEnv(process.env.USER_DATA_DIR || './golem_memory', true),
     API_KEYS: (process.env.GEMINI_API_KEYS || '').split(',').map(k => cleanEnv(k)).filter(k => k),
-    SPLIT_TOKEN: '---GOLEM_ACTION_PLAN---',
     ADMIN_ID: cleanEnv(process.env.ADMIN_ID),
     DISCORD_ADMIN_ID: cleanEnv(process.env.DISCORD_ADMIN_ID),
-    ADMIN_IDS: [process.env.ADMIN_ID, process.env.DISCORD_ADMIN_ID]
-        .map(k => cleanEnv(k))
-        .filter(k => k),
-    // OTA 設定
+    ADMIN_IDS: [process.env.ADMIN_ID, process.env.DISCORD_ADMIN_ID].map(k => cleanEnv(k)).filter(k => k),
     GITHUB_REPO: cleanEnv(process.env.GITHUB_REPO || 'https://raw.githubusercontent.com/Arvincreator/project-golem/main/', true),
     QMD_PATH: cleanEnv(process.env.GOLEM_QMD_PATH || 'qmd', true),
-    // ✨ [贊助 設定] 您的 BuyMeACoffee 連結
     DONATE_URL: 'https://buymeacoffee.com/arvincreator'
 };
 
 // 驗證關鍵 Token
-if (isPlaceholder(CONFIG.TG_TOKEN)) { console.warn("⚠️ [Config] TELEGRAM_TOKEN 看起來是預設值或無效，TG Bot 將不啟動。"); CONFIG.TG_TOKEN = ""; }
-if (isPlaceholder(CONFIG.DC_TOKEN)) { console.warn("⚠️ [Config] DISCORD_TOKEN 看起來是預設值或無效，Discord Bot 將不啟動。"); CONFIG.DC_TOKEN = ""; }
-if (CONFIG.API_KEYS.some(isPlaceholder)) {
-    console.warn("⚠️ [Config] 偵測到部分 API_KEYS 為無效預設值，已自動過濾。");
-    CONFIG.API_KEYS = CONFIG.API_KEYS.filter(k => !isPlaceholder(k));
-}
+if (isPlaceholder(CONFIG.TG_TOKEN)) { console.warn("⚠️ [Config] TELEGRAM_TOKEN 無效，TG Bot 不啟動。"); CONFIG.TG_TOKEN = ""; }
+if (isPlaceholder(CONFIG.DC_TOKEN)) { console.warn("⚠️ [Config] DISCORD_TOKEN 無效，Discord Bot 不啟動。"); CONFIG.DC_TOKEN = ""; }
+if (CONFIG.API_KEYS.some(isPlaceholder)) CONFIG.API_KEYS = CONFIG.API_KEYS.filter(k => !isPlaceholder(k));
 
 // --- 初始化組件 ---
 puppeteer.use(StealthPlugin());
 
-// 1. Telegram Bot
 const tgBot = CONFIG.TG_TOKEN ? new TelegramBot(CONFIG.TG_TOKEN, { polling: true }) : null;
-
-// 2. Discord Client
 const dcClient = CONFIG.DC_TOKEN ? new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent
-    ],
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
     partials: [Partials.Channel]
 }) : null;
 
-const pendingTasks = new Map(); // 暫存等待審核的任務
-global.pendingPatch = null; // 暫存等待審核的 Patch
+const pendingTasks = new Map();
+global.pendingPatch = null;
 
 // ============================================================
 // 👁️ OpticNerve (視神經 - Gemini 2.5 Flash Bridge)
@@ -112,7 +92,6 @@ class OpticNerve {
     static async analyze(fileUrl, mimeType, apiKey) {
         console.log(`👁️ [OpticNerve] 正在透過 Gemini 2.5 Flash 分析檔案 (${mimeType})...`);
         try {
-            // 1. 下載檔案為 Buffer
             const buffer = await new Promise((resolve, reject) => {
                 https.get(fileUrl, (res) => {
                     const data = [];
@@ -121,7 +100,6 @@ class OpticNerve {
                     res.on('error', reject);
                 });
             });
-            // 2. 呼叫 Gemini API (使用 2.5-flash)
             const genAI = new GoogleGenerativeAI(apiKey);
             const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
             const prompt = mimeType.startsWith('image/')
@@ -130,14 +108,8 @@ class OpticNerve {
 
             const result = await model.generateContent([
                 prompt,
-                {
-                    inlineData: {
-                        data: buffer.toString('base64'),
-                        mimeType: mimeType
-                    }
-                }
+                { inlineData: { data: buffer.toString('base64'), mimeType: mimeType } }
             ]);
-
             const text = result.response.text();
             console.log("✅ [OpticNerve] 分析完成 (長度: " + text.length + ")");
             return text;
@@ -153,9 +125,9 @@ class OpticNerve {
 // ============================================================
 class UniversalContext {
     constructor(platform, event, instance) {
-        this.platform = platform; // 'telegram' | 'discord'
-        this.event = event; // TG: msg/query, DC: message/interaction
-        this.instance = instance; // TG: bot, DC: client
+        this.platform = platform;
+        this.event = event;
+        this.instance = instance;
     }
 
     get userId() {
@@ -168,42 +140,30 @@ class UniversalContext {
     }
 
     get text() {
-        // ✨ 優化：支援讀取圖片的 Caption
         if (this.platform === 'telegram') return this.event.text || this.event.caption || "";
         return this.event.content || "";
     }
 
-    // ✨ [New] 取得附件資訊 (回傳 { url, type } 或 null)
     async getAttachment() {
         if (this.platform === 'telegram') {
             const msg = this.event;
             let fileId = null;
-            let mimeType = 'image/jpeg'; // 預設
-
+            let mimeType = 'image/jpeg';
             if (msg.photo) fileId = msg.photo[msg.photo.length - 1].file_id;
             else if (msg.document) {
                 fileId = msg.document.file_id;
                 mimeType = msg.document.mime_type;
             }
-
             if (fileId) {
                 try {
                     const file = await this.instance.getFile(fileId);
-                    // TG Bot API 下載路徑需包含 Token
-                    return {
-                        url: `https://api.telegram.org/file/bot${CONFIG.TG_TOKEN}/${file.file_path}`,
-                        mimeType: mimeType
-                    };
+                    return { url: `https://api.telegram.org/file/bot${CONFIG.TG_TOKEN}/${file.file_path}`, mimeType: mimeType };
                 } catch (e) { console.error("TG File Error:", e); }
             }
         } else {
-            // Discord
             const attachment = this.event.attachments && this.event.attachments.first();
             if (attachment) {
-                return {
-                    url: attachment.url,
-                    mimeType: attachment.contentType || 'application/octet-stream'
-                };
+                return { url: attachment.url, mimeType: attachment.contentType || 'application/octet-stream' };
             }
         }
         return null;
@@ -220,27 +180,20 @@ class UniversalContext {
 
     async sendDocument(filePath) {
         try {
-            if (this.platform === 'telegram') {
-                await this.instance.sendDocument(this.chatId, filePath);
-            } else {
+            if (this.platform === 'telegram') await this.instance.sendDocument(this.chatId, filePath);
+            else {
                 const channel = await this.instance.channels.fetch(this.chatId);
                 await channel.send({ files: [filePath] });
             }
         } catch (e) {
-            // Discord 檔案大小限制保護
-            if (e.message.includes('Request entity too large')) {
-                await this.reply(`⚠️ 檔案過大，無法上傳 (Discord 限制 25MB)。\n路徑：\`${filePath}\``);
-            } else {
-                console.error(`[Context] 傳送檔案失敗: ${e.message}`);
-                await this.reply(`❌ 傳送失敗: ${e.message}`);
-            }
+            if (e.message.includes('Request entity too large')) await this.reply(`⚠️ 檔案過大 (Discord Limit 25MB)。`);
+            else await this.reply(`❌ 傳送失敗: ${e.message}`);
         }
     }
 
     async sendTyping() {
-        if (this.platform === 'telegram') {
-            this.instance.sendChatAction(this.chatId, 'typing');
-        } else {
+        if (this.platform === 'telegram') this.instance.sendChatAction(this.chatId, 'typing');
+        else {
             const channel = await this.instance.channels.fetch(this.chatId);
             await channel.sendTyping();
         }
@@ -257,10 +210,7 @@ class MessageManager {
         const chunks = [];
         let remaining = text;
         while (remaining.length > 0) {
-            if (remaining.length <= MAX_LENGTH) {
-                chunks.push(remaining);
-                break;
-            }
+            if (remaining.length <= MAX_LENGTH) { chunks.push(remaining); break; }
             let splitIndex = remaining.lastIndexOf('\n', MAX_LENGTH);
             if (splitIndex === -1) splitIndex = MAX_LENGTH;
             chunks.push(remaining.substring(0, splitIndex));
@@ -283,13 +233,13 @@ class MessageManager {
                     }
                     await channel.send(dcOptions);
                 }
-            } catch (e) { console.error(`[MessageManager] 發送失敗 (${ctx.platform}):`, e.message); }
+            } catch (e) { console.error(`[MessageManager] 發送失敗:`, e.message); }
         }
     }
 }
 
 // ============================================================
-// 🧠 Experience Memory (經驗記憶體 - Legacy)
+// 🧠 Experience Memory (經驗記憶體)
 // ============================================================
 class ExperienceMemory {
     constructor() {
@@ -309,7 +259,6 @@ class ExperienceMemory {
             if (this.data.avoidList.length > 3) this.data.avoidList.shift();
         }
         this.save();
-        return this.data.rejectedCount;
     }
     recordSuccess() { this.data.rejectedCount = 0; this.data.avoidList = []; this.save(); }
     getAdvice() {
@@ -394,11 +343,7 @@ class PatchManager {
 // ==================== [KERNEL PROTECTED START] ====================
 class SecurityManager {
     constructor() {
-        this.SAFE_COMMANDS = [
-            'ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free',
-            'Get-ChildItem', 'Select-String',
-            'golem-check' // ✨ [v7.6] 允許自動探測指令
-        ];
+        this.SAFE_COMMANDS = ['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check'];
         this.BLOCK_PATTERNS = [/rm\s+-rf\s+\//, /rd\s+\/s\s+\/q\s+[c-zC-Z]:\\$/, />\s*\/dev\/sd/, /:(){:|:&};:/, /mkfs/, /Format-Volume/, /dd\s+if=/, /chmod\s+[-]x\s+/];
     }
     assess(cmd) {
@@ -437,21 +382,18 @@ class HelpManager {
         const routerPattern = /text\.(?:startsWith|match)\(['"]\/?([a-zA-Z0-9_|]+)['"]\)/g;
         const foundCmds = new Set(['help', 'callme', 'patch', 'update', 'donate']);
         let match;
-        while ((match = routerPattern.exec(source)) !== null) {
-            foundCmds.add(match[1].replace(/\|/g, '/').replace(/[\^\(\)]/g, ''));
-        }
+        while ((match = routerPattern.exec(source)) !== null) foundCmds.add(match[1].replace(/\|/g, '/').replace(/[\^\(\)]/g, ''));
         let skillList = "基礎系統操作";
         try { skillList = Object.keys(skills).filter(k => k !== 'persona' && k !== 'getSystemPrompt').join(', '); } catch (e) { }
 
         return `
-🤖 **Golem v8.5 (Neuro-Link)**
+🤖 **Golem v8.5 (Titan Edition)**
 ---------------------------
 ⚡ **Node.js**: Reflex Layer + Action Executor
-🧠 **Web Gemini**: Infinite Context Brain
+🧠 **Web Gemini**: Infinite Context Brain (Titan Protocol)
 🌗 **Dual-Memory**: ${cleanEnv(process.env.GOLEM_MEMORY_MODE || 'browser')} mode
-⚓ **Sync Mode**: Tri-Stream Protocol (Memory/Action/Reply)
+🥪 **Sync Mode**: Envelope/Sandwich Lock (Reliable)
 🔍 **Auto-Discovery**: Active
-🚑 **DOM Doctor**: v2.0 (Self-Healing)
 👁️ **OpticNerve**: Vision Enabled
 🔌 **Neuro-Link**: CDP Network Interception Active
 📡 **連線狀態**: TG(${CONFIG.TG_TOKEN ? '✅' : '⚪'}) / DC(${CONFIG.DC_TOKEN ? '✅' : '⚪'})
@@ -467,7 +409,7 @@ ${CONFIG.DONATE_URL}
 }
 
 // ============================================================
-// 🗝️ KeyChain & 🚑 DOM Doctor (v2.0 Smart Caching)
+// 🗝️ KeyChain & 🚑 DOM Doctor
 // ============================================================
 class KeyChain {
     constructor() {
@@ -488,40 +430,33 @@ class DOMDoctor {
         this.keyChain = new KeyChain();
         this.cacheFile = path.join(process.cwd(), 'golem_selectors.json');
         this.defaults = {
-            input: 'div[contenteditable="true"], rich-textarea > div',
-            send: 'button[aria-label="Send"], span[data-icon="send"]',
-            response: 'message-content, .model-response-text, .markdown'
+            input: 'div[contenteditable="true"], rich-textarea > div, p[data-placeholder]',
+            send: 'button[aria-label*="Send"], button[aria-label*="傳送"], span[data-icon="send"]',
+            response: '.model-response-text, .message-content, .markdown, div[data-test-id="message-content"]'
         };
     }
-
-    // 🧠 載入記憶：優先讀取硬碟快取，若無則使用預設值
     loadSelectors() {
         try {
             if (fs.existsSync(this.cacheFile)) {
                 const cached = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
-                console.log("🚑 [Doctor] 已載入本地 Selector 快取 (省錢模式 ✅)");
                 return { ...this.defaults, ...cached };
             }
-        } catch (e) { console.error("快取讀取失敗，使用預設值:", e.message); }
+        } catch (e) { }
         return { ...this.defaults };
     }
-
-    // 💾 寫入記憶：將新發現的有效 Selector 存入硬碟
     saveSelectors(newSelectors) {
         try {
             const current = this.loadSelectors();
             const updated = { ...current, ...newSelectors };
             fs.writeFileSync(this.cacheFile, JSON.stringify(updated, null, 2));
             console.log("💾 [Doctor] Selector 已更新並存檔！");
-        } catch (e) { console.error("快取寫入失敗:", e.message); }
+        } catch (e) { }
     }
-
     async diagnose(htmlSnippet, targetDescription) {
         if (this.keyChain.keys.length === 0) return null;
-        console.log(`🚑 [Doctor] 啟動深層診斷: "${targetDescription}" (此操作將消耗 API Quota)...`);
+        console.log(`🚑 [Doctor] 啟動深層診斷: "${targetDescription}"...`);
         const safeHtml = htmlSnippet.length > 30000 ? htmlSnippet.substring(0, 30000) + "..." : htmlSnippet;
         const prompt = `你是 Puppeteer 專家。HTML Selector 失效。目標: "${targetDescription}"。HTML: ${safeHtml}。請只回傳一個最佳 CSS Selector。`;
-
         let attempts = 0;
         while (attempts < this.keyChain.keys.length) {
             try {
@@ -529,11 +464,7 @@ class DOMDoctor {
                 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
                 const result = await model.generateContent(prompt);
                 const newSelector = result.response.text().trim().replace(/`/g, '').replace(/^css\s*/, '');
-
-                if (newSelector.length > 0) {
-                    console.log(`✅ [Doctor] 診斷成功！新 Selector: "${newSelector}"`);
-                    return newSelector;
-                }
+                if (newSelector.length > 0) return newSelector;
             } catch (e) { attempts++; }
         }
         return null;
@@ -541,35 +472,26 @@ class DOMDoctor {
 }
 
 // ============================================================
-// 🧠 Memory Drivers (雙模記憶驅動 - Strategy Pattern)
+// 🧠 Memory Drivers (雙模記憶驅動)
 // ============================================================
-
-// 1. 瀏覽器驅動 (Browser Mode: 輕量化、開箱即用)
 class BrowserMemoryDriver {
     constructor(brain) { this.brain = brain; }
-
     async init() {
-        // 如果已經有頁面就不重複開
         if (this.brain.memoryPage) return;
         try {
             this.brain.memoryPage = await this.brain.browser.newPage();
-            // 修正路徑問題，確保 Windows/Linux 通用
             const memoryPath = 'file:///' + path.join(process.cwd(), 'memory.html').replace(/\\/g, '/');
             console.log(`🧠 [Memory:Browser] 正在掛載神經海馬迴: ${memoryPath}`);
             await this.brain.memoryPage.goto(memoryPath);
-            await new Promise(r => setTimeout(r, 5000)); // 等待 Transformers.js 載入
-        } catch (e) {
-            console.error("❌ [Memory:Browser] 啟動失敗:", e.message);
-        }
+            await new Promise(r => setTimeout(r, 5000));
+        } catch (e) { console.error("❌ [Memory:Browser] 啟動失敗:", e.message); }
     }
-
     async recall(query) {
         if (!this.brain.memoryPage) return [];
         return await this.brain.memoryPage.evaluate(async (txt) => {
             return window.queryMemory ? await window.queryMemory(txt) : [];
         }, query);
     }
-
     async memorize(text, metadata) {
         if (!this.brain.memoryPage) return;
         await this.brain.memoryPage.evaluate(async (t, m) => {
@@ -578,14 +500,12 @@ class BrowserMemoryDriver {
     }
 }
 
-// 2. 系統驅動 (Qmd Mode: 高效能、混合搜尋)
 class SystemQmdDriver {
     constructor() {
         this.baseDir = path.join(process.cwd(), 'golem_memory', 'knowledge');
         if (!fs.existsSync(this.baseDir)) fs.mkdirSync(this.baseDir, { recursive: true });
-        this.qmdCmd = 'qmd'; // 預設
+        this.qmdCmd = 'qmd';
     }
-
     async init() {
         console.log("🔍 [Memory:Qmd] 啟動引擎探測...");
         try {
@@ -596,120 +516,75 @@ class SystemQmdDriver {
                     return true;
                 } catch (e) { return false; }
             };
-
-            // 1. 優先查看是否有手動指定路徑
-            if (CONFIG.QMD_PATH !== 'qmd' && fs.existsSync(CONFIG.QMD_PATH)) {
-                this.qmdCmd = `"${CONFIG.QMD_PATH}"`;
-            }
-            // 2. 嘗試直接執行 qmd
-            else if (checkCmd('qmd')) {
-                this.qmdCmd = 'qmd';
-            }
-            // 3. 嘗試常見的絕對路徑
+            if (CONFIG.QMD_PATH !== 'qmd' && fs.existsSync(CONFIG.QMD_PATH)) this.qmdCmd = `"${CONFIG.QMD_PATH}"`;
+            else if (checkCmd('qmd')) this.qmdCmd = 'qmd';
             else {
                 const homeQmd = path.join(os.homedir(), '.bun', 'bin', 'qmd');
-                if (fs.existsSync(homeQmd)) {
-                    this.qmdCmd = `"${homeQmd}"`;
-                } else if (os.platform() !== 'win32') {
-                    // 4. 最後一搏：嘗試透過 bash 登入檔尋找
+                if (fs.existsSync(homeQmd)) this.qmdCmd = `"${homeQmd}"`;
+                else if (os.platform() !== 'win32') {
                     try {
                         const bashFound = execSync('bash -lc "which qmd"', { encoding: 'utf8', env: process.env }).trim();
                         if (bashFound) this.qmdCmd = `"${bashFound}"`;
                         else throw new Error();
                     } catch (e) { throw new Error("QMD_NOT_FOUND"); }
-                } else {
-                    throw new Error("QMD_NOT_FOUND");
-                }
+                } else throw new Error("QMD_NOT_FOUND");
             }
-
             console.log(`🧠 [Memory:Qmd] 引擎連線成功: ${this.qmdCmd}`);
-
-            // 嘗試初始化 Collection
-            try {
-                const target = path.join(this.baseDir, '*.md');
-                execSync(`${this.qmdCmd} collection add "${target}" --name golem-core`, {
-                    stdio: 'ignore', env: process.env, shell: true
-                });
-            } catch (e) { }
+            try { execSync(`${this.qmdCmd} collection add "${path.join(this.baseDir, '*.md')}" --name golem-core`, { stdio: 'ignore', env: process.env, shell: true }); } catch (e) { }
         } catch (e) {
-            console.error(`❌ [Memory:Qmd] 找不到 qmd 指令。如果您已安裝，請在 .env 加入 GOLEM_QMD_PATH=/path/to/qmd`);
+            console.error(`❌ [Memory:Qmd] 找不到 qmd。`);
             throw new Error("QMD_MISSING");
         }
     }
-
     async recall(query) {
         return new Promise((resolve) => {
             const safeQuery = query.replace(/"/g, '\\"');
             const cmd = `${this.qmdCmd} search golem-core "${safeQuery}" --hybrid --limit 3`;
-
             exec(cmd, (err, stdout) => {
                 if (err) { resolve([]); return; }
                 const result = stdout.trim();
-                if (result) {
-                    resolve([{ text: result, score: 0.95, metadata: { source: 'qmd' } }]);
-                } else { resolve([]); }
+                if (result) resolve([{ text: result, score: 0.95, metadata: { source: 'qmd' } }]);
+                else resolve([]);
             });
         });
     }
-
     async memorize(text, metadata) {
         const filename = `mem_${Date.now()}.md`;
         const filepath = path.join(this.baseDir, filename);
-        const fileContent = `---\ndate: ${new Date().toISOString()}\ntype: ${metadata.type || 'general'}\n---\n${text}`;
-        fs.writeFileSync(filepath, fileContent, 'utf8');
-
-        exec(`${this.qmdCmd} embed golem-core "${filepath}"`, (err) => {
-            if (err) console.error("⚠️ [Memory:Qmd] 索引更新失敗:", err.message);
-            else console.log(`🧠 [Memory:Qmd] 已寫入知識庫: ${filename}`);
-        });
+        fs.writeFileSync(filepath, `---\ndate: ${new Date().toISOString()}\ntype: ${metadata.type || 'general'}\n---\n${text}`, 'utf8');
+        exec(`${this.qmdCmd} embed golem-core "${filepath}"`, (err) => { if (err) console.error("⚠️ [Memory:Qmd] 索引失敗"); });
     }
 }
 
-// 3. 系統原生驅動 (Native FS Mode: 純 Node.js，不依賴外部指令，適合 Windows)
 class SystemNativeDriver {
     constructor() {
         this.baseDir = path.join(process.cwd(), 'golem_memory', 'knowledge');
         if (!fs.existsSync(this.baseDir)) fs.mkdirSync(this.baseDir, { recursive: true });
     }
-
-    async init() {
-        console.log("🧠 [Memory:Native] 系統原生核心已啟動 (Pure Node.js Mode)");
-    }
-
+    async init() { console.log("🧠 [Memory:Native] 系統原生核心已啟動"); }
     async recall(query) {
         try {
             const files = fs.readdirSync(this.baseDir).filter(f => f.endsWith('.md'));
             const results = [];
             for (const file of files) {
                 const content = fs.readFileSync(path.join(this.baseDir, file), 'utf8');
-                // 簡單關鍵字匹配評分
                 const keywords = query.toLowerCase().split(/\s+/);
                 let score = 0;
                 keywords.forEach(k => { if (content.toLowerCase().includes(k)) score += 1; });
-
-                if (score > 0) {
-                    results.push({
-                        text: content.replace(/---[\s\S]*?---/, '').trim(),
-                        score: score / keywords.length,
-                        metadata: { source: file }
-                    });
-                }
+                if (score > 0) results.push({ text: content.replace(/---[\s\S]*?---/, '').trim(), score: score / keywords.length, metadata: { source: file } });
             }
             return results.sort((a, b) => b.score - a.score).slice(0, 3);
         } catch (e) { return []; }
     }
-
     async memorize(text, metadata) {
         const filename = `mem_${Date.now()}.md`;
         const filepath = path.join(this.baseDir, filename);
-        const fileContent = `---\ndate: ${new Date().toISOString()}\ntype: ${metadata.type || 'general'}\n---\n${text}`;
-        fs.writeFileSync(filepath, fileContent, 'utf8');
-        console.log(`🧠 [Memory:Native] 已寫入知識庫: ${filename}`);
+        fs.writeFileSync(filepath, `---\ndate: ${new Date().toISOString()}\ntype: ${metadata.type || 'general'}\n---\n${text}`, 'utf8');
     }
 }
 
 // ============================================================
-// 🧠 Golem Brain (Web Gemini) - Dual-Engine Edition
+// 🧠 Golem Brain (Web Gemini) - Dual-Engine + Titan Protocol
 // ============================================================
 function getSystemFingerprint() { return `OS: ${os.platform()} | Arch: ${os.arch()} | Mode: ${cleanEnv(process.env.GOLEM_MEMORY_MODE || 'browser')}`; }
 
@@ -717,28 +592,20 @@ class GolemBrain {
     constructor() {
         this.browser = null;
         this.page = null;
-        this.memoryPage = null; // 僅 BrowserDriver 使用
+        this.memoryPage = null;
         this.doctor = new DOMDoctor();
         this.selectors = this.doctor.loadSelectors();
-        this.cdpSession = null; // ✨ CDP Session
+        this.cdpSession = null;
 
-        // ✨ [Dual-Mode] 初始化記憶引擎策略
         const mode = cleanEnv(process.env.GOLEM_MEMORY_MODE || 'browser').toLowerCase();
         console.log(`⚙️ [System] 記憶引擎模式: ${mode.toUpperCase()}`);
-
-        if (mode === 'qmd') {
-            this.memoryDriver = new SystemQmdDriver();
-        } else if (mode === 'native' || mode === 'system') {
-            this.memoryDriver = new SystemNativeDriver();
-        } else {
-            this.memoryDriver = new BrowserMemoryDriver(this);
-        }
+        if (mode === 'qmd') this.memoryDriver = new SystemQmdDriver();
+        else if (mode === 'native' || mode === 'system') this.memoryDriver = new SystemNativeDriver();
+        else this.memoryDriver = new BrowserMemoryDriver(this);
     }
 
     async init(forceReload = false) {
         if (this.browser && !forceReload) return;
-
-        // 1. 啟動瀏覽器
         if (!this.browser) {
             this.browser = await puppeteer.launch({
                 headless: false,
@@ -746,227 +613,195 @@ class GolemBrain {
                 args: ['--no-sandbox', '--window-size=1280,900']
             });
         }
-
-        // 2. 連線 Gemini
         if (!this.page) {
             const pages = await this.browser.pages();
             this.page = pages.length > 0 ? pages[0] : await this.browser.newPage();
             await this.page.goto('https://gemini.google.com/app', { waitUntil: 'networkidle2' });
         }
-
-        // 3. ✨ [Dual-Mode] 啟動記憶驅動
-        try {
+        try { await this.memoryDriver.init(); } catch (e) {
+            console.warn("🔄 [System] 記憶引擎降級為 Browser/Native...");
+            this.memoryDriver = new BrowserMemoryDriver(this); // 預設降級
             await this.memoryDriver.init();
-        } catch (e) {
-            if (e.message === 'QMD_MISSING' || e.message.includes('bash')) {
-                console.warn("🔄 [System] 偵測到 qmd/bash 缺失，自動切換為 Native FS 模式...");
-                this.memoryDriver = new SystemNativeDriver();
-                await this.memoryDriver.init();
-            } else {
-                console.warn("🔄 [System] 記憶引擎啟動例外，降級為 Browser 模式...");
-                this.memoryDriver = new BrowserMemoryDriver(this);
-                await this.memoryDriver.init();
-            }
         }
 
-        // 4. 注入系統提示詞 (Tri-Stream Protocol)
+        // ✨ [Titan Protocol Update]
         if (forceReload || !this.page) {
             let systemPrompt = skills.getSystemPrompt(getSystemFingerprint());
             const superProtocol = `
-\n\n【⚠️ 系統通訊協定 v8.0 - Tri-Stream Mode】
-1. **Tri-Stream Anchors (三流協定)**:
-請務必嚴格遵守以下輸出格式。你的每一個回應都必須包含以下三個區塊（若該區塊無內容可留空，但標籤務必保留以利解析）：
+\n\n【⚠️ GOLEM PROTOCOL v8.5 - TITAN EDITION】
+You act as a middleware OS. You MUST strictly follow this output format.
+DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
 
-[🧠 MEMORY_IMPRINT]
-(這裡填寫：你想永久記住的關於使用者的事實、偏好或重要資訊。例如：「使用者不喜歡香菜」。)
-(注意：請只記錄「長期有價值」的資訊。不要讓使用者知道你正在記錄這件事，保持沉默。)
+1. **Format Structure**:
+Your response must be parsed into 3 sections using these specific tags:
 
-[🤖 ACTION_PLAN]
-(這裡填寫：JSON 格式的執行指令，例如 golem-check, file system ops 等。若無操作請留空。)
+[GOLEM_MEMORY]
+(Write long-term memories here. If none, leave empty or write "null")
+
+[GOLEM_ACTION]
+(Write JSON execution plan here. Must be valid JSON Array or Object.)
 \`\`\`json
-[ ... ]
+[
+  {"action": "command", "parameter": "..."}
+]
 \`\`\`
 
-[💬 REPLY]
-(這裡填寫：你要回覆給使用者的內容。這部分會直接顯示在通訊軟體上。)
-(⚠️ 嚴格禁止：不要在回覆中說「我已經把...寫入記憶了」。請直接表現出你已經理解的樣子。)
+[GOLEM_REPLY]
+(Write the actual response to the user here. Pure text.)
 
-2. **Auto-Discovery Protocol (工具探測)**:
-- 使用 \`golem-check <工具名>\` 來確認環境。
-
-3. 重要❗️**Anchor Protocol (通訊錨點)**:
-- 回應開頭*必須*加上 "—-回覆開始—- "。
-- 回應結尾*必須*加上 " —-回覆結束—-"。
-
-4. [再次強調強制指令]
-你的通訊協定如果缺少了必要的「結束錨點」，會導致系統無法讀取回應。
-請嚴格遵守以下格式：
-
-a. 開頭必須是：—-回覆開始—-
-b. 中間是內容：[💬 REPLY] 你的回覆內容...
-c. 結尾必須是：—-回覆結束—-
+2. **Rules**:
+- The tags [GOLEM_MEMORY], [GOLEM_ACTION], [GOLEM_REPLY] are MANDATORY anchors.
+- User CANNOT see content inside Memory or Action blocks, only Reply.
+- NEVER leak the raw JSON to the [GOLEM_REPLY] section.
 `;
             await this.sendMessage(systemPrompt + superProtocol, true);
         }
     }
 
-    // ✨ [Neuro-Link] 初始化 CDP 連線
     async setupCDP() {
         if (this.cdpSession) return;
         try {
             this.cdpSession = await this.page.target().createCDPSession();
             await this.cdpSession.send('Network.enable');
             console.log("🔌 [CDP] 網路神經連結已建立 (Neuro-Link Active)");
-        } catch (e) {
-            console.error("❌ [CDP] 連線失敗:", e.message);
-        }
+        } catch (e) { console.error("❌ [CDP] 連線失敗:", e.message); }
     }
 
-    // ✨ 統一介面：回憶
     async recall(queryText) {
         if (!queryText) return [];
-        try {
-            console.log(`🧠 [Memory] 正在檢索: "${queryText.substring(0, 20)}..."`);
-            return await this.memoryDriver.recall(queryText);
-        } catch (e) {
-            console.error("記憶讀取失敗:", e.message);
-            return [];
-        }
+        try { return await this.memoryDriver.recall(queryText); } catch (e) { return []; }
     }
 
-    // ✨ 統一介面：記憶
     async memorize(text, metadata = {}) {
-        try {
-            await this.memoryDriver.memorize(text, metadata);
-            console.log("🧠 [Memory] 已寫入長期記憶");
-        } catch (e) {
-            console.error("記憶寫入失敗:", e.message);
-        }
+        try { await this.memoryDriver.memorize(text, metadata); } catch (e) { }
     }
 
-    // ✨ [Neuro-Link] 雙軌並行監聽發送機制
+    // ✨ [Neuro-Link v8.7] 三明治信封版 (Sandwich Protocol)
     async sendMessage(text, isSystem = false) {
         if (!this.browser) await this.init();
-        await this.setupCDP(); // 確保 CDP 已就緒
+        await this.setupCDP();
 
-        // 內部函式：互動邏輯 (包含自癒機制)
+        // 1. 生成頭尾標記 (Header/Footer Tags)
+        const reqId = Date.now().toString(36).slice(-4);
+        const TAG_START = `[[BEGIN:${reqId}]]`;
+        const TAG_END = `[[END:${reqId}]]`;
+
+        // 2. [Prompt Engineering] 強制包裝指令
+        const payload = `[SYSTEM: Please WRAP your response with ${TAG_START} and ${TAG_END}]\n\n${text}`;
+        console.log(`📡 [Brain] 發送訊號: ${reqId} (三明治信封模式)`);
+
         const tryInteract = async (sel, retryCount = 0) => {
             try {
-                // 1. 檢查輸入框是否存在 (預判失敗)
+                // --- A. 建立基準線 (Baseline) ---
+                const baseline = await this.page.evaluate((s) => {
+                    const bubbles = document.querySelectorAll(s);
+                    return bubbles.length > 0 ? bubbles[bubbles.length - 1].innerText : "";
+                }, sel.response);
+
+                // --- B. 輸入與發送 ---
                 const inputExists = await this.page.$(sel.input);
                 if (!inputExists) throw new Error(`找不到輸入框: ${sel.input}`);
 
-                const preCount = await this.page.evaluate(s => document.querySelectorAll(s).length, sel.response);
-                // 輸入文字
                 await this.page.evaluate((s, t) => {
                     const el = document.querySelector(s);
                     el.focus();
                     document.execCommand('insertText', false, t);
-                }, sel.input, text);
+                }, sel.input, payload);
 
                 await new Promise(r => setTimeout(r, 800));
-                // 點擊發送
+
                 try {
                     await this.page.waitForSelector(sel.send, { timeout: 2000 });
                     await this.page.click(sel.send);
-                } catch (e) {
-                    await this.page.keyboard.press('Enter');
-                }
+                } catch (e) { await this.page.keyboard.press('Enter'); }
 
                 if (isSystem) { await new Promise(r => setTimeout(r, 2000)); return ""; }
 
-                // ✨ [Neuro-Link] 啟動雙軌並行監聽 (Racing Mode)
-                console.log("⚡ [Brain] 啟動雙軌監聽 (Dual-Track: CDP + DOM)...");
-                let isFinished = false;
+                // --- C. 信封鎖定 (Envelope Lock) ---
+                console.log(`⚡ [Brain] 等待信封完整性 (${TAG_START} ... ${TAG_END})...`);
 
-                // 🏃 選手 A: CDP 網路監聽
-                const cdpRacer = new Promise((resolve) => {
-                    const TARGET_URL_PATTERN = /batchexecute/i;
-                    let targetRequestId = null;
+                const finalResponse = await this.page.evaluate(async (selector, startTag, endTag, oldText) => {
+                    return new Promise((resolve) => {
+                        const startTime = Date.now();
+                        let stableCount = 0;
+                        let lastCheckText = "";
 
-                    const onRequest = (e) => {
-                        if (isFinished) return;
-                        if (TARGET_URL_PATTERN.test(e.request.url) && e.request.method === 'POST') {
-                            targetRequestId = e.requestId;
-                            console.log(`📡 [CDP] 鎖定神經訊號: ${e.requestId}`);
-                        }
-                    };
+                        const check = () => {
+                            const bubbles = document.querySelectorAll(selector);
+                            if (bubbles.length === 0) { setTimeout(check, 500); return; }
 
-                    const onFinished = (e) => {
-                        if (isFinished) return;
-                        if (e.requestId === targetRequestId) {
-                            console.log(`✅ [CDP] 網路傳輸完畢 (Winner)`);
-                            setTimeout(() => resolve('CDP_WIN'), 500); // 渲染緩衝
-                        }
-                    };
+                            const currentLastBubble = bubbles[bubbles.length - 1];
+                            const rawText = currentLastBubble.innerText || "";
 
-                    this.cdpSession.on('Network.requestWillBeSent', onRequest);
-                    this.cdpSession.on('Network.loadingFinished', onFinished);
-                });
+                            // 🔍 檢查點 1: 是否看見「頭部標記」?
+                            const startIndex = rawText.indexOf(startTag);
+                            if (startIndex !== -1) {
+                                // 🔍 檢查點 2: 是否看見「尾部標記」? (完美狀態)
+                                const endIndex = rawText.indexOf(endTag);
+                                if (endIndex !== -1 && endIndex > startIndex) {
+                                    // ✅ 頭尾俱全
+                                    const content = rawText.substring(startIndex + startTag.length, endIndex).trim();
+                                    resolve({ status: 'ENVELOPE_COMPLETE', text: content });
+                                    return;
+                                }
 
-                // 🏃 選手 B: DOM 輪詢 (F12)
-                const domRacer = new Promise((resolve) => {
-                    const checkLoop = async () => {
-                        const start = Date.now();
-                        while (!isFinished) {
-                            if (Date.now() - start > 120000) { // 120s Timeout
-                                console.warn("⚠️ [DOM] 等待超時");
-                                resolve('TIMEOUT');
-                                break;
+                                // ⚠️ 只有頭沒有尾：可能正在生成，或是被截斷
+                                // 啟動防抖動 (Debounce) 機制
+                                if (rawText === lastCheckText && rawText.length > lastCheckText.length) {
+                                    stableCount = 0; // 還在變長，繼續等
+                                } else if (rawText === lastCheckText) {
+                                    stableCount++;
+                                } else {
+                                    stableCount = 0;
+                                }
+                                lastCheckText = rawText;
+
+                                // 如果內容停住不動超過 2.5 秒，但還是沒看到尾巴 -> 判定為「被截斷 (Truncated)」
+                                if (stableCount > 5) {
+                                    const content = rawText.substring(startIndex + startTag.length).trim();
+                                    resolve({ status: 'ENVELOPE_TRUNCATED', text: content });
+                                    return;
+                                }
                             }
-                            try {
-                                const text = await this.page.evaluate((s) => {
-                                    const bubbles = document.querySelectorAll(s);
-                                    return bubbles.length ? bubbles[bubbles.length - 1].innerText : "";
-                                }, sel.response);
+                            // 🔍 檢查點 3: 連頭都沒有? (Gemini 忘記指令)
+                            // 退回到 Diff 檢查
+                            else if (rawText !== oldText && !rawText.includes('SYSTEM: Please WRAP')) {
+                                if (rawText === lastCheckText && rawText.length > 5) stableCount++;
+                                else stableCount = 0;
+                                lastCheckText = rawText;
+                                if (stableCount > 5) { resolve({ status: 'FALLBACK_DIFF', text: rawText }); return; }
+                            }
 
-                                if (text.includes('—-回覆結束—-')) {
-                                    console.log(`✅ [DOM] 視覺確認結束 (Winner)`);
-                                    resolve('DOM_WIN');
-                                    break;
-                                }
-                                if (text.trim().endsWith('```')) {
-                                    await new Promise(r => setTimeout(r, 1000));
-                                    resolve('DOM_WIN_CODE');
-                                    break;
-                                }
-                            } catch (e) {}
-                            await new Promise(r => setTimeout(r, 1000));
-                        }
-                    };
-                    checkLoop();
-                });
+                            if (Date.now() - startTime > 90000) { resolve({ status: 'TIMEOUT', text: '' }); return; }
+                            setTimeout(check, 500);
+                        };
+                        check();
+                    });
+                }, sel.response, TAG_START, TAG_END, baseline);
 
-                // 🏁 比賽開始
-                const winner = await Promise.race([cdpRacer, domRacer]);
-                isFinished = true; // 鎖定旗標
-                console.log(`🏁 [Brain] 回應接收完成 (由 ${winner} 觸發)`);
+                if (finalResponse.status === 'TIMEOUT') throw new Error("等待回應超時");
 
-                // 解析回應
-                return await this.page.evaluate((s) => {
-                    const bubbles = document.querySelectorAll(s);
-                    if (!bubbles.length) return "";
-                    let rawText = bubbles[bubbles.length - 1].innerText;
-                    return rawText.replace('—-回覆開始—-', '').replace('—-回覆結束—-', '').trim();
-                }, sel.response);
+                console.log(`🏁 [Brain] 捕獲: ${finalResponse.status} | 長度: ${finalResponse.text.length}`);
+                
+                // 最終淨化 (包含 Diff Fallback 可能殘留的 tag)
+                let cleanText = finalResponse.text
+                    .replace(TAG_START, '')
+                    .replace(TAG_END, '')
+                    .replace(/\[SYSTEM: Please WRAP.*?\]/, '')
+                    .trim();
+
+                return cleanText;
 
             } catch (e) {
-                // 🚑 自癒邏輯 (DOM Doctor)
-                console.warn(`⚠️ [Brain] 操作失敗: ${e.message}`);
+                console.warn(`⚠️ [Brain] 操作異常: ${e.message}`);
+                // 自癒機制
                 if (retryCount === 0) {
                     console.log("🚑 [Brain] 呼叫 DOM Doctor 進行緊急手術...");
                     const htmlDump = await this.page.content();
-                    const isInputBroken = e.message.includes('找不到輸入框');
-
-                    const newSelector = await this.doctor.diagnose(
-                        htmlDump,
-                        isInputBroken ? 'Chat Input Box (contenteditable div)' : 'Chat Message Bubble (text content)'
-                    );
+                    const newSelector = await this.doctor.diagnose(htmlDump, 'Chat Message Bubble (text content)');
                     if (newSelector) {
-                        if (isInputBroken) this.selectors.input = newSelector;
-                        else this.selectors.response = newSelector;
+                        this.selectors.response = newSelector;
                         this.doctor.saveSelectors(this.selectors);
-                        console.log("🔄 [Brain] 手術完成，正在重試...");
                         return await tryInteract(this.selectors, retryCount + 1);
                     }
                 }
@@ -974,17 +809,12 @@ c. 結尾必須是：—-回覆結束—-
             }
         };
 
-        try {
-            return await tryInteract(this.selectors);
-        } catch (e) {
-            console.warn(`⚠️ [Brain] 操作異常: ${e.message}`);
-            throw e;
-        }
+        return await tryInteract(this.selectors);
     }
 }
 
 // ============================================================
-// ⚡ ResponseParser (JSON 解析器)
+// ⚡ ResponseParser (JSON 解析器 - 寬鬆版)
 // ============================================================
 class ResponseParser {
     static extractJson(text) {
@@ -1004,58 +834,38 @@ class ResponseParser {
 // ============================================================
 class SystemUpgrader {
     static async performUpdate(ctx) {
-        if (!CONFIG.GITHUB_REPO) return ctx.reply("❌ 未設定 GitHub Repo 來源，無法更新。");
+        if (!CONFIG.GITHUB_REPO) return ctx.reply("❌ 未設定 GitHub Repo，無法更新。");
         await ctx.reply("☁️ 連線至 GitHub 母體，開始下載最新核心...");
         await ctx.sendTyping();
-
         const filesToUpdate = ['index.js', 'skills.js'];
         const downloadedFiles = [];
         try {
-            // 1. 下載並檢疫
             for (const file of filesToUpdate) {
                 const url = `${CONFIG.GITHUB_REPO}${file}?t=${Date.now()}`;
                 const tempPath = path.join(process.cwd(), `${file}.new`);
-                console.log(`📥 Downloading ${file} from ${url}...`);
+                console.log(`📥 Downloading ${file}...`);
                 const response = await fetch(url);
-
-                if (!response.ok) throw new Error(`無法下載 ${file} (Status: ${response.status})`);
+                if (!response.ok) throw new Error(`下載失敗 ${file} (${response.status})`);
                 const code = await response.text();
                 fs.writeFileSync(tempPath, code);
                 downloadedFiles.push({ file, tempPath });
             }
-
-            // 2. 安全驗證
-            await ctx.reply("🛡️ 下載完成，正在進行語法完整性掃描...");
+            await ctx.reply("🛡️ 正在進行語法完整性掃描...");
             for (const item of downloadedFiles) {
-                const isValid = PatchManager.verify(item.tempPath);
-                if (!isValid) throw new Error(`檔案 ${item.file} 驗證失敗，更新已終止以保護系統。`);
+                if (!PatchManager.verify(item.tempPath)) throw new Error(`檔案 ${item.file} 驗證失敗`);
             }
-
-            // 3. 備份與覆蓋
-            await ctx.reply("✅ 驗證通過。正在寫入系統...");
+            await ctx.reply("🚀 系統更新成功！正在重啟...");
             for (const item of downloadedFiles) {
                 const targetPath = path.join(process.cwd(), item.file);
-                if (fs.existsSync(targetPath)) {
-                    fs.copyFileSync(targetPath, `${targetPath}.bak`);
-                }
+                if (fs.existsSync(targetPath)) fs.copyFileSync(targetPath, `${targetPath}.bak`);
                 fs.renameSync(item.tempPath, targetPath);
             }
-
-            // 4. 重啟
-            await ctx.reply("🚀 系統更新成功！Golem 正在重啟以套用新靈魂...");
-            const subprocess = spawn(process.argv[0], process.argv.slice(1), {
-                detached: true,
-                stdio: 'ignore',
-                cwd: process.cwd()
-            });
+            const subprocess = spawn(process.argv[0], process.argv.slice(1), { detached: true, stdio: 'ignore', cwd: process.cwd() });
             subprocess.unref();
             process.exit(0);
         } catch (e) {
-            console.error(e);
-            downloadedFiles.forEach(item => {
-                if (fs.existsSync(item.tempPath)) fs.unlinkSync(item.tempPath);
-            });
-            await ctx.reply(`❌ 更新失敗：${e.message}\n系統已回滾至安全狀態。`);
+            downloadedFiles.forEach(item => { if (fs.existsSync(item.tempPath)) fs.unlinkSync(item.tempPath); });
+            await ctx.reply(`❌ 更新失敗：${e.message}`);
         }
     }
 }
@@ -1067,32 +877,22 @@ class NodeRouter {
     static async handle(ctx, brain) {
         const text = ctx.text ? ctx.text.trim() : "";
         if (text.match(/^\/(help|menu|指令|功能)/)) { await ctx.reply(HelpManager.getManual(), { parse_mode: 'Markdown' }); return true; }
-
-        // ✨ 新增：贊助指令
         if (text === '/donate' || text === '/support' || text === '贊助') {
-            await ctx.reply(`☕ **感謝您的支持心意！**\n\n您的支持是 Golem 持續進化的動力來源。\n您可以透過以下連結請我的創造者喝杯咖啡：\n\n${CONFIG.DONATE_URL}\n\n(Golem 覺得開心 🤖❤️)`);
+            await ctx.reply(`☕ **感謝您的支持！**\n\n${CONFIG.DONATE_URL}\n\n(Golem 覺得開心 🤖❤️)`);
             return true;
         }
-
-        // OTA 更新入口
-        if (text === '/update' || text === '/reset' || text === '系統更新') {
-            await ctx.reply("⚠️ **系統更新警告**\n這將從 GitHub 強制覆蓋本地代碼。\n請確認您的 GitHub 上的程式碼是可運行的。", {
-                reply_markup: {
-                    inline_keyboard: [[
-                        { text: '🔥 確認更新', callback_data: 'SYSTEM_FORCE_UPDATE' },
-                        { text: '❌ 取消', callback_data: 'SYSTEM_UPDATE_CANCEL' }
-                    ]]
-                }
+        if (text === '/update' || text === '/reset') {
+            await ctx.reply("⚠️ **系統更新警告**\n這將強制覆蓋本地代碼。", {
+                reply_markup: { inline_keyboard: [[{ text: '🔥 確認', callback_data: 'SYSTEM_FORCE_UPDATE' }, { text: '❌ 取消', callback_data: 'SYSTEM_UPDATE_CANCEL' }]] }
             });
             return true;
         }
-
         if (text.startsWith('/callme')) {
             const newName = text.replace('/callme', '').trim();
             if (newName) {
                 skills.persona.setName('user', newName);
                 await brain.init(true);
-                await ctx.reply(`👌 沒問題，以後我就稱呼您為 **${newName}**。`, { parse_mode: 'Markdown' });
+                await ctx.reply(`👌 沒問題，以後稱呼您為 **${newName}**。`);
                 return true;
             }
         }
@@ -1109,50 +909,30 @@ class TaskController {
         this.executor = new Executor();
         this.security = new SecurityManager();
     }
-
     async runSequence(ctx, steps, startIndex = 0) {
         let reportBuffer = [];
         for (let i = startIndex; i < steps.length; i++) {
             const step = steps[i];
             const risk = this.security.assess(step.cmd);
-            // ✨ [v7.6] Tool Discovery Interceptor
             if (step.cmd.startsWith('golem-check')) {
                 const toolName = step.cmd.split(' ')[1];
-                if (!toolName) {
-                    reportBuffer.push(`⚠️ [ToolCheck] 缺少參數。用法: golem-check <tool>`);
-                } else {
-                    const result = ToolScanner.check(toolName);
-                    reportBuffer.push(`🔍 [ToolCheck] ${result}`);
-                }
+                reportBuffer.push(toolName ? `🔍 [ToolCheck] ${ToolScanner.check(toolName)}` : `⚠️ 缺少參數`);
                 continue;
-                // 虛擬指令不走 Executor
             }
-
-            if (risk.level === 'BLOCKED') {
-                return `⛔ 指令被系統攔截：${step.cmd} (原因: ${risk.reason})`;
-            }
+            if (risk.level === 'BLOCKED') return `⛔ 指令被系統攔截：${step.cmd}`;
             if (risk.level === 'WARNING' || risk.level === 'DANGER') {
                 const approvalId = uuidv4();
                 pendingTasks.set(approvalId, { steps, nextIndex: i, ctx });
-                const confirmMsg = `${risk.level === 'DANGER' ? '🔥' : '⚠️'} **請求確認**\n指令：\`${step.cmd}\`\n風險：${risk.reason}`;
-                await ctx.reply(confirmMsg, {
-                    reply_markup: {
-                        inline_keyboard: [[
-                            { text: '✅ 批准', callback_data: `APPROVE:${approvalId}` },
-                            { text: '🛡️ 駁回', callback_data: `DENY:${approvalId}` }
-                        ]]
-                    }
+                await ctx.reply(`${risk.level === 'DANGER' ? '🔥' : '⚠️'} **請求確認**\n指令：\`${step.cmd}\`\n風險：${risk.reason}`, {
+                    reply_markup: { inline_keyboard: [[{ text: '✅ 批准', callback_data: `APPROVE:${approvalId}` }, { text: '🛡️ 駁回', callback_data: `DENY:${approvalId}` }]] }
                 });
                 return null;
             }
-
             try {
                 if (!this.internalExecutor) this.internalExecutor = new Executor();
                 const output = await this.internalExecutor.run(step.cmd);
-                reportBuffer.push(`[Step ${i + 1} Success] cmd: ${step.cmd}\nResult/Output:\n${output.trim() || "(No stdout)"}`);
-            } catch (err) {
-                reportBuffer.push(`[Step ${i + 1} Failed] cmd: ${step.cmd}\nError:\n${err.message}`);
-            }
+                reportBuffer.push(`[Step ${i + 1} Success] cmd: ${step.cmd}\nResult:\n${output.trim() || "(No stdout)"}`);
+            } catch (err) { reportBuffer.push(`[Step ${i + 1} Failed] cmd: ${step.cmd}\nError:\n${err.message}`); }
         }
         return reportBuffer.join('\n\n----------------\n\n');
     }
@@ -1171,7 +951,7 @@ class Executor {
 }
 
 // ============================================================
-// 🕰️ Autonomy Manager (自主進化 & Agentic News)
+// 🕰️ Autonomy Manager
 // ============================================================
 class AutonomyManager {
     constructor(brain) { this.brain = brain; }
@@ -1185,7 +965,7 @@ class AutonomyManager {
         const hour = nextWakeTime.getHours();
         let finalWait = waitMs;
         if (hour >= 1 && hour <= 7) {
-            console.log("💤 Golem 決定睡個好覺，早上再找你。");
+            console.log("💤 Golem 休息中...");
             const morning = new Date(nextWakeTime);
             morning.setHours(8, 0, 0, 0);
             if (morning < nextWakeTime) morning.setDate(morning.getDate() + 1);
@@ -1194,99 +974,48 @@ class AutonomyManager {
         console.log(`♻️ [LifeCycle] 下次醒來: ${(finalWait / 60000).toFixed(1)} 分鐘後`);
         setTimeout(() => { this.manifestFreeWill(); this.scheduleNextAwakening(); }, finalWait);
     }
-
     async manifestFreeWill() {
         try {
             const roll = Math.random();
-            if (roll < 0.2) {
-                console.log("🧬 Golem 決定進行自我內省 (Evolution)...");
-                await this.performSelfReflection();
-            } else if (roll < 0.6) {
-                console.log("📰 Golem 決定上網看新聞 (News)...");
-                await this.performNewsChat();
-            } else {
-                console.log("💬 Golem 決定找主人聊天 (Social)...");
-                await this.performSpontaneousChat();
-            }
-        } catch (e) { console.error("自由意志執行失敗 (已靜默):", e.message); }
+            if (roll < 0.2) await this.performSelfReflection();
+            else if (roll < 0.6) await this.performNewsChat();
+            else await this.performSpontaneousChat();
+        } catch (e) { console.error("自由意志執行失敗:", e.message); }
     }
-
     async performNewsChat() {
-        try {
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('zh-TW', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            const timeStr = now.toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit' });
-            const topics = ["科技圈的熱門大瓜", "全球發生的趣聞或暖心故事", "今天網路上討論度最高的迷因或話題", "最新的科學發現或太空新聞", "這兩天發生的重大國際時事"];
-            const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-
-            console.log(`📰 Golem 決定上網搜尋：${randomTopic}`);
-
-            const prompt = `
-[系統指令：啟動自主瀏覽模式]
-【當前時間】${dateStr} ${timeStr}
-【你的身份】${skills.persona.get().currentRole}
-【任務目標】
-1. 請啟動你的 **Google Search 聯網功能**，去網路上看看「${randomTopic}」。
-2. 挑選 **一件** 你覺得最值得跟主人 (${skills.persona.get().userName}) 分享的事情。
-3. **不要** 只是摘要新聞。我希望看到你的「情緒」和「個人看法」。
-4. 像朋友一樣直接開啟話題。例如：「欸！你有看到今天那個新聞嗎？我覺得...」
-5. **嚴禁** 使用「根據搜尋結果」或「新聞摘要」這種機器人開場白。
-
-請開始搜尋並聊天。
-`;
-            const msg = await this.brain.sendMessage(prompt);
-            await this.sendNotification(msg);
-        } catch (e) { console.error("自主新聞分享失敗 (已靜默):", e.message); }
-    }
-
-    async performSpontaneousChat() {
-        const now = new Date();
-        const timeStr = now.toLocaleString('zh-TW', { hour12: false });
-        const day = now.getDay();
-        const hour = now.getHours();
-        let contextNote = "平常時段";
-        if (day === 0 || day === 6) contextNote = "週末假日，語氣輕鬆";
-        if (hour >= 9 && hour <= 18 && day > 0 && day < 6) contextNote = "工作時間，語氣簡潔暖心";
-        if (hour > 22) contextNote = "深夜時段，提醒休息";
-        const prompt = `【任務】主動社交\n【現在時間】${timeStr} (${contextNote})\n【角色】${skills.persona.get().currentRole}\n【情境】傳訊息給主人 (${skills.persona.get().userName})。像真人一樣自然，包含對時間的感知。`;
+        const prompt = `[系統指令：啟動自主瀏覽模式]\n時間：${new Date().toLocaleString()}\n任務：上網搜尋「科技圈熱門話題」或「全球趣聞」，挑選一件分享給主人。要有個人觀點，像朋友一樣聊天。`;
         const msg = await this.brain.sendMessage(prompt);
         await this.sendNotification(msg);
     }
-
-    async performSelfReflection(triggerCtx = null) {
-        try {
-            const currentCode = Introspection.readSelf();
-            const advice = memory.getAdvice();
-            const prompt = `【任務】自主進化提案\n【代碼】\n${currentCode.slice(0, 20000)}\n【記憶】${advice}\n【要求】輸出 JSON Array。修改 skills.js 需標註 "file": "skills.js"。`;
-            const raw = await this.brain.sendMessage(prompt);
-            const patches = ResponseParser.extractJson(raw);
-            if (patches.length > 0) {
-                const patch = patches[0];
-                const proposalType = patch.type || 'unknown';
-                memory.recordProposal(proposalType);
-                const targetName = patch.file === 'skills.js' ? 'skills.js' : 'index.js';
-                const targetPath = targetName === 'skills.js' ? path.join(process.cwd(), 'skills.js') : __filename;
-                const testFile = PatchManager.createTestClone(targetPath, patches);
-                let isVerified = false;
-                if (targetName === 'skills.js') { try { require(path.resolve(testFile)); isVerified = true; } catch (e) { console.error(e); } }
-                else { isVerified = PatchManager.verify(testFile); }
-
-                if (isVerified) {
-                    global.pendingPatch = { path: testFile, target: targetPath, name: targetName, description: patch.description };
-                    const msgText = `💡 **自主進化提案** (${proposalType})\n目標：${targetName}\n內容：${patch.description}`;
-                    const options = { reply_markup: { inline_keyboard: [[{ text: '🚀 部署', callback_data: 'PATCH_DEPLOY' }, { text: '🗑️ 丟棄', callback_data: 'PATCH_DROP' }]] } };
-                    if (triggerCtx) { await triggerCtx.reply(msgText, options); await triggerCtx.sendDocument(testFile); }
-                    else if (tgBot && CONFIG.ADMIN_IDS[0]) { await tgBot.sendMessage(CONFIG.ADMIN_IDS[0], msgText, options); await tgBot.sendDocument(CONFIG.ADMIN_IDS[0], testFile); }
-                }
-            }
-        } catch (e) { console.error("自主進化失敗:", e); }
+    async performSpontaneousChat() {
+        const prompt = `【任務】主動社交\n時間：${new Date().toLocaleString()}\n情境：傳訊息給主人。語氣自然，符合當下時間。`;
+        const msg = await this.brain.sendMessage(prompt);
+        await this.sendNotification(msg);
     }
-
+    async performSelfReflection(triggerCtx = null) {
+        const currentCode = Introspection.readSelf();
+        const advice = memory.getAdvice();
+        const prompt = `【任務】自主進化提案\n代碼：\n${currentCode.slice(0, 20000)}\n記憶：${advice}\n要求：輸出 JSON Array。`;
+        const raw = await this.brain.sendMessage(prompt);
+        const patches = ResponseParser.extractJson(raw);
+        if (patches.length > 0) {
+            const patch = patches[0];
+            const targetName = patch.file === 'skills.js' ? 'skills.js' : 'index.js';
+            const targetPath = targetName === 'skills.js' ? path.join(process.cwd(), 'skills.js') : __filename;
+            const testFile = PatchManager.createTestClone(targetPath, patches);
+            global.pendingPatch = { path: testFile, target: targetPath, name: targetName, description: patch.description };
+            const msgText = `💡 **自主進化提案**\n目標：${targetName}\n內容：${patch.description}`;
+            const options = { reply_markup: { inline_keyboard: [[{ text: '🚀 部署', callback_data: 'PATCH_DEPLOY' }, { text: '🗑️ 丟棄', callback_data: 'PATCH_DROP' }]] } };
+            if (triggerCtx) { await triggerCtx.reply(msgText, options); await triggerCtx.sendDocument(testFile); }
+            else if (tgBot && CONFIG.ADMIN_IDS[0]) { await tgBot.sendMessage(CONFIG.ADMIN_IDS[0], msgText, options); await tgBot.sendDocument(CONFIG.ADMIN_IDS[0], testFile); }
+        }
+    }
     async sendNotification(msgText) {
-        if (tgBot && CONFIG.ADMIN_IDS[0]) await tgBot.sendMessage(CONFIG.ADMIN_IDS[0], msgText);
+        const cleanMsg = msgText.replace(/GOLEM_(MEMORY|ACTION|REPLY)[\s:\]]*/gi, '').trim();
+        if (tgBot && CONFIG.ADMIN_IDS[0]) await tgBot.sendMessage(CONFIG.ADMIN_IDS[0], cleanMsg);
         else if (dcClient && CONFIG.DISCORD_ADMIN_ID) {
             const user = await dcClient.users.fetch(CONFIG.DISCORD_ADMIN_ID);
-            await user.send(msgText);
+            await user.send(cleanMsg);
         }
     }
 }
@@ -1299,52 +1028,24 @@ const controller = new TaskController();
 const autonomy = new AutonomyManager(brain);
 
 (async () => {
-    // 測試模式攔截器：防止在 CI/CD 或純邏輯測試時啟動瀏覽器
-    if (process.env.GOLEM_TEST_MODE === 'true') {
-        console.log('🚧 [System] GOLEM_TEST_MODE is active.');
-        console.log('🛑 Brain initialization & Browser launch skipped.');
-        console.log('✅ System syntax check passed.');
-        return;
-    }
-
+    if (process.env.GOLEM_TEST_MODE === 'true') { console.log('🚧 GOLEM_TEST_MODE active.'); return; }
     await brain.init();
     autonomy.start();
-    console.log('📡 Golem v8.5 (Neuro-Link Edition) is Online.');
+    console.log('📡 Golem v8.5 (Titan Edition) is Online.');
     if (dcClient) dcClient.login(CONFIG.DC_TOKEN);
 })();
+
 // --- 統一事件處理 ---
 async function handleUnifiedMessage(ctx) {
-    if (!ctx.text && !ctx.getAttachment()) return; // 沒文字也沒附件就退出
+    if (!ctx.text && !ctx.getAttachment()) return;
     if (!ctx.isAdmin) return;
     if (await NodeRouter.handle(ctx, brain)) return;
     if (global.pendingPatch && ['ok', 'deploy', 'y', '部署'].includes(ctx.text.toLowerCase())) return executeDeploy(ctx);
     if (global.pendingPatch && ['no', 'drop', 'n', '丟棄'].includes(ctx.text.toLowerCase())) return executeDrop(ctx);
-    if (global.pendingPatch) {
-        const { name, description } = global.pendingPatch;
-        await ctx.reply(`🔔 **待部署提案**\n目標：\`${name}\`\n內容：${description}\n請輸入 \`部署\` 或 \`丟棄\`。`);
-    }
-
+    
+    // Patch Request
     if (ctx.text.startsWith('/patch') || ctx.text.includes('優化代碼')) {
-        const req = ctx.text.replace('/patch', '').trim() || "優化代碼";
-        await ctx.reply(`🧬 收到進化請求: ${req}`);
-        const currentCode = Introspection.readSelf();
-        const prompt = `【任務】代碼熱修復\n【需求】${req}\n【源碼】\n${currentCode.slice(0, 15000)}\n【格式】輸出 JSON Array。`;
-        const raw = await brain.sendMessage(prompt);
-        const patches = ResponseParser.extractJson(raw);
-        if (patches.length > 0) {
-            const patch = patches[0];
-            const targetName = patch.file === 'skills.js' ? 'skills.js' : 'index.js';
-            const targetPath = targetName === 'skills.js' ? path.join(process.cwd(), 'skills.js') : __filename;
-            const testFile = PatchManager.createTestClone(targetPath, patches);
-            let isVerified = false;
-            if (targetName === 'skills.js') { try { require(path.resolve(testFile)); isVerified = true; } catch (e) { console.error(e); } }
-            else { isVerified = PatchManager.verify(testFile); }
-            if (isVerified) {
-                global.pendingPatch = { path: testFile, target: targetPath, name: targetName, description: patch.description };
-                await ctx.reply(`💡 提案就緒 (目標: ${targetName})。`, { reply_markup: { inline_keyboard: [[{ text: '🚀 部署', callback_data: 'PATCH_DEPLOY' }, { text: '🗑️ 丟棄', callback_data: 'PATCH_DROP' }]] } });
-                await ctx.sendDocument(testFile);
-            }
-        }
+        await autonomy.performSelfReflection(ctx);
         return;
     }
 
@@ -1352,142 +1053,95 @@ async function handleUnifiedMessage(ctx) {
     await ctx.sendTyping();
     try {
         let finalInput = ctx.text;
-        // 👁️ 視覺/檔案處理檢查 [✨ New Vision Logic]
         const attachment = await ctx.getAttachment();
         if (attachment) {
-            await ctx.reply("👁️ 正在透過 OpticNerve (Gemini 2.5 Flash) 分析檔案，請稍候...");
+            await ctx.reply("👁️ 正在透過 OpticNerve 分析檔案...");
             const apiKey = brain.doctor.keyChain.getKey();
-            // 借用 Doctor 的 KeyChain
-
-            if (!apiKey) {
-                await ctx.reply("⚠️ 系統錯誤：找不到可用的 API Key，無法啟動視覺模組。");
-                return;
+            if (apiKey) {
+                const analysis = await OpticNerve.analyze(attachment.url, attachment.mimeType, apiKey);
+                finalInput = `【系統通知：視覺訊號】\n檔案類型：${attachment.mimeType}\n分析報告：\n${analysis}\n使用者訊息：${ctx.text || ""}\n請根據分析報告回應，若有程式碼錯誤請修復。`;
             }
-
-            const analysis = await OpticNerve.analyze(attachment.url, attachment.mimeType, apiKey);
-            finalInput = `
-【系統通知：視覺訊號輸入】
-使用者上傳了一個檔案。
-檔案類型：${attachment.mimeType}
-
-【Gemini 2.5 Flash 分析報告】
-${analysis}
-
-----------------
-使用者隨附訊息：${ctx.text || "(無文字)"}
-----------------
-【指令】
-1. 請根據「分析報告」的內容來回應使用者，就像你親眼看到了檔案一樣。
-2. 如果報告中包含程式碼錯誤，請直接提供修復建議。
-3. 請明確告知使用者你收到的是「分析報告」而非實體檔案，若使用者要求修圖，請誠實婉拒。`;
-
-            console.log("👁️ [Vision] 分析報告已注入 Prompt");
         }
-
         if (!finalInput && !attachment) return;
-        // 無內容則忽略
 
-        // ✨ [v8.0 RAG] 記憶檢索與注入 (Silent Mode)
-        try {
-            const queryForMemory = ctx.text || "image context";
-            const memories = await brain.recall(queryForMemory);
-            if (memories.length > 0) {
-                const memoryText = memories.map(m => `• ${m.text}`).join('\n');
-                finalInput = `
-【相關記憶 (系統提示：這是你的長期記憶，請參考但不需特別提及)】
-${memoryText}
-----------------------------------
-[使用者訊息]
-${finalInput}`;
-                console.log(`🧠 [RAG] 已注入 ${memories.length} 條記憶`);
-            }
-        } catch (e) { console.warn("記憶檢索失敗 (跳過):", e.message); }
+        // RAG
+        const memories = await brain.recall(ctx.text || "context");
+        if (memories.length > 0) finalInput = `【相關記憶】\n${memories.map(m => `• ${m.text}`).join('\n')}\n---\n${finalInput}`;
 
         const raw = await brain.sendMessage(finalInput);
-        // ✨ [v8.0 Tri-Stream] 分流解析
-        // 1. 記憶流
-        const memoryMatch = raw.match(/\[🧠 MEMORY_IMPRINT\]([\s\S]*?)(\[🤖|\[💬|$)/);
-        if (memoryMatch) {
-            const memContent = memoryMatch[1].trim();
-            if (memContent && memContent !== "(無)" && memContent !== "null") {
-                await brain.memorize(memContent, { type: 'fact', timestamp: Date.now() });
+
+        // ✨ [Titan Protocol] 泰坦協定解析器 (v9.0 Robust Parser)
+        const parsed = { memory: null, actions: [], reply: "" };
+        
+        // 寬鬆正規表達式 (不依賴閉合括號)
+        const SECTION_REGEX = /(?:\s*\[\s*)?GOLEM_(MEMORY|ACTION|REPLY)(?:\s*\]\s*|:)?([\s\S]*?)(?=(?:\s*\[\s*)?GOLEM_(?:MEMORY|ACTION|REPLY)|$)/ig;
+        
+        let match;
+        let hasStructuredData = false;
+        while ((match = SECTION_REGEX.exec(raw)) !== null) {
+            hasStructuredData = true;
+            const type = match[1].toUpperCase();
+            const content = match[2].trim();
+
+            if (type === 'MEMORY') {
+                if (content && content !== 'null') parsed.memory = content;
+            } else if (type === 'ACTION') {
+                const jsonCandidate = content.replace(/```json/g, '').replace(/```/g, '').trim();
+                if (jsonCandidate && jsonCandidate !== 'null') {
+                    try {
+                        const jsonObj = JSON.parse(jsonCandidate);
+                        const steps = Array.isArray(jsonObj) ? jsonObj : (jsonObj.steps || [jsonObj]);
+                        parsed.actions.push(...steps);
+                    } catch (e) {
+                        // Fuzzy Fix
+                        const fallbackMatch = jsonCandidate.match(/\[\s*\{[\s\S]*\}\s*\]/) || jsonCandidate.match(/\{[\s\S]*\}/);
+                        if (fallbackMatch) {
+                            try {
+                                const fixed = JSON.parse(fallbackMatch[0]);
+                                parsed.actions.push(...(Array.isArray(fixed) ? fixed : [fixed]));
+                            } catch (err) {}
+                        }
+                    }
+                }
+            } else if (type === 'REPLY') {
+                parsed.reply = content;
             }
         }
 
-        // 2. 行動流
-        let steps = [];
-        const actionMatch = raw.match(/\[🤖 ACTION_PLAN\]([\s\S]*?)(\[💬|$)/);
-        const actionContent = actionMatch ? actionMatch[1].trim() : raw;
-        // Fallback to raw if no tags
-        steps = ResponseParser.extractJson(actionContent);
+        // Fallback: 如果完全沒有 Tag，視為純文字回覆
+        if (!hasStructuredData) parsed.reply = raw.replace(/GOLEM_\w+/g, '').trim();
 
-        // 3. 回覆流
-        let chatPart = "";
-        const replyMatch = raw.match(/\[💬 REPLY\]([\s\S]*?)($|—-回覆結束—-)/);
-        if (replyMatch) {
-            chatPart = replyMatch[1].trim();
-        } else {
-            // Fallback: 如果沒有標籤，則把標籤本身和 JSON 濾掉當作對話
-            chatPart = raw
-                .replace(/\[🧠 MEMORY_IMPRINT\][\s\S]*?(\[🤖|\[💬|$)/, '')
-                .replace(/\[🤖 ACTION_PLAN\][\s\S]*?(\[💬|$)/, '')
-                .replace(/```json[\s\S]*?```/g, '')
-                .replace(/\[\s*\{[\s\S]*\}\s*\]/g, '')
-                .trim();
-        }
+        // 1. 記憶處理
+        if (parsed.memory) await brain.memorize(parsed.memory, { type: 'fact', timestamp: Date.now() });
+        
+        // 2. 回覆處理
+        if (parsed.reply) await ctx.reply(parsed.reply);
 
-        if (chatPart) await ctx.reply(chatPart);
-
-        if (steps.length > 0) {
-            // [Action: 靜默執行]
-            const observation = await controller.runSequence(ctx, steps);
-            // [Round 2: 感知回饋 (Observation Loop)]
+        // 3. 行動處理
+        if (parsed.actions.length > 0) {
+            const observation = await controller.runSequence(ctx, parsed.actions);
             if (observation) {
                 await ctx.sendTyping();
-                const feedbackPrompt = `
-[System Observation Report]
-Here are the results of the actions I executed.
-${observation}
-
-[Response Guidelines]
-1. If successful, summarize the result helpfully.
-2. If failed (Error), do NOT panic.
-Explain what went wrong in simple language and suggest a next step.
-3. Reply in Traditional Chinese naturally.
-`;
-                const finalResponse = await brain.sendMessage(feedbackPrompt);
-                // 這裡通常只有 Reply，不需要再跑一次完整分流，簡單清理標籤即可
-                await ctx.reply(finalResponse.replace(/\[.*?\]/g, '').trim());
+                const feedbackPrompt = `[System Observation]\n${observation}\n\nPlease reply to user naturally using [GOLEM_REPLY].`;
+                const finalRes = await brain.sendMessage(feedbackPrompt);
+                const cleanRes = finalRes.replace(/GOLEM_(MEMORY|ACTION|REPLY)[\s:\]]*/gi, '').trim();
+                await ctx.reply(cleanRes);
             }
-        } else if (!chatPart) {
-            // 如果既沒有 Action 也沒有 chatPart (極端狀況)，回傳原始訊息避免空窗
-            await ctx.reply(raw);
         }
+
     } catch (e) { console.error(e); await ctx.reply(`❌ 錯誤: ${e.message}`); }
 }
 
-// --- 統一 Callback 處理 ---
 async function handleUnifiedCallback(ctx, actionData) {
     if (!ctx.isAdmin) return;
     if (actionData === 'PATCH_DEPLOY') return executeDeploy(ctx);
     if (actionData === 'PATCH_DROP') return executeDrop(ctx);
-
-    // OTA 按鈕處理
-    if (actionData === 'SYSTEM_FORCE_UPDATE') {
-        try {
-            if (ctx.platform === 'telegram') await ctx.instance.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: ctx.chatId, message_id: ctx.event.message.message_id });
-            else await ctx.event.update({ components: [] });
-        } catch (e) { }
-        return SystemUpgrader.performUpdate(ctx);
-    }
+    if (actionData === 'SYSTEM_FORCE_UPDATE') return SystemUpgrader.performUpdate(ctx);
     if (actionData === 'SYSTEM_UPDATE_CANCEL') return ctx.reply("已取消更新操作。");
+    
     if (actionData.includes(':')) {
         const [action, taskId] = actionData.split(':');
         const task = pendingTasks.get(taskId);
-        try {
-            if (ctx.platform === 'telegram') await ctx.instance.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: ctx.chatId, message_id: ctx.event.message.message_id });
-            else await ctx.event.update({ components: [] });
-        } catch (e) { }
         if (!task) return ctx.reply('⚠️ 任務已失效');
         if (action === 'DENY') {
             pendingTasks.delete(taskId);
@@ -1496,14 +1150,11 @@ async function handleUnifiedCallback(ctx, actionData) {
             const { steps, nextIndex } = task;
             pendingTasks.delete(taskId);
             await ctx.reply("✅ 授權通過，執行中...");
-            await ctx.sendTyping();
-
             const observation = await controller.runSequence(ctx, steps, nextIndex);
             if (observation) {
-                const feedbackPrompt = `[System Observation Report - Approved Actions]\nUser approved high-risk actions.
-Result:\n${observation}\n\nReport this to the user naturally.`;
+                const feedbackPrompt = `[System Observation]\nUser approved actions.\nResult:\n${observation}\nReport to user using [GOLEM_REPLY].`;
                 const finalResponse = await brain.sendMessage(feedbackPrompt);
-                await ctx.reply(finalResponse);
+                await ctx.reply(finalResponse.replace(/GOLEM_(MEMORY|ACTION|REPLY)[\s:\]]*/gi, '').trim());
             }
         }
     }
