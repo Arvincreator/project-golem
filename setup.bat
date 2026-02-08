@@ -1,6 +1,6 @@
 @echo off
 setlocal EnableDelayedExpansion
-:: 切換編碼為 UTF-8 以支援中文顯示
+:: 切換 UTF-8
 chcp 65001 >nul
 
 title Golem v8.5 全自動安裝精靈
@@ -14,17 +14,32 @@ echo.
 :: ------------------------------------------------------------
 echo [1/6] 正在檢查核心檔案完整性...
 set "MISSING_FILES="
+
+:: 檢查關鍵檔案是否存在
 if not exist index.js set "MISSING_FILES=!MISSING_FILES! index.js"
 if not exist skills.js set "MISSING_FILES=!MISSING_FILES! skills.js"
 if not exist package.json set "MISSING_FILES=!MISSING_FILES! package.json"
 if not exist memory.html set "MISSING_FILES=!MISSING_FILES! memory.html"
 
+:: 如果有缺少檔案 (注意：這裡移除了括號以避免語法錯誤)
 if defined MISSING_FILES (
     echo.
-    echo [ERROR] 錯誤：核心檔案遺失！(!MISSING_FILES!)
+    echo ==========================================================
+    echo [ERROR] 嚴重錯誤：找不到核心檔案！
+    echo.
+    echo 缺少檔案清單： !MISSING_FILES!
+    echo.
+    echo 目前執行路徑： %cd%
+    echo.
+    echo [?] 請確認：
+    echo     1. 您是否已下載完整的專案檔案 (不只是 setup.bat)？
+    echo     2. 您是否將 setup.bat 放在專案的「根目錄」下？
+    echo ==========================================================
+    echo.
     pause
     exit /b
 )
+
 echo [OK] 核心檔案檢查通過。
 echo.
 
@@ -76,7 +91,7 @@ if not exist .env (
 echo.
 
 :: ------------------------------------------------------------
-:: 3. 安裝 NPM 依賴 (含 Dashboard)
+:: 3. 安裝 NPM 依賴
 :: ------------------------------------------------------------
 echo [4/6] 正在安裝核心依賴...
 call npm install
@@ -89,43 +104,37 @@ if %errorlevel% neq 0 (
 echo [+] 正在加裝 Dashboard (戰術控制台) 擴充套件...
 call npm install blessed blessed-contrib
 if %errorlevel% neq 0 (
-    echo [!] Dashboard 套件安裝失敗 (非致命錯誤)，您可能無法使用圖形介面。
+    echo [!] Dashboard 套件安裝失敗 (非致命錯誤)。
 ) else (
     echo [OK] Dashboard 套件安裝完成。
 )
 echo.
 
 :: ------------------------------------------------------------
-:: 4. 設定記憶引擎 (Windows 僅支援瀏覽器模式)
+:: 4. 設定記憶引擎
 :: ------------------------------------------------------------
 echo [5/6] 正在設定 Golem 記憶引擎...
-echo [*] 配置為：瀏覽器模式 (原生推薦)...
+echo [*] 配置為：瀏覽器模式...
 powershell -Command "(Get-Content .env) -replace 'GOLEM_MEMORY_MODE=.*', 'GOLEM_MEMORY_MODE=browser' | Set-Content .env"
 echo.
 
 :: ------------------------------------------------------------
-:: 5. 自動修補檢測 (Auto-Patch)
+:: 5. 自動修補
 :: ------------------------------------------------------------
 echo [6/6] 正在檢查自動修補腳本 (patch.js)...
 if exist patch.js (
     echo [*] 偵測到 patch.js，正在執行修補程序...
-    echo ----------------------------------------------------------
     call node patch.js
-    echo ----------------------------------------------------------
     if !errorlevel! equ 0 (
         echo [OK] 自動修補執行完畢！
-        echo [-] (若需保留補丁紀錄，patch.js 檔案將保留在目錄中)
     ) else (
-        echo [ERROR] 修補執行失敗，請檢查上方錯誤訊息。
+        echo [ERROR] 修補執行失敗。
     )
 ) else (
-    echo [OK] 無須修補 (未偵測到 patch.js)。
+    echo [OK] 無須修補。
 )
 echo.
 
-goto finish
-
-:finish
 echo.
 echo ==========================================================
 echo [OK] 安裝完成！(v8.5 Neuro-Link Edition)
