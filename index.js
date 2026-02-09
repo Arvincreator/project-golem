@@ -6,11 +6,11 @@
  * 1. 🛡️ Titan Protocol: 採用純英文大寫標籤 ([GOLEM_ACTION])，移除 Emoji 降低解析干擾。
  * 2. 🥪 Envelope Lock: 實作「三明治信封」鎖定機制 ([[BEGIN]]...[[END]])，徹底解決非同步競態與截斷問題。
  * 3. ⚡ Robust Parser: 寬鬆格式解析器，支援斷尾 JSON 修復與模糊匹配。
+ * 4. 👁️ OpticNerve: 完整支援圖片/文件附件分析 (Gemini 2.5 Flash)。
  * ---------------------------------------------------
  * 原有特性保留：
  * 🐍 Hydra Link | 🧠 Tri-Brain | 🛡️ High Availability | ☁️ OTA Upgrader
- * 💰 Sponsor Core | 👁️ Agentic Grazer | 🔍 Auto-Discovery | 🔮 OpticNerve
- * 🌗 Dual-Engine Memory | ⚡ Neuro-Link (CDP Integration)
+ * 💰 Sponsor Core | 👁️ Agentic Grazer | 🔍 Auto-Discovery | ⚡ Neuro-Link
  */
 
 // ==========================================
@@ -676,7 +676,7 @@ Your response must be parsed into 3 sections using these specific tags:
         try { await this.memoryDriver.memorize(text, metadata); } catch (e) { }
     }
 
-    // ✨ [Neuro-Link v8.7] 三明治信封版 (Sandwich Protocol)
+    // ✨ [Neuro-Link v8.7] 三明治信封版 (Sandwich Protocol + Tri-Stream Reminder)
     async sendMessage(text, isSystem = false) {
         if (!this.browser) await this.init();
         await this.setupCDP();
@@ -686,9 +686,15 @@ Your response must be parsed into 3 sections using these specific tags:
         const TAG_START = `[[BEGIN:${reqId}]]`;
         const TAG_END = `[[END:${reqId}]]`;
 
-        // 2. [Prompt Engineering] 強制包裝指令
-        const payload = `[SYSTEM: Please WRAP your response with ${TAG_START} and ${TAG_END}]\n\n${text}`;
-        console.log(`📡 [Brain] 發送訊號: ${reqId} (三明治信封模式)`);
+        // 2. [Prompt Engineering] 強制包裝指令 (全均勢提醒)
+        // 核心修正：明確指示 ACTION 和 MEMORY 為 Optional，REPLY 為 Required
+        const payload = `[SYSTEM: STRICT FORMAT. Wrap response with ${TAG_START} and ${TAG_END}. Inside, organize content using these tags:\n` +
+                        `1. [GOLEM_MEMORY] (Optional)\n` +
+                        `2. [GOLEM_ACTION] (Optional)\n` +
+                        `3. [GOLEM_REPLY] (Required)\n` +
+                        `Do not output raw text outside tags.]\n\n${text}`;
+        
+        console.log(`📡 [Brain] 發送訊號: ${reqId} (三流全激活模式)`);
 
         const tryInteract = async (sel, retryCount = 0) => {
             try {
