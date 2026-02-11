@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golem Neural Cortex v8.5</title>
+    <title>Golem Neural Cortex v8.6</title>
     <style>
         body { font-family: 'Segoe UI', monospace; background: #0d1117; color: #c9d1d9; padding: 20px; }
         .status { padding: 12px; border: 1px solid #30363d; margin-bottom: 10px; border-radius: 6px; background: #161b22; }
@@ -11,11 +11,12 @@
         h1 { color: #58a6ff; font-size: 1.5rem; margin-bottom: 0.5rem; }
         .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-left: 10px; }
         .badge-browser { background: #1f6feb; color: white; }
+        .badge-chronos { background: #d29922; color: white; }
     </style>
 </head>
 <body>
-    <h1>🧠 Golem Neural Cortex <span class="badge badge-browser">v8.5</span></h1>
-    <div style="color: #8b949e; margin-bottom: 20px;">Browser-based Vector Memory Engine (Neuro-Link Ready)</div>
+    <h1>🧠 Golem Neural Cortex <span class="badge badge-browser">v8.6</span> <span class="badge badge-chronos">Chronos</span></h1>
+    <div style="color: #8b949e; margin-bottom: 20px;">Browser-based Vector Memory & Timeline Engine (Neuro-Link Ready)</div>
 
     <div id="model-status" class="status">⚡ Initializing Transformers.js...</div>
     <div id="db-status" class="status">💾 Connecting to IndexedDB...</div>
@@ -32,12 +33,15 @@
         let extractor = null;
         let db = null;
         const DB_NAME = 'GolemMemoryDB';
+        // ✨ [Upgrade] 版本號升級為 2，以觸發結構更新
+        const DB_VERSION = 2; 
         const STORE_NAME = 'memories';
+        const SCHEDULE_STORE = 'schedule'; // ✨ 新增排程倉庫
         const MODEL_NAME = 'Xenova/all-MiniLM-L6-v2'; // 輕量級 Embedding 模型
 
         // UI Helper
         const log = (msg) => {
-            console.log(`[Cortex v8.5] ${msg}`);
+            console.log(`[Cortex v8.6] ${msg}`);
             const logDiv = document.getElementById('logs');
             logDiv.innerHTML = `<div><span style="color:#58a6ff">${new Date().toLocaleTimeString()}</span> - ${msg}</div>` + logDiv.innerHTML;
         };
@@ -59,24 +63,34 @@
             }
         }
 
-        // 2. 初始化 IndexedDB
+        // 2. 初始化 IndexedDB (含升級邏輯)
         function initDB() {
             return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, 1);
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
 
                 request.onupgradeneeded = (e) => {
                     const db = e.target.result;
+                    
+                    // 確保記憶倉庫存在
                     if (!db.objectStoreNames.contains(STORE_NAME)) {
                         db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                    }
+
+                    // ✨ [Chronos] 新增排程倉庫 (如果不存在)
+                    if (!db.objectStoreNames.contains(SCHEDULE_STORE)) {
+                        log("⚙️ Upgrading DB: Creating Schedule Store...");
+                        const store = db.createObjectStore(SCHEDULE_STORE, { keyPath: 'id', autoIncrement: true });
+                        // 建立時間索引，方便查詢 "所有早於現在的任務"
+                        store.createIndex('time', 'time', { unique: false });
                     }
                 };
 
                 request.onsuccess = (e) => {
                     db = e.target.result;
-                    document.getElementById('db-status').innerText = "✅ Memory Bank Connected";
+                    document.getElementById('db-status').innerText = "✅ Memory & Timeline Bank Connected";
                     document.getElementById('db-status').style.borderColor = "#238636";
                     document.getElementById('db-status').style.color = "#3fb950";
-                    log("Storage Ready.");
+                    log("Storage Ready (v" + DB_VERSION + ").");
                     resolve();
                 };
 
@@ -181,6 +195,73 @@
                 log("Query Error: " + e.message);
                 return [];
             }
+        };
+
+        // ==========================================
+        // ⏰ [Chronos] 新增：排程管理 API
+        // ==========================================
+
+        /**
+         * 新增排程任務
+         * @param {string} task - 任務內容
+         * @param {string} timeISO - ISO 格式的時間字串
+         */
+        window.addSchedule = async (task, timeISO) => {
+            if (!db) return { success: false };
+            return new Promise((resolve) => {
+                const tx = db.transaction(SCHEDULE_STORE, 'readwrite');
+                const store = tx.objectStore(SCHEDULE_STORE);
+                store.add({
+                    task: task,
+                    time: timeISO,
+                    status: 'pending',
+                    createdAt: Date.now()
+                });
+                tx.oncomplete = () => {
+                    log(`📅 Scheduled: "${task}" at ${timeISO}`);
+                    resolve({ success: true });
+                };
+                tx.onerror = () => resolve({ success: false, error: tx.error });
+            });
+        };
+
+        /**
+         * 檢查並取出「到期」的任務
+         * (此函數會取出所有「現在時間之前」的任務，並將其從 DB 刪除，避免重複執行)
+         */
+        window.checkSchedule = async () => {
+            if (!db) return [];
+            const nowISO = new Date().toISOString();
+
+            return new Promise((resolve) => {
+                const tx = db.transaction(SCHEDULE_STORE, 'readwrite');
+                const store = tx.objectStore(SCHEDULE_STORE);
+                const index = store.index('time');
+                
+                // 搜尋所有時間 <= 現在 的任務
+                const range = IDBKeyRange.upperBound(nowISO);
+                const request = index.openCursor(range);
+                
+                const dueTasks = [];
+
+                request.onsuccess = (e) => {
+                    const cursor = e.target.result;
+                    if (cursor) {
+                        const record = cursor.value;
+                        if (record.status === 'pending') {
+                            dueTasks.push(record);
+                            // 取出後直接刪除
+                            cursor.delete(); 
+                        }
+                        cursor.continue();
+                    } else {
+                        // 遍歷結束
+                        if (dueTasks.length > 0) log(`⏰ Triggered ${dueTasks.length} tasks`);
+                        resolve(dueTasks);
+                    }
+                };
+                request.onerror = () => resolve([]);
+            });
         };
 
         // 啟動程序
