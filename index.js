@@ -454,65 +454,66 @@ class DOMDoctor {
             console.log("💾 [Doctor] Selector 已更新並存檔！");
         } catch (e) { }
     }
-    async diagnose(htmlSnippet, targetDescription) {
-        if (this.keyChain.keys.length === 0) return null;
-        console.log(`🚑 [Doctor] 啟動深層診斷: "${targetDescription}"...`);
-        
-        // 截斷過長的 HTML 以免爆 Token，但保留足夠長度供分析
-        const safeHtml = htmlSnippet.length > 50000 ? htmlSnippet.substring(0, 50000) + "..." : htmlSnippet;
-        
-        // ⚡ [Fix] 強制要求 JSON 格式，並加入各種禁令，防止 AI 寫作文
-        const prompt = `你是 Puppeteer 自動化專家。目前的 CSS Selector 失效，目標是選取: "${targetDescription}"。
-請分析以下 HTML 結構，找出一個最穩定、最不容易報錯的 CSS Selector。
+    async diagnose(htmlSnippet, targetType) {
+    if (this.keyChain.keys.length === 0) return null;
+    
+    const hints = {
+      'input': '找尋一個可以輸入文字的區域。特徵通常包含: contenteditable="true", role="textbox", textarea, 或 class 包含 "editor", "input".',
+      'send': '找尋發送訊息的按鈕。特徵通常包含: aria-label="Send", data-icon="send", 或包含 SVG icon 的 button。',
+      'response': '找尋 AI 回覆的文字氣泡。'
+    };
+    
+    const targetDescription = hints[targetType] || targetType;
+    console.log(`🚑 [Doctor] 啟動深層診斷: 目標 [${targetType}]...`);
 
-HTML 片段 (部分):
-\`\`\`html
-${safeHtml}
-\`\`\`
+    const safeHtml = htmlSnippet.length > 60000 ? htmlSnippet.substring(0, 60000) : htmlSnippet;
 
-⚠️ **絕對嚴格的輸出規則 (違反會導致系統崩潰)：**
-1. **只允許輸出 JSON 格式**，格式為：{"selector": "你的CSS選擇器"}
-2. **絕對禁止** 任何解釋、前言、Markdown 標記 (如 \`\`\`json) 或其他文字。
-3. 如果找不到，回傳 {"selector": ""}`;
+    const prompt = `你是 Puppeteer 自動化專家。目前的 CSS Selector 失效。
+    請分析 HTML，找出目標: "${targetType}" (${targetDescription}) 的最佳 CSS Selector。
 
-        let attempts = 0;
-        while (attempts < this.keyChain.keys.length) {
-            try {
-                const genAI = new GoogleGenerativeAI(this.keyChain.getKey());
-                const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-                const result = await model.generateContent(prompt);
-                const rawText = result.response.text().trim();
-                
-                // 🧹 清洗邏輯：提取 JSON
-                let selector = "";
-                try {
-                    // 1. 嘗試移除 Markdown code block 標記
-                    const jsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-                    // 2. 解析 JSON
-                    const parsed = JSON.parse(jsonStr);
-                    selector = parsed.selector;
-                } catch (jsonErr) {
-                    console.warn(`⚠️ [Doctor] JSON 解析失敗，嘗試暴力提取 (Raw: ${rawText.substring(0, 50)}...)`);
-                    // Fallback: 如果 AI 還是回傳了文字，嘗試抓取最後一行看起來像 Selector 的東西
-                    const lines = rawText.split('\n').filter(l => l.trim().length > 0);
-                    const lastLine = lines[lines.length - 1].trim();
-                    if (!lastLine.includes(' ')) selector = lastLine; // 簡單 heuristic
-                }
+    HTML 片段:
+    \`\`\`html
+    ${safeHtml}
+    \`\`\`
 
-                // 最後防線：檢查 selector 是否包含非法字符或過長 (這通常代表又是廢話)
-                if (selector && selector.length > 0 && selector.length < 150 && !selector.includes('問題')) {
-                     console.log(`✅ [Doctor] 診斷成功，新 Selector: ${selector}`);
-                     return selector;
-                } else {
-                    console.warn(`⚠️ [Doctor] AI 提供的 Selector 無效或包含雜訊: ${selector}`);
-                }
-            } catch (e) { 
-                console.error(`❌ [Doctor] 診斷 API 錯誤: ${e.message}`);
-                attempts++; 
-            }
+    規則：
+    1. 只回傳 JSON: {"selector": "your_css_selector"}
+    2. 選擇器必須具備高特異性 (Specificity)，但不要依賴隨機生成的 ID (如 #xc-123)。
+    3. 優先使用 id, name, role, aria-label, data-attribute。`;
+
+    let attempts = 0;
+    while (attempts < this.keyChain.keys.length) {
+      try {
+        const genAI = new GoogleGenerativeAI(this.keyChain.getKey());
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const result = await model.generateContent(prompt);
+        const rawText = result.response.text().trim();
+
+        let selector = "";
+        try {
+          const jsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+          const parsed = JSON.parse(jsonStr);
+          selector = parsed.selector;
+        } catch (jsonErr) {
+          console.warn(`⚠️ [Doctor] JSON 解析失敗，嘗試暴力提取 (Raw: ${rawText.substring(0, 50)}...)`);
+          const lines = rawText.split('\n').filter(l => l.trim().length > 0);
+          const lastLine = lines[lines.length - 1].trim();
+          if (!lastLine.includes(' ')) selector = lastLine;
         }
-        return null;
+
+        if (selector && selector.length > 0 && selector.length < 150 && !selector.includes('問題')) {
+          console.log(`✅ [Doctor] 診斷成功，新 Selector: ${selector}`);
+          return selector;
+        } else {
+          console.warn(`⚠️ [Doctor] AI 提供的 Selector 無效或包含雜訊: ${selector}`);
+        }
+      } catch (e) {
+        console.error(`❌ [Doctor] 診斷 API 錯誤: ${e.message}`);
+        attempts++;
+      }
     }
+    return null;
+  }
 }
 
 // ============================================================
@@ -764,109 +765,138 @@ Your response must be parsed into 3 sections using these specific tags:
         console.log(`📡 [Brain] 發送訊號: ${reqId} (三流全激活模式)`);
 
         const tryInteract = async (sel, retryCount = 0) => {
-            try {
-                const baseline = await this.page.evaluate((s) => {
-                    const bubbles = document.querySelectorAll(s);
-                    return bubbles.length > 0 ? bubbles[bubbles.length - 1].innerText : "";
-                }, sel.response);
+      if (retryCount > 3) throw new Error("🔥 DOM Doctor 修復失敗，請檢查網路或 HTML 結構大幅變更。");
 
-                const inputExists = await this.page.$(sel.input);
-                if (!inputExists) throw new Error(`找不到輸入框: ${sel.input}`);
+      try {
+        const baseline = await this.page.evaluate((s) => {
+          const bubbles = document.querySelectorAll(s);
+          return bubbles.length > 0 ? bubbles[bubbles.length - 1].innerText : "";
+        }, sel.response);
 
-                await this.page.evaluate((s, t) => {
-                    const el = document.querySelector(s);
-                    el.focus();
-                    document.execCommand('insertText', false, t);
-                }, sel.input, payload);
+        // --- 1. 檢查輸入框 (Input) ---
+        let inputEl = await this.page.$(sel.input);
+        if (!inputEl) {
+          console.log("🚑 找不到輸入框，呼叫 DOM Doctor...");
+          const html = await this.page.content();
+          const newSel = await this.doctor.diagnose(html, 'input');
+          if (newSel) {
+            this.selectors.input = newSel;
+            this.doctor.saveSelectors(this.selectors);
+            return tryInteract(this.selectors, retryCount + 1);
+          }
+          throw new Error(`無法修復輸入框 Selector`);
+        }
 
-                await new Promise(r => setTimeout(r, 800));
+        // --- 2. 執行輸入 ---
+        await this.page.evaluate((s, t) => {
+          const el = document.querySelector(s);
+          el.focus();
+          document.execCommand('insertText', false, t);
+        }, sel.input, payload);
 
-                try {
-                    await this.page.waitForSelector(sel.send, { timeout: 2000 });
-                    await this.page.click(sel.send);
-                } catch (e) { await this.page.keyboard.press('Enter'); }
+        await new Promise(r => setTimeout(r, 800));
 
-                if (isSystem) { await new Promise(r => setTimeout(r, 2000)); return ""; }
+        // --- 3. 檢查發送按鈕 (Send) ---
+        let sendEl = await this.page.$(sel.send);
+        if (!sendEl) {
+          console.log("🚑 找不到發送按鈕，呼叫 DOM Doctor...");
+          const html = await this.page.content();
+          const newSel = await this.doctor.diagnose(html, 'send');
+          if (newSel) {
+            this.selectors.send = newSel;
+            this.doctor.saveSelectors(this.selectors);
+            return tryInteract(this.selectors, retryCount + 1);
+          }
+          console.log("⚠️ 無法修復按鈕，嘗試使用 Enter 鍵發送...");
+          await this.page.keyboard.press('Enter');
+        } else {
+          try {
+            await this.page.waitForSelector(sel.send, { timeout: 2000 });
+            await this.page.click(sel.send);
+          } catch (e) { await this.page.keyboard.press('Enter'); }
+        }
 
-                console.log(`⚡ [Brain] 等待信封完整性 (${TAG_START} ... ${TAG_END})...`);
+        if (isSystem) { await new Promise(r => setTimeout(r, 2000)); return ""; }
 
-                const finalResponse = await this.page.evaluate(async (selector, startTag, endTag, oldText) => {
-                    return new Promise((resolve) => {
-                        const startTime = Date.now();
-                        let stableCount = 0;
-                        let lastCheckText = "";
+        console.log(`⚡ [Brain] 等待信封完整性 (${TAG_START} ... ${TAG_END})...`);
 
-                        const check = () => {
-                            const bubbles = document.querySelectorAll(selector);
-                            if (bubbles.length === 0) { setTimeout(check, 500); return; }
+        const finalResponse = await this.page.evaluate(async (selector, startTag, endTag, oldText) => {
+          return new Promise((resolve) => {
+            const startTime = Date.now();
+            let stableCount = 0;
+            let lastCheckText = "";
 
-                            const currentLastBubble = bubbles[bubbles.length - 1];
-                            const rawText = currentLastBubble.innerText || "";
+            const check = () => {
+              const bubbles = document.querySelectorAll(selector);
+              if (bubbles.length === 0) { setTimeout(check, 500); return; }
 
-                            const startIndex = rawText.indexOf(startTag);
-                            if (startIndex !== -1) {
-                                const endIndex = rawText.indexOf(endTag);
-                                if (endIndex !== -1 && endIndex > startIndex) {
-                                    const content = rawText.substring(startIndex + startTag.length, endIndex).trim();
-                                    resolve({ status: 'ENVELOPE_COMPLETE', text: content });
-                                    return;
-                                }
-                                if (rawText === lastCheckText && rawText.length > lastCheckText.length) {
-                                    stableCount = 0;
-                                } else if (rawText === lastCheckText) {
-                                    stableCount++;
-                                } else {
-                                    stableCount = 0;
-                                }
-                                lastCheckText = rawText;
+              const currentLastBubble = bubbles[bubbles.length - 1];
+              const rawText = currentLastBubble.innerText || "";
 
-                                if (stableCount > 5) {
-                                    const content = rawText.substring(startIndex + startTag.length).trim();
-                                    resolve({ status: 'ENVELOPE_TRUNCATED', text: content });
-                                    return;
-                                }
-                            }
-                            else if (rawText !== oldText && !rawText.includes('SYSTEM: Please WRAP')) {
-                                if (rawText === lastCheckText && rawText.length > 5) stableCount++;
-                                else stableCount = 0;
-                                lastCheckText = rawText;
-                                if (stableCount > 5) { resolve({ status: 'FALLBACK_DIFF', text: rawText }); return; }
-                            }
-
-                            if (Date.now() - startTime > 90000) { resolve({ status: 'TIMEOUT', text: '' }); return; }
-                            setTimeout(check, 500);
-                        };
-                        check();
-                    });
-                }, sel.response, TAG_START, TAG_END, baseline);
-
-                if (finalResponse.status === 'TIMEOUT') throw new Error("等待回應超時");
-
-                console.log(`🏁 [Brain] 捕獲: ${finalResponse.status} | 長度: ${finalResponse.text.length}`);
-
-                let cleanText = finalResponse.text
-                    .replace(TAG_START, '')
-                    .replace(TAG_END, '')
-                    .replace(/\[SYSTEM: Please WRAP.*?\]/, '')
-                    .trim();
-
-                return cleanText;
-
-            } catch (e) {
-                console.warn(`⚠️ [Brain] 操作異常: ${e.message}`);
-                if (retryCount === 0) {
-                    console.log("🚑 [Brain] 呼叫 DOM Doctor 進行緊急手術...");
-                    const htmlDump = await this.page.content();
-                    const newSelector = await this.doctor.diagnose(htmlDump, 'Chat Message Bubble (text content)');
-                    if (newSelector) {
-                        this.selectors.response = newSelector;
-                        this.doctor.saveSelectors(this.selectors);
-                        return await tryInteract(this.selectors, retryCount + 1);
-                    }
+              const startIndex = rawText.indexOf(startTag);
+              if (startIndex !== -1) {
+                const endIndex = rawText.indexOf(endTag);
+                if (endIndex !== -1 && endIndex > startIndex) {
+                  const content = rawText.substring(startIndex + startTag.length, endIndex).trim();
+                  resolve({ status: 'ENVELOPE_COMPLETE', text: content });
+                  return;
                 }
-                throw e;
-            }
-        };
+                if (rawText === lastCheckText && rawText.length > lastCheckText.length) {
+                  stableCount = 0;
+                } else if (rawText === lastCheckText) {
+                  stableCount++;
+                } else {
+                  stableCount = 0;
+                }
+                lastCheckText = rawText;
+
+                if (stableCount > 5) {
+                  const content = rawText.substring(startIndex + startTag.length).trim();
+                  resolve({ status: 'ENVELOPE_TRUNCATED', text: content });
+                  return;
+                }
+              }
+              else if (rawText !== oldText && !rawText.includes('SYSTEM: Please WRAP')) {
+                if (rawText === lastCheckText && rawText.length > 5) stableCount++;
+                else stableCount = 0;
+                lastCheckText = rawText;
+                if (stableCount > 5) { resolve({ status: 'FALLBACK_DIFF', text: rawText }); return; }
+              }
+
+              if (Date.now() - startTime > 90000) { resolve({ status: 'TIMEOUT', text: '' }); return; }
+              setTimeout(check, 500);
+            };
+            check();
+          });
+        }, sel.response, TAG_START, TAG_END, baseline);
+
+        if (finalResponse.status === 'TIMEOUT') throw new Error("等待回應超時");
+
+        console.log(`🏁 [Brain] 捕獲: ${finalResponse.status} | 長度: ${finalResponse.text.length}`);
+
+        let cleanText = finalResponse.text
+          .replace(TAG_START, '')
+          .replace(TAG_END, '')
+          .replace(/\[SYSTEM: Please WRAP.*?\]/, '')
+          .trim();
+
+        return cleanText;
+
+      } catch (e) {
+        console.warn(`⚠️ [Brain] 操作異常: ${e.message}`);
+        if (retryCount === 0) {
+          console.log("🚑 [Brain] 呼叫 DOM Doctor 進行緊急手術 (Response)...");
+          const htmlDump = await this.page.content();
+          const newSelector = await this.doctor.diagnose(htmlDump, 'response');
+          if (newSelector) {
+            this.selectors.response = newSelector;
+            this.doctor.saveSelectors(this.selectors);
+            return await tryInteract(this.selectors, retryCount + 1);
+          }
+        }
+        throw e;
+      }
+    };
 
         return await tryInteract(this.selectors);
     }
