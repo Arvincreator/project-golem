@@ -466,7 +466,13 @@ class DOMDoctor {
     const targetDescription = hints[targetType] || targetType;
     console.log(`🚑 [Doctor] 啟動深層診斷: 目標 [${targetType}]...`);
 
-    const safeHtml = htmlSnippet.length > 60000 ? htmlSnippet.substring(0, 60000) : htmlSnippet;
+// 策略修改：採用「頭尾夾擊」。保留頭部 5,000 字(結構) + 尾部 55,000 字(輸入框通常在最後)。
+    let safeHtml = htmlSnippet;
+    if (htmlSnippet.length > 60000) {
+      const head = htmlSnippet.substring(0, 5000);
+      const tail = htmlSnippet.substring(htmlSnippet.length - 55000);
+      safeHtml = `${head}\n\n\n\n${tail}`;
+    }
 
     const prompt = `你是 Puppeteer 自動化專家。目前的 CSS Selector 失效。
     請分析 HTML，找出目標: "${targetType}" (${targetDescription}) 的最佳 CSS Selector。
