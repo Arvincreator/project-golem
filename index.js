@@ -196,28 +196,31 @@ class UniversalContext {
         return CONFIG.ADMIN_IDS.includes(this.userId);
     }
 
-    async reply(content, options = {}) {
-    // 🔧 FIX: Discord 交互專用回應
-    if (this.isInteraction) {
+    async reply(content, options) {
+  // FIX: Discord interaction reply
+  if (this.isInteraction) {
+    try {
+      if (!this.event.deferred && !this.event.replied) {
+        return await this.event.reply({ content, flags: 64 });
+      } else {
+        return await this.event.followUp({ content, flags: 64 });
+      }
+    } catch (e) {
+      console.error('UniversalContext Discord Reply Error:', e.message);
+      // Fallback: 嘗試作為一般訊息發送
       try {
-        if (!this.event.deferred && !this.event.replied) {
-          return await this.event.reply({ content, ephemeral: true });
-        } else {
-          return await this.event.followUp({ content, ephemeral: true });
-        }
-      } catch (e) {
-        console.error("[UniversalContext] Discord 交互回應失敗:", e.message);
-        // 降級為普通訊息
-        try {
-          const channel = await this.instance.channels.fetch(this.chatId);
-          return await channel.send(content);
-        } catch (err) {
-          console.error("[UniversalContext] 降級發送也失敗:", err.message);
-        }
+        const channel = await this.instance.channels.fetch(this.chatId);
+        return await channel.send(content);
+      } catch (err) {
+        console.error('UniversalContext Fallback Error:', err.message);
       }
     }
-    return await MessageManager.send(this, content, options);
   }
+  
+  // Telegram or regular Discord message
+  return await MessageManager.send(this, content, options);
+}
+
 
     async sendDocument(filePath) {
         try {
@@ -1228,14 +1231,29 @@ class TaskController {
                 continue;
             }
             if (risk.level === 'BLOCKED') return `⛔ 指令被系統攔截：${cmdToRun}`;
-            if (risk.level === 'WARNING' || risk.level === 'DANGER') {
-                const approvalId = uuidv4();
-                pendingTasks.set(approvalId, { steps, nextIndex: i, ctx, timestamp: Date.now() }); // 🔧 FIX: 添加 timestamp
-                await ctx.reply(`${risk.level === 'DANGER' ? '🔥' : '⚠️'} **請求確認**\n指令：\`${cmdToRun}\`\n風險：${risk.reason}`, {
-                    reply_markup: { inline_keyboard: [[{ text: '✅ 批准', callback_data: `APPROVE:${approvalId}` }, { text: '🛡️ 駁回', callback_data: `DENY:${approvalId}` }]] }
-                });
-                return null;
-            }
+if (risk.level === 'WARNING' || risk.level === 'DANGER') {
+  const approvalId = uuidv4();
+  pendingTasks.set(approvalId, { 
+    steps, 
+    nextIndex: i, 
+    ctx, 
+    timestamp: Date.now() 
+  });
+  
+  await ctx.reply(
+    `⚠️ ${risk.level === 'DANGER' ? '🔴 危險指令' : '🟡 警告'}\n\`${cmdToRun}\`\n${risk.reason}`,
+    {
+      reply_markup: {
+        inline_keyboard: [[
+          { text: '✅ 批准', callback_ `APPROVE_${approvalId}` },
+          { text: '❌ 拒絕', callback_ `DENY_${approvalId}` }
+        ]]
+      }
+    }
+  );
+  return null;
+}
+
             try {
                 if (!this.internalExecutor) this.internalExecutor = new Executor();
                 const output = await this.internalExecutor.run(cmdToRun);
@@ -1417,15 +1435,15 @@ async function handleUnifiedMessage(ctx) {
 }
 
 async function handleUnifiedCallback(ctx, actionData) {
-  // 🔧 FIX: Discord 交互必須在 3 秒內回應
+  // FIX: Discord 3 - 正確的 defer 方式
   if (ctx.platform === 'discord' && ctx.isInteraction) {
     try {
-      await ctx.event.deferReply({ ephemeral: true });
+      await ctx.event.deferReply({ flags: 64 });
     } catch (e) {
-      console.error("[Callback] Discord deferReply 失敗:", e.message);
+      console.error('Callback Discord deferReply Error:', e.message);
     }
   }
-
+  
   if (!ctx.isAdmin) return;
     if (actionData === 'PATCH_DEPLOY') return executeDeploy(ctx);
     if (actionData === 'PATCH_DROP') return executeDrop(ctx);
