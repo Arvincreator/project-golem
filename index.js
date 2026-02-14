@@ -967,35 +967,36 @@ Your response must be parsed into 3 sections using these specific tags:
 // ⚡ ResponseParser (JSON 解析器 - 寬鬆版 + 集中化)
 // ============================================================
 class ResponseParser {
+    // [請將整個 ResponseParser 類別的 parse 方法替換為此]
     static parse(raw) {
         const parsed = { memory: null, actions: [], reply: "" };
-        const SECTION_REGEX = /(?:\s*\[\s*)?GOLEM_(MEMORY|ACTION|REPLY)(?:\s*\]\s*|:)?([\s\S]*?)(?=(?:\s*\[\s*)?GOLEM_(?:MEMORY|ACTION|REPLY)|$)/ig;
+        
+        // 增強版正則：更寬鬆地捕捉區塊，不被換行符號干擾
+        const SECTION_REGEX = /\[GOLEM_(MEMORY|ACTION|REPLY)\]([\s\S]*?)(?=\[GOLEM_|$)/ig;
 
         let match;
         let hasStructuredData = false;
 
+        // 1. 嘗試標準解析
         while ((match = SECTION_REGEX.exec(raw)) !== null) {
             hasStructuredData = true;
             const type = match[1].toUpperCase();
             const content = (match[2] || "").trim();
 
             if (type === 'MEMORY') {
-                if (content && content !== 'null' && content !== '(無)') parsed.memory = content;
+                if (content && content !== 'null' && !content.includes('(無)')) parsed.memory = content;
             } else if (type === 'ACTION') {
-                const jsonCandidate = content.replace(/```json/g, '').replace(/```/g, '').trim();
-                if (jsonCandidate && jsonCandidate !== 'null') {
+                // 強力 JSON 提取：不管有沒有 markdown 符號，都把 JSON 挖出來
+                const jsonMatch = content.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
+                if (jsonMatch) {
                     try {
-                        const jsonObj = JSON.parse(jsonCandidate);
+                        // 清理可能存在的 markdown 標記 (```json ... ```)
+                        let cleanJson = jsonMatch[0].replace(/```json/g, '').replace(/```/g, '');
+                        const jsonObj = JSON.parse(cleanJson);
                         const steps = Array.isArray(jsonObj) ? jsonObj : (jsonObj.steps || [jsonObj]);
                         parsed.actions.push(...steps);
                     } catch (e) {
-                        const fallbackMatch = jsonCandidate.match(/\[\s*\{[\s\S]*\}\s*\]/) || jsonCandidate.match(/\{[\s\S]*\}/);
-                        if (fallbackMatch) {
-                            try {
-                                const fixed = JSON.parse(fallbackMatch[0]);
-                                parsed.actions.push(...(Array.isArray(fixed) ? fixed : [fixed]));
-                            } catch (err) { }
-                        }
+                        console.error("⚠️ [Parser] JSON 解析失敗:", e.message);
                     }
                 }
             } else if (type === 'REPLY') {
@@ -1003,7 +1004,19 @@ class ResponseParser {
             }
         }
 
-        if (!hasStructuredData) parsed.reply = raw.replace(/GOLEM_\w+/g, '').trim();
+        // 2. 兜底機制：如果 AI 忘記加標籤，嘗試暴力提取 JSON
+        if (!hasStructuredData || parsed.actions.length === 0) {
+            const fallbackJson = this.extractJson(raw);
+            if (fallbackJson.length > 0) {
+                console.log("⚠️ [Parser] 觸發暴力提取機制 (Fallback)");
+                parsed.actions.push(...fallbackJson);
+                // 移除 JSON 部分，剩下的當作回覆
+                parsed.reply = raw.replace(/```json[\s\S]*?```/g, '').trim();
+            } else {
+                 if (!hasStructuredData) parsed.reply = raw;
+            }
+        }
+        
         return parsed;
     }
 
