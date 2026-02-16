@@ -18,30 +18,30 @@ Golem v9.0 採用獨特的 **"Browser-in-the-Loop"** 混合架構，結合了 We
 
 ```mermaid
 graph TD
-    User[使用者] -->|Telegram/Discord| Ingress[Universal Context]
-    Ingress -->|封裝訊息| Queue[Conversation Queue (Debounce)]
-    Queue -->|發送 Prompt| Puppeteer[Puppeteer / CDP Bridge]
+    User["👤 使用者 (User)"] -->|"Telegram / Discord"| Ingress["📥 Ingress (Universal Context)"]
+    Ingress -->|"封裝訊息"| Queue["🚦 Queue (Debounce)"]
+    Queue -->|"發送 Prompt"| Puppeteer["🔌 Puppeteer (CDP Bridge)"]
     
-    subgraph "🧠 The Brain (Dual-Engine)"
-        Puppeteer -->|注入 DOM| WebGemini[Web Gemini (Infinite Context)]
-        Ingress -->|圖片/檔案| OpticNerve[Gemini 2.5 Flash API (Vision)]
+    subgraph Brain ["🧠 The Brain (Dual-Engine)"]
+        Puppeteer -->|"注入 DOM"| WebGemini["🌐 Web Gemini (Infinite Context)"]
+        Ingress -->|"圖片/檔案"| OpticNerve["👁️ OpticNerve (Gemini 2.5 Flash API)"]
     end
 
-    WebGemini -->|Titan Protocol Response| NeuroShunter[🧬 NeuroShunter]
+    WebGemini -->|"Titan Protocol Response"| NeuroShunter["🧬 NeuroShunter"]
     
-    subgraph "⚡ Reflex Layer (Node.js)"
-        NeuroShunter -->|解析 [GOLEM_MEMORY]| Memory[Vector/JSON Storage]
-        NeuroShunter -->|解析 [GOLEM_ACTION]| TaskController[Task Controller]
-        NeuroShunter -->|解析 [GOLEM_REPLY]| Egress[Response Handler]
+    subgraph Reflex ["⚡ Reflex Layer (Node.js)"]
+        NeuroShunter -->|"解析 [GOLEM_MEMORY]"| Memory["💾 Memory (Vector/JSON)"]
+        NeuroShunter -->|"解析 [GOLEM_ACTION]"| TaskController["⚙️ Task Controller"]
+        NeuroShunter -->|"解析 [GOLEM_REPLY]"| Egress["📤 Response Handler"]
     end
 
-    TaskController -->|執行指令| Shell[System Shell / Git / NPM]
-    TaskController -->|召喚 Agent| MultiAgent[🎭 Interactive MultiAgent]
-    TaskController -->|設定排程| Chronos[⏰ Titan Chronos]
+    TaskController -->|"執行指令"| Shell["💻 Shell / Git / NPM"]
+    TaskController -->|"召喚 Agent"| MultiAgent["🎭 Interactive MultiAgent"]
+    TaskController -->|"設定排程"| Chronos["⏰ Titan Chronos"]
 
-    Shell -->|執行結果 (Observation)| Puppeteer
-    MultiAgent -->|團隊總結| Egress
-    Egress -->|回覆| User
+    Shell -->|"執行結果 (Observation)"| Puppeteer
+    MultiAgent -->|"團隊總結"| Egress
+    Egress -->|"回覆"| User
 
 ```
 
@@ -49,12 +49,9 @@ graph TD
 
 #### 🔌 Neuro-Link (神經連結層)
 
+* **Puppeteer & CDP**: Golem 不依賴官方 Chat API，而是透過 Puppeteer 控制無頭瀏覽器 (Headless Chrome)。
 * 
-**Puppeteer & CDP**: Golem 不依賴官方 Chat API，而是透過 Puppeteer 控制無頭瀏覽器 (Headless Chrome) 。
-
-
-* 
-**Sandwich Protocol (三明治協定)**: 為了確保 AI 輸出的穩定性，Golem 在 Prompt 前後注入隱藏的錨點 (`[[BEGIN]]` ... `[[END]]`) ，並透過 `DOM Doctor` 自動修復 CSS Selector ，即使 Google 介面改版也能自我癒合。
+**Sandwich Protocol (三明治協定)**: 為了確保 AI 輸出的穩定性，Golem 在 Prompt 前後注入隱藏的錨點 (`[[BEGIN]]` ... `[[END]]`) ，並透過 `DOM Doctor` 自動修復 CSS Selector，即使 Google 介面改版也能自我癒合。
 
 
 
@@ -68,7 +65,7 @@ graph TD
 
 #### 🎭 Multi-Agent Orchestrator (多智能體協作)
 
-v9.0 的核心突破 。當觸發會議模式時：
+v9.0 的核心突破。當觸發會議模式時：
 
 1. **Context Switching**: 主腦 (Golem) 暫時退居幕後，轉換為「會議主席」。
 2. 
@@ -83,10 +80,7 @@ v9.0 的核心突破 。當觸發會議模式時：
 #### ⏰ Titan Chronos (時序引擎)
 
 * **Time Perception**: 每次對話時，系統會注入 `【當前系統時間】` 給 AI。
-* 
-**Persistence**: 排程任務被序列化存儲，並由 `TimeWatcher` 每分鐘掃描一次 。當時間到達，系統會自動喚醒並執行定義好的 Action。
-
-
+* **Persistence**: 排程任務被序列化存儲，並由 `TimeWatcher` 每分鐘掃描一次。當時間到達，系統會自動喚醒並執行定義好的 Action。
 
 ---
 
@@ -94,7 +88,7 @@ v9.0 的核心突破 。當觸發會議模式時：
 
 ### 1. 👥 Interactive MultiAgent (互動式多智能體會議)
 
-Golem 不再是一個人在戰鬥。v9.0 支援動態召喚 AI 專家團隊，進行多輪對話、辯論與決策 。
+Golem 不再是一個人在戰鬥。v9.0 支援動態召喚 AI 專家團隊，進行多輪對話、辯論與決策。
 
 * **Tech Team**: 包含前端、後端工程師與 PM，解決複雜程式問題。
 * **Debate Team**: 魔鬼代言人與樂觀主義者進行觀點辯證。
@@ -106,13 +100,10 @@ Golem 不再是一個人在戰鬥。v9.0 支援動態召喚 AI 專家團隊，�
 
 ### 2. ⏰ Titan Chronos (時序領主)
 
-打破了 AI 只能回應「當下」的限制 。
+打破了 AI 只能回應「當下」的限制。
 
 * **智能排程**: 支援「明天早上叫我」、「每週五提醒我」、「30分鐘後執行」。
-* 
-**持久化任務**: 即使系統重啟，排程任務依然存在 (基於 v9.0 記憶架構) 。
-
-
+* **持久化任務**: 即使系統重啟，排程任務依然存在 (基於 v9.0 記憶架構)。
 
 ---
 
@@ -120,36 +111,21 @@ Golem 不再是一個人在戰鬥。v9.0 支援動態召喚 AI 專家團隊，�
 
 ### 🛠️ 技能模組 (Skill Modules)
 
-得益於 `skills.js` 的動態加載，Golem 擁有以下超能力 ：
+得益於 `skills.js` 的動態加載，Golem 擁有以下超能力：
 
 * **☁️ Cloud Observer**: 原生聯網搜尋，獲取即時新聞與數據。
 * **🎵 Spotify DJ**: 控制音樂播放、暫停、切換 (需 `spotify-cli-s`)。
 * **📺 YouTube Analyst**: 下載影片字幕並進行摘要總結 (需 `yt-dlp-wrap`)。
 * **🐙 Git Master**: 自主管理 GitHub 專案 (Init, Commit, Push)。
 * **💻 Code Wizard**: 直接在伺服器上撰寫、生成並執行程式碼檔案。
-* 
-**🔍 Tool Explorer**: 自動探測系統環境工具 (Python, Node, Docker) 。
-
-
+* **🔍 Tool Explorer**: 自動探測系統環境工具 (Python, Node, Docker)。
 
 ### 🛡️ 自我防護與修復 (Self-Healing & Security)
 
-* 
-**🚑 DOM Doctor**: 當網頁結構改變導致操作失敗時，AI 會自動診斷 HTML 並生成新的 CSS Selector 修復自身 。
-
-
-* 
-**🔐 KeyChain v2**: 智慧 API 金鑰輪替與冷卻機制，防止 Rate Limit 。
-
-
-* 
-**🌊 Flood Guard**: 防止啟動時處理過多歷史訊息 。
-
-
-* 
-**🛡️ Security Manager**: 攔截高風險指令 (`rm -rf`, `format`)，需管理員授權 。
-
-
+* **🚑 DOM Doctor**: 當網頁結構改變導致操作失敗時，AI 會自動診斷 HTML 並生成新的 CSS Selector 修復自身。
+* **🔐 KeyChain v2**: 智慧 API 金鑰輪替與冷卻機制，防止 Rate Limit。
+* **🌊 Flood Guard**: 防止啟動時處理過多歷史訊息。
+* **🛡️ Security Manager**: 攔截高風險指令 (`rm -rf`, `format`)，需管理員授權。
 
 ### 📺 戰術控制台 (Dashboard v9.0)
 
@@ -165,10 +141,7 @@ Golem 不再是一個人在戰鬥。v9.0 支援動態召喚 AI 專家團隊，�
 
 ### 1. 環境準備 (Prerequisites)
 
-* 
-**Node.js**: v18.0.0 或更高版本 (核心要求) 。
-
-
+* **Node.js**: v18.0.0 或更高版本 (核心要求)。
 * **Google Chrome**: 建議安裝最新版 (Puppeteer 依賴)。
 * **帳號**: 一個 Google 帳號 (用於 Web Gemini) 與 Gemini API Key (用於視覺分析)。
 
@@ -218,7 +191,7 @@ npm start
 
 ```
 
-說明：這會以標準模式啟動，僅在 Console 輸出基本日誌 。
+*說明：這會以標準模式啟動，僅在 Console 輸出基本日誌。*
 
 **模式 B: 戰術控制台 (推薦，可視化監控 v9.0)**
 
@@ -237,18 +210,9 @@ node index.js dashboard
 
 ### 基礎指令
 
-* 
-`/help`: 顯示說明書 。
-
-
-* 
-`/callme [名字]`: 設定你的稱呼 。
-
-
-* 
-`/donate`: 支持開發者 。
-
-
+* `/help`: 顯示說明書。
+* `/callme [名字]`: 設定你的稱呼。
+* `/donate`: 支持開發者。
 
 ### 👥 多智能體會議 (v9.0 New)
 
@@ -259,15 +223,9 @@ node index.js dashboard
 
 在會議中，你可以：
 
-* 輸入 `繼續`：讓討論繼續 。
-
-
-* 輸入 `中斷`：暫停會議 。
-
-
-* 輸入 `@Alex`：指定某位 Agent 回答 。
-
-
+* 輸入 `繼續`：讓討論繼續。
+* 輸入 `中斷`：暫停會議。
+* 輸入 `@Alex`：指定某位 Agent 回答。
 
 ### ⏰ 排程指令 (Chronos)
 
@@ -306,13 +264,11 @@ Project Golem 是一個強大的自動化工具，擁有執行系統指令的能
 **安全風險**: 雖然有 Security Manager，但請勿在生產環境給予 root/admin 權限 。
 
 
-2. 
-**帳號安全**: Web Gemini 依賴您的 Google 帳號，請妥善保管 `golem_memory` 資料夾 (內含 Session Cookie) 。
-
-
+2. **帳號安全**: Web Gemini 依賴您的 Google 帳號，請妥善保管 `golem_memory` 資料夾 (內含 Session Cookie)。
 3. **自主性**: AI 可能會產生幻覺或執行非預期操作，請始終保持監控。
 
 ---
 
 **Developed with ❤️ by Arvincreator**
+[Buy Me a Coffee](https://buymeacoffee.com/arvincreator)
 <a href="https://www.buymeacoffee.com/arvincreator" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
