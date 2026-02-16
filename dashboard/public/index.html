@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Golem v8.6 Control Center</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js" defer></script>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -25,6 +28,13 @@
                 <div class="indicator" id="system-mode">
                     <span class="label">MODE:</span>
                     <span class="value">--</span>
+                </div>
+                <div class="indicator" id="model-selector-container">
+                    <span class="label">BRAIN:</span>
+                    <select id="model-select" class="retro-select">
+                        <option value="gemini">GEMINI</option>
+                        <option value="openai">OPENAI</option>
+                    </select>
                 </div>
             </div>
         </header>
@@ -107,4 +117,5 @@
         </div>
     </div>
 </body>
+
 </html>

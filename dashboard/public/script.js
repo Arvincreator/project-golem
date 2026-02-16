@@ -9,6 +9,7 @@ const cpuBar = document.getElementById('cpu-bar'); // Placeholder, simulating ac
 const cpuVal = document.getElementById('cpu-val');
 const queueCountEl = document.getElementById('queue-count');
 const lastScheduleEl = document.getElementById('last-schedule');
+const modelSelect = document.getElementById('model-select');
 
 const logContainers = {
     global: document.getElementById('global-log'),
@@ -47,6 +48,24 @@ function appendLog(container, data) {
     }
 }
 
+// Model Selection
+modelSelect.addEventListener('change', (e) => {
+    const newModel = e.target.value;
+    // Disable temporarily
+    modelSelect.disabled = true;
+
+    socket.emit('set_model', newModel, (response) => {
+        modelSelect.disabled = false;
+        if (!response.success) {
+            alert('Switch failed: ' + response.msg);
+            // Revert selection if failed (simple retrieval)
+            socket.emit('get_model', (data) => {
+                if (data.model) modelSelect.value = data.model;
+            });
+        }
+    });
+});
+
 // Socket Events
 socket.on('connect', () => {
     connStatus.classList.add('connected');
@@ -61,6 +80,11 @@ socket.on('disconnect', () => {
 socket.on('init', (data) => {
     queueCountEl.textContent = data.queueCount;
     lastScheduleEl.textContent = data.lastSchedule;
+    if (data.model) modelSelect.value = data.model;
+});
+
+socket.on('model_update', (data) => {
+    if (data.model) modelSelect.value = data.model;
 });
 
 socket.on('heartbeat', (data) => {

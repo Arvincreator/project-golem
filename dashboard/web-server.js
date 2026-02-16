@@ -26,9 +26,34 @@ class WebServer {
                 socket.emit('init', {
                     queueCount: this.dashboard.queueCount,
                     lastSchedule: this.dashboard.lastSchedule,
-                    uptime: process.uptime()
+                    uptime: process.uptime(),
+                    model: this.dashboard.brain ? this.dashboard.brain.CONFIG.AI_MODEL : 'unknown'
                 });
             }
+
+            // ✨ Handle Model Switching
+            socket.on('get_model', (cb) => {
+                if (this.dashboard && this.dashboard.brain) {
+                    cb({ model: this.dashboard.brain.CONFIG.AI_MODEL });
+                } else {
+                    cb({ model: 'unknown' });
+                }
+            });
+
+            socket.on('set_model', async (model, cb) => {
+                if (this.dashboard && this.dashboard.brain) {
+                    try {
+                        const result = await this.dashboard.brain.switchModel(model);
+                        this.broadcastLog({ time: new Date().toLocaleTimeString(), msg: result, type: 'general' });
+                        this.io.emit('model_update', { model: model });
+                        cb({ success: true, msg: result });
+                    } catch (e) {
+                        cb({ success: false, msg: e.message });
+                    }
+                } else {
+                    cb({ success: false, msg: "Brain not connected" });
+                }
+            });
         });
 
         // Start Server

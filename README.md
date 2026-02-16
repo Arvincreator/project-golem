@@ -170,12 +170,13 @@ v8.6 儀表板新增了 **[時序雷達]** 與 **[隊列監控]**，讓您即時
 ```bash
 git clone https://github.com/Arvincreator/project-golem.git
 cd project-golem
-
 ```
 
 ### 3. 一鍵安裝 (自動化)
 
-此腳本會自動安裝 Node.js (若無)、`blessed` 儀表板套件，並建立 `.env` 設定檔。
+此腳本會自動安裝 Node.js (若無)、`blessed` 儀表板套件，並引導您設定：
+1. **記憶引擎** (Browser / Sytem)
+2. **AI 模型** (Gemini / OpenAI)
 
 * **Mac / Linux**:
 
@@ -211,6 +212,26 @@ npm start dashboard
 * **Web UI (v8.6 New)**:
   啟動 Dashboard 後，可透過瀏覽器訪問：[http://localhost:3000](http://localhost:3000)
   (包含即時狀態、排程監控與系統日誌)
+
+---
+
+## 🤖 AI 模型設定 (AI Model Config)
+
+Project Golem 支援多種 AI 大腦，您可以在安裝時選擇，或隨時修改 `.env` 檔案：
+
+```bash
+# 選擇核心模型 (gemini / openai)
+GOLEM_AI_MODEL=openai
+```
+
+### 支援模型：
+1. **Google Gemini** (預設):
+   - 優勢：速度快、免費額度高、支援 **OpticNerve (視覺分析)**。
+   - 網址：`gemini.google.com`
+
+2. **OpenAI ChatGPT**:
+   - 優勢：邏輯推理能力強。
+   - 網址：`chatgpt.com`
 
 ---
 

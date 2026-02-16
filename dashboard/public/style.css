@@ -88,14 +88,32 @@ header {
     box-shadow: 0 0 8px var(--accent-color);
 }
 
+.retro-select {
+    background-color: var(--bg-color);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    font-family: var(--font-mono);
+    padding: 2px 5px;
+    font-size: 0.8rem;
+    outline: none;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.retro-select option {
+    background-color: var(--panel-bg);
+    color: var(--text-color);
+}
+
 /* Main Grid Layout */
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto 1fr 1fr; /* Adjust rows as needed */
+    grid-template-rows: auto 1fr 1fr;
+    /* Adjust rows as needed */
     gap: 10px;
     height: 100%;
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 /* Panels */
@@ -189,7 +207,7 @@ header {
     font-size: 0.9rem;
     color: var(--text-color);
     float: right;
-    margin-top: -18px; 
+    margin-top: -18px;
 }
 
 .progress-bar {
@@ -234,15 +252,18 @@ header {
 }
 
 .log-msg.chronos {
-    color: #ffd700; /* Gold */
+    color: #ffd700;
+    /* Gold */
 }
 
 .log-msg.queue {
-    color: #ff00ff; /* Magenta */
+    color: #ff00ff;
+    /* Magenta */
 }
 
 .log-msg.error {
-    color: #ff4444; /* Red */
+    color: #ff4444;
+    /* Red */
 }
 
 /* Responsive */
@@ -252,7 +273,7 @@ header {
         flex-direction: column;
         overflow-y: auto;
     }
-    
+
     .container {
         grid-template-rows: 60px auto;
         overflow-y: auto;
