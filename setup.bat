@@ -1,6 +1,6 @@
 @echo off
 setlocal EnableDelayedExpansion
-:: 強制 UTF-8，這點在您的 v9.0 中已經做得很好
+:: 強制 UTF-8，確保中文顯示正常
 chcp 65001 >nul
 cd /d "%~dp0"
 title Golem v9.0 Setup (Titan Chronos)
@@ -36,7 +36,7 @@ if /i "%CHOICE%"=="Q" exit /b 0
 goto :MainMenu
 
 :: ==========================================
-:: 1. 檔案完整性檢查 (參考您的 V9.0 邏輯)
+:: 1. 檔案完整性檢查 (保留您 V9.0 的嚴謹檢查)
 :: ==========================================
 :StepCheckFiles
 cls
@@ -48,6 +48,7 @@ if not exist index.js set "MISSING_FILES=!MISSING_FILES! index.js"
 if not exist skills.js set "MISSING_FILES=!MISSING_FILES! skills.js"
 if not exist package.json set "MISSING_FILES=!MISSING_FILES! package.json"
 if not exist dashboard.js set "MISSING_FILES=!MISSING_FILES! dashboard.js"
+if not exist memory.html set "MISSING_FILES=!MISSING_FILES! memory.html"
 
 if defined MISSING_FILES (
     echo.
@@ -60,7 +61,7 @@ if defined MISSING_FILES (
 echo    [OK] 核心檔案檢查通過。
 
 :: ==========================================
-:: 2. 環境檢查 (Node.js)
+:: 2. 環境檢查 (Node.js) - 您的 Winget 邏輯
 :: ==========================================
 :StepCheckNode
 echo.
@@ -69,6 +70,7 @@ node -v >nul 2>&1
 if %errorlevel% neq 0 (
     echo    [WARN] 未檢測到 Node.js！
     echo    [*] 正在嘗試使用 Winget 自動安裝 LTS 版本...
+    echo    請在彈出的視窗中點選「是」...
     winget install -e --id OpenJS.NodeJS.LTS --silent --accept-source-agreements --accept-package-agreements
     if !errorlevel! neq 0 (
         echo    [ERROR] 自動安裝失敗。請手動安裝 Node.js。
@@ -149,7 +151,6 @@ if "%CHOICE%"=="2" goto :MainMenu
 :StepInstallCore
 echo.
 echo [4/5] 📦 安裝核心與 Dashboard 依賴...
-echo    (包含 blessed, puppeteer, gemini-ai...)
 call npm install
 if %ERRORLEVEL% neq 0 (
     echo    [ERROR] NPM 安裝失敗，請檢查網路。
@@ -158,9 +159,9 @@ if %ERRORLEVEL% neq 0 (
 )
 
 echo.
-echo [5/5] 🖥️ 安裝 Dashboard UI 套件...
-:: V9.0 特有：確保 TUI 套件存在
-call npm install blessed blessed-contrib
+echo [5/5] 🖥️ 確認 Dashboard UI 套件...
+:: 確保 blessed 存在
+if not exist "node_modules\blessed" call npm install blessed blessed-contrib
 echo    [OK] Dashboard 套件就緒。
 
 :: ==========================================
