@@ -1,142 +1,198 @@
 @echo off
 setlocal EnableDelayedExpansion
-:: 0. 強制鎖定工作目錄 (關鍵修復：防止找不到檔案)
-cd /d "%~dp0"
-:: 切換 UTF-8 編碼
+:: 設定編碼為 UTF-8 以支援中文顯示
 chcp 65001 >nul
+cd /d "%~dp0"
+title Project Golem Manager
 
-title Golem v9.0 全自動安裝精靈 (Titan Chronos)
-echo ==========================================================
-echo  Project Golem v9.0 (Titan Chronos) - 全自動安裝精靈
-echo ==========================================================
+:: ==========================================
+:: Project Golem 整合管理系統 (All-in-One)
+:: ==========================================
+
+:MainMenu
+cls
 echo.
-
-:: ------------------------------------------------------------
-:: 1. 檔案完整性檢查
-:: ------------------------------------------------------------
-echo [1/6] 正在檢查核心檔案完整性...
-set "MISSING_FILES="
-if not exist index.js set "MISSING_FILES=!MISSING_FILES! index.js"
-if not exist skills.js set "MISSING_FILES=!MISSING_FILES! skills.js"
-if not exist package.json set "MISSING_FILES=!MISSING_FILES! package.json"
-if not exist memory.html set "MISSING_FILES=!MISSING_FILES! memory.html"
-:: [v9.0 新增] 檢查儀表板檔案，這對監控排程很重要
-if not exist dashboard.js set "MISSING_FILES=!MISSING_FILES! dashboard.js"
-
-if defined MISSING_FILES (
-    echo.
-    echo [ERROR] 錯誤: 核心檔案遺失^! "!MISSING_FILES!"
-    echo.
-    echo 請確認您已下載所有檔案 (包含 dashboard.js)，並將 setup.bat 放在專案資料夾內。
-    pause
-    exit /b
-)
-echo [OK] 核心檔案檢查通過。
+echo =======================================================
+echo  Project Golem Master Controller
+echo =======================================================
 echo.
+echo  請選擇操作模式：
+echo.
+echo  [0] 直接啟動系統 (Start System)
+echo  -------------------------------------------------------
+echo  [1] 完整安裝與部署 (Full Setup)
+echo  [2] 僅更新配置 (.env Wizard)
+echo  [3] 僅安裝依賴 (Install Dependencies)
+echo  [Q] 退出
+echo.
+set /p "CHOICE=請輸入選項 (0/1/2/3/Q): "
 
-:: ------------------------------------------------------------
-:: 2. 檢查並自動安裝 Node.js
-:: ------------------------------------------------------------
-echo [2/6] 正在檢查 Node.js 環境...
-node -v >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [^!] 偵測到未安裝 Node.js^!
-    echo [*] 正在嘗試使用 Windows Winget 自動下載並安裝 ^(LTS 版本^)...
-    echo [-] 這可能需要幾分鐘，且可能會跳出「允許變更」視窗，請點選 [是]...
-    echo.
+if /i "%CHOICE%"=="0" goto :LaunchSystem
+if /i "%CHOICE%"=="1" goto :StepCheckEnv
+if /i "%CHOICE%"=="2" goto :ConfigWizard
+if /i "%CHOICE%"=="3" goto :StepInstallCore
+if /i "%CHOICE%"=="Q" exit /b 0
+goto :MainMenu
 
-    winget install -e --id OpenJS.NodeJS.LTS --silent --accept-source-agreements --accept-package-agreements
-
-    if !errorlevel! neq 0 (
-        echo.
-        echo [ERROR] 自動安裝失敗 ^(可能是您的 Windows 版本太舊不支援 Winget^).
-        echo [^>] 請手動前往官網下載安裝：https://nodejs.org/
-        pause
-        exit /b
+:: ==========================================
+:: 1. 環境檔案準備
+:: ==========================================
+:StepCheckEnv
+echo.
+echo [1/4] 檢查環境設定檔...
+if not exist ".env" (
+    echo    [WARN] 未檢測到 .env，正在從範本建立...
+    if exist ".env.example" (
+        copy ".env.example" ".env" >nul
+        echo    [OK] 已建立 .env 檔案。
     ) else (
-        echo.
-        echo [OK] Node.js 安裝成功^!
-        echo [^!] 重要: 由於 Windows 環境變數限制，您必須 **關閉此視窗** 並 **重新執行 setup.bat** 才能生效。
-        echo.
-        pause
-        exit
-    )
-)
-echo [OK] Node.js 已安裝。
-echo.
-
-:: ------------------------------------------------------------
-:: 3. 設定環境變數 (.env)
-:: ------------------------------------------------------------
-echo [3/6] 正在設定環境變數 (.env)...
-if not exist .env (
-    if exist .env.example (
-        copy .env.example .env >nul
-        echo [OK] 已從範本建立 .env 檔案。
-    ) else (
-        echo [^!] 找不到 .env.example，跳過。
+        echo    [ERROR] 找不到 .env.example，無法建立配置！
+        goto :Error
     )
 ) else (
-    echo [OK] .env 已存在。
+    echo    [OK] .env 檔案已存在。
 )
-echo.
 
-:: ------------------------------------------------------------
-:: 4. 安裝 NPM 依賴 (含 Dashboard)
-:: ------------------------------------------------------------
-echo [4/6] 正在安裝核心依賴...
+:: ==========================================
+:: 2. 配置精靈 (Configuration Wizard)
+:: ==========================================
+:ConfigWizard
+cls
+echo.
+echo =======================================================
+echo  環境變數配置精靈 (.env)
+echo =======================================================
+
+:: --- 設定 Gemini keys ---
+echo.
+echo [1/2] Google Gemini API Keys (必填)
+echo -------------------------------------------------------
+echo  格式：Key1,Key2 (逗號分隔)
+:AskGemini
+set "INPUT_GEMINI="
+set /p "INPUT_GEMINI=Gemini Keys: "
+if "!INPUT_GEMINI!"=="" (
+    echo    [ERROR] 此欄位為必填！
+    goto :AskGemini
+)
+call :UpdateEnv "GEMINI_API_KEY" "!INPUT_GEMINI!"
+
+:: --- 設定 Telegram ---
+echo.
+echo [2/2] Telegram Bot 設定 (必填)
+echo -------------------------------------------------------
+:AskTGToken
+set "INPUT_TG="
+set /p "INPUT_TG=Telegram Bot Token: "
+if "!INPUT_TG!"=="" (
+    echo    [ERROR] 此欄位為必填！
+    goto :AskTGToken
+)
+call :UpdateEnv "TELEGRAM_BOT_TOKEN" "!INPUT_TG!"
+
+:AskTGUser
+set "INPUT_TG_ID="
+set /p "INPUT_TG_ID=Admin User ID: "
+if "!INPUT_TG_ID!"=="" (
+    echo    [ERROR] 此欄位為必填！
+    goto :AskTGUser
+)
+call :UpdateEnv "TELEGRAM_USER_ID" "!INPUT_TG_ID!"
+
+:: --- 設定 Discord (選填) ---
+echo.
+echo [Optional] Discord Bot 設定
+set "INPUT_DC="
+set /p "INPUT_DC=Discord Token (按Enter跳過): "
+if not "!INPUT_DC!"=="" call :UpdateEnv "DISCORD_TOKEN" "!INPUT_DC!"
+
+echo.
+echo  [OK] 配置完成！
+if "%CHOICE%"=="2" goto :MainMenu
+
+:: ==========================================
+:: 3. 依賴安裝
+:: ==========================================
+:StepInstallCore
+echo.
+echo [3/4] 安裝核心依賴...
 call npm install
-if %errorlevel% neq 0 (
-    echo [ERROR] NPM 安裝失敗。請檢查網路連線。
-    pause
-    exit /b
-)
+if %ERRORLEVEL% neq 0 goto :Error
 
-echo [*] 正在加裝 Dashboard (戰術控制台) 擴充套件...
-call npm install blessed blessed-contrib
-if %errorlevel% neq 0 (
-    echo [^!] Dashboard 套件安裝失敗 ^(非致命錯誤^)，您可能無法使用圖形介面。
+echo.
+echo [4/4] 安裝儀表板...
+if exist "web-dashboard" (
+    cd web-dashboard
+    call npm install
+    cd ..
 ) else (
-    echo [OK] Dashboard 套件安裝完成。
+    echo    [WARN] 無 Dashboard 資料夾，跳過。
 )
+
+:: ==========================================
+:: 4. 安裝完成與倒數啟動
+:: ==========================================
+:StepFinal
+cls
+echo.
+echo =======================================================
+echo  部署成功！所有系統已就緒。
+echo =======================================================
+echo.
+echo  系統將在 10 秒後自動啟動...
+echo     [Y] 立即啟動
+echo     [N] 返回主選單
 echo.
 
-:: ------------------------------------------------------------
-:: 5. 設定記憶引擎 (Windows 僅支援瀏覽器模式)
-:: ------------------------------------------------------------
-echo [5/6] 正在設定 Golem 記憶引擎...
-echo [*] 配置為：瀏覽器模式 ^(Native Chronos Ready^)...
-powershell -Command "(Get-Content .env) -replace 'GOLEM_MEMORY_MODE=.*', 'GOLEM_MEMORY_MODE=browser' | Set-Content .env"
+choice /C YN /N /T 10 /D Y /M "是否啟動系統 (Y/N)? "
+if errorlevel 2 goto :MainMenu
+if errorlevel 1 goto :LaunchSystem
+
+:: ==========================================
+:: 啟動系統核心邏輯
+:: ==========================================
+:LaunchSystem
+cls
+echo.
+echo =======================================================
+echo  正在啟動 Golem System...
+echo =======================================================
 echo.
 
-:: ------------------------------------------------------------
-:: 6. 自動修補檢測 (Auto-Patch)
-:: ------------------------------------------------------------
-echo [6/6] 正在檢查自動修補腳本 (patch.js)...
-if exist patch.js (
-    echo [*] 偵測到 patch.js，正在執行修補程序...
-    echo ----------------------------------------------------------
-    call node patch.js
-    echo ----------------------------------------------------------
-    if !errorlevel! equ 0 (
-        echo [OK] 自動修補執行完畢^!
-        echo [-] ^(若需保留補丁紀錄，patch.js 檔案將保留在目錄中^)
-    ) else (
-        echo [ERROR] 修補執行失敗，請檢查上方錯誤訊息。
-    )
+:: 1. 啟動核心
+echo [1/2] 啟動 AI Core...
+start "Golem Core" cmd /k "node index.js"
+
+:: 2. 啟動儀表板
+if exist "web-dashboard\node_modules" (
+    echo [2/2] 啟動 Dashboard...
+    cd web-dashboard
+    start "Golem Dashboard" cmd /k "npm run dev"
+    cd ..
+    echo.
+    echo  Dashboard 網址: http://localhost:3000
 ) else (
-    echo [OK] 無須修補 ^(未偵測到 patch.js^).
+    echo [SKIP] 未檢測到 Dashboard 安裝，僅啟動核心。
 )
-echo.
 
-goto finish
-
-:finish
 echo.
-echo ==========================================================
-echo [OK] 安裝完成^! (v9.0 Titan Chronos Edition)
-echo [^>] 啟動命令:
-echo    - 標準模式: npm start
-echo    - 戰術面板: npm start dashboard (推薦: 可監控排程與隊列)
-echo ==========================================================
+echo [OK] 啟動指令已發送，視窗將自動彈出。
+echo (此視窗將在 5 秒後自動關閉)
+timeout /t 5 >nul
+exit
+
+:: ==========================================
+:: 錯誤處理與輔助函數
+:: ==========================================
+:Error
+echo.
+echo [ERROR] 發生錯誤，程序終止。
 pause
+exit /b 1
+
+:UpdateEnv
+set "KEY_NAME=%~1"
+set "NEW_VALUE=%~2"
+powershell -Command "(Get-Content .env) -replace '^%KEY_NAME%=.*', '%KEY_NAME%=%NEW_VALUE%' | Set-Content .env -Encoding UTF8"
+echo    -> 已更新 %KEY_NAME%
+exit /b
