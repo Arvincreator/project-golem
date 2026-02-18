@@ -22,6 +22,7 @@ const SKILLS = {
     SPOTIFY_DJ: require('./lib/spotify'),
     YOUTUBE_OBSERVER: require('./lib/youtube'),
     SKILL_ARCHITECT: require('./lib/skill-architect'),
+    MOLTBOT_SOCIAL: require('./lib/moltbot'),
 };
 
 // ============================================================
