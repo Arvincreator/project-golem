@@ -8,8 +8,8 @@ const DOMDoctor = require('../services/DOMDoctor');
 const BrowserMemoryDriver = require('../memory/BrowserMemoryDriver');
 const SystemQmdDriver = require('../memory/SystemQmdDriver');
 const SystemNativeDriver = require('../memory/SystemNativeDriver');
-const skills = require('../../skills');
-const skillManager = require('../../skills/lib/skill-manager');
+const skills = require('../skills');
+const skillManager = require('../skills/lib/skill-manager');
 
 puppeteer.use(StealthPlugin());
 

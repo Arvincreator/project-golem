@@ -1,7 +1,7 @@
 const { CONFIG, cleanEnv } = require('../config');
 const Introspection = require('../services/Introspection');
-const skills = require('../../skills');
-const skillManager = require('../../skills/lib/skill-manager');
+const skills = require('../skills');
+const skillManager = require('../skills/lib/skill-manager');
 
 // ============================================================
 // 📖 Help Manager (動態說明書) - v9.0 Enhanced

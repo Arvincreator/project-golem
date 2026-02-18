@@ -1,6 +1,6 @@
 const ResponseParser = require('../utils/ResponseParser');
 const ToolScanner = require('../managers/ToolScanner');
-const skillManager = require('../../skills/lib/skill-manager');
+const skillManager = require('../skills/lib/skill-manager');
 
 // ============================================================
 // 🧬 NeuroShunter (神經分流中樞 - 核心邏輯層)
