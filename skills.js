@@ -8,4 +8,4 @@
  * 3. 嚴格保留所有 v8.6 技能，無任何閹割。
  */
 
-module.exports = require('./skills/index.js');
+module.exports = require('./src/skills/index.js');
