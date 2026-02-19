@@ -15,7 +15,7 @@
 require('dotenv').config();
 
 // ==========================================
-// 🛡️ [v9.1 NEW] 全域錯誤防護 (Global Safety Nets)
+// 🛡️ [v9.0.1 NEW] 全域錯誤防護 (Global Safety Nets)
 // ==========================================
 process.on('uncaughtException', (err) => {
     console.error('🔥 [CRITICAL] Uncaught Exception:', err);
@@ -217,7 +217,7 @@ async function handleUnifiedCallback(ctx, actionData) {
 }
 
 // ============================================================
-// 🚀 [v9.1 Update] Async Deployment System
+// 🚀 [v9.0.1 Update] Async Deployment System
 // ============================================================
 async function executeDeploy(ctx) {
     if (!global.pendingPatch) return;
