@@ -41,7 +41,7 @@ if (process.argv.includes('dashboard')) {
 }
 
 // ==========================================
-const fs = require('fs').promises; // ✨ [v9.1 Update] 改為 Promise 版本以支援非同步部署
+const fs = require('fs').promises; // ✨ [v9.0.1 Update] 改為 Promise 版本以支援非同步部署
 const path = require('path');
 const { spawn } = require('child_process');
 const TelegramBot = require('node-telegram-bot-api');
@@ -60,7 +60,7 @@ const OpticNerve = require('./src/services/OpticNerve');
 const SystemUpgrader = require('./src/managers/SystemUpgrader');
 const InteractiveMultiAgent = require('./src/core/InteractiveMultiAgent');
 
-// ✨ [v9.1 NEW] 整合內省模組
+// ✨ [v9.0.1 NEW] 整合內省模組
 const introspection = require('./src/services/Introspection');
 
 // Initialize Integrations
@@ -97,12 +97,12 @@ const pendingTasks = controller.pendingTasks; // Shared reference
     if (process.env.GOLEM_TEST_MODE === 'true') { console.log('🚧 GOLEM_TEST_MODE active.'); return; }
     await brain.init();
     
-    // ✨ [v9.1 NEW] 啟動時預掃描專案結構，建立快取
+    // ✨ [v9.0.1 NEW] 啟動時預掃描專案結構，建立快取
     console.log('🧠 [Introspection] Pre-scanning project structure...');
     await introspection.getStructure();
 
     autonomy.start();
-    console.log('✅ Golem v9.1 (Integrity Core Edition) is Online.');
+    console.log('✅ Golem v9.0.1 (Integrity Core Edition) is Online.');
     if (dcClient) dcClient.login(CONFIG.DC_TOKEN);
 })();
 
@@ -224,14 +224,14 @@ async function executeDeploy(ctx) {
     try {
         const { path: patchPath, target: targetPath, name: targetName } = global.pendingPatch;
         
-        // ✨ [v9.1] 非同步複製備份
+        // ✨ [v9.0.1] 非同步複製備份
         try {
             await fs.copyFile(targetPath, `${targetName}.bak-${Date.now()}`);
         } catch (e) {
             // 忽略備份錯誤 (可能是新檔案)
         }
 
-        // ✨ [v9.1] 非同步讀寫操作，避免卡死 Bot
+        // ✨ [v9.0.1] 非同步讀寫操作，避免卡死 Bot
         const patchContent = await fs.readFile(patchPath);
         await fs.writeFile(targetPath, patchContent);
         await fs.unlink(patchPath);
@@ -250,7 +250,7 @@ async function executeDeploy(ctx) {
 async function executeDrop(ctx) {
     if (!global.pendingPatch) return;
     try { 
-        // ✨ [v9.1] 非同步刪除
+        // ✨ [v9.0.1] 非同步刪除
         await fs.unlink(global.pendingPatch.path); 
     } catch (e) { }
     global.pendingPatch = null;
