@@ -1,8 +1,8 @@
 /**
- * 🦞 Project Golem v9.1 (Integrity Core Edition)
+ * 🦞 Project Golem v9.0.1 (Integrity Core Edition)
  * -------------------------------------------------------------------------
  * 架構：[Universal Context] -> [Conversation Queue] -> [NeuroShunter] <==> [Web Gemini]
- * * 🎯 v9.1 核心升級：
+ * * 🎯 v9.0.1 核心升級：
  * 1. ⚡ 非同步部署 (Async Deployment): 自我升級不再卡住 Event Loop。
  * 2. 🛡️ 全域錯誤防護 (Global Error Guard): 防止未捕獲的 Promise 導致崩潰。
  * 3. 🧠 深度整合 Introspection: 啟動時建立自我結構快取。
