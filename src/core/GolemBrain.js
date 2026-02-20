@@ -75,11 +75,111 @@ class GolemBrain {
         if (this.browser && !forceReload) return;
         let isNewSession = false;
         if (!this.browser) {
-            this.browser = await puppeteer.launch({
-                headless: false,
-                userDataDir: CONFIG.USER_DATA_DIR,
-                args: ['--no-sandbox', '--window-size=1280,900']
-            });
+            const userDataDir = path.resolve(CONFIG.USER_DATA_DIR);
+            console.log(`📂 [System] Browser User Data Dir: ${userDataDir}`);
+
+            // Check if we should connect to Remote Chrome (Docker only)
+            const isDocker = fs.existsSync('/.dockerenv');
+            const remoteDebugPort = process.env.PUPPETEER_REMOTE_DEBUGGING_PORT;
+            if (isDocker && remoteDebugPort) {
+                const host = 'host.docker.internal';
+                const browserURL = `http://${host}:${remoteDebugPort}`;
+                console.log(`🔌 [System] Connecting to Remote Chrome at ${browserURL}...`);
+                try {
+                    // Chrome 111+ rejects HTTP requests with non-localhost Host header.
+                    // We manually fetch /json/version with Host:localhost to bypass this,
+                    // then connect directly via the WebSocket endpoint.
+                    const http = require('http');
+                    const wsEndpoint = await new Promise((resolve, reject) => {
+                        const req = http.get(
+                            `http://${host}:${remoteDebugPort}/json/version`,
+                            { headers: { 'Host': 'localhost' } },
+                            (res) => {
+                                let data = '';
+                                res.on('data', chunk => data += chunk);
+                                res.on('end', () => {
+                                    try {
+                                        const json = JSON.parse(data);
+                                        // Rebuild wsURL with correct host:port for Docker connectivity.
+                                        // Chrome may return ws://localhost/devtools/... (no port),
+                                        // so we use URL constructor to ensure port is included.
+                                        const rawWsUrl = new URL(json.webSocketDebuggerUrl);
+                                        rawWsUrl.hostname = host;
+                                        rawWsUrl.port = remoteDebugPort;
+                                        resolve(rawWsUrl.toString());
+                                    } catch (e) { reject(new Error(`Failed to parse /json/version: ${data}`)); }
+                                });
+                            }
+                        );
+                        req.on('error', reject);
+                        req.setTimeout(5000, () => { req.destroy(); reject(new Error('Timeout fetching /json/version')); });
+                    });
+                    console.log(`🔗 [System] WebSocket Endpoint: ${wsEndpoint}`);
+                    this.browser = await puppeteer.connect({
+                        browserWSEndpoint: wsEndpoint,
+                        defaultViewport: null
+                    });
+                    console.log(`✅ [System] Connected to Remote Chrome!`);
+                } catch (e) {
+                    console.error(`❌ [System] Failed to connect to Remote Chrome: ${e.message}`);
+                    console.error(`   Make sure you ran './start-host-chrome.sh' on the host and 'host.docker.internal' is reachable.`);
+                    throw e;
+                }
+            } else {
+                // 🧹 [Docker Fix] Advanced Lock Cleanup
+                const cleanLocks = () => {
+                    const lockFiles = ['SingletonLock', 'SingletonSocket', 'SingletonCookie'];
+                    let cleaned = 0;
+                    lockFiles.forEach(file => {
+                        const p = path.join(userDataDir, file);
+                        try {
+                            // Use lstatSync instead of existsSync because existsSync returns false for broken symlinks
+                            // lstatSync throws ENOENT if file doesn't exist, which is what we want to catch
+                            fs.lstatSync(p);
+
+                            // If we are here, something exists (file, dir, or broken symlink). Kill it.
+                            fs.rmSync(p, { force: true, recursive: true });
+                            console.log(`🔓 [System] Removed Stale Lock: ${file}`);
+                            cleaned++;
+                        } catch (e) {
+                            // Ignore ENOENT (file not found), warn on other errors
+                            if (e.code !== 'ENOENT') {
+                                console.warn(`⚠️ [System] Failed to remove ${file}: ${e.message}`);
+                            }
+                        }
+                    });
+                    return cleaned;
+                };
+
+                // Initial cleanup
+                cleanLocks();
+
+                const launchBrowser = async (retries = 3) => {
+                    try {
+                        return await puppeteer.launch({
+                            headless: process.env.PUPPETEER_HEADLESS === 'true' ? true : (process.env.PUPPETEER_HEADLESS === 'new' ? 'new' : false),
+                            userDataDir: userDataDir,
+                            args: [
+                                '--no-sandbox',
+                                '--disable-dev-shm-usage', // Critical for Docker
+                                '--disable-setuid-sandbox',
+                                '--window-size=1280,900',
+                                '--disable-gpu' // Often helps in containerized environments
+                            ]
+                        });
+                    } catch (err) {
+                        if (retries > 0 && err.message.includes('profile appears to be in use')) {
+                            console.warn(`⚠️ [System] Profile locked. Retrying launch (${retries} left)...`);
+                            cleanLocks(); // Force clean again
+                            await new Promise(r => setTimeout(r, 1000)); // Wait a bit
+                            return launchBrowser(retries - 1);
+                        }
+                        throw err;
+                    }
+                };
+
+                this.browser = await launchBrowser();
+            }
         }
         if (!this.page) {
             const pages = await this.browser.pages();

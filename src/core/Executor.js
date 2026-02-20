@@ -18,7 +18,7 @@ class Executor {
         return new Promise((resolve, reject) => {
             const cwd = options.cwd || process.cwd();
             const timeout = options.timeout !== undefined ? options.timeout : this.defaultTimeout;
-            
+
             console.log(`⚡ [Executor] Running: "${command}" in ${cwd}`);
 
             // 使用 spawn 啟動子進程
@@ -50,7 +50,7 @@ class Executor {
             child.stdout.on('data', (data) => {
                 const text = data.toString();
                 stdout += text;
-                
+
                 // 如果有設定即時回調 (例如送給前端 Socket)，就在這裡呼叫
                 if (options.onData && typeof options.onData === 'function') {
                     options.onData(text);
@@ -61,7 +61,7 @@ class Executor {
             child.stderr.on('data', (data) => {
                 const text = data.toString();
                 stderr += text;
-                
+
                 // 錯誤訊息通常也要即時顯示
                 if (options.onData && typeof options.onData === 'function') {
                     options.onData(text);
@@ -99,4 +99,4 @@ class Executor {
     }
 }
 
-module.exports = new Executor();
+module.exports = Executor;

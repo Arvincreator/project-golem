@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  golem:
+    build: .
+    container_name: golem-core
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      # Persistence for memory and logs
+      - ./golem_memory:/app/golem_memory
+      - ./logs:/app/logs
+      # Mount .env to allow configuration changes without rebuild
+      - ./.env:/app/.env
+    environment:
+      - ENABLE_WEB_DASHBOARD=true
+      - NODE_ENV=production
+      - PUPPETEER_HEADLESS=true
+      # Optional: Control Host Chrome (requires start-host-chrome.sh)
+      - PUPPETEER_REMOTE_DEBUGGING_PORT=${PUPPETEER_REMOTE_DEBUGGING_PORT}
+      # Host project path for Remote Chrome to resolve file:// URLs correctly
+      - HOST_PROJECT_DIR=${PWD}
+    # TTY and Stdin are useful for maintaining the process if it expects interaction
+    stdin_open: true
+    tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -19,6 +19,11 @@ cleanup() {
         kill "$SPINNER_PID" 2>/dev/null
         wait "$SPINNER_PID" 2>/dev/null
     fi
+    # Kill Host Chrome if started by us
+    if [ -n "${HOST_CHROME_PID:-}" ] && kill -0 "$HOST_CHROME_PID" 2>/dev/null; then
+        echo -e "${YELLOW}🧹 Closing Host Chrome (PID: $HOST_CHROME_PID)...${NC}"
+        kill "$HOST_CHROME_PID" 2>/dev/null
+    fi
     echo -e "${GREEN}👋 已安全退出。感謝使用 Project Golem！${NC}"
     exit 0
 }
@@ -234,6 +239,25 @@ check_status() {
 
     # Disk space
     DISK_AVAIL=$(df -h "$SCRIPT_DIR" 2>/dev/null | awk 'NR==2{print $4}' || echo "N/A")
+
+    # Docker Status
+    if command -v docker &>/dev/null; then
+        DOCKER_VER=$(docker --version | awk '{print $3}' | tr -d ',')
+        STATUS_DOCKER="${GREEN}✅ $DOCKER_VER${NC}"
+        DOCKER_OK=true
+    else
+        STATUS_DOCKER="${RED}❌ 未安裝${NC}"
+        DOCKER_OK=false
+    fi
+
+    if docker compose version &>/dev/null; then
+        COMPOSE_VER="Yes"
+        STATUS_COMPOSE="${GREEN}✅ 支援${NC}"
+        COMPOSE_OK=true
+    else
+        STATUS_COMPOSE="${RED}❌ 不支援${NC}"
+        COMPOSE_OK=false
+    fi
 }
 
 # ─── Health Check (Pre-launch) ──────────────────────────
@@ -302,6 +326,13 @@ run_health_check() {
         box_line_colored "  ${DIM}─${NC}  Web Dashboard    ${DIM}已停用${NC}                             "
     fi
 
+    # 7. Docker (Optional but recommended for Docker mode)
+    if [ "$DOCKER_OK" = true ] && [ "$COMPOSE_OK" = true ]; then
+        box_line_colored "  ${GREEN}✔${NC}  Docker 環境      ${GREEN}已就緒${NC}                           "
+    else
+        box_line_colored "  ${DIM}△${NC}  Docker 環境      ${DIM}未完整支援 (僅影響 Docker 模式)${NC}    "
+    fi
+
     box_sep
     if [ "$all_pass" = true ]; then
         box_line_colored "  ${GREEN}${BOLD}✅ 系統就緒，可以啟動！${NC}                                "
@@ -330,6 +361,7 @@ show_header() {
     box_line_colored "  Node.js: $STATUS_NODE   npm: ${DIM}v$NPM_VER${NC}               "
     box_line_colored "  Config:  $STATUS_ENV   Dashboard: $STATUS_DASH            "
     box_line_colored "  OS: ${DIM}$OS_INFO ($ARCH_INFO)${NC}    磁碟: ${DIM}${DISK_AVAIL} 可用${NC}     "
+    box_line_colored "  Docker: $STATUS_DOCKER  Compose: $STATUS_COMPOSE              "
     box_line_colored "  Port 3000: $PORT_3000_STATUS                                       "
     box_bottom
     echo ""
@@ -349,6 +381,11 @@ show_menu() {
     echo -e "   ${BOLD}[2]${NC}  ⚙️  配置精靈 ${DIM}(設定 API Keys / Tokens)${NC}"
     echo -e "   ${BOLD}[3]${NC}  📥 安裝依賴 ${DIM}(npm install + Dashboard)${NC}"
     echo -e "   ${BOLD}[4]${NC}  🌐 重建 Dashboard ${DIM}(重新安裝/建置 Web UI)${NC}"
+    echo ""
+    echo -e "  ${BOLD}${YELLOW}🐳 Docker 容器化${NC}"
+    echo -e "  ${CYAN}───────────────────────────────────────────────${NC}"
+    echo -e "   ${BOLD}[5]${NC}  🚀 Docker 啟動 ${DIM}(Build & Up, 支援外部瀏覽器)${NC}"
+    echo -e "   ${BOLD}[6]${NC}  🧹 清除 Docker ${DIM}(Down & Prune)${NC}"
     echo ""
 
     echo -e "  ${BOLD}${YELLOW}🔧 工具${NC}"
@@ -370,6 +407,8 @@ show_menu() {
         2) step_check_env; config_wizard; show_menu ;;
         3) step_install_core; step_install_dashboard; echo -e "\n  ${GREEN}✅ 依賴與 Dashboard 安裝完成。${NC}"; read -p "  按 Enter 返回主選單..." ; show_menu ;;
         4) step_install_dashboard; echo -e "\n  ${GREEN}✅ Dashboard 安裝/重建完成。${NC}"; read -p "  按 Enter 返回主選單..." ; show_menu ;;
+        5) launch_docker ;;
+        6) clean_docker ;;
         [Ss]) check_status; run_health_check; read -p "  按 Enter 返回主選單..."; show_menu ;;
         [Dd]) toggle_dashboard ;;
         [Ll]) view_logs ;;
@@ -891,6 +930,87 @@ launch_system() {
 #  PRINT STATUS (Non-interactive)
 # ═══════════════════════════════════════════════════════
 
+# ═══════════════════════════════════════════════════════
+#  DOCKER FUNCTIONS
+# ═══════════════════════════════════════════════════════
+
+launch_docker() {
+    check_status
+    clear
+    echo ""
+    box_top
+    box_line_colored "  ${BOLD}${CYAN}🐳 Docker 啟動模式 (Containerized Launch)${NC}                  "
+    box_sep
+
+    if [ "$DOCKER_OK" != true ] || [ "$COMPOSE_OK" != true ]; then
+         box_line_colored "  ${RED}❌ Docker 或 Docker Compose 未安裝/未啟動${NC}                 "
+         box_line_colored "  ${YELLOW}   請先安裝 Docker Desktop 或啟動 Docker 服務${NC}             "
+         box_bottom
+         read -p "  按 Enter 返回..."
+         show_menu
+         return
+    fi
+
+    if [ ! -f "$SCRIPT_DIR/docker-compose.yml" ]; then
+         box_line_colored "  ${RED}❌ 找不到 docker-compose.yml${NC}                             "
+         box_bottom
+         read -p "  按 Enter 返回..."
+         show_menu
+         return
+    fi
+    
+    box_line_colored "  ${GREEN}✔${NC}  Docker 環境檢查通過                                    "
+    box_line_colored "  🚀 即將執行: ${BOLD}docker compose up --build${NC}                     "
+    box_line_colored "  🌐 外部瀏覽器可訪問: ${BOLD}http://localhost:3000${NC}                 "
+    box_line_colored "  💡 按 ${BOLD}Ctrl+C${NC} 可停止容器並返回                               "
+    box_bottom
+    echo ""
+
+    # Ensure memory dir exists for volume mount
+    mkdir -p "$SCRIPT_DIR/golem_memory"
+    mkdir -p "$SCRIPT_DIR/logs"
+
+    # [Integration] Check and launch Host Chrome
+    if grep -q "PUPPETEER_REMOTE_DEBUGGING_PORT" "$DOT_ENV_PATH"; then
+        echo -e "  ${CYAN}🔌 偵測到遠端除錯設定，正在啟動主機 Chrome...${NC}"
+        $SCRIPT_DIR/start-host-chrome.sh &
+        HOST_CHROME_PID=$!
+        sleep 2 # Wait for Chrome to start
+    fi
+
+    echo -e "  ${CYAN}正在建置並啟動容器... (這可能需要一點時間)${NC}"
+    echo ""
+    
+    # Run docker compose attached
+    if docker compose up --build; then
+        echo ""
+        echo -e "  ${GREEN}✅ Docker 容器已停止${NC}"
+    else
+        echo ""
+        echo -e "  ${RED}❌ Docker 啟動失敗${NC}"
+    fi
+
+    read -p "  按 Enter 返回主選單..."
+    show_menu
+}
+
+clean_docker() {
+    echo ""
+    echo -e "  ${BOLD}${CYAN}🧹 清除 Docker 資源${NC}"
+    echo -e "  ${DIM}這將停止容器並移除相關網路 (不會刪除 volumes/memory)${NC}"
+    echo ""
+    
+    if confirm_action "確定要執行 docker compose down?"; then
+        echo ""
+        docker compose down
+        echo -e "  ${GREEN}✅ 已執行 docker compose down${NC}"
+    else
+        echo -e "  ${DIM}已取消${NC}"
+    fi
+    sleep 1
+    show_menu
+}
+
 print_status() {
     check_status
     echo ""
@@ -902,6 +1022,7 @@ print_status() {
     echo -e "  .env:          $([ -f "$DOT_ENV_PATH" ] && echo "Found" || echo "Missing")"
     echo -e "  Dashboard:     ${ENABLE_WEB_DASHBOARD:-unknown}"
     echo -e "  Port 3000:     $(lsof -i :3000 &>/dev/null 2>&1 && echo "In Use" || echo "Free")"
+    echo -e "  Docker:        $([ -x "$(command -v docker)" ] && echo "Yes" || echo "No")"
     echo -e "  Disk:          $DISK_AVAIL available"
     echo ""
 }
@@ -926,6 +1047,9 @@ case "${1:-}" in
     --dashboard)
         step_install_dashboard
         ;;
+    --docker)
+        launch_docker
+        ;;
     --config)
         step_check_env
         config_wizard
@@ -948,6 +1072,7 @@ case "${1:-}" in
         echo "  --install     執行完整安裝流程"
         echo "  --config      啟動配置精靈 (.env)"
         echo "  --dashboard   僅安裝/重建 Web Dashboard"
+        echo "  --docker      使用 Docker 啟動系統"
         echo "  --status      顯示系統狀態 (非互動)"
         echo "  --version     顯示版本號"
         echo "  --help, -h    顯示此說明"

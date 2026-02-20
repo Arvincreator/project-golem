@@ -9,7 +9,10 @@ class BrowserMemoryDriver {
         if (this.brain.memoryPage) return;
         try {
             this.brain.memoryPage = await this.brain.browser.newPage();
-            const memoryPath = 'file:///' + path.join(process.cwd(), 'memory.html').replace(/\\/g, '/');
+            // When using Remote Chrome (host browser), paths must be host-side.
+            // HOST_PROJECT_DIR tells us where the project lives on the host.
+            const baseDir = process.env.HOST_PROJECT_DIR || process.cwd();
+            const memoryPath = 'file:///' + path.join(baseDir, 'memory.html').replace(/\\/g, '/');
             console.log(`🧠 [Memory:Browser] 正在掛載神經海馬迴: ${memoryPath}`);
             await this.brain.memoryPage.goto(memoryPath);
             await new Promise(r => setTimeout(r, 5000));

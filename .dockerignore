@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+logs
+golem_memory
+coverage
+tests
+web-dashboard/node_modules
+web-dashboard/out
+.DS_Store
