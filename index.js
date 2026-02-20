@@ -2,14 +2,17 @@
  * 🦞 Project Golem v9.0.2 (Integrity Core Edition)
  * -------------------------------------------------------------------------
  * 架構：[Universal Context] -> [Conversation Queue] -> [NeuroShunter] <==> [Web Gemini]
- * * 🎯 v9.0.2 核心升級：
+ * * 🎯 V9.0.2 核心升級：
  * 1. 🧬 記憶轉生系統 (Memory Reincarnation): 支援無限期延續對話上下文，自動重置底層 Web 會話。
  * 2. 🔌 Telegram Topic 支援: 修正在 Forum 模式下的精準回覆。
  * * [保留功能]
- * - ⚡ 非同步部署 (Async Deployment)
- * - 🛡️ 全域錯誤防護 (Global Error Guard)
- * - 🧠 深度整合 Introspection
- * - KeyChain v2, MultiAgent, WebSkillEngine 等
+ * - ⚡ 非同步部署 (Async Deployment): 自我升級不再卡住 Event Loop。
+ * - 🛡️ 全域錯誤防護 (Global Error Guard): 防止未捕獲的 Promise 導致崩潰。
+ * - 🧠 深度整合 Introspection: 啟動時建立自我結構快取。
+ * - v9.0 所有功能 (InteractiveMultiAgent, WebSkillEngine)
+ * - KeyChain v2 智慧冷卻機制
+ * - Flood Guard 啟動時間過濾
+ * - DOM Doctor 自動修復
  */
 require('dotenv').config();
 
@@ -101,7 +104,7 @@ const pendingTasks = controller.pendingTasks; // Shared reference
     await introspection.getStructure();
 
     // ==========================================
-    // 🧬 [v9.0.2 新增] Web 記憶轉生接收器 (Memory Reincarnation)
+    // 🧬 [V9.0.2 新增] Web 記憶轉生接收器 (Memory Reincarnation)
     // ==========================================
     const fsSync = require('fs');
     fsSync.watch(process.cwd(), async (eventType, filename) => {
@@ -232,7 +235,6 @@ async function handleUnifiedCallback(ctx, actionData) {
             const cmd = approvedStep.cmd || approvedStep.parameter || approvedStep.command || "";
             let execResult = "";
             try {
-                // controller.executor 現在是新的 Executor v2，支援 run()
                 const output = await controller.executor.run(cmd);
                 execResult = `[Step ${nextIndex + 1} Success] cmd: ${cmd}\nResult:\n${(output || "").trim()}`;
             } catch (e) {
