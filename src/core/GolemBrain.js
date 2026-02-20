@@ -306,11 +306,8 @@ Your response must be parsed into 3 sections using these specific tags:
                 if (!inputEl) {
                     console.log("🚑 找不到輸入框，呼叫 DOM Doctor...");
                     const html = await this.page.content();
-                    let newSel = await this.doctor.diagnose(html, 'input');
+                    const newSel = await this.doctor.diagnose(html, 'input');
                     if (newSel) {
-                        // 🛡️ [防毒面具] 強制洗掉 AI 可能夾帶的 Markdown 符號
-                        newSel = newSel.replace(/`/g, '').replace(/css/gi, '').replace(/\n/g, '').trim();
-                        console.log(`🧼 [Doctor] 清洗後的 Input Selector: ${newSel}`);
                         this.selectors.input = newSel;
                         this.doctor.saveSelectors(this.selectors);
                         return tryInteract(this.selectors, retryCount + 1);
@@ -326,9 +323,24 @@ Your response must be parsed into 3 sections using these specific tags:
 
                 await new Promise(r => setTimeout(r, 800));
 
-                // ✨ [鍵盤流送出] 放棄點擊按鈕，直接按 Enter
-                console.log("⌨️ [Brain] 採用鍵盤流 (Enter) 送出訊息...");
-                await this.page.keyboard.press('Enter');
+                let sendEl = await this.page.$(sel.send);
+                if (!sendEl) {
+                    console.log("🚑 找不到發送按鈕，呼叫 DOM Doctor...");
+                    const html = await this.page.content();
+                    const newSel = await this.doctor.diagnose(html, 'send');
+                    if (newSel) {
+                        this.selectors.send = newSel;
+                        this.doctor.saveSelectors(this.selectors);
+                        return tryInteract(this.selectors, retryCount + 1);
+                    }
+                    console.log("⚠️ 無法修復按鈕，嘗試使用 Enter 鍵發送...");
+                    await this.page.keyboard.press('Enter');
+                } else {
+                    try {
+                        await this.page.waitForSelector(sel.send, { timeout: 2000 });
+                        await this.page.click(sel.send);
+                    } catch (e) { await this.page.keyboard.press('Enter'); }
+                }
 
                 if (isSystem) { await new Promise(r => setTimeout(r, 2000)); return ""; }
 
@@ -397,11 +409,8 @@ Your response must be parsed into 3 sections using these specific tags:
                 if (retryCount === 0) {
                     console.log('🩺 [Brain] 啟動 DOM Doctor 進行 Response 診斷...');
                     const htmlDump = await this.page.content();
-                    let newSelector = await this.doctor.diagnose(htmlDump, 'response');
+                    const newSelector = await this.doctor.diagnose(htmlDump, 'response');
                     if (newSelector) {
-                        // 🛡️ [防毒面具] 強制洗掉 AI 可能夾帶的 Markdown 符號
-                        newSelector = newSelector.replace(/`/g, '').replace(/css/gi, '').replace(/\n/g, '').trim();
-                        console.log(`🧼 [Doctor] 清洗後的 Response Selector: ${newSelector}`);
                         this.selectors.response = newSelector;
                         this.doctor.saveSelectors(this.selectors);
                         return await tryInteract(this.selectors, retryCount + 1);
