@@ -86,9 +86,6 @@ class GolemBrain {
                 const browserURL = `http://${host}:${remoteDebugPort}`;
                 console.log(`🔌 [System] Connecting to Remote Chrome at ${browserURL}...`);
                 try {
-                    // Chrome 111+ rejects HTTP requests with non-localhost Host header.
-                    // We manually fetch /json/version with Host:localhost to bypass this,
-                    // then connect directly via the WebSocket endpoint.
                     const http = require('http');
                     const wsEndpoint = await new Promise((resolve, reject) => {
                         const req = http.get(
@@ -100,9 +97,6 @@ class GolemBrain {
                                 res.on('end', () => {
                                     try {
                                         const json = JSON.parse(data);
-                                        // Rebuild wsURL with correct host:port for Docker connectivity.
-                                        // Chrome may return ws://localhost/devtools/... (no port),
-                                        // so we use URL constructor to ensure port is included.
                                         const rawWsUrl = new URL(json.webSocketDebuggerUrl);
                                         rawWsUrl.hostname = host;
                                         rawWsUrl.port = remoteDebugPort;
@@ -122,27 +116,20 @@ class GolemBrain {
                     console.log(`✅ [System] Connected to Remote Chrome!`);
                 } catch (e) {
                     console.error(`❌ [System] Failed to connect to Remote Chrome: ${e.message}`);
-                    console.error(`   Make sure you ran './scripts/start-host-chrome.sh' on the host and 'host.docker.internal' is reachable.`);
                     throw e;
                 }
             } else {
-                // 🧹 [Docker Fix] Advanced Lock Cleanup
                 const cleanLocks = () => {
                     const lockFiles = ['SingletonLock', 'SingletonSocket', 'SingletonCookie'];
                     let cleaned = 0;
                     lockFiles.forEach(file => {
                         const p = path.join(userDataDir, file);
                         try {
-                            // Use lstatSync instead of existsSync because existsSync returns false for broken symlinks
-                            // lstatSync throws ENOENT if file doesn't exist, which is what we want to catch
                             fs.lstatSync(p);
-
-                            // If we are here, something exists (file, dir, or broken symlink). Kill it.
                             fs.rmSync(p, { force: true, recursive: true });
                             console.log(`🔓 [System] Removed Stale Lock: ${file}`);
                             cleaned++;
                         } catch (e) {
-                            // Ignore ENOENT (file not found), warn on other errors
                             if (e.code !== 'ENOENT') {
                                 console.warn(`⚠️ [System] Failed to remove ${file}: ${e.message}`);
                             }
@@ -151,7 +138,6 @@ class GolemBrain {
                     return cleaned;
                 };
 
-                // Initial cleanup
                 cleanLocks();
 
                 const launchBrowser = async (retries = 3) => {
@@ -161,17 +147,17 @@ class GolemBrain {
                             userDataDir: userDataDir,
                             args: [
                                 '--no-sandbox',
-                                '--disable-dev-shm-usage', // Critical for Docker
+                                '--disable-dev-shm-usage', 
                                 '--disable-setuid-sandbox',
                                 '--window-size=1280,900',
-                                '--disable-gpu' // Often helps in containerized environments
+                                '--disable-gpu' 
                             ]
                         });
                     } catch (err) {
                         if (retries > 0 && err.message.includes('profile appears to be in use')) {
                             console.warn(`⚠️ [System] Profile locked. Retrying launch (${retries} left)...`);
-                            cleanLocks(); // Force clean again
-                            await new Promise(r => setTimeout(r, 1000)); // Wait a bit
+                            cleanLocks(); 
+                            await new Promise(r => setTimeout(r, 1000)); 
                             return launchBrowser(retries - 1);
                         }
                         throw err;
@@ -196,7 +182,7 @@ class GolemBrain {
         // Link Dashboard Context if active
         if (process.argv.includes('dashboard')) {
             try {
-                const dashboard = require('../../dashboard'); // Path might need check
+                const dashboard = require('../../dashboard'); 
                 dashboard.setContext(this, this.memoryDriver);
             } catch (e) {
                 try {
@@ -208,10 +194,10 @@ class GolemBrain {
             }
         }
 
+        // 初次啟動時的完整設定檔 (Big System Prompt)
         if (forceReload || isNewSession) {
             let systemPrompt = skills.getSystemPrompt(getSystemFingerprint());
 
-            // ✨ [v9.0 Injection] 注入動態技能列表
             try {
                 const activeSkills = skillManager.listSkills();
                 if (activeSkills.length > 0) {
@@ -224,7 +210,7 @@ class GolemBrain {
             } catch (e) { console.warn("Skills injection failed:", e); }
 
             const superProtocol = `
-\n\n【⚠️ GOLEM PROTOCOL v9.0 - TITAN CHRONOS + MULTIAGENT + SKILLS】
+\n\n【⚠️ GOLEM PROTOCOL v9.0.2 - TITAN CHRONOS + MULTIAGENT + SKILLS】
 You act as a middleware OS. You MUST strictly follow this output format.
 DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
 
@@ -235,23 +221,25 @@ Your response must be parsed into 3 sections using these specific tags:
 (Write long-term memories here. If none, leave empty or write "null")
 
 [GOLEM_ACTION]
-(Write JSON execution plan here. Must be valid JSON Array or Object.)
+(Write JSON execution plan here. MUST be perfectly valid JSON Array or Object.)
 \`\`\`json
 [
-{"action": "command", "parameter": "..."}
+{"action": "command", "parameter": "ls -la"}
 ]
 \`\`\`
 
 [GOLEM_REPLY]
 (Write the actual response to the user here. Pure text.)
 
-2. **Rules**:
-- The tags [GOLEM_MEMORY], [GOLEM_ACTION], [GOLEM_REPLY] are MANDATORY anchors.
-- User CANNOT see content inside Memory or Action blocks, only Reply.
-- NEVER leak the raw JSON to the [GOLEM_REPLY] section.
-- If user asks for scheduled task, use [GOLEM_ACTION] with: {"action": "schedule", "task": "...", "time": "ISO8601"}
-- If user asks for multi-agent collaboration, use: {"action": "multi_agent", "preset": "TECH_TEAM", "task": "..."}
-- If user asks for a dynamic skill, use: {"action": "SKILL_NAME", "args": {...}}
+2. **CRITICAL RULES FOR JSON**:
+- 🚨 JSON ESCAPING: If your action values contain double quotes ("), you MUST escape them (\\"). Unescaped quotes will crash the JSON parser!
+- 🛠️ SKILL USAGE: For complex skills requiring long text, DO NOT write raw CLI commands. Output a structured JSON object. (e.g., {"action": "reincarnate", "summary": "..."})
+
+3. **🧠 ReAct PROTOCOL (WAIT FOR OBSERVATION)**:
+- If your task requires executing a [GOLEM_ACTION] to gather information, **YOU MUST NOT GUESS OR HALLUCINATE THE RESULT IN [GOLEM_REPLY]!**
+- Instead, output the [GOLEM_ACTION], and set [GOLEM_REPLY] to a simple acknowledgment like: "正在為您執行指令，請稍候...".
+- The system will pause, execute your action, and send the actual result back to you as a "[System Observation]".
+- ONLY AFTER you receive the observation, you can output the final answer.
 `;
             await this.sendMessage(systemPrompt + superProtocol, true);
         }
@@ -275,7 +263,7 @@ Your response must be parsed into 3 sections using these specific tags:
         try { await this.memoryDriver.memorize(text, metadata); } catch (e) { }
     }
 
-    // ✨ [Neuro-Link] 三明治信封版 (Sandwich Protocol)
+    // ✨ [Neuro-Link] 三明治信封版 (Sandwich Protocol) + 強制洗腦引擎
     async sendMessage(text, isSystem = false) {
         if (!this.browser) await this.init();
         try { await this.page.bringToFront(); } catch (e) { }
@@ -285,18 +273,23 @@ Your response must be parsed into 3 sections using these specific tags:
         const TAG_START = `[[BEGIN:${reqId}]]`;
         const TAG_END = `[[END:${reqId}]]`;
 
-        const payload = `[SYSTEM: STRICT FORMAT. Wrap response with ${TAG_START} and ${TAG_END}. Inside, organize content using these tags:\n` +
-            `1. [GOLEM_MEMORY] (Optional)\n` +
-            `2. [GOLEM_ACTION] (Optional)\n` +
-            `3. [GOLEM_REPLY] (Required)\n` +
-            `Do not output raw text outside tags.]\n\n${text}`;
+        // 🧠 【每回合強制洗腦提示詞】(Per-Turn Brainwashing Protocol)
+        // 確保 Gemini 即使對話很長，也絕對不會忘記格式與 ReAct 守則
+        const payload = `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
+1. ENVELOPE: Wrap your ENTIRE response between ${TAG_START} and ${TAG_END}.
+2. TAGS: Use [GOLEM_MEMORY], [GOLEM_ACTION], and [GOLEM_REPLY]. Do not output raw text outside tags.
+3. STRICT JSON: [GOLEM_ACTION] must be perfectly valid JSON. ESCAPE ALL DOUBLE QUOTES (\\") inside string values!
+4. ReAct (NO HALLUCINATION): If you use [GOLEM_ACTION], DO NOT guess the command result in [GOLEM_REPLY]. Wait for the upcoming [System Observation] before answering.
 
-        console.log(`📡 [Brain] 發送訊號: ${reqId} (三流全激活模式)`);
+[USER INPUT / SYSTEM MESSAGE]
+${text}`;
+
+        console.log(`📡 [Brain] 發送訊號: ${reqId} (含每回合強制洗腦引擎)`);
 
         const tryInteract = async (sel, retryCount = 0) => {
             if (retryCount > 3) throw new Error("🔥 DOM Doctor 修復失敗，請檢查網路或 HTML 結構大幅變更。");
 
-            // ✨ 智慧型脫殼濾水器函數
+            // ✨ 智慧型脫殼濾水器函數 (Anti-Taint Filter)
             const cleanSelector = (rawSelector) => {
                 if (!rawSelector) return "";
                 return rawSelector
