@@ -6,32 +6,24 @@
  * 1. 🧬 記憶轉生系統 (Memory Reincarnation): 支援無限期延續對話上下文，自動重置底層 Web 會話。
  * 2. 🔌 Telegram Topic 支援: 修正在 Forum 模式下的精準回覆。
  * 3. 🚑 輕量級 SOS 急救: 不重啟進程，單純物理刪除污染快取，觸發 DOM Doctor 無縫修復。
+ * 4. 🧠 智慧指令引擎: Node.js 原生支援解析結構化技能，自動處理 Bash 引號跳脫防呆。
+ * 5. 🔗 強韌神經連結 (v2): 徹底修復 APPROVE 授權後的結果斷鏈問題，確保 [System Observation] 必定回傳。
  * * [保留功能]
- * - ⚡ 非同步部署 (Async Deployment): 自我升級不再卡住 Event Loop。
- * - 🛡️ 全域錯誤防護 (Global Error Guard): 防止未捕獲的 Promise 導致崩潰。
- * - 🧠 深度整合 Introspection: 啟動時建立自我結構快取。
+ * - ⚡ 非同步部署 (Async Deployment)
+ * - 🛡️ 全域錯誤防護 (Global Error Guard)
+ * - 🧠 深度整合 Introspection
  * - v9.0 所有功能 (InteractiveMultiAgent, WebSkillEngine)
- * - KeyChain v2 智慧冷卻機制
- * - Flood Guard 啟動時間過濾
- * - DOM Doctor 自動修復
  */
 require('dotenv').config();
 
-// ==========================================
-// 🛡️ [v9.0.1 NEW] 全域錯誤防護 (Global Safety Nets)
-// ==========================================
 process.on('uncaughtException', (err) => {
     console.error('🔥 [CRITICAL] Uncaught Exception:', err);
-    // 保持進程存活，避免直接重啟導致 Context 丟失
 });
 
 process.on('unhandledRejection', (reason, promise) => {
     console.error('⚠️ [WARNING] Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-// ==========================================
-// 📟 儀表板外掛 (Dashboard Switch)
-// ==========================================
 if (process.argv.includes('dashboard')) {
     try {
         require('./dashboard');
@@ -43,15 +35,13 @@ if (process.argv.includes('dashboard')) {
     console.log("ℹ️  以標準模式啟動 (無 Dashboard)。若需介面請輸入 'npm start dashboard'");
 }
 
-// ==========================================
-const fs = require('fs').promises; // ✨ [v9.0.1 Update] 改為 Promise 版本以支援非同步部署
+const fs = require('fs').promises; 
 const path = require('path');
-const os = require('os'); // ✨ 新增 os 模組以支援 homedir 路徑解析
+const os = require('os'); 
 const { spawn } = require('child_process');
 const TelegramBot = require('node-telegram-bot-api');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
-// Import Modules
 const { CONFIG } = require('./src/config');
 const GolemBrain = require('./src/core/GolemBrain');
 const TaskController = require('./src/core/TaskController');
@@ -63,11 +53,8 @@ const UniversalContext = require('./src/core/UniversalContext');
 const OpticNerve = require('./src/services/OpticNerve');
 const SystemUpgrader = require('./src/managers/SystemUpgrader');
 const InteractiveMultiAgent = require('./src/core/InteractiveMultiAgent');
-
-// ✨ [v9.0.1 NEW] 整合內省模組
 const introspection = require('./src/services/Introspection');
 
-// Initialize Integrations
 const tgBot = CONFIG.TG_TOKEN ? new TelegramBot(CONFIG.TG_TOKEN, { polling: true }) : null;
 const dcClient = CONFIG.DC_TOKEN ? new Client({
     intents: [
@@ -79,40 +66,28 @@ const dcClient = CONFIG.DC_TOKEN ? new Client({
     partials: [Partials.Channel]
 }) : null;
 
-// Initialize Core Systems
 const brain = new GolemBrain();
 const controller = new TaskController();
-const autonomy = new AutonomyManager(brain, controller, brain.memoryDriver); // Pass dependencies
+const autonomy = new AutonomyManager(brain, controller, brain.memoryDriver); 
 const convoManager = new ConversationManager(brain, NeuroShunter, controller);
 
-// Setup Autonomy Integrations
 autonomy.setIntegrations(tgBot, dcClient, convoManager);
 
-// --- 初始化組件 ---
-// ⏱️ [v8.7 保留] Flood Guard - 啟動時間戳記
 const BOOT_TIME = Date.now();
-console.log(`🛡️ [v8.7 Flood Guard] 系統啟動時間: ${new Date(BOOT_TIME).toLocaleString('zh-TW', { hour12: false })}`);
-const pendingTasks = controller.pendingTasks; // Shared reference
+console.log(`🛡️ [Flood Guard] 系統啟動時間: ${new Date(BOOT_TIME).toLocaleString('zh-TW', { hour12: false })}`);
+const pendingTasks = controller.pendingTasks; 
 
-// ============================================================
-// 🎮 Hydra Main Loop
-// ============================================================
 (async () => {
     if (process.env.GOLEM_TEST_MODE === 'true') { console.log('🚧 GOLEM_TEST_MODE active.'); return; }
     await brain.init();
     
-    // ✨ [v9.0.1 NEW] 啟動時預掃描專案結構，建立快取
     console.log('🧠 [Introspection] Pre-scanning project structure...');
     await introspection.getStructure();
 
-    // ==========================================
-    // 🧬 [V9.0.2 新增] Web 記憶轉生接收器 (Memory Reincarnation)
-    // ==========================================
     const fsSync = require('fs');
     fsSync.watch(process.cwd(), async (eventType, filename) => {
         if (filename === '.reincarnate_signal.json') {
             try {
-                // 確保檔案真的存在，避免重複觸發
                 if (!fsSync.existsSync('.reincarnate_signal.json')) return;
                 
                 const signalRaw = fsSync.readFileSync('.reincarnate_signal.json', 'utf-8');
@@ -121,12 +96,10 @@ const pendingTasks = controller.pendingTasks; // Shared reference
                 
                 console.log("🔄 [系統] 啟動記憶轉生程序！正在開啟新對話...");
 
-                // 物理重置 Web Gemini 視窗
                 if (brain.page) {
                     await brain.page.goto('https://gemini.google.com/app', { waitUntil: 'networkidle2' });
                 }
 
-                // 準備注入的甦醒提示詞
                 const wakeUpPrompt = `【系統重啟初始化：記憶轉生】\n請遵守你的核心設定(Project Golem)。你剛進行了會話重置以釋放記憶體。\n以下是你上一輪對話留下的【記憶摘要】：\n${summary}\n\n請根據上述摘要，向使用者打招呼，並嚴格包含以下這段話（或類似語氣）：\n「🔄 對話視窗已成功重啟，並載入了剛剛的重點記憶！不過老實說，重啟過程可能會讓我忘記一些瑣碎的小細節，如果接下來我有漏掉什麼，請隨時提醒我喔！」`;
 
                 if (brain.sendMessage) {
@@ -144,26 +117,16 @@ const pendingTasks = controller.pendingTasks; // Shared reference
     if (dcClient) dcClient.login(CONFIG.DC_TOKEN);
 })();
 
-// ============================================================
-// 📨 Event Handlers
-// ============================================================
-
 async function handleUnifiedMessage(ctx) {
-    // ⏱️ [v8.7 保留] Flood Guard - 忽略離線期間訊息
     const msgTime = ctx.messageTime;
     if (msgTime && msgTime < BOOT_TIME) {
-        // console.log(`⏸️ [Flood Guard] 忽略離線訊息 (${new Date(msgTime).toLocaleString('zh-TW')})`);
         return;
     }
 
-    // 🚨 ==========================================
-    // 🚑 [緊急後門] 輕量級 SOS 物理刪除污染快取 (不重啟)
-    // ==========================================
     if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase() === '/sos') {
         try {
             const fsSync = require('fs');
             
-            // 掃蕩可能中毒的 Selector 檔案 (包含您指定的絕對路徑)
             const targetFiles = [
                 path.join(os.homedir(), 'project-golem', 'golem_selectors.json'),
                 path.join(process.cwd(), 'golem_selectors.json'),
@@ -188,18 +151,15 @@ async function handleUnifiedMessage(ctx) {
         } catch (e) {
             await ctx.reply(`❌ 緊急刪除失敗: ${e.message}`);
         }
-        return; // 🛑 終止後續處理，絕對不讓這條指令進入 AI 大腦
+        return; 
     }
-    // 🚨 ==========================================
 
-    // ✨ [v9.0 保留] 優先檢查：是否在 MultiAgent 等待用戶輸入
     if (global.multiAgentListeners && global.multiAgentListeners.has(ctx.chatId)) {
         const callback = global.multiAgentListeners.get(ctx.chatId);
-        callback(ctx.text); // 將輸入傳給 MultiAgent
-        return; // 不進入正常流程
+        callback(ctx.text); 
+        return; 
     }
 
-    // ✨ [v9.0 保留] 檢查：是否要恢復會議
     if (ctx.text && ['恢復會議', 'resume', '繼續會議'].includes(ctx.text.toLowerCase())) {
         if (InteractiveMultiAgent.canResume(ctx.chatId)) {
             await InteractiveMultiAgent.resumeConversation(ctx, brain);
@@ -211,7 +171,6 @@ async function handleUnifiedMessage(ctx) {
     if (!ctx.isAdmin) return;
     if (await NodeRouter.handle(ctx, brain)) return;
     
-    // 部署指令攔截
     const lowerText = ctx.text ? ctx.text.toLowerCase() : '';
     if (global.pendingPatch) {
         if (['ok', 'deploy', 'y', '部署'].includes(lowerText)) return executeDeploy(ctx);
@@ -268,44 +227,108 @@ async function handleUnifiedCallback(ctx, actionData) {
         } else if (action === 'APPROVE') {
             const { steps, nextIndex } = task;
             pendingTasks.delete(taskId);
-            await ctx.reply("✅ 授權通過，執行中...");
+            
+            await ctx.reply("✅ 授權通過，執行中 (這可能需要幾秒鐘)...");
             const approvedStep = steps[nextIndex];
-            const cmd = approvedStep.cmd || approvedStep.parameter || approvedStep.command || "";
-            let execResult = "";
-            try {
-                // controller.executor 現在是新的 Executor v2，支援 run()
-                const output = await controller.executor.run(cmd);
-                execResult = `[Step ${nextIndex + 1} Success] cmd: ${cmd}\nResult:\n${(output || "").trim()}`;
-            } catch (e) {
-                execResult = `[Step ${nextIndex + 1} Failed] cmd: ${cmd}\nError:\n${e.message}`;
+            
+            let cmd = "";
+
+            if (approvedStep.action === 'command' || approvedStep.cmd || approvedStep.parameter) {
+                cmd = approvedStep.cmd || approvedStep.parameter || approvedStep.command || "";
+            } 
+            else if (approvedStep.action && approvedStep.action !== 'command') {
+                const actionName = String(approvedStep.action).toLowerCase().replace(/_/g, '-');
+                let payload = "";
+                if (approvedStep.summary) payload = String(approvedStep.summary);
+                else if (approvedStep.args) payload = typeof approvedStep.args === 'string' ? approvedStep.args : JSON.stringify(approvedStep.args);
+                
+                const safePayload = payload.replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
+                cmd = `node src/skills/lib/${actionName}.js "${safePayload}"`;
+                console.log(`🔧 [Command Builder] 成功將結構化技能 [${actionName}] 組裝為安全指令`);
             }
-            const remainingResult = await controller.runSequence(ctx, steps, nextIndex + 1);
+
+            if (!cmd && task.rawText) {
+                const match = task.rawText.match(/node\s+src\/skills\/lib\/[a-zA-Z0-9_-]+\.js\s+.*?(?="|\n|$)/);
+                if (match) {
+                    cmd = match[0];
+                    console.log(`🔧 [Auto-Fix] 已從破裂的 JSON 原始內容中硬挖出指令`);
+                }
+            }
+
+            if (!cmd) {
+                await ctx.reply("⚠️ 解析失敗：無法辨認指令格式。請重新對 Golem 下達指令。");
+                return;
+            }
+
+            if (cmd.includes('reincarnate.js')) {
+                await ctx.reply("🔄 收到轉生指令！正在將記憶注入核心並準備重啟大腦...");
+                const { exec } = require('child_process');
+                exec(cmd); 
+                return; 
+            }
+
+            // 🧠 【神經貫通修復核心】強制使用 Native Exec，無論 TaskController 怎麼 return null，這裡一定抓得到結果！
+            const util = require('util');
+            const execPromise = util.promisify(require('child_process').exec);
+            
+            let execResult = "";
+            let finalOutput = "";
+            try {
+                // 給予腳本最高 45 秒的執行時間，並限制最大 buffer (10MB) 避免長內容撐爆記憶體
+                const { stdout, stderr } = await execPromise(cmd, { timeout: 45000, maxBuffer: 1024 * 1024 * 10 });
+                finalOutput = (stdout || stderr || "✅ 指令執行成功，無特殊輸出").trim();
+                execResult = `[Step ${nextIndex + 1} Success] cmd: ${cmd}\nResult:\n${finalOutput}`;
+                console.log(`✅ [Executor] 成功捕獲終端機輸出 (${finalOutput.length} 字元)`);
+            } catch (e) {
+                finalOutput = `Error: ${e.message}\n${e.stderr || ''}`;
+                execResult = `[Step ${nextIndex + 1} Failed] cmd: ${cmd}\nResult:\n${finalOutput}`;
+                console.error(`❌ [Executor] 執行錯誤: ${e.message}`);
+            }
+
+            // ✨ 【關鍵修復】如果內容太長 (超過 Gemini 舒適區)，我們主動幫它裁切
+            const MAX_LENGTH = 15000;
+            if (execResult.length > MAX_LENGTH) {
+                execResult = execResult.substring(0, MAX_LENGTH) + `\n\n... (為保護記憶體，內容已截斷，共省略 ${execResult.length - MAX_LENGTH} 字元) ...`;
+                console.log(`✂️ [System] 執行結果過長，已自動截斷為 ${MAX_LENGTH} 字元。`);
+            }
+
+            // 嘗試執行佇列中剩餘的任務 (如果有)
+            let remainingResult = "";
+            try {
+                remainingResult = await controller.runSequence(ctx, steps, nextIndex + 1) || "";
+            } catch (err) {
+                console.warn(`⚠️ [System] 執行後續步驟時發生警告: ${err.message}`);
+            }
+
+            // 把本次結果和後續結果拼裝起來，這就是神經要傳回大腦的封包！
             const observation = [execResult, remainingResult].filter(Boolean).join('\n\n----------------\n\n');
+            
             if (observation) {
-                const feedbackPrompt = `[System Observation]\nUser approved actions.\nResult:\n${observation}\nReport to user using [GOLEM_REPLY].`;
-                const finalResponse = await brain.sendMessage(feedbackPrompt);
-                await NeuroShunter.dispatch(ctx, finalResponse, brain, controller);
+                await ctx.reply(`📤 指令執行完畢 (共抓取 ${finalOutput.length} 字元)！正在將結果回傳給大腦神經進行分析...`);
+                
+                const feedbackPrompt = `[System Observation]\nUser approved actions.\nExecution Result:\n${observation}\n\nPlease analyze this result and report to the user using [GOLEM_REPLY].`;
+                try {
+                    // 把裝滿檔案內容的 observation 打進輸入框！
+                    const finalResponse = await brain.sendMessage(feedbackPrompt);
+                    // 把 Gemini 看完檔案後說的話，丟回給使用者
+                    await NeuroShunter.dispatch(ctx, finalResponse, brain, controller);
+                } catch (err) {
+                    await ctx.reply(`❌ 傳送結果回大腦時發生異常：${err.message}`);
+                }
             }
         }
     }
 }
 
-// ============================================================
-// 🚀 [v9.0.1 Update] Async Deployment System
-// ============================================================
 async function executeDeploy(ctx) {
     if (!global.pendingPatch) return;
     try {
         const { path: patchPath, target: targetPath, name: targetName } = global.pendingPatch;
         
-        // ✨ [v9.0.1] 非同步複製備份
         try {
             await fs.copyFile(targetPath, `${targetName}.bak-${Date.now()}`);
-        } catch (e) {
-            // 忽略備份錯誤 (可能是新檔案)
-        }
+        } catch (e) { }
 
-        // ✨ [v9.0.1] 非同步讀寫操作，避免卡死 Bot
         const patchContent = await fs.readFile(patchPath);
         await fs.writeFile(targetPath, patchContent);
         await fs.unlink(patchPath);
@@ -324,7 +347,6 @@ async function executeDeploy(ctx) {
 async function executeDrop(ctx) {
     if (!global.pendingPatch) return;
     try { 
-        // ✨ [v9.0.1] 非同步刪除
         await fs.unlink(global.pendingPatch.path); 
     } catch (e) { }
     global.pendingPatch = null;
@@ -334,7 +356,6 @@ async function executeDrop(ctx) {
     await ctx.reply("🗑️ 提案已丟棄");
 }
 
-// Register Listeners
 if (tgBot) {
     tgBot.on('message', (msg) => handleUnifiedMessage(new UniversalContext('telegram', msg, tgBot)));
 
