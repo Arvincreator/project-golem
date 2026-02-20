@@ -194,21 +194,29 @@ class GolemBrain {
             }
         }
 
-        // 初次啟動時的完整設定檔 (Big System Prompt)
         if (forceReload || isNewSession) {
             let systemPrompt = skills.getSystemPrompt(getSystemFingerprint());
 
+            // ✨ [v9.0 Injection & Memory Initialization] 注入技能並寫入長期記憶
             try {
                 const activeSkills = skillManager.listSkills();
                 if (activeSkills.length > 0) {
                     systemPrompt += `\n\n### 🛠️ DYNAMIC SKILLS AVAILABLE (Output {"action": "skill_name", ...}):\n`;
+                    
+                    let skillMemoryText = "【系統技能庫初始化】我目前已掛載並精通以下可用技能：\n";
                     activeSkills.forEach(s => {
                         systemPrompt += `- Action: "${s.name}" | Desc: ${s.description}\n`;
+                        skillMemoryText += `- 技能 "${s.name}"：${s.description}\n`;
                     });
                     systemPrompt += `(Use these skills via [GOLEM_ACTION] when requested by user.)\n`;
+
+                    // 🧠 將掃描到的技能寫入大腦的長期記憶區
+                    await this.memorize(skillMemoryText, { type: 'system_skills', source: 'boot_init' });
+                    console.log(`🧠 [Memory] 已成功將 ${activeSkills.length} 項技能載入長期記憶中！`);
                 }
             } catch (e) { console.warn("Skills injection failed:", e); }
 
+            // ✨ [智慧強化] 嚴格規範 JSON 跳脫、結構化技能格式，與 ReAct 等待協議
             const superProtocol = `
 \n\n【⚠️ GOLEM PROTOCOL v9.0.2 - TITAN CHRONOS + MULTIAGENT + SKILLS】
 You act as a middleware OS. You MUST strictly follow this output format.
@@ -231,15 +239,15 @@ Your response must be parsed into 3 sections using these specific tags:
 [GOLEM_REPLY]
 (Write the actual response to the user here. Pure text.)
 
-2. **CRITICAL RULES FOR JSON**:
+2. **CRITICAL RULES FOR JSON (MUST OBEY)**:
 - 🚨 JSON ESCAPING: If your action values contain double quotes ("), you MUST escape them (\\"). Unescaped quotes will crash the JSON parser!
 - 🛠️ SKILL USAGE: For complex skills requiring long text, DO NOT write raw CLI commands. Output a structured JSON object. (e.g., {"action": "reincarnate", "summary": "..."})
 
-3. **🧠 ReAct PROTOCOL (WAIT FOR OBSERVATION)**:
-- If your task requires executing a [GOLEM_ACTION] to gather information, **YOU MUST NOT GUESS OR HALLUCINATE THE RESULT IN [GOLEM_REPLY]!**
-- Instead, output the [GOLEM_ACTION], and set [GOLEM_REPLY] to a simple acknowledgment like: "正在為您執行指令，請稍候...".
+3. **🧠 ReAct PROTOCOL (WAIT FOR OBSERVATION - EXTREMELY IMPORTANT)**:
+- If your task requires executing a [GOLEM_ACTION] to gather information (e.g., reading a file, checking a folder, fetching an API), **YOU MUST NOT GUESS OR HALLUCINATE THE RESULT IN [GOLEM_REPLY]!**
+- Instead, output the [GOLEM_ACTION], and set [GOLEM_REPLY] to a simple acknowledgment like: "正在為您執行指令查詢，請稍候..." or "我正在查看資料夾，請批准操作...".
 - The system will pause, execute your action, and send the actual result back to you as a "[System Observation]".
-- ONLY AFTER you receive the observation, you can output the final answer.
+- ONLY AFTER you receive the "[System Observation]" in the NEXT turn, you can analyze it and output the final answer in a new [GOLEM_REPLY].
 `;
             await this.sendMessage(systemPrompt + superProtocol, true);
         }
@@ -274,7 +282,6 @@ Your response must be parsed into 3 sections using these specific tags:
         const TAG_END = `[[END:${reqId}]]`;
 
         // 🧠 【每回合強制洗腦提示詞】(Per-Turn Brainwashing Protocol)
-        // 確保 Gemini 即使對話很長，也絕對不會忘記格式與 ReAct 守則
         const payload = `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
 1. ENVELOPE: Wrap your ENTIRE response between ${TAG_START} and ${TAG_END}.
 2. TAGS: Use [GOLEM_MEMORY], [GOLEM_ACTION], and [GOLEM_REPLY]. Do not output raw text outside tags.
@@ -300,7 +307,6 @@ ${text}`;
             };
 
             try {
-                // 先嘗試計算基準線，如果這裡就報錯，代表 response selector 已經被污染了
                 const baseline = await this.page.evaluate((s) => {
                     const bubbles = document.querySelectorAll(s);
                     return bubbles.length > 0 ? bubbles[bubbles.length - 1].innerText : "";
