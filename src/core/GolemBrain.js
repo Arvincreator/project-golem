@@ -122,7 +122,7 @@ class GolemBrain {
                     console.log(`✅ [System] Connected to Remote Chrome!`);
                 } catch (e) {
                     console.error(`❌ [System] Failed to connect to Remote Chrome: ${e.message}`);
-                    console.error(`   Make sure you ran './start-host-chrome.sh' on the host and 'host.docker.internal' is reachable.`);
+                    console.error(`   Make sure you ran './scripts/start-host-chrome.sh' on the host and 'host.docker.internal' is reachable.`);
                     throw e;
                 }
             } else {
