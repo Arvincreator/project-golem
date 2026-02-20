@@ -75,7 +75,7 @@ class UniversalContext {
             }
         }
         
-        // ✨ [v9.0.2 修正] Telegram Topic (Forum) 支援
+        // ✨ [V9.0.2 修正] Telegram Topic (Forum) 支援
         let sendOptions = options || {};
         if (this.platform === 'telegram') {
             const threadId = this.event.message_thread_id || (this.event.message && this.event.message.message_thread_id);
@@ -90,7 +90,7 @@ class UniversalContext {
     async sendDocument(filePath) {
         try {
             if (this.platform === 'telegram') {
-                // ✨ [v9.0.2 修正] Telegram Topic (Forum) 支援
+                // ✨ [V9.0.2 修正] Telegram Topic (Forum) 支援
                 let sendOptions = {};
                 const threadId = this.event.message_thread_id || (this.event.message && this.event.message.message_thread_id);
                 if (threadId) {
