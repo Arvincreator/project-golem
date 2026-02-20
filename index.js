@@ -5,6 +5,7 @@
  * * 🎯 V9.0.2 核心升級：
  * 1. 🧬 記憶轉生系統 (Memory Reincarnation): 支援無限期延續對話上下文，自動重置底層 Web 會話。
  * 2. 🔌 Telegram Topic 支援: 修正在 Forum 模式下的精準回覆。
+ * 3. 🚑 輕量級 SOS 急救: 不重啟進程，單純物理刪除污染快取，觸發 DOM Doctor 無縫修復。
  * * [保留功能]
  * - ⚡ 非同步部署 (Async Deployment): 自我升級不再卡住 Event Loop。
  * - 🛡️ 全域錯誤防護 (Global Error Guard): 防止未捕獲的 Promise 導致崩潰。
@@ -45,6 +46,7 @@ if (process.argv.includes('dashboard')) {
 // ==========================================
 const fs = require('fs').promises; // ✨ [v9.0.1 Update] 改為 Promise 版本以支援非同步部署
 const path = require('path');
+const os = require('os'); // ✨ 新增 os 模組以支援 homedir 路徑解析
 const { spawn } = require('child_process');
 const TelegramBot = require('node-telegram-bot-api');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
@@ -155,38 +157,36 @@ async function handleUnifiedMessage(ctx) {
     }
 
     // 🚨 ==========================================
-    // 🚑 [緊急後門] SOS 物理急救與重啟
+    // 🚑 [緊急後門] 輕量級 SOS 物理刪除污染快取 (不重啟)
     // ==========================================
     if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase() === '/sos') {
-        await ctx.reply("🚨 [SOS 緊急協定啟動] 正在強制清除可能污染的快取檔並重啟系統...");
         try {
             const fsSync = require('fs');
-            const path = require('path');
             
-            // 1. 定義要清除的「毒蘋果」名單 (包含常見的存放位置)
-            const toxicFiles = [
+            // 掃蕩可能中毒的 Selector 檔案 (包含您指定的絕對路徑)
+            const targetFiles = [
+                path.join(os.homedir(), 'project-golem', 'golem_selectors.json'),
+                path.join(process.cwd(), 'golem_selectors.json'),
                 path.join(process.cwd(), 'selectors.json'),
                 path.join(process.cwd(), 'src', 'core', 'selectors.json')
             ];
 
-            // 2. 執行物理刪除
-            for (const file of toxicFiles) {
+            let isDeleted = false;
+            for (const file of targetFiles) {
                 if (fsSync.existsSync(file)) {
                     fsSync.unlinkSync(file);
                     console.log(`🗑️ [SOS] 已刪除污染檔案: ${file}`);
+                    isDeleted = true;
                 }
             }
 
-            await ctx.reply("✅ 潛在的污染檔案已清除，正在重新啟動 Golem 進程...");
-            
-            // 3. 呼叫 Node.js 重啟自己
-            const { spawn } = require('child_process');
-            const subprocess = spawn(process.argv[0], process.argv.slice(1), { detached: true, stdio: 'ignore' });
-            subprocess.unref();
-            process.exit(0);
-
+            if (isDeleted) {
+                await ctx.reply("✅ 毒蘋果 (選擇器快取) 已成功刪除！\n不用重啟，請直接跟我說話，我會觸發 DOM Doctor 自動重抓乾淨的選擇器。");
+            } else {
+                await ctx.reply("⚠️ 找不到污染的快取檔案，它可能已經是乾淨狀態了。");
+            }
         } catch (e) {
-            await ctx.reply(`❌ 緊急重啟失敗，需要手動終端機介入: ${e.message}`);
+            await ctx.reply(`❌ 緊急刪除失敗: ${e.message}`);
         }
         return; // 🛑 終止後續處理，絕對不讓這條指令進入 AI 大腦
     }
@@ -273,6 +273,7 @@ async function handleUnifiedCallback(ctx, actionData) {
             const cmd = approvedStep.cmd || approvedStep.parameter || approvedStep.command || "";
             let execResult = "";
             try {
+                // controller.executor 現在是新的 Executor v2，支援 run()
                 const output = await controller.executor.run(cmd);
                 execResult = `[Step ${nextIndex + 1} Success] cmd: ${cmd}\nResult:\n${(output || "").trim()}`;
             } catch (e) {
