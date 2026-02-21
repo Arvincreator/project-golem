@@ -266,22 +266,33 @@ Your response must be parsed into 3 sections using these specific tags:
         try { await this.memoryDriver.memorize(text, metadata); } catch (e) { }
     }
 
-    // ✨ [新增] 動態視覺腳本：針對新版 UI 切換 Fast / Thinking / Pro (含灰色按鈕防呆)
+    // ✨ [新增] 動態視覺腳本：針對新版 UI 切換模型 (支援中英文介面與防呆)
     async switchModel(targetMode) {
         if (!this.page) throw new Error("大腦尚未啟動。");
         try {
             const result = await this.page.evaluate(async (mode) => {
                 const delay = (ms) => new Promise(r => setTimeout(r, ms));
-                const knownModels = ['fast', 'thinking', 'pro'];
                 
-                // 1. 尋找畫面底部含有 Fast, Thinking 或 Pro 字眼的按鈕
+                // 定義支援的模式及其可能的中英文關鍵字
+                const modeKeywords = {
+                    'fast': ['fast', '快捷'],
+                    'thinking': ['thinking', '思考型', '思考'], // 增加容錯率
+                    'pro': ['pro'] // Pro 通常中英文都叫 Pro
+                };
+
+                // 取得目標模式的所有關鍵字
+                const targetKeywords = modeKeywords[mode] || [mode];
+
+                // 1. 尋找畫面底部含有目標關鍵字的按鈕 (這可能是展開選單的按鈕)
+                // 我們先尋找任何可能代表模型切換的按鈕
+                const allKnownKeywords = [...modeKeywords.fast, ...modeKeywords.thinking, ...modeKeywords.pro];
                 const buttons = Array.from(document.querySelectorAll('div[role="button"], button'));
                 let pickerBtn = null;
 
                 for (const btn of buttons) {
                     const txt = (btn.innerText || "").toLowerCase().trim();
-                    // 按鈕文字通常會是目前選中的模式 (例如 "Fast")，而且高度不會太大
-                    if (knownModels.some(m => txt.includes(m)) && btn.offsetHeight > 10 && btn.offsetHeight < 60) {
+                    // 按鈕文字包含任何已知模式的關鍵字，且高度合理
+                    if (allKnownKeywords.some(k => txt.includes(k.toLowerCase())) && btn.offsetHeight > 10 && btn.offsetHeight < 60) {
                         const rect = btn.getBoundingClientRect();
                         // 根據截圖，該按鈕位於畫面下半部
                         if (rect.top > window.innerHeight / 2) { 
@@ -306,14 +317,15 @@ Your response must be parsed into 3 sections using these specific tags:
                 pickerBtn.click();
                 await delay(1000); // 等待選單彈出動畫
 
-                // 2. 尋找選單中對應的目標模式 (Fast, Thinking, Pro)
+                // 2. 尋找選單中對應的目標模式 (比對中英文關鍵字)
                 const items = Array.from(document.querySelectorAll('[role="menuitem"], [role="option"], [role="radio"], li, .menu-item, div'));
                 let targetElement = null;
 
-                // 尋找包含目標字眼且是可點擊層級的元素
                 for (const el of items) {
                     const txt = (el.innerText || "").toLowerCase();
-                    if (txt.includes(mode)) {
+                    // 檢查元素的文字是否包含目標模式的*任何一個*關鍵字
+                    if (targetKeywords.some(keyword => txt.includes(keyword.toLowerCase()))) {
+                        // 確保它是個合理的可點擊選項層級
                         if (el.getAttribute('role') || el.tagName.toLowerCase() === 'li' || (el.tagName.toLowerCase() === 'div' && el.children.length > 0)) {
                             targetElement = el;
                             break;
@@ -324,7 +336,7 @@ Your response must be parsed into 3 sections using these specific tags:
                 if (!targetElement) {
                     // 若找不到，點擊背景關閉選單避免畫面卡死
                     document.body.click(); 
-                    return `⚠️ 選單已展開，但找不到「${mode}」選項。您可能目前無法使用該模型，或免費額度已耗盡。`;
+                    return `⚠️ 選單已展開，但找不到對應「${mode}」的選項 (已搜尋關鍵字: ${targetKeywords.join(', ')})。您可能目前無法使用該模型。`;
                 }
 
                 // 點擊目標選項
