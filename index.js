@@ -8,6 +8,7 @@
  * 3. 🚑 輕量級 SOS 急救: 不重啟進程，單純物理刪除污染快取，觸發 DOM Doctor 無縫修復。
  * 4. 🧠 智慧指令引擎: Node.js 原生支援解析結構化技能，自動處理 Bash 引號跳脫防呆。
  * 5. 🔗 強韌神經連結 (v2): 徹底修復 APPROVE 授權後的結果斷鏈問題，確保 [System Observation] 必定回傳。
+ * 6. 🔄 物理重生指令 (/new): 強制導回 Gemini 根目錄以開啟全新對話，並清除狀態快取。
  * * [保留功能]
  * - ⚡ 非同步部署 (Async Deployment)
  * - 🛡️ 全域錯誤防護 (Global Error Guard)
@@ -154,6 +155,27 @@ async function handleUnifiedMessage(ctx) {
         return; 
     }
 
+    // ✨ [新增] /new - 強制開啟新對話並重新注入設定檔
+    if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase() === '/new') {
+        await ctx.reply("🔄 收到 /new 指令！正在為您開啟全新的大腦對話神經元...");
+        try {
+            if (brain.page) {
+                // 1. 強制導向乾淨的根目錄，Gemini 伺服器會自動判定為開啟新對話
+                await brain.page.goto('https://gemini.google.com/app', { waitUntil: 'networkidle2' });
+                
+                // 2. 重新注入核心大腦設定檔 (System Prompt)
+                await brain.init(true); 
+                
+                await ctx.reply("✅ 物理重置完成！已經為您切斷舊有記憶，現在這是一個全新且乾淨的 Golem 實體。");
+            } else {
+                await ctx.reply("⚠️ 找不到活躍的網頁視窗，無法執行物理重置。");
+            }
+        } catch (e) {
+            await ctx.reply(`❌ 物理重置失敗: ${e.message}`);
+        }
+        return; // 🛑 終止後續處理，不讓這句 /new 傳給 AI
+    }
+
     if (global.multiAgentListeners && global.multiAgentListeners.has(ctx.chatId)) {
         const callback = global.multiAgentListeners.get(ctx.chatId);
         callback(ctx.text); 
@@ -267,7 +289,7 @@ async function handleUnifiedCallback(ctx, actionData) {
                 return; 
             }
 
-            // 🧠 【神經貫通修復核心】強制使用 Native Exec，無論 TaskController 怎麼 return null，這裡一定抓得到結果！
+            // 🧠 【神經貫通修復核心】強制使用 Native Exec
             const util = require('util');
             const execPromise = util.promisify(require('child_process').exec);
             
@@ -285,14 +307,13 @@ async function handleUnifiedCallback(ctx, actionData) {
                 console.error(`❌ [Executor] 執行錯誤: ${e.message}`);
             }
 
-            // ✨ 【關鍵修復】如果內容太長 (超過 Gemini 舒適區)，我們主動幫它裁切
+            // ✨ 【關鍵修復】如果內容太長，主動幫它裁切
             const MAX_LENGTH = 15000;
             if (execResult.length > MAX_LENGTH) {
                 execResult = execResult.substring(0, MAX_LENGTH) + `\n\n... (為保護記憶體，內容已截斷，共省略 ${execResult.length - MAX_LENGTH} 字元) ...`;
                 console.log(`✂️ [System] 執行結果過長，已自動截斷為 ${MAX_LENGTH} 字元。`);
             }
 
-            // 嘗試執行佇列中剩餘的任務 (如果有)
             let remainingResult = "";
             try {
                 remainingResult = await controller.runSequence(ctx, steps, nextIndex + 1) || "";
@@ -300,7 +321,6 @@ async function handleUnifiedCallback(ctx, actionData) {
                 console.warn(`⚠️ [System] 執行後續步驟時發生警告: ${err.message}`);
             }
 
-            // 把本次結果和後續結果拼裝起來，這就是神經要傳回大腦的封包！
             const observation = [execResult, remainingResult].filter(Boolean).join('\n\n----------------\n\n');
             
             if (observation) {
@@ -308,9 +328,7 @@ async function handleUnifiedCallback(ctx, actionData) {
                 
                 const feedbackPrompt = `[System Observation]\nUser approved actions.\nExecution Result:\n${observation}\n\nPlease analyze this result and report to the user using [GOLEM_REPLY].`;
                 try {
-                    // 把裝滿檔案內容的 observation 打進輸入框！
                     const finalResponse = await brain.sendMessage(feedbackPrompt);
-                    // 把 Gemini 看完檔案後說的話，丟回給使用者
                     await NeuroShunter.dispatch(ctx, finalResponse, brain, controller);
                 } catch (err) {
                     await ctx.reply(`❌ 傳送結果回大腦時發生異常：${err.message}`);
