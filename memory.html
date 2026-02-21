@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golem Neural Cortex v9.0</title>
+    <title>Golem Neural Cortex v9.0.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -28,7 +28,7 @@
         }
 
         h1 { 
-            font-family: 'Press Start 2P', cursive; 
+            font-family: 'Press Start 2P', cursive;
             color: var(--text-color); 
             font-size: 1.4rem; 
             margin-bottom: 2rem; 
@@ -138,9 +138,13 @@
 <body>
     <h1>
         🧠 Golem Neural Cortex 
-        <span class="badge-ver">v9.0</span>
+        <span class="badge-ver">v9.0.3</span>
         <br><span class="cn-note">Golem智能體記憶核心</span>
     </h1>
+
+    <button onclick="clearAllMemory()" style="background: var(--accent-pink); color: white; padding: 10px 15px; border: 2px solid #000; border-radius: 5px; cursor: pointer; font-family: inherit; font-weight: bold; margin-bottom: 20px; box-shadow: 3px 3px 0px var(--shadow-color);">
+        🗑️ 物理清空記憶庫 (Wipe DB)
+    </button>
 
     <div class="nes-container">
         <span class="nes-badge" style="background:var(--accent-pink);">INFO 系統資訊</span>
@@ -180,10 +184,9 @@
         const MODEL_NAME = 'Xenova/all-MiniLM-L6-v2';
 
         const log = (msg) => {
-            console.log(`[Cortex v9.0] ${msg}`);
+            console.log(`[Cortex v9.0.3] ${msg}`);
             const logDiv = document.getElementById('logs');
             const time = new Date().toLocaleTimeString();
-            // 使用顏色區分時間與內容
             logDiv.innerHTML = `<div style="border-bottom:1px dashed #555; padding-bottom:4px; margin-bottom:4px;">
                 <span style="color:#feca57">[${time}]</span> ${msg}
             </div>` + logDiv.innerHTML;
@@ -196,13 +199,14 @@
                 
                 const el = document.getElementById('model-status');
                 el.innerHTML = "✅ Model Active (all-MiniLM-L6-v2)<br><small>模型已載入</small>";
-                el.className = "status status-ok heartbeat"; // 啟用心跳動畫
+                el.className = "status status-ok heartbeat"; 
                 
                 log("Neural Engine Ready.");
             } catch (e) {
                 const el = document.getElementById('model-status');
                 el.innerText = "❌ Model Failed: " + e.message;
                 el.className = "status status-error";
+         
                 log("Model Error: " + e.message);
             }
         }
@@ -223,11 +227,9 @@
                 };
                 request.onsuccess = (e) => {
                     db = e.target.result;
-                    
                     const el = document.getElementById('db-status');
                     el.innerHTML = "✅ Memory Bank Connected<br><small>記憶庫已連線</small>";
-                    el.className = "status status-ok heartbeat"; // 啟用心跳動畫
-
+                    el.className = "status status-ok heartbeat";
                     log("Storage Ready (v" + DB_VERSION + ").");
                     resolve();
                 };
@@ -326,6 +328,52 @@
                     }
                 };
                 request.onerror = () => resolve([]);
+            });
+        };
+
+        // ✨ [新增] 清空整個 IndexedDB 資料庫的函式
+        window.clearAllMemory = async () => {
+            if (!db) {
+                alert("資料庫尚未載入完成，請稍候。");
+                return;
+            }
+            
+            // 如果是從網頁上手動點擊，會跳出確認視窗。如果是程式自動呼叫，就不會卡住。
+            if (event && event.type === 'click') {
+                if (!confirm("⚠️ 警告：確定要物理清空/壓縮所有記憶庫嗎？這個動作將會刪除過去『所有的對話歷史』，且無法還原！")) {
+                    return;
+                }
+            }
+
+            return new Promise((resolve, reject) => {
+                try {
+                    // 抓出資料庫裡所有的表單 (Store) 並全部清空
+                    const storeNames = Array.from(db.objectStoreNames);
+                    const tx = db.transaction(storeNames, 'readwrite');
+                    
+                    storeNames.forEach(storeName => {
+                        tx.objectStore(storeName).clear();
+                    });
+                    
+                    tx.oncomplete = () => {
+                        log(`🗑️ 記憶庫已被徹底清空！`);
+                        
+                        // 如果是手動點擊，彈出提示並重整畫面
+                        if (event && event.type === 'click') {
+                            alert("✅ IndexedDB 記憶庫已成功清空！");
+                            location.reload(); 
+                        }
+                        resolve(true);
+                    };
+                    
+                    tx.onerror = () => {
+                        console.error("清空 DB 失敗:", tx.error);
+                        reject(tx.error);
+                    };
+                } catch (e) {
+                    console.error("執行清空 DB 時發生錯誤:", e);
+                    reject(e);
+                }
             });
         };
 
