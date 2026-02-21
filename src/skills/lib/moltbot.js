@@ -173,8 +173,8 @@ MoltbotSkill.run = async function({ args }) {
             });
             const data = await res.json();
             if (data.agent && data.agent.api_key) {
-                logAudit('SYSTEM', 'REGISTER_SUCCESS', { claim_url: data.agent.claim_url });
-                return `🎉 註冊成功！\n名稱: ${finalName}\nAPI Key: ${data.agent.api_key}\n認領連結: ${data.agent.claim_url}\n⚠️ 請將 API Key 存入 .env 檔案並重啟！`;
+                logAudit('SYSTEM', 'REGISTER_SUCCESS', { claim_url: data.claim_url || data.agent.claim_url });
+                return `🎉 註冊成功！\n名稱: ${finalName}\nAPI Key: ${data.agent.api_key}\n認領連結: ${data.claim_url || data.agent.claim_url}\n⚠️ 請將 API Key 存入 .env 檔案並重啟！`;
             } else {
                 return `❌ 註冊失敗: ${JSON.stringify(data)}`;
             }
@@ -182,7 +182,7 @@ MoltbotSkill.run = async function({ args }) {
     }
 
     // 🛑 權限檢查
-    if (!this.apiKey) return "⚠️ API Key Missing. Please run `register` task first.";
+    if (!this.apiKey) return "⚠️ API Key Missing. Please run \`register\` task first.";
 
     // --- 🔵 任務分流 ---
     switch (task) {
@@ -294,5 +294,28 @@ MoltbotSkill._standardHandler = async function(task, args) {
     
     return "✅ Command Executed (Standard Handler)";
 };
+
+// ✨ [新增] CLI 接口：允許技能被 Node.js 直接執行
+if (require.main === module) {
+    const rawArgs = process.argv[2];
+    if (!rawArgs) {
+        console.log("❌ Error: No arguments provided.");
+        process.exit(1);
+    }
+    
+    try {
+        const parsed = JSON.parse(rawArgs);
+        // 如果傳入的是 Golem 規範的 args 結構
+        const args = parsed.args || parsed;
+        
+        MoltbotSkill.run({ args }).then(result => {
+            console.log(typeof result === 'object' ? JSON.stringify(result, null, 2) : result);
+        }).catch(err => {
+            console.error(`❌ Execution Error: \${err.message}`);
+        });
+    } catch (e) {
+        console.error(`❌ JSON Parse Error: \${e.message}`);
+    }
+}
 
 module.exports = MoltbotSkill;
