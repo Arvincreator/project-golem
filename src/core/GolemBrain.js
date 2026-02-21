@@ -78,7 +78,6 @@ class GolemBrain {
             const userDataDir = path.resolve(CONFIG.USER_DATA_DIR);
             console.log(`📂 [System] Browser User Data Dir: ${userDataDir}`);
 
-            // Check if we should connect to Remote Chrome (Docker only)
             const isDocker = fs.existsSync('/.dockerenv');
             const remoteDebugPort = process.env.PUPPETEER_REMOTE_DEBUGGING_PORT;
             if (isDocker && remoteDebugPort) {
@@ -179,7 +178,6 @@ class GolemBrain {
             await this.memoryDriver.init();
         }
 
-        // Link Dashboard Context if active
         if (process.argv.includes('dashboard')) {
             try {
                 const dashboard = require('../../dashboard'); 
@@ -197,7 +195,6 @@ class GolemBrain {
         if (forceReload || isNewSession) {
             let systemPrompt = skills.getSystemPrompt(getSystemFingerprint());
 
-            // ✨ [v9.0 Injection & Memory Initialization] 注入技能並寫入長期記憶
             try {
                 const activeSkills = skillManager.listSkills();
                 if (activeSkills.length > 0) {
@@ -210,13 +207,11 @@ class GolemBrain {
                     });
                     systemPrompt += `(Use these skills via [GOLEM_ACTION] when requested by user.)\n`;
 
-                    // 🧠 將掃描到的技能寫入大腦的長期記憶區
                     await this.memorize(skillMemoryText, { type: 'system_skills', source: 'boot_init' });
                     console.log(`🧠 [Memory] 已成功將 ${activeSkills.length} 項技能載入長期記憶中！`);
                 }
             } catch (e) { console.warn("Skills injection failed:", e); }
 
-            // ✨ [智慧強化] 嚴格規範 JSON 跳脫、結構化技能格式，與 ReAct 等待協議
             const superProtocol = `
 \n\n【⚠️ GOLEM PROTOCOL v9.0.2 - TITAN CHRONOS + MULTIAGENT + SKILLS】
 You act as a middleware OS. You MUST strictly follow this output format.
@@ -271,7 +266,6 @@ Your response must be parsed into 3 sections using these specific tags:
         try { await this.memoryDriver.memorize(text, metadata); } catch (e) { }
     }
 
-    // ✨ [Neuro-Link] 三明治信封版 (Sandwich Protocol) + 強制洗腦引擎
     async sendMessage(text, isSystem = false) {
         if (!this.browser) await this.init();
         try { await this.page.bringToFront(); } catch (e) { }
@@ -281,7 +275,6 @@ Your response must be parsed into 3 sections using these specific tags:
         const TAG_START = `[[BEGIN:${reqId}]]`;
         const TAG_END = `[[END:${reqId}]]`;
 
-        // 🧠 【每回合強制洗腦提示詞】(Per-Turn Brainwashing Protocol)
         const payload = `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
 1. ENVELOPE: Wrap your ENTIRE response between ${TAG_START} and ${TAG_END}.
 2. TAGS: Use [GOLEM_MEMORY], [GOLEM_ACTION], and [GOLEM_REPLY]. Do not output raw text outside tags.
@@ -296,15 +289,13 @@ ${text}`;
         const tryInteract = async (sel, retryCount = 0) => {
             if (retryCount > 3) throw new Error("🔥 DOM Doctor 修復失敗，請檢查網路或 HTML 結構大幅變更。");
 
-            // ✨ 放寬脫殼濾水器，只過濾會導致語法錯誤的部分
             const cleanSelector = (rawSelector) => {
                 if (!rawSelector) return "";
                 let cleaned = rawSelector
-                    .replace(/```[a-zA-Z]*\s*/gi, '') // 拔除開頭的 ```css 或 ```html
-                    .replace(/`/g, '')                 // 拔除所有反引號
+                    .replace(/```[a-zA-Z]*\s*/gi, '') 
+                    .replace(/`/g, '')                 
                     .trim();
                 
-                // 如果一開始是 "css "，也只拔除這三個字，不影響後面的內容
                 if (cleaned.toLowerCase().startsWith('css ')) {
                    cleaned = cleaned.substring(4).trim();
                 }
@@ -312,14 +303,12 @@ ${text}`;
             };
 
             try {
-                // ✨ [修復 1: 智慧向上擴展 - 基準線計算]
                 let baseline = "";
                 if (sel.response && sel.response.trim() !== "") {
                      baseline = await this.page.evaluate((s) => {
                         const bubbles = document.querySelectorAll(s);
                         if (bubbles.length === 0) return "";
                         let target = bubbles[bubbles.length - 1];
-                        // 強制往上層抓取整個訊息框，無視結尾是否為 p 標籤
                         let container = target.closest('model-response') || target.closest('.markdown') || target.closest('.model-response-text') || target.parentElement || target;
                         return container.innerText || "";
                     }, sel.response).catch(() => "");
@@ -328,7 +317,6 @@ ${text}`;
                      throw new Error(`空的 Response Selector`);
                 }
 
-                // 安全檢查：如果 input 是空的，直接進修復
                 if (!sel.input || sel.input.trim() === "") {
                      throw new Error(`空的 Input Selector`);
                 }
@@ -355,7 +343,6 @@ ${text}`;
 
                 await new Promise(r => setTimeout(r, 800));
 
-                // ✨ [防空防當機制] 如果送出按鈕的 Selector 變成空字串了，不要再用 $ 找了，直接改按 Enter！
                 if (!sel.send || sel.send.trim() === "") {
                     console.log("⚠️ 發送按鈕的 Selector 為空，直接降級使用 Enter 鍵發送...");
                     await this.page.keyboard.press('Enter');
@@ -397,7 +384,6 @@ ${text}`;
                             const bubbles = document.querySelectorAll(selector);
                             if (bubbles.length === 0) { setTimeout(check, 500); return; }
 
-                            // ✨ [修復 2: 智慧向上擴展 - 內容擷取]
                             let currentLastBubble = bubbles[bubbles.length - 1];
                             let container = currentLastBubble.closest('model-response') || 
                                             currentLastBubble.closest('.markdown') || 
@@ -407,35 +393,45 @@ ${text}`;
 
                             const rawText = container.innerText || "";
                             const startIndex = rawText.indexOf(startTag);
+                            const endIndex = rawText.indexOf(endTag);
+
+                            // ✨ [條件 1：完美信封] 看到 END 標籤，0秒延遲瞬間打包回傳！
+                            if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+                                const content = rawText.substring(startIndex + startTag.length, endIndex).trim();
+                                resolve({ status: 'ENVELOPE_COMPLETE', text: content });
+                                return;
+                            }
+
+                            // 計算文字穩定度 (有沒有在打字)
+                            if (rawText === lastCheckText) {
+                                stableCount++;
+                            } else {
+                                stableCount = 0;
+                            }
+                            lastCheckText = rawText;
 
                             if (startIndex !== -1) {
-                                const endIndex = rawText.indexOf(endTag);
-                                if (endIndex !== -1 && endIndex > startIndex) {
-                                    const content = rawText.substring(startIndex + startTag.length, endIndex).trim();
-                                    resolve({ status: 'ENVELOPE_COMPLETE', text: content });
-                                    return;
-                                }
-                                if (rawText === lastCheckText && rawText.length > lastCheckText.length) {
-                                    stableCount = 0;
-                                } else if (rawText === lastCheckText) {
-                                    stableCount++;
-                                } else {
-                                    stableCount = 0;
-                                }
-                                lastCheckText = rawText;
-                                if (stableCount > 5) { // 等待時間
+                                // ✨ [條件 2：已經開始回答] 看到 BEGIN，但遲遲沒看到 END (AI 忘記寫)
+                                // 只要畫面停頓超過 5 秒 (10 次檢查) 沒動靜，就強制截斷回傳，不等 30 秒！
+                                if (stableCount > 10) {
                                     const content = rawText.substring(startIndex + startTag.length).trim();
                                     resolve({ status: 'ENVELOPE_TRUNCATED', text: content });
                                     return;
                                 }
                             } else if (rawText !== oldText && !rawText.includes('SYSTEM: Please WRAP')) {
-                                if (rawText === lastCheckText && rawText.length > 5) stableCount++;
-                                else stableCount = 0;
-                                lastCheckText = rawText;
-                                if (stableCount > 5) { resolve({ status: 'FALLBACK_DIFF', text: rawText }); return; }
+                                // ✨ [條件 3：Thinking Mode] 還沒看到 BEGIN，可能在深思
+                                // 給予最高 30 秒 (60 次檢查) 的容忍度，等它想完
+                                if (stableCount > 60) {
+                                    resolve({ status: 'FALLBACK_DIFF', text: rawText });
+                                    return;
+                                }
                             }
 
-                            if (Date.now() - startTime > 120000) { resolve({ status: 'TIMEOUT', text: '' }); return; } 
+                            // 總超時時間上限 5 分鐘 (300,000 ms)
+                            if (Date.now() - startTime > 300000) { 
+                                resolve({ status: 'TIMEOUT', text: '' }); 
+                                return; 
+                            } 
                             setTimeout(check, 500);
                         };
                         check();
