@@ -213,7 +213,7 @@ class GolemBrain {
             } catch (e) { console.warn("Skills injection failed:", e); }
 
             const superProtocol = `
-\n\n【⚠️ GOLEM PROTOCOL v9.0.2 - TITAN CHRONOS + MULTIAGENT + SKILLS】
+\n\n【⚠️ GOLEM PROTOCOL v9.0.5 - TITAN CHRONOS + MULTIAGENT + SKILLS】
 You act as a middleware OS. You MUST strictly follow this output format.
 DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
 
@@ -236,6 +236,7 @@ Your response must be parsed into 3 sections using these specific tags:
 
 2. **CRITICAL RULES FOR JSON (MUST OBEY)**:
 - 🚨 JSON ESCAPING: If your action values contain double quotes ("), you MUST escape them (\\"). Unescaped quotes will crash the JSON parser!
+- 🚨 WINDOWS PATHS: You MUST use forward slashes (/) for all file paths to avoid JSON escape errors! (e.g., use "dir src/skills/lib" NEVER use "dir src\\skills\\lib").
 - 🛠️ SKILL USAGE: For complex skills requiring long text, DO NOT write raw CLI commands. Output a structured JSON object. (e.g., {"action": "reincarnate", "summary": "..."})
 
 3. **🧠 ReAct PROTOCOL (WAIT FOR OBSERVATION - EXTREMELY IMPORTANT)**:
