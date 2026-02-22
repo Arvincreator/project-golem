@@ -11,8 +11,8 @@ const SystemNativeDriver = require('../memory/SystemNativeDriver');
 const BrowserLauncher = require('./BrowserLauncher');
 const ProtocolFormatter = require('./ProtocolFormatter');
 const PageInteractor = require('./PageInteractor');
-const ChatLogger = require('./ChatLogger');
-const { URLS, LOG_RETENTION_MS } = require('./constants');
+const ChatLogManager = require('../managers/ChatLogManager');
+const { URLS } = require('./constants');
 
 // ============================================================
 // 🧠 Golem Brain (Web Gemini) - Dual-Engine + Titan Protocol
@@ -37,9 +37,7 @@ class GolemBrain {
         else this.memoryDriver = new BrowserMemoryDriver(this);
 
         // ── 對話日誌 ──
-        this.chatLogFile = path.join(process.cwd(), 'logs', 'agent_chat.jsonl');
-        this._chatLogger = new ChatLogger(this.chatLogFile);
-        this._chatLogger.cleanup(LOG_RETENTION_MS);
+        this.chatLogManager = new ChatLogManager();
     }
 
     // ─── Public API (向後相容) ─────────────────────────────
@@ -264,7 +262,7 @@ class GolemBrain {
      * @param {Object} entry - 日誌紀錄
      */
     _appendChatLog(entry) {
-        this._chatLogger.append(entry);
+        this.chatLogManager.append(entry);
     }
 
     // ─── Private Methods ─────────────────────────────────────
