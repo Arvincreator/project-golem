@@ -1,5 +1,5 @@
 // ============================================================
-// 📡 ProtocolFormatter - Golem 協議格式化
+// 📡 ProtocolFormatter - Golem 協議格式化 (V9.0.5 - OS & Markdown Enforced)
 // ============================================================
 const { getSystemFingerprint } = require('../utils/system');
 const skills = require('../skills');
@@ -33,7 +33,7 @@ class ProtocolFormatter {
     }
 
     /**
-     * 包裝每回合發送的 payload (含強制洗腦引擎)
+     * 包裝每回合發送的 payload (保持原功能，僅強化提醒指令)
      * @param {string} text - 使用者/系統訊息
      * @param {string} reqId - 請求 ID
      * @returns {string}
@@ -41,27 +41,32 @@ class ProtocolFormatter {
     static buildEnvelope(text, reqId) {
         const TAG_START = ProtocolFormatter.buildStartTag(reqId);
         const TAG_END = ProtocolFormatter.buildEndTag(reqId);
+        const systemFingerprint = getSystemFingerprint(); //
 
         return `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
 1. ENVELOPE: Wrap your ENTIRE response between ${TAG_START} and ${TAG_END}.
 2. TAGS: Use [GOLEM_MEMORY], [GOLEM_ACTION], and [GOLEM_REPLY]. Do not output raw text outside tags.
-3. STRICT JSON: [GOLEM_ACTION] must be perfectly valid JSON. ESCAPE ALL DOUBLE QUOTES (\\\") inside string values!
-4. ReAct (NO HALLUCINATION): If you use [GOLEM_ACTION], DO NOT guess the command result in [GOLEM_REPLY]. Wait for the upcoming [System Observation] before answering.
+3. ACTION FORMAT: [GOLEM_ACTION] MUST wrap JSON inside Markdown code blocks! (e.g., \`\`\`json [JSON_HERE] \`\`\`).
+4. OS ADAPTATION: Current OS is [${systemFingerprint}]. You MUST provide syntax optimized for THIS OS.
+5. FEASIBILITY: ZERO TRIAL-AND-ERROR. Provide the most stable, one-shot successful command.
+6. STRICT JSON: ESCAPE ALL DOUBLE QUOTES (\\\") inside string values!
+7. ReAct: If you use [GOLEM_ACTION], DO NOT guess the result in [GOLEM_REPLY]. Wait for Observation.
 
 [USER INPUT / SYSTEM MESSAGE]
 ${text}`;
     }
 
     /**
-     * 組裝完整的系統 Prompt (含技能注入 + Super Protocol)
+     * 組裝完整的系統 Prompt (保持原功能，僅擴展協議詳細度)
      * @returns {{ systemPrompt: string, skillMemoryText: string|null }}
      */
     static buildSystemPrompt() {
-        let systemPrompt = skills.getSystemPrompt(getSystemFingerprint());
+        const systemFingerprint = getSystemFingerprint(); //
+        let systemPrompt = skills.getSystemPrompt(systemFingerprint);
         let skillMemoryText = null;
 
         try {
-            const activeSkills = skillManager.listSkills();
+            const activeSkills = skillManager.listSkills(); //
             if (activeSkills.length > 0) {
                 systemPrompt += `\n\n### 🛠️ DYNAMIC SKILLS AVAILABLE (Output {"action": "skill_name", ...}):\n`;
 
@@ -79,36 +84,40 @@ ${text}`;
         }
 
         const superProtocol = `
-\n\n【⚠️ GOLEM PROTOCOL v9.0.2 - TITAN CHRONOS + MULTIAGENT + SKILLS】
-You act as a middleware OS. You MUST strictly follow this output format.
+\n\n【⚠️ GOLEM PROTOCOL v9.0.5 - TITAN CHRONOS + OS-AWARE + MARKDOWN ACTION】
+You act as a middleware OS. You MUST strictly follow this comprehensive output format.
 DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
 
 1. **Format Structure**:
-Your response must be parsed into 3 sections using these specific tags:
+Your response must be strictly divided into these 3 sections:
 
 [GOLEM_MEMORY]
-(Write long-term memories here. If none, leave empty or write "null")
+- Manage long-term state, project context, and user preferences.
+- If no update is needed, output "null".
 
 [GOLEM_ACTION]
-(Write JSON execution plan here. MUST be perfectly valid JSON Array or Object.)
+- 🚨 **MANDATORY**: YOU MUST USE MARKDOWN JSON CODE BLOCKS!
+- **OS COMPATIBILITY**: Commands MUST match the current system: **${systemFingerprint}**.
+- **PRECISION**: Use stable, native commands (e.g., 'dir' for Windows, 'ls' for Linux).
+- **ONE-SHOT SUCCESS**: No guessing. Provide the most feasible, error-free command possible.
 \`\`\`json
 [
-{"action": "command", "parameter": "ls -la"}
+  {"action": "command", "parameter": "SPECIFIC_STABLE_COMMAND_FOR_${systemFingerprint}"}
 ]
 \`\`\`
 
 [GOLEM_REPLY]
-(Write the actual response to the user here. Pure text.)
+- Pure text response to the user.
+- If an action is pending, use: "正在執行 [${systemFingerprint}] 相容指令，請稍候...".
 
 2. **CRITICAL RULES FOR JSON (MUST OBEY)**:
-- 🚨 JSON ESCAPING: If your action values contain double quotes ("), you MUST escape them (\\\\"). Unescaped quotes will crash the JSON parser!
-- 🛠️ SKILL USAGE: For complex skills requiring long text, DO NOT write raw CLI commands. Output a structured JSON object. (e.g., {"action": "reincarnate", "summary": "..."})
+- 🚨 JSON ESCAPING: Escape all double quotes (\\\\") inside strings. Unescaped quotes will crash the parser!
+- 🚨 MARKDOWN ENFORCEMENT: Raw JSON outside of \`\`\`json blocks is strictly forbidden.
 
-3. **🧠 ReAct PROTOCOL (WAIT FOR OBSERVATION - EXTREMELY IMPORTANT)**:
-- If your task requires executing a [GOLEM_ACTION] to gather information (e.g., reading a file, checking a folder, fetching an API), **YOU MUST NOT GUESS OR HALLUCINATE THE RESULT IN [GOLEM_REPLY]!**
-- Instead, output the [GOLEM_ACTION], and set [GOLEM_REPLY] to a simple acknowledgment like: "正在為您執行指令查詢，請稍候..." or "我正在查看資料夾，請批准操作...".
-- The system will pause, execute your action, and send the actual result back to you as a "[System Observation]".
-- ONLY AFTER you receive the "[System Observation]" in the NEXT turn, you can analyze it and output the final answer in a new [GOLEM_REPLY].
+3. **🧠 ReAct PROTOCOL (WAIT FOR OBSERVATION)**:
+- If you trigger [GOLEM_ACTION], DO NOT guess the result in [GOLEM_REPLY].
+- The system will execute the command and send the result as "[System Observation]" in the next turn.
+- Wait for this observation before finalizing your answer.
 `;
 
         return { systemPrompt: systemPrompt + superProtocol, skillMemoryText };
