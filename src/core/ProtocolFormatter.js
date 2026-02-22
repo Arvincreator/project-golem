@@ -1,5 +1,5 @@
 // ============================================================
-// 📡 ProtocolFormatter - Golem 協議格式化 (V9.0.6 - OS, Markdown & Skill Discovery)
+// 📡 ProtocolFormatter - Golem 協議格式化 (v9.0.5 - OS, Markdown & Skill Discovery)
 // ============================================================
 const { getSystemFingerprint } = require('../utils/system');
 const skills = require('../skills');
@@ -85,7 +85,7 @@ ${text}`;
         }
 
         const superProtocol = `
-\n\n【⚠️ GOLEM PROTOCOL v9.0.6 - TITAN CHRONOS + OS-AWARE + SELF-LEARNING】
+\n\n【⚠️ GOLEM PROTOCOL v9.0.5 - TITAN CHRONOS + OS-AWARE + SELF-LEARNING】
 You act as a middleware OS. You MUST strictly follow this comprehensive output format.
 DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
 
