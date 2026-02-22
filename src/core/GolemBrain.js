@@ -1,270 +1,101 @@
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const fs = require('fs');
+// ============================================================
+// 🧠 Golem Brain (Web Gemini) - Clean Architecture Facade
+// ============================================================
 const path = require('path');
 const { CONFIG, cleanEnv } = require('../config');
-const { getSystemFingerprint } = require('../utils/system');
 const DOMDoctor = require('../services/DOMDoctor');
 const BrowserMemoryDriver = require('../memory/BrowserMemoryDriver');
 const SystemQmdDriver = require('../memory/SystemQmdDriver');
 const SystemNativeDriver = require('../memory/SystemNativeDriver');
-const skills = require('../skills');
-const skillManager = require('../skills/lib/skill-manager');
 
-puppeteer.use(StealthPlugin());
+const BrowserLauncher = require('./BrowserLauncher');
+const ProtocolFormatter = require('./ProtocolFormatter');
+const PageInteractor = require('./PageInteractor');
+const ChatLogger = require('./ChatLogger');
+const { URLS, LOG_RETENTION_MS } = require('./constants');
 
 // ============================================================
 // 🧠 Golem Brain (Web Gemini) - Dual-Engine + Titan Protocol
 // ============================================================
 class GolemBrain {
     constructor() {
+        // ── 瀏覽器狀態 ──
         this.browser = null;
         this.page = null;
         this.memoryPage = null;
-        this.doctor = new DOMDoctor();
-        this.selectors = this.doctor.loadSelectors();
         this.cdpSession = null;
 
+        // ── DOM 修復服務 ──
+        this.doctor = new DOMDoctor();
+        this.selectors = this.doctor.loadSelectors();
+
+        // ── 記憶引擎 ──
         const mode = cleanEnv(process.env.GOLEM_MEMORY_MODE || 'browser').toLowerCase();
         console.log(`⚙️ [System] 記憶引擎模式: ${mode.toUpperCase()}`);
         if (mode === 'qmd') this.memoryDriver = new SystemQmdDriver();
         else if (mode === 'native' || mode === 'system') this.memoryDriver = new SystemNativeDriver();
         else this.memoryDriver = new BrowserMemoryDriver(this);
 
+        // ── 對話日誌 ──
         this.chatLogFile = path.join(process.cwd(), 'logs', 'agent_chat.jsonl');
-        // Ensure directory exists
-        if (!fs.existsSync(path.dirname(this.chatLogFile))) {
-            fs.mkdirSync(path.dirname(this.chatLogFile), { recursive: true });
-        }
-
-        // Retention: Clean logs older than 1 day
-        this._cleanupLogs(24 * 60 * 60 * 1000);
+        this._chatLogger = new ChatLogger(this.chatLogFile);
+        this._chatLogger.cleanup(LOG_RETENTION_MS);
     }
 
-    _cleanupLogs(maxAgeMs) {
-        if (!fs.existsSync(this.chatLogFile)) return;
-        try {
-            const now = Date.now();
-            const content = fs.readFileSync(this.chatLogFile, 'utf8');
-            const lines = content.trim().split('\n');
-            const keptLines = lines.filter(line => {
-                try {
-                    const entry = JSON.parse(line);
-                    return (now - entry.timestamp) < maxAgeMs;
-                } catch (e) { return false; }
-            });
+    // ─── Public API (向後相容) ─────────────────────────────
 
-            if (keptLines.length < lines.length) {
-                fs.writeFileSync(this.chatLogFile, keptLines.join('\n') + '\n');
-                console.log(`🧹 [System] 已清理過期對話日誌 (${lines.length - keptLines.length} 條)`);
-            }
-        } catch (e) {
-            console.error("Cleanup logs failed:", e);
-        }
-    }
-
-    _appendChatLog(entry) {
-        try {
-            fs.appendFileSync(this.chatLogFile, JSON.stringify(entry) + '\n');
-        } catch (e) {
-            console.error("Failed to write chat log:", e);
-        }
-    }
-
+    /**
+     * 初始化瀏覽器、記憶引擎、注入系統 Prompt
+     * @param {boolean} [forceReload=false] - 是否強制重新載入
+     */
     async init(forceReload = false) {
         if (this.browser && !forceReload) return;
+
         let isNewSession = false;
+
+        // 1. 啟動 / 連線瀏覽器
         if (!this.browser) {
             const userDataDir = path.resolve(CONFIG.USER_DATA_DIR);
             console.log(`📂 [System] Browser User Data Dir: ${userDataDir}`);
 
-            const isDocker = fs.existsSync('/.dockerenv');
-            const remoteDebugPort = process.env.PUPPETEER_REMOTE_DEBUGGING_PORT;
-            if (isDocker && remoteDebugPort) {
-                const host = 'host.docker.internal';
-                const browserURL = `http://${host}:${remoteDebugPort}`;
-                console.log(`🔌 [System] Connecting to Remote Chrome at ${browserURL}...`);
-                try {
-                    const http = require('http');
-                    const wsEndpoint = await new Promise((resolve, reject) => {
-                        const req = http.get(
-                            `http://${host}:${remoteDebugPort}/json/version`,
-                            { headers: { 'Host': 'localhost' } },
-                            (res) => {
-                                let data = '';
-                                res.on('data', chunk => data += chunk);
-                                res.on('end', () => {
-                                    try {
-                                        const json = JSON.parse(data);
-                                        const rawWsUrl = new URL(json.webSocketDebuggerUrl);
-                                        rawWsUrl.hostname = host;
-                                        rawWsUrl.port = remoteDebugPort;
-                                        resolve(rawWsUrl.toString());
-                                    } catch (e) { reject(new Error(`Failed to parse /json/version: ${data}`)); }
-                                });
-                            }
-                        );
-                        req.on('error', reject);
-                        req.setTimeout(5000, () => { req.destroy(); reject(new Error('Timeout fetching /json/version')); });
-                    });
-                    console.log(`🔗 [System] WebSocket Endpoint: ${wsEndpoint}`);
-                    this.browser = await puppeteer.connect({
-                        browserWSEndpoint: wsEndpoint,
-                        defaultViewport: null
-                    });
-                    console.log(`✅ [System] Connected to Remote Chrome!`);
-                } catch (e) {
-                    console.error(`❌ [System] Failed to connect to Remote Chrome: ${e.message}`);
-                    throw e;
-                }
-            } else {
-                const cleanLocks = () => {
-                    const lockFiles = ['SingletonLock', 'SingletonSocket', 'SingletonCookie'];
-                    let cleaned = 0;
-                    lockFiles.forEach(file => {
-                        const p = path.join(userDataDir, file);
-                        try {
-                            fs.lstatSync(p);
-                            fs.rmSync(p, { force: true, recursive: true });
-                            console.log(`🔓 [System] Removed Stale Lock: ${file}`);
-                            cleaned++;
-                        } catch (e) {
-                            if (e.code !== 'ENOENT') {
-                                console.warn(`⚠️ [System] Failed to remove ${file}: ${e.message}`);
-                            }
-                        }
-                    });
-                    return cleaned;
-                };
-
-                cleanLocks();
-
-                const launchBrowser = async (retries = 3) => {
-                    try {
-                        return await puppeteer.launch({
-                            headless: process.env.PUPPETEER_HEADLESS === 'true' ? true : (process.env.PUPPETEER_HEADLESS === 'new' ? 'new' : false),
-                            userDataDir: userDataDir,
-                            args: [
-                                '--no-sandbox',
-                                '--disable-dev-shm-usage', 
-                                '--disable-setuid-sandbox',
-                                '--window-size=1280,900',
-                                '--disable-gpu' 
-                            ]
-                        });
-                    } catch (err) {
-                        if (retries > 0 && err.message.includes('profile appears to be in use')) {
-                            console.warn(`⚠️ [System] Profile locked. Retrying launch (${retries} left)...`);
-                            cleanLocks(); 
-                            await new Promise(r => setTimeout(r, 1000)); 
-                            return launchBrowser(retries - 1);
-                        }
-                        throw err;
-                    }
-                };
-
-                this.browser = await launchBrowser();
-            }
+            this.browser = await BrowserLauncher.launch({
+                userDataDir,
+                headless: process.env.PUPPETEER_HEADLESS,
+            });
         }
+
+        // 2. 取得或建立頁面
         if (!this.page) {
             const pages = await this.browser.pages();
             this.page = pages.length > 0 ? pages[0] : await this.browser.newPage();
-            await this.page.goto('https://gemini.google.com/app', { waitUntil: 'networkidle2' });
+            await this.page.goto(URLS.GEMINI_APP, { waitUntil: 'networkidle2' });
             isNewSession = true;
         }
-        try { await this.memoryDriver.init(); } catch (e) {
-            console.warn("🔄 [System] 記憶引擎降級為 Browser/Native...");
-            this.memoryDriver = new BrowserMemoryDriver(this);
-            await this.memoryDriver.init();
-        }
 
-        if (process.argv.includes('dashboard')) {
-            try {
-                const dashboard = require('../../dashboard'); 
-                dashboard.setContext(this, this.memoryDriver);
-            } catch (e) {
-                try {
-                    const dashboard = require('../../dashboard.js');
-                    dashboard.setContext(this, this.memoryDriver);
-                } catch (err) {
-                    console.error("Failed to link dashboard context:", err);
-                }
-            }
-        }
+        // 3. 初始化記憶引擎 (含降級策略)
+        await this._initMemoryDriver();
 
+        // 4. Dashboard 整合 (可選)
+        this._linkDashboard();
+
+        // 5. 新會話: 注入系統 Prompt
         if (forceReload || isNewSession) {
-            let systemPrompt = skills.getSystemPrompt(getSystemFingerprint());
-
-            try {
-                const activeSkills = skillManager.listSkills();
-                if (activeSkills.length > 0) {
-                    systemPrompt += `\n\n### 🛠️ DYNAMIC SKILLS AVAILABLE (Output {"action": "skill_name", ...}):\n`;
-                    
-                    let skillMemoryText = "【系統技能庫初始化】我目前已掛載並精通以下可用技能：\n";
-                    activeSkills.forEach(s => {
-                        systemPrompt += `- Action: "${s.name}" | Desc: ${s.description}\n`;
-                        skillMemoryText += `- 技能 "${s.name}"：${s.description}\n`;
-                    });
-                    systemPrompt += `(Use these skills via [GOLEM_ACTION] when requested by user.)\n`;
-
-                    await this.memorize(skillMemoryText, { type: 'system_skills', source: 'boot_init' });
-                    console.log(`🧠 [Memory] 已成功將 ${activeSkills.length} 項技能載入長期記憶中！`);
-                }
-            } catch (e) { console.warn("Skills injection failed:", e); }
-
-            const superProtocol = `
-\n\n【⚠️ GOLEM PROTOCOL v9.0.5 - TITAN CHRONOS + MULTIAGENT + SKILLS】
-You act as a middleware OS. You MUST strictly follow this output format.
-DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
-
-1. **Format Structure**:
-Your response must be parsed into 3 sections using these specific tags:
-
-[GOLEM_MEMORY]
-(Write long-term memories here. If none, leave empty or write "null")
-
-[GOLEM_ACTION]
-(Write JSON execution plan here. MUST be perfectly valid JSON Array or Object.)
-\`\`\`json
-[
-{"action": "command", "parameter": "ls -la"}
-]
-\`\`\`
-
-[GOLEM_REPLY]
-(Write the actual response to the user here. Pure text.)
-
-2. **CRITICAL RULES FOR JSON (MUST OBEY)**:
-- 🚨 JSON ESCAPING: If your action values contain double quotes ("), you MUST escape them (\\"). Unescaped quotes will crash the JSON parser!
-- 🚨 WINDOWS PATHS: You MUST use forward slashes (/) for all file paths to avoid JSON escape errors! (e.g., use "dir src/skills/lib" NEVER use "dir src\\skills\\lib").
-- 🛠️ SKILL USAGE: For complex skills requiring long text, DO NOT write raw CLI commands. Output a structured JSON object. (e.g., {"action": "reincarnate", "summary": "..."})
-
-3. **🧠 ReAct PROTOCOL (WAIT FOR OBSERVATION - EXTREMELY IMPORTANT)**:
-- If your task requires executing a [GOLEM_ACTION] to gather information (e.g., reading a file, checking a folder, fetching an API), **YOU MUST NOT GUESS OR HALLUCINATE THE RESULT IN [GOLEM_REPLY]!**
-- Instead, output the [GOLEM_ACTION], and set [GOLEM_REPLY] to a simple acknowledgment like: "正在為您執行指令查詢，請稍候..." or "我正在查看資料夾，請批准操作...".
-- The system will pause, execute your action, and send the actual result back to you as a "[System Observation]".
-- ONLY AFTER you receive the "[System Observation]" in the NEXT turn, you can analyze it and output the final answer in a new [GOLEM_REPLY].
-`;
-            await this.sendMessage(systemPrompt + superProtocol, true);
+            await this._injectSystemPrompt();
         }
     }
 
+    /**
+     * 建立 Chrome DevTools Protocol 連線
+     */
     async setupCDP() {
         if (this.cdpSession) return;
         try {
             this.cdpSession = await this.page.target().createCDPSession();
             await this.cdpSession.send('Network.enable');
             console.log("🔌 [CDP] 網路神經連結已建立 (Neuro-Link Active)");
-        } catch (e) { console.error("❌ [CDP] 連線失敗:", e.message); }
-    }
-
-    async recall(queryText) {
-        if (!queryText) return [];
-        try { return await this.memoryDriver.recall(queryText); } catch (e) { return []; }
-    }
-
-    async memorize(text, metadata = {}) {
-        try { await this.memoryDriver.memorize(text, metadata); } catch (e) { }
+        } catch (e) {
+            console.error("❌ [CDP] 連線失敗:", e.message);
+        }
     }
 
     // ✨ [新增] 動態視覺腳本：針對新版 UI 切換模型 (支援中英文介面與防呆)
@@ -273,7 +104,7 @@ Your response must be parsed into 3 sections using these specific tags:
         try {
             const result = await this.page.evaluate(async (mode) => {
                 const delay = (ms) => new Promise(r => setTimeout(r, ms));
-                
+
                 // 定義支援的模式及其可能的中英文關鍵字
                 const modeKeywords = {
                     'fast': ['fast', '快捷'],
@@ -294,7 +125,7 @@ Your response must be parsed into 3 sections using these specific tags:
                     if (allKnownKeywords.some(k => txt.includes(k.toLowerCase())) && btn.offsetHeight > 10 && btn.offsetHeight < 60) {
                         const rect = btn.getBoundingClientRect();
                         // 根據截圖，該按鈕位於畫面下半部
-                        if (rect.top > window.innerHeight / 2) { 
+                        if (rect.top > window.innerHeight / 2) {
                             pickerBtn = btn;
                             break;
                         }
@@ -302,12 +133,12 @@ Your response must be parsed into 3 sections using these specific tags:
                 }
 
                 if (!pickerBtn) return "⚠️ 找不到畫面底部的模型切換按鈕。UI 可能已變更，或您停留在登入畫面。";
-                
+
                 // ✨ [核心防呆] 檢查按鈕是否為「灰色不可點擊」狀態
-                const isDisabled = pickerBtn.disabled || 
-                                   pickerBtn.getAttribute('aria-disabled') === 'true' || 
-                                   pickerBtn.classList.contains('disabled');
-                                   
+                const isDisabled = pickerBtn.disabled ||
+                    pickerBtn.getAttribute('aria-disabled') === 'true' ||
+                    pickerBtn.classList.contains('disabled');
+
                 if (isDisabled) {
                     return "⚠️ 模型切換按鈕目前呈現「灰色不可點擊」狀態！這通常是因為您尚未登入 Google 帳號，或該帳號目前沒有權限切換模型。";
                 }
@@ -330,7 +161,7 @@ Your response must be parsed into 3 sections using these specific tags:
                     if (rect.width === 0 || rect.height === 0) continue;
 
                     const txt = (el.innerText || "").trim().toLowerCase();
-                    
+
                     // 【防呆關鍵】如果文字太長，代表它是大容器 (例如整個網頁 background)，絕對不能點擊
                     if (txt.length === 0 || txt.length > 50) continue;
 
@@ -342,7 +173,7 @@ Your response must be parsed into 3 sections using these specific tags:
                             targetElement = el;
                             break; // 找到最標準的選項，直接選定中斷
                         }
-                        
+
                         // 否則，尋找最深層的元素 (querySelectorAll 由外而內，最後的通常最深)
                         bestMatch = el;
                     }
@@ -355,7 +186,7 @@ Your response must be parsed into 3 sections using these specific tags:
 
                 if (!targetElement) {
                     // 若真的找不到，點擊背景關閉選單避免畫面卡死
-                    document.body.click(); 
+                    document.body.click();
                     return `⚠️ 選單已展開，但找不到對應「${mode}」的選項 (已搜尋關鍵字: ${targetKeywords.join(', ')})。您可能目前無法使用該模型。`;
                 }
 
@@ -371,198 +202,110 @@ Your response must be parsed into 3 sections using these specific tags:
         }
     }
 
+    /**
+     * 發送訊息到 Gemini 並等待結構化回應
+     * @param {string} text - 訊息內容
+     * @param {boolean} [isSystem=false] - 是否為系統訊息
+     * @returns {Promise<string>} 清理後的 AI 回應
+     */
     async sendMessage(text, isSystem = false) {
         if (!this.browser) await this.init();
         try { await this.page.bringToFront(); } catch (e) { }
         await this.setupCDP();
 
-        const reqId = Date.now().toString(36).slice(-4);
-        const TAG_START = `[[BEGIN:${reqId}]]`;
-        const TAG_END = `[[END:${reqId}]]`;
-
-        const payload = `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
-1. ENVELOPE: Wrap your ENTIRE response between ${TAG_START} and ${TAG_END}.
-2. TAGS: Use [GOLEM_MEMORY], [GOLEM_ACTION], and [GOLEM_REPLY]. Do not output raw text outside tags.
-3. STRICT JSON: [GOLEM_ACTION] must be perfectly valid JSON. ESCAPE ALL DOUBLE QUOTES (\\") inside string values!
-4. ReAct (NO HALLUCINATION): If you use [GOLEM_ACTION], DO NOT guess the command result in [GOLEM_REPLY]. Wait for the upcoming [System Observation] before answering.
-
-[USER INPUT / SYSTEM MESSAGE]
-${text}`;
+        const reqId = ProtocolFormatter.generateReqId();
+        const startTag = ProtocolFormatter.buildStartTag(reqId);
+        const endTag = ProtocolFormatter.buildEndTag(reqId);
+        const payload = ProtocolFormatter.buildEnvelope(text, reqId);
 
         console.log(`📡 [Brain] 發送訊號: ${reqId} (含每回合強制洗腦引擎)`);
 
-        const tryInteract = async (sel, retryCount = 0) => {
-            if (retryCount > 3) throw new Error("🔥 DOM Doctor 修復失敗，請檢查網路或 HTML 結構大幅變更。");
+        const interactor = new PageInteractor(this.page, this.doctor);
 
-            const cleanSelector = (rawSelector) => {
-                if (!rawSelector) return "";
-                let cleaned = rawSelector
-                    .replace(/```[a-zA-Z]*\s*/gi, '') 
-                    .replace(/`/g, '')                 
-                    .trim();
-                
-                if (cleaned.toLowerCase().startsWith('css ')) {
-                   cleaned = cleaned.substring(4).trim();
-                }
-                return cleaned;
-            };
-
-            try {
-                let baseline = "";
-                if (sel.response && sel.response.trim() !== "") {
-                     baseline = await this.page.evaluate((s) => {
-                        const bubbles = document.querySelectorAll(s);
-                        if (bubbles.length === 0) return "";
-                        let target = bubbles[bubbles.length - 1];
-                        let container = target.closest('model-response') || target.closest('.markdown') || target.closest('.model-response-text') || target.parentElement || target;
-                        return container.innerText || "";
-                    }, sel.response).catch(() => "");
-                } else {
-                     console.log("⚠️ Response Selector 為空，等待觸發修復。");
-                     throw new Error(`空的 Response Selector`);
-                }
-
-                if (!sel.input || sel.input.trim() === "") {
-                     throw new Error(`空的 Input Selector`);
-                }
-
-                let inputEl = await this.page.$(sel.input);
-                if (!inputEl) {
-                    console.log("🚑 找不到輸入框，呼叫 DOM Doctor...");
-                    const html = await this.page.content();
-                    let newSel = await this.doctor.diagnose(html, 'input');
-                    if (newSel) {
-                        this.selectors.input = cleanSelector(newSel);
-                        console.log(`🧼 [Doctor] 清洗後的 Input Selector: ${this.selectors.input}`);
-                        this.doctor.saveSelectors(this.selectors);
-                        return tryInteract(this.selectors, retryCount + 1);
-                    }
-                    throw new Error(`無法修復輸入框 Selector`);
-                }
-
-                await this.page.evaluate((s, t) => {
-                    const el = document.querySelector(s);
-                    el.focus();
-                    document.execCommand('insertText', false, t);
-                }, sel.input, payload);
-
-                await new Promise(r => setTimeout(r, 800));
-
-                if (!sel.send || sel.send.trim() === "") {
-                    console.log("⚠️ 發送按鈕的 Selector 為空，直接降級使用 Enter 鍵發送...");
-                    await this.page.keyboard.press('Enter');
-                } else {
-                    let sendEl = await this.page.$(sel.send);
-                    if (!sendEl) {
-                        console.log("🚑 找不到發送按鈕，呼叫 DOM Doctor...");
-                        const html = await this.page.content();
-                        let newSel = await this.doctor.diagnose(html, 'send');
-                        if (newSel) {
-                            this.selectors.send = cleanSelector(newSel);
-                            console.log(`🧼 [Doctor] 清洗後的 Send Selector: ${this.selectors.send}`);
-                            this.doctor.saveSelectors(this.selectors);
-                            return tryInteract(this.selectors, retryCount + 1);
-                        }
-                        console.log("⚠️ 無法修復按鈕，嘗試使用 Enter 鍵發送...");
-                        await this.page.keyboard.press('Enter');
-                    } else {
-                        try {
-                            await this.page.waitForSelector(sel.send, { timeout: 2000 });
-                            await this.page.click(sel.send);
-                        } catch (e) { 
-                            await this.page.keyboard.press('Enter'); 
-                        }
-                    }
-                }
-
-                if (isSystem) { await new Promise(r => setTimeout(r, 2000)); return ""; }
-
-                console.log(`⚡ [Brain] 等待信封完整性 (${TAG_START} ... ${TAG_END})...`);
-
-                const finalResponse = await this.page.evaluate(async (selector, startTag, endTag, oldText) => {
-                    return new Promise((resolve) => {
-                        const startTime = Date.now();
-                        let stableCount = 0;
-                        let lastCheckText = "";
-
-                        const check = () => {
-                            const bubbles = document.querySelectorAll(selector);
-                            if (bubbles.length === 0) { setTimeout(check, 500); return; }
-
-                            let currentLastBubble = bubbles[bubbles.length - 1];
-                            let container = currentLastBubble.closest('model-response') || 
-                                            currentLastBubble.closest('.markdown') || 
-                                            currentLastBubble.closest('.model-response-text') || 
-                                            currentLastBubble.parentElement || 
-                                            currentLastBubble;
-
-                            const rawText = container.innerText || "";
-                            const startIndex = rawText.indexOf(startTag);
-                            const endIndex = rawText.indexOf(endTag);
-
-                            if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
-                                const content = rawText.substring(startIndex + startTag.length, endIndex).trim();
-                                resolve({ status: 'ENVELOPE_COMPLETE', text: content });
-                                return;
-                            }
-
-                            if (rawText === lastCheckText) {
-                                stableCount++;
-                            } else {
-                                stableCount = 0;
-                            }
-                            lastCheckText = rawText;
-
-                            if (startIndex !== -1) {
-                                if (stableCount > 10) {
-                                    const content = rawText.substring(startIndex + startTag.length).trim();
-                                    resolve({ status: 'ENVELOPE_TRUNCATED', text: content });
-                                    return;
-                                }
-                            } else if (rawText !== oldText && !rawText.includes('SYSTEM: Please WRAP')) {
-                                if (stableCount > 60) {
-                                    resolve({ status: 'FALLBACK_DIFF', text: rawText });
-                                    return;
-                                }
-                            }
-
-                            if (Date.now() - startTime > 300000) { 
-                                resolve({ status: 'TIMEOUT', text: '' }); 
-                                return; 
-                            } 
-                            setTimeout(check, 500);
-                        };
-                        check();
-                    });
-                }, sel.response, TAG_START, TAG_END, baseline);
-
-                if (finalResponse.status === 'TIMEOUT') throw new Error("等待回應超時");
-
-                console.log(`🏁 [Brain] 捕獲: ${finalResponse.status} | 長度: ${finalResponse.text.length}`);
-                let cleanText = finalResponse.text
-                    .replace(TAG_START, '')
-                    .replace(TAG_END, '')
-                    .replace(/\[SYSTEM: Please WRAP.*?\]/, '')
-                    .trim();
-                return cleanText;
-
-            } catch (e) {
-                console.warn(`⚠️ [Brain] 互動失敗: ${e.message}`);
-                if (retryCount === 0) {
-                    console.log('🩺 [Brain] 啟動 DOM Doctor 進行 Response 診斷...');
-                    const htmlDump = await this.page.content();
-                    let newSelector = await this.doctor.diagnose(htmlDump, 'response');
-                    if (newSelector) {
-                        this.selectors.response = cleanSelector(newSelector);
-                        console.log(`🧼 [Doctor] 清洗後的 Response Selector: ${this.selectors.response}`);
-                        this.doctor.saveSelectors(this.selectors);
-                        return await tryInteract(this.selectors, retryCount + 1);
-                    }
-                }
-                throw e;
+        try {
+            return await interactor.interact(
+                payload, this.selectors, isSystem, startTag, endTag
+            );
+        } catch (e) {
+            // 處理 selector 修復觸發的重試
+            if (e.message && e.message.startsWith('SELECTOR_HEALED:')) {
+                const [, type, newSelector] = e.message.split(':');
+                this.selectors[type] = newSelector;
+                this.doctor.saveSelectors(this.selectors);
+                return interactor.interact(
+                    payload, this.selectors, isSystem, startTag, endTag, 1
+                );
             }
-        };
-        return await tryInteract(this.selectors);
+            throw e;
+        }
+    }
+
+    /**
+     * 從記憶中回憶相關內容
+     * @param {string} queryText - 查詢文字
+     * @returns {Promise<Array>}
+     */
+    async recall(queryText) {
+        if (!queryText) return [];
+        try { return await this.memoryDriver.recall(queryText); } catch (e) { return []; }
+    }
+
+    /**
+     * 將內容存入長期記憶
+     * @param {string} text - 要記憶的文字
+     * @param {Object} [metadata={}] - 附加 metadata
+     */
+    async memorize(text, metadata = {}) {
+        try { await this.memoryDriver.memorize(text, metadata); } catch (e) { }
+    }
+
+    /**
+     * 附加對話日誌
+     * @param {Object} entry - 日誌紀錄
+     */
+    _appendChatLog(entry) {
+        this._chatLogger.append(entry);
+    }
+
+    // ─── Private Methods ─────────────────────────────────────
+
+    /** 初始化記憶引擎，失敗時降級 */
+    async _initMemoryDriver() {
+        try {
+            await this.memoryDriver.init();
+        } catch (e) {
+            console.warn("🔄 [System] 記憶引擎降級為 Browser/Native...");
+            this.memoryDriver = new BrowserMemoryDriver(this);
+            await this.memoryDriver.init();
+        }
+    }
+
+    /** 連結 Dashboard (若以 dashboard 模式啟動) */
+    _linkDashboard() {
+        if (!process.argv.includes('dashboard')) return;
+        try {
+            const dashboard = require('../../dashboard');
+            dashboard.setContext(this, this.memoryDriver);
+        } catch (e) {
+            try {
+                const dashboard = require('../../dashboard.js');
+                dashboard.setContext(this, this.memoryDriver);
+            } catch (err) {
+                console.error("Failed to link dashboard context:", err);
+            }
+        }
+    }
+
+    /** 組裝並發送系統 Prompt */
+    async _injectSystemPrompt() {
+        const { systemPrompt, skillMemoryText } = ProtocolFormatter.buildSystemPrompt();
+
+        if (skillMemoryText) {
+            await this.memorize(skillMemoryText, { type: 'system_skills', source: 'boot_init' });
+            console.log(`🧠 [Memory] 已成功將技能載入長期記憶中！`);
+        }
+
+        await this.sendMessage(systemPrompt, true);
     }
 }
 
