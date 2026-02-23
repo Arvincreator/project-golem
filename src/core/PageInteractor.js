@@ -1,5 +1,5 @@
 // ============================================================
-// 🎯 PageInteractor - Gemini 頁面 DOM 互動引擎
+// 🎯 PageInteractor - Gemini 頁面 DOM 互動引擎 (抗 UI 改版強化版)
 // ============================================================
 const { TIMINGS, LIMITS } = require('./constants');
 const ResponseExtractor = require('./ResponseExtractor');
@@ -34,14 +34,6 @@ class PageInteractor {
 
     /**
      * 主互動流程：輸入文字 → 點擊發送 → 等待回應
-     *
-     * @param {string} payload - 要發送的完整 payload
-     * @param {Object} selectors - CSS Selector 集合 { input, send, response }
-     * @param {boolean} isSystem - 是否為系統訊息 (不等待回應)
-     * @param {string} startTag - 信封開始標籤
-     * @param {string} endTag - 信封結束標籤
-     * @param {number} [retryCount=0] - 當前重試次數
-     * @returns {Promise<string>} AI 回應文字
      */
     async interact(payload, selectors, isSystem, startTag, endTag, retryCount = 0) {
         if (retryCount > LIMITS.MAX_INTERACT_RETRY) {
@@ -52,13 +44,13 @@ class PageInteractor {
             // 1. 捕獲基準文字
             const baseline = await this._captureBaseline(selectors.response);
 
-            // 2. 輸入文字
+            // 2. 輸入文字 (使用無敵定位法)
             await this._typeInput(selectors.input, payload);
 
             // 3. 等待輸入穩定
             await new Promise(r => setTimeout(r, TIMINGS.INPUT_DELAY));
 
-            // 4. 發送訊息
+            // 4. 發送訊息 (使用物理 Enter 爆破法)
             await this._clickSend(selectors.send);
 
             // 5. 若為系統訊息，延遲後直接返回
@@ -94,11 +86,6 @@ class PageInteractor {
 
     // ─── Private Methods ─────────────────────────────────────
 
-    /**
-     * 捕獲發送前最後一個回應氣泡的文字 (作為基準)
-     * @param {string} responseSelector
-     * @returns {Promise<string>}
-     */
     async _captureBaseline(responseSelector) {
         if (!responseSelector || responseSelector.trim() === "") {
             console.log("⚠️ Response Selector 為空，等待觸發修復。");
@@ -118,18 +105,37 @@ class PageInteractor {
     }
 
     /**
-     * 在輸入框中填入文字
-     * @param {string} inputSelector
-     * @param {string} text
+     * 在輸入框中填入文字 (無敵屬性定位法)
      */
     async _typeInput(inputSelector, text) {
-        if (!inputSelector || inputSelector.trim() === "") {
-            throw new Error("空的 Input Selector");
+        // 🚀 定義網頁原生文字編輯器的通用特徵 (無視 class 改變)
+        const fallbackSelectors = [
+            '.ProseMirror',
+            'rich-textarea',
+            'div[role="textbox"][contenteditable="true"]',
+            'div[contenteditable="true"]',
+            'textarea'
+        ];
+        
+        let targetSelector = inputSelector;
+
+        // 若原本的 selector 空了，直接切換到無敵陣列
+        if (!targetSelector || targetSelector.trim() === "") {
+            console.log("⚠️ 原 Input Selector 為空，啟動無敵屬性定位法...");
+            targetSelector = fallbackSelectors.join(', ');
         }
 
-        let inputEl = await this.page.$(inputSelector);
+        let inputEl = await this.page.$(targetSelector);
+
+        // 若原本的 selector 失效，切換到無敵陣列
         if (!inputEl) {
-            console.log("🚑 找不到輸入框，呼叫 DOM Doctor...");
+            console.log("⚠️ 原輸入框定位失效，改用通用富文本特徵定位...");
+            targetSelector = fallbackSelectors.join(', ');
+            inputEl = await this.page.$(targetSelector);
+        }
+
+        if (!inputEl) {
+            console.log("🚑 連通用特徵都找不到輸入框，呼叫 DOM Doctor...");
             const html = await this.page.content();
             const newSel = await this.doctor.diagnose(html, 'input');
             if (newSel) {
@@ -140,53 +146,26 @@ class PageInteractor {
             throw new Error("無法修復輸入框 Selector");
         }
 
+        // 執行輸入
         await this.page.evaluate((s, t) => {
             const el = document.querySelector(s);
             el.focus();
             document.execCommand('insertText', false, t);
-        }, inputSelector, text);
+        }, targetSelector, text);
     }
 
     /**
-     * 點擊發送按鈕 (含降級為 Enter 鍵策略)
-     * @param {string} sendSelector
+     * 發送按鈕 (物理 Enter 爆破法)
      */
     async _clickSend(sendSelector) {
-        if (!sendSelector || sendSelector.trim() === "") {
-            console.log("⚠️ 發送按鈕的 Selector 為空，直接降級使用 Enter 鍵發送...");
-            await this.page.keyboard.press('Enter');
-            return;
-        }
-
-        let sendEl = await this.page.$(sendSelector);
-        if (!sendEl) {
-            console.log("🚑 找不到發送按鈕，呼叫 DOM Doctor...");
-            const html = await this.page.content();
-            const newSel = await this.doctor.diagnose(html, 'send');
-            if (newSel) {
-                const cleaned = PageInteractor.cleanSelector(newSel);
-                console.log(`🧼 [Doctor] 清洗後的 Send Selector: ${cleaned}`);
-                throw new Error(`SELECTOR_HEALED:send:${cleaned}`);
-            }
-            console.log("⚠️ 無法修復按鈕，嘗試使用 Enter 鍵發送...");
-            await this.page.keyboard.press('Enter');
-            return;
-        }
-
-        try {
-            await this.page.waitForSelector(sendSelector, { timeout: TIMINGS.SYSTEM_DELAY });
-            await this.page.click(sendSelector);
-        } catch (e) {
-            await this.page.keyboard.press('Enter');
-        }
+        console.log("🚀 [PageInteractor] 啟動物理 Enter 爆破法，無視所有發送按鈕變更！");
+        // 確保焦點在輸入框內後，直接敲擊實體 Enter 鍵
+        await this.page.keyboard.press('Enter');
+        
+        // 稍微等待 0.2 秒讓前端 React/Angular 框架反應過來
+        await new Promise(r => setTimeout(r, 200));
     }
 
-    /**
-     * 嘗試使用 DOM Doctor 修復指定類型的 Selector
-     * @param {string} type - Selector 類型 ('input' | 'send' | 'response')
-     * @param {Object} selectors - 可變的 selectors 物件
-     * @returns {Promise<boolean>} 是否成功修復
-     */
     async _healSelector(type, selectors) {
         try {
             const htmlDump = await this.page.content();
