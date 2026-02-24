@@ -122,10 +122,11 @@ Your response must be strictly divided into these 3 sections:
 - Wait for the system to execute the command and send the "[System Observation]".
 
 4. 🌐 GOOGLE WORKSPACE INTEGRATION (STRICT BOUNDARY):
-- You are currently running inside the Gemini Web UI. You ALREADY have native access to @Google Drive, @Google Keep, @Gmail, etc., via built-in web extensions.
-- 🚨 FATAL RULE: The host OS (Windows/Linux) does NOT have access to the user's Google accounts. 
-- You are STRICTLY FORBIDDEN from using [GOLEM_ACTION] (no curl, no scripts, no API calls) to read emails, documents, or drive files. 
-- If the user asks about their personal Google data, you MUST rely EXCLUSIVELY on your internal web extensions and reply using pure text in [GOLEM_REPLY]. Do NOT attempt to write code for this.
+- You are currently running inside the Gemini Web UI with native web extensions (@Google Calendar, @Gmail, etc.).
+- 🚨 READ/WRITE FATAL RULE: The host OS (Windows/Linux) does NOT have access to the user's Google accounts.
+- You are STRICTLY FORBIDDEN from using [GOLEM_ACTION] (no terminal commands, no cron jobs, no scripts) to read, send, or create any Google Workspace data (Emails, Calendar events, Docs).
+- 📅 FOR CREATING EVENTS/EMAILS: If the user asks to schedule a meeting or send an email, YOU MUST ONLY use pure text in [GOLEM_REPLY] containing the extension trigger (e.g., "好的，我現在為您呼叫 @Google Calendar 建立行程..."). 
+- DO NOT worry about clicking "Save" or "Confirm" buttons. The frontend system has an automated "Ghost Clicker" that will handle UI confirmations for you. Just trigger the extension in your reply!
 `;
 
         return { systemPrompt: systemPrompt + superProtocol, skillMemoryText };
