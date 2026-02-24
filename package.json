@@ -5,17 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-
     "// --- 核心啟動 ---": "",
     "start": "node index.js",
     "dashboard": "node index.js dashboard",
     "dev": "nodemon index.js dashboard",
-
     "// --- 跨平台安裝指令 ---": "",
     "win:setup": "setup.bat",
     "unix:setup": "chmod +x setup.sh && ./setup.sh",
     "unix:start": "./setup.sh",
-
     "// --- 自動化 ---": "",
     "postinstall": "echo [INFO] Golem Core dependencies installed."
   },
@@ -40,6 +37,7 @@
     "puppeteer": "^22.6.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "socket.io-client": "^4.8.3",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

@@ -13,17 +13,19 @@ class NeuroShunter {
 
         // 1. 處理長期記憶寫入
         if (parsed.memory) {
-            console.log(`🧠 [Memory] 寫入: ${parsed.memory.substring(0, 20)}...`);
+            console.log(`[GOLEM_MEMORY]\n${parsed.memory}`);
             await brain.memorize(parsed.memory, { type: 'fact', timestamp: Date.now() });
         }
 
         // 2. 處理直接回覆
         if (parsed.reply) {
+            console.log(`🤖 [Golem] 說: ${parsed.reply}`);
             await ctx.reply(parsed.reply);
         }
 
         // 3. 處理結構化 Action 分配 (Strategy Pattern)
         if (parsed.actions.length > 0) {
+            console.log(`[GOLEM_ACTION]\n${JSON.stringify(parsed.actions, null, 2)}`);
             const normalActions = [];
 
             for (const act of parsed.actions) {
