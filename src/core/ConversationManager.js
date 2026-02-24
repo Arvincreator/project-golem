@@ -44,6 +44,7 @@ class ConversationManager {
         const task = this.queue.shift();
         try {
             console.log(`🚀 [Queue] 開始處理訊息...`);
+            console.log(`🗣️ [User] 說: ${task.text}`);
 
             // ✨ [Log] 記錄用戶輸入 (Fix missing user logs)
             this.brain._appendChatLog({

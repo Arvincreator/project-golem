@@ -46,6 +46,9 @@ class WebServer {
         this.app.get('/dashboard/agents', (req, res) => {
             res.sendFile(path.join(publicPath, 'dashboard', 'agents.html'));
         });
+        this.app.get('/dashboard/office', (req, res) => {
+            res.sendFile(path.join(publicPath, 'dashboard', 'office.html'));
+        });
 
 
         // --- API Routes ---
