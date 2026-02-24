@@ -1,5 +1,5 @@
 // ============================================================
-// 🎯 PageInteractor - Gemini 頁面 DOM 互動引擎 (抗 UI 改版強化版)
+// 🎯 PageInteractor - Gemini 頁面 DOM 互動引擎 (抗 UI 改版強化版 v9.0.5)
 // ============================================================
 const { TIMINGS, LIMITS } = require('./constants');
 const ResponseExtractor = require('./ResponseExtractor');
@@ -44,7 +44,7 @@ class PageInteractor {
             // 1. 捕獲基準文字
             const baseline = await this._captureBaseline(selectors.response);
 
-            // 2. 輸入文字 (使用無敵定位法)
+            // 2. 輸入文字 (使用無敵定位法 + 標籤召喚術)
             await this._typeInput(selectors.input, payload);
 
             // 3. 等待輸入穩定
@@ -105,7 +105,7 @@ class PageInteractor {
     }
 
     /**
-     * 在輸入框中填入文字 (無敵屬性定位法)
+     * 在輸入框中填入文字 (無敵屬性定位法 + 安全標籤召喚)
      */
     async _typeInput(inputSelector, text) {
         // 🚀 定義網頁原生文字編輯器的通用特徵 (無視 class 改變)
@@ -146,12 +146,45 @@ class PageInteractor {
             throw new Error("無法修復輸入框 Selector");
         }
 
-        // 執行輸入
+        // 🪄 擴充功能召喚儀式 (精準防禦 Email 誤判版)
+        const extRegex = /(?:^|\s)@(Gmail|Google Calendar|Google Keep|Google Tasks|Google 文件|Google 雲端硬碟|Workspace|YouTube Music|YouTube|Google Maps|Google 航班|Google 飯店|Spotify|Google Home|SynthID)(?=\s|$)/i;
+        const extMatch = text.match(extRegex);
+
+        let textToPaste = text;
+
+        if (extMatch) {
+            // extMatch[0] 可能包含前面的空白，用 trim() 取得乾淨的召喚詞
+            const summonWord = extMatch[0].trim(); 
+            console.log(`🪄 [PageInteractor] 偵測到擴充功能 [${summonWord}]，啟動人工模擬打字儀式...`);
+            
+            // 從主指令中移除標籤 (替換掉包含可能空白的 extMatch[0])
+            textToPaste = text.replace(extMatch[0], '').trim();
+
+            // 確保焦點
+            await inputEl.focus();
+
+            // 慢慢打出召喚詞，讓 Google 前端有時間跳出選單
+            await this.page.keyboard.type(summonWord, { delay: 100 });
+            
+            // 等待下拉選單動畫浮現
+            await new Promise(r => setTimeout(r, 1500));
+            
+            // 按下 Enter 鍵，強制選取下拉選單的第一個項目 (鎖定標籤)
+            await this.page.keyboard.press('Enter');
+            
+            // 稍作停頓，讓 DOM 更新標籤為藍色氣泡
+            await new Promise(r => setTimeout(r, 500));
+            
+            console.log(`✅ [PageInteractor] [${summonWord}] 標籤召喚完成！準備貼上主指令...`);
+        }
+
+        // 執行輸入 (極速貼上完整/剩餘指令)
         await this.page.evaluate((s, t) => {
             const el = document.querySelector(s);
             el.focus();
-            document.execCommand('insertText', false, t);
-        }, targetSelector, text);
+            // 補一個空白將標籤與後續文字隔開 (如果有文字的話)
+            document.execCommand('insertText', false, (t ? ' ' + t : ''));
+        }, targetSelector, textToPaste);
     }
 
     /**
