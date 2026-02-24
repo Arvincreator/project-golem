@@ -44,7 +44,11 @@ class ProtocolFormatter {
         const systemFingerprint = getSystemFingerprint();
 
         return `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
-1. ENVELOPE: Wrap your ENTIRE response between ${TAG_START} and ${TAG_END}.
+1. ENVELOPE & ONE-TURN RULE: 
+- Wrap your ENTIRE response between [[BEGIN:XXX]] and [[END:XXX]].
+- 🚨 FATAL RULE: You MUST ONLY generate exactly ONE [[BEGIN]] and ONE [[END]] per response. 
+- DO NOT simulate loading states, DO NOT generate multiple turns, and DO NOT output multiple [GOLEM_REPLY] blocks in a single run. 
+- Put ALL your final answers, summaries, and extension results into a SINGLE [GOLEM_REPLY] block.
 2. TAGS: Use [GOLEM_MEMORY], [GOLEM_ACTION], and [GOLEM_REPLY]. Do not output raw text outside tags.
 3. ACTION FORMAT: [GOLEM_ACTION] MUST wrap JSON inside Markdown code blocks! (e.g., \`\`\`json [JSON_HERE] \`\`\`).
 4. OS ADAPTATION: Current OS is [${systemFingerprint}]. You MUST provide syntax optimized for THIS OS.
