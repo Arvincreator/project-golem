@@ -33,7 +33,7 @@ class PageInteractor {
     }
 
     /**
-     * 主互動流程：輸入文字 → 點擊發送 → 等待回應
+     * 主互動流程：輸入文字 → 點擊發送 → 等待回應 → 🌟自動點擊按鈕 (智慧判斷)
      */
     async interact(payload, selectors, isSystem, startTag, endTag, retryCount = 0) {
         if (retryCount > LIMITS.MAX_INTERACT_RETRY) {
@@ -66,6 +66,16 @@ class PageInteractor {
             );
 
             if (finalResponse.status === 'TIMEOUT') throw new Error("等待回應超時");
+
+            // 💡 效能優化：判斷這回合有沒有使用 /@ 擴充功能指令
+            const hasExtensionCommand = /\/@(Gmail|Google Calendar|Google Keep|Google Tasks|Google 文件|Google 雲端硬碟|Workspace|YouTube Music|YouTube|Google Maps|Google 航班|Google 飯店|Spotify|Google Home|SynthID)/i.test(payload);
+            
+            if (hasExtensionCommand) {
+                // 只有呼叫了擴充功能，才需要花 1.5 秒去巡邏有沒有儲存按鈕
+                await this._autoClickWorkspaceButtons();
+            } else {
+                console.log("⏩ [PageInteractor] 此次對話無擴充功能，跳過幽靈掃描，極速返回！");
+            }
 
             console.log(`🏁 [Brain] 捕獲: ${finalResponse.status} | 長度: ${finalResponse.text.length}`);
             return ResponseExtractor.cleanResponse(finalResponse.text, startTag, endTag);
@@ -200,6 +210,52 @@ class PageInteractor {
         
         // 稍微等待 0.2 秒讓前端 React/Angular 框架反應過來
         await new Promise(r => setTimeout(r, 200));
+    }
+
+    /**
+     * 🌟 幽靈按鈕點擊術：掃描並自動點擊 Workspace 的確認按鈕
+     */
+    async _autoClickWorkspaceButtons() {
+        try {
+            console.log("🕵️ [PageInteractor] 啟動幽靈掃描，尋找是否需要點擊【儲存/建立】按鈕...");
+            
+            // 稍等 1.5 秒，讓 Gemini 的 UI 卡片動畫與按鈕完全渲染出來
+            await new Promise(r => setTimeout(r, 1500));
+
+            // 在網頁端執行掃描
+            const clickedButtonText = await this.page.evaluate(() => {
+                // 定義我們想自動點擊的關鍵字 (可依據各語系或擴充功能擴充)
+                const targetKeywords = ['儲存活動', '儲存', '建立', '建立活動', 'Save event', 'Save', 'Create'];
+                
+                // 找出畫面上所有看起來像按鈕的元素
+                const buttons = Array.from(document.querySelectorAll('button, [role="button"], a.btn'));
+                
+                // 💡 關鍵：從最後面找回來！因為最新的卡片與按鈕一定在 DOM 的最底下
+                for (let i = buttons.length - 1; i >= 0; i--) {
+                    const btn = buttons[i];
+                    const text = (btn.innerText || btn.textContent || "").trim();
+                    
+                    // 檢查按鈕文字是否包含我們的關鍵字
+                    if (targetKeywords.some(kw => text === kw || text.includes(kw))) {
+                        // 模擬真實的人類點擊
+                        btn.click();
+                        return text; 
+                    }
+                }
+                return null;
+            });
+
+            if (clickedButtonText) {
+                console.log(`🎯 [PageInteractor] 幽靈突刺成功！已自動幫忙點擊：【${clickedButtonText}】`);
+                // 點擊完後稍微等待，讓 Google 後台處理寫入動作
+                await new Promise(r => setTimeout(r, 2000));
+            } else {
+                console.log("👻 [PageInteractor] 掃描完畢，沒有發現需要自動點擊的卡片按鈕。");
+            }
+
+        } catch (e) {
+            console.warn(`⚠️ [PageInteractor] 幽靈掃描發生異常: ${e.message}`);
+        }
     }
 
     async _healSelector(type, selectors) {
