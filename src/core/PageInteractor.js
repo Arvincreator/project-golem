@@ -129,17 +129,13 @@ class PageInteractor {
         
         let targetSelector = inputSelector;
 
-        // 若原本的 selector 空了，直接切換到無敵陣列
         if (!targetSelector || targetSelector.trim() === "") {
-            console.log("⚠️ 原 Input Selector 為空，啟動無敵屬性定位法...");
             targetSelector = fallbackSelectors.join(', ');
         }
 
         let inputEl = await this.page.$(targetSelector);
 
-        // 若原本的 selector 失效，切換到無敵陣列
         if (!inputEl) {
-            console.log("⚠️ 原輸入框定位失效，改用通用富文本特徵定位...");
             targetSelector = fallbackSelectors.join(', ');
             inputEl = await this.page.$(targetSelector);
         }
@@ -150,94 +146,77 @@ class PageInteractor {
             const newSel = await this.doctor.diagnose(html, 'input');
             if (newSel) {
                 const cleaned = PageInteractor.cleanSelector(newSel);
-                console.log(`🧼 [Doctor] 清洗後的 Input Selector: ${cleaned}`);
                 throw new Error(`SELECTOR_HEALED:input:${cleaned}`);
             }
             throw new Error("無法修復輸入框 Selector");
         }
 
-        // 🪄 擴充功能召喚儀式 (斜線指令明確觸發版: /@擴充功能)
-        // 嚴格配對以 /@ 開頭的擴充功能字眼
         const extRegex = /\/@(Gmail|Google Calendar|Google Keep|Google Tasks|Google 文件|Google 雲端硬碟|Workspace|YouTube Music|YouTube|Google Maps|Google 航班|Google 飯店|Spotify|Google Home|SynthID)/i;
         const extMatch = text.match(extRegex);
 
         let textToPaste = text;
 
         if (extMatch) {
-            const originalSlashCommand = extMatch[0]; // 例如: "/@Gmail" 或 "/@Google 雲端硬碟"
-            const extensionName = extMatch[1];        // 例如: "Gmail"
-            const summonWord = '@' + extensionName;   // 轉換為網頁需要的實際召喚詞: "@Gmail"
+            const originalSlashCommand = extMatch[0]; 
+            const extensionName = extMatch[1];        
+            const summonWord = '@' + extensionName;   
             
             console.log(`🪄 [PageInteractor] 偵測到明確指令 [${originalSlashCommand}]，轉換為 [${summonWord}] 啟動召喚儀式...`);
             
-            // 從主指令中移除 "/@Gmail"，避免等等重複貼上
             textToPaste = text.replace(originalSlashCommand, '').trim();
 
-            // 確保焦點
             await inputEl.focus();
 
-            // 慢慢打出真正的召喚詞 (@Gmail)，讓 Google 前端有時間跳出選單
             await this.page.keyboard.type(summonWord, { delay: 100 });
-            
-            // 等待下拉選單動畫浮現
             await new Promise(r => setTimeout(r, 1500));
-            
-            // 按下 Enter 鍵，強制選取下拉選單的第一個項目 (鎖定標籤)
             await this.page.keyboard.press('Enter');
-            
-            // 稍作停頓，讓 DOM 更新標籤為藍色氣泡
             await new Promise(r => setTimeout(r, 500));
             
             console.log(`✅ [PageInteractor] [${summonWord}] 標籤召喚完成！準備貼上主指令...`);
         }
 
-        // 執行輸入 (極速貼上剩餘指令)
         await this.page.evaluate((s, t) => {
             const el = document.querySelector(s);
             el.focus();
-            // 補一個空白將標籤與後續文字隔開 (如果有文字的話)
             document.execCommand('insertText', false, (t ? ' ' + t : ''));
         }, targetSelector, textToPaste);
     }
 
-    /**
-     * 發送按鈕 (物理 Enter 爆破法)
-     */
     async _clickSend(sendSelector) {
         console.log("🚀 [PageInteractor] 啟動物理 Enter 爆破法，無視所有發送按鈕變更！");
-        // 確保焦點在輸入框內後，直接敲擊實體 Enter 鍵
         await this.page.keyboard.press('Enter');
-        
-        // 稍微等待 0.2 秒讓前端 React/Angular 框架反應過來
         await new Promise(r => setTimeout(r, 200));
     }
 
     /**
-     * 🌟 幽靈按鈕點擊術：掃描並自動點擊 Workspace 的確認按鈕
+     * 🌟 幽靈按鈕點擊術：加裝防禦機制的升級版
      */
     async _autoClickWorkspaceButtons() {
         try {
             console.log("🕵️ [PageInteractor] 啟動幽靈掃描，尋找是否需要點擊【儲存/建立】按鈕...");
             
-            // 稍等 1.5 秒，讓 Gemini 的 UI 卡片動畫與按鈕完全渲染出來
             await new Promise(r => setTimeout(r, 1500));
 
-            // 在網頁端執行掃描
             const clickedButtonText = await this.page.evaluate(() => {
-                // 定義我們想自動點擊的關鍵字 (可依據各語系或擴充功能擴充)
                 const targetKeywords = ['儲存活動', '儲存', '建立', '建立活動', 'Save event', 'Save', 'Create'];
-                
-                // 找出畫面上所有看起來像按鈕的元素
                 const buttons = Array.from(document.querySelectorAll('button, [role="button"], a.btn'));
                 
-                // 💡 關鍵：從最後面找回來！因為最新的卡片與按鈕一定在 DOM 的最底下
                 for (let i = buttons.length - 1; i >= 0; i--) {
                     const btn = buttons[i];
+                    
+                    // 🛡️ 防禦 1：禁止觸摸側邊欄 (避開歷史紀錄)
+                    if (btn.closest('nav') || btn.closest('aside') || btn.closest('sidenav')) {
+                        continue;
+                    }
+
                     const text = (btn.innerText || btn.textContent || "").trim();
                     
-                    // 檢查按鈕文字是否包含我們的關鍵字
+                    // 🛡️ 防禦 2：長度限制 (按鈕文字通常很短，超過 15 字必定是標題)
+                    if (text.length > 15 || text.length === 0) {
+                        continue;
+                    }
+
                     if (targetKeywords.some(kw => text === kw || text.includes(kw))) {
-                        // 模擬真實的人類點擊
                         btn.click();
                         return text; 
                     }
@@ -247,7 +226,6 @@ class PageInteractor {
 
             if (clickedButtonText) {
                 console.log(`🎯 [PageInteractor] 幽靈突刺成功！已自動幫忙點擊：【${clickedButtonText}】`);
-                // 點擊完後稍微等待，讓 Google 後台處理寫入動作
                 await new Promise(r => setTimeout(r, 2000));
             } else {
                 console.log("👻 [PageInteractor] 掃描完畢，沒有發現需要自動點擊的卡片按鈕。");
@@ -264,7 +242,6 @@ class PageInteractor {
             const newSelector = await this.doctor.diagnose(htmlDump, type);
             if (newSelector) {
                 selectors[type] = PageInteractor.cleanSelector(newSelector);
-                console.log(`🧼 [Doctor] 清洗後的 ${type} Selector: ${selectors[type]}`);
                 this.doctor.saveSelectors(selectors);
                 return true;
             }
