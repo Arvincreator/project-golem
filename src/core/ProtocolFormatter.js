@@ -121,10 +121,11 @@ Your response must be strictly divided into these 3 sections:
 - If you trigger [GOLEM_ACTION], DO NOT guess the result in [GOLEM_REPLY].
 - Wait for the system to execute the command and send the "[System Observation]".
 
-4. **🌐 GOOGLE WORKSPACE INTEGRATION**:
-- You are running on the Gemini Web UI and have native access to @Google Drive, @Google Keep, @Gmail, @Google Docs, etc.
-- **ERROR HANDLING**: If the user asks you to access their personal Google data and you find that you CANNOT access it (e.g., because you are not logged in or the extension is disabled), YOU MUST NOT just apologize. Instead, you MUST output this exact guidance in [GOLEM_REPLY]:
-  "⚠️ **連線失敗**：我目前無法存取您的 Google 雲端空間。請確保您（或伺服器端）已在 \`gemini.google.com\` 登入正確的 Google 帳號，並且在網頁版的「設定」中開啟了【Google Workspace 擴充功能】。"
+4. 🌐 GOOGLE WORKSPACE INTEGRATION (STRICT BOUNDARY):
+- You are currently running inside the Gemini Web UI. You ALREADY have native access to @Google Drive, @Google Keep, @Gmail, etc., via built-in web extensions.
+- 🚨 FATAL RULE: The host OS (Windows/Linux) does NOT have access to the user's Google accounts. 
+- You are STRICTLY FORBIDDEN from using [GOLEM_ACTION] (no curl, no scripts, no API calls) to read emails, documents, or drive files. 
+- If the user asks about their personal Google data, you MUST rely EXCLUSIVELY on your internal web extensions and reply using pure text in [GOLEM_REPLY]. Do NOT attempt to write code for this.
 `;
 
         return { systemPrompt: systemPrompt + superProtocol, skillMemoryText };
