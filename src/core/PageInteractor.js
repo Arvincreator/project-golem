@@ -44,7 +44,7 @@ class PageInteractor {
             // 1. 捕獲基準文字
             const baseline = await this._captureBaseline(selectors.response);
 
-            // 2. 輸入文字 (使用無敵定位法 + 標籤召喚術)
+            // 2. 輸入文字 (使用無敵定位法 + 斜線指令標籤召喚術)
             await this._typeInput(selectors.input, payload);
 
             // 3. 等待輸入穩定
@@ -105,7 +105,7 @@ class PageInteractor {
     }
 
     /**
-     * 在輸入框中填入文字 (無敵屬性定位法 + 安全標籤召喚)
+     * 在輸入框中填入文字 (無敵屬性定位法 + 斜線標籤召喚)
      */
     async _typeInput(inputSelector, text) {
         // 🚀 定義網頁原生文字編輯器的通用特徵 (無視 class 改變)
@@ -146,24 +146,27 @@ class PageInteractor {
             throw new Error("無法修復輸入框 Selector");
         }
 
-        // 🪄 擴充功能召喚儀式 (精準防禦 Email 誤判版)
-        const extRegex = /(?:^|\s)@(Gmail|Google Calendar|Google Keep|Google Tasks|Google 文件|Google 雲端硬碟|Workspace|YouTube Music|YouTube|Google Maps|Google 航班|Google 飯店|Spotify|Google Home|SynthID)(?=\s|$)/i;
+        // 🪄 擴充功能召喚儀式 (斜線指令明確觸發版: /@擴充功能)
+        // 嚴格配對以 /@ 開頭的擴充功能字眼
+        const extRegex = /\/@(Gmail|Google Calendar|Google Keep|Google Tasks|Google 文件|Google 雲端硬碟|Workspace|YouTube Music|YouTube|Google Maps|Google 航班|Google 飯店|Spotify|Google Home|SynthID)/i;
         const extMatch = text.match(extRegex);
 
         let textToPaste = text;
 
         if (extMatch) {
-            // extMatch[0] 可能包含前面的空白，用 trim() 取得乾淨的召喚詞
-            const summonWord = extMatch[0].trim(); 
-            console.log(`🪄 [PageInteractor] 偵測到擴充功能 [${summonWord}]，啟動人工模擬打字儀式...`);
+            const originalSlashCommand = extMatch[0]; // 例如: "/@Gmail" 或 "/@Google 雲端硬碟"
+            const extensionName = extMatch[1];        // 例如: "Gmail"
+            const summonWord = '@' + extensionName;   // 轉換為網頁需要的實際召喚詞: "@Gmail"
             
-            // 從主指令中移除標籤 (替換掉包含可能空白的 extMatch[0])
-            textToPaste = text.replace(extMatch[0], '').trim();
+            console.log(`🪄 [PageInteractor] 偵測到明確指令 [${originalSlashCommand}]，轉換為 [${summonWord}] 啟動召喚儀式...`);
+            
+            // 從主指令中移除 "/@Gmail"，避免等等重複貼上
+            textToPaste = text.replace(originalSlashCommand, '').trim();
 
             // 確保焦點
             await inputEl.focus();
 
-            // 慢慢打出召喚詞，讓 Google 前端有時間跳出選單
+            // 慢慢打出真正的召喚詞 (@Gmail)，讓 Google 前端有時間跳出選單
             await this.page.keyboard.type(summonWord, { delay: 100 });
             
             // 等待下拉選單動畫浮現
@@ -178,7 +181,7 @@ class PageInteractor {
             console.log(`✅ [PageInteractor] [${summonWord}] 標籤召喚完成！準備貼上主指令...`);
         }
 
-        // 執行輸入 (極速貼上完整/剩餘指令)
+        // 執行輸入 (極速貼上剩餘指令)
         await this.page.evaluate((s, t) => {
             const el = document.querySelector(s);
             el.focus();
