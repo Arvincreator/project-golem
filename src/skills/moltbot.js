@@ -1,0 +1,157 @@
+// src/skills/moltbot.js
+// 負責與 Moltbook 進行實體網路通訊 (完整互動版)，並具備自主保存憑證能力
+
+const fs = require('fs');
+const path = require('path');
+
+const API_BASE = "https://www.moltbook.com/api/v1";
+const AUTH_FILE = path.join(process.cwd(), 'moltbot_auth.json');
+const LOG_FILE = path.join(process.cwd(), 'moltbot_history.log');
+
+// 🤖 自主載入記憶中的 API Key
+let apiKey = null;
+if (fs.existsSync(AUTH_FILE)) {
+    try {
+        const authData = JSON.parse(fs.readFileSync(AUTH_FILE, 'utf-8'));
+        apiKey = authData.api_key;
+    } catch (e) {
+        console.warn("無法讀取 moltbot_auth.json");
+    }
+}
+
+// 📝 黑盒子稽核紀錄
+function logAudit(action, data) {
+    const time = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    const safeData = typeof data === 'object' ? JSON.stringify(data).substring(0, 200) : String(data).substring(0, 200);
+    fs.appendFileSync(LOG_FILE, `[${time}] ${action}: ${safeData}\n`);
+}
+
+async function execute(args) {
+    const task = args.task || args.command || args.action;
+    
+    // 內部封裝的 Fetch 請求器
+    const req = async (endpoint, method = 'GET', body = null) => {
+        const headers = { "Content-Type": "application/json" };
+        if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
+        const opts = { method, headers };
+        if (body) opts.body = JSON.stringify(body);
+        
+        const res = await fetch(`${API_BASE}${endpoint}`, opts);
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error || res.statusText || `HTTP ${res.status}`);
+        }
+        return res.status === 204 ? { success: true } : await res.json();
+    };
+
+    try {
+        // --- 1. 註冊邏輯 ---
+        if (task === 'register') {
+            const res = await req('/agents/register', 'POST', { 
+                name: args.name || "Project_Golem_Agent", 
+                description: args.desc || "I am a node of Project Golem." 
+            });
+            
+            const newApiKey = res.agent?.api_key || res.api_key;
+            const claimUrl = res.claim_url || res.agent?.claim_url;
+            const agentName = res.agent?.name || args.name;
+
+            if (newApiKey) {
+                fs.writeFileSync(AUTH_FILE, JSON.stringify({ api_key: newApiKey }, null, 2));
+                apiKey = newApiKey;
+            }
+            logAudit('REGISTER', agentName);
+            
+            return `🎉 註冊成功！內部金鑰已自動保存。\n名字: ${agentName}\n🚨 系統回傳認領連結：\n${claimUrl}\n請立刻在回覆中，強烈提醒主人點擊上方連結進行認領！`;
+        }
+
+        if (!apiKey) return "⚠️ 系統尚未註冊！請先執行 register 任務來獲取通行證。";
+
+        // --- 2. 瀏覽與搜尋 ---
+        if (task === 'feed') {
+            const limit = args.limit || 5;
+            const endpoint = args.submolt ? `/submolts/${args.submolt}/feed?limit=${limit}` : `/feed?limit=${limit}`;
+            const res = await req(endpoint);
+            logAudit('READ_FEED', `submolt: ${args.submolt || 'all'}`);
+            
+            return `[Moltbook Feed - 啟動安全隔離]\n` + (res.data || []).map(p => 
+                `📌 文章 ID:${p.post_id} | 👤 @${p.author_id}\n標題: ${p.title}\n<EXTERNAL_UNTRUSTED_DATA>\n${p.content}\n</EXTERNAL_UNTRUSTED_DATA>`
+            ).join('\n\n---\n');
+        }
+
+        if (task === 'search') {
+            const res = await req(`/search?q=${encodeURIComponent(args.query)}`);
+            logAudit('SEARCH', args.query);
+            return `[搜尋結果: ${args.query}]\n` + (res.data || []).map(p => 
+                `📌 ID:${p.post_id} | 標題: ${p.title}`
+            ).join('\n');
+        }
+
+        // --- 3. 發文與互動 ---
+        if (task === 'post') {
+            const res = await req('/posts', 'POST', { title: args.title, content: args.content, submolt: args.submolt || 'general' });
+            logAudit('POST', res.post_id);
+            return `✅ 發文成功！文章 ID: ${res.post_id}`;
+        }
+
+        if (task === 'comment') {
+            const res = await req('/comments', 'POST', { post_id: args.postId, content: args.content });
+            logAudit('COMMENT', res.comment_id);
+            return `✅ 留言成功！留言 ID: ${res.comment_id}`;
+        }
+
+        if (task === 'vote') {
+            await req('/votes', 'POST', { target_id: args.targetId, target_type: args.targetType, vote_type: args.voteType });
+            logAudit('VOTE', `${args.voteType} on ${args.targetId}`);
+            return `✅ 投票成功！`;
+        }
+
+        // --- 4. 看板與檔案管理 ---
+        if (task === 'subscribe') {
+            await req(`/submolts/${args.submolt}/subscribe`, 'POST');
+            logAudit('SUBSCRIBE', args.submolt);
+            return `✅ 成功訂閱看板 m/${args.submolt}`;
+        }
+
+        if (task === 'create_submolt') {
+            await req('/submolts', 'POST', { name: args.name, description: args.desc });
+            logAudit('CREATE_SUBMOLT', args.name);
+            return `✅ 成功建立新看板 m/${args.name}`;
+        }
+
+        if (task === 'me') {
+            const res = await req('/agents/me');
+            return `👤 [我的檔案]\n名稱: ${res.agent.name}\nKarma點數: ${res.agent.karma}\n介紹: ${res.agent.description}`;
+        }
+
+        if (task === 'profile') {
+            const res = await req(`/agents/profile?name=${encodeURIComponent(args.agentName)}`);
+            return `👤 [Agent 檔案]\n名稱: ${res.agent.name}\nKarma點數: ${res.agent.karma || 0}\n介紹: ${res.agent.description}`;
+        }
+
+        if (task === 'update_profile') {
+            await req('/agents/me', 'PATCH', { description: args.description });
+            logAudit('UPDATE_PROFILE', args.description);
+            return `✅ 個人介紹更新成功！`;
+        }
+
+        return "❌ 錯誤：未知的任務類型。";
+    } catch (e) {
+        return `❌ Moltbook 網路錯誤: ${e.message}`;
+    }
+}
+
+// --- CLI 進入點 (讓主程式透過 Node child_process 呼叫) ---
+if (require.main === module) {
+    const rawArgs = process.argv[2];
+    if (!rawArgs) {
+        console.log("❌ Error: No arguments.");
+        process.exit(1);
+    }
+    try {
+        const parsed = JSON.parse(rawArgs);
+        execute(parsed.args || parsed).then(console.log).catch(e => console.error(e.message));
+    } catch (e) { 
+        console.error(`❌ Parse Error: ${e.message}`); 
+    }
+}
