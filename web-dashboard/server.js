@@ -96,6 +96,22 @@ class WebServer {
             }
         });
 
+        this.app.post('/api/system/reload', (req, res) => {
+            console.log("🔄 [WebServer] Received reload request. Restarting system...");
+            res.json({ success: true, message: "System is restarting..." });
+
+            // Small delay to ensure the response is sent before the process exits
+            setTimeout(() => {
+                const { spawn } = require('child_process');
+                const subprocess = spawn(process.argv[0], process.argv.slice(1), {
+                    detached: true,
+                    stdio: 'ignore'
+                });
+                subprocess.unref();
+                process.exit(0);
+            }, 1000);
+        });
+
         // Socket.io connection handler
         this.io.on('connection', (socket) => {
             // Send initial state upon connection
