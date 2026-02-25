@@ -78,7 +78,7 @@ class GolemBrain {
 
         // 5. 新會話: 注入系統 Prompt
         if (forceReload || isNewSession) {
-            await this._injectSystemPrompt();
+            await this._injectSystemPrompt(forceReload);
         }
     }
 
@@ -294,16 +294,20 @@ class GolemBrain {
         }
     }
 
-    /** 組裝並發送系統 Prompt */
-    async _injectSystemPrompt() {
-        const { systemPrompt, skillMemoryText } = await ProtocolFormatter.buildSystemPrompt();
+    /**
+     * 組裝並發送系統 Prompt
+     * @param {boolean} [forceRefresh=false]
+     */
+    async _injectSystemPrompt(forceRefresh = false) {
+        const { systemPrompt, skillMemoryText } = await ProtocolFormatter.buildSystemPrompt(forceRefresh);
 
         if (skillMemoryText) {
             await this.memorize(skillMemoryText, { type: 'system_skills', source: 'boot_init' });
             console.log(`🧠 [Memory] 已成功將技能載入長期記憶中！`);
         }
 
-        await this.sendMessage(systemPrompt, true);
+        const compressedPrompt = ProtocolFormatter.compress(systemPrompt);
+        await this.sendMessage(compressedPrompt, true);
     }
 }
 
