@@ -7,30 +7,30 @@ const CORE_DEFINITION = require('./core/definition');
 // 2. 技能庫 - 自動發現版 (SKILL LIBRARY v9.0+)
 // ============================================================
 
-// 🎯 自動掃描 lib/ 目錄，動態加載所有技能
+// 🎯 自動掃描 core/ 目錄，動態加載所有技能執行檔
 const SKILLS = {};
-const libDir = path.join(__dirname, 'lib');
+const coreDir = path.join(__dirname, 'core');
 
 // 確保目錄存在
-if (fs.existsSync(libDir)) {
-    const files = fs.readdirSync(libDir);
-    
+if (fs.existsSync(coreDir)) {
+    const files = fs.readdirSync(coreDir);
+
     files.forEach(file => {
         // 只加載 .js 文件，跳過其他
         if (!file.endsWith('.js')) return;
-        
+
         const skillName = file.replace('.js', '').toUpperCase().replace(/-/g, '_');
         try {
             // 動態 require
-            const skillModule = require(`./lib/${file}`);
+            const skillModule = require(`./core/${file}`);
             SKILLS[skillName] = skillModule;
-            console.log(`✅ [Skills] 已加載: ${skillName}`);
+            console.log(`✅ [Skills:Core] 已加載: ${skillName}`);
         } catch (e) {
-            console.warn(`⚠️ [Skills] 加載失敗: ${file} - ${e.message}`);
+            console.warn(`⚠️ [Skills:Core] 加載失敗: ${file} - ${e.message}`);
         }
     });
 } else {
-    console.warn(`⚠️ [Skills] lib 目錄不存在`);
+    console.warn(`⚠️ [Skills] core 目錄不存在`);
 }
 
 console.log(`📚 [Skills] 共加載 ${Object.keys(SKILLS).length} 個技能`);

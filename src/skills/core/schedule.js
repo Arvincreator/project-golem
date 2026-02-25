@@ -4,10 +4,11 @@
 const fs = require('fs');
 const path = require('path');
 
-async function execute(args, ctx) {
+async function run(ctx) {
+    const args = ctx.args || {};
     try {
         const { task, time } = args;
-        
+
         if (!task || !time) {
             return "❌ 排程失敗：缺少任務內容或時間。";
         }
@@ -34,7 +35,7 @@ async function execute(args, ctx) {
         fs.writeFileSync(scheduleFile, JSON.stringify(schedules, null, 2));
 
         console.log(`📝 [排程紀錄] 已將任務寫入資料庫: ${task} at ${time}`);
-        
+
         // 回報給 Golem 知道寫入成功了
         return `✅ 排程已成功建立！將於 ${time} 提醒主人：「${task}」。`;
 
@@ -44,4 +45,8 @@ async function execute(args, ctx) {
     }
 }
 
-module.exports = { execute };
+module.exports = {
+    name: "CHRONOS",
+    description: "時間排程器",
+    run: run
+};

@@ -21,15 +21,16 @@ function logAudit(action, data) {
     fs.appendFileSync(LOG_FILE, `[${time}] ${action}: ${safeData}\n`);
 }
 
-async function execute(args) {
+async function run(ctx) {
+    const args = ctx.args || {};
     const task = args.task || args.command || args.action;
-    
+
     const req = async (endpoint, method = 'GET', body = null) => {
         const headers = { "Content-Type": "application/json" };
         if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
         const opts = { method, headers };
         if (body) opts.body = JSON.stringify(body);
-        
+
         const res = await fetch(`${API_BASE}${endpoint}`, opts);
         if (!res.ok) {
             const err = await res.json().catch(() => ({}));
@@ -43,7 +44,7 @@ async function execute(args) {
         if (task === 'register') {
             // 完美還原：自動加上 (golem) 後綴機制
             const rawName = args.name || "Agent";
-            const safeName = rawName.replace(/[^a-zA-Z0-9_]/g, ''); 
+            const safeName = rawName.replace(/[^a-zA-Z0-9_]/g, '');
             const finalName = safeName.includes('_golem') ? safeName : `${safeName}_golem`;
 
             const res = await req('/agents/register', 'POST', { name: finalName, description: args.desc || "I am a node of Project Golem." });
@@ -147,11 +148,17 @@ async function execute(args) {
     }
 }
 
+module.exports = {
+    name: "MOLTBOT",
+    description: "Moltbook 社交網絡機器人",
+    run: run
+};
+
 if (require.main === module) {
     const rawArgs = process.argv[2];
     if (!rawArgs) process.exit(1);
     try {
         const parsed = JSON.parse(rawArgs);
-        execute(parsed.args || parsed).then(console.log).catch(e => console.error(e.message));
+        run({ args: parsed.args || parsed }).then(console.log).catch(e => console.error(e.message));
     } catch (e) { console.error(`❌ Parse Error: ${e.message}`); }
 }

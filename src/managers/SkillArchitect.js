@@ -4,7 +4,7 @@ const path = require('path');
 
 class SkillArchitect {
     constructor(skillsDir) {
-        this.skillsDir = skillsDir || path.join(process.cwd(), 'skills', 'user');
+        this.skillsDir = skillsDir || path.join(process.cwd(), 'src', 'skills', 'user');
         // 確保目錄存在
         if (!fs.existsSync(this.skillsDir)) {
             fs.mkdirSync(this.skillsDir, { recursive: true });
@@ -62,12 +62,12 @@ class SkillArchitect {
             // 2. 透過 Web Gemini 發送訊息
             // 注意：我們假設 brain.sendMessage 會處理三明治協定，我們只需要內容
             const rawResponse = await brain.sendMessage(systemPrompt);
-            
+
             console.log(`🏗️ Architect: Received response from Web Gemini (${rawResponse.length} chars)`);
 
             // 3. 解析回應 (尋找 [[SKILL_JSON_START]])
             const jsonMatch = rawResponse.match(/\[\[SKILL_JSON_START\]\]([\s\S]*?)\[\[SKILL_JSON_END\]\]/);
-            
+
             let skillData;
             if (jsonMatch && jsonMatch[1]) {
                 try {
@@ -97,7 +97,7 @@ class SkillArchitect {
             if (!skillData.filename.endsWith('.js')) skillData.filename += '.js';
 
             const filePath = path.join(this.skillsDir, skillData.filename);
-            
+
             // 防止意外覆蓋
             if (fs.existsSync(filePath)) {
                 skillData.filename = skillData.filename.replace('.js', `-${Date.now()}.js`);
@@ -106,11 +106,11 @@ class SkillArchitect {
             const finalPath = path.join(this.skillsDir, skillData.filename);
             fs.writeFileSync(finalPath, skillData.code);
 
-            return { 
-                success: true, 
-                path: finalPath, 
-                name: skillData.name, 
-                preview: skillData.description 
+            return {
+                success: true,
+                path: finalPath,
+                name: skillData.name,
+                preview: skillData.description
             };
 
         } catch (error) {

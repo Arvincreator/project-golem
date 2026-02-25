@@ -9,7 +9,7 @@ const SystemQmdDriver = require('../memory/SystemQmdDriver');
 const SystemNativeDriver = require('../memory/SystemNativeDriver');
 
 const BrowserLauncher = require('./BrowserLauncher');
-const ProtocolFormatter = require('./ProtocolFormatter');
+const ProtocolFormatter = require('../services/ProtocolFormatter');
 const PageInteractor = require('./PageInteractor');
 const ChatLogManager = require('../managers/ChatLogManager');
 const { URLS } = require('./constants');
@@ -296,7 +296,7 @@ class GolemBrain {
 
     /** 組裝並發送系統 Prompt */
     async _injectSystemPrompt() {
-        const { systemPrompt, skillMemoryText } = ProtocolFormatter.buildSystemPrompt();
+        const { systemPrompt, skillMemoryText } = await ProtocolFormatter.buildSystemPrompt();
 
         if (skillMemoryText) {
             await this.memorize(skillMemoryText, { type: 'system_skills', source: 'boot_init' });

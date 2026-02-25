@@ -1,4 +1,4 @@
-const skillManager = require('../../skills/lib/skill-manager');
+const skillManager = require('../../managers/SkillManager');
 
 class SkillHandler {
     static async execute(ctx, act, brain) {
