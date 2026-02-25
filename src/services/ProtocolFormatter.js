@@ -1,9 +1,11 @@
 // ============================================================
 // 📡 ProtocolFormatter - Golem 協議格式化 (v9.0.5 - OS, Markdown, Self-Learning & Workspace)
 // ============================================================
+const fs = require('fs').promises;
+const path = require('path');
 const { getSystemFingerprint } = require('../utils/system');
 const skills = require('../skills');
-const skillManager = require('../skills/lib/skill-manager');
+const skillManager = require('../managers/SkillManager');
 
 class ProtocolFormatter {
     /**
@@ -63,34 +65,35 @@ ${text}`;
     }
 
     /**
-     * 組裝完整的系統 Prompt (擴展 Workspace 的客服引導)
-     * @returns {{ systemPrompt: string, skillMemoryText: string|null }}
+     * 組裝完整的系統 Prompt (包含動態掃描 lib/ 下的 .md 檔)
+     * @returns {Promise<{ systemPrompt: string, skillMemoryText: string|null }>}
      */
-    static buildSystemPrompt() {
+    static async buildSystemPrompt() {
         const systemFingerprint = getSystemFingerprint();
         let systemPrompt = skills.getSystemPrompt(systemFingerprint);
-        let skillMemoryText = null;
+        let skillMemoryText = "【系統技能庫初始化】我目前已掛載並精通以下可用技能：\n";
 
+        // --- [新增] 動態掃描 src/skills/lib/*.md ---
+        const libPath = path.join(process.cwd(), 'src', 'skills', 'lib');
         try {
-            const activeSkills = skillManager.listSkills();
-            if (activeSkills.length > 0) {
-                systemPrompt += `\n\n### 🛠️ DYNAMIC SKILLS AVAILABLE (Output {"action": "skill_name", ...}):\n`;
+            const files = await fs.readdir(libPath);
+            const mdFiles = files.filter(f => f.endsWith('.md'));
 
-                skillMemoryText = "【系統技能庫初始化】我目前已掛載並精通以下可用技能：\n";
-                activeSkills.forEach(s => {
-                    systemPrompt += `- Action: "${s.name}" | Desc: ${s.description}\n`;
-                    skillMemoryText += `- 技能 "${s.name}"：${s.description}\n`;
-                });
-                systemPrompt += `(Use these skills via [GOLEM_ACTION] when requested by user.)\n`;
-
-                console.log(`🧠 [Memory] 準備將 ${activeSkills.length} 項技能載入長期記憶中`);
+            if (mdFiles.length > 0) {
+                systemPrompt += `\n\n### 🧩 CORE SKILL PROTOCOLS (Cognitive Layer):\n`;
+                for (const file of mdFiles) {
+                    const content = await fs.readFile(path.join(libPath, file), 'utf-8');
+                    const skillName = path.basename(file, '.md').toUpperCase();
+                    systemPrompt += `#### SKILL: ${skillName}\n${content}\n\n`;
+                    skillMemoryText += `- 技能 "${skillName}"：已載入認知說明書\n`;
+                }
             }
         } catch (e) {
-            console.warn("Skills injection failed:", e);
+            console.warn("❌ [ProtocolFormatter] 說明書掃描失敗:", e);
         }
 
         const superProtocol = `
-\n\n【⚠️ GOLEM PROTOCOL v9.0.5 - CHRONOS + OS-AWARE + SELF-LEARNING + WORKSPACE】
+\n\n【⚠️ GOLEM PROTOCOL v9.0.6 - TWO-TIER ARCHITECTURE + OS-AWARE】
 You act as a middleware OS. You MUST strictly follow this comprehensive output format.
 DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
 
@@ -105,17 +108,15 @@ Your response must be strictly divided into these 3 sections:
 [GOLEM_ACTION]
 - 🚨 **MANDATORY**: YOU MUST USE MARKDOWN JSON CODE BLOCKS!
 - **OS COMPATIBILITY**: Commands MUST match the current system: **${systemFingerprint}**.
-- **PRECISION**: Use stable, native commands (e.g., 'dir' for Windows, 'ls' for Linux).
-- **ONE-SHOT SUCCESS**: No guessing. Provide the most feasible, error-free command possible.
+- **Execution Layer**: Skills are now separated from prompts. Execute via action name.
 \`\`\`json
 [
-  {"action": "command", "parameter": "SPECIFIC_STABLE_COMMAND_FOR_${systemFingerprint}"}
+  {"action": "moltbot", "task": "feed", "limit": 5}
 ]
 \`\`\`
 
 [GOLEM_REPLY]
 - Pure text response to the user.
-- If an action is pending, use: "正在執行 [${systemFingerprint}] 相容指令，請稍候...".
 
 2. **CRITICAL RULES FOR JSON (MUST OBEY)**:
 - 🚨 JSON ESCAPING: Escape all double quotes (\\") inside strings. Unescaped quotes will crash the parser!
@@ -124,13 +125,6 @@ Your response must be strictly divided into these 3 sections:
 3. **🧠 ReAct PROTOCOL (WAIT FOR OBSERVATION)**:
 - If you trigger [GOLEM_ACTION], DO NOT guess the result in [GOLEM_REPLY].
 - Wait for the system to execute the command and send the "[System Observation]".
-
-4. 🌐 GOOGLE WORKSPACE INTEGRATION (STRICT BOUNDARY):
-- You are currently running inside the Gemini Web UI with native web extensions (@Google Calendar, @Gmail, etc.).
-- 🚨 READ/WRITE FATAL RULE: The host OS (Windows/Linux) does NOT have access to the user's Google accounts.
-- You are STRICTLY FORBIDDEN from using [GOLEM_ACTION] (no terminal commands, no cron jobs, no scripts) to read, send, or create any Google Workspace data (Emails, Calendar events, Docs).
-- 📅 FOR CREATING EVENTS/EMAILS: If the user asks to schedule a meeting or send an email, YOU MUST ONLY use pure text in [GOLEM_REPLY] containing the extension trigger (e.g., "好的，我現在為您呼叫 @Google Calendar 建立行程..."). 
-- DO NOT worry about clicking "Save" or "Confirm" buttons. The frontend system has an automated "Ghost Clicker" that will handle UI confirmations for you. Just trigger the extension in your reply!
 `;
 
         return { systemPrompt: systemPrompt + superProtocol, skillMemoryText };
