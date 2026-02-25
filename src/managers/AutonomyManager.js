@@ -68,6 +68,7 @@ class AutonomyManager {
     }
     async getAdminContext() {
         const fakeCtx = {
+            chatId: 'system_autonomy', // ✨ [v9.0.6] 修正：賦予明確 ID 避免 Queue 阻塞
             isAdmin: true,
             platform: 'autonomy',
             reply: async (msg, opts) => await this.sendNotification(msg),
