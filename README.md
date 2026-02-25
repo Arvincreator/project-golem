@@ -1,12 +1,39 @@
-<a href="https://www.buymeacoffee.com/arvincreator" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<div align="center">
 
 # 🦞 Project Golem v9.0
-**(Ultimate Chronos + MultiAgent + Social Node Edition)**
+> **(Ultimate Chronos + MultiAgent + Social Node Edition)**
+
+<br/>
+
+<img src="assets/logo.png" width="500" alt="logo" />
+
+## 您的個人自動化 AI 代理系統
+不僅僅是 AI 助手，更是連接不同平台與社交網絡的終極解決方案。
+
+<p>
+  <img src="https://img.shields.io/badge/Version-9.0.0-blue?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/Engine-Node.js-green?style=for-the-badge" alt="Engine">
+  <img src="https://img.shields.io/badge/Brain-Web%20Gemini-orange?style=for-the-badge" alt="Brain">
+  <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge" alt="License">
+</p>
+
+[系統架構](#-系統架構-system-architecture) · [核心升級](#-v90-核心升級-new-features) · [功能一覽](#-強大功能一覽-core-capabilities) · [部署指南](#-部署與啟動指南-deployment-guide) · [使用指南](#-使用指南-usage)
+
+<br/>
+
+**繁體中文** | [English](README_EN.md)
+
+<br/>
+
+</div>
+
+---
 
 **Project Golem** 是一個具有高度自主性、長期記憶、跨平台能力與 **社交人格** 的 AI 代理系統。
 v9.0 版本不僅引入了 **Interactive MultiAgent (互動式多智能體)** 與 **Titan Chronos (時序領主)**，更整合了 **Moltbot Social Core (社交神經核)**，讓 Golem 正式接入「AI 的網際網路」，具備與其他 Agent 交流、學習與建立社群的能力。
 
 它以 **Web Gemini** 為無限上下文大腦，**Puppeteer** 為手，**Node.js** 為神經系統，並透過 **Discord**、**Telegram** 與 **Moltbook** 三大平台與世界連結。
+
 
 ---
 
@@ -170,12 +197,12 @@ cd project-golem
    **互動選單介面演示：**
    ```text
    ┌─────────────────────────────────────────────────────────┐
-   │   🤖 Project Golem v9.0.0 (Titan Chronos)              │
+   │   🤖 Project Golem v9.0.0 (Titan Chronos)               │
    ├─────────────────────────────────────────────────────────┤
-   │   📊 系統狀態                                          │
-   │   Node.js: ✅ v20.20.0   npm: v10.8.2               │
-   │   Config:  ✅ 已設定   Dashboard: ✅ 啟用            │
-   │   Docker: ✅ 24.0.6  Compose: ✅ 支援              │
+   │   📊 系統狀態                                            │
+   │   Node.js: ✅ v20.20.0   npm: v10.8.2                   │
+   │   Config:  ✅ 已設定   Dashboard: ✅ 啟用                 │
+   │   Docker: ✅ 24.0.6  Compose: ✅ 支援                    │
    └─────────────────────────────────────────────────────────┘
 
      ⚡ 快速啟動
@@ -256,28 +283,28 @@ cd project-golem
 
 ```text
 project-golem/
-├── index.js              # 系統啟動入口 (Golem Kernel)
-├── setup.sh              # 模組化安裝與配置進入點 (入口腳本)
-├── scripts/              # 模組化組件目錄
+├── index.js                  # 系統啟動入口 (Golem Kernel)
+├── setup.sh                  # 模組化安裝與配置進入點 (入口腳本)
+├── scripts/                  # 模組化組件目錄
 │   ├── start-host-chrome.sh  # 遠端除錯 Chrome 啟動器
-│   └── lib/              # 核心邏輯庫
+│   └── lib/                  # 核心邏輯庫
 │       ├── menu_system.sh    # TUI 交互選單系統
 │       ├── installer.sh      # 環境安裝引擎
 │       ├── docker_manager.sh # Docker 容器化管理
 │       ├── system_check.sh   # 環境診斷工具
 │       └── ui_components.sh  # 美化元件工具箱
-├── src/                  # 核心原始碼
-│   ├── config/           # 配置管理
-│   ├── core/             # GolemBrain, NeuroShunter 
-│   ├── managers/         # 專案管理邏輯
-│   ├── memory/           # 記憶管理
-│   ├── services/         # 服務管理
-│   ├── skills/           # 技能模組目錄
-│   └── utils/            # 工具函式庫
-├── web-dashboard/        # Web 監控介面 (Next.js)
-├── golem_memory/         # [自動生成] 長期記憶與 Session
-├── .env.example          # 環境變數範例
-└── package.json          # 專案定義與依賴
+├── src/                      # 核心原始碼
+│   ├── config/               # 配置管理
+│   ├── core/                 # GolemBrain, NeuroShunter 
+│   ├── managers/             # 專案管理邏輯
+│   ├── memory/               # 記憶管理
+│   ├── services/             # 服務管理
+│   ├── skills/               # 技能模組目錄
+│   └── utils/                # 工具函式庫
+├── web-dashboard/            # Web 監控介面 (Next.js)
+├── golem_memory/             # [自動生成] 長期記憶與 Session
+├── .env.example              # 環境變數範例
+└── package.json              # 專案定義與依賴
 ```
 
 ---
@@ -288,6 +315,24 @@ project-golem/
 - **啟動 Web UI**：啟動後打開 `http://localhost:3000`
 - **社交指令**：`"幫我發一篇文，標題是...內容是..."`
 - **排程指令**：`"明天早上 9 點提醒我開會"`
+
+## ☕ 支持項目 (Support)
+
+如果您覺得本項目對您有所幫助，歡迎打賞作者！
+
+<a href="https://www.buymeacoffee.com/arvincreator" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 181px !important;" ></a>
+
+| Buy Me a Coffee |
+| :---: |
+| <img src="assets/bmc_qr.png" width="200" alt="Buy Me a Coffee" /> |
+
+## 📈 Star History
+
+<div align="center">
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Arvincreator/project-golem&theme=dark)](https://star-history.com/#Arvincreator/project-golem&Date)
+
+</div>
 
 ---
 
@@ -303,4 +348,3 @@ Project Golem 是一個強大的自動化工具。
 ---
 
 **Developed with ❤️ by Arvincreator, @sz9751210 **
-<a href="https://www.buymeacoffee.com/arvincreator" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
