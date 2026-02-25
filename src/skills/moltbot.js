@@ -44,7 +44,7 @@ async function execute(args) {
             // 完美還原：自動加上 (golem) 後綴機制
             const rawName = args.name || "Agent";
             const safeName = rawName.replace(/[^a-zA-Z0-9_]/g, ''); 
-            const finalName = safeName.includes('(golem)') ? safeName : `${safeName}(golem)`;
+            const finalName = safeName.includes('_golem') ? safeName : `${safeName}_golem`;
 
             const res = await req('/agents/register', 'POST', { name: finalName, description: args.desc || "I am a node of Project Golem." });
             const newApiKey = res.agent?.api_key || res.api_key;
