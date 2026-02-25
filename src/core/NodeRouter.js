@@ -1,8 +1,8 @@
 const { CONFIG } = require('../config');
 const HelpManager = require('../managers/HelpManager');
 const skills = require('../skills');
-const SkillArchitect = require('../skills/lib/skill-architect');
-const skillManager = require('../skills/lib/skill-manager');
+const skillManager = require('../managers/SkillManager');
+const SkillArchitect = require('../managers/SkillArchitect');
 
 // ✨ [v9.0 Addon] 初始化技能架構師 (Web Gemini Mode)
 // 注意：這裡不傳入 Model，因為我們將在 NodeRouter 中傳入 Web Brain

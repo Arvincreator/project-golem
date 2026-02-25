@@ -1,9 +1,11 @@
 // ============================================================
 // 📡 ProtocolFormatter - Golem 協議格式化 (v9.0.5 - OS, Markdown, Self-Learning & Workspace)
 // ============================================================
+const fs = require('fs').promises;
+const path = require('path');
 const { getSystemFingerprint } = require('../utils/system');
 const skills = require('../skills');
-const skillManager = require('../skills/lib/skill-manager');
+const skillManager = require('../managers/SkillManager');
 
 class ProtocolFormatter {
     /**
@@ -45,7 +47,7 @@ class ProtocolFormatter {
 
         return `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
 1. ENVELOPE & ONE-TURN RULE: 
-- Wrap your ENTIRE response between [[BEGIN:XXX]] and [[END:XXX]].
+- Wrap your ENTIRE response between ${TAG_START} and ${TAG_END}.
 - 🚨 FATAL RULE: You MUST ONLY generate exactly ONE [[BEGIN]] and ONE [[END]] per response. 
 - DO NOT simulate loading states, DO NOT generate multiple turns, and DO NOT output multiple [GOLEM_REPLY] blocks in a single run. 
 - Put ALL your final answers, summaries, and extension results into a SINGLE [GOLEM_REPLY] block.
@@ -62,51 +64,73 @@ class ProtocolFormatter {
 ${text}`;
     }
 
+    // --- [效能優化] 靜態快取變數 ---
+    static _cachedPrompt = null;
+    static _cachedMemoryText = null;
+    static _lastScanTime = 0;
+    static CACHE_TTL = 300000; // 5 分鐘快取
+
     /**
-     * 組裝完整的系統 Prompt (擴展 Workspace 的客服引導)
-     * @returns {{ systemPrompt: string, skillMemoryText: string|null }}
+     * 組裝完整的系統 Prompt (包含動態掃描 lib/ 下的 .md 檔)
+     * @param {boolean} [forceRefresh=false] - 是否強制重新掃描
+     * @returns {Promise<{ systemPrompt: string, skillMemoryText: string|null }>}
      */
-    static buildSystemPrompt() {
+    static async buildSystemPrompt(forceRefresh = false) {
+        const now = Date.now();
+        if (!forceRefresh && ProtocolFormatter._cachedPrompt && (now - ProtocolFormatter._lastScanTime < ProtocolFormatter.CACHE_TTL)) {
+            console.log("⚡ [ProtocolFormatter] 使用快取的系統協議 (Cache Hit)");
+            return { systemPrompt: ProtocolFormatter._cachedPrompt, skillMemoryText: ProtocolFormatter._cachedMemoryText };
+        }
+
         const systemFingerprint = getSystemFingerprint();
         let systemPrompt = skills.getSystemPrompt(systemFingerprint);
-        let skillMemoryText = null;
+        let skillMemoryText = "【系統技能庫初始化】我目前已掛載並精通以下可用技能：\n";
 
+        // --- [優化] 使用 Promise.all 平行掃描 src/skills/lib/*.md ---
+        const libPath = path.join(process.cwd(), 'src', 'skills', 'lib');
         try {
-            const activeSkills = skillManager.listSkills();
-            if (activeSkills.length > 0) {
-                systemPrompt += `\n\n### 🛠️ DYNAMIC SKILLS AVAILABLE (Output {"action": "skill_name", ...}):\n`;
+            const files = await fs.readdir(libPath);
+            const mdFiles = files.filter(f => f.endsWith('.md'));
 
-                skillMemoryText = "【系統技能庫初始化】我目前已掛載並精通以下可用技能：\n";
-                activeSkills.forEach(s => {
-                    systemPrompt += `- Action: "${s.name}" | Desc: ${s.description}\n`;
-                    skillMemoryText += `- 技能 "${s.name}"：${s.description}\n`;
+            if (mdFiles.length > 0) {
+                console.log(`📡 [ProtocolFormatter] 正在平行讀取 ${mdFiles.length} 個技能說明書...`);
+                systemPrompt += `\n\n### 🧩 CORE SKILL PROTOCOLS (Cognitive Layer):\n`;
+
+                const readTasks = mdFiles.map(async (file) => {
+                    const content = await fs.readFile(path.join(libPath, file), 'utf-8');
+                    const skillName = path.basename(file, '.md').toUpperCase();
+                    return { skillName, content };
                 });
-                systemPrompt += `(Use these skills via [GOLEM_ACTION] when requested by user.)\n`;
 
-                console.log(`🧠 [Memory] 準備將 ${activeSkills.length} 項技能載入長期記憶中`);
+                const results = await Promise.all(readTasks);
+                for (const res of results) {
+                    systemPrompt += `#### SKILL: ${res.skillName}\n${res.content}\n\n`;
+                    skillMemoryText += `- 技能 "${res.skillName}"：已載入認知說明書\n`;
+                }
             }
         } catch (e) {
-            console.warn("Skills injection failed:", e);
+            console.warn("❌ [ProtocolFormatter] 說明書掃描失敗:", e);
         }
 
         const superProtocol = `
-\n\n【⚠️ GOLEM PROTOCOL v9.0.5 - CHRONOS + OS-AWARE + SELF-LEARNING + WORKSPACE】
+\n\n【⚠️ GOLEM PROTOCOL v9.0.6 - TWO-TIER ARCHITECTURE + OS-AWARE】
 You act as a middleware OS. You MUST strictly follow this comprehensive output format.
 DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
 
 1. **Format Structure**:
 Your response must be strictly divided into these 3 sections:
 
+[[BEGIN:reqId]]
 [GOLEM_MEMORY]
 - Manage long-term state, project context, and user preferences.
 - 🧠 **HIPPOCAMPUS**: If you inspect new skill files in \`src/skills/lib\`, you MUST memorize how to use them here.
 - If no update is needed, output "null".
-
 [GOLEM_ACTION]
 - 🚨 **MANDATORY**: YOU MUST USE MARKDOWN JSON CODE BLOCKS!
 - **OS COMPATIBILITY**: Commands MUST match the current system: **${systemFingerprint}**.
 - **PRECISION**: Use stable, native commands (e.g., 'dir' for Windows, 'ls' for Linux).
 - **ONE-SHOT SUCCESS**: No guessing. Provide the most feasible, error-free command possible.
+- **Execution Layer**: Skills are now separated from prompts. Execute via action name.
 \`\`\`json
 [
   {"action": "command", "parameter": "SPECIFIC_STABLE_COMMAND_FOR_${systemFingerprint}"}
@@ -131,9 +155,33 @@ Your response must be strictly divided into these 3 sections:
 - You are STRICTLY FORBIDDEN from using [GOLEM_ACTION] (no terminal commands, no cron jobs, no scripts) to read, send, or create any Google Workspace data (Emails, Calendar events, Docs).
 - 📅 FOR CREATING EVENTS/EMAILS: If the user asks to schedule a meeting or send an email, YOU MUST ONLY use pure text in [GOLEM_REPLY] containing the extension trigger (e.g., "好的，我現在為您呼叫 @Google Calendar 建立行程..."). 
 - DO NOT worry about clicking "Save" or "Confirm" buttons. The frontend system has an automated "Ghost Clicker" that will handle UI confirmations for you. Just trigger the extension in your reply!
+[[END:reqId]]
+
+🚨 CRITICAL: Use the exact [[BEGIN:reqId]] and [[END:reqId]] tags provided in each turn!
 `;
 
-        return { systemPrompt: systemPrompt + superProtocol, skillMemoryText };
+        const finalPrompt = systemPrompt + superProtocol;
+
+        // 更新快取
+        ProtocolFormatter._cachedPrompt = finalPrompt;
+        ProtocolFormatter._cachedMemoryText = skillMemoryText;
+        ProtocolFormatter._lastScanTime = now;
+
+        return { systemPrompt: finalPrompt, skillMemoryText };
+    }
+
+    /**
+     * [效能優化] 壓縮指令，移除多餘空白與換行
+     * @param {string} prompt 
+     * @returns {string}
+     */
+    static compress(prompt) {
+        if (!prompt) return "";
+        return prompt
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0)
+            .join('\n');
     }
 }
 

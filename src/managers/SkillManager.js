@@ -8,10 +8,10 @@ const path = require('path');
 
 class SkillManager {
     constructor() {
-        this.baseDir = path.join(process.cwd(), 'skills');
+        this.baseDir = path.join(process.cwd(), 'src', 'skills');
         this.userDir = path.join(this.baseDir, 'user');
         this.coreDir = path.join(this.baseDir, 'core');
-        
+
         // 確保目錄結構存在
         [this.baseDir, this.userDir, this.coreDir].forEach(dir => {
             if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -31,15 +31,15 @@ class SkillManager {
         const loadFromDir = (dir, type) => {
             if (!fs.existsSync(dir)) return;
             const files = fs.readdirSync(dir).filter(f => f.endsWith('.js'));
-            
+
             for (const file of files) {
                 try {
                     const fullPath = path.join(dir, file);
                     // 關鍵：清除快取以支援熱更新
                     delete require.cache[require.resolve(fullPath)];
-                    
+
                     const skillModule = require(fullPath);
-                    
+
                     // 驗證模組結構
                     if (skillModule.name && typeof skillModule.run === 'function') {
                         this.skills.set(skillModule.name, {
@@ -56,7 +56,7 @@ class SkillManager {
 
         loadFromDir(this.coreDir, 'CORE');
         loadFromDir(this.userDir, 'USER');
-        
+
         console.log(`📚 Skills Loaded: ${this.skills.size} (Core + User)`);
         return this.skills;
     }
@@ -85,7 +85,7 @@ class SkillManager {
                 t: Date.now(),    // Timestamp
                 c: code           // Code content
             };
-            
+
             // 轉為 Base64 字串
             const buffer = Buffer.from(JSON.stringify(payload));
             return `GOLEM_SKILL::${buffer.toString('base64')}`;
@@ -109,7 +109,7 @@ class SkillManager {
 
             // 基本安全檢查
             if (!payload.n || !payload.c) throw new Error("Corrupted skill data.");
-            
+
             // 安全過濾器 (簡易版)
             const dangerousKeywords = ['require("child_process")', "require('child_process')", 'exec(', 'spawn('];
             if (dangerousKeywords.some(k => payload.c.includes(k))) {
@@ -126,17 +126,17 @@ class SkillManager {
             }
 
             fs.writeFileSync(filePath, payload.c);
-            
+
             // 立即重新載入
             this.refresh();
-            
+
             return { success: true, name: payload.n, path: filePath };
 
         } catch (err) {
             return { success: false, error: err.message };
         }
     }
-    
+
     listSkills() {
         return Array.from(this.skills.values()).map(s => ({
             name: s.name,
