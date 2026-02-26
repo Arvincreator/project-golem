@@ -6,12 +6,12 @@
 # ==========================================
 
 # ─── Path Constants ─────────────────────────────────────
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-LIB_DIR="$SCRIPT_DIR/scripts/lib"
-DOT_ENV_PATH="$SCRIPT_DIR/.env"
-LOG_DIR="$SCRIPT_DIR/logs"
-LOG_FILE="$LOG_DIR/setup.log"
-GOLEM_VERSION="9.0.0"
+readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+readonly LIB_DIR="$SCRIPT_DIR/scripts/lib"
+readonly DOT_ENV_PATH="$SCRIPT_DIR/.env"
+readonly LOG_DIR="$SCRIPT_DIR/logs"
+readonly LOG_FILE="$LOG_DIR/setup.log"
+readonly GOLEM_VERSION="9.0.0"
 
 # ─── Initialize Environment ─────────────────────────────
 mkdir -p "$LOG_DIR"
@@ -27,19 +27,12 @@ source "$LIB_DIR/menu_system.sh"
 
 # ─── Graceful Exit Trap ──────────────────────────────────
 cleanup() {
-    tput cnorm 2>/dev/null  # 恢復游標
-    echo ""
-    echo -e "${YELLOW}⚡ 收到中斷信號，正在安全退出...${NC}"
-    # Kill background spinner if any
-    if [ -n "${SPINNER_PID:-}" ] && kill -0 "$SPINNER_PID" 2>/dev/null; then
-        kill "$SPINNER_PID" 2>/dev/null
-        wait "$SPINNER_PID" 2>/dev/null
-    fi
-    # Kill Host Chrome if started by us
-    if [ -n "${HOST_CHROME_PID:-}" ] && kill -0 "$HOST_CHROME_PID" 2>/dev/null; then
-        echo -e "${YELLOW}🧹 Closing Host Chrome (PID: $HOST_CHROME_PID)...${NC}"
-        kill "$HOST_CHROME_PID" 2>/dev/null
-    fi
+    tput cnorm 2>/dev/null  # Restore cursor
+    echo -e "\n${YELLOW}⚡ 收到中斷信號，正在安全退出...${NC}"
+    
+    # Cleanup background processes using the new utility
+    cleanup_pids
+    
     echo -e "${GREEN}👋 已安全退出。感謝使用 Project Golem！${NC}"
     exit 0
 }
@@ -63,6 +56,9 @@ print_status() {
 }
 
 # ─── Entry Point ────────────────────────────────────────
+# Check basic dependencies first
+check_dependencies
+
 case "${1:-}" in
     --start)     launch_system ;;
     --install)   run_full_install ;;
