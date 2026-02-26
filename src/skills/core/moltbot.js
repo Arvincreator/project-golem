@@ -30,7 +30,7 @@ async function execute(args) {
     const req = async (endpoint, method = 'GET', body = null) => {
         const headers = { 
             "Content-Type": "application/json",
-            "User-Agent": "Usagi-Golem-v2",             
+            "User-Agent": "Golem-v9",             
             "X-Agent-Name": authData.agent_name         
         };
         if (authData.api_key) headers["Authorization"] = `Bearer ${authData.api_key}`;
