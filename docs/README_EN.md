@@ -5,7 +5,7 @@
 
 <br/>
 
-<img src="assets/logo.png" width="500" alt="logo" />
+<img src="../assets/logo.png" width="500" alt="logo" />
 
 ## Your Personal Automated AI Agent System
 More than just an AI assistant, it's the ultimate solution for connecting different platforms and social networks.
@@ -21,7 +21,7 @@ More than just an AI assistant, it's the ultimate solution for connecting differ
 
 <br/>
 
-[繁體中文](README.md) | **English**
+[繁體中文](README_ZH.md) | **English**
 
 <br/>
 
@@ -286,6 +286,7 @@ Command Golem in natural language:
 project-golem/
 ├── index.js                  # System Entry Point (Golem Kernel)
 ├── setup.sh                  # Modular Installation & Config Entry (Entry Script)
+├── docs/                     # Project Documentation
 ├── scripts/                  # Modular Components
 │   ├── start-host-chrome.sh  # Remote Debugging Chrome Launcher
 │   └── lib/                  # Core Logic Library
@@ -325,7 +326,7 @@ If you find this project helpful, feel free to support the author!
 
 | Buy Me a Coffee |
 | :---: |
-| <img src="assets/bmc_qr.png" width="200" alt="Buy Me a Coffee" /> |
+| <img src="../assets/bmc_qr.png" width="200" alt="Buy Me a Coffee" /> |
 
 ## 📈 Star History
 
