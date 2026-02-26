@@ -2,7 +2,7 @@
 
 # ─── Step 1: File Integrity ───
 step_check_files() {
-    echo -e "  ${BOLD}[Step 1/7]${NC} 🔍 檢查核心檔案完整性..."
+    echo -e "  🔍 檢查核心檔案完整性..."
     log "Checking core files"
 
     local missing=0
@@ -34,7 +34,7 @@ step_check_files() {
 
 # ─── Step 2: Env Check ───
 step_check_env() {
-    echo -e "  ${BOLD}[Step 2/7]${NC} 📄 檢查環境設定檔..."
+    echo -e "  📄 檢查環境設定檔..."
     log "Checking .env"
 
     if [ ! -f "$DOT_ENV_PATH" ]; then
@@ -68,13 +68,13 @@ ENVEOF
 
 # ─── Step 3: Config Wizard ───
 config_wizard() {
-    clear
+    echo ""
     echo ""
     box_top
-    box_line_colored "  ${BOLD}${CYAN}🧙 環境變數配置精靈${NC}                                  "
-    box_line_colored "  ${DIM}設定 API Keys、Bot Tokens 與系統選項${NC}                  "
+    box_line_colored "  ${BOLD}${CYAN}🧙 環境變數配置精靈${NC}"
+    box_line_colored "  ${DIM}設定 API Keys、Bot Tokens 與系統選項${NC}"
     box_sep
-    box_line_colored "  ${DIM}提示: 直接按 Enter 保留目前值 │ 輸入 [B] 返回上一步${NC}   "
+    box_line_colored "  ${DIM}提示: 直接按 Enter 保留目前值 │ 輸入 [B] 返回上一步${NC}"
     box_bottom
     echo ""
 
@@ -148,19 +148,19 @@ config_wizard() {
     # ─── Summary Confirmation ────────────────────────────
     echo ""
     box_top
-    box_line_colored "  ${BOLD}📋 配置摘要${NC}                                            "
+    box_line_colored "  ${BOLD}📋 配置摘要${NC}"
     box_sep
     local mg; mg=$(mask_value "${GEMINI_API_KEYS:-}")
     local mt; mt=$(mask_value "${TELEGRAM_TOKEN:-}")
     local md; md=$(mask_value "${DISCORD_TOKEN:-}")
-    box_line_colored "  Gemini Keys:    ${CYAN}${mg}${NC}                                "
-    box_line_colored "  TG Token:       ${CYAN}${mt}${NC}                                "
-    box_line_colored "  TG Admin ID:    ${CYAN}${ADMIN_ID:-未設定}${NC}                              "
-    box_line_colored "  DC Token:       ${CYAN}${md}${NC}                                "
-    box_line_colored "  DC Admin ID:    ${CYAN}${DISCORD_ADMIN_ID:-未設定}${NC}                              "
-    box_line_colored "  Dashboard:      ${CYAN}${ENABLE_WEB_DASHBOARD:-false}${NC}                            "
+    box_line_colored "  Gemini Keys:    ${CYAN}${mg}${NC}"
+    box_line_colored "  TG Token:       ${CYAN}${mt}${NC}"
+    box_line_colored "  TG Admin ID:    ${CYAN}${ADMIN_ID:-未設定}${NC}"
+    box_line_colored "  DC Token:       ${CYAN}${md}${NC}"
+    box_line_colored "  DC Admin ID:    ${CYAN}${DISCORD_ADMIN_ID:-未設定}${NC}"
+    box_line_colored "  Dashboard:      ${CYAN}${ENABLE_WEB_DASHBOARD:-false}${NC}"
     box_sep
-    box_line_colored "  ${GREEN}${BOLD}✅ 配置已儲存到 .env${NC}                                  "
+    box_line_colored "  ${GREEN}${BOLD}✅ 配置已儲存到 .env${NC}"
     box_bottom
     echo ""
     log "Config wizard completed"
@@ -168,7 +168,7 @@ config_wizard() {
 }
 
 step_install_core() {
-    echo -e "  ${BOLD}${NC} 📦 安裝核心依賴..."
+    echo -e "  📦 安裝核心依賴..."
     echo -e "  ${DIM}  (puppeteer, blessed, gemini-ai, discord.js ...)${NC}"
     log "Installing core dependencies"
     spinner_start "npm install 安裝中"
@@ -197,7 +197,7 @@ step_install_core() {
 }
 
 step_install_dashboard() {
-    echo -e "  ${BOLD}${NC} 🌐 設定 Web Dashboard..."
+    echo -e "  🌐 設定 Web Dashboard..."
     log "Setting up dashboard"
     [ -f "$DOT_ENV_PATH" ] && source "$DOT_ENV_PATH" 2>/dev/null
     if [ "$ENABLE_WEB_DASHBOARD" != "true" ]; then
@@ -297,11 +297,11 @@ step_final() {
     local elapsed="${1:-}"
     clear; echo ""
     box_top
-    box_line_colored "  ${GREEN}${BOLD}🎉 部署成功！${NC}                                          "
-    box_line_colored "  ${GREEN}${BOLD}   Golem v${GOLEM_VERSION} (Titan Chronos) 已就緒${NC}                    "
+    box_line_colored "  ${GREEN}${BOLD}🎉 部署成功！${NC}"
+    box_line_colored "  ${GREEN}${BOLD}   Golem v${GOLEM_VERSION} (Titan Chronos) 已就緒${NC}"
     box_sep
-    [ -n "$elapsed" ] && box_line_colored "  ⏱️  安裝耗時: ${CYAN}${elapsed}${NC}                                   "
-    box_line_colored "  📋 安裝日誌: ${DIM}${LOG_FILE}${NC}                "
+    [ -n "$elapsed" ] && box_line_colored "  ⏱️  安裝耗時: ${CYAN}${elapsed}${NC}"
+    box_line_colored "  📋 安裝日誌: ${DIM}${LOG_FILE}${NC}"
     box_bottom
     echo -e "\n  ${YELLOW}系統將在 5 秒後自動啟動... (按 Ctrl+C 取消)${NC}\n"
 

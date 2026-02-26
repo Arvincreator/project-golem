@@ -15,6 +15,7 @@ spinner_start() {
         done
     ) &
     SPINNER_PID=$!
+    register_pid "$SPINNER_PID"
 }
 
 spinner_stop() {
@@ -49,11 +50,24 @@ progress_bar() {
 }
 
 # ─── Box Drawing Helpers ────────────────────────────────
-box_top()    { echo -e "${CYAN}┌─────────────────────────────────────────────────────────┐${NC}"; }
-box_bottom() { echo -e "${CYAN}└─────────────────────────────────────────────────────────┘${NC}"; }
-box_sep()    { echo -e "${CYAN}├─────────────────────────────────────────────────────────┤${NC}"; }
-box_line()   { printf "${CYAN}│${NC} %-56s${CYAN}│${NC}\n" "$1"; }
+readonly BOX_WIDTH=60
+
+box_top()    { echo -e "${CYAN}┌$(printf '─%.0s' $(seq 1 $BOX_WIDTH))┐${NC}"; }
+box_bottom() { echo -e "${CYAN}└$(printf '─%.0s' $(seq 1 $BOX_WIDTH))┘${NC}"; }
+box_sep()    { echo -e "${CYAN}├$(printf '─%.0s' $(seq 1 $BOX_WIDTH))┤${NC}"; }
+
+# Calculate visible length of string (ignoring escape codes)
+get_visible_len() {
+    local str=$1
+    # Remove ANSI escape sequences
+    local clean=$(echo -e "$str" | sed $'s/\033\[[0-9;]*[mK]//g')
+    echo ${#clean}
+}
+
 box_line_colored() {
-    # 接受含顏色碼的文字，需手動補空格
-    printf "${CYAN}│${NC} %b${CYAN}│${NC}\n" "$1"
+    local text="$1"
+    local vlen=$(get_visible_len "$text")
+    local padding=$((BOX_WIDTH - vlen))
+    [ $padding -lt 0 ] && padding=0
+    printf "${CYAN}│${NC}%b%*s${CYAN}│${NC}\n" "$text" "$padding" ""
 }
