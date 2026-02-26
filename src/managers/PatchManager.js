@@ -39,17 +39,29 @@ class PatchManager {
         } catch (e) { throw new Error(`補丁應用失敗: ${e.message}`); }
     }
     static verify(filePath) {
+        const isStandardExt = filePath.endsWith('.js') || filePath.endsWith('.cjs') || filePath.endsWith('.mjs');
+        const verifyPath = isStandardExt ? filePath : `${filePath}.js`;
+
         try {
-            execSync(`node -c "${filePath}"`);
-            if (filePath.includes('index.test.js')) {
-                execSync(`node "${filePath}"`, { env: { ...process.env, GOLEM_TEST_MODE: 'true' }, timeout: 5000, stdio: 'pipe' });
+            if (!isStandardExt) fs.copyFileSync(filePath, verifyPath);
+
+            execSync(`node -c "${verifyPath}"`);
+            if (verifyPath.includes('index.test.js')) {
+                execSync(`node "${verifyPath}"`, { env: { ...process.env, GOLEM_TEST_MODE: 'true' }, timeout: 5000, stdio: 'pipe' });
             }
             console.log(`✅ [PatchManager] ${filePath} 驗證通過`);
             return true;
         } catch (e) {
             console.error(`❌ [PatchManager] 驗證失敗: ${e.message}`);
-            try { fs.unlinkSync(filePath); console.log("🧹 已清理失效的測試檔案"); } catch (delErr) { }
             return false;
+        } finally {
+            if (!isStandardExt && fs.existsSync(verifyPath)) {
+                try { fs.unlinkSync(verifyPath); } catch (e) { }
+            }
+            // Cleanup the original test file if it was a .test.js file created by createTestClone
+            if (filePath.includes('.test.')) {
+                try { fs.unlinkSync(filePath); console.log("🧹 已清理測試檔案"); } catch (e) { }
+            }
         }
     }
 }
