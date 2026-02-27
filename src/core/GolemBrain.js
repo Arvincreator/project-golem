@@ -299,15 +299,56 @@ class GolemBrain {
      * @param {boolean} [forceRefresh=false]
      */
     async _injectSystemPrompt(forceRefresh = false) {
-        const { systemPrompt, skillMemoryText } = await ProtocolFormatter.buildSystemPrompt(forceRefresh);
+        let { systemPrompt, skillMemoryText } = await ProtocolFormatter.buildSystemPrompt(forceRefresh);
 
         if (skillMemoryText) {
             await this.memorize(skillMemoryText, { type: 'system_skills', source: 'boot_init' });
             console.log(`🧠 [Memory] 已成功將技能載入長期記憶中！`);
         }
 
+        // 🚀 [第一階段] 發送底層系統協議 (不含歷史摘要)
         const compressedPrompt = ProtocolFormatter.compress(systemPrompt);
-        await this.sendMessage(compressedPrompt, true);
+        await this.sendMessage(compressedPrompt, false); // ⚡ 改為 false：等待完整回應
+        console.log(`📡 [Brain] 階段一：底層協議注入完成。`);
+
+        // 🧠 [第二階段] 注入完整歷史日誌摘要 (獨立訊息以優化記憶壓縮)
+        if (this.chatLogManager) {
+            const fs = require('fs');
+            const logDir = this.chatLogManager.logDir;
+
+            try {
+                // 掃描符合 YYYYMMDD.log 格式的檔案
+                const files = fs.readdirSync(logDir)
+                    .filter(f => f.length === 12 && f.endsWith('.log'))
+                    .sort();
+
+                if (files.length > 0) {
+                    let historicalMemory = "";
+                    files.forEach(file => {
+                        try {
+                            const dateStr = file.replace('.log', '');
+                            const logs = JSON.parse(fs.readFileSync(path.join(logDir, file), 'utf8'));
+                            if (Array.isArray(logs)) {
+                                logs.forEach((entry, idx) => {
+                                    // 🛡️ [防呆] 只注入有內容的摘要，避免空字串污染 Prompt
+                                    if (entry.content && entry.content.trim()) {
+                                        historicalMemory += `\n--- [${dateStr} 摘要 #${idx + 1}] ---\n${entry.content}\n`;
+                                    }
+                                });
+                            }
+                        } catch (e) { }
+                    });
+
+                    if (historicalMemory) {
+                        const memoryPulse = `【指令：載入長期記憶與背景壓縮】\n以下是你過去所有對話的彙總精華（依時間排序）。請完整閱讀並內化這些背景，將其視為你目前已知的所有先驗知識與決策紀錄：\n${historicalMemory}`;
+                        await this.sendMessage(memoryPulse, false); // ⚡ 改為 false：確保記憶載入完成
+                        console.log(`🧠 [Brain] 階段二：已注入 ${files.length} 個歷史日誌檔案作為獨立回憶。`);
+                    }
+                }
+            } catch (e) {
+                console.warn(`⚠️ [Brain] 歷史記憶掃描或注入失敗: ${e.message}`);
+            }
+        }
     }
 }
 

@@ -161,6 +161,7 @@ Your response must be strictly divided into these 3 sections:
 `;
 
         const finalPrompt = systemPrompt + superProtocol;
+        console.log(`📡 [Protocol] 系統協議組裝完成，總長度: ${finalPrompt.length} 字元`);
 
         // 更新快取
         ProtocolFormatter._cachedPrompt = finalPrompt;

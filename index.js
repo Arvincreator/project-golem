@@ -117,6 +117,17 @@ const pendingTasks = controller.pendingTasks;
 
     autonomy.start();
     console.log('✅ Golem v9.0.5 (Model Switcher Edition) is Online.');
+
+    // ✨ [新增] 每日日誌自動壓縮 (昨天的每小時日誌 -> 每日摘要)
+    if (brain.chatLogManager) {
+        const yesterday = brain.chatLogManager._getYesterdayDateString();
+        console.log(`🕒 [System] 檢查 ${yesterday} 的日誌壓縮狀態...`);
+        // 為了不阻塞啟動，使用非同步執行
+        brain.chatLogManager.compressLogsForDate(yesterday, brain).catch(err => {
+            console.error(`❌ [System] 自動壓縮失敗: ${err.message}`);
+        });
+    }
+
     if (dcClient) dcClient.login(CONFIG.DC_TOKEN);
 })();
 
