@@ -327,7 +327,7 @@ project-golem/
 
 | Buy Me a Coffee |
 | :---: |
-| <img src="../assets/bmc_qr.png" width="200" alt="Buy Me a Coffee" /> |
+| <img src="assets/bmc_qr.png" width="200" alt="Buy Me a Coffee" /> |
 
 ## 📈 Star History
 
