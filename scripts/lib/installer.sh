@@ -45,7 +45,8 @@ step_check_env() {
         else
             echo -e "    ${YELLOW}ℹ${NC}  找不到 .env.example，將建立基本 .env 檔案"
             cat > "$DOT_ENV_PATH" << 'ENVEOF'
-GEMINI_API_KEYS=
+TG_AUTH_MODE=ADMIN
+TG_CHAT_ID=
 TELEGRAM_TOKEN=
 ADMIN_ID=
 DISCORD_TOKEN=
@@ -105,13 +106,29 @@ config_wizard() {
                 if [ -n "$input" ]; then update_env "TELEGRAM_TOKEN" "$input"; TELEGRAM_TOKEN="$input"; fi
                 step=$((step + 1)); echo "" ;;
             3)
-                echo -e "  ${BOLD}${MAGENTA}[${step}/${total}]${NC} ${BOLD}Telegram Admin User ID${NC}"
-                echo -e "  目前: ${CYAN}${ADMIN_ID:-${DIM}(未設定)${NC}}${NC}"
-                read -r -p "  👉 輸入新 ID (留空保留 / B 返回): " input
+                echo -e "  ${BOLD}${MAGENTA}[${step}/${total}]${NC} ${BOLD}Telegram 驗證模式${NC}"
+                echo -e "  目前: ${CYAN}${TG_AUTH_MODE:-ADMIN}${NC}"
+                read -r -p "  👉 選擇模式 [A] 個人 Admin ID / [C] 群組 Chat ID / [B] 返回: " input
                 input=$(echo "$input" | xargs 2>/dev/null)
                 if [[ "$input" =~ ^[Bb]$ ]]; then step=$((step - 1)); continue; fi
-                if [ -n "$input" ]; then
-                    if [[ "$input" =~ ^[0-9]+$ ]]; then update_env "ADMIN_ID" "$input"; ADMIN_ID="$input"; else continue; fi
+                if [[ "$input" =~ ^[Cc]$ ]]; then
+                    update_env "TG_AUTH_MODE" "CHAT"
+                    TG_AUTH_MODE="CHAT"
+                    echo -e "  ${BOLD}${MAGENTA}[${step}.1/${total}]${NC} ${BOLD}Telegram Chat ID (群組/頻道 ID)${NC}"
+                    echo -e "  目前: ${CYAN}${TG_CHAT_ID:-${DIM}(未設定)${NC}}${NC}"
+                    read -r -p "  👉 輸入新 Chat ID (留空保留): " subinput
+                    subinput=$(echo "$subinput" | xargs 2>/dev/null)
+                    if [ -n "$subinput" ]; then update_env "TG_CHAT_ID" "$subinput"; TG_CHAT_ID="$subinput"; fi
+                elif [[ "$input" =~ ^[Aa]$ ]] || [ -z "$input" ]; then
+                    update_env "TG_AUTH_MODE" "ADMIN"
+                    TG_AUTH_MODE="ADMIN"
+                    echo -e "  ${BOLD}${MAGENTA}[${step}.1/${total}]${NC} ${BOLD}Telegram Admin User ID (個人 ID)${NC}"
+                    echo -e "  目前: ${CYAN}${ADMIN_ID:-${DIM}(未設定)${NC}}${NC}"
+                    read -r -p "  👉 輸入新 Admin ID (留空保留): " subinput
+                    subinput=$(echo "$subinput" | xargs 2>/dev/null)
+                    if [ -n "$subinput" ]; then
+                        if [[ "$subinput" =~ ^-?[0-9]+$ ]]; then update_env "ADMIN_ID" "$subinput"; ADMIN_ID="$subinput"; fi
+                    fi
                 fi
                 step=$((step + 1)); echo "" ;;
             4)
@@ -155,7 +172,13 @@ config_wizard() {
     local md; md=$(mask_value "${DISCORD_TOKEN:-}")
     box_line_colored "  Gemini Keys:    ${CYAN}${mg}${NC}"
     box_line_colored "  TG Token:       ${CYAN}${mt}${NC}"
-    box_line_colored "  TG Admin ID:    ${CYAN}${ADMIN_ID:-未設定}${NC}"
+    if [ "$TG_AUTH_MODE" = "CHAT" ]; then
+        box_line_colored "  TG Auth Mode:   ${CYAN}群組模式 (CHAT)${NC}"
+        box_line_colored "  TG Chat ID:     ${CYAN}${TG_CHAT_ID:-未設定}${NC}"
+    else
+        box_line_colored "  TG Auth Mode:   ${CYAN}個人模式 (ADMIN)${NC}"
+        box_line_colored "  TG Admin ID:    ${CYAN}${ADMIN_ID:-未設定}${NC}"
+    fi
     box_line_colored "  DC Token:       ${CYAN}${md}${NC}"
     box_line_colored "  DC Admin ID:    ${CYAN}${DISCORD_ADMIN_ID:-未設定}${NC}"
     box_line_colored "  Dashboard:      ${CYAN}${ENABLE_WEB_DASHBOARD:-false}${NC}"
