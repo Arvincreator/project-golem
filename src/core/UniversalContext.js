@@ -32,6 +32,23 @@ class UniversalContext {
         return this.senderName;
     }
 
+    get isPrivate() {
+        if (this.platform === 'telegram') {
+            const chat = this.event.message ? this.event.message.chat : this.event.chat;
+            return chat && chat.type === 'private';
+        }
+        return !this.event.guildId;
+    }
+
+    get shouldMentionSender() {
+        if (this.platform === 'telegram') {
+            // 在 ADMIN 模式或私聊中，不需要 @ 使用者
+            if (CONFIG.TG_AUTH_MODE === 'ADMIN' || this.isPrivate) return false;
+            return true;
+        }
+        return !this.isPrivate;
+    }
+
     get replyToName() {
         if (this.platform === 'telegram') {
             const replyMsg = this.event.reply_to_message || (this.event.message && this.event.message.reply_to_message);
@@ -100,7 +117,10 @@ class UniversalContext {
             if (CONFIG.TG_AUTH_MODE === 'CHAT') {
                 return String(this.chatId) === String(CONFIG.TG_CHAT_ID);
             }
-            // Default ADMIN mode
+            // Default ADMIN mode: 必須是 Admin 本人，且必須是在私聊 (Private) 中
+            // 避免 Bot 在 Admin 參與的群組中誤觸發
+            if (!this.isPrivate) return false;
+
             if (CONFIG.ADMIN_IDS.length === 0) return true;
             return CONFIG.ADMIN_IDS.includes(String(this.userId));
         }
@@ -145,7 +165,8 @@ class UniversalContext {
             }
 
             // ✨ [V9.0.6 鎖定回覆] 自動物理性掛鈎原始訊息，確保回覆對象絕對準確
-            if (!sendOptions.reply_to_message_id) {
+            // 僅在需要 Mention 的環境 (群組) 下執行，私聊不使用 reply氣泡 以保持簡潔
+            if (this.shouldMentionSender && !sendOptions.reply_to_message_id) {
                 sendOptions.reply_to_message_id = this.messageId;
             }
         }
