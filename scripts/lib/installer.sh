@@ -111,6 +111,13 @@ config_wizard() {
                 read -r -p "  👉 選擇模式 [A] 個人 Admin ID / [C] 群組 Chat ID / [B] 返回: " input
                 input=$(echo "$input" | xargs 2>/dev/null)
                 if [[ "$input" =~ ^[Bb]$ ]]; then step=$((step - 1)); continue; fi
+                
+                # 如果使用者直接按 Enter，則根據目前值決定分支
+                local current_mode="${TG_AUTH_MODE:-ADMIN}"
+                if [ -z "$input" ]; then
+                    if [[ "$current_mode" == "CHAT" ]]; then input="c"; else input="a"; fi
+                fi
+
                 if [[ "$input" =~ ^[Cc]$ ]]; then
                     update_env "TG_AUTH_MODE" "CHAT"
                     TG_AUTH_MODE="CHAT"
@@ -119,7 +126,7 @@ config_wizard() {
                     read -r -p "  👉 輸入新 Chat ID (留空保留): " subinput
                     subinput=$(echo "$subinput" | xargs 2>/dev/null)
                     if [ -n "$subinput" ]; then update_env "TG_CHAT_ID" "$subinput"; TG_CHAT_ID="$subinput"; fi
-                elif [[ "$input" =~ ^[Aa]$ ]] || [ -z "$input" ]; then
+                elif [[ "$input" =~ ^[Aa]$ ]]; then
                     update_env "TG_AUTH_MODE" "ADMIN"
                     TG_AUTH_MODE="ADMIN"
                     echo -e "  ${BOLD}${MAGENTA}[${step}.1/${total}]${NC} ${BOLD}Telegram Admin User ID (個人 ID)${NC}"
