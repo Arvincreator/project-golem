@@ -464,7 +464,7 @@ setInterval(async () => {
 
                 const message = `⏰ **【時間領主提醒】**\n\n時間到了！您設定的排程事項：\n👉 **${task.task}**`;
 
-                const adminId = process.env.ADMIN_ID || process.env.TG_ADMIN_ID;
+                const adminId = CONFIG.TG_AUTH_MODE === 'CHAT' ? CONFIG.TG_CHAT_ID : (process.env.ADMIN_ID || process.env.TG_ADMIN_ID);
                 if (typeof tgBot !== 'undefined' && tgBot && adminId) {
                     tgBot.sendMessage(adminId, message).catch(e => console.warn("TG 提醒發送失敗:", e.message));
                 }

@@ -15,6 +15,8 @@ const isPlaceholder = (str) => {
 
 const CONFIG = {
     TG_TOKEN: cleanEnv(process.env.TELEGRAM_TOKEN),
+    TG_AUTH_MODE: cleanEnv(process.env.TG_AUTH_MODE) || 'ADMIN',
+    TG_CHAT_ID: cleanEnv(process.env.TG_CHAT_ID),
     DC_TOKEN: cleanEnv(process.env.DISCORD_TOKEN),
     USER_DATA_DIR: cleanEnv(process.env.USER_DATA_DIR || './golem_memory', true),
     API_KEYS: (process.env.GEMINI_API_KEYS || '').split(',').map(k => cleanEnv(k)).filter(k => k),

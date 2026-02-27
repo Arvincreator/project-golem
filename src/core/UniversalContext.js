@@ -52,8 +52,18 @@ class UniversalContext {
     }
 
     get isAdmin() {
+        if (this.platform === 'telegram') {
+            if (CONFIG.TG_AUTH_MODE === 'CHAT') {
+                return String(this.chatId) === String(CONFIG.TG_CHAT_ID);
+            }
+            // Default ADMIN mode
+            if (CONFIG.ADMIN_IDS.length === 0) return true;
+            return CONFIG.ADMIN_IDS.includes(String(this.userId));
+        }
+
+        // Other platforms (Discord)
         if (CONFIG.ADMIN_IDS.length === 0) return true;
-        return CONFIG.ADMIN_IDS.includes(this.userId);
+        return CONFIG.ADMIN_IDS.includes(String(this.userId));
     }
 
     async reply(content, options) {
@@ -74,7 +84,7 @@ class UniversalContext {
                 }
             }
         }
-        
+
         // ✨ [V9.0.2 修正] Telegram Topic (Forum) 支援
         let sendOptions = options || {};
         if (this.platform === 'telegram') {
@@ -83,7 +93,7 @@ class UniversalContext {
                 sendOptions = { ...sendOptions, message_thread_id: threadId };
             }
         }
-        
+
         return await MessageManager.send(this, content, sendOptions);
     }
 
