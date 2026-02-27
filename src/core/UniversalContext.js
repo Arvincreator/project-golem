@@ -16,6 +16,50 @@ class UniversalContext {
         return this.platform === 'telegram' ? String(this.event.from?.id || this.event.user?.id) : this.event.user ? this.event.user.id : this.event.author?.id;
     }
 
+    get senderName() {
+        return this._formatName(this.platform === 'telegram' ? (this.event.from || this.event.user) : (this.event.user || this.event.author));
+    }
+
+    get senderMention() {
+        if (this.platform === 'telegram') {
+            const user = this.event.from || this.event.user;
+            if (user && user.username) return `@${user.username}`;
+            return this.senderName;
+        }
+        if (this.platform === 'discord') {
+            return `<@${this.userId}>`;
+        }
+        return this.senderName;
+    }
+
+    get replyToName() {
+        if (this.platform === 'telegram') {
+            const replyMsg = this.event.reply_to_message || (this.event.message && this.event.message.reply_to_message);
+            if (replyMsg && replyMsg.from) {
+                return this._formatName(replyMsg.from);
+            }
+        }
+        if (this.platform === 'discord') {
+            const referencedMessage = this.event.reference?.messageId ? this.event.channel.messages.cache.get(this.event.reference.messageId) : null;
+            if (referencedMessage) {
+                return referencedMessage.author.globalName || referencedMessage.author.username;
+            }
+        }
+        return null;
+    }
+
+    _formatName(user) {
+        if (!user) return "未知使用者";
+        if (this.platform === 'telegram') {
+            const firstName = user.first_name || "";
+            const lastName = user.last_name || "";
+            const username = user.username ? `@${user.username}` : "";
+            const fullName = [firstName, lastName].filter(Boolean).join(" ");
+            return fullName || username || "未知使用者";
+        }
+        return user.globalName || user.username || "未知使用者";
+    }
+
     get chatId() {
         if (this.platform === 'telegram') return this.event.message ? this.event.message.chat.id : this.event.chat.id;
         return this.event.channelId || this.event.channel.id;
@@ -66,6 +110,13 @@ class UniversalContext {
         return CONFIG.ADMIN_IDS.includes(String(this.userId));
     }
 
+    get messageId() {
+        if (this.platform === 'telegram') {
+            return this.event.message_id || (this.event.message && this.event.message.message_id);
+        }
+        return this.event.id;
+    }
+
     async reply(content, options) {
         if (this.isInteraction) {
             try {
@@ -91,6 +142,11 @@ class UniversalContext {
             const threadId = this.event.message_thread_id || (this.event.message && this.event.message.message_thread_id);
             if (threadId) {
                 sendOptions = { ...sendOptions, message_thread_id: threadId };
+            }
+
+            // ✨ [V9.0.6 鎖定回覆] 自動物理性掛鈎原始訊息，確保回覆對象絕對準確
+            if (!sendOptions.reply_to_message_id) {
+                sendOptions.reply_to_message_id = this.messageId;
             }
         }
 

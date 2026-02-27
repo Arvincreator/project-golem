@@ -250,16 +250,27 @@ async function handleUnifiedMessage(ctx) {
         let finalInput = ctx.text;
         const attachment = await ctx.getAttachment();
 
+        // ✨ [群組模式身分與回覆注入]
+        const isGroupMode = CONFIG.TG_AUTH_MODE === 'CHAT' && ctx.platform === 'telegram';
+        let senderPrefix = isGroupMode ? `【發話者：${ctx.senderName}】\n` : "";
+        if (ctx.replyToName) {
+            senderPrefix += `【回覆給：${ctx.replyToName}】\n`;
+        }
+
         if (attachment) {
             await ctx.reply("👁️ 正在透過 OpticNerve 分析檔案...");
             const apiKey = await brain.doctor.keyChain.getKey();
             if (apiKey) {
                 const analysis = await OpticNerve.analyze(attachment.url, attachment.mimeType, apiKey);
-                finalInput = `【系統通知：視覺訊號】\n檔案類型：${attachment.mimeType}\n分析報告：\n${analysis}\n使用者訊息：${ctx.text || ""}\n請根據分析報告回應。`;
+                finalInput = `${senderPrefix}【系統通知：視覺訊號】\n檔案類型：${attachment.mimeType}\n分析報告：\n${analysis}\n使用者訊息：${ctx.text || ""}\n請根據分析報告回應。`;
             } else {
                 await ctx.reply("⚠️ 視覺系統暫時過熱 (API Rate Limit)，無法分析圖片，將僅處理文字訊息。");
+                finalInput = senderPrefix + (ctx.text || "");
             }
+        } else {
+            finalInput = senderPrefix + (ctx.text || "");
         }
+
         if (!finalInput && !attachment) return;
         await convoManager.enqueue(ctx, finalInput);
     } catch (e) { console.error(e); await ctx.reply(`❌ 錯誤: ${e.message}`); }

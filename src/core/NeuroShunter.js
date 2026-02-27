@@ -19,8 +19,12 @@ class NeuroShunter {
 
         // 2. 處理直接回覆
         if (parsed.reply) {
-            console.log(`🤖 [Golem] 說: ${parsed.reply}`);
-            await ctx.reply(parsed.reply);
+            let finalReply = parsed.reply;
+            if (ctx.platform === 'telegram') {
+                finalReply = `${ctx.senderMention} ${parsed.reply}`;
+            }
+            console.log(`🤖 [Golem] 說: ${finalReply}`);
+            await ctx.reply(finalReply);
         }
 
         // 3. 處理結構化 Action 分配 (Strategy Pattern)
