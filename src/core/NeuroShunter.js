@@ -20,7 +20,7 @@ class NeuroShunter {
         // 2. 處理直接回覆
         if (parsed.reply) {
             let finalReply = parsed.reply;
-            if (ctx.platform === 'telegram') {
+            if (ctx.platform === 'telegram' && ctx.shouldMentionSender) {
                 finalReply = `${ctx.senderMention} ${parsed.reply}`;
             }
             console.log(`🤖 [Golem] 說: ${finalReply}`);
