@@ -5,7 +5,7 @@
 
 <br/>
 
-<img src="../assets/logo.png" width="500" alt="logo" />
+<img src="assets/logo.png" width="500" alt="logo" />
 
 ## 您的個人自動化 AI 代理系統
 不僅僅是 AI 助手，更是連接不同平台與社交網絡的終極解決方案。
