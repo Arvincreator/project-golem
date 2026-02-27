@@ -27,8 +27,6 @@
 
 </div>
 
-[Line社群：Project-Golem本機AI代理人交流群](https://line.me/ti/g2/wqhJdXFKfarYxBTv34waWRpY_EXSfuYTbWc4OA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default)
-
 ---
 
 **Project Golem** 是一個具有高度自主性、長期記憶、跨平台能力與 **社交人格** 的 AI 代理系統。

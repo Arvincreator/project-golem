@@ -77,6 +77,23 @@ check_status() {
     fi
 }
 
+check_dependencies() {
+    local missing=()
+    local tools=("node" "npm" "git" "sed" "awk" "curl")
+    
+    for tool in "${tools[@]}"; do
+        if ! command -v "$tool" &>/dev/null; then
+            missing+=("$tool")
+        fi
+    done
+
+    if [ ${#missing[@]} -ne 0 ]; then
+        echo -e "${RED}❌ 缺失必要依賴: ${missing[*]}${NC}"
+        echo -e "${YELLOW}請先安裝上述工具後再執行。${NC}"
+        exit 1
+    fi
+}
+
 # ─── Health Check (Pre-launch) ──────────────────────────
 run_health_check() {
     echo ""
@@ -88,25 +105,25 @@ run_health_check() {
 
     # 1. Node.js
     if [ "$NODE_OK" = true ]; then
-        box_line_colored "  ${GREEN}✔${NC}  Node.js          ${GREEN}$NODE_VER${NC}                        "
+        box_line_colored "  ${GREEN}✔${NC}  Node.js          ${GREEN}$NODE_VER${NC}"
     else
-        box_line_colored "  ${RED}✖${NC}  Node.js          ${RED}$NODE_VER (需 v18+)${NC}                "
+        box_line_colored "  ${RED}✖${NC}  Node.js          ${RED}$NODE_VER (需 v18+)${NC}"
         all_pass=false
     fi
 
     # 2. .env exists
     if [ "$ENV_OK" = true ]; then
-        box_line_colored "  ${GREEN}✔${NC}  環境設定 (.env)  ${GREEN}已找到${NC}                           "
+        box_line_colored "  ${GREEN}✔${NC}  環境設定 (.env)  ${GREEN}已找到${NC}"
     else
-        box_line_colored "  ${RED}✖${NC}  環境設定 (.env)  ${RED}未找到${NC}                           "
+        box_line_colored "  ${RED}✖${NC}  環境設定 (.env)  ${RED}未找到${NC}"
         all_pass=false
     fi
 
     # 3. API Keys
     if [ "$KEYS_SET" = true ]; then
-        box_line_colored "  ${GREEN}✔${NC}  Gemini API Keys  ${GREEN}已設定${NC}                           "
+        box_line_colored "  ${GREEN}✔${NC}  Gemini API Keys  ${GREEN}已設定${NC}"
     else
-        box_line_colored "  ${YELLOW}△${NC}  Gemini API Keys  ${YELLOW}使用預設值 (請先設定)${NC}           "
+        box_line_colored "  ${YELLOW}△${NC}  Gemini API Keys  ${YELLOW}使用預設值 (請先設定)${NC}"
     fi
 
     # 4. Core files
@@ -118,43 +135,43 @@ run_health_check() {
         fi
     done
     if [ "$core_ok" = true ]; then
-        box_line_colored "  ${GREEN}✔${NC}  核心檔案         ${GREEN}完整${NC}                             "
+        box_line_colored "  ${GREEN}✔${NC}  核心檔案         ${GREEN}完整${NC}"
     else
-        box_line_colored "  ${RED}✖${NC}  核心檔案         ${RED}不完整${NC}                           "
+        box_line_colored "  ${RED}✖${NC}  核心檔案         ${RED}不完整${NC}"
         all_pass=false
     fi
 
     # 5. node_modules
     if [ -d "$SCRIPT_DIR/node_modules" ]; then
-        box_line_colored "  ${GREEN}✔${NC}  依賴套件         ${GREEN}已安裝${NC}                           "
+        box_line_colored "  ${GREEN}✔${NC}  依賴套件         ${GREEN}已安裝${NC}"
     else
-        box_line_colored "  ${RED}✖${NC}  依賴套件         ${RED}未安裝 (請執行安裝)${NC}               "
+        box_line_colored "  ${RED}✖${NC}  依賴套件         ${RED}未安裝 (請執行安裝)${NC}"
         all_pass=false
     fi
 
     # 6. Dashboard
     if [ "$IsDashEnabled" = true ]; then
         if [ -d "$SCRIPT_DIR/web-dashboard/out" ] || [ -d "$SCRIPT_DIR/web-dashboard/node_modules" ]; then
-            box_line_colored "  ${GREEN}✔${NC}  Web Dashboard    ${GREEN}已就緒${NC}                           "
+            box_line_colored "  ${GREEN}✔${NC}  Web Dashboard    ${GREEN}已就緒${NC}"
         else
-            box_line_colored "  ${YELLOW}△${NC}  Web Dashboard    ${YELLOW}已啟用但未建置${NC}                   "
+            box_line_colored "  ${YELLOW}△${NC}  Web Dashboard    ${YELLOW}已啟用但未建置${NC}"
         fi
     else
-        box_line_colored "  ${DIM}─${NC}  Web Dashboard    ${DIM}已停用${NC}                             "
+        box_line_colored "  ${DIM}─${NC}  Web Dashboard    ${DIM}已停用${NC}"
     fi
 
     # 7. Docker
     if [ "$DOCKER_OK" = true ] && [ "$COMPOSE_OK" = true ]; then
-        box_line_colored "  ${GREEN}✔${NC}  Docker 環境      ${GREEN}已就緒${NC}                           "
+        box_line_colored "  ${GREEN}✔${NC}  Docker 環境      ${GREEN}已就緒${NC}"
     else
-        box_line_colored "  ${DIM}△${NC}  Docker 環境      ${DIM}未完整支援 (僅影響 Docker 模式)${NC}    "
+        box_line_colored "  ${DIM}△${NC}  Docker 環境      ${DIM}未完整支援 (僅影響 Docker 模式)${NC}"
     fi
 
     box_sep
     if [ "$all_pass" = true ]; then
-        box_line_colored "  ${GREEN}${BOLD}✅ 系統就緒，可以啟動！${NC}                                "
+        box_line_colored "  ${GREEN}${BOLD}✅ 系統就緒，可以啟動！${NC}"
     else
-        box_line_colored "  ${RED}${BOLD}⚠️  部分檢查未通過，建議先修復再啟動${NC}                  "
+        box_line_colored "  ${RED}${BOLD}⚠️  部分檢查未通過，建議先修復再啟動${NC}"
     fi
     box_bottom
     echo ""
