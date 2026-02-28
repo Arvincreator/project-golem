@@ -16,7 +16,11 @@ async function run(ctx) {
 
     // 為了安全與簡潔，我們直接使用 require
     const ChatLogManager = require('../../managers/ChatLogManager');
-    const logManager = new ChatLogManager();
+    const actualBrain = ctx.brain || brain;
+    const logManager = new ChatLogManager({
+        golemId: actualBrain.golemId || args.golemId || 'default',
+        logDir: path.join(process.cwd(), 'logs')
+    });
 
     try {
         let targetDate = args.date;
