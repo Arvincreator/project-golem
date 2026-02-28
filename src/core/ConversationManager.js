@@ -12,6 +12,7 @@ class ConversationManager {
         this.queue = [];
         this.isProcessing = false;
         this.userBuffers = new Map();
+        this.silentMode = false;
         this.DEBOUNCE_MS = 1500;
     }
 
@@ -63,6 +64,11 @@ class ConversationManager {
             if (memories.length > 0) {
                 finalInput = `【相關記憶】\n${memories.map(m => `• ${m.text}`).join('\n')}\n---\n${finalInput}`;
             }
+            if (this.silentMode) {
+                console.log(`🤫 [Queue:${this.golemId}] 靜默模式啟動中，跳過回覆發送。`);
+                return;
+            }
+
             const raw = await this.brain.sendMessage(finalInput);
             await this.NeuroShunter.dispatch(task.ctx, raw, this.brain, this.controller);
         } catch (e) {
