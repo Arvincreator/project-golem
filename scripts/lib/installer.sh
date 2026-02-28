@@ -342,6 +342,7 @@ golems_wizard() {
     box_line_colored "  ${DIM}共計 $golem_count 台 Golems${NC}"
     box_bottom
     echo ""
+    update_env "GOLEM_MODE" "MULTI"
     log "Golems wizard completed ($golem_count instances)"
     sleep 1
 }
@@ -469,6 +470,7 @@ run_full_install() {
         progress_bar 3 $total_steps "配置環境變數 (.env)"
         echo ""
         config_wizard "false"
+        update_env "GOLEM_MODE" "SINGLE"
 
         progress_bar 4 $total_steps "確認單機配置"
         echo -e "  ${DIM}單機模式下將直接使用 .env 中的 Telegram 設定。${NC}\n"

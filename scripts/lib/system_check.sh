@@ -6,7 +6,23 @@ GOLEMS_LIST=""
 GOLEMS_JSON_PATH="$SCRIPT_DIR/golems.json"
 
 check_multi_golems() {
-    if [ -f "$GOLEMS_JSON_PATH" ]; then
+    # 讀取 GOLEM_MODE
+    [ -f "$DOT_ENV_PATH" ] && source "$DOT_ENV_PATH" 2>/dev/null
+    local mode="${GOLEM_MODE:-AUTO}"
+
+    # 判定邏輯強同步 (與 src/config/index.js 對齊):
+    # 1. 若明確為 SINGLE -> 單機
+    # 2. 若明確為 MULTI -> 多機 (需有 json)
+    # 3. 若為 AUTO -> 依 json 存在與否判定
+    
+    local is_multi=false
+    if [ "$mode" == "MULTI" ]; then
+        is_multi=true
+    elif [ "$mode" == "AUTO" ] || [ -z "$mode" ]; then
+        [ -f "$GOLEMS_JSON_PATH" ] && is_multi=true
+    fi
+
+    if [ "$is_multi" = true ] && [ -f "$GOLEMS_JSON_PATH" ]; then
         # 利用 Node.js 解析 JSON 取得 ID 列表與數量
         local result
         result=$(node -e "
@@ -21,15 +37,15 @@ check_multi_golems() {
         
         GOLEMS_ACTIVE_COUNT=$(echo "$result" | cut -d'|' -f1)
         GOLEMS_LIST=$(echo "$result" | cut -d'|' -f2)
+        CURRENT_GOLEM_MODE="MULTI"
     else
-        # Fallback to single golem mode if no golems.json
-        if [ -f "$DOT_ENV_PATH" ]; then
-            source "$DOT_ENV_PATH" 2>/dev/null
-            if [ -n "${TELEGRAM_TOKEN:-}" ] && [ "$TELEGRAM_TOKEN" != "你的BotToken" ]; then
-                GOLEMS_ACTIVE_COUNT=1
-                GOLEMS_LIST="golem_A (單體模式)"
-            fi
+        # Fallback to single golem mode
+        GOLEMS_ACTIVE_COUNT=0
+        if [ -n "${TELEGRAM_TOKEN:-}" ] && [ "$TELEGRAM_TOKEN" != "你的BotToken" ]; then
+            GOLEMS_ACTIVE_COUNT=1
+            GOLEMS_LIST="golem_A (單體模式)"
         fi
+        CURRENT_GOLEM_MODE="SINGLE"
     fi
 }
 

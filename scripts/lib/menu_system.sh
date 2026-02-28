@@ -8,7 +8,7 @@ show_header() {
     box_sep
     box_line_colored "  ${BOLD}📊 系統狀態${NC}                                          "
     box_line_colored "  Node.js: $STATUS_NODE   npm: ${DIM}v$NPM_VER${NC}               "
-    box_line_colored "  Config:  $STATUS_ENV   Golems:    $STATUS_GOLEMS            "
+    box_line_colored "  Config:  $STATUS_ENV   Mode:      ${BOLD}${CYAN}$CURRENT_GOLEM_MODE${NC}           "
     box_line_colored "  Docker: $STATUS_DOCKER  Dashboard: $STATUS_DASH            "
     if [ -n "$GOLEMS_LIST" ]; then
         box_sep
