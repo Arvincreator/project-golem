@@ -26,6 +26,49 @@ class AutonomyManager {
         if (!CONFIG.TG_TOKEN && !CONFIG.DC_TOKEN) return;
         this.scheduleNextAwakening();
         setInterval(() => this.timeWatcher(), 60000);
+        // ✨ [v9.0.7] 每 30 分鐘自動檢查一次日誌狀態
+        setInterval(() => this.checkArchiveStatus(), 30 * 60000);
+    }
+    async checkArchiveStatus() {
+        console.log(`🕒 [Autonomy] 定時檢查日誌壓縮狀態 (雙重門檻掃描)...`);
+        try {
+            const ChatLogManager = require('../managers/ChatLogManager');
+            const logManager = new ChatLogManager();
+            const logDir = logManager.logDir;
+
+            const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            const yesterday = logManager._getYesterdayDateString();
+
+            // 門檻設定：本日需累積 12 小時 (半天) 以上，昨日只需 3 小時 (確保最終歸檔)
+            const checkConfigs = [
+                { date: yesterday, threshold: 3, label: "昨日" },
+                { date: today, threshold: 12, label: "本日" }
+            ];
+
+            for (const config of checkConfigs) {
+                const { date, threshold, label } = config;
+
+                // 掃描指定日期的每小時日誌
+                const files = fs.readdirSync(logDir)
+                    .filter(f => f.startsWith(date) && f.length === 14 && f.endsWith('.log'));
+
+                if (files.length >= threshold) {
+                    console.log(`📦 [Autonomy] 偵測到 ${date} (${label}) 有 ${files.length} 個日誌待壓縮，啟動自動化程序...`);
+
+                    await this.sendNotification(`📦 **【自動化日誌維護】**\n偵測到${label} (${date}) 已累積達 ${files.length} 小時對話，目前將進行記憶彙整，請稍等...`);
+
+                    const logArchiveSkill = require('../skills/core/log-archive');
+                    const result = await logArchiveSkill.run({
+                        brain: this.brain,
+                        args: { date: date }
+                    });
+
+                    await this.sendNotification(`✅ **【自動化日誌維護】**\n${date} (${label}) 歸檔完成！\n${result}`);
+                }
+            }
+        } catch (e) {
+            console.error("❌ [Autonomy] 自動密令壓縮失敗:", e.message);
+        }
     }
     async timeWatcher() {
         if (!this.brain.memoryDriver || !this.brain.memoryDriver.checkDueTasks) return;

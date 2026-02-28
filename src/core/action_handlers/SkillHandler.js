@@ -11,6 +11,7 @@ class SkillHandler {
                 const result = await dynamicSkill.run({
                     page: brain.page,
                     browser: brain.browser,
+                    brain: brain,
                     log: console,
                     io: { ask: (q) => ctx.reply(q) },
                     args: act
