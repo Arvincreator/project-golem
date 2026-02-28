@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 // ============================================================
 // 🧠 Memory Drivers (雙模記憶驅動 + 排程擴充 + 物理清空)
@@ -9,11 +10,38 @@ class BrowserMemoryDriver {
         if (this.brain.memoryPage) return;
         try {
             this.brain.memoryPage = await this.brain.browser.newPage();
-            // When using Remote Chrome (host browser), paths must be host-side.
-            // HOST_PROJECT_DIR tells us where the project lives on the host.
+
+            // ─── 記憶頁面實體隔離 ───
             const baseDir = process.env.HOST_PROJECT_DIR || process.cwd();
-            const memoryPath = 'file:///' + path.join(baseDir, 'memory.html').replace(/\\/g, '/');
-            console.log(`🧠 [Memory:Browser] 正在掛載神經海馬迴: ${memoryPath}`);
+            const sourceHtmlPath = path.join(baseDir, 'memory.html');
+            const targetDir = path.join(baseDir, 'logs', this.brain.golemId);
+            const targetHtmlPath = path.join(targetDir, 'memory.html');
+
+            // 確保目標資料夾存在
+            if (!fs.existsSync(targetDir)) {
+                fs.mkdirSync(targetDir, { recursive: true });
+            }
+
+            // 複製並自定義 HTML (標註 Golem ID)
+            if (fs.existsSync(sourceHtmlPath)) {
+                let htmlContent = fs.readFileSync(sourceHtmlPath, 'utf8');
+
+                // 替換標題與主標題，加入 Golem ID 識別
+                htmlContent = htmlContent.replace(
+                    /<title>(.*?)<\/title>/,
+                    `<title>$1 (${this.brain.golemId})</title>`
+                );
+                htmlContent = htmlContent.replace(
+                    /<h1>([\s\S]*?)<\/h1>/,
+                    `<h1>$1 <span style="font-size:0.5em; color:var(--accent-pink); border:2px solid black; padding:0 10px; margin-left:10px;">ID: ${this.brain.golemId}</span></h1>`
+                );
+
+                fs.writeFileSync(targetHtmlPath, htmlContent);
+            }
+
+            const memoryPath = 'file:///' + targetHtmlPath.replace(/\\/g, '/');
+            console.log(`🧠 [Memory:Browser] 正在掛載神經海馬迴: ${memoryPath} (Golem: ${this.brain.golemId})`);
+
             await this.brain.memoryPage.goto(memoryPath);
             await new Promise(r => setTimeout(r, 5000));
         } catch (e) { console.error("❌ [Memory:Browser] 啟動失敗:", e.message); }

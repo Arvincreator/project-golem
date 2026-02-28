@@ -1,0 +1,16 @@
+[
+    {
+        "id": "golem_A",
+        "tgToken": "111111:AAAAAA",
+        "role": "主要對外對話窗口 (預設)",
+        "tgAuthMode": "ADMIN",
+        "adminId": "123456789"
+    },
+    {
+        "id": "golem_B",
+        "tgToken": "222222:BBBBBB",
+        "role": "測試群組客服",
+        "tgAuthMode": "CHAT",
+        "chatId": "-100987654321"
+    }
+]

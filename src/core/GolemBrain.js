@@ -18,7 +18,11 @@ const { URLS } = require('./constants');
 // 🧠 Golem Brain (Web Gemini) - Dual-Engine + Titan Protocol
 // ============================================================
 class GolemBrain {
-    constructor() {
+    constructor(options = {}) {
+        // ── 實體識別與設定 ──
+        this.golemId = options.golemId || 'default';
+        this.userDataDir = options.userDataDir || path.resolve(CONFIG.USER_DATA_DIR || './golem_memory');
+
         // ── 瀏覽器狀態 ──
         this.browser = null;
         this.page = null;
@@ -31,13 +35,16 @@ class GolemBrain {
 
         // ── 記憶引擎 ──
         const mode = cleanEnv(process.env.GOLEM_MEMORY_MODE || 'browser').toLowerCase();
-        console.log(`⚙️ [System] 記憶引擎模式: ${mode.toUpperCase()}`);
+        console.log(`⚙️ [System] 記憶引擎模式: ${mode.toUpperCase()} (Golem: ${this.golemId})`);
         if (mode === 'qmd') this.memoryDriver = new SystemQmdDriver();
         else if (mode === 'native' || mode === 'system') this.memoryDriver = new SystemNativeDriver();
         else this.memoryDriver = new BrowserMemoryDriver(this);
 
         // ── 對話日誌 ──
-        this.chatLogManager = new ChatLogManager();
+        const logFileName = 'agent_chat.jsonl';
+        this.chatLogManager = new ChatLogManager({
+            logFilePath: path.join(process.cwd(), 'logs', this.golemId, logFileName)
+        });
     }
 
     // ─── Public API (向後相容) ─────────────────────────────
@@ -53,11 +60,10 @@ class GolemBrain {
 
         // 1. 啟動 / 連線瀏覽器
         if (!this.browser) {
-            const userDataDir = path.resolve(CONFIG.USER_DATA_DIR);
-            console.log(`📂 [System] Browser User Data Dir: ${userDataDir}`);
+            console.log(`📂 [System] Browser User Data Dir: ${this.userDataDir} (Golem: ${this.golemId})`);
 
             this.browser = await BrowserLauncher.launch({
-                userDataDir,
+                userDataDir: this.userDataDir,
                 headless: process.env.PUPPETEER_HEADLESS,
             });
         }
