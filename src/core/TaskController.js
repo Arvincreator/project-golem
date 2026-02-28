@@ -8,7 +8,8 @@ const InteractiveMultiAgent = require('./InteractiveMultiAgent');
 // ⚡ Task Controller (閉環回饋版)
 // ============================================================
 class TaskController {
-    constructor() {
+    constructor(options = {}) {
+        this.golemId = options.golemId || 'default';
         this.executor = new Executor();
         this.security = new SecurityManager();
         this.multiAgent = null; // ✨ [v9.0]

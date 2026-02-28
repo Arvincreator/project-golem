@@ -4,7 +4,8 @@ const { v4: uuidv4 } = require('uuid');
 // 🚦 Conversation Manager (隊列與防抖系統 - 多用戶隔離版)
 // ============================================================
 class ConversationManager {
-    constructor(brain, neuroShunterClass, controller) {
+    constructor(brain, neuroShunterClass, controller, options = {}) {
+        this.golemId = options.golemId || 'default';
         this.brain = brain;
         this.NeuroShunter = neuroShunterClass;
         this.controller = controller;
@@ -43,8 +44,8 @@ class ConversationManager {
         this.isProcessing = true;
         const task = this.queue.shift();
         try {
-            console.log(`🚀 [Queue] 開始處理訊息...`);
-            console.log(`🗣️ [User] 說: ${task.text}`);
+            console.log(`🚀 [Queue:${this.golemId}] 開始處理訊息...`);
+            console.log(`🗣️ [User->${this.golemId}] 說: ${task.text}`);
 
             // ✨ [Log] 記錄用戶輸入 (Fix missing user logs)
             this.brain._appendChatLog({

@@ -1,8 +1,8 @@
 /**
- * 🦞 Project Golem v9.0.5 (Model Switcher Edition)
+ * 🦞 Project Golem v9.0.6 (Multi-Golem Edition)
  * -------------------------------------------------------------------------
  * 架構：[Universal Context] -> [Conversation Queue] -> [NeuroShunter] <==> [Web Gemini]
- * * 🎯 V9.0.5 核心升級：
+ * * 🎯 V9.0.6 核心升級：
  * 1. 🧬 記憶轉生系統 (Memory Reincarnation): 支援無限期延續對話上下文，自動重置底層 Web 會話。
  * 2. 🔌 Telegram Topic 支援: 修正在 Forum 模式下的精準回覆。
  * 3. 🚑 輕量級 SOS 急救: 不重啟進程，單純物理刪除污染快取，觸發 DOM Doctor 無縫修復。
@@ -11,6 +11,7 @@
  * 6. 🔄 物理重生指令 (/new): 強制導回 Gemini 根目錄以開啟全新對話，並清除狀態快取。
  * 7. 💥 徹底轉生指令 (/new_memory): 物理清空底層 DB 並重置對話。
  * 8. 🤖 實體模型切換 (/model): 根據最新版 Web UI，實體操作切換 Fast / Thinking / Pro。
+ * 9. 👯 雙子多開架構 (Multi-Golem): 支援多重實例，依頻道分流獨立瀏覽器與記憶。
  * * [保留功能] 
  * - ⚡ 非同步部署 (Async Deployment)
  * - 🛡️ 全域錯誤防護 (Global Error Guard)
@@ -45,7 +46,7 @@ const { spawn } = require('child_process');
 const TelegramBot = require('node-telegram-bot-api');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
-const { CONFIG } = require('./src/config');
+const { CONFIG, GOLEMS_CONFIG } = require('./src/config');
 const GolemBrain = require('./src/core/GolemBrain');
 const TaskController = require('./src/core/TaskController');
 const AutonomyManager = require('./src/managers/AutonomyManager');
@@ -58,7 +59,21 @@ const SystemUpgrader = require('./src/managers/SystemUpgrader');
 const InteractiveMultiAgent = require('./src/core/InteractiveMultiAgent');
 const introspection = require('./src/services/Introspection');
 
-const tgBot = CONFIG.TG_TOKEN ? new TelegramBot(CONFIG.TG_TOKEN, { polling: true }) : null;
+const telegramBots = new Map();
+if (GOLEMS_CONFIG && GOLEMS_CONFIG.length > 0) {
+    for (const config of GOLEMS_CONFIG) {
+        if (!config.tgToken) continue;
+        try {
+            const bot = new TelegramBot(config.tgToken, { polling: true });
+            bot.golemConfig = config;
+            telegramBots.set(config.id, bot);
+            console.log(`🤖 [Bot] 已載入 Telegram 機器人，綁定實體: ${config.id}`);
+        } catch (e) {
+            console.error(`❌ [Bot] 初始化 ${config.id} Telegram 失敗:`, e.message);
+        }
+    }
+}
+
 const dcClient = CONFIG.DC_TOKEN ? new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -69,20 +84,54 @@ const dcClient = CONFIG.DC_TOKEN ? new Client({
     partials: [Partials.Channel]
 }) : null;
 
-const brain = new GolemBrain();
-const controller = new TaskController();
-const autonomy = new AutonomyManager(brain, controller, brain.memoryDriver);
-const convoManager = new ConversationManager(brain, NeuroShunter, controller);
+// ==========================================
+// 🧠 雙子管弦樂團 (Golem Orchestrator)
+// ==========================================
+const activeGolems = new Map();
 
-autonomy.setIntegrations(tgBot, dcClient, convoManager);
+/**
+ * 取得或建立 Golem 實體
+ * @param {string} golemId 
+ * @returns {Object} { brain, controller, autonomy, convoManager }
+ */
+function getOrCreateGolem(golemId) {
+    if (activeGolems.has(golemId)) return activeGolems.get(golemId);
+
+    console.log(`\n================================`);
+    console.log(`🧬 [Orchestrator] 孕育新實體: ${golemId}`);
+    console.log(`================================\n`);
+
+    const brain = new GolemBrain({ golemId, userDataDir: path.resolve(CONFIG.USER_DATA_DIR, golemId) });
+    const controller = new TaskController({ golemId });
+    const autonomy = new AutonomyManager(brain, controller, brain.memoryDriver, { golemId });
+    const convoManager = new ConversationManager(brain, NeuroShunter, controller, { golemId });
+
+    const boundBot = telegramBots.get(golemId) || (telegramBots.size > 0 ? telegramBots.values().next().value : null);
+    autonomy.setIntegrations(boundBot, dcClient, convoManager);
+
+    const instance = { brain, controller, autonomy, convoManager };
+    activeGolems.set(golemId, instance);
+    return instance;
+}
+
+// 根據 GOLEMS_CONFIG 預先註冊所有的 Golem 實體
+const initialGolems = [];
+if (GOLEMS_CONFIG && GOLEMS_CONFIG.length > 0) {
+    for (const config of GOLEMS_CONFIG) {
+        initialGolems.push(getOrCreateGolem(config.id));
+    }
+} else {
+    initialGolems.push(getOrCreateGolem('golem_A'));
+}
 
 const BOOT_TIME = Date.now();
 console.log(`🛡️ [Flood Guard] 系統啟動時間: ${new Date(BOOT_TIME).toLocaleString('zh-TW', { hour12: false })}`);
-const pendingTasks = controller.pendingTasks;
 
 (async () => {
     if (process.env.GOLEM_TEST_MODE === 'true') { console.log('🚧 GOLEM_TEST_MODE active.'); return; }
-    await brain.init();
+
+    // 平行啟動所有大腦
+    await Promise.all(initialGolems.map(instance => instance.brain.init()));
 
     console.log('🧠 [Introspection] Pre-scanning project structure...');
     await introspection.getStructure();
@@ -99,14 +148,15 @@ const pendingTasks = controller.pendingTasks;
 
                 console.log("🔄 [系統] 啟動記憶轉生程序！正在開啟新對話...");
 
-                if (brain.page) {
-                    await brain.page.goto('https://gemini.google.com/app', { waitUntil: 'networkidle2' });
-                }
-
-                const wakeUpPrompt = `【系統重啟初始化：記憶轉生】\n請遵守你的核心設定(Project Golem)。你剛進行了會話重置以釋放記憶體。\n以下是你上一輪對話留下的【記憶摘要】：\n${summary}\n\n請根據上述摘要，向使用者打招呼，並嚴格包含以下這段話（或類似語氣）：\n「🔄 對話視窗已成功重啟，並載入了剛剛的重點記憶！不過老實說，重啟過程可能會讓我忘記一些瑣碎的小細節，如果接下來我有漏掉什麼，請隨時提醒我喔！」`;
-
-                if (brain.sendMessage) {
-                    await brain.sendMessage(wakeUpPrompt);
+                // 廣播給所有 active 的 Golem
+                for (const [id, instance] of activeGolems.entries()) {
+                    if (instance.brain.page) {
+                        await instance.brain.page.goto('https://gemini.google.com/app', { waitUntil: 'networkidle2' });
+                    }
+                    const wakeUpPrompt = `【系統重啟初始化：記憶轉生】\n請遵守你的核心設定(Project Golem [${id}])。你剛進行了會話重置以釋放記憶體。\n以下是你上一輪對話留下的【記憶摘要】：\n${summary}\n\n請根據上述摘要，向使用者打招呼，並嚴格包含以下這段話（或類似語氣）：\n「🔄 對話視窗已成功重啟，並載入了剛剛的重點記憶！不過老實說，重啟過程可能會讓我忘記一些瑣碎的小細節，如果接下來我有漏掉什麼，請隨時提醒我喔！」`;
+                    if (instance.brain.sendMessage) {
+                        await instance.brain.sendMessage(wakeUpPrompt);
+                    }
                 }
 
             } catch (error) {
@@ -115,27 +165,36 @@ const pendingTasks = controller.pendingTasks;
         }
     });
 
-    autonomy.start();
-    console.log('✅ Golem v9.0.5 (Model Switcher Edition) is Online.');
+    initialGolems.forEach(instance => {
+        instance.autonomy.start();
+        console.log(`✅ [System][${instance.brain.golemId}] Autonomy Engine is Online.`);
+        // ✨ [新增] 每日日誌自動壓縮 (昨天的每小時日誌 -> 每日摘要)
+        if (instance.brain.chatLogManager) {
+            const yesterday = instance.brain.chatLogManager._getYesterdayDateString();
+            console.log(`🕒 [System][${instance.brain.golemId}] 檢查 ${yesterday} 的日誌壓縮狀態...`);
+            // 為了不阻塞啟動，使用非同步執行
+            instance.brain.chatLogManager.compressLogsForDate(yesterday, instance.brain).catch(err => {
+                console.error(`❌ [System][${instance.brain.golemId}] 自動壓縮失敗: ${err.message}`);
+            });
+        }
+    });
 
-    // ✨ [新增] 每日日誌自動壓縮 (昨天的每小時日誌 -> 每日摘要)
-    if (brain.chatLogManager) {
-        const yesterday = brain.chatLogManager._getYesterdayDateString();
-        console.log(`🕒 [System] 檢查 ${yesterday} 的日誌壓縮狀態...`);
-        // 為了不阻塞啟動，使用非同步執行
-        brain.chatLogManager.compressLogsForDate(yesterday, brain).catch(err => {
-            console.error(`❌ [System] 自動壓縮失敗: ${err.message}`);
-        });
-    }
-
+    console.log(`✅ Multi-Golem v9.0.6 is Online. (Instances: ${GOLEMS_CONFIG.length > 0 ? GOLEMS_CONFIG.map(g => g.id).join(', ') : 'golem_A'})`);
     if (dcClient) dcClient.login(CONFIG.DC_TOKEN);
 })();
 
-async function handleUnifiedMessage(ctx) {
+async function handleUnifiedMessage(ctx, forceTargetId = null) {
     const msgTime = ctx.messageTime;
     if (msgTime && msgTime < BOOT_TIME) {
         return;
     }
+
+    // [Multi-Golem 分流器]
+    // 優先使用來源機器人強制的 Target ID，若無則預設為單例 `golem_A`
+    let targetId = forceTargetId || 'golem_A';
+
+    const instance = getOrCreateGolem(targetId);
+    const { brain, controller, autonomy, convoManager } = instance;
 
     if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase() === '/sos') {
         try {
@@ -246,9 +305,9 @@ async function handleUnifiedMessage(ctx) {
     if (await NodeRouter.handle(ctx, brain)) return;
 
     const lowerText = ctx.text ? ctx.text.toLowerCase() : '';
-    if (global.pendingPatch) {
-        if (['ok', 'deploy', 'y', '部署'].includes(lowerText)) return executeDeploy(ctx);
-        if (['no', 'drop', 'n', '丟棄'].includes(lowerText)) return executeDrop(ctx);
+    if (autonomy.pendingPatch) {
+        if (['ok', 'deploy', 'y', '部署'].includes(lowerText)) return executeDeploy(ctx, targetId);
+        if (['no', 'drop', 'n', '丟棄'].includes(lowerText)) return executeDrop(ctx, targetId);
     }
 
     if (lowerText.startsWith('/patch') || lowerText.includes('優化代碼')) {
@@ -287,7 +346,7 @@ async function handleUnifiedMessage(ctx) {
     } catch (e) { console.error(e); await ctx.reply(`❌ 錯誤: ${e.message}`); }
 }
 
-async function handleUnifiedCallback(ctx, actionData) {
+async function handleUnifiedCallback(ctx, actionData, forceTargetId = null) {
     if (ctx.platform === 'discord' && ctx.isInteraction) {
         try {
             await ctx.event.deferReply({ flags: 64 });
@@ -297,8 +356,20 @@ async function handleUnifiedCallback(ctx, actionData) {
     }
 
     if (!ctx.isAdmin) return;
-    if (actionData === 'PATCH_DEPLOY') return executeDeploy(ctx);
-    if (actionData === 'PATCH_DROP') return executeDrop(ctx);
+
+    // 解析 GolemId (如果是 PATCH 相關)
+    let targetId = forceTargetId || 'golem_A';
+    if (actionData.startsWith('PATCH_DEPLOY_')) {
+        targetId = actionData.split('PATCH_DEPLOY_')[1];
+        return executeDeploy(ctx, targetId);
+    }
+    if (actionData.startsWith('PATCH_DROP_')) {
+        targetId = actionData.split('PATCH_DROP_')[1];
+        return executeDrop(ctx, targetId);
+    }
+
+    const { brain, controller, convoManager } = getOrCreateGolem(targetId);
+    const pendingTasks = controller.pendingTasks;
     if (actionData === 'SYSTEM_FORCE_UPDATE') return SystemUpgrader.performUpdate(ctx);
     if (actionData === 'SYSTEM_UPDATE_CANCEL') return await ctx.reply("已取消更新操作。");
 
@@ -398,10 +469,11 @@ async function handleUnifiedCallback(ctx, actionData) {
     }
 }
 
-async function executeDeploy(ctx) {
-    if (!global.pendingPatch) return;
+async function executeDeploy(ctx, targetId) {
+    const { autonomy, brain } = getOrCreateGolem(targetId);
+    if (!autonomy.pendingPatch) return;
     try {
-        const { path: patchPath, target: targetPath, name: targetName } = global.pendingPatch;
+        const { path: patchPath, target: targetPath, name: targetName } = autonomy.pendingPatch;
 
         try {
             await fs.copyFile(targetPath, `${targetName}.bak-${Date.now()}`);
@@ -411,43 +483,46 @@ async function executeDeploy(ctx) {
         await fs.writeFile(targetPath, patchContent);
         await fs.unlink(patchPath);
 
-        global.pendingPatch = null;
+        autonomy.pendingPatch = null;
         if (brain && brain.memoryDriver && brain.memoryDriver.recordSuccess) {
             try { await brain.memoryDriver.recordSuccess(); } catch (e) { }
         }
-        await ctx.reply(`🚀 ${targetName} 升級成功！正在重啟...`);
+        await ctx.reply(`🚀 [${targetId}] ${targetName} 升級成功！正在重啟...`);
         const subprocess = spawn(process.argv[0], process.argv.slice(1), { detached: true, stdio: 'ignore' });
         subprocess.unref();
         process.exit(0);
-    } catch (e) { await ctx.reply(`❌ 部署失敗: ${e.message}`); }
+    } catch (e) { await ctx.reply(`❌ [${targetId}] 部署失敗: ${e.message}`); }
 }
 
-async function executeDrop(ctx) {
-    if (!global.pendingPatch) return;
+async function executeDrop(ctx, targetId) {
+    const { autonomy, brain } = getOrCreateGolem(targetId);
+    if (!autonomy.pendingPatch) return;
     try {
-        await fs.unlink(global.pendingPatch.path);
+        await fs.unlink(autonomy.pendingPatch.path);
     } catch (e) { }
-    global.pendingPatch = null;
+    autonomy.pendingPatch = null;
     if (brain && brain.memoryDriver && brain.memoryDriver.recordRejection) {
         try { await brain.memoryDriver.recordRejection(); } catch (e) { }
     }
-    await ctx.reply("🗑️ 提案已丟棄");
+    await ctx.reply(`🗑️ [${targetId}] 提案已丟棄`);
 }
 
-if (tgBot) {
-    tgBot.on('message', (msg) => handleUnifiedMessage(new UniversalContext('telegram', msg, tgBot)));
+for (const [golemId, bot] of telegramBots.entries()) {
+    bot.on('message', (msg) => handleUnifiedMessage(new UniversalContext('telegram', msg, bot), golemId));
 
-    tgBot.on('callback_query', async (query) => {
-        tgBot.answerCallbackQuery(query.id).catch(e => {
-            console.warn(`⚠️ [TG] Callback Answer Warning: ${e.message}`);
+    bot.on('callback_query', async (query) => {
+        bot.answerCallbackQuery(query.id).catch(e => {
+            console.warn(`⚠️ [TG ${golemId}] Callback Answer Warning: ${e.message}`);
         });
 
         await handleUnifiedCallback(
-            new UniversalContext('telegram', query, tgBot),
-            query.data
+            new UniversalContext('telegram', query, bot),
+            query.data,
+            golemId
         );
     });
 }
+
 if (dcClient) {
     dcClient.on('messageCreate', (msg) => { if (!msg.author.bot) handleUnifiedMessage(new UniversalContext('discord', msg, dcClient)); });
     dcClient.on('interactionCreate', (interaction) => { if (interaction.isButton()) handleUnifiedCallback(new UniversalContext('discord', interaction, dcClient), interaction.customId); });
@@ -486,9 +561,23 @@ setInterval(async () => {
 
                 const message = `⏰ **【時間領主提醒】**\n\n時間到了！您設定的排程事項：\n👉 **${task.task}**`;
 
-                const adminId = CONFIG.TG_AUTH_MODE === 'CHAT' ? CONFIG.TG_CHAT_ID : (process.env.ADMIN_ID || process.env.TG_ADMIN_ID);
-                if (typeof tgBot !== 'undefined' && tgBot && adminId) {
-                    tgBot.sendMessage(adminId, message).catch(e => console.warn("TG 提醒發送失敗:", e.message));
+                const firstBot = telegramBots.get('golem_A') || (telegramBots.size > 0 ? telegramBots.values().next().value : null);
+                let adminId = CONFIG.TG_AUTH_MODE === 'CHAT' ? CONFIG.TG_CHAT_ID : (process.env.ADMIN_ID || process.env.TG_ADMIN_ID);
+
+                if (firstBot && firstBot.golemConfig) {
+                    const mode = (firstBot.golemConfig.tgAuthMode || CONFIG.TG_AUTH_MODE).toUpperCase();
+                    if (mode === 'CHAT') {
+                        adminId = firstBot.golemConfig.chatId || CONFIG.TG_CHAT_ID;
+                    } else {
+                        const adminCfg = firstBot.golemConfig.adminId;
+                        if (adminCfg) {
+                            adminId = Array.isArray(adminCfg) ? adminCfg[0] : String(adminCfg).split(',')[0].trim();
+                        }
+                    }
+                }
+
+                if (firstBot && adminId) {
+                    firstBot.sendMessage(adminId, message).catch(e => console.warn("TG 提醒發送失敗:", e.message));
                 }
 
                 const dcAdminId = process.env.DC_ADMIN_ID;
@@ -507,4 +596,4 @@ setInterval(async () => {
     }
 }, 30000);
 
-module.exports = { brain, controller, autonomy, convoManager };
+module.exports = { activeGolems, getOrCreateGolem };

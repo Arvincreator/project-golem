@@ -69,6 +69,7 @@ ENVEOF
 
 # ─── Step 3: Config Wizard ───
 config_wizard() {
+    local skip_bot_config="${1:-false}"
     echo ""
     echo ""
     box_top
@@ -76,6 +77,9 @@ config_wizard() {
     box_line_colored "  ${DIM}設定 API Keys、Bot Tokens 與系統選項${NC}"
     box_sep
     box_line_colored "  ${DIM}提示: 直接按 Enter 保留目前值 │ 輸入 [B] 返回上一步${NC}"
+    if [ "$skip_bot_config" = "true" ]; then
+        box_line_colored "  ${YELLOW}ℹ 已開啟多機模式，將跳過 .env 中的 Bot Token 設定${NC}"
+    fi
     box_bottom
     echo ""
 
@@ -84,11 +88,17 @@ config_wizard() {
 
     local step=1
     local total=6
+    [ "$skip_bot_config" = "true" ] && total=4
 
-    while [ $step -le $total ]; do
+    while [ $step -le 6 ]; do
+        local display_step=$step
+        if [ "$skip_bot_config" = "true" ]; then
+            if [ $step -ge 4 ]; then display_step=$((step - 2)); fi
+        fi
+
         case $step in
             1)
-                echo -e "  ${BOLD}${MAGENTA}[${step}/${total}]${NC} ${BOLD}Google Gemini API Keys${NC}"
+                echo -e "  ${BOLD}${MAGENTA}[${display_step}/${total}]${NC} ${BOLD}Google Gemini API Keys${NC}"
                 echo -e "  ${DIM}取得: https://aistudio.google.com/app/apikey${NC}"
                 local masked_gemini; masked_gemini=$(mask_value "${GEMINI_API_KEYS:-}")
                 echo -e "  目前: ${CYAN}${masked_gemini}${NC}"
@@ -97,6 +107,9 @@ config_wizard() {
                 if [ -n "$input" ]; then update_env "GEMINI_API_KEYS" "$input"; GEMINI_API_KEYS="$input"; fi
                 step=$((step + 1)); echo "" ;;
             2)
+                if [ "$skip_bot_config" = "true" ]; then
+                    step=$((step + 1)); continue
+                fi
                 echo -e "  ${BOLD}${MAGENTA}[${step}/${total}]${NC} ${BOLD}Telegram Bot Token${NC}"
                 local masked_tg; masked_tg=$(mask_value "${TELEGRAM_TOKEN:-}")
                 echo -e "  目前: ${CYAN}${masked_tg}${NC}"
@@ -106,6 +119,9 @@ config_wizard() {
                 if [ -n "$input" ]; then update_env "TELEGRAM_TOKEN" "$input"; TELEGRAM_TOKEN="$input"; fi
                 step=$((step + 1)); echo "" ;;
             3)
+                if [ "$skip_bot_config" = "true" ]; then
+                    step=$((step + 1)); continue
+                fi
                 echo -e "  ${BOLD}${MAGENTA}[${step}/${total}]${NC} ${BOLD}Telegram 驗證模式${NC}"
                 echo -e "  目前: ${CYAN}${TG_AUTH_MODE:-ADMIN}${NC}"
                 read -r -p "  👉 選擇模式 [A] 個人 Admin ID / [C] 群組 Chat ID / [B] 返回: " input
@@ -139,7 +155,7 @@ config_wizard() {
                 fi
                 step=$((step + 1)); echo "" ;;
             4)
-                echo -e "  ${BOLD}${MAGENTA}[${step}/${total}]${NC} ${BOLD}Discord Bot Token${NC}"
+                echo -e "  ${BOLD}${MAGENTA}[${display_step}/${total}]${NC} ${BOLD}Discord Bot Token${NC}"
                 local masked_dc; masked_dc=$(mask_value "${DISCORD_TOKEN:-}")
                 echo -e "  目前: ${CYAN}${masked_dc}${NC}"
                 read -r -p "  👉 輸入新 Token (留空保留 / B 返回): " input
@@ -148,7 +164,7 @@ config_wizard() {
                 if [ -n "$input" ]; then update_env "DISCORD_TOKEN" "$input"; DISCORD_TOKEN="$input"; fi
                 step=$((step + 1)); echo "" ;;
             5)
-                echo -e "  ${BOLD}${MAGENTA}[${step}/${total}]${NC} ${BOLD}Discord Admin User ID${NC}"
+                echo -e "  ${BOLD}${MAGENTA}[${display_step}/${total}]${NC} ${BOLD}Discord Admin User ID${NC}"
                 echo -e "  目前: ${CYAN}${DISCORD_ADMIN_ID:-${DIM}(未設定)${NC}}${NC}"
                 read -r -p "  👉 輸入新 ID (留空保留 / B 返回): " input
                 input=$(echo "$input" | xargs 2>/dev/null)
@@ -158,7 +174,7 @@ config_wizard() {
                 fi
                 step=$((step + 1)); echo "" ;;
             6)
-                echo -e "  ${BOLD}${MAGENTA}[${step}/${total}]${NC} ${BOLD}Web Dashboard${NC}"
+                echo -e "  ${BOLD}${MAGENTA}[${display_step}/${total}]${NC} ${BOLD}Web Dashboard${NC}"
                 echo -e "  目前: ${CYAN}${ENABLE_WEB_DASHBOARD:-false}${NC}"
                 read -r -p "  👉 啟用 Web Dashboard? [Y/n/B] (留空保留): " input
                 input=$(echo "$input" | xargs 2>/dev/null)
@@ -175,17 +191,23 @@ config_wizard() {
     box_line_colored "  ${BOLD}📋 配置摘要${NC}"
     box_sep
     local mg; mg=$(mask_value "${GEMINI_API_KEYS:-}")
-    local mt; mt=$(mask_value "${TELEGRAM_TOKEN:-}")
-    local md; md=$(mask_value "${DISCORD_TOKEN:-}")
     box_line_colored "  Gemini Keys:    ${CYAN}${mg}${NC}"
-    box_line_colored "  TG Token:       ${CYAN}${mt}${NC}"
-    if [ "$TG_AUTH_MODE" = "CHAT" ]; then
-        box_line_colored "  TG Auth Mode:   ${CYAN}群組模式 (CHAT)${NC}"
-        box_line_colored "  TG Chat ID:     ${CYAN}${TG_CHAT_ID:-未設定}${NC}"
+    
+    if [ "$skip_bot_config" != "true" ]; then
+        local mt; mt=$(mask_value "${TELEGRAM_TOKEN:-}")
+        box_line_colored "  TG Token:       ${CYAN}${mt}${NC}"
+        if [ "$TG_AUTH_MODE" = "CHAT" ]; then
+            box_line_colored "  TG Auth Mode:   ${CYAN}群組模式 (CHAT)${NC}"
+            box_line_colored "  TG Chat ID:     ${CYAN}${TG_CHAT_ID:-未設定}${NC}"
+        else
+            box_line_colored "  TG Auth Mode:   ${CYAN}個人模式 (ADMIN)${NC}"
+            box_line_colored "  TG Admin ID:    ${CYAN}${ADMIN_ID:-未設定}${NC}"
+        fi
     else
-        box_line_colored "  TG Auth Mode:   ${CYAN}個人模式 (ADMIN)${NC}"
-        box_line_colored "  TG Admin ID:    ${CYAN}${ADMIN_ID:-未設定}${NC}"
+        box_line_colored "  TG Config:      ${YELLOW}於 golems.json 獨立配置${NC}"
     fi
+
+    local md; md=$(mask_value "${DISCORD_TOKEN:-}")
     box_line_colored "  DC Token:       ${CYAN}${md}${NC}"
     box_line_colored "  DC Admin ID:    ${CYAN}${DISCORD_ADMIN_ID:-未設定}${NC}"
     box_line_colored "  Dashboard:      ${CYAN}${ENABLE_WEB_DASHBOARD:-false}${NC}"
@@ -194,6 +216,133 @@ config_wizard() {
     box_bottom
     echo ""
     log "Config wizard completed"
+    sleep 1
+}
+
+# ─── Step 3.5: Golems Config Wizard ───
+golems_wizard() {
+    echo ""
+    echo ""
+    box_top
+    box_line_colored "  ${BOLD}${CYAN}🧙 多子神經網路配置精靈 (golems.json)${NC}"
+    box_line_colored "  ${DIM}自動生成無限展頻的 Golems 配置檔${NC}"
+    box_sep
+    box_line_colored "  ${DIM}提示: 直接按 Enter 使用預設值 │ 輸入 [B] 返回主選單${NC}"
+    box_bottom
+    echo ""
+
+    local GOLEMS_FILE="$SCRIPT_DIR/golems.json"
+    local existing_count=2
+    local has_existing=false
+
+    if [ -f "$GOLEMS_FILE" ]; then
+        has_existing=true
+        echo -e "  ${YELLOW}⚠️  偵測到 golems.json 已經存在。${NC}"
+        read -r -p "  👉 請問是否要覆寫或修改目前的設定檔？[y/N]: " overwrite
+        if [[ ! "$overwrite" =~ ^[Yy]$ ]]; then
+            echo -e "  ${DIM}已取消配置。${NC}\n"
+            sleep 1
+            return
+        fi
+        # 讀取現有數量
+        existing_count=$(node -e "try { const c = require('$GOLEMS_FILE'); console.log(Array.isArray(c) ? c.length : 2); } catch(e) { console.log(2); }" 2>/dev/null)
+    fi
+
+    read -r -p "  👉 請問您想要部署幾台 Golem？ (輸入數字，預設: $existing_count / B 返回): " golem_count
+    golem_count=$(echo "$golem_count" | xargs 2>/dev/null)
+    if [[ "$golem_count" =~ ^[Bb]$ ]]; then return; fi
+    if [[ ! "$golem_count" =~ ^[0-9]+$ ]] || [ "$golem_count" -le 0 ]; then
+        golem_count=$existing_count
+    fi
+
+    local json_output="[\n"
+    
+    for (( i=1; i<=golem_count; i++ )); do
+        # 嘗試讀取舊有值
+        local old_id="" old_token="" old_role="" old_mode="ADMIN" old_auth_id=""
+        if [ "$has_existing" = "true" ]; then
+            local idx=$((i-1))
+            local raw; raw=$(node -e "try { 
+                const c = require('$GOLEMS_FILE'); 
+                const g = c[$idx] || {};
+                console.log([g.id||'', g.tgToken||'', g.role||'', g.tgAuthMode||'ADMIN', g.adminId||g.chatId||''].join('|'));
+            } catch(e) { console.log('||||'); }" 2>/dev/null)
+            old_id=$(echo "$raw" | cut -d'|' -f1)
+            old_token=$(echo "$raw" | cut -d'|' -f2)
+            old_role=$(echo "$raw" | cut -d'|' -f3)
+            old_mode=$(echo "$raw" | cut -d'|' -f4)
+            old_auth_id=$(echo "$raw" | cut -d'|' -f5)
+        fi
+
+        # ASCII A, B, C...
+        local default_id="golem_$(printf "\\$(printf "%03o" $((64+i)))")"
+        if [ $i -gt 26 ]; then default_id="golem_$i"; fi
+        [ -n "$old_id" ] && default_id="$old_id"
+        
+        echo -e "\n  ${BOLD}${MAGENTA}--- 設定第 $i 台 Golem (共 $golem_count 台) ---${NC}"
+        
+        read -r -p "  👉 [1/4] 輸入 Golem ID (預設: $default_id): " g_id
+        g_id=$(echo "$g_id" | xargs 2>/dev/null)
+        [ -z "$g_id" ] && g_id="$default_id"
+
+        local masked_old_token; masked_old_token=$(mask_value "$old_token")
+        local token_prompt="  👉 [2/4] 輸入 Telegram Token (必填): "
+        [ -n "$old_token" ] && token_prompt="  👉 [2/4] 輸入 Telegram Token (留空保留: $masked_old_token): "
+        
+        read -r -p "$token_prompt" g_token
+        g_token=$(echo "$g_token" | xargs 2>/dev/null)
+        [ -z "$g_token" ] && g_token="$old_token"
+        
+        while [ -z "$g_token" ]; do
+            read -r -p "    ${RED}Token 不能為空${NC}，請重新輸入: " g_token
+            g_token=$(echo "$g_token" | xargs 2>/dev/null)
+        done
+
+        local def_role="一般助手"
+        if [ $i -eq 1 ]; then def_role="主要對外對話窗口 (預設)"; fi
+        if [ $i -eq 2 ]; then def_role="測試機/除錯/開發環境"; fi
+        [ -n "$old_role" ] && def_role="$old_role"
+        
+        read -r -p "  👉 [3/4] 輸入角色/職責 (預設: $def_role): " g_role
+        g_role=$(echo "$g_role" | xargs 2>/dev/null)
+        [ -z "$g_role" ] && g_role="$def_role"
+
+        read -r -p "  👉 [4/4] 選擇驗證模式 [A] 個人 ADMIN / [C] 群組 CHAT (目前: $old_mode): " g_auth_mode
+        g_auth_mode=$(echo "$g_auth_mode" | xargs 2>/dev/null)
+        local auth_mode_str="$old_mode"
+        if [[ "$g_auth_mode" =~ ^[Cc]$ ]]; then auth_mode_str="CHAT"
+        elif [[ "$g_auth_mode" =~ ^[Aa]$ ]]; then auth_mode_str="ADMIN"; fi
+
+        local g_auth_id=""
+        local id_prompt="    👉 輸入對應 個人 Admin ID"
+        [ "$auth_mode_str" = "CHAT" ] && id_prompt="    👉 輸入對應 群組 Chat ID"
+        [ -n "$old_auth_id" ] && id_prompt="$id_prompt (留空保留: $old_auth_id)"
+        
+        read -r -p "$id_prompt: " g_auth_id
+        g_auth_id=$(echo "$g_auth_id" | xargs 2>/dev/null)
+        [ -z "$g_auth_id" ] && g_auth_id="$old_auth_id"
+
+        json_output+="  {\n    \"id\": \"$g_id\",\n    \"tgToken\": \"$g_token\",\n    \"role\": \"$g_role\""
+        if [ -n "$auth_mode_str" ]; then json_output+=",\n    \"tgAuthMode\": \"$auth_mode_str\""; fi
+        if [ -n "$g_auth_id" ]; then
+            if [ "$auth_mode_str" = "CHAT" ]; then json_output+=",\n    \"chatId\": \"$g_auth_id\""
+            else json_output+=",\n    \"adminId\": \"$g_auth_id\""; fi
+        fi
+        json_output+="\n  }"
+        if [ $i -lt $golem_count ]; then json_output+=",\n"
+        else json_output+="\n"; fi
+    done
+
+    json_output+="]"
+    echo -e "$json_output" > "$GOLEMS_FILE"
+
+    echo ""
+    box_top
+    box_line_colored "  ${GREEN}${BOLD}✅ 多機配置已成功寫入 golems.json${NC}"
+    box_line_colored "  ${DIM}共計 $golem_count 台 Golems${NC}"
+    box_bottom
+    echo ""
+    log "Golems wizard completed ($golem_count instances)"
     sleep 1
 }
 
@@ -277,7 +426,7 @@ step_install_dashboard() {
 # ─── Full Install ───
 run_full_install() {
     timer_start
-    local total_steps=7
+    local total_steps=8
     log "Full install started"
 
     echo -e "  ${BOLD}${CYAN}📦 開始完整安裝流程${NC}"
@@ -294,29 +443,56 @@ run_full_install() {
     echo ""
     step_check_env
 
-    # Step 3: Config wizard
-    progress_bar 3 $total_steps "配置精靈"
+    # Step 3 & 4: Configuration
+    progress_bar 3 $total_steps "部署模式選擇"
     echo ""
-    config_wizard
+    echo -e "  ${BOLD}${CYAN}💡 請選擇您的部署模式：${NC}"
+    echo -e "  ${GREEN}1) 單機模式${NC} (Single Golem - 只啟動一個機器人，簡單快速)"
+    echo -e "  ${YELLOW}2) 多機模式${NC} (Multi Golems - 可同時啟動多個機器人，需額外配置)"
+    echo ""
+    local install_mode="1"
+    read -r -p "  👉 請輸入選擇 [1/2] (預設 1): " install_mode
+    install_mode=$(echo "$install_mode" | xargs 2>/dev/null)
+    [ -z "$install_mode" ] && install_mode="1"
 
-    # Step 4: Install core deps
-    progress_bar 4 $total_steps "安裝核心依賴"
+    if [ "$install_mode" = "2" ]; then
+        # 多機模式
+        progress_bar 3 $total_steps "配置基礎環境 (跳過 Bot 設定)"
+        echo ""
+        config_wizard "true"
+
+        progress_bar 4 $total_steps "配置多機實體 (golems.json)"
+        echo ""
+        golems_wizard
+    else
+        # 單機模式
+        progress_bar 3 $total_steps "配置環境變數 (.env)"
+        echo ""
+        config_wizard "false"
+
+        progress_bar 4 $total_steps "確認單機配置"
+        echo -e "  ${DIM}單機模式下將直接使用 .env 中的 Telegram 設定。${NC}\n"
+        sleep 1
+    fi
+
+    # Step 5: Install core deps
+    progress_bar 5 $total_steps "安裝核心依賴"
     echo ""
     step_install_core
 
-    # Step 5: Install dashboard
-    progress_bar 5 $total_steps "安裝 Dashboard"
+    # Step 6: Install dashboard
+    progress_bar 6 $total_steps "安裝 Dashboard"
     echo ""
     step_install_dashboard
 
-    # Step 6: Health check
-    progress_bar 6 $total_steps "健康檢查"
+    # Step 7: Health check
+    progress_bar 7 $total_steps "健康檢查"
     echo ""
     check_status
     run_health_check
 
-    # Step 7: Done
-    progress_bar 7 $total_steps "完成"
+    # Step 8: Done
+    progress_bar 8 $total_steps "完成"
     echo ""
     local elapsed; elapsed=$(timer_elapsed)
     log "Full install completed in $elapsed"

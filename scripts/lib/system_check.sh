@@ -1,5 +1,38 @@
 #!/bin/bash
 
+# ─── Golem Configuration Status ───
+GOLEMS_ACTIVE_COUNT=0
+GOLEMS_LIST=""
+GOLEMS_JSON_PATH="$SCRIPT_DIR/golems.json"
+
+check_multi_golems() {
+    if [ -f "$GOLEMS_JSON_PATH" ]; then
+        # 利用 Node.js 解析 JSON 取得 ID 列表與數量
+        local result
+        result=$(node -e "
+            try {
+                const cfg = require('$GOLEMS_JSON_PATH');
+                if (Array.isArray(cfg)) {
+                    const ids = cfg.map(g => g.id).join(', ');
+                    console.log(cfg.length + '|' + ids);
+                } else { console.log('0|'); }
+            } catch (e) { console.log('0|'); }
+        " 2>/dev/null)
+        
+        GOLEMS_ACTIVE_COUNT=$(echo "$result" | cut -d'|' -f1)
+        GOLEMS_LIST=$(echo "$result" | cut -d'|' -f2)
+    else
+        # Fallback to single golem mode if no golems.json
+        if [ -f "$DOT_ENV_PATH" ]; then
+            source "$DOT_ENV_PATH" 2>/dev/null
+            if [ -n "${TELEGRAM_TOKEN:-}" ] && [ "$TELEGRAM_TOKEN" != "你的BotToken" ]; then
+                GOLEMS_ACTIVE_COUNT=1
+                GOLEMS_LIST="golem_A (單體模式)"
+            fi
+        fi
+    fi
+}
+
 check_status() {
     # Node Version
     NODE_VER=$(node -v 2>/dev/null || echo "N/A")
@@ -18,6 +51,14 @@ check_status() {
     else
         STATUS_ENV="${RED}❌ 未找到${NC}"
         ENV_OK=false
+    fi
+
+    # 執行多 Golem 檢查
+    check_multi_golems
+    if [ "$GOLEMS_ACTIVE_COUNT" -gt 0 ]; then
+        STATUS_GOLEMS="${GREEN}✅ ${GOLEMS_ACTIVE_COUNT} 個實體${NC}"
+    else
+        STATUS_GOLEMS="${YELLOW}⚠️ 未配置${NC}"
     fi
 
     # Web Dashboard
@@ -124,6 +165,16 @@ run_health_check() {
         box_line_colored "  ${GREEN}✔${NC}  Gemini API Keys  ${GREEN}已設定${NC}"
     else
         box_line_colored "  ${YELLOW}△${NC}  Gemini API Keys  ${YELLOW}使用預設值 (請先設定)${NC}"
+    fi
+
+    # 3.5 Golem Config
+    if [ "$GOLEMS_ACTIVE_COUNT" -gt 0 ]; then
+        local list_short="$GOLEMS_LIST"
+        [ ${#list_short} -gt 25 ] && list_short="${list_short:0:22}..."
+        box_line_colored "  ${GREEN}✔${NC}  Golem 實體配置   ${GREEN}${GOLEMS_ACTIVE_COUNT} 個 (${list_short})${NC}"
+    else
+        box_line_colored "  ${RED}✖${NC}  Golem 實體配置   ${RED}未偵測到有效 Bot Token${NC}"
+        all_pass=false
     fi
 
     # 4. Core files

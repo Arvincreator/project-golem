@@ -7,13 +7,15 @@ const path = require('path');
 const fs = require('fs');
 
 class AutonomyManager {
-    constructor(brain, controller, memory) {
+    constructor(brain, controller, memory, options = {}) {
+        this.golemId = options.golemId || 'default';
         this.brain = brain;
         this.controller = controller;
         this.memory = memory;
         this.tgBot = null;
         this.dcClient = null;
         this.convoManager = null;
+        this.pendingPatch = null;
     }
 
     setIntegrations(tgBot, dcClient, convoManager) {
@@ -138,9 +140,9 @@ class AutonomyManager {
             const targetName = patch.file === 'skills.js' ? 'skills.js' : 'index.js';
             const targetPath = targetName === 'skills.js' ? path.join(process.cwd(), 'skills.js') : path.join(process.cwd(), 'index.js');
             const testFile = PatchManager.createTestClone(targetPath, patches);
-            global.pendingPatch = { path: testFile, target: targetPath, name: targetName, description: patch.description };
-            const msgText = `💡 **自主進化提案**\n目標：${targetName}\n內容：${patch.description}`;
-            const options = { reply_markup: { inline_keyboard: [[{ text: '🚀 部署', callback_data: 'PATCH_DEPLOY' }, { text: '🗑️ 丟棄', callback_data: 'PATCH_DROP' }]] } };
+            this.pendingPatch = { path: testFile, target: targetPath, name: targetName, description: patch.description };
+            const msgText = `💡 **自主進化提案 (${this.golemId})**\n目標：${targetName}\n內容：${patch.description}`;
+            const options = { reply_markup: { inline_keyboard: [[{ text: '🚀 部署', callback_data: `PATCH_DEPLOY_${this.golemId}` }, { text: '🗑️ 丟棄', callback_data: `PATCH_DROP_${this.golemId}` }]] } };
             if (triggerCtx) { await triggerCtx.reply(msgText, options); await triggerCtx.sendDocument(testFile); }
             else if (this.tgBot && CONFIG.ADMIN_IDS[0]) { await this.tgBot.sendMessage(CONFIG.ADMIN_IDS[0], msgText, options); await this.tgBot.sendDocument(CONFIG.ADMIN_IDS[0], testFile); }
         }

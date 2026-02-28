@@ -40,10 +40,17 @@ class UniversalContext {
         return !this.event.guildId;
     }
 
+    get authMode() {
+        if (this.platform === 'telegram' && this.instance.golemConfig && this.instance.golemConfig.tgAuthMode) {
+            return String(this.instance.golemConfig.tgAuthMode).toUpperCase();
+        }
+        return CONFIG.TG_AUTH_MODE;
+    }
+
     get shouldMentionSender() {
         if (this.platform === 'telegram') {
             // 在 ADMIN 模式或私聊中，不需要 @ 使用者
-            if (CONFIG.TG_AUTH_MODE === 'ADMIN' || this.isPrivate) return false;
+            if (this.authMode === 'ADMIN' || this.isPrivate) return false;
             return true;
         }
         return !this.isPrivate;
@@ -112,17 +119,34 @@ class UniversalContext {
         return null;
     }
 
+    get targetChatId() {
+        if (this.platform === 'telegram' && this.instance.golemConfig && this.instance.golemConfig.chatId) {
+            return String(this.instance.golemConfig.chatId);
+        }
+        return CONFIG.TG_CHAT_ID;
+    }
+
+    get adminIds() {
+        if (this.platform === 'telegram' && this.instance.golemConfig && this.instance.golemConfig.adminId) {
+            const adminCfg = this.instance.golemConfig.adminId;
+            const ids = Array.isArray(adminCfg) ? adminCfg : String(adminCfg).split(',');
+            return ids.map(id => String(id).trim()).filter(Boolean);
+        }
+        return CONFIG.ADMIN_IDS;
+    }
+
     get isAdmin() {
         if (this.platform === 'telegram') {
-            if (CONFIG.TG_AUTH_MODE === 'CHAT') {
-                return String(this.chatId) === String(CONFIG.TG_CHAT_ID);
+            if (this.authMode === 'CHAT') {
+                return String(this.chatId) === String(this.targetChatId);
             }
             // Default ADMIN mode: 必須是 Admin 本人，且必須是在私聊 (Private) 中
             // 避免 Bot 在 Admin 參與的群組中誤觸發
             if (!this.isPrivate) return false;
 
-            if (CONFIG.ADMIN_IDS.length === 0) return true;
-            return CONFIG.ADMIN_IDS.includes(String(this.userId));
+            const ids = this.adminIds;
+            if (ids.length === 0) return true;
+            return ids.includes(String(this.userId));
         }
 
         // Other platforms (Discord)
