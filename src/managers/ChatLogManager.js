@@ -8,7 +8,12 @@ const ResponseParser = require('../utils/ResponseParser');
  */
 class ChatLogManager {
     constructor(options = {}) {
-        this.logDir = options.logDir || path.join(process.cwd(), 'logs');
+        const baseLogDir = options.logDir || path.join(process.cwd(), 'logs');
+        this.golemId = options.golemId || 'default';
+        // SINGLE 模式不需要 golemId 子目錄
+        this.logDir = options.isSingleMode
+            ? baseLogDir
+            : path.join(baseLogDir, this.golemId);
         this.retentionMs = options.retentionMs || LOG_RETENTION_MS;
 
         this._ensureDirectory();
@@ -49,6 +54,7 @@ class ChatLogManager {
                 const filePath = path.join(this.logDir, file);
                 const stats = fs.statSync(filePath);
 
+                // 在子目錄模式下，所有檔案都屬於該 Golem，直接檢查過期即可
                 if (file.endsWith('.log') && (now - stats.mtimeMs) > this.retentionMs) {
                     fs.unlinkSync(filePath);
                     console.log(`清理過期日誌檔案: ${file}`);
@@ -85,7 +91,7 @@ class ChatLogManager {
      * @param {boolean} [force=false] - 是否無視門檻強制執行
      */
     async compressLogsForDate(dateString, brain, force = false) {
-        console.log(`📦 [LogManager] 檢查 ${dateString} 的日誌狀態... (Force: ${force})`);
+        console.log(`📦 [LogManager][${this.golemId}] 檢查 ${dateString} 的日誌狀態... (Force: ${force})`);
         const files = fs.readdirSync(this.logDir)
             .filter(f => f.startsWith(dateString) && f.length === 14 && f.endsWith('.log'))
             .sort();

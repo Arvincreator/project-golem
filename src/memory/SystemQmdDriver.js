@@ -2,11 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const { exec, execSync } = require('child_process');
-const { CONFIG } = require('../config');
+const { CONFIG, KNOWLEDGE_BASE_DIR } = require('../config');
 
 class SystemQmdDriver {
     constructor() {
-        this.baseDir = path.join(process.cwd(), 'golem_memory', 'knowledge');
+        this.baseDir = KNOWLEDGE_BASE_DIR;
         if (!fs.existsSync(this.baseDir)) fs.mkdirSync(this.baseDir, { recursive: true });
         this.qmdCmd = 'qmd';
     }

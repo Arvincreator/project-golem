@@ -41,9 +41,10 @@ class GolemBrain {
         else this.memoryDriver = new BrowserMemoryDriver(this);
 
         // ── 對話日誌 ──
-        const logFileName = 'agent_chat.jsonl';
         this.chatLogManager = new ChatLogManager({
-            logFilePath: path.join(process.cwd(), 'logs', this.golemId, logFileName)
+            golemId: this.golemId,
+            logDir: options.logDir || path.join(process.cwd(), 'logs'),
+            isSingleMode: options.isSingleMode || false
         });
     }
 
@@ -323,7 +324,7 @@ class GolemBrain {
             const logDir = this.chatLogManager.logDir;
 
             try {
-                // 掃描符合 YYYYMMDD.log 格式的檔案
+                // 掃描符合 YYYYMMDD.log 格式的檔案 (每日摘要)
                 const files = fs.readdirSync(logDir)
                     .filter(f => f.length === 12 && f.endsWith('.log'))
                     .sort();

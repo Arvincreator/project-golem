@@ -37,25 +37,25 @@ if (CONFIG.API_KEYS.some(isPlaceholder)) CONFIG.API_KEYS = CONFIG.API_KEYS.filte
 
 // 🚀 解析運行模式 (單機 vs 多機)
 let GOLEMS_CONFIG = [];
+const GOLEM_MODE = (process.env.GOLEM_MODE || '').trim().toUpperCase();
 const golemsJsonPath = path.join(process.cwd(), 'golems.json');
-const HAS_GOLEMS_JSON = fs.existsSync(golemsJsonPath);
 
-// ✨ [核心優化] 嚴格遵循 setup.sh 選擇的模式
-// 優先級：1. .env 中的 GOLEM_MODE | 2. 自動偵測 (向後相容)
-const DEFINED_MODE = cleanEnv(process.env.GOLEM_MODE).toUpperCase(); // SINGLE | MULTI
-
-let modeToUse = "AUTO";
-if (DEFINED_MODE === "SINGLE" || DEFINED_MODE === "MULTI") {
-    modeToUse = DEFINED_MODE;
-} else {
-    // 向後相容：自動偵測
-    modeToUse = HAS_GOLEMS_JSON ? "MULTI" : "SINGLE";
-}
-
-if (modeToUse === "MULTI" && HAS_GOLEMS_JSON) {
+if (GOLEM_MODE === 'SINGLE') {
+    // 強制單機模式：只使用 .env 配置，忽略 golems.json
+    if (CONFIG.TG_TOKEN) {
+        GOLEMS_CONFIG.push({
+            id: 'golem_A',
+            tgToken: CONFIG.TG_TOKEN,
+            tgAuthMode: CONFIG.TG_AUTH_MODE,
+            adminId: CONFIG.ADMIN_ID,
+            chatId: CONFIG.TG_CHAT_ID
+        });
+    }
+    console.log('📡 [Config] 運行模式: 單機 (GOLEM_MODE=SINGLE)');
+} else if (fs.existsSync(golemsJsonPath)) {
     try {
         GOLEMS_CONFIG = JSON.parse(fs.readFileSync(golemsJsonPath, 'utf8'));
-        console.log("📂 [Config] 已載入 golems.json (多機模式啟動)");
+        console.log(`📡 [Config] 運行模式: 多機 (${GOLEMS_CONFIG.length} 實體)`);
     } catch (e) {
         console.error("❌ [Config] golems.json 格式錯誤:", e.message);
         modeToUse = "SINGLE"; // 降級
@@ -76,6 +76,7 @@ if (modeToUse === "SINGLE" || GOLEMS_CONFIG.length === 0) {
     } else {
         console.warn("⚠️ [Config] 未發現有效的 Telegram Token 且無 golems.json，機器人可能無法運作。");
     }
+    console.log('📡 [Config] 運行模式: 單機 (fallback，無 golems.json)');
 }
 
 // 確保 ID 唯一，且都有基本的 Token 屬性
@@ -87,9 +88,20 @@ GOLEMS_CONFIG = GOLEMS_CONFIG.filter(g => {
     return true;
 });
 
+// 計算 mode-aware 路徑前綴
+const MODE_DIR = GOLEM_MODE === 'SINGLE' ? 'single' : 'multi';
+const LOG_BASE_DIR = path.join(process.cwd(), 'logs', MODE_DIR);
+const MEMORY_BASE_DIR = path.resolve(CONFIG.USER_DATA_DIR || './golem_memory', MODE_DIR);
+const KNOWLEDGE_BASE_DIR = path.join(process.cwd(), 'golem_memory', MODE_DIR, 'knowledge');
+
 module.exports = {
     cleanEnv,
     isPlaceholder,
     CONFIG,
-    GOLEMS_CONFIG
+    GOLEMS_CONFIG,
+    GOLEM_MODE,
+    MODE_DIR,
+    LOG_BASE_DIR,
+    MEMORY_BASE_DIR,
+    KNOWLEDGE_BASE_DIR
 };

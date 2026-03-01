@@ -14,7 +14,9 @@ class BrowserMemoryDriver {
             // ─── 記憶頁面實體隔離 ───
             const baseDir = process.env.HOST_PROJECT_DIR || process.cwd();
             const sourceHtmlPath = path.join(baseDir, 'memory.html');
-            const targetDir = path.join(baseDir, 'logs', this.brain.golemId);
+            const targetDir = this.brain.chatLogManager
+                ? this.brain.chatLogManager.logDir
+                : path.join(baseDir, 'logs', this.brain.golemId);
             const targetHtmlPath = path.join(targetDir, 'memory.html');
 
             // 確保目標資料夾存在
