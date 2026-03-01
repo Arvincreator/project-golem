@@ -445,6 +445,11 @@ async function handleUnifiedCallback(ctx, actionData, forceTargetId = null) {
                 let payload = "";
                 if (approvedStep.summary) payload = String(approvedStep.summary);
                 else if (approvedStep.args) payload = typeof approvedStep.args === 'string' ? approvedStep.args : JSON.stringify(approvedStep.args);
+                else {
+                    // 防呆：如果沒有 args 也沒有 summary，則將扣除 action 以外的所有欄位封裝為 JSON
+                    const { action, ...params } = approvedStep;
+                    payload = JSON.stringify(params);
+                }
 
                 const safePayload = payload.replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
                 cmd = `node src/skills/core/${actionName}.js "${safePayload}"`;
