@@ -39,15 +39,15 @@ check_multi_golems() {
         
         GOLEMS_ACTIVE_COUNT=$(echo "$result" | cut -d'|' -f1)
         GOLEMS_LIST=$(echo "$result" | cut -d'|' -f2)
+        CURRENT_GOLEM_MODE="MULTI"
     else
-        # Fallback to single golem mode if no golems.json
-        if [ -f "$DOT_ENV_PATH" ]; then
-            source "$DOT_ENV_PATH" 2>/dev/null
-            if [ -n "${TELEGRAM_TOKEN:-}" ] && [ "$TELEGRAM_TOKEN" != "你的BotToken" ]; then
-                GOLEMS_ACTIVE_COUNT=1
-                GOLEMS_LIST="golem_A (單體模式)"
-            fi
+        # Fallback to single golem mode
+        GOLEMS_ACTIVE_COUNT=0
+        if [ -n "${TELEGRAM_TOKEN:-}" ] && [ "$TELEGRAM_TOKEN" != "你的BotToken" ]; then
+            GOLEMS_ACTIVE_COUNT=1
+            GOLEMS_LIST="golem_A (單體模式)"
         fi
+        CURRENT_GOLEM_MODE="SINGLE"
     fi
 }
 

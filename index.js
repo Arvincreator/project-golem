@@ -25,7 +25,8 @@ process.on('uncaughtException', (err) => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-    console.error('⚠️ [WARNING] Unhandled Rejection at:', promise, 'reason:', reason);
+    console.error('⚠️ [WARNING] Unhandled Rejection at:', promise);
+    console.error('Reason:', reason);
 });
 
 if (process.argv.includes('dashboard')) {
@@ -66,8 +67,11 @@ if (GOLEMS_CONFIG && GOLEMS_CONFIG.length > 0) {
         try {
             const bot = new TelegramBot(config.tgToken, { polling: true });
             bot.golemConfig = config;
+            bot.getMe().then(me => {
+                bot.username = me.username;
+                console.log(`🤖 [Bot] ${config.id} 已上線，Username: @${me.username}`);
+            }).catch(e => console.warn(`⚠️ [Bot] ${config.id} 無法獲取 Bot 資訊:`, e.message));
             telegramBots.set(config.id, bot);
-            console.log(`🤖 [Bot] 已載入 Telegram 機器人，綁定實體: ${config.id}`);
         } catch (e) {
             console.error(`❌ [Bot] 初始化 ${config.id} Telegram 失敗:`, e.message);
         }
@@ -288,6 +292,40 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
             }
         } catch (e) {
             await ctx.reply(`❌ 切換模組失敗: ${e.message}`);
+        }
+        return;
+    }
+
+    // ✨ [新增] /enable_silent & /disable_silent 指令實作 (僅限 CHAT 模式)
+    if (ctx.authMode === 'CHAT' && ctx.isAdmin && ctx.text && (ctx.text.trim().toLowerCase().startsWith('/enable_silent') || ctx.text.trim().toLowerCase().startsWith('/disable_silent'))) {
+        const lowerRaw = ctx.text.trim().toLowerCase();
+        const isEnable = lowerRaw.startsWith('/enable_silent');
+        const args = ctx.text.trim().split(/\s+/);
+        // 指令格式現在是 /enable_silent @bot_username
+        const targetBotTag = args[1] || "";
+        const targetBotUsername = targetBotTag.startsWith('@') ? targetBotTag.substring(1).toLowerCase() : targetBotTag.toLowerCase();
+
+        if (!targetBotTag) {
+            const currentBotUsername = ctx.instance.username ? `@${ctx.instance.username}` : `@${targetId}`;
+            await ctx.reply(`ℹ️ 請指定目標 Bot ID，例如：\n \`${isEnable ? '/enable_silent' : '/disable_silent'} ${currentBotUsername}\``);
+            return;
+        }
+
+        // 比對 Bot Username (忽略大小寫)
+        if (ctx.instance.username && targetBotUsername !== ctx.instance.username.toLowerCase()) {
+            // 如果不是發給當前 Bot Username，則忽略
+            return;
+        } else if (!ctx.instance.username && targetBotUsername !== targetId.toLowerCase()) {
+            // 備援方案：若尚未獲取 Username，則比對 Golem ID
+            return;
+        }
+
+        convoManager.silentMode = isEnable;
+        const displayName = ctx.instance.username ? `@${ctx.instance.username}` : `[${targetId}]`;
+        if (isEnable) {
+            await ctx.reply(`🤫 ${displayName} 已進入靜默模式。\n我會繼續記錄您的對話，但不再主動發言。`);
+        } else {
+            await ctx.reply(`📢 ${displayName} 已解除靜默模式。\n我已準備好恢復與您的對話！`);
         }
         return;
     }
@@ -513,18 +551,30 @@ async function executeDrop(ctx, targetId) {
 }
 
 for (const [golemId, bot] of telegramBots.entries()) {
-    bot.on('message', (msg) => handleUnifiedMessage(new UniversalContext('telegram', msg, bot), golemId));
+    bot.on('message', async (msg) => {
+        try {
+            await handleUnifiedMessage(new UniversalContext('telegram', msg, bot), golemId);
+        } catch (e) {
+            console.error(`❌ [TG ${golemId}] Message Handler Error:`, e);
+        }
+    });
 
     bot.on('callback_query', async (query) => {
-        bot.answerCallbackQuery(query.id).catch(e => {
+        try {
+            await bot.answerCallbackQuery(query.id);
+        } catch (e) {
             console.warn(`⚠️ [TG ${golemId}] Callback Answer Warning: ${e.message}`);
-        });
+        }
 
-        await handleUnifiedCallback(
-            new UniversalContext('telegram', query, bot),
-            query.data,
-            golemId
-        );
+        try {
+            await handleUnifiedCallback(
+                new UniversalContext('telegram', query, bot),
+                query.data,
+                golemId
+            );
+        } catch (e) {
+            console.error(`❌ [TG ${golemId}] Callback Handler Error:`, e);
+        }
     });
 }
 

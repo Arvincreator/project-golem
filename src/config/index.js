@@ -35,7 +35,7 @@ if (isPlaceholder(CONFIG.TG_TOKEN)) { console.warn("⚠️ [Config] TELEGRAM_TOK
 if (isPlaceholder(CONFIG.DC_TOKEN)) { console.warn("⚠️ [Config] DISCORD_TOKEN 無效，Discord Bot 不啟動。"); CONFIG.DC_TOKEN = ""; }
 if (CONFIG.API_KEYS.some(isPlaceholder)) CONFIG.API_KEYS = CONFIG.API_KEYS.filter(k => !isPlaceholder(k));
 
-// 🚀 解析多重 Golem (無限擴展) 配置
+// 🚀 解析運行模式 (單機 vs 多機)
 let GOLEMS_CONFIG = [];
 const GOLEM_MODE = (process.env.GOLEM_MODE || '').trim().toUpperCase();
 const golemsJsonPath = path.join(process.cwd(), 'golems.json');
@@ -58,11 +58,23 @@ if (GOLEM_MODE === 'SINGLE') {
         console.log(`📡 [Config] 運行模式: 多機 (${GOLEMS_CONFIG.length} 實體)`);
     } catch (e) {
         console.error("❌ [Config] golems.json 格式錯誤:", e.message);
+        modeToUse = "SINGLE"; // 降級
     }
-} else {
-    // 預設向後相容: 使用 .env 的 TG_TOKEN 作為單例模式
+}
+
+// 處理單機模式或多機模式降級
+if (modeToUse === "SINGLE" || GOLEMS_CONFIG.length === 0) {
     if (CONFIG.TG_TOKEN) {
-        GOLEMS_CONFIG.push({ id: 'golem_A', tgToken: CONFIG.TG_TOKEN });
+        GOLEMS_CONFIG = [{
+            id: 'golem_A',
+            tgToken: CONFIG.TG_TOKEN,
+            tgAuthMode: CONFIG.TG_AUTH_MODE,
+            chatId: CONFIG.TG_CHAT_ID,
+            adminId: CONFIG.ADMIN_ID
+        }];
+        console.log(`ℹ️ [Config] 採用 .env 單機設定 (模式: ${modeToUse})`);
+    } else {
+        console.warn("⚠️ [Config] 未發現有效的 Telegram Token 且無 golems.json，機器人可能無法運作。");
     }
     console.log('📡 [Config] 運行模式: 單機 (fallback，無 golems.json)');
 }
