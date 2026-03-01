@@ -456,7 +456,10 @@ run_full_install() {
     [ -z "$install_mode" ] && install_mode="1"
 
     if [ "$install_mode" = "2" ]; then
-        # 多機模式
+        # 多機模式 — 寫入 GOLEM_MODE=MULTI
+        update_env "GOLEM_MODE" "MULTI"
+        log "Mode set to MULTI"
+
         progress_bar 3 $total_steps "配置基礎環境 (跳過 Bot 設定)"
         echo ""
         config_wizard "true"
@@ -465,7 +468,10 @@ run_full_install() {
         echo ""
         golems_wizard
     else
-        # 單機模式
+        # 單機模式 — 寫入 GOLEM_MODE=SINGLE
+        update_env "GOLEM_MODE" "SINGLE"
+        log "Mode set to SINGLE"
+
         progress_bar 3 $total_steps "配置環境變數 (.env)"
         echo ""
         config_wizard "false"

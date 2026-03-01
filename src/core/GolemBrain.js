@@ -43,7 +43,8 @@ class GolemBrain {
         // ── 對話日誌 ──
         this.chatLogManager = new ChatLogManager({
             golemId: this.golemId,
-            logDir: path.join(process.cwd(), 'logs')
+            logDir: options.logDir || path.join(process.cwd(), 'logs'),
+            isSingleMode: options.isSingleMode || false
         });
     }
 

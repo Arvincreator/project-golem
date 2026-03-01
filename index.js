@@ -46,7 +46,7 @@ const { spawn } = require('child_process');
 const TelegramBot = require('node-telegram-bot-api');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
-const { CONFIG, GOLEMS_CONFIG } = require('./src/config');
+const { CONFIG, GOLEMS_CONFIG, MEMORY_BASE_DIR, LOG_BASE_DIR, GOLEM_MODE } = require('./src/config');
 const GolemBrain = require('./src/core/GolemBrain');
 const TaskController = require('./src/core/TaskController');
 const AutonomyManager = require('./src/managers/AutonomyManager');
@@ -101,7 +101,12 @@ function getOrCreateGolem(golemId) {
     console.log(`🧬 [Orchestrator] 孕育新實體: ${golemId}`);
     console.log(`================================\n`);
 
-    const brain = new GolemBrain({ golemId, userDataDir: path.resolve(CONFIG.USER_DATA_DIR, golemId) });
+    const brain = new GolemBrain({
+        golemId,
+        userDataDir: GOLEM_MODE === 'SINGLE' ? MEMORY_BASE_DIR : path.join(MEMORY_BASE_DIR, golemId),
+        logDir: LOG_BASE_DIR,
+        isSingleMode: GOLEM_MODE === 'SINGLE'
+    });
     const controller = new TaskController({ golemId });
     const autonomy = new AutonomyManager(brain, controller, brain.memoryDriver, { golemId });
     const convoManager = new ConversationManager(brain, NeuroShunter, controller, { golemId });

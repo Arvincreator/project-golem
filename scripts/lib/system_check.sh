@@ -6,6 +6,24 @@ GOLEMS_LIST=""
 GOLEMS_JSON_PATH="$SCRIPT_DIR/golems.json"
 
 check_multi_golems() {
+    # 先讀取 .env 中的 GOLEM_MODE
+    local golem_mode=""
+    if [ -f "$DOT_ENV_PATH" ]; then
+        golem_mode=$(grep '^GOLEM_MODE=' "$DOT_ENV_PATH" 2>/dev/null | cut -d'=' -f2 | tr -d ' ')
+    fi
+
+    if [ "$golem_mode" = "SINGLE" ]; then
+        # 強制單機模式，忽略 golems.json
+        if [ -f "$DOT_ENV_PATH" ]; then
+            source "$DOT_ENV_PATH" 2>/dev/null
+            if [ -n "${TELEGRAM_TOKEN:-}" ] && [ "$TELEGRAM_TOKEN" != "你的BotToken" ]; then
+                GOLEMS_ACTIVE_COUNT=1
+                GOLEMS_LIST="golem_A (單機模式)"
+            fi
+        fi
+        return
+    fi
+
     if [ -f "$GOLEMS_JSON_PATH" ]; then
         # 利用 Node.js 解析 JSON 取得 ID 列表與數量
         local result

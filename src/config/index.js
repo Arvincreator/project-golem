@@ -37,10 +37,25 @@ if (CONFIG.API_KEYS.some(isPlaceholder)) CONFIG.API_KEYS = CONFIG.API_KEYS.filte
 
 // 🚀 解析多重 Golem (無限擴展) 配置
 let GOLEMS_CONFIG = [];
+const GOLEM_MODE = (process.env.GOLEM_MODE || '').trim().toUpperCase();
 const golemsJsonPath = path.join(process.cwd(), 'golems.json');
-if (fs.existsSync(golemsJsonPath)) {
+
+if (GOLEM_MODE === 'SINGLE') {
+    // 強制單機模式：只使用 .env 配置，忽略 golems.json
+    if (CONFIG.TG_TOKEN) {
+        GOLEMS_CONFIG.push({
+            id: 'golem_A',
+            tgToken: CONFIG.TG_TOKEN,
+            tgAuthMode: CONFIG.TG_AUTH_MODE,
+            adminId: CONFIG.ADMIN_ID,
+            chatId: CONFIG.TG_CHAT_ID
+        });
+    }
+    console.log('📡 [Config] 運行模式: 單機 (GOLEM_MODE=SINGLE)');
+} else if (fs.existsSync(golemsJsonPath)) {
     try {
         GOLEMS_CONFIG = JSON.parse(fs.readFileSync(golemsJsonPath, 'utf8'));
+        console.log(`📡 [Config] 運行模式: 多機 (${GOLEMS_CONFIG.length} 實體)`);
     } catch (e) {
         console.error("❌ [Config] golems.json 格式錯誤:", e.message);
     }
@@ -49,6 +64,7 @@ if (fs.existsSync(golemsJsonPath)) {
     if (CONFIG.TG_TOKEN) {
         GOLEMS_CONFIG.push({ id: 'golem_A', tgToken: CONFIG.TG_TOKEN });
     }
+    console.log('📡 [Config] 運行模式: 單機 (fallback，無 golems.json)');
 }
 
 // 確保 ID 唯一，且都有基本的 Token 屬性
@@ -60,9 +76,20 @@ GOLEMS_CONFIG = GOLEMS_CONFIG.filter(g => {
     return true;
 });
 
+// 計算 mode-aware 路徑前綴
+const MODE_DIR = GOLEM_MODE === 'SINGLE' ? 'single' : 'multi';
+const LOG_BASE_DIR = path.join(process.cwd(), 'logs', MODE_DIR);
+const MEMORY_BASE_DIR = path.resolve(CONFIG.USER_DATA_DIR || './golem_memory', MODE_DIR);
+const KNOWLEDGE_BASE_DIR = path.join(process.cwd(), 'golem_memory', MODE_DIR, 'knowledge');
+
 module.exports = {
     cleanEnv,
     isPlaceholder,
     CONFIG,
-    GOLEMS_CONFIG
+    GOLEMS_CONFIG,
+    GOLEM_MODE,
+    MODE_DIR,
+    LOG_BASE_DIR,
+    MEMORY_BASE_DIR,
+    KNOWLEDGE_BASE_DIR
 };
