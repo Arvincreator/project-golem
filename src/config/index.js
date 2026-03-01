@@ -38,6 +38,7 @@ if (CONFIG.API_KEYS.some(isPlaceholder)) CONFIG.API_KEYS = CONFIG.API_KEYS.filte
 // 🚀 解析運行模式 (單機 vs 多機)
 let GOLEMS_CONFIG = [];
 const GOLEM_MODE = (process.env.GOLEM_MODE || '').trim().toUpperCase();
+let modeToUse = GOLEM_MODE;
 const golemsJsonPath = path.join(process.cwd(), 'golems.json');
 
 if (GOLEM_MODE === 'SINGLE') {

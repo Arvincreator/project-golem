@@ -79,7 +79,15 @@ class DashboardPlugin {
 
     _handleError(args) {
         if (this.manager.state.isDetached) return;
-        const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
+        const util = require('util');
+        const msg = args.map(a => {
+            if (a instanceof Error) return `${a.name}: ${a.message}\n${a.stack}`;
+            if (typeof a === 'object' && a !== null) {
+                if (a.stack || a.message) return `${a.name || 'Error'}: ${a.message || ''}\n${a.stack || ''}`;
+                return util.inspect(a, { depth: 1, colors: false });
+            }
+            return String(a);
+        }).join(' ');
         this.view.log('error', `{red-fg}[錯誤] ${msg}{/red-fg}`);
         if (this.webServer) {
             this.webServer.broadcastLog({ time: new Date().toLocaleTimeString(), msg, type: 'error' });

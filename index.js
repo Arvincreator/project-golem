@@ -48,6 +48,11 @@ const TelegramBot = require('node-telegram-bot-api');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 const { CONFIG, GOLEMS_CONFIG, MEMORY_BASE_DIR, LOG_BASE_DIR, GOLEM_MODE } = require('./src/config');
+const SystemLogger = require('./src/utils/SystemLogger');
+
+// 🚀 初始化系統日誌持久化
+SystemLogger.init(LOG_BASE_DIR);
+
 const GolemBrain = require('./src/core/GolemBrain');
 const TaskController = require('./src/core/TaskController');
 const AutonomyManager = require('./src/managers/AutonomyManager');
