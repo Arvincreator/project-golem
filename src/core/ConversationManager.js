@@ -64,17 +64,15 @@ class ConversationManager {
             if (memories.length > 0) {
                 finalInput = `【相關記憶】\n${memories.map(m => `• ${m.text}`).join('\n')}\n---\n${finalInput}`;
             }
-            if (this.silentMode) {
-                const isMentioned = task.ctx.isMentioned ? task.ctx.isMentioned(task.text) : false;
-                if (!isMentioned) {
-                    console.log(`🤫 [Queue:${this.golemId}] 靜默模式啟動中，且未被標記，跳過回覆發送。`);
-                    return;
-                }
-                console.log(`📢 [Queue:${this.golemId}] 靜默模式中偵測到標記，強制恢復回應。`);
+            const isMentioned = task.ctx.isMentioned ? task.ctx.isMentioned(task.text) : false;
+            const shouldSuppressReply = this.silentMode && !isMentioned;
+
+            if (shouldSuppressReply) {
+                console.log(`🤫 [Queue:${this.golemId}] 靜默模式監聽中 (背景同步上下文)...`);
             }
 
             const raw = await this.brain.sendMessage(finalInput);
-            await this.NeuroShunter.dispatch(task.ctx, raw, this.brain, this.controller);
+            await this.NeuroShunter.dispatch(task.ctx, raw, this.brain, this.controller, { suppressReply: shouldSuppressReply });
         } catch (e) {
             console.error("❌ [Queue] 處理失敗:", e);
             await task.ctx.reply(`⚠️ 處理錯誤: ${e.message}`);
