@@ -107,21 +107,41 @@ view_logs() {
 
 launch_system() {
     local bg_mode=false
-    if [[ "${1:-}" == "--bg" ]]; then
-        bg_mode=true
-    fi
+    local mode=""
+    local auth_mode=""
+
+    while [[ $# -gt 0 ]]; do
+        case "${1:-}" in
+            --bg)     bg_mode=true ;;
+            --single) mode="SINGLE" ;;
+            --multi)  mode="MULTI" ;;
+            --admin)  auth_mode="ADMIN" ;;
+            --chat)   auth_mode="CHAT" ;;
+        esac
+        shift
+    done
+
     check_status
 
     if [ "$bg_mode" = true ]; then
         echo -e "  ${GREEN}🚀 正在以背景模式啟動 Golem v${GOLEM_VERSION}...${NC}"
+        [ -n "$mode" ] && echo -e "  ${DIM}   模式: $mode${NC}"
+        [ -n "$auth_mode" ] && echo -e "  ${DIM}   權限: $auth_mode${NC}"
         echo -e "  ${DIM}   所有輸出將重新導向至 logs/golem.log${NC}"
+        
         mkdir -p "$SCRIPT_DIR/logs"
-        nohup npm start > "$SCRIPT_DIR/logs/golem.log" 2>&1 &
+        
+        # 建立環境變數前綴
+        local env_cmd="env"
+        [ -n "$mode" ] && env_cmd="$env_cmd GOLEM_MODE=$mode"
+        [ -n "$auth_mode" ] && env_cmd="$env_cmd TG_AUTH_MODE=$auth_mode"
+        
+        nohup $env_cmd npm start > "$SCRIPT_DIR/logs/golem.log" 2>&1 &
         local pid=$!
         echo "$pid" > "$SCRIPT_DIR/.golem.pid"
         echo -e "  ${CYAN}✅ 系統已在背景啟動 (PID: $pid)${NC}"
         echo -e "  ${DIM}   你可以使用 'tail -f logs/golem.log' 查看日誌${NC}"
-        log "System launched in background (PID: $pid)"
+        log "System launched in background (PID: $pid, Mode: $mode, Auth: $auth_mode)"
         sleep 1
         return
     fi
@@ -147,9 +167,14 @@ launch_system() {
     echo -e "  ${DIM}   若要離開，請按 'q' 或 Ctrl+C${NC}"
     echo ""
     sleep 1
-    log "System launched"
+    log "System launched (Mode: $mode, Auth: $auth_mode)"
 
-    npm run dashboard
+    # 建立環境變數前綴
+    local env_cmd="env"
+    [ -n "$mode" ] && env_cmd="$env_cmd GOLEM_MODE=$mode"
+    [ -n "$auth_mode" ] && env_cmd="$env_cmd TG_AUTH_MODE=$auth_mode"
+
+    $env_cmd npm run dashboard
 
     echo ""
     echo -e "  ${YELLOW}[INFO] 系統已停止。${NC}"
