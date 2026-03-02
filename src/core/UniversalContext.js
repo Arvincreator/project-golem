@@ -12,6 +12,26 @@ class UniversalContext {
         this.isInteraction = platform === 'discord' && (event.isButton?.() || event.isCommand?.());
     }
 
+    /**
+     * 偵測訊息中是否包含對機器人的標記
+     * @param {string} text 待檢查的文字
+     * @returns {boolean}
+     */
+    isMentioned(text) {
+        if (!text) return false;
+        if (this.platform === 'telegram') {
+            const username = this.instance.username;
+            if (!username) return false;
+            return text.toLowerCase().includes(`@${username.toLowerCase()}`);
+        }
+        if (this.platform === 'discord') {
+            const botId = this.instance.user?.id;
+            if (!botId) return false;
+            return text.includes(`<@${botId}>`) || text.includes(`<@!${botId}>`);
+        }
+        return false;
+    }
+
     get userId() {
         return this.platform === 'telegram' ? String(this.event.from?.id || this.event.user?.id) : this.event.user ? this.event.user.id : this.event.author?.id;
     }
