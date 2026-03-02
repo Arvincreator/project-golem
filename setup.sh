@@ -60,12 +60,20 @@ print_status() {
 check_dependencies
 
 case "${1:-}" in
-    --start)     
-        if [[ "${2:-}" == "--bg" ]]; then
-            launch_system --bg
-        else
-            launch_system
-        fi
+    --start)
+        shift
+        launch_args=""
+        while [[ $# -gt 0 ]]; do
+            case "${1:-}" in
+                --bg)     launch_args="$launch_args --bg" ;;
+                --single) launch_args="$launch_args --single" ;;
+                --multi)  launch_args="$launch_args --multi" ;;
+                --admin)  launch_args="$launch_args --admin" ;;
+                --chat)   launch_args="$launch_args --chat" ;;
+            esac
+            shift
+        done
+        launch_system $launch_args
         ;;
     --install)   run_full_install ;;
     --docker)    launch_docker ;;
@@ -82,6 +90,10 @@ case "${1:-}" in
         echo "  (none)        啟動互動式主選單"
         echo "  --start       直接啟動系統 (跳過選單)"
         echo "  --start --bg  以背景模式啟動系統"
+        echo "  --single      指定單機模式 (GOLEM_MODE=SINGLE)"
+        echo "  --multi       指定多機模式 (GOLEM_MODE=MULTI)"
+        echo "  --admin       指定驗證模式為 ADMIN (預設)"
+        echo "  --chat        指定驗證模式為 CHAT (群組模式)"
         echo "  --install     執行完整安裝流程"
         echo "  --config      啟動配置精靈 (.env)"
         echo "  --dashboard   僅安裝/重建 Web Dashboard"
@@ -95,10 +107,10 @@ case "${1:-}" in
         echo ""
         echo "EXAMPLES:"
         echo "  ./setup.sh                  # 互動式選單"
-        echo "  ./setup.sh --start          # 快速啟動"
+        echo "  ./setup.sh --start --bg     # 背景啟動"
+        echo "  ./setup.sh --start --bg --single --chat  # 背景模式：單機+群組介面"
         echo "  ./setup.sh --install        # 自動完整安裝"
         echo "  ./setup.sh --status         # 檢查狀態"
-        echo "  NO_COLOR=1 ./setup.sh --status  # CI 環境狀態"
         echo ""
         exit 0
         ;;
