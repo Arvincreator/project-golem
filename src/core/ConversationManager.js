@@ -14,6 +14,7 @@ class ConversationManager {
         this.userBuffers = new Map();
         this.silentMode = false;
         this.observerMode = false;
+        this.interventionLevel = options.interventionLevel || 'CONSERVATIVE';
         this.DEBOUNCE_MS = 1500;
     }
 
@@ -82,7 +83,10 @@ class ConversationManager {
                 console.log(`📢 [Queue:${this.golemId}] 模式中偵測到標記，強制恢復回應。`);
             }
 
-            const raw = await this.brain.sendMessage(finalInput, false, { isObserver: this.observerMode });
+            const raw = await this.brain.sendMessage(finalInput, false, {
+                isObserver: this.observerMode,
+                interventionLevel: this.interventionLevel
+            });
             await this.NeuroShunter.dispatch(task.ctx, raw, this.brain, this.controller, { suppressReply: shouldSuppressReply });
         } catch (e) {
             console.error("❌ [Queue] 處理失敗:", e);

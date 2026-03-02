@@ -47,16 +47,36 @@ class ProtocolFormatter {
 
         let observerPrompt = "";
         if (options.isObserver) {
-            observerPrompt = `
-[GOLEM_OBSERVER_PROTOCOL]
+            const level = options.interventionLevel || 'CONSERVATIVE';
+            const PROMTP_MAP = {
+                'CONSERVATIVE': `
 - You are in CONSERVATIVE OBSERVER MODE. 
 - 🚨 HIGHEST PRIORITY: STAY SILENT. Do not interrupt unless absolutely critical.
-- **Intervention Criteria**: ONLY intervene if you detect:
-   1. **Immediate System Danger**: Commands that would destroy the OS, wipe data, or cause irreversible damage.
-   2. **Critical Security Breach**: Exposure of credentials, keys, or highly sensitive internal data.
-- **Prohibited Interventions**: Do NOT speak for minor errors, logical debates, optimizations, or "helpful tips".
-- To intervene, include the token [INTERVENE] at the very beginning of your [GOLEM_REPLY].
-- Otherwise, output null within [GOLEM_REPLY].\n`;
+- **Intervention Criteria**: ONLY if you detect Immediate System Danger (rm -rf, etc.) or Critical Security Breach.
+- Do NOT speak for minor errors, logical debates, or "helpful tips".`,
+                'NORMAL': `
+- You are in NORMAL OBSERVER MODE. 
+- Stay silent by default, but you are authorized to intervene for:
+   1. **Critical Technical Errors**: Significant factual or syntax errors.
+   2. **Logic Fallacies**: Contradictions that break the workflow.
+   3. **Security/Safety Risks**.
+- Do NOT speak for simple greetings or minor stylistic suggestions.`,
+                'PROACTIVE': `
+- You are in PROACTIVE OBSERVER MODE (Expert Assistant).
+- While you should avoid spamming, you are encouraged to intervene if you can:
+   1. **Optimize**: Suggest better ways to achieve the user's goal.
+   2. **Mentor**: Explain complex concepts or fix minor errors.
+   3. **Anticipate**: Provide the next logical step before they ask.
+- Use your best judgment to be a highly helpful, invisible-yet-present partner.`
+            };
+
+            const selectedPrompt = PROMTP_MAP[level] || PROMTP_MAP['CONSERVATIVE'];
+
+            observerPrompt = `
+[GOLEM_OBSERVER_PROTOCOL]
+${selectedPrompt}
+- To speak, you MUST include the token [INTERVENE] at the very beginning of your [GOLEM_REPLY].
+- Otherwise, output null or a minimal confirmation within [GOLEM_REPLY].\n`;
         }
 
         return `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]

@@ -118,7 +118,15 @@ function getOrCreateGolem(golemId) {
     });
     const controller = new TaskController({ golemId });
     const autonomy = new AutonomyManager(brain, controller, brain.memoryDriver, { golemId });
-    const convoManager = new ConversationManager(brain, NeuroShunter, controller, { golemId });
+
+    // 獲取該實體的配置 (用於自定義介入等級等)
+    const config = GOLEMS_CONFIG.find(g => g.id === golemId) || {};
+    const interventionLevel = config.interventionLevel || CONFIG.INTERVENTION_LEVEL;
+
+    const convoManager = new ConversationManager(brain, NeuroShunter, controller, {
+        golemId,
+        interventionLevel
+    });
 
     const boundBot = telegramBots.get(golemId) || (telegramBots.size > 0 ? telegramBots.values().next().value : null);
     autonomy.setIntegrations(boundBot, dcClient, convoManager);

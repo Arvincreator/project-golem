@@ -28,7 +28,8 @@ const CONFIG = {
     GITHUB_REPO: cleanEnv(process.env.GITHUB_REPO || 'https://raw.githubusercontent.com/Arvincreator/project-golem/main/', true),
     QMD_PATH: cleanEnv(process.env.GOLEM_QMD_PATH || 'qmd', true),
     DONATE_URL: 'https://buymeacoffee.com/arvincreator',
-    TZ: cleanEnv(process.env.TZ) || 'Asia/Taipei'
+    TZ: cleanEnv(process.env.TZ) || 'Asia/Taipei',
+    INTERVENTION_LEVEL: cleanEnv(process.env.GOLEM_INTERVENTION_LEVEL) || 'CONSERVATIVE'
 };
 
 // 驗證關鍵 Token
