@@ -27,7 +27,8 @@ const CONFIG = {
     ADMIN_IDS: [process.env.ADMIN_ID, process.env.DISCORD_ADMIN_ID].map(k => cleanEnv(k)).filter(k => k),
     GITHUB_REPO: cleanEnv(process.env.GITHUB_REPO || 'https://raw.githubusercontent.com/Arvincreator/project-golem/main/', true),
     QMD_PATH: cleanEnv(process.env.GOLEM_QMD_PATH || 'qmd', true),
-    DONATE_URL: 'https://buymeacoffee.com/arvincreator'
+    DONATE_URL: 'https://buymeacoffee.com/arvincreator',
+    TZ: cleanEnv(process.env.TZ) || 'Asia/Taipei'
 };
 
 // 驗證關鍵 Token

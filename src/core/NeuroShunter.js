@@ -1,5 +1,4 @@
 const ResponseParser = require('../utils/ResponseParser');
-const ScheduleHandler = require('./action_handlers/ScheduleHandler');
 const MultiAgentHandler = require('./action_handlers/MultiAgentHandler');
 const SkillHandler = require('./action_handlers/SkillHandler');
 const CommandHandler = require('./action_handlers/CommandHandler');
@@ -46,9 +45,6 @@ class NeuroShunter {
 
             for (const act of parsed.actions) {
                 switch (act.action) {
-                    case 'schedule':
-                        await ScheduleHandler.execute(ctx, act, brain);
-                        break;
                     case 'multi_agent':
                         await MultiAgentHandler.execute(ctx, act, controller, brain);
                         break;

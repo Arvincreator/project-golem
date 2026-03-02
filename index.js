@@ -593,72 +593,7 @@ if (dcClient) {
     dcClient.on('interactionCreate', (interaction) => { if (interaction.isButton()) handleUnifiedCallback(new UniversalContext('discord', interaction, dcClient), interaction.customId); });
 }
 
-const fsSync = require('fs');
 
-setInterval(async () => {
-    try {
-        const scheduleFile = path.join(process.cwd(), 'schedules.json');
-
-        if (!fsSync.existsSync(scheduleFile)) return;
-
-        const rawData = fsSync.readFileSync(scheduleFile, 'utf-8');
-        if (!rawData.trim()) return;
-
-        let schedules = [];
-        try {
-            schedules = JSON.parse(rawData);
-        } catch (e) {
-            console.error("❌ [Chronos Engine] JSON 解析失敗:", e.message);
-            return;
-        }
-
-        if (!Array.isArray(schedules)) return;
-
-        const now = new Date();
-        const dueTasks = schedules.filter(s => new Date(s.time) <= now);
-        const pendingTasks = schedules.filter(s => new Date(s.time) > now);
-
-        if (dueTasks.length > 0) {
-            fsSync.writeFileSync(scheduleFile, JSON.stringify(pendingTasks, null, 2));
-
-            for (const task of dueTasks) {
-                console.log(`⏰ [Chronos Engine] 時間到！準備提醒: ${task.task}`);
-
-                const message = `⏰ **【時間領主提醒】**\n\n時間到了！您設定的排程事項：\n👉 **${task.task}**`;
-
-                const firstBot = telegramBots.get('golem_A') || (telegramBots.size > 0 ? telegramBots.values().next().value : null);
-                let adminId = CONFIG.TG_AUTH_MODE === 'CHAT' ? CONFIG.TG_CHAT_ID : (process.env.ADMIN_ID || process.env.TG_ADMIN_ID);
-
-                if (firstBot && firstBot.golemConfig) {
-                    const mode = (firstBot.golemConfig.tgAuthMode || CONFIG.TG_AUTH_MODE).toUpperCase();
-                    if (mode === 'CHAT') {
-                        adminId = firstBot.golemConfig.chatId || CONFIG.TG_CHAT_ID;
-                    } else {
-                        const adminCfg = firstBot.golemConfig.adminId;
-                        if (adminCfg) {
-                            adminId = Array.isArray(adminCfg) ? adminCfg[0] : String(adminCfg).split(',')[0].trim();
-                        }
-                    }
-                }
-
-                if (firstBot && adminId) {
-                    firstBot.sendMessage(adminId, message).catch(e => console.warn("TG 提醒發送失敗:", e.message));
-                }
-
-                const dcAdminId = process.env.DC_ADMIN_ID;
-                if (typeof dcClient !== 'undefined' && dcClient && dcAdminId) {
-                    try {
-                        const user = await dcClient.users.fetch(dcAdminId);
-                        if (user) await user.send(message);
-                    } catch (e) {
-                        console.warn("DC 提醒發送失敗:", e.message);
-                    }
-                }
-            }
-        }
-    } catch (e) {
-        console.error("❌ [Chronos Engine] 排程檢查發生錯誤:", e.message);
-    }
-}, 30000);
+module.exports = { activeGolems, getOrCreateGolem };
 
 module.exports = { activeGolems, getOrCreateGolem };

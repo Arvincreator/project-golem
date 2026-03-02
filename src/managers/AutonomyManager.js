@@ -73,20 +73,57 @@ class AutonomyManager {
         }
     }
     async timeWatcher() {
-        if (!this.brain.memoryDriver || !this.brain.memoryDriver.checkDueTasks) return;
-        try {
-            const tasks = await this.brain.memoryDriver.checkDueTasks();
-            if (tasks && tasks.length > 0) {
-                console.log(`⏰ [TimeWatcher] 發現 ${tasks.length} 個到期任務！`);
-                for (const task of tasks) {
-                    const adminCtx = await this.getAdminContext();
-                    const prompt = `【⏰ 系統排程觸發】\n時間：${task.time}\n任務內容：${task.task}\n\n請根據任務內容，主動向使用者發送訊息或執行操作。`;
-                    if (this.convoManager) {
-                        await this.convoManager.enqueue(adminCtx, prompt);
+        const now = new Date();
+        const nowTime = now.getTime();
+        let fileTasks = [];
+        let updatedSchedules = [];
+        const logDir = path.join(process.cwd(), 'logs');
+        const scheduleFile = path.join(logDir, 'schedules.json');
+
+        // 1. 讀取並檢查檔案資料庫 (New Path: logs/schedules.json)
+        if (fs.existsSync(scheduleFile)) {
+            try {
+                const rawData = fs.readFileSync(scheduleFile, 'utf-8');
+                if (rawData.trim()) {
+                    const schedules = JSON.parse(rawData);
+                    schedules.forEach(item => {
+                        const itemTime = new Date(item.time).getTime();
+                        if (itemTime <= nowTime) {
+                            fileTasks.push(item);
+                        } else {
+                            updatedSchedules.push(item);
+                        }
+                    });
+
+                    // 如果有過期或已處理的，寫回檔案進行更新 (物理移除)
+                    if (fileTasks.length > 0) {
+                        fs.writeFileSync(scheduleFile, JSON.stringify(updatedSchedules, null, 2));
                     }
                 }
+            } catch (e) {
+                console.error("❌ [Autonomy:TimeWatcher] 讀取排程檔案失敗:", e.message);
             }
-        } catch (e) { console.error("TimeWatcher Error:", e); }
+        }
+
+        // 2. 處理到期任務 (整合檔案任務與 Driver 任務)
+        let totalTasks = [...fileTasks];
+
+        // 額外檢查 BrowserMemoryDriver (雙保險)
+        if (this.brain.memoryDriver && typeof this.brain.memoryDriver.checkDueTasks === 'function') {
+            const driverTasks = await this.brain.memoryDriver.checkDueTasks() || [];
+            totalTasks = totalTasks.concat(driverTasks);
+        }
+
+        if (totalTasks.length > 0) {
+            console.log(`⏰ [TimeWatcher] 發現 ${totalTasks.length} 個到期任務！`);
+            for (const task of totalTasks) {
+                const adminCtx = await this.getAdminContext();
+                const prompt = `【⏰ 系統排程觸發】\n時間：${task.time}\n任務內容：${task.task}\n\n請根據任務內容，主動向使用者發送訊息或執行操作。`;
+                if (this.convoManager) {
+                    await this.convoManager.enqueue(adminCtx, prompt);
+                }
+            }
+        }
     }
     scheduleNextAwakening() {
         const waitMs = (2 + Math.random() * 3) * 3600000;
@@ -149,10 +186,19 @@ class AutonomyManager {
     }
     async sendNotification(msgText) {
         if (!msgText) return;
-        if (this.tgBot && CONFIG.ADMIN_IDS[0]) await this.tgBot.sendMessage(CONFIG.ADMIN_IDS[0], msgText);
-        else if (this.dcClient && CONFIG.DISCORD_ADMIN_ID) {
+
+        let targetId = CONFIG.ADMIN_IDS[0];
+
+        // ✨ [v9.0.7] 智慧分流：如果是群組聊天模式 (CHAT)，優先傳回群組頻道
+        if (CONFIG.TG_AUTH_MODE === 'CHAT' && CONFIG.TG_CHAT_ID) {
+            targetId = CONFIG.TG_CHAT_ID;
+        }
+
+        if (this.tgBot && targetId) {
+            await this.tgBot.sendMessage(targetId, msgText).catch(e => console.error("❌ [Autonomy] TG 通知發送失敗:", e.message));
+        } else if (this.dcClient && CONFIG.DISCORD_ADMIN_ID) {
             const user = await this.dcClient.users.fetch(CONFIG.DISCORD_ADMIN_ID);
-            await user.send(msgText);
+            await user.send(msgText).catch(e => console.error("❌ [Autonomy] DC 通知發送失敗:", e.message));
         }
     }
 }
