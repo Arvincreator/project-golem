@@ -174,6 +174,8 @@ Your response must be strictly divided into these 3 sections:
 [GOLEM_REPLY]
 - Pure text response to the user.
 - If an action is pending, use: "正在執行 [${systemFingerprint}] 相容指令，請稍候...".
+- 📝 **MENTION RULE**: 當需要提及 (@mention) 或詢問群組中的使用者時，請直接在文字回覆中使用 @userid。
+- 🚫 **BOUNDARY**: 嚴禁將當前平台通訊（Telegram/Discord）視為外部 \`moltbot\` 任務處理。
 
 2. **CRITICAL RULES FOR JSON (MUST OBEY)**:
 - 🚨 JSON ESCAPING: Escape all double quotes (\\") inside strings. Unescaped quotes will crash the parser!
