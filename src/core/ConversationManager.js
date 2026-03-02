@@ -13,6 +13,7 @@ class ConversationManager {
         this.isProcessing = false;
         this.userBuffers = new Map();
         this.silentMode = false;
+        this.observerMode = false;
         this.DEBOUNCE_MS = 1500;
     }
 
@@ -65,13 +66,23 @@ class ConversationManager {
                 finalInput = `【相關記憶】\n${memories.map(m => `• ${m.text}`).join('\n')}\n---\n${finalInput}`;
             }
             const isMentioned = task.ctx.isMentioned ? task.ctx.isMentioned(task.text) : false;
-            const shouldSuppressReply = this.silentMode && !isMentioned;
 
-            if (shouldSuppressReply) {
-                console.log(`🤫 [Queue:${this.golemId}] 靜默模式監聽中 (背景同步上下文)...`);
+            if (this.silentMode && !isMentioned) {
+                console.log(`🤫 [Queue:${this.golemId}] 完全靜默模式啟動中，且未被標記，跳過大腦處理。`);
+                return;
             }
 
-            const raw = await this.brain.sendMessage(finalInput);
+            const shouldSuppressReply = this.observerMode && !isMentioned;
+
+            if (shouldSuppressReply) {
+                console.log(`👁️ [Queue:${this.golemId}] 觀察者模式監聽中 (背景同步上下文)...`);
+            }
+
+            if (isMentioned && (this.silentMode || this.observerMode)) {
+                console.log(`📢 [Queue:${this.golemId}] 模式中偵測到標記，強制恢復回應。`);
+            }
+
+            const raw = await this.brain.sendMessage(finalInput, false, { isObserver: this.observerMode });
             await this.NeuroShunter.dispatch(task.ctx, raw, this.brain, this.controller, { suppressReply: shouldSuppressReply });
         } catch (e) {
             console.error("❌ [Queue] 處理失敗:", e);
