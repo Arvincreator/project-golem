@@ -28,20 +28,20 @@
   "author": "Arvin Chen",
   "license": "MIT",
   "dependencies": {
-    "@google/generative-ai": "^0.21.0",
-    "blessed": "^0.1.81",
-    "blessed-contrib": "^4.11.0",
-    "discord.js": "^14.14.1",
-    "dotenv": "^16.4.5",
-    "node-telegram-bot-api": "^0.65.1",
-    "puppeteer": "^22.6.0",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "socket.io-client": "^4.8.3",
-    "uuid": "^9.0.1"
+    "@google/generative-ai": "0.21.0",
+    "blessed": "0.1.81",
+    "blessed-contrib": "4.11.0",
+    "discord.js": "14.14.1",
+    "dotenv": "16.4.5",
+    "node-telegram-bot-api": "0.65.1",
+    "puppeteer": "22.6.0",
+    "puppeteer-extra": "3.3.6",
+    "puppeteer-extra-plugin-stealth": "2.11.2",
+    "socket.io-client": "4.8.3",
+    "uuid": "9.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "3.0.2"
   },
   "engines": {
     "node": ">=18.0.0"
