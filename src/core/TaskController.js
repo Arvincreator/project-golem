@@ -42,7 +42,16 @@ class TaskController {
         let reportBuffer = [];
         for (let i = startIndex; i < steps.length; i++) {
             const step = steps[i];
-            const cmdToRun = step.cmd || step.parameter || step.command || "";
+            let cmdToRun = step.cmd || step.parameter || step.command || "";
+
+            // ✨ [v9.0 Hybrid Object Fix] 如果 cmd 為空但 action 存在，則自動組裝
+            if (!cmdToRun && step.action && step.action !== 'command') {
+                const actionName = String(step.action).toLowerCase().replace(/_/g, '-');
+                const { action, ...params } = step;
+                const payload = JSON.stringify(params).replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
+                cmdToRun = `node src/skills/core/${actionName}.js "${payload}"`;
+                console.log(`🔧 [TaskController] 自動組裝技能指令: ${cmdToRun}`);
+            }
             const risk = this.security.assess(cmdToRun);
             if (cmdToRun.startsWith('golem-check')) {
                 const toolName = cmdToRun.split(' ')[1];
