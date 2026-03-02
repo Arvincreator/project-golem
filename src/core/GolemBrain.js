@@ -213,7 +213,7 @@ class GolemBrain {
      * @param {boolean} [isSystem=false] - 是否為系統訊息
      * @returns {Promise<string>} 清理後的 AI 回應
      */
-    async sendMessage(text, isSystem = false) {
+    async sendMessage(text, isSystem = false, options = {}) {
         if (!this.browser) await this.init();
         try { await this.page.bringToFront(); } catch (e) { }
         await this.setupCDP();
@@ -221,7 +221,7 @@ class GolemBrain {
         const reqId = ProtocolFormatter.generateReqId();
         const startTag = ProtocolFormatter.buildStartTag(reqId);
         const endTag = ProtocolFormatter.buildEndTag(reqId);
-        const payload = ProtocolFormatter.buildEnvelope(text, reqId);
+        const payload = ProtocolFormatter.buildEnvelope(text, reqId, options);
 
         console.log(`📡 [Brain] 發送訊號: ${reqId} (含每回合強制洗腦引擎)`);
 

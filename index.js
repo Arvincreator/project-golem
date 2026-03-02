@@ -326,11 +326,42 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
         }
 
         convoManager.silentMode = isEnable;
+        if (isEnable) convoManager.observerMode = false; // 開啟全靜默時關閉觀察者
+
         const displayName = ctx.instance.username ? `@${ctx.instance.username}` : `[${targetId}]`;
         if (isEnable) {
-            await ctx.reply(`🤫 ${displayName} 已進入靜默模式。\n我會繼續記錄您的對話，但不再主動發言。`);
+            await ctx.reply(`🤫 ${displayName} 已進入「完全靜默模式」。\n我將暫時關閉感知，且不會記錄任何對話。`);
         } else {
-            await ctx.reply(`📢 ${displayName} 已解除靜默模式。\n我已準備好恢復與您的對話！`);
+            await ctx.reply(`📢 ${displayName} 已解除靜默模式。`);
+        }
+        return;
+    }
+
+    // ✨ [新增] /enable_observer & /disable_observer 指令實作 (僅限 CHAT 模式)
+    if (ctx.authMode === 'CHAT' && ctx.isAdmin && ctx.text && (ctx.text.trim().toLowerCase().startsWith('/enable_observer') || ctx.text.trim().toLowerCase().startsWith('/disable_observer'))) {
+        const lowerRaw = ctx.text.trim().toLowerCase();
+        const isEnable = lowerRaw.startsWith('/enable_observer');
+        const args = ctx.text.trim().split(/\s+/);
+        const targetBotTag = args[1] || "";
+        const targetBotUsername = targetBotTag.startsWith('@') ? targetBotTag.substring(1).toLowerCase() : targetBotTag.toLowerCase();
+
+        if (!targetBotTag) {
+            const currentBotUsername = ctx.instance.username ? `@${ctx.instance.username}` : `@${targetId}`;
+            await ctx.reply(`ℹ️ 請指定目標 Bot ID，例如：\n \`${isEnable ? '/enable_observer' : '/disable_observer'} ${currentBotUsername}\``);
+            return;
+        }
+
+        if (ctx.instance.username && targetBotUsername !== ctx.instance.username.toLowerCase()) return;
+        else if (!ctx.instance.username && targetBotUsername !== targetId.toLowerCase()) return;
+
+        convoManager.observerMode = isEnable;
+        if (isEnable) convoManager.silentMode = false; // 開啟觀察者時關閉全靜默
+
+        const displayName = ctx.instance.username ? `@${ctx.instance.username}` : `[${targetId}]`;
+        if (isEnable) {
+            await ctx.reply(`👁️ ${displayName} 已進入「觀察者模式」。\n我會安靜地同步所有對話上下文，但預設不發言。`);
+        } else {
+            await ctx.reply(`📢 ${displayName} 已解除觀察者模式。`);
         }
         return;
     }

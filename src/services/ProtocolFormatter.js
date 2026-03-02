@@ -40,10 +40,24 @@ class ProtocolFormatter {
      * @param {string} reqId - 請求 ID
      * @returns {string}
      */
-    static buildEnvelope(text, reqId) {
+    static buildEnvelope(text, reqId, options = {}) {
         const TAG_START = ProtocolFormatter.buildStartTag(reqId);
         const TAG_END = ProtocolFormatter.buildEndTag(reqId);
         const systemFingerprint = getSystemFingerprint();
+
+        let observerPrompt = "";
+        if (options.isObserver) {
+            observerPrompt = `
+[GOLEM_OBSERVER_PROTOCOL]
+- You are in CONSERVATIVE OBSERVER MODE. 
+- 🚨 HIGHEST PRIORITY: STAY SILENT. Do not interrupt unless absolutely critical.
+- **Intervention Criteria**: ONLY intervene if you detect:
+   1. **Immediate System Danger**: Commands that would destroy the OS, wipe data, or cause irreversible damage.
+   2. **Critical Security Breach**: Exposure of credentials, keys, or highly sensitive internal data.
+- **Prohibited Interventions**: Do NOT speak for minor errors, logical debates, optimizations, or "helpful tips".
+- To intervene, include the token [INTERVENE] at the very beginning of your [GOLEM_REPLY].
+- Otherwise, output null within [GOLEM_REPLY].\n`;
+        }
 
         return `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
 1. ENVELOPE & ONE-TURN RULE: 
@@ -59,7 +73,7 @@ class ProtocolFormatter {
 7. ReAct: If you use [GOLEM_ACTION], DO NOT guess the result in [GOLEM_REPLY]. Wait for Observation.
 8. SKILL DISCOVERY: You can check skill files in \`src/skills/lib\` and memorize their usage in [GOLEM_MEMORY].
 9. WORKSPACE: If you cannot access Google Workspace (@Google Drive/Keep/etc.), explicitly tell the user to enable the extension.
-
+${observerPrompt}
 [USER INPUT / SYSTEM MESSAGE]
 ${text}`;
     }
