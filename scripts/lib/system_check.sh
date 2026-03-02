@@ -54,11 +54,11 @@ check_multi_golems() {
 check_status() {
     # Node Version
     NODE_VER=$(node -v 2>/dev/null || echo "N/A")
-    if [[ "$NODE_VER" == v18* ]] || [[ "$NODE_VER" == v2* ]]; then
+    if [[ "$NODE_VER" == v20* ]]; then
         STATUS_NODE="${GREEN}✅ $NODE_VER${NC}"
         NODE_OK=true
     else
-        STATUS_NODE="${RED}❌ $NODE_VER (需 v18+)${NC}"
+        STATUS_NODE="${RED}❌ $NODE_VER (需 v20)${NC}"
         NODE_OK=false
     fi
 
