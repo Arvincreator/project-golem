@@ -65,8 +65,12 @@ class ConversationManager {
                 finalInput = `【相關記憶】\n${memories.map(m => `• ${m.text}`).join('\n')}\n---\n${finalInput}`;
             }
             if (this.silentMode) {
-                console.log(`🤫 [Queue:${this.golemId}] 靜默模式啟動中，跳過回覆發送。`);
-                return;
+                const isMentioned = task.ctx.isMentioned ? task.ctx.isMentioned(task.text) : false;
+                if (!isMentioned) {
+                    console.log(`🤫 [Queue:${this.golemId}] 靜默模式啟動中，且未被標記，跳過回覆發送。`);
+                    return;
+                }
+                console.log(`📢 [Queue:${this.golemId}] 靜默模式中偵測到標記，強制恢復回應。`);
             }
 
             const raw = await this.brain.sendMessage(finalInput);
