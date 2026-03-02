@@ -157,7 +157,7 @@ check_dependencies() {
 run_health_check() {
     echo ""
     box_top
-    box_line "🏥 系統健康檢查 (Pre-Launch Health Check)"
+    box_line_colored "🏥 系統健康檢查 (Pre-Launch Health Check)"
     box_sep
 
     local all_pass=true
@@ -166,7 +166,7 @@ run_health_check() {
     if [ "$NODE_OK" = true ]; then
         box_line_colored "  ${GREEN}✔${NC}  Node.js          ${GREEN}$NODE_VER${NC}"
     else
-        box_line_colored "  ${RED}✖${NC}  Node.js          ${RED}$NODE_VER (需 v18+)${NC}"
+        box_line_colored "  ${RED}✖${NC}  Node.js          ${RED}$NODE_VER (需 v20)${NC}"
         all_pass=false
     fi
 
