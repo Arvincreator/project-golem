@@ -1,4 +1,4 @@
-const { CONFIG } = require('../config');
+const { CONFIG, GOLEM_MODE, LOG_BASE_DIR } = require('../config');
 const Introspection = require('../services/Introspection');
 const ResponseParser = require('../utils/ResponseParser');
 const PatchManager = require('../managers/PatchManager');
@@ -76,8 +76,13 @@ class AutonomyManager {
         const now = new Date();
         const nowTime = now.getTime();
         let fileTasks = [];
-        let updatedSchedules = [];
-        const logDir = path.join(process.cwd(), 'logs');
+        const updatedSchedules = [];
+
+        // --- ✨ 路徑隔離 (Path Isolation) ---
+        const logDir = GOLEM_MODE === 'SINGLE'
+            ? LOG_BASE_DIR
+            : path.join(LOG_BASE_DIR, this.golemId);
+
         const scheduleFile = path.join(logDir, 'schedules.json');
 
         // 1. 讀取並檢查檔案資料庫 (New Path: logs/schedules.json)
@@ -188,10 +193,24 @@ class AutonomyManager {
         if (!msgText) return;
 
         let targetId = CONFIG.ADMIN_IDS[0];
+        let authMode = CONFIG.TG_AUTH_MODE;
 
-        // ✨ [v9.0.7] 智慧分流：如果是群組聊天模式 (CHAT)，優先傳回群組頻道
-        if (CONFIG.TG_AUTH_MODE === 'CHAT' && CONFIG.TG_CHAT_ID) {
-            targetId = CONFIG.TG_CHAT_ID;
+        // ✨ [v9.0.7] 智慧分流：優先從機器人綁定的實體配置中提取設定
+        if (this.tgBot && this.tgBot.golemConfig) {
+            const gCfg = this.tgBot.golemConfig;
+            authMode = gCfg.tgAuthMode || authMode;
+
+            if (authMode === 'CHAT' && gCfg.chatId) {
+                targetId = gCfg.chatId;
+            } else if (gCfg.adminId) {
+                // 處理可能的多個 Admin ID (取第一個)
+                targetId = Array.isArray(gCfg.adminId) ? gCfg.adminId[0] : String(gCfg.adminId).split(',')[0].trim();
+            }
+        } else {
+            // Fallback 到全域設定
+            if (authMode === 'CHAT' && CONFIG.TG_CHAT_ID) {
+                targetId = CONFIG.TG_CHAT_ID;
+            }
         }
 
         if (this.tgBot && targetId) {

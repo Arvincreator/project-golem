@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { CONFIG } = require('../../config');
+const { CONFIG, GOLEM_MODE, LOG_BASE_DIR } = require('../../config');
 
 async function run(ctx) {
     const args = ctx.args || {};
@@ -34,7 +34,13 @@ async function run(ctx) {
         // 最終存儲統一使用 ISO 格式或帶有明確偏移的字串
         const finalTime = dateObj.toISOString();
 
-        const logDir = path.join(process.cwd(), 'logs');
+        // --- ✨ 路徑隔離 (Path Isolation) ---
+        // 根據運行模式 (SINGLE/MULTI) 與 golemId 決定儲存路徑
+        const golemId = (ctx.brain && ctx.brain.golemId) || 'golem_A';
+        const logDir = GOLEM_MODE === 'SINGLE'
+            ? LOG_BASE_DIR
+            : path.join(LOG_BASE_DIR, golemId);
+
         if (!fs.existsSync(logDir)) {
             fs.mkdirSync(logDir, { recursive: true });
         }

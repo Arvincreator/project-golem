@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { CONFIG } = require('../../config');
+const { CONFIG, GOLEM_MODE, LOG_BASE_DIR } = require('../../config');
 
 /**
  * 執行排程查詢
@@ -12,7 +12,12 @@ const { CONFIG } = require('../../config');
  */
 async function run(ctx) {
     try {
-        const logDir = path.join(process.cwd(), 'logs');
+        // --- ✨ 路徑隔離 (Path Isolation) ---
+        const golemId = (ctx.brain && ctx.brain.golemId) || 'golem_A';
+        const logDir = GOLEM_MODE === 'SINGLE'
+            ? LOG_BASE_DIR
+            : path.join(LOG_BASE_DIR, golemId);
+
         const scheduleFile = path.join(logDir, 'schedules.json');
 
         if (!fs.existsSync(scheduleFile)) {

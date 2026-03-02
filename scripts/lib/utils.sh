@@ -4,6 +4,9 @@
 [ -z "$DOT_ENV_PATH" ] && DOT_ENV_PATH="$(cd "$(dirname "$0")/../.." && pwd)/.env"
 [ -z "$LOG_FILE" ] && LOG_FILE="$(cd "$(dirname "$0")/../.." && pwd)/logs/setup.log"
 
+# Ensure log directory exists
+mkdir -p "$(dirname "$LOG_FILE")"
+
 # PID Management
 declare -a BACKGROUND_PIDS=()
 

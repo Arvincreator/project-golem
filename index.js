@@ -593,7 +593,4 @@ if (dcClient) {
     dcClient.on('interactionCreate', (interaction) => { if (interaction.isButton()) handleUnifiedCallback(new UniversalContext('discord', interaction, dcClient), interaction.customId); });
 }
 
-
-module.exports = { activeGolems, getOrCreateGolem };
-
 module.exports = { activeGolems, getOrCreateGolem };
