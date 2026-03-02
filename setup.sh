@@ -60,7 +60,13 @@ print_status() {
 check_dependencies
 
 case "${1:-}" in
-    --start)     launch_system ;;
+    --start)     
+        if [[ "${2:-}" == "--bg" ]]; then
+            launch_system --bg
+        else
+            launch_system
+        fi
+        ;;
     --install)   run_full_install ;;
     --docker)    launch_docker ;;
     --config)    step_check_env; config_wizard ;;
@@ -75,6 +81,7 @@ case "${1:-}" in
         echo "OPTIONS:"
         echo "  (none)        啟動互動式主選單"
         echo "  --start       直接啟動系統 (跳過選單)"
+        echo "  --start --bg  以背景模式啟動系統"
         echo "  --install     執行完整安裝流程"
         echo "  --config      啟動配置精靈 (.env)"
         echo "  --dashboard   僅安裝/重建 Web Dashboard"

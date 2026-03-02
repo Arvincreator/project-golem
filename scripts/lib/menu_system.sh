@@ -106,8 +106,26 @@ view_logs() {
 }
 
 launch_system() {
+    local bg_mode=false
+    if [[ "${1:-}" == "--bg" ]]; then
+        bg_mode=true
+    fi
     check_status
 
+    if [ "$bg_mode" = true ]; then
+        echo -e "  ${GREEN}🚀 正在以背景模式啟動 Golem v${GOLEM_VERSION}...${NC}"
+        echo -e "  ${DIM}   所有輸出將重新導向至 logs/golem.log${NC}"
+        mkdir -p "$SCRIPT_DIR/logs"
+        nohup npm start > "$SCRIPT_DIR/logs/golem.log" 2>&1 &
+        local pid=$!
+        echo "$pid" > "$SCRIPT_DIR/.golem.pid"
+        echo -e "  ${CYAN}✅ 系統已在背景啟動 (PID: $pid)${NC}"
+        echo -e "  ${DIM}   你可以使用 'tail -f logs/golem.log' 查看日誌${NC}"
+        log "System launched in background (PID: $pid)"
+        sleep 1
+        return
+    fi
+    
     clear
     show_header
 
