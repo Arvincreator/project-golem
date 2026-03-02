@@ -7,8 +7,9 @@ const CommandHandler = require('./action_handlers/CommandHandler');
 // 🧬 NeuroShunter (神經分流中樞 - 核心路由器)
 // ============================================================
 class NeuroShunter {
-    static async dispatch(ctx, rawResponse, brain, controller) {
+    static async dispatch(ctx, rawResponse, brain, controller, options = {}) {
         const parsed = ResponseParser.parse(rawResponse);
+        const shouldSuppressReply = options.suppressReply === true;
 
         // 1. 處理長期記憶寫入
         if (parsed.memory) {
@@ -17,7 +18,7 @@ class NeuroShunter {
         }
 
         // 2. 處理直接回覆
-        if (parsed.reply) {
+        if (parsed.reply && !shouldSuppressReply) {
             let finalReply = parsed.reply;
             if (ctx.platform === 'telegram' && ctx.shouldMentionSender) {
                 finalReply = `${ctx.senderMention} ${parsed.reply}`;
@@ -36,10 +37,13 @@ class NeuroShunter {
             }
 
             await ctx.reply(finalReply);
+        } else if (parsed.reply && shouldSuppressReply) {
+            console.log(`🤫 [NeuroShunter] 檢測到靜默模式，已攔截回覆內容。`);
         }
 
         // 3. 處理結構化 Action 分配 (Strategy Pattern)
-        if (parsed.actions.length > 0) {
+        // 🚨 靜默模式下預設不執行自動 Action，避免非預期系統操作
+        if (parsed.actions.length > 0 && !shouldSuppressReply) {
             console.log(`[GOLEM_ACTION]\n${JSON.stringify(parsed.actions, null, 2)}`);
             const normalActions = [];
 
@@ -61,8 +65,10 @@ class NeuroShunter {
 
             // 4. 處理剩餘的終端指令序列並自動啟動回饋循環 (Feedback Loop)
             if (normalActions.length > 0) {
-                await CommandHandler.execute(ctx, normalActions, controller, brain, this.dispatch.bind(this));
+                await CommandHandler.execute(ctx, normalActions, controller, brain, (c, r, b, ctrl) => this.dispatch(c, r, b, ctrl, options));
             }
+        } else if (parsed.actions.length > 0 && shouldSuppressReply) {
+            console.log(`🤫 [NeuroShunter] 靜默模式，跳過 ${parsed.actions.length} 個 Action 的執行。`);
         }
     }
 }
