@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, Database, Globe, ChevronLeft, ChevronRight, Terminal, BrainCircuit } from "lucide-react";
+import { LayoutDashboard, Users, Database, Globe, ChevronLeft, ChevronRight, Terminal, BrainCircuit, BookOpen } from "lucide-react";
 import { GolemProvider, useGolem } from "@/components/GolemContext";
 
 function DashboardSidebar({
@@ -20,6 +20,7 @@ function DashboardSidebar({
     const navItems = [
         { name: "戰術控制台", href: "/dashboard", icon: LayoutDashboard },
         { name: "終端機控制台", href: "/dashboard/terminal", icon: Terminal },
+        { name: "技能說明書", href: "/dashboard/skills", icon: BookOpen },
         { name: "Agent 會議室", href: "/dashboard/agents", icon: Users },
         { name: "辦公室模式", href: "/dashboard/office", icon: Users },
         { name: "記憶核心", href: "/dashboard/memory", icon: BrainCircuit },

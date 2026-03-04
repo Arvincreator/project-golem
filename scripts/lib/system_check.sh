@@ -136,19 +136,63 @@ check_status() {
     fi
 }
 
+os_detect() {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "macos"
+    elif [[ "$OSTYPE" == "linux-gnu"* ]] || [[ -n "${WSL_DISTRO_NAME:-}" ]]; then
+        echo "linux"
+    else
+        echo "unknown"
+    fi
+}
+
+install_dependency() {
+    local pkg_name=$1
+    local os=$(os_detect)
+    
+    if [[ "$os" == "macos" ]]; then
+        if command -v brew &>/dev/null; then
+            run_quiet_step "嘗試使用 Homebrew 安裝 $pkg_name" brew install "$pkg_name"
+            return $?
+        fi
+    elif [[ "$os" == "linux" ]]; then
+        if command -v apt-get &>/dev/null; then
+            run_quiet_step "嘗試使用 apt-get 安裝 $pkg_name" sudo apt-get install -y "$pkg_name"
+            return $?
+        elif command -v dnf &>/dev/null; then
+            run_quiet_step "嘗試使用 dnf 安裝 $pkg_name" sudo dnf install -y "$pkg_name"
+            return $?
+        elif command -v yum &>/dev/null; then
+            run_quiet_step "嘗試使用 yum 安裝 $pkg_name" sudo yum install -y "$pkg_name"
+            return $?
+        elif command -v apk &>/dev/null; then
+            run_quiet_step "嘗試使用 apk 安裝 $pkg_name" sudo apk add "$pkg_name"
+            return $?
+        fi
+    fi
+    return 1
+}
+
 check_dependencies() {
     local missing=()
     local tools=("node" "npm" "git" "sed" "awk" "curl")
     
     for tool in "${tools[@]}"; do
         if ! command -v "$tool" &>/dev/null; then
-            missing+=("$tool")
+            ui_warn "偵測到缺失依賴: $tool"
+            if ! install_dependency "$tool"; then
+                ui_error "無法自動安裝 $tool"
+                missing+=("$tool")
+            else
+                ui_success "自動安裝 $tool 完成"
+            fi
         fi
     done
 
     if [ ${#missing[@]} -ne 0 ]; then
-        echo -e "${RED}❌ 缺失必要依賴: ${missing[*]}${NC}"
-        echo -e "${YELLOW}請先安裝上述工具後再執行。${NC}"
+        echo ""
+        echo -e "${RED}❌ 缺失系統依賴且無法自動修復: ${missing[*]}${NC}"
+        echo -e "${YELLOW}請手動安裝上述工具後，重新執行腳本。${NC}"
         exit 1
     fi
 }

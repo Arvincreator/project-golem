@@ -19,6 +19,8 @@ show_header() {
 
 show_menu() {
     show_header
+    echo -e "  ${DIM}$(pick_tagline)${NC}"
+    echo ""
     echo -e "  ${BOLD}${YELLOW}⚡ 快速啟動${NC}"
     echo -e "  ${CYAN}───────────────────────────────────────────────${NC}"
     echo -e "   ${BOLD}[0]${NC}  🚀 啟動系統 ${DIM}(使用目前配置)${NC}"

@@ -58,6 +58,7 @@ GOLEM_MEMORY_MODE=browser
 GITHUB_REPO=
 ENABLE_WEB_DASHBOARD=true
 GOLEM_INTERVENTION_LEVEL=CONSERVATIVE
+OPTIONAL_SKILLS=
 ENVEOF
             echo -e "    ${GREEN}✔${NC}  已建立基本 .env 設定檔"
             log "Created basic .env"
@@ -88,10 +89,10 @@ config_wizard() {
     [ -f "$DOT_ENV_PATH" ] && source "$DOT_ENV_PATH" 2>/dev/null
 
     local step=1
-    local total=7
-    [ "$skip_bot_config" = "true" ] && total=5
+    local total=8
+    [ "$skip_bot_config" = "true" ] && total=6
 
-    while [ $step -le 7 ]; do
+    while [ $step -le 8 ]; do
         local display_step=$step
         if [ "$skip_bot_config" = "true" ]; then
             if [ $step -ge 4 ]; then display_step=$((step - 2)); fi
@@ -124,18 +125,17 @@ config_wizard() {
                     step=$((step + 1)); continue
                 fi
                 echo -e "  ${BOLD}${MAGENTA}[${step}/${total}]${NC} ${BOLD}Telegram 驗證模式${NC}"
-                echo -e "  目前: ${CYAN}${TG_AUTH_MODE:-ADMIN}${NC}"
-                read -r -p "  👉 選擇模式 [A] 個人 Admin ID / [C] 群組 Chat ID / [B] 返回: " input
-                input=$(echo "$input" | xargs 2>/dev/null)
-                if [[ "$input" =~ ^[Bb]$ ]]; then step=$((step - 1)); continue; fi
                 
-                # 如果使用者直接按 Enter，則根據目前值決定分支
-                local current_mode="${TG_AUTH_MODE:-ADMIN}"
-                if [ -z "$input" ]; then
-                    if [[ "$current_mode" == "CHAT" ]]; then input="c"; else input="a"; fi
-                fi
+                SINGLESELECT_DEFAULT="${TG_AUTH_MODE:-ADMIN}"
+                prompt_singleselect "選擇模式:" \
+                    "ADMIN|個人 Admin ID" \
+                    "CHAT|群組 Chat ID" \
+                    "BACK|返回上一步 (B)"
+                local input="$SINGLESELECT_RESULT"
 
-                if [[ "$input" =~ ^[Cc]$ ]]; then
+                if [[ "$input" == "BACK" ]]; then step=$((step - 1)); continue; fi
+                
+                if [[ "$input" == "CHAT" ]]; then
                     update_env "TG_AUTH_MODE" "CHAT"
                     TG_AUTH_MODE="CHAT"
                     echo -e "  ${BOLD}${MAGENTA}[${step}.1/${total}]${NC} ${BOLD}Telegram Chat ID (群組/頻道 ID)${NC}"
@@ -143,7 +143,7 @@ config_wizard() {
                     read -r -p "  👉 輸入新 Chat ID (留空保留): " subinput
                     subinput=$(echo "$subinput" | xargs 2>/dev/null)
                     if [ -n "$subinput" ]; then update_env "TG_CHAT_ID" "$subinput"; TG_CHAT_ID="$subinput"; fi
-                elif [[ "$input" =~ ^[Aa]$ ]]; then
+                elif [[ "$input" == "ADMIN" ]]; then
                     update_env "TG_AUTH_MODE" "ADMIN"
                     TG_AUTH_MODE="ADMIN"
                     echo -e "  ${BOLD}${MAGENTA}[${step}.1/${total}]${NC} ${BOLD}Telegram Admin User ID (個人 ID)${NC}"
@@ -176,28 +176,49 @@ config_wizard() {
                 step=$((step + 1)); echo "" ;;
             6)
                 echo -e "  ${BOLD}${MAGENTA}[${display_step}/${total}]${NC} ${BOLD}Web Dashboard${NC}"
-                echo -e "  目前: ${CYAN}${ENABLE_WEB_DASHBOARD:-false}${NC}"
-                read -r -p "  👉 啟用 Web Dashboard? [Y/n/B] (留空保留): " input
-                input=$(echo "$input" | xargs 2>/dev/null)
-                if [[ "$input" =~ ^[Bb]$ ]]; then step=$((step - 1)); continue; fi
-                if [[ "$input" =~ ^[Yy]$ ]]; then update_env "ENABLE_WEB_DASHBOARD" "true"; ENABLE_WEB_DASHBOARD="true"
-                elif [[ "$input" =~ ^[Nn]$ ]]; then update_env "ENABLE_WEB_DASHBOARD" "false"; ENABLE_WEB_DASHBOARD="false"; fi
+                SINGLESELECT_DEFAULT="${ENABLE_WEB_DASHBOARD:-false}"
+                prompt_singleselect "啟用 Web Dashboard?" \
+                    "true|啟用 Dashboard" \
+                    "false|停用 Dashboard" \
+                    "BACK|返回上一步 (B)"
+                local input="$SINGLESELECT_RESULT"
+                
+                if [[ "$input" == "BACK" ]]; then step=$((step - 1)); continue; fi
+                
+                if [[ "$input" == "true" ]]; then update_env "ENABLE_WEB_DASHBOARD" "true"; ENABLE_WEB_DASHBOARD="true"
+                elif [[ "$input" == "false" ]]; then update_env "ENABLE_WEB_DASHBOARD" "false"; ENABLE_WEB_DASHBOARD="false"; fi
                 step=$((step + 1)); echo "" ;;
             7)
                 echo -e "  ${BOLD}${MAGENTA}[${display_step}/${total}]${NC} ${BOLD}觀察者介入等級 (全域預設 / Global Default)${NC}"
-                echo -e "  目前: ${CYAN}${GOLEM_INTERVENTION_LEVEL:-CONSERVATIVE}${NC}"
                 echo -e "  ${DIM}當子機器人沒單獨設定時，將採用此全域模式。${NC}"
-                echo -e "  [1] ${BOLD}CONSERVATIVE${NC} (僅限系統威脅/資安風險)"
-                echo -e "  [2] ${BOLD}NORMAL${NC} (錯誤糾正、邏輯矛盾、安全提示)"
-                echo -e "  [3] ${BOLD}PROACTIVE${NC} (積極提供建議、優化與協助)"
-                read -r -p "  👉 選擇等級 [1/2/3/B] (留空保留): " input
-                input=$(echo "$input" | xargs 2>/dev/null)
-                if [[ "$input" =~ ^[Bb]$ ]]; then step=$((step - 1)); continue; fi
-                case $input in
-                    1) update_env "GOLEM_INTERVENTION_LEVEL" "CONSERVATIVE"; GOLEM_INTERVENTION_LEVEL="CONSERVATIVE" ;;
-                    2) update_env "GOLEM_INTERVENTION_LEVEL" "NORMAL"; GOLEM_INTERVENTION_LEVEL="NORMAL" ;;
-                    3) update_env "GOLEM_INTERVENTION_LEVEL" "PROACTIVE"; GOLEM_INTERVENTION_LEVEL="PROACTIVE" ;;
-                esac
+                
+                SINGLESELECT_DEFAULT="${GOLEM_INTERVENTION_LEVEL:-CONSERVATIVE}"
+                prompt_singleselect "選擇等級:" \
+                    "CONSERVATIVE|保守 (僅限系統威脅/資安風險)" \
+                    "NORMAL|標準 (錯誤糾正、邏輯矛盾、安全提示)" \
+                    "PROACTIVE|積極 (主動提供建議、優化與協助)" \
+                    "BACK|返回上一步 (B)"
+                local input="$SINGLESELECT_RESULT"
+                
+                if [[ "$input" == "BACK" ]]; then step=$((step - 1)); continue; fi
+                
+                update_env "GOLEM_INTERVENTION_LEVEL" "$input"
+                GOLEM_INTERVENTION_LEVEL="$input"
+                step=$((step + 1)); echo "" ;;
+            8)
+                echo -e "  ${BOLD}${MAGENTA}[${display_step}/${total}]${NC} ${BOLD}選擇可選技能模組${NC}"
+                MULTISELECT_DEFAULT="${OPTIONAL_SKILLS:-}"
+                prompt_multiselect "使用空白鍵啟用特定功能 (按 Enter 確認):" \
+                    "git|Git 檔案變更、分支操作" \
+                    "image-prompt|圖片提示詞生成與分析" \
+                    "moltbot|Moltie 相關文件/指令參考" \
+                    "spotify|Spotify 音樂播放與控制" \
+                    "youtube|YouTube 影片及音樂控制"
+                
+                # MULTISELECT_RESULT is set by prompt_multiselect
+                update_env "OPTIONAL_SKILLS" "$MULTISELECT_RESULT"
+                OPTIONAL_SKILLS="$MULTISELECT_RESULT"
+                
                 step=$((step + 1)); echo "" ;;
         esac
     done
@@ -229,6 +250,7 @@ config_wizard() {
     box_line_colored "  DC Admin ID:    ${CYAN}${DISCORD_ADMIN_ID:-未設定}${NC}"
     box_line_colored "  Dashboard:      ${CYAN}${ENABLE_WEB_DASHBOARD:-false}${NC}"
     box_line_colored "  Intent Level:   ${CYAN}${GOLEM_INTERVENTION_LEVEL:-CONSERVATIVE}${NC}"
+    box_line_colored "  Optional Skills:${CYAN}${OPTIONAL_SKILLS:-無}${NC}"
     box_sep
     box_line_colored "  ${GREEN}${BOLD}✅ 配置已儲存到 .env${NC}"
     box_bottom
@@ -394,12 +416,8 @@ step_install_core() {
     echo -e "  📦 安裝核心依賴..."
     echo -e "  ${DIM}  (puppeteer, blessed, gemini-ai, discord.js ...)${NC}"
     log "Installing core dependencies"
-    spinner_start "npm install 安裝中"
-    npm install --no-fund --no-audit >> "$LOG_FILE" 2>&1
-    local exit_code=$?
-    spinner_stop $([ "$exit_code" -eq 0 ] && echo true || echo false)
-    if [ "$exit_code" -ne 0 ]; then
-        echo -e "  ${RED}${BOLD}❌ npm install 失敗${NC}"
+    
+    if ! run_quiet_step "npm install 安裝中" npm install --no-fund --no-audit; then
         echo -e "  ${YELLOW}💡 可能原因:${NC}"
         echo -e "     • 網路連線問題 → 請確認網路是否正常"
         echo -e "     • Node.js 版本不符 → 需要 v18+ (目前: $(node -v 2>/dev/null || echo N/A))"
@@ -411,12 +429,10 @@ step_install_core() {
 
     # 確保 TUI 套件存在
     if [ ! -d "$SCRIPT_DIR/node_modules/blessed" ]; then
-        echo -e "  ${YELLOW}ℹ${NC}  補安裝 blessed 介面庫..."
-        spinner_start "安裝 blessed 套件"
-        npm install blessed blessed-contrib express --no-fund --no-audit >> "$LOG_FILE" 2>&1
-        spinner_stop
+        ui_info "補安裝 blessed 介面庫..."
+        run_quiet_step "安裝 blessed 套件" npm install blessed blessed-contrib express --no-fund --no-audit
     fi
-    echo -e "  ${GREEN}  ✅ 核心依賴安裝完成${NC}\n"
+    ui_success "核心依賴安裝完成\n"
 }
 
 step_install_dashboard() {
@@ -427,7 +443,7 @@ step_install_dashboard() {
         echo -e "    ${DIM}⏩ Dashboard 已停用，跳過安裝${NC}\n"; return
     fi
     if [ ! -d "$SCRIPT_DIR/web-dashboard" ]; then
-        echo -e "    ${RED}⚠️  找不到 web-dashboard 目錄，自動停用 Dashboard${NC}"
+        ui_warn "找不到 web-dashboard 目錄，自動停用 Dashboard"
         update_env "ENABLE_WEB_DASHBOARD" "false"
         echo ""
         return
@@ -435,35 +451,28 @@ step_install_dashboard() {
 
     echo -e "    ${CYAN}偵測到 Dashboard 模組，開始安裝...${NC}"
 
-    spinner_start "安裝 Dashboard 依賴"
-    (cd "$SCRIPT_DIR/web-dashboard" && npm install --no-fund --no-audit >> "$LOG_FILE" 2>&1)
-    dep_exit=$?
-    spinner_stop $([ "$dep_exit" -eq 0 ] && echo true || echo false)
+    pushd "$SCRIPT_DIR/web-dashboard" > /dev/null
     
-    if [ "$dep_exit" -ne 0 ]; then
-        echo -e "    ${RED}❌ Dashboard 依賴安裝失敗${NC}"
-        echo -e "    ${DIM}詳細日誌: $LOG_FILE${NC}"
+    if ! run_quiet_step "安裝 Dashboard 依賴" npm install --no-fund --no-audit; then
+        ui_error "Dashboard 依賴安裝失敗"
         update_env "ENABLE_WEB_DASHBOARD" "false"
         log "Dashboard deps install failed"
+        popd > /dev/null
         echo ""
         return
     fi
 
-    spinner_start "建置 Dashboard (Next.js Build)"
-    (cd "$SCRIPT_DIR/web-dashboard" && npm run build >> "$LOG_FILE" 2>&1)
-    local build_exit=$?
-    spinner_stop $([ "$build_exit" -eq 0 ] && echo true || echo false)
-
-    if [ "$build_exit" -ne 0 ]; then
-        echo -e "    ${RED}❌ Dashboard 建置失敗${NC}"
-        echo -e "    ${DIM}詳細日誌: $LOG_FILE${NC}"
+    if ! run_quiet_step "建置 Dashboard (Next.js Build)" npm run build; then
+        ui_error "Dashboard 建置失敗"
         update_env "ENABLE_WEB_DASHBOARD" "false"
         log "Dashboard build failed"
     else
-        echo -e "    ${GREEN}✅ Dashboard 建置完成${NC}"
+        ui_success "Dashboard 建置完成"
         update_env "ENABLE_WEB_DASHBOARD" "true"
         log "Dashboard build succeeded"
     fi
+    
+    popd > /dev/null
     echo ""
 }
 
@@ -474,6 +483,7 @@ run_full_install() {
     log "Full install started"
 
     echo -e "  ${BOLD}${CYAN}📦 開始完整安裝流程${NC}"
+    echo -e "  ${DIM}$(pick_tagline)${NC}"
     echo -e "  ${DIM}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
 
@@ -491,13 +501,12 @@ run_full_install() {
     progress_bar 3 $total_steps "部署模式選擇"
     echo ""
     echo -e "  ${BOLD}${CYAN}💡 請選擇您的部署模式：${NC}"
-    echo -e "  ${GREEN}1) 單機模式${NC} (Single Golem - 只啟動一個機器人，簡單快速)"
-    echo -e "  ${YELLOW}2) 多機模式${NC} (Multi Golems - 可同時啟動多個機器人，需額外配置)"
-    echo ""
-    local install_mode="1"
-    read -r -p "  👉 請輸入選擇 [1/2] (預設 1): " install_mode
-    install_mode=$(echo "$install_mode" | xargs 2>/dev/null)
-    [ -z "$install_mode" ] && install_mode="1"
+    
+    SINGLESELECT_DEFAULT="1"
+    prompt_singleselect "" \
+        "1|單機模式 (Single Golem - 只啟動一個機器人，簡單快速)" \
+        "2|多機模式 (Multi Golems - 可同時啟動多個機器人，需額外配置)"
+    local install_mode="$SINGLESELECT_RESULT"
 
     if [ "$install_mode" = "2" ]; then
         # 多機模式 — 寫入 GOLEM_MODE=MULTI

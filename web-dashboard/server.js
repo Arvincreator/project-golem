@@ -73,6 +73,116 @@ class WebServer {
 
 
         // --- API Routes ---
+        this.app.get('/api/skills', async (req, res) => {
+            try {
+                const libPath = path.join(process.cwd(), 'src', 'skills', 'lib');
+                if (!fs.existsSync(libPath)) return res.json([]);
+
+                const files = fs.readdirSync(libPath).filter(f => f.endsWith('.md'));
+
+                const ALL_OPTIONAL_SKILLS = ['git.md', 'image-prompt.md', 'moltbot.md', 'spotify.md', 'youtube.md'];
+                const optionalSkillsConfig = process.env.OPTIONAL_SKILLS || '';
+                const enabledOptionalSkills = optionalSkillsConfig.split(',').map(s => s.trim().toLowerCase()).filter(s => s !== '');
+
+                const skillsData = files.map(file => {
+                    const content = fs.readFileSync(path.join(libPath, file), 'utf8');
+                    const isOptional = ALL_OPTIONAL_SKILLS.includes(file);
+                    const baseName = file.replace('.md', '').toLowerCase();
+                    const isEnabled = !isOptional || enabledOptionalSkills.includes(baseName);
+
+                    // Extract first line or generic title
+                    const firstLineMatch = content.match(/^#+ (.*)|^【(.*)】/m) || content.match(/^([^\n]+)/);
+                    let title = baseName;
+                    if (firstLineMatch) {
+                        title = firstLineMatch[1] || firstLineMatch[2] || firstLineMatch[0];
+                        title = title.replace(/^#+\s*|【|】/g, '').trim();
+                    }
+
+                    return {
+                        id: baseName,
+                        title: title || baseName,
+                        isOptional,
+                        isEnabled,
+                        content: content
+                    };
+                });
+
+                // Sort: Enabled first, then by name
+                skillsData.sort((a, b) => {
+                    if (a.isEnabled && !b.isEnabled) return -1;
+                    if (!a.isEnabled && b.isEnabled) return 1;
+                    return a.id.localeCompare(b.id);
+                });
+
+                return res.json(skillsData);
+            } catch (e) {
+                console.error("Failed to read skills:", e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
+        this.app.post('/api/skills/toggle', (req, res) => {
+            try {
+                const { id, enabled } = req.body;
+                if (!id) return res.status(400).json({ error: "Missing skill ID" });
+
+                const ALL_OPTIONAL_SKILLS = ['git', 'image-prompt', 'moltbot', 'spotify', 'youtube'];
+                if (!ALL_OPTIONAL_SKILLS.includes(id)) {
+                    return res.status(400).json({ error: "Cannot toggle core system skills" });
+                }
+
+                // 1. Update in-memory
+                let currentStr = process.env.OPTIONAL_SKILLS || '';
+                let currentSkills = currentStr.split(',').map(s => s.trim().toLowerCase()).filter(s => s !== '');
+
+                if (enabled && !currentSkills.includes(id)) {
+                    currentSkills.push(id);
+                } else if (!enabled && currentSkills.includes(id)) {
+                    currentSkills = currentSkills.filter(s => s !== id);
+                }
+
+                const newSkillsStr = currentSkills.join(',');
+                process.env.OPTIONAL_SKILLS = newSkillsStr;
+
+                // 2. Persist to .env
+                const envPath = path.resolve(process.cwd(), '../.env'); // web-dashboard is in a subfolder
+                if (fs.existsSync(envPath)) {
+                    let envContent = fs.readFileSync(envPath, 'utf8');
+
+                    // Regex to find OPTIONAL_SKILLS=... and replace it
+                    const regex = /^OPTIONAL_SKILLS=.*$/m;
+                    if (regex.test(envContent)) {
+                        envContent = envContent.replace(regex, `OPTIONAL_SKILLS=${newSkillsStr}`);
+                    } else {
+                        envContent += `\nOPTIONAL_SKILLS=${newSkillsStr}\n`;
+                    }
+                    fs.writeFileSync(envPath, envContent, 'utf8');
+                    console.log(`📝 [System] Saved new skill config to .env: ${newSkillsStr}`);
+                }
+
+                // 3. Clear Cache (Hot Reload)
+                const ProtocolFormatter = require('../src/services/ProtocolFormatter');
+                ProtocolFormatter._lastScanTime = 0;
+
+                return res.json({ success: true, enabled, skillsStr: newSkillsStr });
+            } catch (e) {
+                console.error("Failed to toggle skill:", e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
+        this.app.post('/api/skills/reload', (req, res) => {
+            try {
+                console.log("🔄 [WebServer] Hot-reloading skills... Clearing ProtocolFormatter cache.");
+                const ProtocolFormatter = require('../src/services/ProtocolFormatter');
+                ProtocolFormatter._lastScanTime = 0; // Trigger a fresh scan on next turn
+                return res.json({ success: true, message: "Skills cache cleared" });
+            } catch (e) {
+                console.error("Failed to reload skills cache:", e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
         this.app.get('/api/golems', (req, res) => {
             return res.json({ golems: Array.from(this.contexts.keys()) });
         });

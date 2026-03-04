@@ -127,10 +127,27 @@ ${text}`;
             const mdFiles = files.filter(f => f.endsWith('.md'));
 
             if (mdFiles.length > 0) {
-                console.log(`📡 [ProtocolFormatter] 正在平行讀取 ${mdFiles.length} 個技能說明書...`);
+                // Parse optional skills from environment variable
+                const optionalSkillsConfig = process.env.OPTIONAL_SKILLS || '';
+                const enabledOptionalSkills = optionalSkillsConfig.split(',').map(s => s.trim().toLowerCase()).filter(s => s !== '');
+
+                // Define the list of dynamically loadable optional skills
+                const ALL_OPTIONAL_SKILLS = ['git.md', 'image-prompt.md', 'moltbot.md', 'spotify.md', 'youtube.md'];
+
+                // Filter the mdFiles: keep if it's NOT in ALL_OPTIONAL_SKILLS (meaning it's mandatory), 
+                // OR if it IS in ALL_OPTIONAL_SKILLS and is enabled in the .env
+                const filteredMdFiles = mdFiles.filter(file => {
+                    const isOptional = ALL_OPTIONAL_SKILLS.includes(file);
+                    if (!isOptional) return true; // Mandatory skill
+
+                    const baseName = file.replace('.md', '').toLowerCase();
+                    return enabledOptionalSkills.includes(baseName);
+                });
+
+                console.log(`📡 [ProtocolFormatter] 正在平行讀取 ${filteredMdFiles.length} 個技能說明書...`);
                 systemPrompt += `\n\n### 🧩 CORE SKILL PROTOCOLS (Cognitive Layer):\n`;
 
-                const readTasks = mdFiles.map(async (file) => {
+                const readTasks = filteredMdFiles.map(async (file) => {
                     const content = await fs.readFile(path.join(libPath, file), 'utf-8');
                     const skillName = path.basename(file, '.md').toUpperCase();
                     return { skillName, content };

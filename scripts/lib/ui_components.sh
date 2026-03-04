@@ -71,3 +71,37 @@ box_line_colored() {
     [ $padding -lt 0 ] && padding=0
     printf "${CYAN}│${NC}%b%*s${CYAN}│${NC}\n" "$text" "$padding" ""
 }
+
+# ─── Semantic UI Indicators ──────────────────────────────
+ui_info()    { echo -e "  ${DIM}·${NC} $*"; }
+ui_success() { echo -e "  ${GREEN}✔${NC} $*"; }
+ui_warn()    { echo -e "  ${YELLOW}!${NC} $*"; }
+ui_error()   { echo -e "  ${RED}✗${NC} $*"; }
+
+# ─── Robust Command Wrapper ──────────────────────────────
+# Executes a command silently, showing a spinner. If it fails, dumps stderr.
+# Usage: run_quiet_step "Task Description" command arg1 arg2 ...
+run_quiet_step() {
+    local title="$1"
+    shift
+    
+    spinner_start "$title"
+    
+    local log_tmp
+    log_tmp=$(mktemp)
+    
+    if "$@" >"$log_tmp" 2>&1; then
+        spinner_stop true
+        rm -f "$log_tmp"
+        return 0
+    else
+        spinner_stop false
+        echo -e "  ${RED}${BOLD}❌ ${title} 失敗${NC}"
+        echo -e "  ${DIM}最後 50 行日誌：${NC}"
+        tail -n 50 "$log_tmp" | while read -r line; do
+            echo -e "    ${DIM}$line${NC}"
+        done
+        rm -f "$log_tmp"
+        return 1
+    fi
+}
