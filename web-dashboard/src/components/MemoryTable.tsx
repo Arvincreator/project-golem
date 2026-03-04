@@ -222,8 +222,8 @@ export function MemoryTable() {
                         <thead className="text-xs text-gray-500 uppercase bg-gray-900/80 sticky top-0 backdrop-blur-md z-10 border-b border-gray-800">
                             <tr>
                                 <th scope="col" className="px-5 py-3 font-medium tracking-wider w-8">#</th>
+                                <th scope="col" className="px-4 py-3 font-medium tracking-wider w-32 text-center">Type</th>
                                 <th scope="col" className="px-4 py-3 font-medium tracking-wider">Content</th>
-                                <th scope="col" className="px-4 py-3 font-medium tracking-wider w-24 text-center">Type</th>
                                 <th scope="col" className="px-4 py-3 font-medium tracking-wider w-16 text-center">Action</th>
                             </tr>
                         </thead>
@@ -241,9 +241,6 @@ export function MemoryTable() {
                                         <td className="px-5 py-4 text-xs text-gray-600 font-mono">
                                             {index + 1}
                                         </td>
-                                        <td className="px-4 py-3 text-gray-300 break-words max-w-xl text-sm leading-relaxed">
-                                            {mem.text}
-                                        </td>
                                         <td className="px-4 py-3 text-center">
                                             <span className={cn(
                                                 "px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-semibold border",
@@ -255,6 +252,9 @@ export function MemoryTable() {
                                             )}>
                                                 {mem.metadata?.type || 'general'}
                                             </span>
+                                        </td>
+                                        <td className="px-4 py-3 text-gray-300 break-words max-w-xl text-sm leading-relaxed">
+                                            {mem.text}
                                         </td>
                                         <td className="px-4 py-3 text-center">
                                             <button
