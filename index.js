@@ -143,9 +143,9 @@ if (GOLEMS_CONFIG && GOLEMS_CONFIG.length > 0) {
     for (const config of GOLEMS_CONFIG) {
         initialGolems.push(getOrCreateGolem(config.id));
     }
-} else {
-    initialGolems.push(getOrCreateGolem('golem_A'));
 }
+// 注意：若 GOLEMS_CONFIG 為空，則不自動建立預設 golem_A。
+// 使用者可在 golems.json 設定後重啟，或透過 Web Dashboard 動態建立。
 
 const BOOT_TIME = Date.now();
 console.log(`🛡️ [Flood Guard] 系統啟動時間: ${new Date(BOOT_TIME).toLocaleString('zh-TW', { hour12: false })}`);
@@ -228,6 +228,52 @@ console.log(`🛡️ [Flood Guard] 系統啟動時間: ${new Date(BOOT_TIME).toL
         instance.autonomy.start();
         console.log(`✅ [System][${instance.brain.golemId}] Autonomy Engine is Online.`);
     });
+
+    // 將 golemFactory 注入給 WebServer，讓 Dashboard 能夠動態建立 Golem
+    const dashboard = require('./dashboard');
+    if (dashboard && dashboard.webServer && typeof dashboard.webServer.setGolemFactory === 'function') {
+        const TelegramBot = require('node-telegram-bot-api');
+        dashboard.webServer.setGolemFactory(async (golemConfig) => {
+            // 小心：避免重複導入，先檢查 activeGolems
+            if (activeGolems.has(golemConfig.id)) {
+                console.log(`⚠️ [Factory] Golem [${golemConfig.id}] already exists, skipping.`);
+                return activeGolems.get(golemConfig.id);
+            }
+
+            // 動態建立 Telegram Bot
+            if (golemConfig.tgToken) {
+                try {
+                    const bot = new TelegramBot(golemConfig.tgToken, { polling: true });
+                    bot.golemConfig = golemConfig;
+                    bot.getMe().then(me => {
+                        bot.username = me.username;
+                        console.log(`🤖 [Bot] ${golemConfig.id} 已上線，@${me.username}`);
+                    }).catch(e => console.warn(`⚠️ [Bot] ${golemConfig.id}:`, e.message));
+                    telegramBots.set(golemConfig.id, bot);
+                } catch (e) {
+                    console.error(`❌ [Bot] 初始化 ${golemConfig.id} Telegram 失敗:`, e.message);
+                }
+            }
+
+            // 建立 Golem 實體
+            const instance = getOrCreateGolem(golemConfig.id);
+
+            // 連結 Dashboard
+            if (typeof instance.brain._linkDashboard === 'function') {
+                instance.brain._linkDashboard();
+            }
+
+            // 標記為 pending_setup（尚未設定 Persona）
+            instance.brain.status = 'pending_setup';
+
+            // 啟動自主引擎
+            instance.autonomy.start();
+            console.log(`✅ [Factory] Golem [${golemConfig.id}] started via Web Dashboard.`);
+
+            return instance;
+        });
+        console.log('🔗 [System] golemFactory injected into WebServer.');
+    }
 
     // ============================================================
     // 🏛️ 金字塔式多層記憶壓縮排程器

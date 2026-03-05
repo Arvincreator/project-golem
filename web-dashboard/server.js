@@ -5,6 +5,41 @@ const path = require('path');
 const fs = require('fs');
 const { MANDATORY_SKILLS, OPTIONAL_SKILLS: OPTIONAL_SKILL_LIST, resolveEnabledSkills } = require('../src/skills/skillsConfig');
 
+// ─── .env helper ────────────────────────────────────────────────────────────────────
+function readEnvFile(envPath) {
+    if (!fs.existsSync(envPath)) return {};
+    const content = fs.readFileSync(envPath, 'utf8');
+    const result = {};
+    for (const line of content.split('\n')) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#')) continue;
+        const eqIdx = trimmed.indexOf('=');
+        if (eqIdx < 0) continue;
+        const key = trimmed.slice(0, eqIdx).trim();
+        const val = trimmed.slice(eqIdx + 1).trim();
+        result[key] = val;
+    }
+    return result;
+}
+
+function updateEnvFile(envPath, updates) {
+    let content = fs.existsSync(envPath) ? fs.readFileSync(envPath, 'utf8') : '';
+    for (const [key, value] of Object.entries(updates)) {
+        const regex = new RegExp(`^(${key}\\s*=.*)$`, 'm');
+        if (regex.test(content)) {
+            content = content.replace(regex, `${key}=${value}`);
+        } else {
+            content = content + `\n${key}=${value}`;
+        }
+    }
+    fs.writeFileSync(envPath, content, 'utf8');
+}
+
+function maskValue(val) {
+    if (!val || val.length < 8) return val ? '****' : '';
+    return val.slice(0, 4) + '****' + val.slice(-4);
+}
+
 class WebServer {
     constructor(dashboard) {
         this.dashboard = dashboard; // Reference to main dashboard if needed for initial state
@@ -33,9 +68,19 @@ class WebServer {
         this.port = process.env.DASHBOARD_PORT || 3000;
 
         this.contexts = new Map();
+        this.golemFactory = null; // Injected from index.js for dynamic Golem creation
 
         this.init();
         this.logBuffer = []; // Store last 200 logs
+    }
+
+    /**
+     * 注入 Golem 工廠函式（由 index.js 在啟動後呼叫）
+     * @param {Function} fn async (golemConfig) => golemInstance
+     */
+    setGolemFactory(fn) {
+        this.golemFactory = fn;
+        console.log('🔗 [WebServer] Golem factory injected — dynamic Golem creation enabled.');
     }
 
     setContext(golemId, brain, memory) {
@@ -457,7 +502,153 @@ class WebServer {
                 const status = (context.brain && context.brain.status) || 'running';
                 return { id, status };
             });
+
+            // If no live contexts, supplement with golems.json entries as 'not_started'
+            if (golemsData.length === 0) {
+                try {
+                    const golemsPath = path.resolve(process.cwd(), 'golems.json');
+                    if (fs.existsSync(golemsPath)) {
+                        const stored = JSON.parse(fs.readFileSync(golemsPath, 'utf8'));
+                        if (Array.isArray(stored) && stored.length > 0) {
+                            const fromFile = stored.map(g => ({ id: g.id, status: 'not_started' }));
+                            return res.json({ golems: fromFile });
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[WebServer] Failed to read golems.json for fallback:', e.message);
+                }
+            }
+
             return res.json({ golems: golemsData });
+        });
+
+        // ─── System Status ────────────────────────────────────────────────────────────────────
+        this.app.get('/api/system/status', (req, res) => {
+            try {
+                const liveCount = this.contexts.size;
+                let configuredCount = 0;
+                const golemsPath = path.resolve(process.cwd(), 'golems.json');
+                if (fs.existsSync(golemsPath)) {
+                    const stored = JSON.parse(fs.readFileSync(golemsPath, 'utf8'));
+                    if (Array.isArray(stored)) configuredCount = stored.length;
+                }
+                const envPath = path.resolve(process.cwd(), '.env');
+                const envVars = readEnvFile(envPath);
+                const isSystemConfigured = !!(envVars.GEMINI_API_KEYS && envVars.GEMINI_API_KEYS.trim());
+                return res.json({
+                    hasGolems: liveCount > 0 || configuredCount > 0,
+                    liveCount,
+                    configuredCount,
+                    isSystemConfigured,
+                });
+            } catch (e) {
+                console.error('[WebServer] Failed to get system status:', e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
+        // ─── System Config (read) ───────────────────────────────────────────────────────────────
+        this.app.get('/api/system/config', (req, res) => {
+            try {
+                const envPath = path.resolve(process.cwd(), '.env');
+                const env = readEnvFile(envPath);
+                const rawKeys = env.GEMINI_API_KEYS || '';
+                return res.json({
+                    geminiApiKeys: maskValue(rawKeys),
+                    geminiApiKeysSet: !!rawKeys.trim(),
+                    userDataDir: env.USER_DATA_DIR || './golem_memory',
+                    golemMemoryMode: env.GOLEM_MEMORY_MODE || 'browser',
+                    isConfigured: !!(rawKeys && rawKeys.trim()),
+                });
+            } catch (e) {
+                console.error('[WebServer] Failed to get system config:', e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
+        // ─── System Config (write) ───────────────────────────────────────────────────────────────
+        this.app.post('/api/system/config', (req, res) => {
+            try {
+                const { geminiApiKeys, userDataDir, golemMemoryMode } = req.body;
+                if (!geminiApiKeys || !geminiApiKeys.trim()) {
+                    return res.status(400).json({ error: 'GEMINI_API_KEYS 不能為空' });
+                }
+                const envPath = path.resolve(process.cwd(), '.env');
+                const updates = {
+                    GEMINI_API_KEYS: geminiApiKeys.trim(),
+                };
+                if (userDataDir) updates.USER_DATA_DIR = userDataDir.trim();
+                if (golemMemoryMode) updates.GOLEM_MEMORY_MODE = golemMemoryMode.trim();
+
+                updateEnvFile(envPath, updates);
+
+                // Also update process.env for immediate effect
+                process.env.GEMINI_API_KEYS = geminiApiKeys.trim();
+                if (userDataDir) process.env.USER_DATA_DIR = userDataDir.trim();
+                if (golemMemoryMode) process.env.GOLEM_MEMORY_MODE = golemMemoryMode.trim();
+
+                return res.json({ success: true });
+            } catch (e) {
+                console.error('[WebServer] Failed to write system config:', e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
+
+        // ─── Create New Golem ────────────────────────────────────────────
+        this.app.post('/api/golems/create', async (req, res) => {
+            try {
+                const { id, tgToken, role, tgAuthMode, adminId, chatId } = req.body;
+
+                if (!id || !tgToken) {
+                    return res.status(400).json({ error: 'Missing required fields: id, tgToken' });
+                }
+
+                // Validate ID format
+                if (!/^[a-zA-Z0-9_-]+$/.test(id)) {
+                    return res.status(400).json({ error: 'Invalid Golem ID: only alphanumeric, _ and - allowed' });
+                }
+
+                // Check for duplicate
+                const golemsPath = path.resolve(process.cwd(), 'golems.json');
+                let existingGolems = [];
+                if (fs.existsSync(golemsPath)) {
+                    existingGolems = JSON.parse(fs.readFileSync(golemsPath, 'utf8'));
+                    if (!Array.isArray(existingGolems)) existingGolems = [];
+                }
+
+                if (existingGolems.find(g => g.id === id)) {
+                    return res.status(409).json({ error: `Golem ID '${id}' already exists` });
+                }
+
+                // Build new golem config entry
+                const newGolemConfig = { id, tgToken, role: role || '' };
+                if (tgAuthMode) newGolemConfig.tgAuthMode = tgAuthMode;
+                if (tgAuthMode === 'CHAT' && chatId) newGolemConfig.chatId = chatId;
+                if ((!tgAuthMode || tgAuthMode === 'ADMIN') && adminId) newGolemConfig.adminId = adminId;
+
+                // Persist to golems.json
+                existingGolems.push(newGolemConfig);
+                fs.writeFileSync(golemsPath, JSON.stringify(existingGolems, null, 4), 'utf8');
+                console.log(`📝 [WebServer] New Golem config saved: ${id}`);
+
+                // Dynamically start the Golem if factory is available
+                if (typeof this.golemFactory === 'function') {
+                    try {
+                        await this.golemFactory(newGolemConfig);
+                        console.log(`🚀 [WebServer] Golem [${id}] dynamically started via factory.`);
+                    } catch (factoryErr) {
+                        console.error(`❌ [WebServer] Golem factory failed for [${id}]:`, factoryErr.message);
+                        // We still return success since the config was saved — restart will pick it up
+                        return res.json({ success: true, id, started: false, message: 'Config saved. Golem will start on next system restart.' });
+                    }
+                }
+
+                return res.json({ success: true, id, started: typeof this.golemFactory === 'function' });
+            } catch (e) {
+                console.error('[WebServer] Failed to create Golem:', e);
+                return res.status(500).json({ error: e.message });
+            }
         });
 
         this.app.post('/api/golems/setup', async (req, res) => {

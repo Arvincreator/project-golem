@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, Database, Globe, ChevronLeft, ChevronRight, Terminal, BrainCircuit, BookOpen, Settings, User } from "lucide-react";
+import { LayoutDashboard, Users, Database, Globe, ChevronLeft, ChevronRight, Terminal, BrainCircuit, BookOpen, Settings, User, UserPlus } from "lucide-react";
 import { GolemProvider, useGolem } from "@/components/GolemContext";
 
 function DashboardSidebar({
@@ -64,6 +64,29 @@ function DashboardSidebar({
                             <option key={golem.id} value={golem.id}>{golem.id}</option>
                         ))}
                     </select>
+                </div>
+            )}
+
+            {/* Add New Golem Button */}
+            {isSidebarOpen ? (
+                <div className="px-4 py-2 border-b border-gray-800">
+                    <Link
+                        href="/dashboard/agents/create"
+                        className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-indigo-400 hover:text-indigo-300 hover:bg-indigo-900/20 rounded-lg transition-colors border border-dashed border-indigo-800/40 hover:border-indigo-600/60"
+                    >
+                        <UserPlus className="w-3.5 h-3.5" />
+                        <span>新增 Golem</span>
+                    </Link>
+                </div>
+            ) : (
+                <div className="flex justify-center py-2 border-b border-gray-800">
+                    <Link
+                        href="/dashboard/agents/create"
+                        title="新增 Golem"
+                        className="w-8 h-8 flex items-center justify-center text-indigo-400 hover:text-indigo-300 hover:bg-indigo-900/20 rounded-lg transition-colors"
+                    >
+                        <UserPlus className="w-4 h-4" />
+                    </Link>
                 </div>
             )}
 
@@ -132,7 +155,7 @@ function DashboardContent({
     isSidebarOpen: boolean,
     setIsSidebarOpen: (v: boolean) => void
 }) {
-    const { activeGolem, activeGolemStatus } = useGolem();
+    const { activeGolem, activeGolemStatus, isSystemConfigured, isLoadingSystem } = useGolem();
     const router = useRouter();
     const pathname = usePathname();
 
@@ -142,7 +165,14 @@ function DashboardContent({
         }
     }, [activeGolemStatus, pathname, router]);
 
-    const isSetupPage = pathname === '/dashboard/setup';
+    // 系統設定保護：若 GEMINI_API_KEYS 未設定且不在設定頁，就導向設定向導
+    useEffect(() => {
+        if (!isLoadingSystem && !isSystemConfigured && pathname !== '/dashboard/system-setup') {
+            router.push('/dashboard/system-setup');
+        }
+    }, [isLoadingSystem, isSystemConfigured, pathname, router]);
+
+    const isSetupPage = pathname === '/dashboard/setup' || pathname === '/dashboard/system-setup';
 
     return (
         <div className="flex h-screen bg-gray-950 text-white overflow-hidden">

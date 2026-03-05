@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { socket } from "@/lib/socket";
 import { MetricCard } from "@/components/MetricCard";
 import { LogStream } from "@/components/LogStream";
-import { Activity, Cpu, Server, Clock, RefreshCcw, PowerOff, AlertTriangle, TriangleAlert } from "lucide-react";
+import { useGolem } from "@/components/GolemContext";
+import { Activity, Cpu, Server, Clock, RefreshCcw, PowerOff, AlertTriangle, TriangleAlert, BrainCircuit, UserPlus, Zap } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -153,6 +155,7 @@ function DoneDialog({ open, onOpenChange, variant }: DoneDialogProps) {
 
 // ── 主頁面 ─────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
+    const { hasGolems, isLoadingGolems } = useGolem();
     const [metrics, setMetrics] = useState({
         uptime: "0h 0m",
         queueCount: 0,
@@ -249,6 +252,54 @@ export default function DashboardPage() {
     }, []);
 
     const isBusy = isLoading;
+
+    // ── Onboarding: 沒有任何 Golem 時顯示引導介面 ──
+    if (!isLoadingGolems && !hasGolems) {
+        return (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 bg-gray-950 text-white">
+                <div className="max-w-md w-full text-center animate-in fade-in slide-in-from-bottom-6 duration-700">
+                    {/* Icon */}
+                    <div className="inline-flex items-center justify-center p-5 bg-indigo-950/50 border border-indigo-800/40 rounded-3xl mb-8 shadow-[0_0_50px_-10px_theme(colors.indigo.900)]">
+                        <BrainCircuit className="w-12 h-12 text-indigo-400" />
+                    </div>
+
+                    <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-br from-white to-indigo-400">
+                        歡迎使用 Golem
+                    </h1>
+                    <p className="text-gray-400 text-lg leading-relaxed mb-10">
+                        你的神經網路艦隊尚未部署。<br />
+                        建立第一個 Golem 實體，賦予它身分、技能與任務。
+                    </p>
+
+                    {/* Feature Highlights */}
+                    <div className="grid grid-cols-3 gap-4 mb-10 text-sm">
+                        {[
+                            { icon: Zap, label: "快速建立", desc: "填寫 Token 即可啟動" },
+                            { icon: BrainCircuit, label: "長期記憶", desc: "向量記憶持久化" },
+                            { icon: UserPlus, label: "多實體", desc: "管理多台 Bot" },
+                        ].map(({ icon: Icon, label, desc }) => (
+                            <div key={label} className="bg-gray-900/50 border border-gray-800 rounded-xl p-3 flex flex-col items-center gap-1.5">
+                                <Icon className="w-5 h-5 text-indigo-400" />
+                                <span className="text-white font-medium text-xs">{label}</span>
+                                <span className="text-gray-500 text-[10px]">{desc}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <Link href="/dashboard/agents/create">
+                        <Button className="w-full h-14 text-base font-bold bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-500 hover:to-blue-400 border-none shadow-xl shadow-indigo-900/20 rounded-2xl group transition-all hover:scale-[1.02] active:scale-95">
+                            <UserPlus className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                            建立第一個 Golem 實體
+                        </Button>
+                    </Link>
+
+                    <p className="text-xs text-gray-600 mt-4">
+                        或直接修改 <code className="text-gray-500 font-mono">golems.json</code> 並重啟系統
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="p-6 h-full flex flex-col space-y-6">
