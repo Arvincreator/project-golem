@@ -396,7 +396,7 @@ export default function SkillsPage() {
                                         prose-strong:text-cyan-50 prose-li:marker:text-gray-600"
                                     >
                                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                            {selectedSkill.content}
+                                            {selectedSkill.content.replace(/<SkillModule[^>]*>([\s\S]*?)<\/SkillModule>/g, '$1').trim()}
                                         </ReactMarkdown>
                                     </div>
                                 ) : (
