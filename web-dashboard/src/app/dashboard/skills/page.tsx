@@ -249,6 +249,10 @@ export default function SkillsPage() {
                 setSkills((prev) =>
                     prev.map((s) => (s.id === id ? { ...s, isEnabled: enabled } : s))
                 );
+                // ✅ 同步更新右側詳情目前選擇的技能狀態，避免 UI 按鈕卡住不變
+                if (selectedSkill?.id === id) {
+                    setSelectedSkill((prev: any) => prev ? { ...prev, isEnabled: enabled } : null);
+                }
                 setHasUnsyncedChanges(true);
             }
         } catch (err) {

@@ -1050,7 +1050,16 @@ class WebServer {
 
                 const golemId = req.query.golemId || (this.contexts.size > 0 ? Array.from(this.contexts.keys())[0] : null);
                 const context = golemId ? this.contexts.get(golemId) : null;
-                const userDataDir = (context && context.brain) ? context.brain.userDataDir : ConfigManager.CONFIG.USER_DATA_DIR;
+
+                // ✅ 修正路徑判定：預設使用模式切換後的 MEMORY_BASE_DIR 而非寫死的預設值
+                let userDataDir;
+                if (context && context.brain && context.brain.userDataDir) {
+                    userDataDir = context.brain.userDataDir;
+                } else if (ConfigManager.GOLEM_MODE === 'SINGLE') {
+                    userDataDir = ConfigManager.MEMORY_BASE_DIR;
+                } else {
+                    userDataDir = golemId ? require('path').join(ConfigManager.MEMORY_BASE_DIR, golemId) : ConfigManager.MEMORY_BASE_DIR;
+                }
 
                 const persona = personaManager.get(userDataDir);
                 return res.json(persona);
@@ -1061,7 +1070,7 @@ class WebServer {
         });
 
         // 🎭 人格注入 API
-        this.app.post('/api/persona/inject', (req, res) => {
+        this.app.post('/api/persona/inject', async (req, res) => {
             try {
                 const { golemId: reqGolemId, aiName, userName, currentRole, tone, skills } = req.body;
                 const personaManager = require('../src/skills/core/persona');
@@ -1069,7 +1078,16 @@ class WebServer {
 
                 const golemId = reqGolemId || (this.contexts.size > 0 ? Array.from(this.contexts.keys())[0] : null);
                 const context = golemId ? this.contexts.get(golemId) : null;
-                const userDataDir = (context && context.brain) ? context.brain.userDataDir : ConfigManager.CONFIG.USER_DATA_DIR;
+
+                // ✅ 修正路徑判定確保能正確儲存 (同上)
+                let userDataDir;
+                if (context && context.brain && context.brain.userDataDir) {
+                    userDataDir = context.brain.userDataDir;
+                } else if (ConfigManager.GOLEM_MODE === 'SINGLE') {
+                    userDataDir = ConfigManager.MEMORY_BASE_DIR;
+                } else {
+                    userDataDir = golemId ? require('path').join(ConfigManager.MEMORY_BASE_DIR, golemId) : ConfigManager.MEMORY_BASE_DIR;
+                }
 
                 personaManager.save(userDataDir, {
                     aiName: aiName || 'Golem',
@@ -1080,14 +1098,32 @@ class WebServer {
                     isNew: false
                 });
 
-                // 清除 ProtocolFormatter 快取，確保下次載入時拿到最新技能書
-                try {
-                    const ProtocolFormatter = require('../src/services/ProtocolFormatter');
-                    ProtocolFormatter._lastScanTime = 0;
-                } catch (_) { /* ignore if not available */ }
+                // ✅ 改為熱重載：不再要求重啟，直接呼叫 reloadSkills 開啟新視窗
+                if (context && context.brain) {
+                    try {
+                        console.log(`🤖 [WebServer] Triggering hot-reload for persona via new Gemini window... (Golem: ${golemId})`);
+                        await context.brain.reloadSkills();
 
-                console.log(`🎭 [WebServer] Persona injected for Golem [${golemId}]`);
-                return res.json({ success: true, message: '人格已更新，請重啟 Golem 使設定生效' });
+                        // TG 通知 (同技能注入)
+                        const targetId = context.brain.config?.chatId || ConfigManager.CONFIG.TG_CHAT_ID;
+                        if (context.brain.tgBot && targetId) {
+                            const bot = context.brain.tgBot;
+                            bot.sendMessage(targetId, `🔄 *[${golemId}] 人格設定已更新*\n已重新開啟全新的對話視窗並載入最新人格「${aiName || 'Golem'}」，歷史記憶完整保留。`, { parse_mode: 'Markdown' })
+                                .catch(e => console.warn(`⚠️ [WebServer] TG persona notify failed [${golemId}]:`, e.message));
+                        }
+                    } catch (e) {
+                        console.error('⚠️ [WebServer] Failed to hot-reload persona:', e);
+                    }
+                } else {
+                    // 若 Golem 尚未啟動，至少要清快取，下次啟動自動套用
+                    try {
+                        const ProtocolFormatter = require('../src/services/ProtocolFormatter');
+                        ProtocolFormatter._lastScanTime = 0;
+                    } catch (_) { /* ignore */ }
+                }
+
+                console.log(`🎭 [WebServer] Persona saved & injection requested for Golem [${golemId}]`);
+                return res.json({ success: true, message: '人格已更新並重新開啟對話視窗' });
             } catch (e) {
                 console.error('Failed to inject persona:', e);
                 return res.status(500).json({ success: false, error: e.message });

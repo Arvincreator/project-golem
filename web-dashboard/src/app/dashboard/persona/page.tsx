@@ -75,22 +75,22 @@ function RestartConfirmDialog({
                     <div className="w-12 h-12 rounded-xl border bg-purple-500/10 border-purple-500/20 flex items-center justify-center mb-2">
                         <Zap className="w-5 h-5 text-purple-400" />
                     </div>
-                    <DialogTitle className="text-white text-base">儲存人格並重啟 Golem？</DialogTitle>
+                    <DialogTitle className="text-white text-base">儲存人格並開啟新對話窗口？</DialogTitle>
                     <DialogDescription className="text-gray-400 text-sm leading-relaxed">
-                        人格設定將寫入檔案，Golem 重啟後新設定正式生效。
+                        人格設定將寫入檔案，並重新開啟 Golem 對話窗口使新設定正式生效。
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-2">
                     <div className="flex items-start gap-2 rounded-lg bg-gray-800/60 border border-gray-700/50 px-3 py-2.5">
                         <TriangleAlert className="w-3.5 h-3.5 text-gray-500 mt-0.5 flex-shrink-0" />
-                        <p className="text-xs text-gray-500">進行中的對話將被中斷，前端短暫斷線後自動重連。</p>
+                        <p className="text-xs text-gray-500">進行中的對話將被中斷，此動作將為 Golem 開啟全新的對話視窗。</p>
                     </div>
                     <div className="rounded-lg bg-gray-800/40 border border-gray-700/30 px-3 py-2">
                         <p className="text-[11px] text-gray-500 mb-1 font-medium">確認後將自動執行：</p>
                         <ol className="text-[11px] text-gray-400 space-y-0.5 list-decimal list-inside">
                             <li>將人格設定寫入 persona.json</li>
-                            <li>重啟 Golem 程序</li>
-                            <li>重新載入人格與記憶</li>
+                            <li>重新開啟 Gemini 對話視窗</li>
+                            <li>載入新的人格與歷史記憶</li>
                         </ol>
                     </div>
                 </div>
@@ -108,11 +108,11 @@ function RestartConfirmDialog({
                     >
                         {isLoading ? (
                             <span className="flex items-center gap-1.5">
-                                <RefreshCcw className="w-3.5 h-3.5 animate-spin" />儲存並重啟中...
+                                <RefreshCcw className="w-3.5 h-3.5 animate-spin" />儲存並重啟視窗中...
                             </span>
                         ) : (
                             <span className="flex items-center gap-1.5">
-                                <Zap className="w-3.5 h-3.5" />確認重啟
+                                <Zap className="w-3.5 h-3.5" />確認開啟
                             </span>
                         )}
                     </Button>
@@ -129,11 +129,11 @@ function RestartingDialog({ open }: { open: boolean }) {
             <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-sm" showCloseButton={false}>
                 <DialogHeader>
                     <div className="w-12 h-12 rounded-xl border bg-green-500/10 border-green-500/20 flex items-center justify-center mb-2">
-                        <RefreshCcw className="w-5 h-5 text-green-400 animate-spin" />
+                        <Check className="w-5 h-5 text-green-400" />
                     </div>
-                    <DialogTitle className="text-white text-base">Golem 重啟中...</DialogTitle>
+                    <DialogTitle className="text-white text-base">人格設定已儲存 ✅</DialogTitle>
                     <DialogDescription className="text-gray-400 text-sm">
-                        人格已更新，Golem 正在重啟並重新載入記憶。頁面將在 5 秒後自動重新整理。
+                        人格已更新，Golem 正在新視窗載入您的設定。頁面將在 3 秒後自動重新整理。
                     </DialogDescription>
                 </DialogHeader>
             </DialogContent>
@@ -378,10 +378,9 @@ export default function PersonaPage() {
                 setIsEditing(false);
                 setIsDirty(false);
                 setShowDone(true);
-                setTimeout(() => {
-                    fetch("/api/system/reload", { method: "POST" }).catch(() => { });
-                }, 1500);
-                setTimeout(() => window.location.reload(), 5000);
+                // 不再呼叫 /api/system/reload，因為這會殺掉整個 node process
+                // 而是直接等待 3 秒讓前端狀態重置
+                setTimeout(() => window.location.reload(), 3000);
             } else {
                 setShowConfirm(false);
                 setStatusMsg({ type: "error", text: data.message || data.error || "注入失敗" });
@@ -528,11 +527,11 @@ export default function PersonaPage() {
                                         >
                                             <span className="flex items-center gap-2">
                                                 <Zap className="w-5 h-5" />
-                                                儲存人格並重啟 Golem
+                                                儲存人格並開啟新對話窗口
                                             </span>
                                         </Button>
                                         <p className="text-center text-xs text-gray-600 mt-2">
-                                            重啟後新設定正式生效，前端將自動重新整理
+                                            重開視窗後新設定正式生效，前端將自動重新整理
                                         </p>
                                     </div>
                                 </div>
