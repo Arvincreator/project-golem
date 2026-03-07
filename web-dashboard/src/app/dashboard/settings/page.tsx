@@ -26,6 +26,161 @@ type SystemStatus = {
     system?: { totalMem: string; freeMem: string; diskAvail: string };
 };
 
+const SystemHealthDashboard = ({ systemStatus }: { systemStatus: SystemStatus | null }) => {
+    if (!systemStatus) return null;
+
+    const { runtime, health, system } = systemStatus;
+
+    const StatusItem = ({ label, status, icon: Icon }: { label: string, status: boolean, icon: any }) => (
+        <div className="flex items-center justify-between p-2 rounded-lg bg-gray-900/40 border border-gray-800/40">
+            <div className="flex items-center gap-2">
+                <Icon className="w-4 h-4 text-gray-400" />
+                <span className="text-xs text-gray-300">{label}</span>
+            </div>
+            {status ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+            ) : (
+                <AlertTriangle className="w-4 h-4 text-amber-500" />
+            )}
+        </div>
+    );
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-4 duration-500 mb-8">
+            {/* 1. Runtime Info */}
+            <div className="bg-gray-900/30 border border-gray-800 hover:border-gray-700/50 transition-colors rounded-xl p-5 shadow-sm">
+                <div className="flex items-center gap-2 mb-4">
+                    <Cpu className="w-5 h-5 text-cyan-400" />
+                    <h3 className="text-sm font-semibold text-white">運作環境 (Runtime)</h3>
+                </div>
+                <div className="space-y-3">
+                    <div className="flex justify-between text-xs">
+                        <span className="text-gray-500">OS</span>
+                        <span className="text-indigo-400 font-medium">{(systemStatus as any)?.runtime?.osName || 'Unknown'}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                        <span className="text-gray-500">Node.js</span>
+                        <span className="text-gray-300 font-mono">{runtime?.node || 'Unknown'}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                        <span className="text-gray-500">npm</span>
+                        <span className="text-gray-300 font-mono">{runtime?.npm || 'Unknown'}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                        <span className="text-gray-500">Platform</span>
+                        <span className="text-gray-300 capitalize">{runtime?.platform} ({runtime?.arch})</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                        <span className="text-gray-500">Uptime</span>
+                        <span className="text-gray-300">{Math.floor((runtime?.uptime || 0) / 3600)}h {Math.floor(((runtime?.uptime || 0) % 3600) / 60)}m</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* 2. System Health */}
+            <div className="bg-gray-900/30 border border-gray-800 hover:border-gray-700/50 transition-colors rounded-xl p-5 shadow-sm">
+                <div className="flex items-center gap-2 mb-4">
+                    <Activity className="w-5 h-5 text-emerald-400" />
+                    <h3 className="text-sm font-semibold text-white">健康檢查 (Health)</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                    <StatusItem label="API Keys" status={!!health?.keys} icon={Activity} />
+                    <StatusItem label="Env Config" status={!!health?.env} icon={Activity} />
+                    <StatusItem label="Dependencies" status={!!health?.deps} icon={Activity} />
+                    <StatusItem label="Core Files" status={!!health?.core} icon={Activity} />
+                </div>
+            </div>
+
+            {/* 3. System Resources */}
+            <div className="bg-gray-900/30 border border-gray-800 hover:border-gray-700/50 transition-colors rounded-xl p-5 shadow-sm">
+                <div className="flex items-center gap-2 mb-4">
+                    <Server className="w-5 h-5 text-indigo-400" />
+                    <h3 className="text-sm font-semibold text-white">系統資源 (Resources)</h3>
+                </div>
+                <div className="space-y-4">
+                    <div>
+                        <div className="flex justify-between text-[10px] text-gray-500 mb-1">
+                            <span>記憶體 (Memory)</span>
+                            <span>{system?.freeMem} / {system?.totalMem}</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden">
+                            <div
+                                className="h-full bg-indigo-500 transition-all duration-1000"
+                                style={{ width: `${100 - (parseInt(system?.freeMem || "0") / parseInt(system?.totalMem || "1")) * 100}%` }}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex justify-between text-xs pt-1">
+                        <div className="flex items-center gap-2 text-gray-500">
+                            <HardDrive className="w-4 h-4" />
+                            磁碟可用空間
+                        </div>
+                        <span className="text-emerald-400 font-bold">{system?.diskAvail || 'N/A'}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const SettingField = ({
+    label, desc = "", keyName,
+    isReadOnly = false, isSecret = false, value = "", onChange,
+    type = "text", placeholder = ""
+}: {
+    label: string,
+    desc?: string,
+    isReadOnly?: boolean, isSecret?: boolean, value?: string, onChange?: (val: string) => void,
+    type?: string, placeholder?: string, keyName?: string
+}) => {
+    const [isVisible, setIsVisible] = useState(false);
+    const inputType = (isSecret && !isVisible) ? "password" : type;
+
+    return (
+        <div className="flex flex-col mb-4">
+            <label className="text-sm font-medium text-gray-300 mb-1 flex items-center justify-between gap-1 overflow-hidden">
+                <span className="truncate mr-1" title={label}>{label}</span>
+                <div className="flex items-center gap-1.5 shrink-0">
+                    {isReadOnly && (
+                        <span className="text-[10px] bg-gray-800 text-gray-400 px-1.5 py-0.5 rounded border border-gray-700 flex items-center gap-1 whitespace-nowrap">
+                            <Lock className="w-3 h-3" /> 唯讀
+                        </span>
+                    )}
+                    {!isReadOnly && (
+                        <span className="text-[10px] bg-orange-900/40 text-orange-400 px-1.5 py-0.5 rounded border border-orange-800/50 whitespace-nowrap">需重啟</span>
+                    )}
+                </div>
+            </label>
+            <div className="relative">
+                <input
+                    type={inputType}
+                    value={value}
+                    onChange={(e) => {
+                        if (onChange) {
+                            onChange(e.target.value);
+                        }
+                    }}
+                    placeholder={placeholder}
+                    disabled={isReadOnly}
+                    className={`w-full bg-gray-900/50 border border-gray-700/50 focus:border-cyan-500 rounded-lg px-3 py-2 text-sm text-gray-100 font-mono transition-colors ${isReadOnly ? "opacity-70 cursor-not-allowed bg-gray-900/80" : ""} ${isSecret ? "pr-10" : ""}`}
+                    spellCheck={false}
+                />
+                {isSecret && (
+                    <button
+                        type="button"
+                        onClick={() => setIsVisible(!isVisible)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors p-1"
+                        title={isVisible ? "隱藏內容" : "顯示內容"}
+                    >
+                        {isVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                )}
+            </div>
+            {desc && <p className="text-xs text-gray-500 mt-1">{desc}</p>}
+        </div>
+    );
+};
+
 export default function SettingsPage() {
     const [config, setConfig] = useState<ConfigData>({ env: {}, golems: [] });
     const [originalConfig, setOriginalConfig] = useState<ConfigData>({ env: {}, golems: [] });
@@ -33,7 +188,6 @@ export default function SettingsPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error' | 'warning', text: string } | null>(null);
-    const [visibleFields, setVisibleFields] = useState<Record<string, boolean>>({});
 
     useEffect(() => {
         fetchConfig();
@@ -67,102 +221,6 @@ export default function SettingsPage() {
         } catch (e) { console.error("Failed to fetch system status:", e); }
     };
 
-    const SystemHealthDashboard = () => {
-        if (!systemStatus) return null;
-
-        const { runtime, health, system } = systemStatus;
-
-        const StatusItem = ({ label, status, icon: Icon }: { label: string, status: boolean, icon: any }) => (
-            <div className="flex items-center justify-between p-2 rounded-lg bg-gray-900/40 border border-gray-800/40">
-                <div className="flex items-center gap-2">
-                    <Icon className="w-4 h-4 text-gray-400" />
-                    <span className="text-xs text-gray-300">{label}</span>
-                </div>
-                {status ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                ) : (
-                    <AlertTriangle className="w-4 h-4 text-amber-500" />
-                )}
-            </div>
-        );
-
-        return (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-4 duration-500 mb-8">
-                {/* 1. Runtime Info */}
-                <div className="bg-gray-900/30 border border-gray-800 hover:border-gray-700/50 transition-colors rounded-xl p-5 shadow-sm">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Cpu className="w-5 h-5 text-cyan-400" />
-                        <h3 className="text-sm font-semibold text-white">運作環境 (Runtime)</h3>
-                    </div>
-                    <div className="space-y-3">
-                        <div className="flex justify-between text-xs">
-                            <span className="text-gray-500">OS</span>
-                            <span className="text-indigo-400 font-medium">{(systemStatus as any)?.runtime?.osName || 'Unknown'}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                            <span className="text-gray-500">Node.js</span>
-                            <span className="text-gray-300 font-mono">{runtime?.node || 'Unknown'}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                            <span className="text-gray-500">npm</span>
-                            <span className="text-gray-300 font-mono">{runtime?.npm || 'Unknown'}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                            <span className="text-gray-500">Platform</span>
-                            <span className="text-gray-300 capitalize">{runtime?.platform} ({runtime?.arch})</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                            <span className="text-gray-500">Uptime</span>
-                            <span className="text-gray-300">{Math.floor((runtime?.uptime || 0) / 3600)}h {Math.floor(((runtime?.uptime || 0) % 3600) / 60)}m</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 2. System Health */}
-                <div className="bg-gray-900/30 border border-gray-800 hover:border-gray-700/50 transition-colors rounded-xl p-5 shadow-sm">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Activity className="w-5 h-5 text-emerald-400" />
-                        <h3 className="text-sm font-semibold text-white">健康檢查 (Health)</h3>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                        <StatusItem label="API Keys" status={!!health?.keys} icon={Activity} />
-                        <StatusItem label="Env Config" status={!!health?.env} icon={Activity} />
-                        <StatusItem label="Dependencies" status={!!health?.deps} icon={Activity} />
-                        <StatusItem label="Core Files" status={!!health?.core} icon={Activity} />
-                    </div>
-                </div>
-
-                {/* 3. System Resources */}
-                <div className="bg-gray-900/30 border border-gray-800 hover:border-gray-700/50 transition-colors rounded-xl p-5 shadow-sm">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Server className="w-5 h-5 text-indigo-400" />
-                        <h3 className="text-sm font-semibold text-white">系統資源 (Resources)</h3>
-                    </div>
-                    <div className="space-y-4">
-                        <div>
-                            <div className="flex justify-between text-[10px] text-gray-500 mb-1">
-                                <span>記憶體 (Memory)</span>
-                                <span>{system?.freeMem} / {system?.totalMem}</span>
-                            </div>
-                            <div className="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden">
-                                <div
-                                    className="h-full bg-indigo-500 transition-all duration-1000"
-                                    style={{ width: `${100 - (parseInt(system?.freeMem || "0") / parseInt(system?.totalMem || "1")) * 100}%` }}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex justify-between text-xs pt-1">
-                            <div className="flex items-center gap-2 text-gray-500">
-                                <HardDrive className="w-4 h-4" />
-                                磁碟可用空間
-                            </div>
-                            <span className="text-emerald-400 font-bold">{system?.diskAvail || 'N/A'}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    };
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -283,69 +341,6 @@ export default function SettingsPage() {
         });
     };
 
-    const toggleVisibility = (key: string) => {
-        setVisibleFields(prev => ({ ...prev, [key]: !prev[key] }));
-    };
-
-    const SettingField = ({
-        label, keyName, type = "text", placeholder = "", desc = "",
-        isReadOnly = false, isSecret = false, value, onChange
-    }: {
-        label: string, keyName: string, type?: string, placeholder?: string, desc?: string,
-        isReadOnly?: boolean, isSecret?: boolean, value?: string, onChange?: (val: string) => void
-    }) => {
-        const isVisible = visibleFields[keyName] || false;
-        // if it's secret and not visible, disguise it
-        const inputType = (isSecret && !isVisible) ? "password" : type;
-
-        return (
-            <div className="flex flex-col mb-4">
-                <label className="text-sm font-medium text-gray-300 mb-1 flex items-center justify-between gap-1 overflow-hidden">
-                    <span className="truncate mr-1" title={label}>{label}</span>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                        {isReadOnly && (
-                            <span className="text-[10px] bg-gray-800 text-gray-400 px-1.5 py-0.5 rounded border border-gray-700 flex items-center gap-1 whitespace-nowrap">
-                                <Lock className="w-3 h-3" /> 唯讀
-                            </span>
-                        )}
-                        {!isReadOnly && (
-                            <span className="text-[10px] bg-orange-900/40 text-orange-400 px-1.5 py-0.5 rounded border border-orange-800/50 whitespace-nowrap">需重啟</span>
-                        )}
-                    </div>
-                </label>
-                <div className="relative">
-                    <input
-                        type={inputType}
-                        value={value !== undefined ? value : (config.env?.[keyName] || "")}
-                        onChange={(e) => {
-                            if (onChange) {
-                                onChange(e.target.value);
-                            } else {
-                                handleChangeEnv(keyName, e.target.value);
-                            }
-                        }}
-                        placeholder={placeholder}
-                        disabled={isReadOnly}
-                        className={`w-full bg-gray-900/50 border border-gray-700/50 focus:border-cyan-500 rounded-lg px-3 py-2 text-sm text-gray-100 font-mono transition-colors ${isReadOnly ? "opacity-70 cursor-not-allowed bg-gray-900/80" : ""
-                            } ${isSecret ? "pr-10" : ""}`}
-                        spellCheck={false}
-                    />
-                    {isSecret && (
-                        <button
-                            type="button"
-                            onClick={() => toggleVisibility(keyName)}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors p-1"
-                            title={isVisible ? "隱藏內容" : "顯示內容"}
-                        >
-                            {isVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                    )}
-                </div>
-                {desc && <p className="text-xs text-gray-500 mt-1">{desc}</p>}
-            </div>
-        );
-    };
-
     if (isLoading) {
         return (
             <div className="flex-1 p-6 flex items-center justify-center">
@@ -407,7 +402,7 @@ export default function SettingsPage() {
                 )}
 
                 {/* System Health Dashboard */}
-                <SystemHealthDashboard />
+                <SystemHealthDashboard systemStatus={systemStatus} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* 左側：AI 大腦與控制權限 */}
