@@ -167,7 +167,7 @@ class AutonomyManager {
             chatId: 'system_autonomy', // ✨ [v9.0.6] 修正：賦予明確 ID 避免 Queue 阻塞
             isAdmin: true,
             platform: 'autonomy',
-            reply: async (msg, opts) => await this.sendNotification(msg),
+            reply: async (msg, opts) => await this.sendNotification(msg, opts),
             sendTyping: async () => { }
         };
         return fakeCtx;
@@ -209,7 +209,7 @@ class AutonomyManager {
             else if (this.tgBot && CONFIG.ADMIN_IDS[0]) { await this.tgBot.sendMessage(CONFIG.ADMIN_IDS[0], msgText, options); await this.tgBot.sendDocument(CONFIG.ADMIN_IDS[0], testFile); }
         }
     }
-    async sendNotification(msgText) {
+    async sendNotification(msgText, opts = {}) {
         if (!msgText) return;
 
         // --- Telegram Routing ---
@@ -243,7 +243,7 @@ class AutonomyManager {
         // --- Dispatch ---
         let sent = false;
         if (this.tgBot && tgTargetId) {
-            await this.tgBot.sendMessage(tgTargetId, msgText).then(() => sent = true).catch(e => console.error("❌ [Autonomy] TG 通知發送失敗:", e.message));
+            await this.tgBot.sendMessage(tgTargetId, msgText, opts).then(() => sent = true).catch(e => console.error("❌ [Autonomy] TG 通知發送失敗:", e.message));
         }
 
         if (!sent && this.dcClient && dcTargetId) {
