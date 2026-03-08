@@ -27,6 +27,14 @@ process.on('unhandledRejection', (reason, promise) => {
     console.error('⚠️ [WARNING] Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
+
+// --- 🩺 Doctor Mode ---
+if (process.argv.includes('--doctor')) {
+    const { runDoctor } = require('./src/utils/doctor');
+    runDoctor();
+    // runDoctor() calls process.exit() internally
+}
+
 if (process.argv.includes('dashboard')) {
     try {
         require('./dashboard');
