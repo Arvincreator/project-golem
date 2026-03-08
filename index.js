@@ -45,7 +45,9 @@ const { spawn } = require('child_process');
 const TelegramBot = require('node-telegram-bot-api');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
-const { CONFIG } = require('./src/config');
+const { CONFIG, validateConfig, printConfigSummary } = require('./src/config');
+validateConfig();
+printConfigSummary();
 const GolemBrain = require('./src/core/GolemBrain');
 const TaskController = require('./src/core/TaskController');
 const AutonomyManager = require('./src/managers/AutonomyManager');
