@@ -496,4 +496,24 @@ setInterval(async () => {
     }
 }, 30000);
 
+
+
+// --- 🔒 Graceful Shutdown ---
+let isShuttingDown = false;
+async function gracefulShutdown(signal) {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+    console.log(`
+🔒 [${signal}] Graceful shutdown initiated...`);
+    try {
+        if (tgBot) { tgBot.stopPolling(); console.log('  ✅ Telegram bot stopped'); }
+        if (dcClient) { dcClient.destroy(); console.log('  ✅ Discord client destroyed'); }
+        if (brain) { await brain.shutdown(); console.log('  ✅ GolemBrain shutdown'); }
+    } catch (e) { console.error('  ⚠️ Shutdown error:', e.message); }
+    console.log('👋 Golem offline. See you next time!');
+    process.exit(0);
+}
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
 module.exports = { brain, controller, autonomy, convoManager };
