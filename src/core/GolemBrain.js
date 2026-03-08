@@ -311,4 +311,11 @@ class GolemBrain {
     }
 }
 
-module.exports = GolemBrain;
+// --- 🧠 Brain Mode Selection ---
+const brainMode = (process.env.GOLEM_BRAIN_MODE || 'browser').toLowerCase();
+if (brainMode === 'api') {
+    const ApiBrain = require('./ApiBrain');
+    module.exports = ApiBrain;
+} else {
+    module.exports = GolemBrain;
+}
