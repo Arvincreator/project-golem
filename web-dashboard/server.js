@@ -12,9 +12,14 @@ class WebServer {
         this.server = http.createServer(this.app);
         this.io = new Server(this.server, {
             cors: {
-                origin: "*", // Allow Next.js dev server
+                origin: process.env.DASHBOARD_ORIGIN
+                    ? process.env.DASHBOARD_ORIGIN.split(',')
+                    : "*",
                 methods: ["GET", "POST"]
-            }
+            },
+            pingTimeout: 30000,
+            pingInterval: 15000,
+            transports: ["websocket", "polling"],
         });
         this.port = process.env.DASHBOARD_PORT || 3000;
 
@@ -112,8 +117,19 @@ class WebServer {
             }, 1000);
         });
 
+        // Track connected clients
+        this._connectedClients = 0;
+
         // Socket.io connection handler
         this.io.on('connection', (socket) => {
+            this._connectedClients++;
+            console.log(`🔗 [WebServer] Client connected (${this._connectedClients} total)`);
+            
+            socket.on('disconnect', (reason) => {
+                this._connectedClients = Math.max(0, this._connectedClients - 1);
+                console.log(`🔌 [WebServer] Client disconnected: ${reason} (${this._connectedClients} remaining)`);
+            });
+
             // Send initial state upon connection
             if (this.dashboard) {
                 socket.emit('init', {
