@@ -8,11 +8,32 @@ class WebServer {
     constructor(dashboard) {
         this.dashboard = dashboard; // Reference to main dashboard if needed for initial state
         this.app = express();
-        this.app.use(express.json()); // Enable JSON body parsing
+        this.app.use(express.json({ limit: '1mb' })); // Limit body size
+        
+        // Security headers
+        this.app.use((req, res, next) => {
+            res.setHeader('X-Content-Type-Options', 'nosniff');
+            res.setHeader('X-Frame-Options', 'DENY');
+            res.setHeader('X-XSS-Protection', '1; mode=block');
+            next();
+        });
+
+        // Simple rate limiter (per IP, 100 req/min)
+        this._rateLimits = new Map();
+        this.app.use((req, res, next) => {
+            const ip = req.ip || req.connection.remoteAddress;
+            const now = Date.now();
+            const limit = this._rateLimits.get(ip) || { count: 0, resetAt: now + 60000 };
+            if (now > limit.resetAt) { limit.count = 0; limit.resetAt = now + 60000; }
+            limit.count++;
+            this._rateLimits.set(ip, limit);
+            if (limit.count > 100) { return res.status(429).json({ error: 'Too many requests' }); }
+            next();
+        }); // Enable JSON body parsing
         this.server = http.createServer(this.app);
         this.io = new Server(this.server, {
             cors: {
-                origin: "*", // Allow Next.js dev server
+                origin: [process.env.DASHBOARD_ORIGIN || "http://localhost:3000", "http://127.0.0.1:3000"], // Allow Next.js dev server
                 methods: ["GET", "POST"]
             }
         });
@@ -72,6 +93,9 @@ class WebServer {
             if (!this.memory) return res.status(503).json({ error: "Memory not engaged" });
             try {
                 const { text, metadata } = req.body;
+                if (!text || typeof text !== 'string' || text.length > 10000) {
+                    return res.status(400).json({ error: 'Invalid text (max 10000 chars)' });
+                }
                 await this.memory.memorize(text, metadata || {});
                 this.io.emit('memory_update', { action: 'add', text, metadata });
                 return res.json({ success: true });
@@ -90,7 +114,13 @@ class WebServer {
                 }).filter(x => x);
 
                 // Return last 1000 logs (approx 1 day of heavy usage)
-                return res.json(logs.slice(-1000));
+                // Mask potential secrets in logs
+                const masked = logs.slice(-1000).map(log => {
+                    if (log.content) log.content = log.content.replace(/(?:AIza|sk-|ghp_|gho_|Bearers+)[A-Za-z0-9_-]{10,}/g, '[REDACTED]');
+                    if (log.response) log.response = log.response.replace(/(?:AIza|sk-|ghp_|gho_|Bearers+)[A-Za-z0-9_-]{10,}/g, '[REDACTED]');
+                    return log;
+                });
+                return res.json(masked);
             } catch (e) {
                 return res.status(500).json({ error: e.message });
             }

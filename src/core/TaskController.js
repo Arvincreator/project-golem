@@ -12,7 +12,8 @@ class TaskController {
         this.executor = new Executor();
         this.security = new SecurityManager();
         this.multiAgent = null; // ✨ [v9.0]
-        this.pendingTasks = new Map(); // Moved from global to here
+        this.pendingTasks = new Map();
+        this.APPROVAL_TTL = 5 * 60 * 1000; // 5 分鐘過期 // Moved from global to here
     }
 
     // ✨ [v9.0] 處理多 Agent 請求
@@ -35,6 +36,20 @@ class TaskController {
             console.error('[TaskController] MultiAgent 執行失敗:', e);
             await ctx.reply(`❌ 執行失敗: ${e.message}`);
         }
+    }
+
+
+    /**
+     * 驗證 approval 是否有效 (未過期)
+     */
+    validateApproval(approvalId) {
+        const task = this.pendingTasks.get(approvalId);
+        if (!task) return { valid: false, reason: '找不到此審批' };
+        if (Date.now() - task.timestamp > this.APPROVAL_TTL) {
+            this.pendingTasks.delete(approvalId);
+            return { valid: false, reason: '審批已過期 (超過 5 分鐘)' };
+        }
+        return { valid: true, task };
     }
 
     async runSequence(ctx, steps, startIndex = 0) {
