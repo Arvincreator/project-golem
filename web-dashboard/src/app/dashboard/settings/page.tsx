@@ -184,7 +184,7 @@ const SettingField = ({
 };
 
 const SystemUpdateSection = () => {
-    const [updateInfo, setUpdateInfo] = useState<{ currentVersion: string, installMode: string, gitInfo?: { currentBranch: string, currentCommit: string, latestCommit: string, behindCount: number } } | null>(null);
+    const [updateInfo, setUpdateInfo] = useState<{ currentVersion: string, remoteVersion?: string, isOutdated?: boolean, installMode: string, gitInfo?: { currentBranch: string, currentCommit: string, latestCommit: string, behindCount: number } } | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -192,12 +192,39 @@ const SystemUpdateSection = () => {
     const [keepOldData, setKeepOldData] = useState(true);
     const [keepMemory, setKeepMemory] = useState(true);
     const [updateDone, setUpdateDone] = useState(false);
+    const [logInfo, setLogInfo] = useState<{ size: string, bytes: number } | null>(null);
 
+    // Initial check for update and log info
     useEffect(() => {
-        fetch("/api/system/update/check")
-            .then(res => res.json())
-            .then(data => setUpdateInfo(data))
-            .catch(err => console.error("Failed to check update", err));
+        let isMounted = true;
+        const checkUpdate = async () => {
+            try {
+                const res = await fetch('/api/system/update/check');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (isMounted) setUpdateInfo(data);
+                }
+            } catch (err) {
+                console.error('Failed to check for updates:', err);
+            }
+        };
+
+        const checkLogInfo = async () => {
+            try {
+                const res = await fetch('/api/system/log-info');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (isMounted && data.success) setLogInfo(data);
+                }
+            } catch (err) {
+                console.error('Failed to fetch log info:', err);
+            }
+        };
+
+        checkUpdate();
+        checkLogInfo();
+
+        return () => { isMounted = false; };
     }, []);
 
     useEffect(() => {
@@ -333,6 +360,29 @@ const SystemUpdateSection = () => {
                                     </div>
                                 )}
 
+                                {updateInfo.installMode === 'zip' && updateInfo.remoteVersion && updateInfo.remoteVersion !== 'Unknown' && (
+                                    <div className="bg-gray-950 p-4 rounded-lg border border-gray-800 text-sm space-y-2">
+                                        <div className="flex items-center gap-2 text-indigo-400 font-semibold mb-2">
+                                            <Activity className="w-4 h-4" /> 主機板號差異分析
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">當前版本 (Current):</span>
+                                            <span className="text-gray-400 font-mono text-xs text-right">{updateInfo.currentVersion}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">遠端最新 (Latest):</span>
+                                            <span className="text-emerald-400/90 font-mono text-xs text-right">{updateInfo.remoteVersion}</span>
+                                        </div>
+                                        <div className="pt-2 border-t border-gray-800 mt-2">
+                                            {updateInfo.isOutdated ? (
+                                                <span className="text-amber-400 font-medium">⚠️ 發現新版本 (v{updateInfo.remoteVersion}) 可供更新。建議進行更新。</span>
+                                            ) : (
+                                                <span className="text-emerald-400 font-medium">✅ 您目前已經是最新版本 (v{updateInfo.currentVersion})。</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="space-y-3 bg-black/30 p-4 rounded-lg border border-gray-800">
                                     <label className="flex items-start gap-3 cursor-pointer group">
                                         <input type="checkbox" checked={keepMemory} onChange={(e) => setKeepMemory(e.target.checked)} className="mt-1" />
@@ -397,6 +447,7 @@ export default function SettingsPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error' | 'warning', text: string } | null>(null);
+    const [logInfo, setLogInfo] = useState<{ size: string, bytes: number } | null>(null);
 
     useEffect(() => {
         fetchConfig();
@@ -428,6 +479,18 @@ export default function SettingsPage() {
             const data = await res.json();
             if (res.ok) setSystemStatus(data);
         } catch (e) { console.error("Failed to fetch system status:", e); }
+    };
+
+    const fetchLogInfo = async () => {
+        try {
+            const res = await fetch('/api/system/log-info');
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success) setLogInfo(data);
+            }
+        } catch (err) {
+            console.error('Failed to fetch log info:', err);
+        }
     };
 
 
@@ -766,13 +829,64 @@ export default function SettingsPage() {
                                 value={config.env.USER_DATA_DIR || ""}
                                 onChange={(val) => handleChangeEnv("USER_DATA_DIR", val)}
                             />
-                            <SettingField
-                                label="OTA 升級節點 (GitHub Repo)"
-                                keyName="GITHUB_REPO"
-                                placeholder="https://raw.github..."
-                                value={config.env.GITHUB_REPO || ""}
-                                onChange={(val) => handleChangeEnv("GITHUB_REPO", val)}
-                            />
+                            <div className="grid grid-cols-2 gap-4 mt-4">
+                                <SettingField
+                                    label="OTA 升級節點 (GitHub Repo)"
+                                    keyName="GITHUB_REPO"
+                                    placeholder="https://raw.github..."
+                                    value={config.env.GITHUB_REPO || ""}
+                                    onChange={(val) => handleChangeEnv("GITHUB_REPO", val)}
+                                />
+                                <div className="space-y-4 col-span-2">
+                                    <div className="bg-gray-800/30 p-4 rounded-lg border border-gray-700/50">
+                                        <h4 className="text-sm font-medium text-gray-300 mb-3 flex items-center gap-2">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                                            日誌輪替策略 (Log Rotation Strategy)
+                                        </h4>
+                                        <p className="text-xs text-gray-500 mb-4">
+                                            系統將自動在「跨日」或「檔案大小達標」時建立新的日誌壓縮檔，這兩個條件只要達成其一即會觸發輪替。
+                                        </p>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <SettingField
+                                                label="單檔儲存上限 (MB)"
+                                                keyName="LOG_MAX_SIZE_MB"
+                                                placeholder="10"
+                                                desc="超過此容量即切割壓縮新檔 (設 0 則不限制)"
+                                                value={config.env.LOG_MAX_SIZE_MB || ""}
+                                                onChange={(val) => handleChangeEnv("LOG_MAX_SIZE_MB", val)}
+                                            />
+                                            <SettingField
+                                                label="保留歷史檔案天數"
+                                                keyName="LOG_RETENTION_DAYS"
+                                                placeholder="7"
+                                                desc="過舊的壓縮日誌將會自動刪除"
+                                                value={config.env.LOG_RETENTION_DAYS || ""}
+                                                onChange={(val) => handleChangeEnv("LOG_RETENTION_DAYS", val)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-4 pt-4 border-t border-gray-800/80">
+                                <div className="flex items-center justify-between mb-4">
+                                    <span className="text-sm font-medium text-gray-300 flex items-center gap-2">
+                                        啟用系統日誌 (System Log)
+                                        {logInfo && (
+                                            <span className={`px-2 py-0.5 rounded text-xs font-mono ml-2 ${logInfo.bytes > 10 * 1024 * 1024 ? 'bg-red-900/50 text-red-400' : 'bg-green-900/30 text-green-400'}`}>
+                                                system.log 大小: {logInfo.size}
+                                            </span>
+                                        )}
+                                    </span>
+                                </div>
+                                <SettingField
+                                    label=""
+                                    keyName="ENABLE_SYSTEM_LOG"
+                                    placeholder="true"
+                                    desc="設為 false 將完全不記錄 system.log，節省硬碟空間"
+                                    value={config.env.ENABLE_SYSTEM_LOG || ""}
+                                    onChange={(val) => handleChangeEnv("ENABLE_SYSTEM_LOG", val)}
+                                />
+                            </div>
                         </div>
 
                         {/* Section: Autonomy Schedule */}

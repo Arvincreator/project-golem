@@ -832,6 +832,27 @@ class WebServer {
 
         // ─── Create New Golem ────────────────────────────────────────────
         // ─── System Update ───────────────────────────────────────────────
+        this.app.get('/api/system/log-info', (req, res) => {
+            try {
+                const logPath = path.resolve(process.cwd(), 'logs', 'system.log');
+                if (fs.existsSync(logPath)) {
+                    const stats = fs.statSync(logPath);
+                    const bytes = stats.size;
+                    let displaySize = bytes + ' B';
+                    if (bytes > 1024 * 1024) {
+                        displaySize = (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+                    } else if (bytes > 1024) {
+                        displaySize = (bytes / 1024).toFixed(2) + ' KB';
+                    }
+                    return res.json({ success: true, size: displaySize, bytes });
+                }
+                return res.json({ success: true, size: '0 B', bytes: 0 });
+            } catch (e) {
+                console.error('[WebServer] Failed to get log info:', e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
         this.app.get('/api/system/update/check', async (req, res) => {
             try {
                 const SystemUpdater = require('../src/utils/SystemUpdater');

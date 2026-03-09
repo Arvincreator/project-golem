@@ -12,6 +12,18 @@ class SystemUpdater {
             currentVersion = pkg.version || 'Unknown';
         }
 
+        let remoteVersion = 'Unknown';
+        try {
+            const rawUrl = 'https://raw.githubusercontent.com/Arvincreator/project-golem/main/package.json';
+            const response = await fetch(rawUrl);
+            if (response.ok) {
+                const remotePkg = await response.json();
+                remoteVersion = remotePkg.version || 'Unknown';
+            }
+        } catch (e) {
+            console.error("[SystemUpdater] Failed to fetch remote version", e);
+        }
+
         const isGit = fs.existsSync(path.join(rootDir, '.git'));
         let gitInfo = null;
 
@@ -51,8 +63,26 @@ class SystemUpdater {
             }
         }
 
+        const isOutdated = (() => {
+            if (currentVersion === 'Unknown' || remoteVersion === 'Unknown') return false;
+            // Simple string comparison works for standard semver (e.g., "0.1.0" < "0.1.1")
+            // A more robust method would split and compare numbers, but this covers basic usage.
+            const vParam = (v) => v.split('.').map(Number);
+            const a = vParam(currentVersion);
+            const b = vParam(remoteVersion);
+            for (let i = 0; i < Math.max(a.length, b.length); i++) {
+                const aNum = a[i] || 0;
+                const bNum = b[i] || 0;
+                if (aNum < bNum) return true;
+                if (aNum > bNum) return false;
+            }
+            return false;
+        })();
+
         return {
             currentVersion,
+            remoteVersion,
+            isOutdated,
             installMode: isGit ? 'git' : 'zip',
             gitInfo
         };
