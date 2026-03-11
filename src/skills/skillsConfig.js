@@ -20,6 +20,8 @@ const MANDATORY_SKILLS = [
     'reincarnate',
     'sys-admin',
     'tool-explorer',
+    'adaptive-learning',
+    'reflection',
 ];
 
 const OPTIONAL_SKILLS = [

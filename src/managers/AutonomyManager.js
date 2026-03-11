@@ -198,32 +198,39 @@ class AutonomyManager {
     async performNewsChat() { await this.run("上網搜尋「科技圈熱門話題」或「全球趣聞」，挑選一件分享給主人。要有個人觀點，像朋友一樣聊天。", "NewsChat"); }
     async performSpontaneousChat() { await this.run("主動社交，傳訊息給主人。語氣自然，符合當下時間。", "SpontaneousChat"); }
     async performSelfReflection(triggerCtx = null) {
-        const currentCode = Introspection.readSelf();
-        const advice = this.memory.getAdvice();
-        const prompt = `【任務】自主進化提案\n代碼：\n${currentCode.slice(0, 20000)}\n記憶：${advice}\n要求：輸出 JSON Array。`;
-        const raw = await this.brain.sendMessage(prompt);
-        const patches = ResponseParser.extractJson(raw);
-        if (patches.length > 0) {
-            const patch = patches[0];
-            // ✅ [M-3 Fix] 移除 hardcoded skills.js，改為支援 src/ 下的合法相對路徑
-            // 防止目錄穿越攻擊（不允許 .. 層級）
-            const patchFile = patch.file || '';
-            if (!patchFile || patchFile.includes('..') || patchFile.startsWith('/')) {
-                console.error(`⛔ [Autonomy] 非法补丁路徑被拒: ${patchFile}`);
-                return;
+        console.log(`🧠 [Autonomy][${this.golemId}] 啟動自我反思程序...`);
+
+        // 1. 讀取最近的對話摘要 (Tier 1)
+        const ChatLogManager = require('../managers/ChatLogManager');
+        const logManager = new ChatLogManager({
+            golemId: this.golemId,
+            logDir: ConfigManager.LOG_BASE_DIR,
+            isSingleMode: ConfigManager.GOLEM_MODE === 'SINGLE'
+        });
+
+        const recentSummaries = logManager.readTier('daily', 3);
+        const summaryContext = recentSummaries.map(s => `[${s.date}] ${s.content}`).join('\n\n');
+
+        // 2. 建構反思 Prompt
+        const prompt = `【系統指令：自我反思】
+請回顧你最近 3 天的對話摘要，評估你的表現、使用者的滿意度，以及是否有任何需要優化的邏輯或需要記錄的學習。
+
+對話摘要：
+${summaryContext || "（目前尚無對話摘要）"}
+
+請根據 <Skill: REFLECTION> 的格式要求產出反思報告。
+如果你發現了具體的代碼 Bug 並有信心修復，請額外產生 [PATCH] 或建議透過 evolution 技能進行修復。`;
+
+        const adminCtx = await this.getAdminContext();
+        if (triggerCtx) {
+            // 如果是手動觸發，則透過 convoManager 進行
+            if (this.convoManager) {
+                await this.convoManager.enqueue(triggerCtx, prompt, { isPriority: true });
             }
-            const targetPath = path.join(process.cwd(), patchFile);
-            const targetName = path.basename(targetPath);
-            if (!require('fs').existsSync(targetPath)) {
-                console.error(`❌ [Autonomy] 目標檔案不存在: ${targetPath}`);
-                return;
-            }
-            const testFile = PatchManager.createTestClone(targetPath, patches);
-            this.pendingPatch = { path: testFile, target: targetPath, name: targetName, description: patch.description };
-            const msgText = `💡 **自主進化提案 (${this.golemId})**\n目標：${targetName}\n內容：${patch.description}`;
-            const options = { reply_markup: { inline_keyboard: [[{ text: '🚀 部署', callback_data: `PATCH_DEPLOY_${this.golemId}` }, { text: '🗑️ 丟棄', callback_data: `PATCH_DROP_${this.golemId}` }]] } };
-            if (triggerCtx) { await triggerCtx.reply(msgText, options); await triggerCtx.sendDocument(testFile); }
-            else if (this.tgBot && ConfigManager.CONFIG.ADMIN_IDS[0]) { await this.tgBot.sendMessage(ConfigManager.CONFIG.ADMIN_IDS[0], msgText, options); await this.tgBot.sendDocument(ConfigManager.CONFIG.ADMIN_IDS[0], testFile); }
+        } else {
+            // 如果是自動觸發
+            const raw = await this.brain.sendMessage(prompt);
+            await NeuroShunter.dispatch(adminCtx, raw, this.brain, this.controller);
         }
     }
     async sendNotification(msgText, opts = {}) {
