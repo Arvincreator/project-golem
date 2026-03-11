@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<golem-config version="1.0" updated="2026-03-12">
+
+  <node id="rensin" role="primary">
+    <platform>wsl2</platform>
+    <mode>puppeteer</mode>
+    <telegram enabled="true" token-env="TG_TOKEN"/>
+    <dashboard port="4000"/>
+  </node>
+
+  <rag>
+    <remote url="https://yedan-graph-rag.yagami8095.workers.dev"
+            auth-env="FLEET_AUTH_TOKEN"
+            timeout-ms="15000"/>
+    <local driver="magma" data-file="src/memory/graph/nodes.json"/>
+    <sync interval-minutes="60"/>
+  </rag>
+
+  <gemini>
+    <sdk package="@google/genai" version="1.44.0"/>
+    <model primary="gemini-2.5-flash" fallback="gemini-3-flash-preview"/>
+    <keys rotation="round-robin">
+      <key env="GEMINI_API_KEY_1"/>
+      <key env="GEMINI_API_KEY_2"/>
+      <key env="GEMINI_API_KEY_3"/>
+      <key env="GEMINI_API_KEY_4"/>
+    </keys>
+    <limits rpm="60" daily="1500"/>
+  </gemini>
+
+  <telegram engine="grammy">
+    <polling timeout-sec="30"
+             max-consecutive-errors="10"
+             backoff-max-sec="60"
+             jitter="true"/>
+    <startup>
+      <delete-webhook drop-pending="false"/>
+      <wait-sec>3</wait-sec>
+    </startup>
+    <health>
+      <check-interval-sec>300</check-interval-sec>
+      <alert-threshold polling-success-rate-min="95"
+                       response-latency-max-ms="5000"
+                       uptime-min-sec="300"/>
+    </health>
+  </telegram>
+
+  <circuit-breakers>
+    <breaker name="fleet" timeout-ms="5000" reset-ms="30000" error-pct="50"/>
+    <breaker name="rag" timeout-ms="3000" reset-ms="20000" error-pct="40"/>
+    <breaker name="gemini" timeout-ms="30000" reset-ms="60000" error-pct="50"/>
+    <breaker name="telegram" timeout-ms="10000" reset-ms="15000" error-pct="30"/>
+  </circuit-breakers>
+
+  <failover>
+    <heartbeat interval-sec="30" storage="d1"/>
+    <timeout detect-sec="90" confirm-sec="180"/>
+    <takeover notify="telegram" auto="true"/>
+  </failover>
+
+  <dependencies>
+    <dep name="grammy" version="^1" for="rensin"/>
+    <dep name="@google/genai" version="^1.44" for="both"/>
+    <dep name="better-sqlite3" version="^11" for="both"/>
+    <dep name="opossum" version="^9" for="both"/>
+    <dep name="pino" version="^9" for="both"/>
+    <dep name="fast-xml-parser" version="^4" for="both"/>
+  </dependencies>
+
+  <protection>
+    <immutable-files>golem-config.xml,.env</immutable-files>
+    <self-coder require-approval="true">
+      <forbidden-targets>*.service,*.xml,.env,constitution.py</forbidden-targets>
+    </self-coder>
+  </protection>
+
+</golem-config>
