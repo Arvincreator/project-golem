@@ -59,6 +59,48 @@ class WebServer {
             res.json({});
         });
 
+        // [Health Endpoint] Lightweight health check for external monitoring
+        this.app.get('/health', (req, res) => {
+            try {
+                const mem = process.memoryUsage();
+                const health = {
+                    status: 'ok',
+                    timestamp: new Date().toISOString(),
+                    uptime: Math.floor(process.uptime()),
+                    memory: {
+                        heapUsed: Math.round(mem.heapUsed / 1024 / 1024),
+                        heapTotal: Math.round(mem.heapTotal / 1024 / 1024),
+                        rss: Math.round(mem.rss / 1024 / 1024),
+                    },
+                    golems: this.contexts ? this.contexts.size : 0,
+                };
+
+                // Add Telegram health if watchdog is available
+                try {
+                    const tgHealth = require('../src/bridges/TelegramHealthWatchdog');
+                    health.telegram = tgHealth.getHealth();
+                    if (health.telegram.status === 'critical') health.status = 'degraded';
+                } catch (e) { /* watchdog not loaded */ }
+
+                // Add circuit breaker status
+                try {
+                    const cb = require('../src/core/circuit_breaker');
+                    health.circuitBreakers = cb.getStatus();
+                    for (const [name, s] of Object.entries(health.circuitBreakers)) {
+                        if (s.state === 'OPEN') {
+                            health.status = 'degraded';
+                            break;
+                        }
+                    }
+                } catch (e) { /* CB not loaded */ }
+
+                const httpCode = health.status === 'ok' ? 200 : 503;
+                res.status(httpCode).json(health);
+            } catch (e) {
+                res.status(500).json({ status: 'error', error: e.message });
+            }
+        });
+
         this.io = new Server(this.server, {
             cors: {
                 origin: "*", // Allow Next.js dev server

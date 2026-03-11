@@ -57,7 +57,8 @@ const fs = require('fs').promises;
 const path = require('path');
 const os = require('os');
 const { spawn } = require('child_process');
-const TelegramBot = require('node-telegram-bot-api');
+// [GrammyBridge] Factory: auto-selects grammY or legacy based on golem-config.xml
+const { createTelegramBot } = require('./src/bridges/TelegramBotFactory');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 const ConfigManager = require('./src/config');
@@ -194,7 +195,7 @@ function getOrCreateGolem(golemId) {
 
     const dashboard = require('./dashboard');
     if (dashboard && dashboard.webServer && typeof dashboard.webServer.setGolemFactory === 'function') {
-        const TelegramBot = require('node-telegram-bot-api');
+        // [GrammyBridge] Use factory instead of direct TelegramBot constructor
         dashboard.webServer.setGolemFactory(async (golemConfig) => {
             if (activeGolems.has(golemConfig.id)) {
                 console.log(`⚠️ [Factory] Golem [${golemConfig.id}] already exists, skipping.`);
@@ -204,7 +205,7 @@ function getOrCreateGolem(golemId) {
                 try {
                     // [V9.0.8 修正] 先以 polling: false 建立 Bot，
                     // 再延遲啟動 Polling 並使用 restart:true 讓舊 session 自動讓步，防止 409 Conflict
-                    const bot = new TelegramBot(golemConfig.tgToken, { polling: false });
+                    const bot = createTelegramBot(golemConfig.tgToken, { polling: false });
                     bot.golemConfig = golemConfig;
                     bot.getMe().then(me => {
                         bot.username = me.username;
