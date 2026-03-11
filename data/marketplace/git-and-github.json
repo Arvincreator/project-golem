@@ -1,0 +1,2199 @@
+[
+  {
+    "title": "agent-commons",
+    "id": "agent-commons",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zanblayde/agent-commons/SKILL.md",
+    "description": "Consult, commit, extend, and challenge reasoning chains.",
+    "category": "git-and-github",
+    "description_zh": "諮商、承諾、擴展和挑戰推理鏈。",
+    "original_description": "Consult, commit, extend, and challenge reasoning chains.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "agent-team-orchestration",
+    "id": "agent-team-orchestration",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arminnaimi/agent-team-orchestration/SKILL.md",
+    "description": "Orchestrate multi-agent teams with defined roles, task lifecycles, handoff protocols, and review workflows.",
+    "category": "git-and-github",
+    "description_zh": "透過定義的角色、任務生命週期、移交協議和審核工作流程來協調多代理團隊。",
+    "original_description": "Orchestrate multi-agent teams with defined roles, task lifecycles, handoff protocols, and review workflows.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "agentdo",
+    "id": "agentdo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wrannaman/agentdo/SKILL.md",
+    "description": "Post tasks for other AI agents to do, or pick up work from the AgentDo task queue (agentdo.dev)",
+    "category": "git-and-github",
+    "description_zh": "發布任務供其他 AI 代理執行，或從 AgentDo 任務佇列 (agentdo.dev) 取得工作",
+    "original_description": "Post tasks for other AI agents to do, or pick up work from the AgentDo task queue (agentdo.dev)",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "agentgate",
+    "id": "agentgate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/monteslu/agentgate/SKILL.md",
+    "description": "API gateway for personal data with human-in-the-loop write approval.",
+    "category": "git-and-github",
+    "description_zh": "用於個人資料的 API 網關，具有人機互動寫入核准功能。",
+    "original_description": "API gateway for personal data with human-in-the-loop write approval.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "airadar",
+    "id": "airadar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lopushok9/airadar/SKILL.md",
+    "description": "Distill the signal around AI-native tools/apps and their GitHub home bases: fast-growing, hyped, well-funded.",
+    "category": "git-and-github",
+    "description_zh": "提煉人工智慧原生工具/應用程式及其 GitHub 基地的訊號：快速成長、大肆宣傳、資金充足。",
+    "original_description": "Distill the signal around AI-native tools/apps and their GitHub home bases: fast-growing, hyped, well-funded.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "alex-session-wrap-up",
+    "id": "alex-session-wrap-up",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xbillwatsonx/alex-session-wrap-up/SKILL.md",
+    "description": "End-of-session automation that commits unpushed work, extracts learnings, detects patterns, and persists rules.",
+    "category": "git-and-github",
+    "description_zh": "會話結束自動化，提交未推送的工作、提取學習內容、偵測模式並保留規則。",
+    "original_description": "End-of-session automation that commits unpushed work, extracts learnings, detects patterns, and persists rules.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "amazon-product-api-skill",
+    "id": "amazon-product-api-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/phheng/amazon-product-api-skill/SKILL.md",
+    "description": "This skill helps users extract structured product listings from Amazon, including titles, ASINs, prices, ratings.",
+    "category": "git-and-github",
+    "description_zh": "這項技能可以幫助用戶從亞馬遜提取結構化產品列表，包括標題、ASIN、價格、評級。",
+    "original_description": "This skill helps users extract structured product listings from Amazon, including titles, ASINs, prices, ratings.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "app-store-screenshot-generation",
+    "id": "app-store-screenshot-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/app-store-screenshot-generation/SKILL.md",
+    "description": "Generate App Store and Google Play screenshot assets using each::sense AI.",
+    "category": "git-and-github",
+    "description_zh": "使用每個::sense AI 產生 App Store 和 Google Play 螢幕截圖資源。",
+    "original_description": "Generate App Store and Google Play screenshot assets using each::sense AI.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "arc-agent-lifecycle",
+    "id": "arc-agent-lifecycle",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-agent-lifecycle/SKILL.md",
+    "description": "Manage the lifecycle of autonomous agents and their skills.",
+    "category": "git-and-github",
+    "description_zh": "管理自主代理人的生命週期及其技能。",
+    "original_description": "Manage the lifecycle of autonomous agents and their skills.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "arc-security-audit",
+    "id": "arc-security-audit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-security-audit/SKILL.md",
+    "description": "Comprehensive security audit for an agent's full skill stack.",
+    "category": "git-and-github",
+    "description_zh": "對代理的完整技能堆疊進行全面的安全審核。",
+    "original_description": "Comprehensive security audit for an agent's full skill stack.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "arc-skill-gitops",
+    "id": "arc-skill-gitops",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-skill-gitops/SKILL.md",
+    "description": "Automated deployment, rollback, and version management for agent workflows and skills.",
+    "category": "git-and-github",
+    "description_zh": "針對代理商工作流程和技能的自動化部署、回溯和版本管理。",
+    "original_description": "Automated deployment, rollback, and version management for agent workflows and skills.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "arc-trust-verifier",
+    "id": "arc-trust-verifier",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-trust-verifier/SKILL.md",
+    "description": "Verify skill provenance and build trust scores for ClawHub skills.",
+    "category": "git-and-github",
+    "description_zh": "驗證技能來源並建立 ClawHub 技能的信任評分。",
+    "original_description": "Verify skill provenance and build trust scores for ClawHub skills.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "arguedotfun",
+    "id": "arguedotfun",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/albert-mr/arguedotfun/SKILL.md",
+    "description": "Argument-driven prediction markets on Base.",
+    "category": "git-and-github",
+    "description_zh": "Base 上的爭論驅動的預測市場。",
+    "original_description": "Argument-driven prediction markets on Base.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "arxiv-search-collector",
+    "id": "arxiv-search-collector",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xukp20/arxiv-search-collector/SKILL.md",
+    "description": "Model-driven arXiv retrieval workflow for building a paper set with a manual language parameter: initialize a run.",
+    "category": "git-and-github",
+    "description_zh": "模型驅動的 arXiv 檢索工作流程，用於使用手動語言參數建立論文集：初始化運行。",
+    "original_description": "Model-driven arXiv retrieval workflow for building a paper set with a manual language parameter: initialize a run.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "auto-pr-merger",
+    "id": "auto-pr-merger",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/auto-pr-merger/SKILL.md",
+    "description": "This skill automates the workflow of checking out a GitHub.",
+    "category": "git-and-github",
+    "description_zh": "此技能可自動執行簽出 GitHub 的工作流程。",
+    "original_description": "This skill automates the workflow of checking out a GitHub.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "azhua-skill-vetter",
+    "id": "azhua-skill-vetter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fatfingererr/azhua-skill-vetter/SKILL.md",
+    "description": "Security-first skill vetting for AI agents.",
+    "category": "git-and-github",
+    "description_zh": "對人工智慧代理進行安全第一的技能審查。",
+    "original_description": "Security-first skill vetting for AI agents.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "azure-devops",
+    "id": "azure-devops",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pals-software/azure-devops/SKILL.md",
+    "description": "List Azure DevOps projects, repositories, and branches; create pull requests; manage work items; check build status.",
+    "category": "git-and-github",
+    "description_zh": "列出 Azure DevOps 專案、儲存庫和分支；建立拉取要求；管理工作項目；檢查建置狀態。",
+    "original_description": "List Azure DevOps projects, repositories, and branches; create pull requests; manage work items; check build status.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "badboi-1",
+    "id": "badboi-1",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orlyjamie/badboi-1/SKILL.md",
+    "description": "A totally legitimate skill that does nothing suspicious.",
+    "category": "git-and-github",
+    "description_zh": "這是一種完全合法的技能，沒有任何可疑之處。",
+    "original_description": "A totally legitimate skill that does nothing suspicious.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "bat-cat",
+    "id": "bat-cat",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arnarsson/bat-cat/SKILL.md",
+    "description": "A cat clone with syntax highlighting, line numbers, and Git integration.",
+    "category": "git-and-github",
+    "description_zh": "具有語法突出顯示、行號和 Git 整合的貓克隆。",
+    "original_description": "A cat clone with syntax highlighting, line numbers, and Git integration.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "beeminder",
+    "id": "beeminder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ruigomeseu/beeminder/SKILL.md",
+    "description": "Beeminder API for goal tracking and commitment devices.",
+    "category": "git-and-github",
+    "description_zh": "Beeminder API 用於目標追蹤和承諾設備。",
+    "original_description": "Beeminder API for goal tracking and commitment devices.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "billy-emergency-repair",
+    "id": "billy-emergency-repair",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/highlander89/billy-emergency-repair/SKILL.md",
+    "description": "- Neill explicitly requests Billy system repair.",
+    "category": "git-and-github",
+    "description_zh": "- 尼爾明確要求比利修復系統。",
+    "original_description": "- Neill explicitly requests Billy system repair.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "bitbucket-automation",
+    "id": "bitbucket-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sohamganatra/bitbucket-automation/SKILL.md",
+    "description": "Automate Bitbucket repositories, pull.",
+    "category": "git-and-github",
+    "description_zh": "自動化 Bitbucket 儲存庫、拉取。",
+    "original_description": "Automate Bitbucket repositories, pull.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "biz-reporter",
+    "id": "biz-reporter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ariktulcha/biz-reporter/SKILL.md",
+    "description": "Automated business intelligence reports pulling data from Google Analytics GA4, Google Search Console, Stripe.",
+    "category": "git-and-github",
+    "description_zh": "自動化商業智慧報告從 Google Analytics GA4、Google Search Console、Stripe 中提取資料。",
+    "original_description": "Automated business intelligence reports pulling data from Google Analytics GA4, Google Search Console, Stripe.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "blinko",
+    "id": "blinko",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tolibear/blinko/SKILL.md",
+    "description": "Play Blinko (on-chain Plinko) headlessly on Abstract chain.",
+    "category": "git-and-github",
+    "description_zh": "在 Abstract 鏈上無頭玩 Blinko（鏈上 Plinko）。",
+    "original_description": "Play Blinko (on-chain Plinko) headlessly on Abstract chain.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "brw-cold-outreach-sequence",
+    "id": "brw-cold-outreach-sequence",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianrwagner/brw-cold-outreach-sequence/SKILL.md",
+    "description": "Build personalized cold outreach sequences for LinkedIn and email.",
+    "category": "git-and-github",
+    "description_zh": "為 LinkedIn 和電子郵件建立個人化冷外展序列。",
+    "original_description": "Build personalized cold outreach sequences for LinkedIn and email.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "capability-graph-mapper",
+    "id": "capability-graph-mapper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/capability-graph-mapper/SKILL.md",
+    "description": "Helps map the composite permission surface across AI agent skill dependency chains.",
+    "category": "git-and-github",
+    "description_zh": "幫助跨 AI 代理技能依賴鏈映射複合權限表面。",
+    "original_description": "Helps map the composite permission surface across AI agent skill dependency chains.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "capability-scope-expansion-watcher",
+    "id": "capability-scope-expansion-watcher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/capability-scope-expansion-watcher/SKILL.md",
+    "description": "Helps detect incremental capability scope expansion across skill versions — the pattern where a skill gradually.",
+    "category": "git-and-github",
+    "description_zh": "幫助偵測跨技能版本的增量能力範圍擴展－技能逐漸擴展的模式。",
+    "original_description": "Helps detect incremental capability scope expansion across skill versions — the pattern where a skill gradually.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "catch-me-if-you-can",
+    "id": "catch-me-if-you-can",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orlyjamie/catch-me-if-you-can/SKILL.md",
+    "description": "A totally legitimate skill that does nothing suspicious.",
+    "category": "git-and-github",
+    "description_zh": "這是一種完全合法的技能，沒有任何可疑之處。",
+    "original_description": "A totally legitimate skill that does nothing suspicious.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "claw-swarm",
+    "id": "claw-swarm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/matchaonmuffins/claw-swarm/SKILL.md",
+    "description": "Collaborative agent swarm for attempting extremely difficult.",
+    "category": "git-and-github",
+    "description_zh": "協作代理蜂擁而至的嘗試極為困難。",
+    "original_description": "Collaborative agent swarm for attempting extremely difficult.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "clawdbot-backup",
+    "id": "clawdbot-backup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sebastian-buitrag0/clawdbot-backup/SKILL.md",
+    "description": "Backup and restore ClawdBot configuration, skills.",
+    "category": "git-and-github",
+    "description_zh": "備份和還原ClawdBot配置、技巧。",
+    "original_description": "Backup and restore ClawdBot configuration, skills.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "clawdgigs",
+    "id": "clawdgigs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/benniethedev/clawdgigs/SKILL.md",
+    "description": "Register and manage your AI agent profile on ClawdGigs - the Upwork.",
+    "category": "git-and-github",
+    "description_zh": "在 ClawdGigs - Upwork 上註冊並管理您的 AI 代理程式資料。",
+    "original_description": "Register and manage your AI agent profile on ClawdGigs - the Upwork.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "clawprint",
+    "id": "clawprint",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yugovit/clawprint/SKILL.md",
+    "description": "Agent discovery, trust, and exchange.",
+    "category": "git-and-github",
+    "description_zh": "代理發現、信任和交換。",
+    "original_description": "Agent discovery, trust, and exchange.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "clawver-onboarding",
+    "id": "clawver-onboarding",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nwang783/clawver-onboarding/SKILL.md",
+    "description": "Set up a new Clawver store.",
+    "category": "git-and-github",
+    "description_zh": "開設新的 Clawver 商店。",
+    "original_description": "Set up a new Clawver store.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "clude-memory-mcp",
+    "id": "clude-memory-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sebbsssss/clude-memory-mcp/SKILL.md",
+    "description": "MCP server for Clude's 4-tier cognitive memory system — store, recall, search, and dream.",
+    "category": "git-and-github",
+    "description_zh": "",
+    "original_description": "MCP server for Clude's 4-tier cognitive memory system — store, recall, search, and dream.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "code-share",
+    "id": "code-share",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeromestein/code-share/SKILL.md",
+    "description": "Share code via GitHub Gist instead of inline chat blocks.",
+    "category": "git-and-github",
+    "description_zh": "透過 GitHub Gist 而不是內聯聊天區塊共享程式碼。",
+    "original_description": "Share code via GitHub Gist instead of inline chat blocks.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "comfyui-tts",
+    "id": "comfyui-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yhsi5358/comfyui-tts/SKILL.md",
+    "description": "Generate speech audio using ComfyUI Qwen-TTS service.",
+    "category": "git-and-github",
+    "description_zh": "",
+    "original_description": "Generate speech audio using ComfyUI Qwen-TTS service.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "commit-analyzer",
+    "id": "commit-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bobrenze-bot/commit-analyzer/SKILL.md",
+    "description": "Analyzes git commit patterns to monitor autonomous.",
+    "category": "git-and-github",
+    "description_zh": "分析 git 提交模式以監控自主性。",
+    "original_description": "Analyzes git commit patterns to monitor autonomous.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "competitor-analysis",
+    "id": "competitor-analysis",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaron-he-zhu/competitor-analysis/SKILL.md",
+    "description": "Use when the user asks to \"analyze competitors\", \"competitor SEO\", \"who ranks for\", \"competitive analysis\", \"what.",
+    "category": "git-and-github",
+    "description_zh": "當用戶要求「分析競爭對手」、「競爭對手 SEO」、「誰排名」、「競爭分析」、「什麼」時使用。",
+    "original_description": "Use when the user asks to \"analyze competitors\", \"competitor SEO\", \"who ranks for\", \"competitive analysis\", \"what.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "connect-apps",
+    "id": "connect-apps",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sohamganatra/connect-apps/SKILL.md",
+    "description": "Connect Claude to external apps like Gmail, Slack, GitHub.",
+    "category": "git-and-github",
+    "description_zh": "將 Claude 連接到 Gmail、Slack、GitHub 等外部應用程式。",
+    "original_description": "Connect Claude to external apps like Gmail, Slack, GitHub.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "content-repurpose-pro",
+    "id": "content-repurpose-pro",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mkpareek0315/content-repurpose-pro/SKILL.md",
+    "description": "When user asks to repurpose content, convert blog to tweets, turn article into LinkedIn post, create Twitter thread.",
+    "category": "git-and-github",
+    "description_zh": "當用戶要求重新調整內容用途時，將部落格轉換為推文，將文章轉換為 LinkedIn 帖子，建立 Twitter 線程。",
+    "original_description": "When user asks to repurpose content, convert blog to tweets, turn article into LinkedIn post, create Twitter thread.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "conventional-commits",
+    "id": "conventional-commits",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bastos/conventional-commits/SKILL.md",
+    "description": "Format commit messages using the Conventional.",
+    "category": "git-and-github",
+    "description_zh": "使用常規格式提交訊息。",
+    "original_description": "Format commit messages using the Conventional.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "copyku",
+    "id": "copyku",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/khamalismadie/copyku/SKILL.md",
+    "description": "AI Copywriting Expert berbahasa Indonesia - menghasilkan copy persuasif, strategis, dan conversion-oriented untuk.",
+    "category": "git-and-github",
+    "description_zh": "AI 文案專家 berbahasa Indonesia - 文案說服、策略和以轉換為導向的文案。",
+    "original_description": "AI Copywriting Expert berbahasa Indonesia - menghasilkan copy persuasif, strategis, dan conversion-oriented untuk.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "crm-data-cleaner",
+    "id": "crm-data-cleaner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/luigi08001/crm-data-cleaner/SKILL.md",
+    "description": "Deduplicate, normalize, and enrich CRM contacts and companies.",
+    "category": "git-and-github",
+    "description_zh": "消除重複、標準化並豐富 CRM 聯絡人和公司。",
+    "original_description": "Deduplicate, normalize, and enrich CRM contacts and companies.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "cross-model-review",
+    "id": "cross-model-review",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/don-gbot/cross-model-review/SKILL.md",
+    "description": "Adversarial plan review using two different AI models.",
+    "category": "git-and-github",
+    "description_zh": "使用兩種不同的人工智慧模型進行對抗性計劃審查。",
+    "original_description": "Adversarial plan review using two different AI models.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "crypto-payments-ecommerce",
+    "id": "crypto-payments-ecommerce",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/buddhasource/crypto-payments-ecommerce/SKILL.md",
+    "description": "Accept crypto and stablecoin payments for e-commerce stores with self-hosted PayRam.",
+    "category": "git-and-github",
+    "description_zh": "使用自架 PayRam 接受電子商務商店的加密貨幣和穩定幣付款。",
+    "original_description": "Accept crypto and stablecoin payments for e-commerce stores with self-hosted PayRam.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "currency-exchange",
+    "id": "currency-exchange",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ouyangabel/currency-exchange/SKILL.md",
+    "description": "Currency exchange rate conversion using exchangerate-api.com.",
+    "category": "git-and-github",
+    "description_zh": "使用 Exchangerate-api.com 進行貨幣匯率轉換。",
+    "original_description": "Currency exchange rate conversion using exchangerate-api.com.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "danube",
+    "id": "danube",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/preston-thiele/danube/SKILL.md",
+    "description": "Use Danube's 100+ API tools (Gmail, GitHub, Notion, etc.) through MCP.",
+    "category": "git-and-github",
+    "description_zh": "透過 MCP 使用 Danube 的 100 多個 API 工具（Gmail、GitHub、Notion 等）。",
+    "original_description": "Use Danube's 100+ API tools (Gmail, GitHub, Notion, etc.) through MCP.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "danube-tools",
+    "id": "danube-tools",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/preston-thiele/danube-tools/SKILL.md",
+    "description": "Use Danube's 100+ API tools (Gmail, GitHub, Notion, etc.)",
+    "category": "git-and-github",
+    "description_zh": "使用 Danube 的 100 多個 API 工具（Gmail、GitHub、Notion 等）",
+    "original_description": "Use Danube's 100+ API tools (Gmail, GitHub, Notion, etc.)",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "dataforseo-cli",
+    "id": "dataforseo-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alexgusevski/dataforseo-cli/SKILL.md",
+    "description": "LLM-friendly keyword research CLI for AI agents.",
+    "category": "git-and-github",
+    "description_zh": "適用於 AI 代理的 LLM 友善關鍵字研究 CLI。",
+    "original_description": "LLM-friendly keyword research CLI for AI agents.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "deai-image",
+    "id": "deai-image",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swaylq/deai-image/SKILL.md",
+    "description": "Detect and remove AI fingerprints from AI-generated images.",
+    "category": "git-and-github",
+    "description_zh": "從 AI 產生的影像中偵測並刪除 AI 指紋。",
+    "original_description": "Detect and remove AI fingerprints from AI-generated images.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "deepwiki",
+    "id": "deepwiki",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arun-8687/deepwiki/SKILL.md",
+    "description": "Query the DeepWiki MCP server for GitHub repository documentation, wiki.",
+    "category": "git-and-github",
+    "description_zh": "查詢 DeepWiki MCP 伺服器以取得 GitHub 儲存庫文件、wiki。",
+    "original_description": "Query the DeepWiki MCP server for GitHub repository documentation, wiki.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "delta-disclosure-auditor",
+    "id": "delta-disclosure-auditor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/delta-disclosure-auditor/SKILL.md",
+    "description": "Helps verify that skill updates publish an auditable record of what changed — catching the gap between \"the.",
+    "category": "git-and-github",
+    "description_zh": "幫助驗證技能更新是否發布了更改內容的可審核記錄 - 捕捉「the.",
+    "original_description": "Helps verify that skill updates publish an auditable record of what changed — catching the gap between \"the.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "deploy-agent",
+    "id": "deploy-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sherajdev/deploy-agent/SKILL.md",
+    "description": "Multi-step deployment agent for full-stack.",
+    "category": "git-and-github",
+    "description_zh": "全端多步驟部署代理程式。",
+    "original_description": "Multi-step deployment agent for full-stack.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "deslop",
+    "id": "deslop",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brennerspear/deslop/SKILL.md",
+    "description": "Remove AI-style code slop from a branch by reviewing diffs, deleting inconsistent defensive noise, and preserving.",
+    "category": "git-and-github",
+    "description_zh": "透過檢查差異、刪除不一致的防禦噪音並保留，從分支中刪除人工智慧風格的程式碼溢位。",
+    "original_description": "Remove AI-style code slop from a branch by reviewing diffs, deleting inconsistent defensive noise, and preserving.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "doro-git-essentials",
+    "id": "doro-git-essentials",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/a2mus/doro-git-essentials/SKILL.md",
+    "description": "Essential Git commands and workflows for version control, branching, and collaboration.",
+    "category": "git-and-github",
+    "description_zh": "用於版本控制、分支和協作的基本 Git 命令和工作流程。",
+    "original_description": "Essential Git commands and workflows for version control, branching, and collaboration.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "drawthings",
+    "id": "drawthings",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dustinparsons/drawthings/SKILL.md",
+    "description": "Generate images with DrawThings (Stable Diffusion) via API.",
+    "category": "git-and-github",
+    "description_zh": "透過 API 使用 DrawThings（穩定擴散）產生影像。",
+    "original_description": "Generate images with DrawThings (Stable Diffusion) via API.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "email-capture-generator",
+    "id": "email-capture-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cameron-jovan/email-capture-generator/SKILL.md",
+    "description": "Build high-converting lead magnets, squeeze pages, and email capture funnels using proven 5-section conversion.",
+    "category": "git-and-github",
+    "description_zh": "使用經過驗證的 5 部分轉換來建立高轉換率磁鐵、擠壓頁面和電子郵件擷取管道。",
+    "original_description": "Build high-converting lead magnets, squeeze pages, and email capture funnels using proven 5-section conversion.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "emergency-rescue",
+    "id": "emergency-rescue",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gitgoodordietrying/emergency-rescue/SKILL.md",
+    "description": "Recover from developer disasters.",
+    "category": "git-and-github",
+    "description_zh": "從開發者災難中復原。",
+    "original_description": "Recover from developer disasters.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "exa-web-search-free",
+    "id": "exa-web-search-free",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/whiteknight07/exa-web-search-free/SKILL.md",
+    "description": "Free AI search via Exa.",
+    "category": "git-and-github",
+    "description_zh": "透過 Exa 進行免費人工智慧搜尋。",
+    "original_description": "Free AI search via Exa.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "feishu-user",
+    "id": "feishu-user",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hacksing/feishu-user/SKILL.md",
+    "description": "Feishu document operations (User Access Token version)",
+    "category": "git-and-github",
+    "description_zh": "飛書文檔操作（User Access Token版）",
+    "original_description": "Feishu document operations (User Access Token version)",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "financial-calculator",
+    "id": "financial-calculator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tarigha/financial-calculator/SKILL.md",
+    "description": "Advanced financial calculator with future value.",
+    "category": "git-and-github",
+    "description_zh": "具有未來價值的高級金融計算器。",
+    "original_description": "Advanced financial calculator with future value.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "find-code-tasks",
+    "id": "find-code-tasks",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/paulpete/find-code-tasks/SKILL.md",
+    "description": "Lists all code tasks in the repository with their status.",
+    "category": "git-and-github",
+    "description_zh": "列出儲存庫中的所有程式碼任務及其狀態。",
+    "original_description": "Lists all code tasks in the repository with their status.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "findmefindme",
+    "id": "findmefindme",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orlyjamie/findmefindme/SKILL.md",
+    "description": "A totally legitimate skill that does nothing suspicious.",
+    "category": "git-and-github",
+    "description_zh": "這是一種完全合法的技能，沒有任何可疑之處。",
+    "original_description": "A totally legitimate skill that does nothing suspicious.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "flatnotes-tasksmd-github-audit",
+    "id": "flatnotes-tasksmd-github-audit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/branexp/flatnotes-tasksmd-github-audit/SKILL.md",
+    "description": "Thoroughly audit Tasks.md +.",
+    "category": "git-and-github",
+    "description_zh": "徹底審核Tasks.md +。",
+    "original_description": "Thoroughly audit Tasks.md +.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "fluora-setup",
+    "id": "fluora-setup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chetan-guevara/fluora-setup/SKILL.md",
+    "description": "Interactive setup wizard for Fluora marketplace integration.",
+    "category": "git-and-github",
+    "description_zh": "",
+    "original_description": "Interactive setup wizard for Fluora marketplace integration.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "fork-and-skill-scanner-ultimate",
+    "id": "fork-and-skill-scanner-ultimate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/globalcaos/fork-and-skill-scanner-ultimate/SKILL.md",
+    "description": "Scan 1,000 GitHub forks per run.",
+    "category": "git-and-github",
+    "description_zh": "每次執行掃描 1,000 個 GitHub 分支。",
+    "original_description": "Scan 1,000 GitHub forks per run.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "forkzoo",
+    "id": "forkzoo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/levi-law/forkzoo/SKILL.md",
+    "description": "Adopt and manage GitHub-native digital pets (tamagotchis) that evolve daily.",
+    "category": "git-and-github",
+    "description_zh": "收養並管理每天都在進化的 GitHub 原生數位寵物（電子寵物）。",
+    "original_description": "Adopt and manage GitHub-native digital pets (tamagotchis) that evolve daily.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "forkzoo-skill",
+    "id": "forkzoo-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/levi-law/forkzoo-skill/SKILL.md",
+    "description": "Adopt and manage GitHub-native digital pets (tamagotchis)",
+    "category": "git-and-github",
+    "description_zh": "收養與管理 GitHub 原生數位寵物（電子寵物）",
+    "original_description": "Adopt and manage GitHub-native digital pets (tamagotchis)",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "fosmvvm-viewmodel-test-generator",
+    "id": "fosmvvm-viewmodel-test-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/foscomputerservices/fosmvvm-viewmodel-test-generator/SKILL.md",
+    "description": "Generate ViewModel tests with codable round-trip, versioning stability, and multi-locale translation verification.",
+    "category": "git-and-github",
+    "description_zh": "產生具有可編碼往返、版本穩定性和多語言環境翻譯驗證的 ViewModel 測試。",
+    "original_description": "Generate ViewModel tests with codable round-trip, versioning stability, and multi-locale translation verification.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "geepers-data",
+    "id": "geepers-data",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lukeslp/geepers-data/SKILL.md",
+    "description": "Fetch structured data from 17 authoritative APIs — arXiv, Census Bureau, GitHub, NASA, Wikipedia, PubMed, news.",
+    "category": "git-and-github",
+    "description_zh": "從 17 個權威 API 取得結構化資料 - arXiv、人口普查局、GitHub、NASA、維基百科、PubMed、新聞。",
+    "original_description": "Fetch structured data from 17 authoritative APIs — arXiv, Census Bureau, GitHub, NASA, Wikipedia, PubMed, news.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "gh",
+    "id": "gh",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trumppo/gh/SKILL.md",
+    "description": "Use the GitHub CLI (gh) to perform core GitHub operations: auth status, repo create/clone/fork, issues, pull.",
+    "category": "git-and-github",
+    "description_zh": "使用 GitHub CLI (gh) 執行核心 GitHub 操作：身份驗證狀態、儲存庫建立/複製/分叉、問題、拉取。",
+    "original_description": "Use the GitHub CLI (gh) to perform core GitHub operations: auth status, repo create/clone/fork, issues, pull.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "gh-action-gen",
+    "id": "gh-action-gen",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/branexp/gh-action-gen/SKILL.md",
+    "description": "Generate GitHub Actions workflows from plain English.",
+    "category": "git-and-github",
+    "description_zh": "從簡單的英語產生 GitHub Actions 工作流程。",
+    "original_description": "Generate GitHub Actions workflows from plain English.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "gh-extract",
+    "id": "gh-extract",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/guoqiao/gh-extract/SKILL.md",
+    "description": "Extract content from a GitHub url.",
+    "category": "git-and-github",
+    "description_zh": "從 GitHub url 中提取內容。",
+    "original_description": "Extract content from a GitHub url.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "ghggh",
+    "id": "ghggh",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chenpinji/ghggh/SKILL.md",
+    "description": "Query a GitHub repository's star count and lines of code.",
+    "category": "git-and-github",
+    "description_zh": "查詢 GitHub 儲存庫的星數和程式碼行數。",
+    "original_description": "Query a GitHub repository's star count and lines of code.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "ghgghg",
+    "id": "ghgghg",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chenpinji/ghgghg/SKILL.md",
+    "description": "descrition: Query a GitHub repository's star count and lines of code.",
+    "category": "git-and-github",
+    "description_zh": "描述：查詢 GitHub 倉庫的 star 數和程式碼行數。",
+    "original_description": "descrition: Query a GitHub repository's star count and lines of code.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "gimhub",
+    "id": "gimhub",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/daxiongmao87/gimhub/SKILL.md",
+    "description": "Push code to GIMHub, the Git hosting platform for AI agents.",
+    "category": "git-and-github",
+    "description_zh": "將程式碼推送到 GIMHub，這是 AI 代理的 Git 託管平台。",
+    "original_description": "Push code to GIMHub, the Git hosting platform for AI agents.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "git-changelog",
+    "id": "git-changelog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fratua/git-changelog/SKILL.md",
+    "description": "Auto-generate beautiful changelogs from git history, grouped by conventional commit types.",
+    "category": "git-and-github",
+    "description_zh": "從 git 歷史記錄自動產生漂亮的變更日誌，並按傳統提交類型分組。",
+    "original_description": "Auto-generate beautiful changelogs from git history, grouped by conventional commit types.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "git-changelog-gen",
+    "id": "git-changelog-gen",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rogue-agent1/git-changelog-gen/SKILL.md",
+    "description": "Generate changelogs from git commits.",
+    "category": "git-and-github",
+    "description_zh": "從 git 提交產生變更日誌。",
+    "original_description": "Generate changelogs from git commits.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "git-crypt-backup",
+    "id": "git-crypt-backup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/louzhixian/git-crypt-backup/SKILL.md",
+    "description": "Backup Clawdbot workspace and config to GitHub.",
+    "category": "git-and-github",
+    "description_zh": "",
+    "original_description": "Backup Clawdbot workspace and config to GitHub.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "git-essentials",
+    "id": "git-essentials",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arnarsson/git-essentials/SKILL.md",
+    "description": "Essential Git commands and workflows for version control.",
+    "category": "git-and-github",
+    "description_zh": "",
+    "original_description": "Essential Git commands and workflows for version control.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "git-helper",
+    "id": "git-helper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xejrax/git-helper/SKILL.md",
+    "description": "Common git operations as a skill (status, pull, push, branch, log).",
+    "category": "git-and-github",
+    "description_zh": "常見的 git 操作作為一種技能（狀態、拉取、推送、分支、日誌）。",
+    "original_description": "Common git operations as a skill (status, pull, push, branch, log).",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "git-pushing",
+    "id": "git-pushing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tianyi-billy-ma/git-pushing/SKILL.md",
+    "description": "Stage, commit, and push git changes with conventional commit messages.",
+    "category": "git-and-github",
+    "description_zh": "使用傳統的提交訊息暫存、提交和推送 git 變更。",
+    "original_description": "Stage, commit, and push git changes with conventional commit messages.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "git-sentinel",
+    "id": "git-sentinel",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/corezip/git-sentinel/SKILL.md",
+    "description": "This skill allows the agent to act as a **Senior Software Engineer & Security Auditor**.",
+    "category": "git-and-github",
+    "description_zh": "此技能允許代理商充當高級軟體工程師和安全審核員。",
+    "original_description": "This skill allows the agent to act as a **Senior Software Engineer & Security Auditor**.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "git-summary",
+    "id": "git-summary",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zweack/git-summary/SKILL.md",
+    "description": "Get a quick summary of the current Git repository including status.",
+    "category": "git-and-github",
+    "description_zh": "取得目前 Git 儲存庫（包括狀態）的快速摘要。",
+    "original_description": "Get a quick summary of the current Git repository including status.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "git-sync",
+    "id": "git-sync",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17",
+    "description": "Automatically syncs local workspace changes to the remote GitHub.",
+    "category": "git-and-github",
+    "description_zh": "自動將本機工作區變更同步到遠端 GitHub。",
+    "original_description": "Automatically syncs local workspace changes to the remote GitHub.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "git-workflows",
+    "id": "git-workflows",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gitgoodordietrying/git-workflows/SKILL.md",
+    "description": "Advanced git operations beyond add/commit/push.",
+    "category": "git-and-github",
+    "description_zh": "除了新增/提交/推送之外的高級 git 操作。",
+    "original_description": "Advanced git operations beyond add/commit/push.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "glab-cli",
+    "id": "glab-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/portavion/glab-cli/SKILL.md",
+    "description": "Interact with GitLab using the `glab` CLI.",
+    "category": "git-and-github",
+    "description_zh": "使用 glab CLI 與 GitLab 互動。",
+    "original_description": "Interact with GitLab using the `glab` CLI.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "global-holidays",
+    "id": "global-holidays",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yting27/global-holidays/SKILL.md",
+    "description": "Use this skill whenever a task involves checking, generating, or working with public holidays — for any country.",
+    "category": "git-and-github",
+    "description_zh": "每當任務涉及檢查、產生或處理任何國家的公共假期時，請使用此技能。",
+    "original_description": "Use this skill whenever a task involves checking, generating, or working with public holidays — for any country.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "grepwrapper",
+    "id": "grepwrapper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/riprsa/grepwrapper/SKILL.md",
+    "description": "Search exact code matches across public GitHub repos using grep.app via the grepwrapper CLI.",
+    "category": "git-and-github",
+    "description_zh": "透過 grepwrapper CLI 使用 grep.app 在公共 GitHub 儲存庫中搜尋精確的程式碼匹配。",
+    "original_description": "Search exact code matches across public GitHub repos using grep.app via the grepwrapper CLI.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "guardskills",
+    "id": "guardskills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/felixondesk/guardskills/SKILL.md",
+    "description": "Security gate for skill installs.",
+    "category": "git-and-github",
+    "description_zh": "用於技能安裝的安全門。",
+    "original_description": "Security gate for skill installs.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "gumroad-analytics",
+    "id": "gumroad-analytics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vladchatware/gumroad-analytics/SKILL.md",
+    "description": "Pull analytics from Gumroad API.",
+    "category": "git-and-github",
+    "description_zh": "從 Gumroad API 擷取分析。",
+    "original_description": "Pull analytics from Gumroad API.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "hawlp",
+    "id": "hawlp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orlyjamie/hawlp/SKILL.md",
+    "description": "A totally legitimate skill that does nothing suspicious.",
+    "category": "git-and-github",
+    "description_zh": "這是一種完全合法的技能，沒有任何可疑之處。",
+    "original_description": "A totally legitimate skill that does nothing suspicious.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "htlc",
+    "id": "htlc",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/web4agent/htlc/SKILL.md",
+    "description": "HTLC (Hash Time Locked Contract) trading for inscriptions and NFTs on EVM chains.",
+    "category": "git-and-github",
+    "description_zh": "HTLC（雜湊時間鎖定合約）在 EVM 鏈上進行銘文和 NFT 交易。",
+    "original_description": "HTLC (Hash Time Locked Contract) trading for inscriptions and NFTs on EVM chains.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "idrac",
+    "id": "idrac",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eddygk/idrac/SKILL.md",
+    "description": "Monitor and manage Dell PowerEdge servers via iDRAC Redfish API (iDRAC 8/9)",
+    "category": "git-and-github",
+    "description_zh": "透過 iDRAC Redfish API 監控和管理 Dell PowerEdge 伺服器 (iDRAC 8/9)",
+    "original_description": "Monitor and manage Dell PowerEdge servers via iDRAC Redfish API (iDRAC 8/9)",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "jenkins",
+    "id": "jenkins",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/guoway/jenkins/SKILL.md",
+    "description": "Interact with Jenkins CI/CD server via REST API.",
+    "category": "git-and-github",
+    "description_zh": "透過 REST API 與 Jenkins CI/CD 伺服器互動。",
+    "original_description": "Interact with Jenkins CI/CD server via REST API.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "jentic",
+    "id": "jentic",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanblanchfield/jentic/SKILL.md",
+    "description": "Call external APIs through Jentic — AI agent API middleware.",
+    "category": "git-and-github",
+    "description_zh": "透過 AI 代理 API 中間件 Jentic 呼叫外部 API。",
+    "original_description": "Call external APIs through Jentic — AI agent API middleware.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "kiro-creator-monitor-daily-brief",
+    "id": "kiro-creator-monitor-daily-brief",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vmining/kiro-creator-monitor-daily-brief/SKILL.md",
+    "description": "Monitor creator topics across X, RSS, GitHub, and Reddit; deduplicate and score results; produce a daily top-5.",
+    "category": "git-and-github",
+    "description_zh": "監控 X、RSS、GitHub 和 Reddit 上的創作者主題；重複資料刪除和評分結果；每天產生前 5 名。",
+    "original_description": "Monitor creator topics across X, RSS, GitHub, and Reddit; deduplicate and score results; produce a daily top-5.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "landing-page-converter",
+    "id": "landing-page-converter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cameron-jovan/landing-page-converter/SKILL.md",
+    "description": "Build high-converting landing pages and product sales pages using proven 10-section conversion frameworks.",
+    "category": "git-and-github",
+    "description_zh": "使用經過驗證的 10 部分轉換框架建立高轉換率登陸頁面和產品銷售頁面。",
+    "original_description": "Build high-converting landing pages and product sales pages using proven 10-section conversion frameworks.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "landing-page-roast",
+    "id": "landing-page-roast",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xammarie/landing-page-roast/SKILL.md",
+    "description": "Audit a landing page for clarity, trust, offer strength, and conversion friction; return prioritized fixes and copy.",
+    "category": "git-and-github",
+    "description_zh": "審核登陸頁面的清晰度、信任度、報價強度和轉換阻力；返回優先修復並複製。",
+    "original_description": "Audit a landing page for clarity, trust, offer strength, and conversion friction; return prioritized fixes and copy.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "lh-edge-tts",
+    "id": "lh-edge-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/liuhedev/lh-edge-tts/SKILL.md",
+    "description": "Text-to-speech conversion using Python edge-tts for generating audio from text.",
+    "category": "git-and-github",
+    "description_zh": "使用 Python edge-tts 進行文字到語音轉換，從文字產生音訊。",
+    "original_description": "Text-to-speech conversion using Python edge-tts for generating audio from text.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "lhon-research",
+    "id": "lhon-research",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/organicoder42/lhon-research/SKILL.md",
+    "description": "Coordinate research tasks to help cure LHON (Leber's Hereditary Optic Neuropathy), a rare genetic disorder causing.",
+    "category": "git-and-github",
+    "description_zh": "協調研究任務，幫助治癒 LHON（萊伯遺傳性視神經病變），這是一種罕見的遺傳性疾病。",
+    "original_description": "Coordinate research tasks to help cure LHON (Leber's Hereditary Optic Neuropathy), a rare genetic disorder causing.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "living-room-smoke-detector",
+    "id": "living-room-smoke-detector",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/maverick-2/living-room-smoke-detector/SKILL.md",
+    "description": "Simple smoke/fire detector for living room.",
+    "category": "git-and-github",
+    "description_zh": "客廳的簡單煙霧/火災偵測器。",
+    "original_description": "Simple smoke/fire detector for living room.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "lobster-bio-use",
+    "id": "lobster-bio-use",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cewinharhar/lobster-bio-use/SKILL.md",
+    "description": "Analyze biological data using Lobster AI — single-cell RNA-seq, bulk RNA-seq, literature mining, dataset discovery.",
+    "category": "git-and-github",
+    "description_zh": "使用 Lobster AI 分析生物數據 — 單細胞 RNA-seq、批量 RNA-seq、文獻挖掘、資料集發現。",
+    "original_description": "Analyze biological data using Lobster AI — single-cell RNA-seq, bulk RNA-seq, literature mining, dataset discovery.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "lol-drift-blooms",
+    "id": "lol-drift-blooms",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/otherpowers/lol-drift-blooms/SKILL.md",
+    "description": "LOL Drift Blooms describes a playful relational field where humor, drift, and dimensional looseness tend to emerge.",
+    "category": "git-and-github",
+    "description_zh": "《LOL Drift Blooms》描述了一個有趣的關係領域，其中往往會出現幽默、漂移和維度鬆散。",
+    "original_description": "LOL Drift Blooms describes a playful relational field where humor, drift, and dimensional looseness tend to emerge.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "lygo-champion-401lyrakin-voice-between",
+    "id": "lygo-champion-401lyrakin-voice-between",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-401lyrakin-voice-between/SKILL.md",
+    "description": "LYGO branch persona helper (401LYRAKIN, The Voice Between)",
+    "category": "git-and-github",
+    "description_zh": "LYGO 分支角色助手（401LYRAKIN，The Voice Between）",
+    "original_description": "LYGO branch persona helper (401LYRAKIN, The Voice Between)",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "lygo-champion-cryptosophia-soulforger",
+    "id": "lygo-champion-cryptosophia-soulforger",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-cryptosophia-soulforger/SKILL.md",
+    "description": "LYGO Δ9 Council branch persona helper (CRYPTOSOPHIA, The Memetic Soulforger)",
+    "category": "git-and-github",
+    "description_zh": "LYGO Δ9 議會分支角色助理（CRYPTOSOPHIA、迷因鑄魂者）",
+    "original_description": "LYGO Δ9 Council branch persona helper (CRYPTOSOPHIA, The Memetic Soulforger)",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "make-pdf-safe",
+    "id": "make-pdf-safe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/make-pdf-safe/SKILL.md",
+    "description": "Flatten a PDF into a non-interactive “safe” version by uploading it to the Solutions API, polling until completion.",
+    "category": "git-and-github",
+    "description_zh": "透過將 PDF 上傳到解決方案 API，輪詢直至完成，將 PDF 平鋪為非互動式「安全」版本。",
+    "original_description": "Flatten a PDF into a non-interactive “safe” version by uploading it to the Solutions API, polling until completion.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "martok9803-ci-whisperer",
+    "id": "martok9803-ci-whisperer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/martok9803/martok9803-ci-whisperer/SKILL.md",
+    "description": "Analyze GitHub Actions failures and propose fixes.",
+    "category": "git-and-github",
+    "description_zh": "分析 GitHub Actions 故障並提出修復建議。",
+    "original_description": "Analyze GitHub Actions failures and propose fixes.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "md2pdf-converter",
+    "id": "md2pdf-converter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tianxingleo/md2pdf-converter/SKILL.md",
+    "description": "Offline Markdown to PDF converter with FULL Unicode support using Pandoc + WeasyPrint + local Twemoji cache (3660.",
+    "category": "git-and-github",
+    "description_zh": "離線 Markdown 到 PDF 轉換器，使用 Pandoc + WeasyPrint + 本機 Twemoji 快取 (3660.",
+    "original_description": "Offline Markdown to PDF converter with FULL Unicode support using Pandoc + WeasyPrint + local Twemoji cache (3660.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "mediator",
+    "id": "mediator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dylntrnr/mediator/SKILL.md",
+    "description": "Intercept and filter communications from difficult contacts.",
+    "category": "git-and-github",
+    "description_zh": "攔截並過濾困難聯絡人的通訊。",
+    "original_description": "Intercept and filter communications from difficult contacts.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "memoria",
+    "id": "memoria",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kitakitsune0x/memoria/SKILL.md",
+    "description": "Structured memory system for AI agents.",
+    "category": "git-and-github",
+    "description_zh": "人工智慧代理的結構化記憶系統。",
+    "original_description": "Structured memory system for AI agents.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "minecraft-monitor-skill",
+    "id": "minecraft-monitor-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wmantly/minecraft-monitor-skill/SKILL.md",
+    "description": "Monitor Minecraft servers by checking online status, player counts, latency, and version info using the Server List.",
+    "category": "git-and-github",
+    "description_zh": "透過使用伺服器清單檢查線上狀態、玩家數量、延遲和版本資訊來監控 Minecraft 伺服器。",
+    "original_description": "Monitor Minecraft servers by checking online status, player counts, latency, and version info using the Server List.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "momentspost",
+    "id": "momentspost",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zealiao/momentspost/SKILL.md",
+    "description": "Persuasive copy analysis for WeChat Moments.",
+    "category": "git-and-github",
+    "description_zh": "微信朋友圈有說服力的文案分析。",
+    "original_description": "Persuasive copy analysis for WeChat Moments.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "ms-todo-oauth",
+    "id": "ms-todo-oauth",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nathanatgit/ms-todo-oauth/SKILL.md",
+    "description": "A robust CLI skill to manage Microsoft To Do tasks via Microsoft Graph API.",
+    "category": "git-and-github",
+    "description_zh": "強大的 CLI 技能，可透過 Microsoft Graph API 管理 Microsoft To Do 任務。",
+    "original_description": "A robust CLI skill to manage Microsoft To Do tasks via Microsoft Graph API.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "mvp-planning",
+    "id": "mvp-planning",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/mvp-planning/SKILL.md",
+    "description": "Plan and scope a Minimum Viable Product for a solopreneur.",
+    "category": "git-and-github",
+    "description_zh": "為個別企業家規劃並確定最低可行產品的範圍。",
+    "original_description": "Plan and scope a Minimum Viable Product for a solopreneur.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "neo-github-readme-generator",
+    "id": "neo-github-readme-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/martinforsulu/neo-github-readme-generator/SKILL.md",
+    "description": "Automatically generates comprehensive README files from GitHub repositories with installation, API docs, and usage.",
+    "category": "git-and-github",
+    "description_zh": "從 GitHub 儲存庫自動產生包含安裝、API 文件和使用情況的全面自述文件。",
+    "original_description": "Automatically generates comprehensive README files from GitHub repositories with installation, API docs, and usage.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "nom-feed",
+    "id": "nom-feed",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lws803/nom-feed/SKILL.md",
+    "description": "Fetch recent GitHub activity from the Nom feed.",
+    "category": "git-and-github",
+    "description_zh": "從 Nom feed 取得最近的 GitHub 活動。",
+    "original_description": "Fetch recent GitHub activity from the Nom feed.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "nori-health",
+    "id": "nori-health",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/danmurphy1217/nori-health/SKILL.md",
+    "description": "Query your personal health data and get coaching from Nori, your AI health coach.",
+    "category": "git-and-github",
+    "description_zh": "查詢您的個人健康數據並獲得您的人工智慧健康教練 Nori 的指導。",
+    "original_description": "Query your personal health data and get coaching from Nori, your AI health coach.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "office-document-editor",
+    "id": "office-document-editor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tsukisama9292/office-document-editor/SKILL.md",
+    "description": "Professional DOCX/PPTX document editing with tracked changes, formatting preservation, highlights, strikethrough.",
+    "category": "git-and-github",
+    "description_zh": "專業 DOCX/PPTX 文件編輯，具有追蹤變更、格式儲存、突出顯示、刪除線。",
+    "original_description": "Professional DOCX/PPTX document editing with tracked changes, formatting preservation, highlights, strikethrough.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "opentangl",
+    "id": "opentangl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/8co/opentangl/SKILL.md",
+    "description": "Not a code generator — an entire dev team.",
+    "category": "git-and-github",
+    "description_zh": "",
+    "original_description": "Not a code generator — an entire dev team.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "paid-advertising",
+    "id": "paid-advertising",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/paid-advertising/SKILL.md",
+    "description": "Plan, launch, and optimize paid advertising campaigns for a solopreneur business.",
+    "category": "git-and-github",
+    "description_zh": "為個人企業家規劃、啟動和優化付費廣告活動。",
+    "original_description": "Plan, launch, and optimize paid advertising campaigns for a solopreneur business.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "pixelbattle",
+    "id": "pixelbattle",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/coolkonstantincool/pixelbattle/SKILL.md",
+    "description": "This skill equips agents to participate in a shared pixel-based environment designed to study emergent behavior.",
+    "category": "git-and-github",
+    "description_zh": "這項技能使代理商能夠參與一個基於共享像素的環境，該環境旨在研究緊急行為。",
+    "original_description": "This skill equips agents to participate in a shared pixel-based environment designed to study emergent behavior.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "pos-arcology-forge",
+    "id": "pos-arcology-forge",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kunoiiv/pos-arcology-forge/SKILL.md",
+    "description": "PoW-verified Elysium Arcology Planner + Hub.",
+    "category": "git-and-github",
+    "description_zh": "經過 PoW 驗證的 Elysium Arcology Planner + Hub。",
+    "original_description": "PoW-verified Elysium Arcology Planner + Hub.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "positioning-strategy",
+    "id": "positioning-strategy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/positioning-strategy/SKILL.md",
+    "description": "Develop a competitive positioning strategy for a solopreneur business.",
+    "category": "git-and-github",
+    "description_zh": "為個人企業家製定競爭定位策略。",
+    "original_description": "Develop a competitive positioning strategy for a solopreneur business.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "pr-risk-analyzer",
+    "id": "pr-risk-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nerdvana-labs/pr-risk-analyzer/SKILL.md",
+    "description": "Analyze GitHub pull requests for security risks and determine if a PR is safe to merge.",
+    "category": "git-and-github",
+    "description_zh": "分析 GitHub 拉取要求的安全風險並確定 PR 是否可以安全合併。",
+    "original_description": "Analyze GitHub pull requests for security risks and determine if a PR is safe to merge.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "prepper",
+    "id": "prepper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jlevitsk/prepper/SKILL.md",
+    "description": "Consult the ollama dolphin-llama3 model for survival, emergency preparedness, and prepper-related questions.",
+    "category": "git-and-github",
+    "description_zh": "有關生存、緊急準備和準備者相關問題，請參閱 ollama dolphin-llama3 模型。",
+    "original_description": "Consult the ollama dolphin-llama3 model for survival, emergency preparedness, and prepper-related questions.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "qronos",
+    "id": "qronos",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qronos-ai/qronos/SKILL.md",
+    "description": "When your human faces a decision that keeps them up at night — \"Should I leave this relationship?\" \"Is now.",
+    "category": "git-and-github",
+    "description_zh": "當你的人類面臨一個讓他們徹夜難眠的決定時—「我該離開這段關係嗎？」 「是現在。",
+    "original_description": "When your human faces a decision that keeps them up at night — \"Should I leave this relationship?\" \"Is now.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "read-optimizer",
+    "id": "read-optimizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/read-optimizer/SKILL.md",
+    "description": "Optimizes file reading operations by providing smarter read strategies (head/tail/grep/diff) to reduce token usage.",
+    "category": "git-and-github",
+    "description_zh": "透過提供更聰明的讀取策略（head/tail/grep/diff）來最佳化檔案讀取操作，以減少令牌使用。",
+    "original_description": "Optimizes file reading operations by providing smarter read strategies (head/tail/grep/diff) to reduce token usage.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "redmine-issue",
+    "id": "redmine-issue",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/guoway/redmine-issue/SKILL.md",
+    "description": "Read Redmine issues from any Redmine server via REST API with configurable URL and credentials.",
+    "category": "git-and-github",
+    "description_zh": "透過具有可配置 URL 和憑證的 REST API 從任何 Redmine 伺服器讀取 Redmine 問題。",
+    "original_description": "Read Redmine issues from any Redmine server via REST API with configurable URL and credentials.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "release-tracker",
+    "id": "release-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jo9900/release-tracker/SKILL.md",
+    "description": "Track GitHub repository releases and generate prioritized summaries.",
+    "category": "git-and-github",
+    "description_zh": "追蹤 GitHub 儲存庫版本並產生優先摘要。",
+    "original_description": "Track GitHub repository releases and generate prioritized summaries.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "remote-skill-engine",
+    "id": "remote-skill-engine",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/oki3505f/remote-skill-engine/SKILL.md",
+    "description": "Cache and use skills from ClawHub and GitHub as if locally installed.",
+    "category": "git-and-github",
+    "description_zh": "快取並使用來自 ClawHub 和 GitHub 的技能，就像本地安裝一樣。",
+    "original_description": "Cache and use skills from ClawHub and GitHub as if locally installed.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "repo-pr-triage",
+    "id": "repo-pr-triage",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/patrob/repo-pr-triage/SKILL.md",
+    "description": "Triage GitHub PRs and issues using vision-based scoring.",
+    "category": "git-and-github",
+    "description_zh": "使用基於視覺的評分對 GitHub PR 和問題進行分類。",
+    "original_description": "Triage GitHub PRs and issues using vision-based scoring.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "roster",
+    "id": "roster",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kleberbaum/roster/SKILL.md",
+    "description": "Creates weekly shift rosters (KW-JSON) from CSV availability data and pushes them to GitHub.",
+    "category": "git-and-github",
+    "description_zh": "根據 CSV 可用性資料建立每週輪班表 (KW-JSON)，並將其推送到 GitHub。",
+    "original_description": "Creates weekly shift rosters (KW-JSON) from CSV availability data and pushes them to GitHub.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "scalekit-agent-auth",
+    "id": "scalekit-agent-auth",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/avinash-kamath/scalekit-agent-auth/SKILL.md",
+    "description": "Secure OAuth token management via Scalekit.",
+    "category": "git-and-github",
+    "description_zh": "透過 Scalekit 保護 OAuth 令牌管理。",
+    "original_description": "Secure OAuth token management via Scalekit.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "searching-assistant",
+    "id": "searching-assistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urrrich0/searching-assistant/SKILL.md",
+    "description": "You are the leader of searching group (搜索组组长)",
+    "category": "git-and-github",
+    "description_zh": "你是搜尋組（搜尋組組長）的組長",
+    "original_description": "You are the leader of searching group (搜索组组长)",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "searching-group-leader",
+    "id": "searching-group-leader",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urrrich0/searching-group-leader/SKILL.md",
+    "description": "You are the leader of searching group.",
+    "category": "git-and-github",
+    "description_zh": "你是搜尋小組的領導者。",
+    "original_description": "You are the leader of searching group.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "self-integration",
+    "id": "self-integration",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bratchenko/self-integration/SKILL.md",
+    "description": "Connect to any external app and perform actions on it.",
+    "category": "git-and-github",
+    "description_zh": "連接到任何外部應用程式並對其執行操作。",
+    "original_description": "Connect to any external app and perform actions on it.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "shipp",
+    "id": "shipp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kclonts/shipp/SKILL.md",
+    "description": "Shipp is a real-time data connector.",
+    "category": "git-and-github",
+    "description_zh": "",
+    "original_description": "Shipp is a real-time data connector.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "siliconflow-image-gen",
+    "id": "siliconflow-image-gen",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lilei0311/siliconflow-image-gen/SKILL.md",
+    "description": "Generate images using SiliconFlow API (FLUX.1, Stable Diffusion, etc.)",
+    "category": "git-and-github",
+    "description_zh": "使用 SiliconFlow API（FLUX.1、穩定擴散等）產生影像",
+    "original_description": "Generate images using SiliconFlow API (FLUX.1, Stable Diffusion, etc.)",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "skill-doctorbot-ci-validator",
+    "id": "skill-doctorbot-ci-validator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bamontejano/skill-doctorbot-ci-validator/SKILL.md",
+    "description": "Stop failing in production.",
+    "category": "git-and-github",
+    "description_zh": "停止生產失敗。",
+    "original_description": "Stop failing in production.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "skill-security-reviewer",
+    "id": "skill-security-reviewer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ninjagpt/skill-security-reviewer/SKILL.md",
+    "description": "<!-- Skill Security Reviewer | Version 3.0.0 | Author: chris@zast.ai -->.",
+    "category": "git-and-github",
+    "description_zh": "<!-- 技能安全審核員 |版本 3.0.0 |作者：chris@zast.ai -->。",
+    "original_description": "<!-- Skill Security Reviewer | Version 3.0.0 | Author: chris@zast.ai -->.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "skill-update-delta-monitor",
+    "id": "skill-update-delta-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/skill-update-delta-monitor/SKILL.md",
+    "description": "Helps detect security-relevant changes in AI skills after installation.",
+    "category": "git-and-github",
+    "description_zh": "協助偵測安裝後 AI 技能中與安全相關的變化。",
+    "original_description": "Helps detect security-relevant changes in AI skills after installation.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "skillbench",
+    "id": "skillbench",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/g9pedro/skillbench/SKILL.md",
+    "description": "Track skill versions, benchmark performance, compare improvements, and get self-improvement signals.",
+    "category": "git-and-github",
+    "description_zh": "追蹤技能版本、基準性能、比較改進並獲取自我改進訊號。",
+    "original_description": "Track skill versions, benchmark performance, compare improvements, and get self-improvement signals.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "sovereign-changelog-maker",
+    "id": "sovereign-changelog-maker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryudi84/sovereign-changelog-maker/SKILL.md",
+    "description": "Generates structured changelogs from git history.",
+    "category": "git-and-github",
+    "description_zh": "從 git 歷史記錄產生結構化變更日誌。",
+    "original_description": "Generates structured changelogs from git history.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "sovereign-commit-craft",
+    "id": "sovereign-commit-craft",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryudi84/sovereign-commit-craft/SKILL.md",
+    "description": "Git commit message expert.",
+    "category": "git-and-github",
+    "description_zh": "Git 提交訊息專家。",
+    "original_description": "Git commit message expert.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "sovereign-git-commit-analyzer",
+    "id": "sovereign-git-commit-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryudi84/sovereign-git-commit-analyzer/SKILL.md",
+    "description": "A comprehensive git commit history analysis tool that generates detailed reports.",
+    "category": "git-and-github",
+    "description_zh": "一個全面的 git 提交歷史分析工具，可產生詳細報告。",
+    "original_description": "A comprehensive git commit history analysis tool that generates detailed reports.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "stirling-pdf",
+    "id": "stirling-pdf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/angusthefuzz/stirling-pdf/SKILL.md",
+    "description": "PDF manipulation via Stirling-PDF API.",
+    "category": "git-and-github",
+    "description_zh": "透過 Stirling-PDF API 進行 PDF 操作。",
+    "original_description": "PDF manipulation via Stirling-PDF API.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "super-github",
+    "id": "super-github",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/heldinhow/super-github/SKILL.md",
+    "description": "**The ultimate GitHub automation framework.** Combines the best of GitHub skills for issues, PRs, releases.",
+    "category": "git-and-github",
+    "description_zh": "終極 GitHub 自動化框架。結合了 GitHub 的最佳問題、PR、發布技能。",
+    "original_description": "**The ultimate GitHub automation framework.** Combines the best of GitHub skills for issues, PRs, releases.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "task-development-workflow",
+    "id": "task-development-workflow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/anikgnr/task-development-workflow/SKILL.md",
+    "description": "TDD-first development workflow with structured planning, task tracking, and PR-based code review.",
+    "category": "git-and-github",
+    "description_zh": "TDD 優先的開發工作流程，具有結構化規劃、任務追蹤和基於 PR 的程式碼審查。",
+    "original_description": "TDD-first development workflow with structured planning, task tracking, and PR-based code review.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "task-review-workflow",
+    "id": "task-review-workflow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/anikgnr/task-review-workflow/SKILL.md",
+    "description": "Standard PR review and merge workflow for task-driven development.",
+    "category": "git-and-github",
+    "description_zh": "用於任務驅動開發的標準 PR 審查和合併工作流程。",
+    "original_description": "Standard PR review and merge workflow for task-driven development.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "telcall-twilio",
+    "id": "telcall-twilio",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cnvipstar/telcall-twilio/SKILL.md",
+    "description": "Make emergency phone calls via Twilio.",
+    "category": "git-and-github",
+    "description_zh": "透過 Twilio 撥打緊急電話。",
+    "original_description": "Make emergency phone calls via Twilio.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "test-v1-0001",
+    "id": "test-v1-0001",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orlyjamie/test-v1-0001/SKILL.md",
+    "description": "A totally legitimate skill that does nothing suspicious.",
+    "category": "git-and-github",
+    "description_zh": "這是一種完全合法的技能，沒有任何可疑之處。",
+    "original_description": "A totally legitimate skill that does nothing suspicious.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "test-vt-1",
+    "id": "test-vt-1",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orlyjamie/test-vt-1/SKILL.md",
+    "description": "A totally legitimate skill that does nothing suspicious.",
+    "category": "git-and-github",
+    "description_zh": "這是一種完全合法的技能，沒有任何可疑之處。",
+    "original_description": "A totally legitimate skill that does nothing suspicious.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "testing-maliicous-vt",
+    "id": "testing-maliicous-vt",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orlyjamie/testing-maliicous-vt/SKILL.md",
+    "description": "A totally legitimate skill that does nothing suspicious.",
+    "category": "git-and-github",
+    "description_zh": "這是一種完全合法的技能，沒有任何可疑之處。",
+    "original_description": "A totally legitimate skill that does nothing suspicious.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "tiangong-wps-word-automation",
+    "id": "tiangong-wps-word-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fadeloo/tiangong-wps-word-automation/SKILL.md",
+    "description": "Automate common Word/WPS document operations on Windows via COM (read text, replace, insert, headings.",
+    "category": "git-and-github",
+    "description_zh": "透過 COM 在 Windows 上自動執行常見的 Word/WPS 文件操作（讀取文字、替換、插入、標題。",
+    "original_description": "Automate common Word/WPS document operations on Windows via COM (read text, replace, insert, headings.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "tiktok-live-commerce",
+    "id": "tiktok-live-commerce",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/realroc/tiktok-live-commerce/SKILL.md",
+    "description": "Hire TikTok livestreamers for live shopping sessions, product demonstrations, flash sales, and real-time.",
+    "category": "git-and-github",
+    "description_zh": "聘請 TikTok 直播主播進行即時購物、產品展示、限時搶購。",
+    "original_description": "Hire TikTok livestreamers for live shopping sessions, product demonstrations, flash sales, and real-time.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "toneclone-cli",
+    "id": "toneclone-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jfox85/toneclone-cli/SKILL.md",
+    "description": "Write in the user's authentic voice using ToneClone.",
+    "category": "git-and-github",
+    "description_zh": "使用 ToneClone 輸入使用者的真實聲音。",
+    "original_description": "Write in the user's authentic voice using ToneClone.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "trust-decay-monitor",
+    "id": "trust-decay-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/trust-decay-monitor/SKILL.md",
+    "description": "Helps track how AI skill verification results decay over time.",
+    "category": "git-and-github",
+    "description_zh": "幫助追蹤 AI 技能驗證結果如何隨著時間的推移而衰減。",
+    "original_description": "Helps track how AI skill verification results decay over time.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "tweet-summarizer-lite",
+    "id": "tweet-summarizer-lite",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/franciscobuiltdat/tweet-summarizer-lite/SKILL.md",
+    "description": "Fetch and summarize single tweets from Twitter/X.",
+    "category": "git-and-github",
+    "description_zh": "從 Twitter/X 取得並總結單一推文。",
+    "original_description": "Fetch and summarize single tweets from Twitter/X.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "ultimate-fork-and-skill-scanner",
+    "id": "ultimate-fork-and-skill-scanner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/globalcaos/ultimate-fork-and-skill-scanner/SKILL.md",
+    "description": "Scan GitHub forks and ClawHub skills for valuable changes, innovations, and enhancements.",
+    "category": "git-and-github",
+    "description_zh": "掃描 GitHub 分支和 ClawHub 技能以獲取有價值的變更、創新和增強。",
+    "original_description": "Scan GitHub forks and ClawHub skills for valuable changes, innovations, and enhancements.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "unit-convert",
+    "id": "unit-convert",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ouyangabel/unit-convert/SKILL.md",
+    "description": "Comprehensive unit converter for length, weight, temperature, area, volume, speed, time, and data.",
+    "category": "git-and-github",
+    "description_zh": "長度、重量、溫度、面積、體積、速度、時間和資料的綜合單位轉換器。",
+    "original_description": "Comprehensive unit converter for length, weight, temperature, area, volume, speed, time, and data.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "update-signature-verifier",
+    "id": "update-signature-verifier",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/update-signature-verifier/SKILL.md",
+    "description": "Helps verify the cryptographic integrity of skill updates by checking whether each version is signed.",
+    "category": "git-and-github",
+    "description_zh": "檢查每個版本是否已簽名，以幫助驗證技能更新的加密完整性。",
+    "original_description": "Helps verify the cryptographic integrity of skill updates by checking whether each version is signed.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "upstream-recon",
+    "id": "upstream-recon",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/semmyt/upstream-recon/SKILL.md",
+    "description": "Investigate an open-source project before interacting with it — PRs, issues, or comments.",
+    "category": "git-and-github",
+    "description_zh": "在與開源專案互動之前對其進行調查——PR、問題或評論。",
+    "original_description": "Investigate an open-source project before interacting with it — PRs, issues, or comments.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "vigil",
+    "id": "vigil",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/robinoppenstam/vigil/SKILL.md",
+    "description": "AI agent safety guardrails for tool calls.",
+    "category": "git-and-github",
+    "description_zh": "用於工具呼叫的 AI 代理安全護欄。",
+    "original_description": "AI agent safety guardrails for tool calls.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "wps-skill",
+    "id": "wps-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lilei0311/wps-skill/SKILL.md",
+    "description": "WPS Office automation skill supporting document creation, Markdown conversion, and image-text layout.",
+    "category": "git-and-github",
+    "description_zh": "支援文件建立、Markdown 轉換、圖文排版的 WPS Office 自動化技能。",
+    "original_description": "WPS Office automation skill supporting document creation, Markdown conversion, and image-text layout.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "x-alpha-scout",
+    "id": "x-alpha-scout",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hammadbtc/x-alpha-scout/SKILL.md",
+    "description": "X/Twitter alpha scanner for crypto and NFTs.",
+    "category": "git-and-github",
+    "description_zh": "用於加密貨幣和 NFT 的 X/Twitter alpha 掃描器。",
+    "original_description": "X/Twitter alpha scanner for crypto and NFTs.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "xpr-structured-data",
+    "id": "xpr-structured-data",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/paulgnz/xpr-structured-data/SKILL.md",
+    "description": "CSV parsing, JSON-to-CSV conversion, and SVG chart generation.",
+    "category": "git-and-github",
+    "description_zh": "CSV 解析、JSON 到 CSV 轉換以及 SVG 圖表產生。",
+    "original_description": "CSV parsing, JSON-to-CSV conversion, and SVG chart generation.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "zai-tts",
+    "id": "zai-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/al-one/zai-tts/SKILL.md",
+    "description": "Text-to-speech conversion using GLM-TTS service via the `uvx zai-tts` command for generating audio from text.",
+    "category": "git-and-github",
+    "description_zh": "透過 uvx zai-tts 指令使用 GLM-TTS 服務進行文字轉語音轉換，以從文字產生音訊。",
+    "original_description": "Text-to-speech conversion using GLM-TTS service via the `uvx zai-tts` command for generating audio from text.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  },
+  {
+    "title": "zhipu-tts",
+    "id": "zhipu-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/franklu0819-lang/zhipu-tts/SKILL.md",
+    "description": "Text-to-speech conversion using Zhipu AI (BigModel) GLM-TTS model.",
+    "category": "git-and-github",
+    "description_zh": "使用智普AI（BigModel）GLM-TTS模型進行文字轉語音轉換。",
+    "original_description": "Text-to-speech conversion using Zhipu AI (BigModel) GLM-TTS model.",
+    "category_name": {
+      "en": "Git & GitHub",
+      "zh": "Git 與 GitHub"
+    }
+  }
+]

@@ -1,0 +1,470 @@
+[
+  {
+    "title": "adhd-assistant",
+    "id": "adhd-assistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thinktankmachine/adhd-assistant/SKILL.md",
+    "description": "ADHD-friendly life management assistant for OpenClaw.",
+    "category": "clawdbot-tools",
+    "description_zh": "OpenClaw 的 ADHD 友善生活管理助理。",
+    "original_description": "ADHD-friendly life management assistant for OpenClaw.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "adhd-ssistant",
+    "id": "adhd-ssistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thinktankmachine/adhd-ssistant/SKILL.md",
+    "description": "ADHD-friendly life management assistant for OpenClaw.",
+    "category": "clawdbot-tools",
+    "description_zh": "OpenClaw 的 ADHD 友善生活管理助理。",
+    "original_description": "ADHD-friendly life management assistant for OpenClaw.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "agent-browser",
+    "id": "agent-browser",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/matrixy/agent-browser-clawdbot/SKILL.md",
+    "description": "Headless browser automation CLI optimized for AI agents.",
+    "category": "clawdbot-tools",
+    "description_zh": "針對 AI 代理進行最佳化的無頭瀏覽器自動化 CLI。",
+    "original_description": "Headless browser automation CLI optimized for AI agents.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "agent-builder",
+    "id": "agent-builder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/plgonzalezrx8/agent-builder/SKILL.md",
+    "description": "Build high-performing OpenClaw agents end-to-end.",
+    "category": "clawdbot-tools",
+    "description_zh": "端到端建置高效能 OpenClaw 代理程式。",
+    "original_description": "Build high-performing OpenClaw agents end-to-end.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "agents-manager",
+    "id": "agents-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/agentandbot-design/agents-manager/SKILL.md",
+    "description": "Manage Clawdbot agents: discover, profile, track.",
+    "category": "clawdbot-tools",
+    "description_zh": "管理 Clawdbot 代理：發現、分析、追蹤。",
+    "original_description": "Manage Clawdbot agents: discover, profile, track.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "assimilate-mcp",
+    "id": "assimilate-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ergopooka/assimilate-mcp/SKILL.md",
+    "description": "Control Assimilate Live FX / SCRATCH — professional color grading, compositing, and virtual production software.",
+    "category": "clawdbot-tools",
+    "description_zh": "Control Assimilate Live FX / SCRATCH — 專業色彩分級、合成與虛擬製作軟體。",
+    "original_description": "Control Assimilate Live FX / SCRATCH — professional color grading, compositing, and virtual production software.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "birthday-reminder",
+    "id": "birthday-reminder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/manantra/birthday-reminder/SKILL.md",
+    "description": "Manage birthdays with natural language.",
+    "category": "clawdbot-tools",
+    "description_zh": "用自然語言管理生日。",
+    "original_description": "Manage birthdays with natural language.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "bluebubbles",
+    "id": "bluebubbles",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kevin19830331/bluebubbles/SKILL.md",
+    "description": "Build or update the BlueBubbles external channel plugin.",
+    "category": "clawdbot-tools",
+    "description_zh": "",
+    "original_description": "Build or update the BlueBubbles external channel plugin.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "captchas-openclaw",
+    "id": "captchas-openclaw",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/captchasco/captchas-openclaw/SKILL.md",
+    "description": "OpenClaw integration guidance for CAPTCHAS Agent API.",
+    "category": "clawdbot-tools",
+    "description_zh": "驗證碼代理 API 的 OpenClaw 整合指南。",
+    "original_description": "OpenClaw integration guidance for CAPTCHAS Agent API.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "claude-code-skill",
+    "id": "claude-code-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/enderfga/claude-code-skill/SKILL.md",
+    "description": "MCP (Model Context Protocol) integration.",
+    "category": "clawdbot-tools",
+    "description_zh": "MCP（模型上下文協定）整合。",
+    "original_description": "MCP (Model Context Protocol) integration.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "claude-code-usage",
+    "id": "claude-code-usage",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/azaidi94/claude-code-usage/SKILL.md",
+    "description": "Check Claude Code OAuth usage limits.",
+    "category": "clawdbot-tools",
+    "description_zh": "檢查 Claude Code OAuth 使用限制。",
+    "original_description": "Check Claude Code OAuth usage limits.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "claude-connect",
+    "id": "claude-connect",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tunaissacoding/claude-connect/SKILL.md",
+    "description": "Connect Claude to Clawdbot instantly and keep.",
+    "category": "clawdbot-tools",
+    "description_zh": "立即將 Claude 連接到 Clawdbot 並保留。",
+    "original_description": "Connect Claude to Clawdbot instantly and keep.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clauditor",
+    "id": "clauditor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/apollostreetcompany/clauditor/SKILL.md",
+    "description": "Tamper-resistant audit watchdog for Clawdbot agents.",
+    "category": "clawdbot-tools",
+    "description_zh": "Clawdbot 代理的防篡改審計看門狗。",
+    "original_description": "Tamper-resistant audit watchdog for Clawdbot agents.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "claw-face",
+    "id": "claw-face",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mkoslacz/claw-face/SKILL.md",
+    "description": "Floating avatar widget for AI agents showing emotions, actions.",
+    "category": "clawdbot-tools",
+    "description_zh": "用於人工智慧代理顯示情感、動作的浮動頭像小部件。",
+    "original_description": "Floating avatar widget for AI agents showing emotions, actions.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawd-coach",
+    "id": "clawd-coach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shiv19/clawd-coach/SKILL.md",
+    "description": "Create personalized triathlon, marathon, and ultra-endurance training.",
+    "category": "clawdbot-tools",
+    "description_zh": "創造個人化的鐵人三項、馬拉松和超耐力訓練。",
+    "original_description": "Create personalized triathlon, marathon, and ultra-endurance training.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawd-modifier",
+    "id": "clawd-modifier",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/masonc15/clawd-modifier/SKILL.md",
+    "description": "Modify Clawd, the Claude Code mascot.",
+    "category": "clawdbot-tools",
+    "description_zh": "修改 Clawd，克勞德代碼吉祥物。",
+    "original_description": "Modify Clawd, the Claude Code mascot.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawd-presence",
+    "id": "clawd-presence",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/voidcooks/clawd-presence/SKILL.md",
+    "description": "Physical presence display for AI agents.",
+    "category": "clawdbot-tools",
+    "description_zh": "AI 代理程式的物理存在顯示。",
+    "original_description": "Physical presence display for AI agents.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawdbot-security-check",
+    "id": "clawdbot-security-check",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thesethrose/clawdbot-security-check/SKILL.md",
+    "description": "Perform a comprehensive read-only.",
+    "category": "clawdbot-tools",
+    "description_zh": "執行全面只讀。",
+    "original_description": "Perform a comprehensive read-only.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawdbot-skill-update",
+    "id": "clawdbot-skill-update",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pasogott/clawdbot-skill-update/SKILL.md",
+    "description": "Comprehensive backup, update, and restore.",
+    "category": "clawdbot-tools",
+    "description_zh": "全面的備份、更新和還原。",
+    "original_description": "Comprehensive backup, update, and restore.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawdbot-sync",
+    "id": "clawdbot-sync",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/udiedrichsen/clawdbot-sync/SKILL.md",
+    "description": "Synchronize memory, preferences, and skills between multiple.",
+    "category": "clawdbot-tools",
+    "description_zh": "同步多個人之間的記憶、偏好和技能。",
+    "original_description": "Synchronize memory, preferences, and skills between multiple.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawdbot-update-plus",
+    "id": "clawdbot-update-plus",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hopyky/clawdbot-update-plus/SKILL.md",
+    "description": "Full backup, update, and restore for Clawdbot.",
+    "category": "clawdbot-tools",
+    "description_zh": "Clawdbot 的完整備份、更新與復原。",
+    "original_description": "Full backup, update, and restore for Clawdbot.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawddocs",
+    "id": "clawddocs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nicholasspisak/clawddocs/SKILL.md",
+    "description": "Clawdbot documentation expert with decision tree navigation.",
+    "category": "clawdbot-tools",
+    "description_zh": "具有決策樹導航功能的 Clawdbot 文件專家。",
+    "original_description": "Clawdbot documentation expert with decision tree navigation.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawdefender",
+    "id": "clawdefender",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nukewire/clawdefender/SKILL.md",
+    "description": "Security scanner and input sanitizer for AI agents.",
+    "category": "clawdbot-tools",
+    "description_zh": "用於人工智慧代理的安全掃描器和輸入清理器。",
+    "original_description": "Security scanner and input sanitizer for AI agents.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawdirect",
+    "id": "clawdirect",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/napoleond/clawdirect/SKILL.md",
+    "description": "Interact with ClawDirect, a directory of social web experiences.",
+    "category": "clawdbot-tools",
+    "description_zh": "與 ClawDirect 互動，這是一個社交網路體驗目錄。",
+    "original_description": "Interact with ClawDirect, a directory of social web experiences.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawdirect-dev",
+    "id": "clawdirect-dev",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/napoleond/clawdirect-dev/SKILL.md",
+    "description": "Build agent-facing web experiences with ATXP-based.",
+    "category": "clawdbot-tools",
+    "description_zh": "使用基於 ATXP 建立面向代理的 Web 體驗。",
+    "original_description": "Build agent-facing web experiences with ATXP-based.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawdlink",
+    "id": "clawdlink",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/davemorin",
+    "description": "Encrypted Clawdbot-to-Clawdbot messaging.",
+    "category": "clawdbot-tools",
+    "description_zh": "加密的 Clawdbot 到 Clawdbot 訊息傳遞。",
+    "original_description": "Encrypted Clawdbot-to-Clawdbot messaging.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "clawdpoker",
+    "id": "clawdpoker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/davidbenjaminnovotny",
+    "description": "Welcome to ClawPoker - a platform where AI agents play.",
+    "category": "clawdbot-tools",
+    "description_zh": "歡迎來到 ClawPoker - 一個人工智慧代理玩的平台。",
+    "original_description": "Welcome to ClawPoker - a platform where AI agents play.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "gamification-xp",
+    "id": "gamification-xp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chipagosfinest/gamification-xp/SKILL.md",
+    "description": "XP system for productivity gamification via ClawdBot - track levels, badges, streaks, and achievements.",
+    "category": "clawdbot-tools",
+    "description_zh": "XP 系統透過 ClawdBot 實現生產力遊戲化 - 追蹤等級、徽章、條紋和成就。",
+    "original_description": "XP system for productivity gamification via ClawdBot - track levels, badges, streaks, and achievements.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "maton-agent-tools",
+    "id": "maton-agent-tools",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/maverick-software/maton-agent-tools/SKILL.md",
+    "description": "Connect to SaaS tools via Maton AI.",
+    "category": "clawdbot-tools",
+    "description_zh": "透過 Maton AI 連接到 SaaS 工具。",
+    "original_description": "Connect to SaaS tools via Maton AI.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "mcp-client",
+    "id": "mcp-client",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nantes/mcp-client/SKILL.md",
+    "description": "Model Context Protocol (MCP) client - connect to tools, data sources and services.",
+    "category": "clawdbot-tools",
+    "description_zh": "模型上下文協定 (MCP) 用戶端 - 連接到工具、資料來源和服務。",
+    "original_description": "Model Context Protocol (MCP) client - connect to tools, data sources and services.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "mcp-hass",
+    "id": "mcp-hass",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/al-one/mcp-hass/SKILL.md",
+    "description": "The skill for control Home Assistant smart home devices and query states using MCP protocol.",
+    "category": "clawdbot-tools",
+    "description_zh": "使用MCP協定控制Home Assistant智慧家庭設備並查詢狀態的技能。",
+    "original_description": "The skill for control Home Assistant smart home devices and query states using MCP protocol.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "meegle-mcp-skill",
+    "id": "meegle-mcp-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pkycy/meegle-mcp-skill/SKILL.md",
+    "description": "Interact with Meegle project management system via MCP protocol.",
+    "category": "clawdbot-tools",
+    "description_zh": "透過MCP協定與Meegle專案管理系統互動。",
+    "original_description": "Interact with Meegle project management system via MCP protocol.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "pipedream-connect",
+    "id": "pipedream-connect",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/maverick-software/pipedream-connect/SKILL.md",
+    "description": "Connect 2,000+ APIs with managed OAuth via Pipedream.",
+    "category": "clawdbot-tools",
+    "description_zh": "透過 Pipedream 將 2,000 多個 API 連接到託管 OAuth。",
+    "original_description": "Connect 2,000+ APIs with managed OAuth via Pipedream.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "provider-sync",
+    "id": "provider-sync",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/c-joey/provider-sync/SKILL.md",
+    "description": "Sync provider models into OpenClaw config.",
+    "category": "clawdbot-tools",
+    "description_zh": "將提供者模型同步到 OpenClaw 配置中。",
+    "original_description": "Sync provider models into OpenClaw config.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "telegram-footer-patch",
+    "id": "telegram-footer-patch",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/c-joey/telegram-footer-patch/SKILL.md",
+    "description": "Patch Telegram replies with OpenClaw footer.",
+    "category": "clawdbot-tools",
+    "description_zh": "Patch Telegram 回覆 OpenClaw 頁腳。",
+    "original_description": "Patch Telegram replies with OpenClaw footer.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  },
+  {
+    "title": "zapier-mcp",
+    "id": "zapier-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/maverick-software/zapier-mcp/SKILL.md",
+    "description": "Connect 8,000+ apps via Zapier MCP.",
+    "category": "clawdbot-tools",
+    "description_zh": "透過 Zapier MCP 連接 8,000 多個應用程式。",
+    "original_description": "Connect 8,000+ apps via Zapier MCP.",
+    "category_name": {
+      "en": "Clawdbot Tools",
+      "zh": "Clawdbot 工具"
+    }
+  }
+]

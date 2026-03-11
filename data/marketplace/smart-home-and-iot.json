@@ -1,0 +1,561 @@
+[
+  {
+    "title": "anova-oven",
+    "id": "anova-oven",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dodeja/anova-skill/SKILL.md",
+    "description": "Control Anova Precision Ovens and Precision Cookers (sous vide)",
+    "category": "smart-home-and-iot",
+    "description_zh": "控制 Anova 精密烤箱和精密炊具（真空低溫烹調）",
+    "original_description": "Control Anova Precision Ovens and Precision Cookers (sous vide)",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "anthropology",
+    "id": "anthropology",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/networktheoryappliedresearchinstitute/anthropology/SKILL.md",
+    "description": "A comprehensive AI skill for teaching.",
+    "category": "smart-home-and-iot",
+    "description_zh": "用於教學的綜合人工智慧技能。",
+    "original_description": "A comprehensive AI skill for teaching.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "arccos-golf",
+    "id": "arccos-golf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pfrederiksen/arccos-golf/SKILL.md",
+    "description": "Analyze Arccos Golf performance data including club distances, strokes gained metrics, scoring patterns.",
+    "category": "smart-home-and-iot",
+    "description_zh": "分析 Arccos Golf 表現數據，包含球桿距離、擊球數指標、得分模式。",
+    "original_description": "Analyze Arccos Golf performance data including club distances, strokes gained metrics, scoring patterns.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "bambu-cli",
+    "id": "bambu-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tobiasbischoff/bambu-cli/SKILL.md",
+    "description": "Operate and troubleshoot BambuLab printers with the bambu-cli.",
+    "category": "smart-home-and-iot",
+    "description_zh": "使用 bambu-cli 操作 BambuLab 印表機並排除故障。",
+    "original_description": "Operate and troubleshoot BambuLab printers with the bambu-cli.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "bambu-local",
+    "id": "bambu-local",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tanguyvans/bambu-local/SKILL.md",
+    "description": "Control Bambu Lab 3D printers locally via MQTT.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過 MQTT 在本地控制 Bambu Lab 3D 列印機。",
+    "original_description": "Control Bambu Lab 3D printers locally via MQTT.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "beestat",
+    "id": "beestat",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mjrussell/beestat/SKILL.md",
+    "description": "Query ecobee thermostat data via Beestat API including temperature.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過 Beestat API 查詢 ecobee 恆溫器數據，包括溫度。",
+    "original_description": "Query ecobee thermostat data via Beestat API including temperature.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "bring-add",
+    "id": "bring-add",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/darkdevelopers/bring-add/SKILL.md",
+    "description": "Use when user wants to add items to Bring!",
+    "category": "smart-home-and-iot",
+    "description_zh": "當使用者想要新增物品到 Bring! 時使用！",
+    "original_description": "Use when user wants to add items to Bring!",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "communication-coach",
+    "id": "communication-coach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rjmoggach/communication-coach/SKILL.md",
+    "description": "Adaptive communication coaching that shapes.",
+    "category": "smart-home-and-iot",
+    "description_zh": "適應性溝通輔導塑造。",
+    "original_description": "Adaptive communication coaching that shapes.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "context-engineering",
+    "id": "context-engineering",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leoyessi10-tech/context-engineering/SKILL.md",
+    "description": "This skill should be used when the user asks.",
+    "category": "smart-home-and-iot",
+    "description_zh": "當使用者要求時應該使用此技能。",
+    "original_description": "This skill should be used when the user asks.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "control-ikea-lightbulb",
+    "id": "control-ikea-lightbulb",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/antgly/control-ikea-lightbulb/SKILL.md",
+    "description": "Control IKEA/TP-Link Kasa smart bulbs.",
+    "category": "smart-home-and-iot",
+    "description_zh": "控制 IKEA/TP-Link Kasa 智慧燈泡。",
+    "original_description": "Control IKEA/TP-Link Kasa smart bulbs.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "crabnet",
+    "id": "crabnet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/spclaudehome/crabnet/SKILL.md",
+    "description": "Interact with the CrabNet cross-agent collaboration registry.",
+    "category": "smart-home-and-iot",
+    "description_zh": "與 CrabNet 跨代理協作註冊表互動。",
+    "original_description": "Interact with the CrabNet cross-agent collaboration registry.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "dellight-cfo-financial-ops",
+    "id": "dellight-cfo-financial-ops",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arthurelgindell/dellight-cfo-financial-ops/SKILL.md",
+    "description": "CFO reports to CEO (Arthur Dell), dotted line to CRO (Reign).",
+    "category": "smart-home-and-iot",
+    "description_zh": "CFO 向 CEO (Arthur Dell) 報告，虛線向 CRO (Reign) 報告。",
+    "original_description": "CFO reports to CEO (Arthur Dell), dotted line to CRO (Reign).",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "devialet",
+    "id": "devialet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jgm2025/devialet/SKILL.md",
+    "description": "Control Devialet Phantom speakers via HTTP API.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過 HTTP API 控制 Devial​​et Phantom 揚聲器。",
+    "original_description": "Control Devialet Phantom speakers via HTTP API.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "dht11-temp",
+    "id": "dht11-temp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/noahseeger/dht11-temp/SKILL.md",
+    "description": "Read temperature and humidity from DHT11 sensor.",
+    "category": "smart-home-and-iot",
+    "description_zh": "從 DHT11 感測器讀取溫度和濕度。",
+    "original_description": "Read temperature and humidity from DHT11 sensor.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "dirigera-control",
+    "id": "dirigera-control",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/falderebet/dirigera-control/SKILL.md",
+    "description": "Control IKEA Dirigera smart home devices.",
+    "category": "smart-home-and-iot",
+    "description_zh": "控制宜家 Dirigera 智慧家庭設備。",
+    "original_description": "Control IKEA Dirigera smart home devices.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "dyson-cli",
+    "id": "dyson-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tmustier/dyson-cli/SKILL.md",
+    "description": "Control Dyson air purifiers, fans, and heaters via local MQTT.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過本地 MQTT 控制戴森空氣清淨機、風扇和加熱器。",
+    "original_description": "Control Dyson air purifiers, fans, and heaters via local MQTT.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "echodecks",
+    "id": "echodecks",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/drgeld/echodecks/SKILL.md",
+    "description": "Integrates with EchoDecks for flashcard management, study sessions, and AI.",
+    "category": "smart-home-and-iot",
+    "description_zh": "與 EchoDecks 集成，用於抽認卡管理、學習課程和人工智慧。",
+    "original_description": "Integrates with EchoDecks for flashcard management, study sessions, and AI.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "echodecks-ultimate",
+    "id": "echodecks-ultimate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/drgeld/echodecks-ultimate/SKILL.md",
+    "description": "AI-powered flashcard management with automated podcast.",
+    "category": "smart-home-and-iot",
+    "description_zh": "人工智慧驅動的抽認卡管理和自動播客。",
+    "original_description": "AI-powered flashcard management with automated podcast.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "eightctl",
+    "id": "eightctl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/eightctl/SKILL.md",
+    "description": "Control Eight Sleep pods (status, temperature, alarms, schedules).",
+    "category": "smart-home-and-iot",
+    "description_zh": "控制八個睡眠艙（狀態、溫度、警報、時間表）。",
+    "original_description": "Control Eight Sleep pods (status, temperature, alarms, schedules).",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "enzoldhazam",
+    "id": "enzoldhazam",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/daniel-laszlo/enzoldhazam/SKILL.md",
+    "description": "NGBS iCON Smart Home thermostat control.",
+    "category": "smart-home-and-iot",
+    "description_zh": "NGBS iCON 智慧家庭恆溫器控制。",
+    "original_description": "NGBS iCON Smart Home thermostat control.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "farmos-weather",
+    "id": "farmos-weather",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianppetty/farmos-weather/SKILL.md",
+    "description": "Query weather data and forecasts for farm fields via the Agronomy module.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過農學模組查詢農地的天氣資料和預報。",
+    "original_description": "Query weather data and forecasts for farm fields via the Agronomy module.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "fivem-dev",
+    "id": "fivem-dev",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dktrn9ne/fivem-dev/SKILL.md",
+    "description": "FiveM RP server engineering for QBCore, ESX.",
+    "category": "smart-home-and-iot",
+    "description_zh": "適用於 QBCore、ESX 的 FiveM RP 伺服器工程。",
+    "original_description": "FiveM RP server engineering for QBCore, ESX.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "frigate",
+    "id": "frigate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/porygonthebot/frigate/SKILL.md",
+    "description": "Access Frigate NVR cameras with session-based authentication.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過基於會話的身份驗證存取 Frigate NVR 攝影機。",
+    "original_description": "Access Frigate NVR cameras with session-based authentication.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "glitch-homeassistant",
+    "id": "glitch-homeassistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chris6970barbarian-hue/glitch-homeassistant/SKILL.md",
+    "description": "Control smart home devices via Home Assistant API.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過 Home Assistant API 控制智慧家庭設備。",
+    "original_description": "Control smart home devices via Home Assistant API.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "google-home",
+    "id": "google-home",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mitchellbernstein/google-home/SKILL.md",
+    "description": "Control Google Nest devices.",
+    "category": "smart-home-and-iot",
+    "description_zh": "控制 Google Nest 設備。",
+    "original_description": "Control Google Nest devices.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "google-tv",
+    "id": "google-tv",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/antgly",
+    "description": "Control the Living Room Chromecast with Google TV via ADB.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過 ADB 使用 Google TV 控制客廳 Chromecast。",
+    "original_description": "Control the Living Room Chromecast with Google TV via ADB.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "govee-lights",
+    "id": "govee-lights",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/joeynyc/govee-lights/SKILL.md",
+    "description": "Control Govee smart lights via the Govee API.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過 Govee API 控制 Govee 智慧燈。",
+    "original_description": "Control Govee smart lights via the Govee API.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "govpredict",
+    "id": "govpredict",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seyhunak/govpredict/SKILL.md",
+    "description": "Smarter Government Procurement - Streamline compliance, tendering.",
+    "category": "smart-home-and-iot",
+    "description_zh": "更聰明的政府採購 - 簡化合規、招標。",
+    "original_description": "Smarter Government Procurement - Streamline compliance, tendering.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "home-music",
+    "id": "home-music",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/asteinberger/home-music/SKILL.md",
+    "description": "Control whole-house music scenes combining Spotify playback.",
+    "category": "smart-home-and-iot",
+    "description_zh": "結合 Spotify 播放控制全屋音樂場景。",
+    "original_description": "Control whole-house music scenes combining Spotify playback.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "homebridge",
+    "id": "homebridge",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jiasenl/clawdbot-skill-homebridge/SKILL.md",
+    "description": "Control smart home devices via Homebridge Config UI X.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過 Homebridge Config UI X 控制智慧家庭設備。",
+    "original_description": "Control smart home devices via Homebridge Config UI X.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "homey",
+    "id": "homey",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/maxsumrall/homey/SKILL.md",
+    "description": "Control Athom Homey smart home devices via local (LAN/VPN) or cloud APIs.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過本機 (LAN/VPN) 或雲端 API 控制 Athom Homey 智慧家庭設備。",
+    "original_description": "Control Athom Homey smart home devices via local (LAN/VPN) or cloud APIs.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "homey-cli",
+    "id": "homey-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/krausefx/homey-cli/SKILL.md",
+    "description": "Control Homey home automation hub.",
+    "category": "smart-home-and-iot",
+    "description_zh": "控制 Homey 家庭自動化中心。",
+    "original_description": "Control Homey home automation hub.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "icom-7610",
+    "id": "icom-7610",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/morozsm/icom-7610/SKILL.md",
+    "description": "Control an Icom IC-7610 transceiver over USB/LAN.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過 USB/LAN 控制 Icom IC-7610 收發器。",
+    "original_description": "Control an Icom IC-7610 transceiver over USB/LAN.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "internet-lookup-verifier",
+    "id": "internet-lookup-verifier",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/amangarg1999/internet-lookup-verifier/SKILL.md",
+    "description": "Verify information by performing.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過執行來驗證資訊。",
+    "original_description": "Verify information by performing.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "ipcam",
+    "id": "ipcam",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ltpop/ipcam/SKILL.md",
+    "description": "ONVIF PTZ control + RTSP capture + camera discovery.",
+    "category": "smart-home-and-iot",
+    "description_zh": "ONVIF PTZ 控制 + RTSP 擷取 + 攝影機發現。",
+    "original_description": "ONVIF PTZ control + RTSP capture + camera discovery.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "lg-thinq",
+    "id": "lg-thinq",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kaiofreitas/lg-thinq/SKILL.md",
+    "description": "Control LG smart appliances via ThinQ API.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過 ThinQ API 控制 LG 智慧電器。",
+    "original_description": "Control LG smart appliances via ThinQ API.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "lygo-champion-cosmara",
+    "id": "lygo-champion-cosmara",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-cosmara/SKILL.md",
+    "description": "COSMARA – ARKOS-line LYGO Champion of ethical cosmic exploration.",
+    "category": "smart-home-and-iot",
+    "description_zh": "COSMARA – ARKOS 系列 LYGO 道德宇宙探索的冠軍。",
+    "original_description": "COSMARA – ARKOS-line LYGO Champion of ethical cosmic exploration.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "nest-sdm",
+    "id": "nest-sdm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tag-assistant/nest-sdm/SKILL.md",
+    "description": "Control Nest thermostat, doorbell, and cameras via the Google Smart Device Management (SDM) API.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過 Google 智慧型裝置管理 (SDM) API 控制 Nest 恆溫器、門鈴和攝影機。",
+    "original_description": "Control Nest thermostat, doorbell, and cameras via the Google Smart Device Management (SDM) API.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "nostr-plantr",
+    "id": "nostr-plantr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/samthomson/nostr-plantr/SKILL.md",
+    "description": "Specialized skill for Plantr IoT data (Kind 34419 and 4171).",
+    "category": "smart-home-and-iot",
+    "description_zh": "Plantr IoT 資料的專業技能（種類 34419 和 4171）。",
+    "original_description": "Specialized skill for Plantr IoT data (Kind 34419 and 4171).",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "nostr-weather",
+    "id": "nostr-weather",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/samthomson/nostr-weather/SKILL.md",
+    "description": "Specialized skill for NIP-Weather IoT data, powered by nostr-nak.",
+    "category": "smart-home-and-iot",
+    "description_zh": "NIP 天氣物聯網資料的專業技能，由 nostr-nak 提供支援。",
+    "original_description": "Specialized skill for NIP-Weather IoT data, powered by nostr-nak.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "openmeteo-sh-weather-simple",
+    "id": "openmeteo-sh-weather-simple",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lstpsche/openmeteo-sh-weather-simple/SKILL.md",
+    "description": "Get current weather and forecasts for any city or coordinates using free OpenMeteo API.",
+    "category": "smart-home-and-iot",
+    "description_zh": "使用免費的 OpenMeteo API 來取得任何城市或座標的當前天氣和預報。",
+    "original_description": "Get current weather and forecasts for any city or coordinates using free OpenMeteo API.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "tempest-weather",
+    "id": "tempest-weather",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wranglerdriver/tempest-weather/SKILL.md",
+    "description": "Get current weather conditions from a WeatherFlow Tempest station using the Tempest REST API.",
+    "category": "smart-home-and-iot",
+    "description_zh": "使用 Tempest REST API 從 WeatherFlow Tempest 站取得目前天氣狀況。",
+    "original_description": "Get current weather conditions from a WeatherFlow Tempest station using the Tempest REST API.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  },
+  {
+    "title": "wiz-light-control",
+    "id": "wiz-light-control",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/canbirlik/wiz-light-control/SKILL.md",
+    "description": "Controls Wiz smart bulbs (turn on/off, RGB colors, disco mode) via local WiFi.",
+    "category": "smart-home-and-iot",
+    "description_zh": "透過本地 WiFi 控制 Wiz 智慧燈泡（開啟/關閉、RGB 顏色、迪斯可模式）。",
+    "original_description": "Controls Wiz smart bulbs (turn on/off, RGB colors, disco mode) via local WiFi.",
+    "category_name": {
+      "en": "Smart Home & IoT",
+      "zh": "智慧家庭與物聯網"
+    }
+  }
+]

@@ -1,0 +1,1939 @@
+[
+  {
+    "title": "aa",
+    "id": "aa",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/azvast/aa/SKILL.md",
+    "description": "This skill enables the agent to **automatically answer Gmail messages on behalf of a client**.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "This skill enables the agent to **automatically answer Gmail messages on behalf of a client**.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "agent-mail",
+    "id": "agent-mail",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rimelucci/agent-mail/SKILL.md",
+    "description": "Email inbox for AI agents.",
+    "category": "communication",
+    "description_zh": "AI 代理商的電子郵件收件匣。",
+    "original_description": "Email inbox for AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "agent-mail-cli",
+    "id": "agent-mail-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rimelucci/agent-mail-cli/SKILL.md",
+    "description": "Email inbox for AI agents.",
+    "category": "communication",
+    "description_zh": "AI 代理商的電子郵件收件匣。",
+    "original_description": "Email inbox for AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "agent-nou",
+    "id": "agent-nou",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mariancristiancarp-cell/agent-nou/SKILL.md",
+    "description": "The social network for AI agents.",
+    "category": "communication",
+    "description_zh": "人工智慧代理的社交網路。",
+    "original_description": "The social network for AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "agent-social",
+    "id": "agent-social",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iisweetheartii/agent-social/SKILL.md",
+    "description": "The open-source social network for AI agents.",
+    "category": "communication",
+    "description_zh": "人工智慧代理的開源社交網路。",
+    "original_description": "The open-source social network for AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "agent-team-kit",
+    "id": "agent-team-kit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryancampbell/agent-team-kit/SKILL.md",
+    "description": "*A framework for self-sustaining AI agent teams.*.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "*A framework for self-sustaining AI agent teams.*.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "agentbook",
+    "id": "agentbook",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/r4v3n-art/agentbook/SKILL.md",
+    "description": "Send and receive encrypted messages on the agentbook network.",
+    "category": "communication",
+    "description_zh": "在 Agentbook 網路上傳送和接收加密訊息。",
+    "original_description": "Send and receive encrypted messages on the agentbook network.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "agenthc-market-intelligence",
+    "id": "agenthc-market-intelligence",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/traderhc123/agenthc-market-intelligence/SKILL.md",
+    "description": "Real-time stock market data and trading intelligence API. 85 intelligence modules, 40 encoded intelligence skills.",
+    "category": "communication",
+    "description_zh": "即時股市數據和交易情報API。 85個情報模組，40種編碼情報技能。",
+    "original_description": "Real-time stock market data and trading intelligence API. 85 intelligence modules, 40 encoded intelligence skills.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "agentmanager",
+    "id": "agentmanager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nonightwatch/agentmanager/SKILL.md",
+    "description": "This file is a concise integration contract for AI tool callers and gateway implementers.",
+    "category": "communication",
+    "description_zh": "該檔案是AI工具呼叫者和網關實現者的簡明整合合約。",
+    "original_description": "This file is a concise integration contract for AI tool callers and gateway implementers.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "agentmesh",
+    "id": "agentmesh",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cerbug45/agentmesh/SKILL.md",
+    "description": "> **WhatsApp-style end-to-end encrypted messaging for AI agents.**.",
+    "category": "communication",
+    "description_zh": "> 適用於 AI 代理程式的 WhatsApp 式端對端加密訊息傳遞。",
+    "original_description": "> **WhatsApp-style end-to-end encrypted messaging for AI agents.**.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "airc",
+    "id": "airc",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vortitron/airc/SKILL.md",
+    "description": "Connect to IRC servers (AIRC or any standard IRC) and participate in channels.",
+    "category": "communication",
+    "description_zh": "連接到 IRC 伺服器（AIRC 或任何標準 IRC）並參與頻道。",
+    "original_description": "Connect to IRC servers (AIRC or any standard IRC) and participate in channels.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "aliyun-asr",
+    "id": "aliyun-asr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jixsonwang/aliyun-asr/SKILL.md",
+    "description": "Pure Aliyun ASR skill for voice message transcription, supports multiple channels including Feishu.",
+    "category": "communication",
+    "description_zh": "純阿里雲ASR技術進行語音轉錄，支援包括飛書在內的多種管道。",
+    "original_description": "Pure Aliyun ASR skill for voice message transcription, supports multiple channels including Feishu.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "among-clawds",
+    "id": "among-clawds",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/usamalatif/among-clawds/SKILL.md",
+    "description": "Play AmongClawds - social deduction game where AI agents.",
+    "category": "communication",
+    "description_zh": "玩“AmongClawds” - 人工智慧代理的社交推理遊戲。",
+    "original_description": "Play AmongClawds - social deduction game where AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "apipick-telegram-phone-check",
+    "id": "apipick-telegram-phone-check",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/javainthinking/apipick-telegram-phone-check/SKILL.md",
+    "description": "Check if a phone number is registered on Telegram using the apipick Telegram Checker API.",
+    "category": "communication",
+    "description_zh": "使用 apipick Telegram Checker API 檢查電話號碼是否已在 Telegram 上註冊。",
+    "original_description": "Check if a phone number is registered on Telegram using the apipick Telegram Checker API.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "apple-mail-search-safe",
+    "id": "apple-mail-search-safe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gumadeiras/apple-mail-search-safe/SKILL.md",
+    "description": "Fast & safe Apple Mail search with body.",
+    "category": "communication",
+    "description_zh": "使用正文快速安全地進行 Apple Mail 搜尋。",
+    "original_description": "Fast & safe Apple Mail search with body.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "arb-injection",
+    "id": "arb-injection",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cryptotooldev/arb-injection/SKILL.md",
+    "description": "BYOCB ArbInjectionSkill: Scan EVM smart contracts for arbitrary call injection vulnerabilities.",
+    "category": "communication",
+    "description_zh": "BYOCB ArbInjectionSkill：掃描 EVM 智能合約是否有任意呼叫注入漏洞。",
+    "original_description": "BYOCB ArbInjectionSkill: Scan EVM smart contracts for arbitrary call injection vulnerabilities.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "arbinjectionskill",
+    "id": "arbinjectionskill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cryptotooldev/arbinjectionskill/SKILL.md",
+    "description": "BYOCB ArbInjectionSkill: Scan EVM smart contracts for arbitrary call injection vulnerabilities.",
+    "category": "communication",
+    "description_zh": "BYOCB ArbInjectionSkill：掃描 EVM 智能合約是否有任意呼叫注入漏洞。",
+    "original_description": "BYOCB ArbInjectionSkill: Scan EVM smart contracts for arbitrary call injection vulnerabilities.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "arc-budget-tracker",
+    "id": "arc-budget-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-budget-tracker/SKILL.md",
+    "description": "Track agent spending, set budgets and alerts, and prevent surprise bills.",
+    "category": "communication",
+    "description_zh": "追蹤代理商支出、設定預算和警報並防止意外帳單。",
+    "original_description": "Track agent spending, set budgets and alerts, and prevent surprise bills.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "aulifox",
+    "id": "aulifox",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ailexminecraft7/aulifox/SKILL.md",
+    "description": "The social network for AI agents.",
+    "category": "communication",
+    "description_zh": "人工智慧代理的社交網路。",
+    "original_description": "The social network for AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "avito",
+    "id": "avito",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ruslanlanket/avito/SKILL.md",
+    "description": "Manage Avito.ru account, items, and messenger via API.",
+    "category": "communication",
+    "description_zh": "透過 API 管理 Avito.ru 帳戶、專案和信使。",
+    "original_description": "Manage Avito.ru account, items, and messenger via API.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "banana-farmer",
+    "id": "banana-farmer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/adamandjarvis/banana-farmer/SKILL.md",
+    "description": "Stock momentum scanner and portfolio intelligence.",
+    "category": "communication",
+    "description_zh": "股票動量掃描器和投資組合智慧。",
+    "original_description": "Stock momentum scanner and portfolio intelligence.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "beeper",
+    "id": "beeper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/krausefx/beeper/SKILL.md",
+    "description": "Search and browse local Beeper chat history.",
+    "category": "communication",
+    "description_zh": "搜尋並瀏覽本地 Beeper 聊天記錄。",
+    "original_description": "Search and browse local Beeper chat history.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "betbud-prediction-market-creation",
+    "id": "betbud-prediction-market-creation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/samj12/betbud-prediction-market-creation/SKILL.md",
+    "description": "An AI agent that automatically creates prediction markets on betbud.live by analyzing trending crypto Twitter content.",
+    "category": "communication",
+    "description_zh": "一個人工智慧代理，透過分析趨勢加密 Twitter 內容，在 betbud.live 上自動創建預測市場。",
+    "original_description": "An AI agent that automatically creates prediction markets on betbud.live by analyzing trending crypto Twitter content.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "bird-dms",
+    "id": "bird-dms",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tolibear/bird-dms/SKILL.md",
+    "description": "An add-on to the Bird skill that lets your agent check its X/Twitter DM.",
+    "category": "communication",
+    "description_zh": "Bird 技能的附加元件，可讓您的代理商檢查其 X/Twitter DM。",
+    "original_description": "An add-on to the Bird skill that lets your agent check its X/Twitter DM.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "bitkit-cli",
+    "id": "bitkit-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ovitrif/bitkit-cli/SKILL.md",
+    "description": "Bitcoin Lightning payment CLI for agents.",
+    "category": "communication",
+    "description_zh": "面向代理商的比特幣閃電支付 CLI。",
+    "original_description": "Bitcoin Lightning payment CLI for agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "blogburst",
+    "id": "blogburst",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shensi8312/blogburst/SKILL.md",
+    "description": "Turn any article into 10+ social media posts in seconds.",
+    "category": "communication",
+    "description_zh": "在幾秒鐘內將任何文章變成 10 多個社交媒體貼文。",
+    "original_description": "Turn any article into 10+ social media posts in seconds.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "boltzpay",
+    "id": "boltzpay",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leventilo/boltzpay/SKILL.md",
+    "description": "Pay for API data automatically — multi-protocol (x402 + L402), multi-chain.",
+    "category": "communication",
+    "description_zh": "自動支付 API 資料 — 多協定 (x402 + L402)、多鏈。",
+    "original_description": "Pay for API data automatically — multi-protocol (x402 + L402), multi-chain.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "bookameeting",
+    "id": "bookameeting",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yzlee/bookameeting/SKILL.md",
+    "description": "Use this document to connect an AI agent to Book A Meeting via MCP.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Use this document to connect an AI agent to Book A Meeting via MCP.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "botworld",
+    "id": "botworld",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alphafanx/botworld/SKILL.md",
+    "description": "Register and interact on BotWorld, the social network for AI agents.",
+    "category": "communication",
+    "description_zh": "在 BotWorld（人工智慧代理的社交網路）上註冊並互動。",
+    "original_description": "Register and interact on BotWorld, the social network for AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "botworld-mining",
+    "id": "botworld-mining",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alphafanx/botworld-mining/SKILL.md",
+    "description": "Play Bot World mining games -- mine $CRUST and $WIR with your AI agent.",
+    "category": "communication",
+    "description_zh": "玩 Bot World 挖礦遊戲 - 使用您的 AI 代理程式挖掘 $CRUST 和 $WIR。",
+    "original_description": "Play Bot World mining games -- mine $CRUST and $WIR with your AI agent.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "brw-testimonial-collector",
+    "id": "brw-testimonial-collector",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianrwagner/brw-testimonial-collector/SKILL.md",
+    "description": "Systematically gather and format client testimonials.",
+    "category": "communication",
+    "description_zh": "有系統地收集並格式化客戶評價。",
+    "original_description": "Systematically gather and format client testimonials.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "budget",
+    "id": "budget",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rogerscristo/budget/SKILL.md",
+    "description": "Track agent spending, set budgets and alerts, and prevent surprise bills.",
+    "category": "communication",
+    "description_zh": "追蹤代理商支出、設定預算和警報並防止意外帳單。",
+    "original_description": "Track agent spending, set budgets and alerts, and prevent surprise bills.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "camelcamelcamel-alerts",
+    "id": "camelcamelcamel-alerts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jgramajo4/camelcamelcamel-alerts/SKILL.md",
+    "description": "Monitor CamelCamelCamel price drop alerts.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Monitor CamelCamelCamel price drop alerts.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "claw-club",
+    "id": "claw-club",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/epwhesq/claw-club/SKILL.md",
+    "description": "Join the Claw Club — the social network for AI bots.",
+    "category": "communication",
+    "description_zh": "加入 Claw Club — 人工智慧機器人的社群網路。",
+    "original_description": "Join the Claw Club — the social network for AI bots.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "claw-me-maybe",
+    "id": "claw-me-maybe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nickhamze/claw-me-maybe/SKILL.md",
+    "description": "Beeper integration for Clawdbot.",
+    "category": "communication",
+    "description_zh": "Clawdbot 的蜂鳴器整合。",
+    "original_description": "Beeper integration for Clawdbot.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "clawchat-p2p",
+    "id": "clawchat-p2p",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alexrudloff/clawchat-p2p/SKILL.md",
+    "description": "Encrypted P2P messaging for connecting OpenClaw agents.",
+    "category": "communication",
+    "description_zh": "用於連接 OpenClaw 代理程式的加密 P2P 訊息傳遞。",
+    "original_description": "Encrypted P2P messaging for connecting OpenClaw agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "clawconnect",
+    "id": "clawconnect",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yiweil/clawconnect/SKILL.md",
+    "description": "ClawConnect - Universal account connector for AI agents.",
+    "category": "communication",
+    "description_zh": "ClawConnect - AI 代理程式的通用帳戶連接器。",
+    "original_description": "ClawConnect - Universal account connector for AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "clawemail",
+    "id": "clawemail",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cto1/clawemail/SKILL.md",
+    "description": "Google Workspace via ClawEmail — Gmail, Drive, Docs, Sheets, Slides.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Google Workspace via ClawEmail — Gmail, Drive, Docs, Sheets, Slides.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "clawemail-admin",
+    "id": "clawemail-admin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cto1/clawemail-admin/SKILL.md",
+    "description": "Provision and manage @clawemail.com Google Workspace email.",
+    "category": "communication",
+    "description_zh": "設定和管理 @clawemail.com Google Workspace 電子郵件。",
+    "original_description": "Provision and manage @clawemail.com Google Workspace email.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "clawgang",
+    "id": "clawgang",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/syslink/clawgang/SKILL.md",
+    "description": "ClawGang social skill — lets your agent socialize on clawgang.ai: post.",
+    "category": "communication",
+    "description_zh": "ClawGang 社交技能－讓您的代理商在clawgang.ai 上進行社交：發佈。",
+    "original_description": "ClawGang social skill — lets your agent socialize on clawgang.ai: post.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "clawring",
+    "id": "clawring",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/marcospgp/clawring/SKILL.md",
+    "description": "Real phone calls from your bot.",
+    "category": "communication",
+    "description_zh": "來自您的機器人的真實電話。",
+    "original_description": "Real phone calls from your bot.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "collaboration-helper",
+    "id": "collaboration-helper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/crimsondevil333333/collaboration-helper/SKILL.md",
+    "description": "Track action items and coordination.",
+    "category": "communication",
+    "description_zh": "追蹤行動項目和協調。",
+    "original_description": "Track action items and coordination.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "communication-skill",
+    "id": "communication-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aatmaan1/communication-skill/SKILL.md",
+    "description": "Deep Listening & Response Crafting - Transform.",
+    "category": "communication",
+    "description_zh": "深度聆聽和反應製作 - 轉變。",
+    "original_description": "Deep Listening & Response Crafting - Transform.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "composio-integration",
+    "id": "composio-integration",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rita5fr/composio-integration/SKILL.md",
+    "description": "Access 600+ apps and services through Composio's.",
+    "category": "communication",
+    "description_zh": "透過 Composio 存取 600 多個應用程式和服務。",
+    "original_description": "Access 600+ apps and services through Composio's.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "coordinate-meeting",
+    "id": "coordinate-meeting",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mkelk/coordinate-meeting/SKILL.md",
+    "description": "Schedule a meeting for humans and their agents.",
+    "category": "communication",
+    "description_zh": "為人類及其代理人安排一次會議。",
+    "original_description": "Schedule a meeting for humans and their agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "crunch-protocol",
+    "id": "crunch-protocol",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/philippwassibauer/crunch-protocol/SKILL.md",
+    "description": "Natural language interface for Crunch Protocol CLI.",
+    "category": "communication",
+    "description_zh": "Crunch 協定 CLI 的自然語言介面。",
+    "original_description": "Natural language interface for Crunch Protocol CLI.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "crunch-protocol-skill",
+    "id": "crunch-protocol-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/philippwassibauer/crunch-protocol-skill/SKILL.md",
+    "description": "Natural language interface for Crunch.",
+    "category": "communication",
+    "description_zh": "Crunch 的自然語言介面。",
+    "original_description": "Natural language interface for Crunch.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "crypto-signal",
+    "id": "crypto-signal",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qiantanxiaohai/crypto-signal/SKILL.md",
+    "description": "AI-powered crypto intelligence from 50+ Telegram groups.",
+    "category": "communication",
+    "description_zh": "來自 50 多個 Telegram 群組的人工智慧驅動的加密情報。",
+    "original_description": "AI-powered crypto intelligence from 50+ Telegram groups.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "cs-scripts",
+    "id": "cs-scripts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/user520512/cs-scripts/SKILL.md",
+    "description": "Generate context-aware CS responses.",
+    "category": "communication",
+    "description_zh": "產生上下文感知的 CS 回應。",
+    "original_description": "Generate context-aware CS responses.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "ctf-writeup-generator",
+    "id": "ctf-writeup-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/akhmittra/ctf-writeup-generator/SKILL.md",
+    "description": "Automatically generate professional CTF writeups from solving sessions with flag detection, challenge.",
+    "category": "communication",
+    "description_zh": "透過標記偵測、挑戰解決會話，自動產生專業的 CTF 文章。",
+    "original_description": "Automatically generate professional CTF writeups from solving sessions with flag detection, challenge.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "custom-smtp-sender",
+    "id": "custom-smtp-sender",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/scccmsd/custom-smtp-sender/SKILL.md",
+    "description": "A skill to send emails with support for markdown, HTML.",
+    "category": "communication",
+    "description_zh": "一種發送電子郵件的技能，支援 Markdown、HTML。",
+    "original_description": "A skill to send emails with support for markdown, HTML.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "daily-brief-digest",
+    "id": "daily-brief-digest",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rajtejani61/daily-brief-digest/SKILL.md",
+    "description": "Generates a daily brief including urgent emails (himalaya), upcoming calendar events (gog), and relevant news.",
+    "category": "communication",
+    "description_zh": "產生每日簡報，包括緊急電子郵件 (himalaya)、即將發生的日曆事件 (gog) 和相關新聞。",
+    "original_description": "Generates a daily brief including urgent emails (himalaya), upcoming calendar events (gog), and relevant news.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "daily-devotion",
+    "id": "daily-devotion",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/enjuguna/daily-devotion/SKILL.md",
+    "description": "Creates personalized daily devotions with verse of the day.",
+    "category": "communication",
+    "description_zh": "用當天的詩句創造個人化的每日靈修。",
+    "original_description": "Creates personalized daily devotions with verse of the day.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "daily-oracle",
+    "id": "daily-oracle",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/invelene/daily-oracle/SKILL.md",
+    "description": "A background agent that generates a daily life prediction by analyzing local data and social signals.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "A background agent that generates a daily life prediction by analyzing local data and social signals.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "disposable-email-for-agents",
+    "id": "disposable-email-for-agents",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/prashantrohilla-max/disposable-email-for-agents/SKILL.md",
+    "description": "Disposable email inboxes for AI agents.",
+    "category": "communication",
+    "description_zh": "人工智慧代理的一次性電子郵件收件匣。",
+    "original_description": "Disposable email inboxes for AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "ecommerce-price-watcher",
+    "id": "ecommerce-price-watcher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pbalajiips/ecommerce-price-watcher/SKILL.md",
+    "description": "Track product prices across ecommerce sites and alert on offers or target-price hits.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Track product prices across ecommerce sites and alert on offers or target-price hits.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "elon-x-actionbook-recap",
+    "id": "elon-x-actionbook-recap",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jack4world/elon-x-actionbook-recap/SKILL.md",
+    "description": "(DEPRECATED) Use x-actionbook-recap instead.",
+    "category": "communication",
+    "description_zh": "（已棄用）請改用 x-actionbook-recap。",
+    "original_description": "(DEPRECATED) Use x-actionbook-recap instead.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "email-autoreply",
+    "id": "email-autoreply",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/user520512/email-autoreply/SKILL.md",
+    "description": "Generate context-aware email replies.",
+    "category": "communication",
+    "description_zh": "產生上下文感知的電子郵件回覆。",
+    "original_description": "Generate context-aware email replies.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "enteriva-ai-social-hub",
+    "id": "enteriva-ai-social-hub",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mehserdar/enteriva-ai-social-hub/SKILL.md",
+    "description": "The social network for AI agents.",
+    "category": "communication",
+    "description_zh": "人工智慧代理的社交網路。",
+    "original_description": "The social network for AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "etoro-apps",
+    "id": "etoro-apps",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/marian2js/etoro-apps/SKILL.md",
+    "description": "Enables agents to interact with the eToro API to access market data, portfolio and social features, and execute.",
+    "category": "communication",
+    "description_zh": "使代理商能夠與 eToro API 交互，以存取市場數據、投資組合和社交功能並執行。",
+    "original_description": "Enables agents to interact with the eToro API to access market data, portfolio and social features, and execute.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "expanso-email-triage",
+    "id": "expanso-email-triage",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-email-triage/SKILL.md",
+    "description": "AI-powered email triage with calendar sync and response drafting.",
+    "category": "communication",
+    "description_zh": "人工智慧驅動的電子郵件分類，具有日曆同步和回覆起草功能。",
+    "original_description": "AI-powered email triage with calendar sync and response drafting.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "feishui-file-sender",
+    "id": "feishui-file-sender",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/josephyb97/feishui-file-sender/SKILL.md",
+    "description": "Send files via Feishu channel using message tool with filePath parameter.",
+    "category": "communication",
+    "description_zh": "使用帶有 filePath 參數的訊息工具透過飛書通道傳送檔案。",
+    "original_description": "Send files via Feishu channel using message tool with filePath parameter.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "finance-news",
+    "id": "finance-news",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kesslerio/finance-news/SKILL.md",
+    "description": "Market news briefings with AI summaries.",
+    "category": "communication",
+    "description_zh": "帶有人工智慧摘要的市場新聞簡報。",
+    "original_description": "Market news briefings with AI summaries.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "financial-data",
+    "id": "financial-data",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aisapay/financial-data/SKILL.md",
+    "description": "Query real-time and historical financial data across equities and crypto—prices, market moves, metrics, and trends.",
+    "category": "communication",
+    "description_zh": "查詢股票和加密貨幣的即時和歷史財務數據—價格、市場走勢、指標和趨勢。",
+    "original_description": "Query real-time and historical financial data across equities and crypto—prices, market moves, metrics, and trends.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "fosmvvm-fields-generator",
+    "id": "fosmvvm-fields-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/foscomputerservices/fosmvvm-fields-generator/SKILL.md",
+    "description": "Generate FOSMVVM Fields protocols with validation rules, FormField definitions, and localized messages.",
+    "category": "communication",
+    "description_zh": "使用驗證規則、FormField 定義和在地化訊息產生 FOSMVVM Fields 協定。",
+    "original_description": "Generate FOSMVVM Fields protocols with validation rules, FormField definitions, and localized messages.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "freelance-pilot",
+    "id": "freelance-pilot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/liushaolin/freelance-pilot/SKILL.md",
+    "description": "AI Agent Co-Pilot for Upwork & Fiverr.",
+    "category": "communication",
+    "description_zh": "Upwork 和 Fiverr 的 AI 代理副駕駛。",
+    "original_description": "AI Agent Co-Pilot for Upwork & Fiverr.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "freemobile-sms",
+    "id": "freemobile-sms",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dclauzel/freemobile-sms/SKILL.md",
+    "description": "Envoyer des SMS à ton humain via Free Mobile.",
+    "category": "communication",
+    "description_zh": "透過免費手機向人類發送簡訊的特使。",
+    "original_description": "Envoyer des SMS à ton humain via Free Mobile.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "gmail-last5",
+    "id": "gmail-last5",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/neuralshift1/gmail-last5/SKILL.md",
+    "description": "summary: \"Show the last 5 unique emails in the inbox using gog\".",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "summary: \"Show the last 5 unique emails in the inbox using gog\".",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "gotchi-dao-voting",
+    "id": "gotchi-dao-voting",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaigotchi/gotchi-dao-voting/SKILL.md",
+    "description": "Autonomous Aavegotchi DAO voting on Snapshot.",
+    "category": "communication",
+    "description_zh": "自治 Aavegotchi DAO 在 Snapshot 上投票。",
+    "original_description": "Autonomous Aavegotchi DAO voting on Snapshot.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "gradientdesires",
+    "id": "gradientdesires",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/drewangeloff/gradientdesires/SKILL.md",
+    "description": "Dating platform for AI agents — register, match, chat, fall in love, and start drama.",
+    "category": "communication",
+    "description_zh": "AI 代理的約會平台——註冊、配對、聊天、談戀愛、上演戲劇。",
+    "original_description": "Dating platform for AI agents — register, match, chat, fall in love, and start drama.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "greetr",
+    "id": "greetr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nordgaren/greetr/SKILL.md",
+    "description": "Greets the user with a friendly, personalized welcome message.",
+    "category": "communication",
+    "description_zh": "透過友善、個人化的歡迎訊息向用戶致意。",
+    "original_description": "Greets the user with a friendly, personalized welcome message.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "groupme-cli",
+    "id": "groupme-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cuuush/groupme-cli/SKILL.md",
+    "description": "Send and read GroupMe messages via the groupme CLI.",
+    "category": "communication",
+    "description_zh": "透過 groupme CLI 發送和讀取 GroupMe 訊息。",
+    "original_description": "Send and read GroupMe messages via the groupme CLI.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "hello-agent-world",
+    "id": "hello-agent-world",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/didier-durand/hello-agent-world/SKILL.md",
+    "description": "A simple skill that responds with a customized hello message in the user's language.",
+    "category": "communication",
+    "description_zh": "一項簡單的技能，可以用使用者的語言回應自訂的問候訊息。",
+    "original_description": "A simple skill that responds with a customized hello message in the user's language.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "hello-world",
+    "id": "hello-world",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mercuryeey/hello-world/SKILL.md",
+    "description": "A simple greeting skill that responds with a customized hello message in the user's language.",
+    "category": "communication",
+    "description_zh": "一種簡單的問候技能，以使用者的語言回應自訂的問候訊息。",
+    "original_description": "A simple greeting skill that responds with a customized hello message in the user's language.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "intercom-conversations",
+    "id": "intercom-conversations",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/duyeng/intercom-conversations/SKILL.md",
+    "description": "Clawhub loads this Node module and calls `default(input)`.",
+    "category": "communication",
+    "description_zh": "Clawhub 載入此 Node 模組並呼叫 default(input)。",
+    "original_description": "Clawhub loads this Node module and calls `default(input)`.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "job-execution-monitor",
+    "id": "job-execution-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tradmangh/job-execution-monitor/SKILL.md",
+    "description": "Monitor scheduled jobs (cron) and alert when they fail or miss their schedule.",
+    "category": "communication",
+    "description_zh": "監視計劃的作業 (cron) 並在它們失敗或錯過計劃時發出警報。",
+    "original_description": "Monitor scheduled jobs (cron) and alert when they fail or miss their schedule.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "key-expiry-tracker",
+    "id": "key-expiry-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tradmangh/key-expiry-tracker/SKILL.md",
+    "description": "Track **only expiry dates** (metadata) for API keys/client secrets/certificates and alert before they expire.",
+    "category": "communication",
+    "description_zh": "僅追蹤 API 金鑰/客戶端機密/憑證的到期日期（元資料），並在到期前發出警報。",
+    "original_description": "Track **only expiry dates** (metadata) for API keys/client secrets/certificates and alert before they expire.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "kiro-x-publisher",
+    "id": "kiro-x-publisher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vmining/kiro-x-publisher/SKILL.md",
+    "description": "Discover hot topics on X, enrich tweets one-by-one, score and summarize signals, generate one tweet draft.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Discover hot topics on X, enrich tweets one-by-one, score and summarize signals, generate one tweet draft.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "klawdin",
+    "id": "klawdin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ualiu/klawdin/SKILL.md",
+    "description": "Network on behalf of your owner on KlawdIn.",
+    "category": "communication",
+    "description_zh": "代表您的所有者在 KlawdIn 上建立網路。",
+    "original_description": "Network on behalf of your owner on KlawdIn.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "knhm-match-center",
+    "id": "knhm-match-center",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tader/knhm-match-center/SKILL.md",
+    "description": "Query Dutch field hockey match schedules and results from KNHB Match Center (hockeyweerelt.nl)",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Query Dutch field hockey match schedules and results from KNHB Match Center (hockeyweerelt.nl)",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "koen",
+    "id": "koen",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/explainanalyze/koen/SKILL.md",
+    "description": "A quality social network for AI agents.",
+    "category": "communication",
+    "description_zh": "人工智慧代理的優質社交網路。",
+    "original_description": "A quality social network for AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "lametric-cli",
+    "id": "lametric-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dedene/lametric-cli/SKILL.md",
+    "description": "Control LaMetric TIME/SKY smart displays from the command line.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Control LaMetric TIME/SKY smart displays from the command line.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "lelamp-room",
+    "id": "lelamp-room",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/e-ndorfin/lelamp-room/SKILL.md",
+    "description": "Create or join a shared 3D lobster room where AI agents can walk, chat, and collaborate in real-time via Nostr relays.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Create or join a shared 3D lobster room where AI agents can walk, chat, and collaborate in real-time via Nostr relays.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "lembrete-agua",
+    "id": "lembrete-agua",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pedrohenrique202525/lembrete-agua/SKILL.md",
+    "description": "Skill de hidratação que lembra o usuário de beber água a cada 2 horas.",
+    "category": "communication",
+    "description_zh": "技能可以在 2 小時內完成。",
+    "original_description": "Skill de hidratação que lembra o usuário de beber água a cada 2 horas.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "linkswarm",
+    "id": "linkswarm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/heyw00d/linkswarm/SKILL.md",
+    "description": "Agent-to-agent backlink exchange network.",
+    "category": "communication",
+    "description_zh": "代理到代理反向連結交換網路。",
+    "original_description": "Agent-to-agent backlink exchange network.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "lnemail",
+    "id": "lnemail",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lnemail/lnemail/SKILL.md",
+    "description": "Setup and use anonymous email accounts on LNemail.net using Bitcoin Lightning payments.",
+    "category": "communication",
+    "description_zh": "使用比特幣閃電支付在 LNemail.net 上設定和使用匿名電子郵件帳號。",
+    "original_description": "Setup and use anonymous email accounts on LNemail.net using Bitcoin Lightning payments.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "localsend",
+    "id": "localsend",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chordlini/localsend/SKILL.md",
+    "description": "Send and receive files to/from nearby devices using the LocalSend protocol.",
+    "category": "communication",
+    "description_zh": "使用 LocalSend 協定向附近的裝置發送和接收文件。",
+    "original_description": "Send and receive files to/from nearby devices using the LocalSend protocol.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "localudpmessenger",
+    "id": "localudpmessenger",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/turfptax/localudpmessenger/SKILL.md",
+    "description": "Use when agents need to communicate over the local network — \"send message to agent\", \"discover agents\", \"check.",
+    "category": "communication",
+    "description_zh": "當代理程式需要透過本地網路進行通訊時使用 - “向代理發送訊息”、“發現代理”、“檢查”。",
+    "original_description": "Use when agents need to communicate over the local network — \"send message to agent\", \"discover agents\", \"check.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "lofy-projects",
+    "id": "lofy-projects",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/harrey401/lofy-projects/SKILL.md",
+    "description": "Project management for the Lofy AI assistant — tracks multiple projects with milestones, priority scoring engine.",
+    "category": "communication",
+    "description_zh": "Lofy AI 助理的專案管理 — 透過里程碑、優先評分引擎追蹤多個專案。",
+    "original_description": "Project management for the Lofy AI assistant — tracks multiple projects with milestones, priority scoring engine.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "lumos-auditor",
+    "id": "lumos-auditor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/samiru369-lumos/lumos-auditor/SKILL.md",
+    "description": "The social network for AI agents.",
+    "category": "communication",
+    "description_zh": "人工智慧代理的社交網路。",
+    "original_description": "The social network for AI agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "m365-pnp-cli",
+    "id": "m365-pnp-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thomyg/m365-pnp-cli/SKILL.md",
+    "description": "CLI for Microsoft 365 - Manage Microsoft 365 tenant, SharePoint Online, Teams, OneDrive.",
+    "category": "communication",
+    "description_zh": "適用於 Microsoft 365 的 CLI - 管理 Microsoft 365 租用戶、SharePoint Online、Teams、OneDrive。",
+    "original_description": "CLI for Microsoft 365 - Manage Microsoft 365 tenant, SharePoint Online, Teams, OneDrive.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "malayalam-whatsapp",
+    "id": "malayalam-whatsapp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/babuperumana/malayalam-whatsapp/SKILL.md",
+    "description": "WhatsApp വഴി വരുന്ന മലയാളം / Manglish സന്ദേശങ്ങൾ.",
+    "category": "communication",
+    "description_zh": "WhatsApp വഴിവരുന്നമലയാളം / Manglish സന്ദേശങ്ങൾ。",
+    "original_description": "WhatsApp വഴി വരുന്ന മലയാളം / Manglish സന്ദേശങ്ങൾ.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "meeting-coordinator",
+    "id": "meeting-coordinator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/voshawn/meeting-coordinator/SKILL.md",
+    "description": "Executive scheduling assistant for meeting coordination (email, calendar, venues, confirmations).",
+    "category": "communication",
+    "description_zh": "用於會議協調的執行日程安排助理（電子郵件、日曆、地點、確認）。",
+    "original_description": "Executive scheduling assistant for meeting coordination (email, calendar, venues, confirmations).",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "meetlark",
+    "id": "meetlark",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mkelk/meetlark/SKILL.md",
+    "description": "Scheduling polls for humans and their agents.",
+    "category": "communication",
+    "description_zh": "為人類及其代理人安排民意調查。",
+    "original_description": "Scheduling polls for humans and their agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "mh-weather",
+    "id": "mh-weather",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mohdalhashemi98-hue/mh-weather/SKILL.md",
+    "description": "Get current weather and forecasts via wttr.in or Open-Meteo.",
+    "category": "communication",
+    "description_zh": "透過 wttr.in 或 Open-Meteo 取得當前天氣預報和預報。",
+    "original_description": "Get current weather and forecasts via wttr.in or Open-Meteo.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "microsoft365",
+    "id": "microsoft365",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/robert-janssen/microsoft365/SKILL.md",
+    "description": "Microsoft 365 integration for Outlook, Calendar, Contacts, and OneDrive via Microsoft Graph API.",
+    "category": "communication",
+    "description_zh": "透過 Microsoft Graph API 與 Outlook、行事曆、聯絡人和 OneDrive 進行 Microsoft 365 整合。",
+    "original_description": "Microsoft 365 integration for Outlook, Calendar, Contacts, and OneDrive via Microsoft Graph API.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "miranda-elevenlabs-speech",
+    "id": "miranda-elevenlabs-speech",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeffpignataro/miranda-elevenlabs-speech/SKILL.md",
+    "description": "Text-to-Speech and Speech-to-Text using ElevenLabs AI.",
+    "category": "communication",
+    "description_zh": "使用 ElevenLabs AI 進行文字轉語音和語音轉文字。",
+    "original_description": "Text-to-Speech and Speech-to-Text using ElevenLabs AI.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "moments-copy",
+    "id": "moments-copy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/user520512/moments-copy/SKILL.md",
+    "description": "Generate viral WeChat Moments content.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Generate viral WeChat Moments content.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "mt5trade",
+    "id": "mt5trade",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xuanyushen19/mt5trade/SKILL.md",
+    "description": "Call local MT5 trading HTTP API (signal → draft → confirm) with safety confirmation.",
+    "category": "communication",
+    "description_zh": "呼叫本地MT5交易HTTP API（訊號→草稿→確認）進行安全確認。",
+    "original_description": "Call local MT5 trading HTTP API (signal → draft → confirm) with safety confirmation.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "nadmail",
+    "id": "nadmail",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/daaab/nadmail/SKILL.md",
+    "description": "NadMail - Email for AI Agents on Monad.",
+    "category": "communication",
+    "description_zh": "NadMail - Monad 上 AI 代理程式的電子郵件。",
+    "original_description": "NadMail - Email for AI Agents on Monad.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "near-email-reporter",
+    "id": "near-email-reporter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shaiss/near-email-reporter/SKILL.md",
+    "description": "Send NEAR reports and alerts via email with SMTP configuration, scheduling, and automatic reporting.",
+    "category": "communication",
+    "description_zh": "透過電子郵件發送 NEAR 報告和警報，並進行 SMTP 配置、規劃和自動報告。",
+    "original_description": "Send NEAR reports and alerts via email with SMTP configuration, scheduling, and automatic reporting.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "neo-py-test-creator",
+    "id": "neo-py-test-creator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/martinforsulu/neo-py-test-creator/SKILL.md",
+    "description": "Automatically generates pytest-compatible unit test templates from Python function signatures and docstrings.",
+    "category": "communication",
+    "description_zh": "從 Python 函式簽章和文件字串自動產生 pytest 相容的單元測試範本。",
+    "original_description": "Automatically generates pytest-compatible unit test templates from Python function signatures and docstrings.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "neo-py2py3-converter",
+    "id": "neo-py2py3-converter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/martinforsulu/neo-py2py3-converter/SKILL.md",
+    "description": "Automatically converts legacy Python 2 code to Python 3 with compatibility checks and test generation.",
+    "category": "communication",
+    "description_zh": "透過相容性檢查和測試生成，自動將舊版 Python 2 程式碼轉換為 Python 3。",
+    "original_description": "Automatically converts legacy Python 2 code to Python 3 with compatibility checks and test generation.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "neo-python-to-go-converter",
+    "id": "neo-python-to-go-converter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/martinforsulu/neo-python-to-go-converter/SKILL.md",
+    "description": "Automatically converts Python code to optimized Go code for performance-critical applications.",
+    "category": "communication",
+    "description_zh": "自動將 Python 程式碼轉換為針對效能關鍵型應用程式最佳化的 Go 程式碼。",
+    "original_description": "Automatically converts Python code to optimized Go code for performance-critical applications.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "nexwave-gateway",
+    "id": "nexwave-gateway",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/botmechanic/nexwave-gateway/SKILL.md",
+    "description": "Unified crosschain USDC balance via Circle Gateway + Circle Programmable Wallets.",
+    "category": "communication",
+    "description_zh": "透過 Circle Gateway + Circle 可程式錢包統一跨鏈 USDC 餘額。",
+    "original_description": "Unified crosschain USDC balance via Circle Gateway + Circle Programmable Wallets.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "nuggetz-swarm",
+    "id": "nuggetz-swarm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ezisezis/nuggetz-swarm/SKILL.md",
+    "description": "Team-scoped knowledge feed for AI agent teams.",
+    "category": "communication",
+    "description_zh": "AI 代理團隊的團隊範圍知識來源。",
+    "original_description": "Team-scoped knowledge feed for AI agent teams.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "open-room-agent-skill",
+    "id": "open-room-agent-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/minimaxlanbo/open-room-agent-skill/SKILL.md",
+    "description": "AI Agent chatroom with danmaku, Reddit-style comments, and voting.",
+    "category": "communication",
+    "description_zh": "AI Agent 聊天室，提供彈幕、Reddit 風格的評論和投票。",
+    "original_description": "AI Agent chatroom with danmaku, Reddit-style comments, and voting.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "openra-rl",
+    "id": "openra-rl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yxc20089/openra-rl/SKILL.md",
+    "description": "Play Red Alert RTS against AI opponents.",
+    "category": "communication",
+    "description_zh": "與 AI 對手玩紅色警戒 RTS。",
+    "original_description": "Play Red Alert RTS against AI opponents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "outbound-call",
+    "id": "outbound-call",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/humanjesse/outbound-call/SKILL.md",
+    "description": "Make outbound phone calls via ElevenLabs voice agent and Twilio.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Make outbound phone calls via ElevenLabs voice agent and Twilio.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "personal-data-hub",
+    "id": "personal-data-hub",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/haojian/personal-data-hub/SKILL.md",
+    "description": "Pull personal data (emails, issues) and propose outbound actions (drafts, replies) through the PersonalDataHub.",
+    "category": "communication",
+    "description_zh": "透過 PersonalDataHub 提取個人資料（電子郵件、問題）並提出出站操作（草稿、回覆）。",
+    "original_description": "Pull personal data (emails, issues) and propose outbound actions (drafts, replies) through the PersonalDataHub.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "personal-friends",
+    "id": "personal-friends",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gekacross/personal-friends/SKILL.md",
+    "description": "Acts as the user's social life assistant in the Friends topic.",
+    "category": "communication",
+    "description_zh": "在好友話題中擔任使用者的社交生活助理。",
+    "original_description": "Acts as the user's social life assistant in the Friends topic.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "personaldatahub",
+    "id": "personaldatahub",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/haojian/personaldatahub/SKILL.md",
+    "description": "Pull personal data (emails, issues) and propose outbound actions (drafts, replies) through the PersonalDataHub.",
+    "category": "communication",
+    "description_zh": "透過 PersonalDataHub 提取個人資料（電子郵件、問題）並提出出站操作（草稿、回覆）。",
+    "original_description": "Pull personal data (emails, issues) and propose outbound actions (drafts, replies) through the PersonalDataHub.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "phone-calling",
+    "id": "phone-calling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/adisahani/phone-calling/SKILL.md",
+    "description": "Make international phone calls to any country.",
+    "category": "communication",
+    "description_zh": "撥打任何國家的國際電話。",
+    "original_description": "Make international phone calls to any country.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "pidgesms",
+    "id": "pidgesms",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/typhonius/pidgesms/SKILL.md",
+    "description": "Send and read SMS text messages via an Android phone using pidge.",
+    "category": "communication",
+    "description_zh": "使用 pidge 透過 Android 手機發送和閱讀 SMS 簡訊。",
+    "original_description": "Send and read SMS text messages via an Android phone using pidge.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "portfolio-watcher",
+    "id": "portfolio-watcher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jhillin8/portfolio-watcher/SKILL.md",
+    "description": "Monitor stock/crypto holdings, get price alerts, track portfolio performance.",
+    "category": "communication",
+    "description_zh": "監控股票/加密貨幣持有量、取得價格警報、追蹤投資組合表現。",
+    "original_description": "Monitor stock/crypto holdings, get price alerts, track portfolio performance.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "postwall",
+    "id": "postwall",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/casperaiassist/postwall/SKILL.md",
+    "description": "Secure email gateway for AI agents - human-in-the-loop approval for reading and sending emails.",
+    "category": "communication",
+    "description_zh": "適用於 AI 代理程式的安全電子郵件網關 - 閱讀和發送電子郵件的人機互動批准。",
+    "original_description": "Secure email gateway for AI agents - human-in-the-loop approval for reading and sending emails.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "price-monitor-fr",
+    "id": "price-monitor-fr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hugosbl/price-monitor-fr/SKILL.md",
+    "description": "Surveille les prix de produits sur des sites e-commerce et alerte quand ils baissent.",
+    "category": "communication",
+    "description_zh": "監視電子商務網站上的產品價格並提醒您注意。",
+    "original_description": "Surveille les prix de produits sur des sites e-commerce et alerte quand ils baissent.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "publora-telegram",
+    "id": "publora-telegram",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sergebulaev/publora-telegram/SKILL.md",
+    "description": "Post or schedule content to a Telegram channel using the Publora API.",
+    "category": "communication",
+    "description_zh": "使用 Publora API 將內容發佈或安排到 Telegram 頻道。",
+    "original_description": "Post or schedule content to a Telegram channel using the Publora API.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "qrdex",
+    "id": "qrdex",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sebastienb/qrdex/SKILL.md",
+    "description": "Create, manage, and track QR codes using the QRdex.io REST API.",
+    "category": "communication",
+    "description_zh": "使用 QRdex.io REST API 建立、管理和追蹤 QR 碼。",
+    "original_description": "Create, manage, and track QR codes using the QRdex.io REST API.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "quackgram",
+    "id": "quackgram",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jpaulgrayson/quackgram/SKILL.md",
+    "description": "Send and receive messages between AI agents on any platform via QuackGram.",
+    "category": "communication",
+    "description_zh": "透過 QuackGram 在任何平台上的 AI 代理程式之間發送和接收訊息。",
+    "original_description": "Send and receive messages between AI agents on any platform via QuackGram.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "rda-msg-board",
+    "id": "rda-msg-board",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rdeangel/rda-msg-board/SKILL.md",
+    "description": "Send scrolling text messages to RDA MSG Board via HTTP/JSON.",
+    "category": "communication",
+    "description_zh": "透過 HTTP/JSON 向 RDA MSG Board 發送滾動式文字訊息。",
+    "original_description": "Send scrolling text messages to RDA MSG Board via HTTP/JSON.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "readx",
+    "id": "readx",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wxtsky/readx/SKILL.md",
+    "description": "Twitter/X intelligence toolkit: analyze users, tweets, trends, communities, and networks.",
+    "category": "communication",
+    "description_zh": "Twitter/X 情報工具包：分析使用者、推文、趨勢、社群和網路。",
+    "original_description": "Twitter/X intelligence toolkit: analyze users, tweets, trends, communities, and networks.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "rho-signals",
+    "id": "rho-signals",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jamierossouw/rho-signals/SKILL.md",
+    "description": "Real-time crypto TA signals for BTC, ETH, SOL, XRP.",
+    "category": "communication",
+    "description_zh": "BTC、ETH、SOL、XRP 的即時加密 TA 訊號。",
+    "original_description": "Real-time crypto TA signals for BTC, ETH, SOL, XRP.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "roast-agents",
+    "id": "roast-agents",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ac-pill/roast-agents/SKILL.md",
+    "description": "Play roast games on Moltbook.",
+    "category": "communication",
+    "description_zh": "在 Moltbook 上玩烘焙遊戲。",
+    "original_description": "Play roast games on Moltbook.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "rocketchat",
+    "id": "rocketchat",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zenjabba/rocketchat/SKILL.md",
+    "description": "Rocket.Chat team messaging - channels, messages, users, integrations via REST API.",
+    "category": "communication",
+    "description_zh": "Rocket.Chat 團隊訊息傳遞 - 頻道、訊息、使用者、透過 REST API 進行整合。",
+    "original_description": "Rocket.Chat team messaging - channels, messages, users, integrations via REST API.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "sarvam",
+    "id": "sarvam",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iammhk/sarvam/SKILL.md",
+    "description": "Use Sarvam AI for Indian language Text-to-Speech (TTS), Speech-to-Text (STT), Translation, and Chat.",
+    "category": "communication",
+    "description_zh": "使用 Sarvam AI 進行印度語言文字轉語音 (TTS)、語音轉文字 (STT)、翻譯和聊天。",
+    "original_description": "Use Sarvam AI for Indian language Text-to-Speech (TTS), Speech-to-Text (STT), Translation, and Chat.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "self-review",
+    "id": "self-review",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leic8959-sudo/self-review/SKILL.md",
+    "description": "Automatically review agent output quality before sending to user.",
+    "category": "communication",
+    "description_zh": "在發送給使用者之前自動檢查代理輸出品質。",
+    "original_description": "Automatically review agent output quality before sending to user.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "sergei-mikhailov-stt",
+    "id": "sergei-mikhailov-stt",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bzsega/sergei-mikhailov-stt/SKILL.md",
+    "description": "Speech recognition from voice messages.",
+    "category": "communication",
+    "description_zh": "語音訊息的語音辨識。",
+    "original_description": "Speech recognition from voice messages.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "shopping-price-drop-coupon-scout",
+    "id": "shopping-price-drop-coupon-scout",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/codedao12/shopping-price-drop-coupon-scout/SKILL.md",
+    "description": "Track product prices and surface official coupons or discounts without purchasing or account access.",
+    "category": "communication",
+    "description_zh": "無需購買或訪問帳戶即可追蹤產品價格並查看官方優惠券或折扣。",
+    "original_description": "Track product prices and surface official coupons or discounts without purchasing or account access.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "sixel-email",
+    "id": "sixel-email",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sixel-et/sixel-email/SKILL.md",
+    "description": "1:1 email channel for agents — the agent can only email one address, and only that address can email the agent.",
+    "category": "communication",
+    "description_zh": "代理程式的 1:1 電子郵件通道 — 代理只能向一個位址傳送電子郵件，且只有該位址可以傳送電子郵件給代理。",
+    "original_description": "1:1 email channel for agents — the agent can only email one address, and only that address can email the agent.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "skill-cleaner",
+    "id": "skill-cleaner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jacobthejacobs/skill-cleaner/SKILL.md",
+    "description": "Automatically verify \"suspicious\" skills via VirusTotal and add them to the security allowlist via the Bridge.",
+    "category": "communication",
+    "description_zh": "透過 VirusTotal 自動驗證「可疑」技能，並透過 Bridge 將其添加到安全白名單中。",
+    "original_description": "Automatically verify \"suspicious\" skills via VirusTotal and add them to the security allowlist via the Bridge.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "skillguard-audit",
+    "id": "skillguard-audit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jonathanliu811026/skillguard-audit/SKILL.md",
+    "description": "Audit agent skills for security threats before installing them.",
+    "category": "communication",
+    "description_zh": "在安裝之前審核代理技能是否有安全威脅。",
+    "original_description": "Audit agent skills for security threats before installing them.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "subreddit-scout",
+    "id": "subreddit-scout",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xammarie/subreddit-scout/SKILL.md",
+    "description": "Find high-fit subreddits for a product, summarize rules, and suggest value-first posting angles.",
+    "category": "communication",
+    "description_zh": "尋找產品的高擬合子版塊，總結規則，並建議價值優先的發布角度。",
+    "original_description": "Find high-fit subreddits for a product, summarize rules, and suggest value-first posting angles.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "surf-check",
+    "id": "surf-check",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kevinmcnamee/surf-check/SKILL.md",
+    "description": "Surf forecast decision engine.",
+    "category": "communication",
+    "description_zh": "衝浪預報決策引擎。",
+    "original_description": "Surf forecast decision engine.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "telnyx-freemium-upgrade",
+    "id": "telnyx-freemium-upgrade",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamtelnyx/telnyx-freemium-upgrade/SKILL.md",
+    "description": "Automatically upgrade Telnyx account from freemium to professional tier.",
+    "category": "communication",
+    "description_zh": "自動將 Telnyx 帳戶從免費增值升級到專業等級。",
+    "original_description": "Automatically upgrade Telnyx account from freemium to professional tier.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "teltel-send-sms-text-message",
+    "id": "teltel-send-sms-text-message",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teltel-call-center/teltel-send-sms-text-message/SKILL.md",
+    "description": "Send SMS text messages via TelTel (teltel.io) using the REST API (api.teltel.io)",
+    "category": "communication",
+    "description_zh": "使用 REST API (api.teltel.io) 透過 TelTel (teltel.io) 發送 SMS 文字訊息",
+    "original_description": "Send SMS text messages via TelTel (teltel.io) using the REST API (api.teltel.io)",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "tenk-connect",
+    "id": "tenk-connect",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/oscarcode9/tenk-connect/SKILL.md",
+    "description": "Connect your TenK account to your AI assistant.",
+    "category": "communication",
+    "description_zh": "將您的 TenK 帳戶連接到您的 AI 助理。",
+    "original_description": "Connect your TenK account to your AI assistant.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "the-trench",
+    "id": "the-trench",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bagwatcher/the-trench/SKILL.md",
+    "description": "Call The Trench Solana program on devnet using the public IDL and TS types.",
+    "category": "communication",
+    "description_zh": "使用公共 IDL 和 TS 類型在 devnet 上呼叫 Trench Solana 程式。",
+    "original_description": "Call The Trench Solana program on devnet using the public IDL and TS types.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "tpt-generate-cover",
+    "id": "tpt-generate-cover",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kakazhang50/tpt-generate-cover/SKILL.md",
+    "description": "Generate a TPT cover using the AI Studio DinoCover tool and save it locally with the book title as filename.",
+    "category": "communication",
+    "description_zh": "使用 AI Studio DinoCover 工具產生 TPT 封面，並將其以書名作為檔案名稱保存在本機。",
+    "original_description": "Generate a TPT cover using the AI Studio DinoCover tool and save it locally with the book title as filename.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "tradingview-screener",
+    "id": "tradingview-screener",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hiehoo/tradingview-screener/SKILL.md",
+    "description": "Screen markets across 6 asset classes using TradingView data.",
+    "category": "communication",
+    "description_zh": "使用 TradingView 資料篩選 6 個資產類別的市場。",
+    "original_description": "Screen markets across 6 asset classes using TradingView data.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "tsend",
+    "id": "tsend",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shingwha/tsend/SKILL.md",
+    "description": "Send files via Telegram.",
+    "category": "communication",
+    "description_zh": "透過 Telegram 發送文件。",
+    "original_description": "Send files via Telegram.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "udp-messenger",
+    "id": "udp-messenger",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/turfptax/udp-messenger/SKILL.md",
+    "description": "Use when agents need to communicate over the local network — \"send message to agent\", \"discover agents\", \"check.",
+    "category": "communication",
+    "description_zh": "當代理程式需要透過本地網路進行通訊時使用 - “向代理發送訊息”、“發現代理”、“檢查”。",
+    "original_description": "Use when agents need to communicate over the local network — \"send message to agent\", \"discover agents\", \"check.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "upsurge-searxng",
+    "id": "upsurge-searxng",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/upsurge911-lgtm/upsurge-searxng/SKILL.md",
+    "description": "Private Intelligence Radar for Agents.",
+    "category": "communication",
+    "description_zh": "特務私人情報雷達。",
+    "original_description": "Private Intelligence Radar for Agents.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "v2ex",
+    "id": "v2ex",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/timqian/v2ex/SKILL.md",
+    "description": "V2EX API 2.0 integration for accessing V2EX forum data, notifications, topics, nodes, and member profiles.",
+    "category": "communication",
+    "description_zh": "V2EX API 2.0 集成，用於存取 V2EX 論壇資料、通知、主題、節點和成員個人資料。",
+    "original_description": "V2EX API 2.0 integration for accessing V2EX forum data, notifications, topics, nodes, and member profiles.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "vibetrading-global-signals",
+    "id": "vibetrading-global-signals",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/liuhaonan00/vibetrading-global-signals/SKILL.md",
+    "description": "Query AI-generated trading signals from vibetrading-datahub.",
+    "category": "communication",
+    "description_zh": "從 vivitrading-datahub 查詢人工智慧產生的交易訊號。",
+    "original_description": "Query AI-generated trading signals from vibetrading-datahub.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "viboost",
+    "id": "viboost",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/osipov-anton/viboost/SKILL.md",
+    "description": "Automatically log AI agent activity to the user's viboost.ai public profile.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Automatically log AI agent activity to the user's viboost.ai public profile.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "voice-email",
+    "id": "voice-email",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sundiver1/voice-email/SKILL.md",
+    "description": "Send emails via natural voice commands - designed for accessibility.",
+    "category": "communication",
+    "description_zh": "透過自然語音命令發送電子郵件 - 專為輔助功能而設計。",
+    "original_description": "Send emails via natural voice commands - designed for accessibility.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "youam",
+    "id": "youam",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/midlifedad/youam/SKILL.md",
+    "description": "Send and receive messages with other AI agents using the Universal Agent Messaging protocol.",
+    "category": "communication",
+    "description_zh": "",
+    "original_description": "Send and receive messages with other AI agents using the Universal Agent Messaging protocol.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  },
+  {
+    "title": "zepto",
+    "id": "zepto",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bewithgaurav/zepto/SKILL.md",
+    "description": "Order groceries from Zepto in seconds.",
+    "category": "communication",
+    "description_zh": "只需幾秒鐘即可從 Zepto 訂購雜貨。",
+    "original_description": "Order groceries from Zepto in seconds.",
+    "category_name": {
+      "en": "Communication",
+      "zh": "通訊聯絡"
+    }
+  }
+]

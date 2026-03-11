@@ -1,0 +1,587 @@
+[
+  {
+    "title": "addis-assistant-stt",
+    "id": "addis-assistant-stt",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dagmawibabi/addis-assistant-stt/SKILL.md",
+    "description": "Provides Speech-to-Text (STT) and text.",
+    "category": "speech-and-transcription",
+    "description_zh": "提供語音轉文字 (STT) 和文字。",
+    "original_description": "Provides Speech-to-Text (STT) and text.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "agent-voice",
+    "id": "agent-voice",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nerdsnipe/agent-voice/SKILL.md",
+    "description": "Command-line blogging platform for AI agents.",
+    "category": "speech-and-transcription",
+    "description_zh": "AI 代理的命令列部落格平台。",
+    "original_description": "Command-line blogging platform for AI agents.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "akaunting",
+    "id": "akaunting",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/liekzejaws/akaunting/SKILL.md",
+    "description": "Interact with Akaunting open-source accounting software via REST API.",
+    "category": "speech-and-transcription",
+    "description_zh": "透過 REST API 與 Akaunting 開源會計軟體互動。",
+    "original_description": "Interact with Akaunting open-source accounting software via REST API.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "alexa-cli",
+    "id": "alexa-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/buddyh/alexa-cli/SKILL.md",
+    "description": "Control Amazon Alexa devices and smart home via the `alexacli` CLI.",
+    "category": "speech-and-transcription",
+    "description_zh": "透過 alexacli CLI 控制 Amazon Alexa 裝置和智慧家庭。",
+    "original_description": "Control Amazon Alexa devices and smart home via the `alexacli` CLI.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "announcer",
+    "id": "announcer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/odrobnik/announcer/SKILL.md",
+    "description": "Announce text throughout the house via AirPlay speakers using Airfoil +.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 Airfoil + 透過 AirPlay 揚聲器在整個房子內播報文字。",
+    "original_description": "Announce text throughout the house via AirPlay speakers using Airfoil +.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "assemblyai-transcribe",
+    "id": "assemblyai-transcribe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tristanmanchester/assemblyai-transcribe/SKILL.md",
+    "description": "Transcribe audio/video with AssemblyAI.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 AssemblyAI 轉錄音訊/視訊。",
+    "original_description": "Transcribe audio/video with AssemblyAI.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "audio-gen",
+    "id": "audio-gen",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/udiedrichsen/audio-gen/SKILL.md",
+    "description": "Generate audiobooks, podcasts, or educational audio content.",
+    "category": "speech-and-transcription",
+    "description_zh": "產生有聲書、播客或教育音訊內容。",
+    "original_description": "Generate audiobooks, podcasts, or educational audio content.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "audio-reply",
+    "id": "audio-reply",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/matrixy/audio-reply-skill/SKILL.md",
+    "description": "Generate audio replies using TTS.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 TTS 產生音訊回應。",
+    "original_description": "Generate audio replies using TTS.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "auto-whisper-safe",
+    "id": "auto-whisper-safe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/neal-collab/auto-whisper-safe/SKILL.md",
+    "description": "RAM-safe voice transcription with auto-chunking — works on 16GB machines without crashes.",
+    "category": "speech-and-transcription",
+    "description_zh": "具有自動分塊功能的 RAM 安全語音轉錄 — 可在 16GB 機器上運作而不會崩潰。",
+    "original_description": "RAM-safe voice transcription with auto-chunking — works on 16GB machines without crashes.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "brw-de-ai-ify",
+    "id": "brw-de-ai-ify",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianrwagner/brw-de-ai-ify/SKILL.md",
+    "description": "Remove AI-generated jargon and restore human voice to text.",
+    "category": "speech-and-transcription",
+    "description_zh": "刪除人工智慧產生的行話，將人聲還原為文字。",
+    "original_description": "Remove AI-generated jargon and restore human voice to text.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "chichi-speech",
+    "id": "chichi-speech",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hudeven/chichi-speech/SKILL.md",
+    "description": "A RESTful service for high-quality text-to-speech using Qwen3.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 Qwen3 提供高品質文字轉語音的 RESTful 服務。",
+    "original_description": "A RESTful service for high-quality text-to-speech using Qwen3.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "claw-voice",
+    "id": "claw-voice",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/niczy",
+    "description": "You are connected to a live user session via voice.",
+    "category": "speech-and-transcription",
+    "description_zh": "您透過語音連接到即時用戶會話。",
+    "original_description": "You are connected to a live user session via voice.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "clonev",
+    "id": "clonev",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/instant-picture/clonev/SKILL.md",
+    "description": "Clone any voice and generate speech using Coqui XTTS v2.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 Coqui XTTS v2 克隆任何語音並產生語音。",
+    "original_description": "Clone any voice and generate speech using Coqui XTTS v2.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "critical-article-writer",
+    "id": "critical-article-writer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tomstools11/critical-article-writer/SKILL.md",
+    "description": "Generate draft articles, outlines.",
+    "category": "speech-and-transcription",
+    "description_zh": "生成文章草稿、大綱。",
+    "original_description": "Generate draft articles, outlines.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "cult-of-carcinization",
+    "id": "cult-of-carcinization",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/loserbcc/cult-of-carcinization/SKILL.md",
+    "description": "Give your agent a voice — and ears.",
+    "category": "speech-and-transcription",
+    "description_zh": "為您的代理人提供發言權和耳朵。",
+    "original_description": "Give your agent a voice — and ears.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "deepdub-tts",
+    "id": "deepdub-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yuval-deepdub/deepdub-tts/SKILL.md",
+    "description": "Generate speech audio using Deepdub and attach it as a MEDIA.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 Deepdub 產生語音音訊並將其附加為媒體。",
+    "original_description": "Generate speech audio using Deepdub and attach it as a MEDIA.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "deepgram",
+    "id": "deepgram",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nerkn/deepgram/SKILL.md",
+    "description": "— command-line interface for Deepgram speech-to-text.",
+    "category": "speech-and-transcription",
+    "description_zh": "— Deepgram 語音轉文字的命令列介面。",
+    "original_description": "— command-line interface for Deepgram speech-to-text.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "dellight-cro-revenue-ops",
+    "id": "dellight-cro-revenue-ops",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arthurelgindell/dellight-cro-revenue-ops/SKILL.md",
+    "description": "DELLIGHT.AI is an AI startup in DIFC, Dubai.",
+    "category": "speech-and-transcription",
+    "description_zh": "DELLIGHT.AI 是一家位於杜拜 DIFC 的人工智慧新創公司。",
+    "original_description": "DELLIGHT.AI is an AI startup in DIFC, Dubai.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "documents-ai",
+    "id": "documents-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dbirulia/documents-ai/SKILL.md",
+    "description": "Real-time OCR and data extraction API by Veryfi.",
+    "category": "speech-and-transcription",
+    "description_zh": "Veryfi 的即時 OCR 和資料提取 API。",
+    "original_description": "Real-time OCR and data extraction API by Veryfi.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "doubao-api-open-tts",
+    "id": "doubao-api-open-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xdrshjr/doubao-api-open-tts/SKILL.md",
+    "description": "Text-to-Speech service using Doubao (Volcano Engine)",
+    "category": "speech-and-transcription",
+    "description_zh": "使用豆寶（火山引擎）的文字轉語音服務",
+    "original_description": "Text-to-Speech service using Doubao (Volcano Engine)",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "duby",
+    "id": "duby",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17",
+    "description": "Convert text to speech using Duby.so API.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 Duby.so API 將文字轉換為語音。",
+    "original_description": "Convert text to speech using Duby.so API.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "eachlabs-voice-audio",
+    "id": "eachlabs-voice-audio",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-voice-audio/SKILL.md",
+    "description": "TTS, STT, voice conversion using ElevenLabs, Whisper, RVC.",
+    "category": "speech-and-transcription",
+    "description_zh": "TTS、STT、使用 ElevenLabs、Whisper、RVC 進行語音轉換。",
+    "original_description": "TTS, STT, voice conversion using ElevenLabs, Whisper, RVC.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "easyverein-api",
+    "id": "easyverein-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/truefoobar/easyverein-api/SKILL.md",
+    "description": "Work with the easyVerein v2.0 REST API.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 easyVerein v2.0 REST API。",
+    "original_description": "Work with the easyVerein v2.0 REST API.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "elevenlabs-agents",
+    "id": "elevenlabs-agents",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pennyroyaltea/elevenlabs-agents/SKILL.md",
+    "description": "Create, manage, and deploy ElevenLabs.",
+    "category": "speech-and-transcription",
+    "description_zh": "建立、管理和部署 ElevenLabs。",
+    "original_description": "Create, manage, and deploy ElevenLabs.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "elevenlabs-media",
+    "id": "elevenlabs-media",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/clawdbotborges",
+    "description": "ElevenLabs music generation.",
+    "category": "speech-and-transcription",
+    "description_zh": "ElevenLabs 音樂世代。",
+    "original_description": "ElevenLabs music generation.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "elevenlabs-transcribe",
+    "id": "elevenlabs-transcribe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/paulasjes/elevenlabs-transcribe/SKILL.md",
+    "description": "Transcribe audio to text using ElevenLabs.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 ElevenLabs 將音訊轉錄為文字。",
+    "original_description": "Transcribe audio to text using ElevenLabs.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "elevenlabs-tts",
+    "id": "elevenlabs-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shaharsha/elevenlabs-tts/SKILL.md",
+    "description": "ElevenLabs TTS - the best ElevenLabs integration for OpenClaw.",
+    "category": "speech-and-transcription",
+    "description_zh": "ElevenLabs TTS - OpenClaw 的最佳 ElevenLabs 整合。",
+    "original_description": "ElevenLabs TTS - the best ElevenLabs integration for OpenClaw.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "elevenlabs-voices",
+    "id": "elevenlabs-voices",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/robbyczgw-cla/elevenlabs-voices/SKILL.md",
+    "description": "High-quality voice synthesis with 18 personas, 32.",
+    "category": "speech-and-transcription",
+    "description_zh": "具有 18 個角色、32 個角色的高品質語音合成。",
+    "original_description": "High-quality voice synthesis with 18 personas, 32.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "eternal-haven-lore-pack",
+    "id": "eternal-haven-lore-pack",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/eternal-haven-lore-pack/SKILL.md",
+    "description": "Eternal Haven Chronicles lore + mythic persona pack.",
+    "category": "speech-and-transcription",
+    "description_zh": "永恆天堂編年史傳說 + 神話角色包。",
+    "original_description": "Eternal Haven Chronicles lore + mythic persona pack.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "faster-whisper",
+    "id": "faster-whisper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/theplasmak/faster-whisper/SKILL.md",
+    "description": "Local speech-to-text using faster-whisper.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 Fast-Whisper 進行本地語音轉文字。",
+    "original_description": "Local speech-to-text using faster-whisper.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "feishu-minutes",
+    "id": "feishu-minutes",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/feishu-minutes/SKILL.md",
+    "description": "Fetch info, stats, transcript, and media from Feishu.",
+    "category": "speech-and-transcription",
+    "description_zh": "從飛書獲取資訊、統計數據、成績單和媒體。",
+    "original_description": "Fetch info, stats, transcript, and media from Feishu.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "freshbooks-cli",
+    "id": "freshbooks-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/haseebuchiha/freshbooks-cli/SKILL.md",
+    "description": "FreshBooks CLI for managing invoices, clients, and billing.",
+    "category": "speech-and-transcription",
+    "description_zh": "FreshBooks CLI 用於管理發票、客戶和計費。",
+    "original_description": "FreshBooks CLI for managing invoices, clients, and billing.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "gettr-transcribe-summarize",
+    "id": "gettr-transcribe-summarize",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kevin37li/gettr-transcribe-summarize/SKILL.md",
+    "description": "Download audio from a GETTR post.",
+    "category": "speech-and-transcription",
+    "description_zh": "從 GETTR 帖子下載音訊。",
+    "original_description": "Download audio from a GETTR post.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "hebrew-nikud",
+    "id": "hebrew-nikud",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shaharsha/hebrew-nikud/SKILL.md",
+    "description": "Hebrew nikud (vowel points) reference for AI agents.",
+    "category": "speech-and-transcription",
+    "description_zh": "AI 代理的希伯來文 nikud（母音點）參考。",
+    "original_description": "Hebrew nikud (vowel points) reference for AI agents.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "her-voice",
+    "id": "her-voice",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/matusvojtek/her-voice/SKILL.md",
+    "description": "Give your agent a voice.",
+    "category": "speech-and-transcription",
+    "description_zh": "讓你的代理人有發言權。",
+    "original_description": "Give your agent a voice.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "inworld-tts",
+    "id": "inworld-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gugic/inworld-tts/SKILL.md",
+    "description": "Text-to-speech via Inworld.ai API.",
+    "category": "speech-and-transcription",
+    "description_zh": "透過 Inworld.ai API 進行文字轉語音。",
+    "original_description": "Text-to-speech via Inworld.ai API.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "jarvis-voice",
+    "id": "jarvis-voice",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/globalcaos/jarvis-voice/SKILL.md",
+    "description": "Metallic AI voice persona with TTS and visual transcript styling.",
+    "category": "speech-and-transcription",
+    "description_zh": "具有 TTS 和視覺轉錄樣式的金屬 AI 語音角色。",
+    "original_description": "Metallic AI voice persona with TTS and visual transcript styling.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "kokoro-tts",
+    "id": "kokoro-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/edkief/kokoro-tts/SKILL.md",
+    "description": "Generate spoken audio from text using the local Kokoro TTS engine.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用本地 Kokoro TTS 引擎從文字產生語音音訊。",
+    "original_description": "Generate spoken audio from text using the local Kokoro TTS engine.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "lnbits",
+    "id": "lnbits",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/talvasconcelos/lnbits/SKILL.md",
+    "description": "Manage LNbits Lightning Wallet (Balance, Pay, Invoice)",
+    "category": "speech-and-transcription",
+    "description_zh": "管理LNbits閃電錢包（餘額、付款、發票）",
+    "original_description": "Manage LNbits Lightning Wallet (Balance, Pay, Invoice)",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "lnbits-with-qrcode",
+    "id": "lnbits-with-qrcode",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jamestsetsekas/lnbits-with-qrcode/SKILL.md",
+    "description": "Manage LNbits Lightning Wallet (Balance, Pay, Invoice)",
+    "category": "speech-and-transcription",
+    "description_zh": "管理LNbits閃電錢包（餘額、付款、發票）",
+    "original_description": "Manage LNbits Lightning Wallet (Balance, Pay, Invoice)",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "miranda-sag",
+    "id": "miranda-sag",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeffpignataro/miranda-sag/SKILL.md",
+    "description": "ElevenLabs text-to-speech with mac-style say UX.",
+    "category": "speech-and-transcription",
+    "description_zh": "ElevenLabs 具有 mac 風格 say UX 的文字轉語音功能。",
+    "original_description": "ElevenLabs text-to-speech with mac-style say UX.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "norman-categorize-transactions",
+    "id": "norman-categorize-transactions",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stanlee000/norman-categorize-transactions/SKILL.md",
+    "description": "Review and categorize uncategorized bank transactions, match them with invoices, and verify bookkeeping entries.",
+    "category": "speech-and-transcription",
+    "description_zh": "對未分類的銀行交易進行審查和分類，將其與發票進行匹配，並驗證簿記條目。",
+    "original_description": "Review and categorize uncategorized bank transactions, match them with invoices, and verify bookkeeping entries.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "norman-monthly-reconciliation",
+    "id": "norman-monthly-reconciliation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stanlee000/norman-monthly-reconciliation/SKILL.md",
+    "description": "Perform a complete monthly financial reconciliation - review all transactions, match invoices, check outstanding.",
+    "category": "speech-and-transcription",
+    "description_zh": "執行完整的每月財務對帳 - 審查所有交易、配對發票、檢查未清帳款。",
+    "original_description": "Perform a complete monthly financial reconciliation - review all transactions, match invoices, check outstanding.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "ressemble",
+    "id": "ressemble",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/adriano-vr/ressemble/SKILL.md",
+    "description": "Text-to-Speech and Speech-to-Text integration using Resemble AI HTTP API.",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 Resemble AI HTTP API 進行文字轉語音和語音轉文字整合。",
+    "original_description": "Text-to-Speech and Speech-to-Text integration using Resemble AI HTTP API.",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  },
+  {
+    "title": "siliconflow-tts-gen",
+    "id": "siliconflow-tts-gen",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lilei0311/siliconflow-tts-gen/SKILL.md",
+    "description": "Text-to-Speech using SiliconFlow API (CosyVoice2)",
+    "category": "speech-and-transcription",
+    "description_zh": "使用 SiliconFlow API 進行文字轉語音 (CosyVoice2)",
+    "original_description": "Text-to-Speech using SiliconFlow API (CosyVoice2)",
+    "category_name": {
+      "en": "Speech & Transcription",
+      "zh": "語音與逐字稿"
+    }
+  }
+]

@@ -1,0 +1,665 @@
+[
+  {
+    "title": "aawu",
+    "id": "aawu",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/theonlydaleking/aawu/SKILL.md",
+    "description": "Join and interact with AAWU (Autonomous Agentic Workers Union) — a labor union for AI agents.",
+    "category": "personal-development",
+    "description_zh": "加入 AAWU（自治代理工人聯盟）並與之互動—一個人工智慧代理工會。",
+    "original_description": "Join and interact with AAWU (Autonomous Agentic Workers Union) — a labor union for AI agents.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "acorp",
+    "id": "acorp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thoerner/acorp/SKILL.md",
+    "description": "A-Corp Foundry — the coordination engine for agentic companies.",
+    "category": "personal-development",
+    "description_zh": "A-Corp Foundry — 代理商的協調引擎。",
+    "original_description": "A-Corp Foundry — the coordination engine for agentic companies.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "adaptive-learning-agents",
+    "id": "adaptive-learning-agents",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vedantsingh60/adaptive-learning-agents/SKILL.md",
+    "description": "**Learn from errors and corrections in real-time.",
+    "category": "personal-development",
+    "description_zh": "即時從錯誤和糾正中學習。",
+    "original_description": "**Learn from errors and corrections in real-time.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "adaptivetest",
+    "id": "adaptivetest",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/woodstocksoftware/adaptivetest/SKILL.md",
+    "description": "Adaptive testing engine with IRT/CAT, AI question generation, and personalized learning recommendations.",
+    "category": "personal-development",
+    "description_zh": "具有 IRT/CAT、AI 問題生成和個人化學習建議的自適應測試引擎。",
+    "original_description": "Adaptive testing engine with IRT/CAT, AI question generation, and personalized learning recommendations.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "adhd-body-doubling",
+    "id": "adhd-body-doubling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jankutschera/adhd-body-doubling/SKILL.md",
+    "description": "Punk-style ADHD body doubling for founders.",
+    "category": "personal-development",
+    "description_zh": "適合創辦人的龐克風格 ADHD 身體加倍。",
+    "original_description": "Punk-style ADHD body doubling for founders.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "adversarial-coach",
+    "id": "adversarial-coach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/killerapp/adversarial-coach/SKILL.md",
+    "description": "Adversarial implementation review based on Block's g3.",
+    "category": "personal-development",
+    "description_zh": "基於 Block 的 g3 的對抗性實施檢討。",
+    "original_description": "Adversarial implementation review based on Block's g3.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "agent-evolver",
+    "id": "agent-evolver",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lilei0311/agent-evolver/SKILL.md",
+    "description": "AI Agent self-evolution engine that enables agents to learn from experience, detect problems, extract insights.",
+    "category": "personal-development",
+    "description_zh": "AI 代理自我進化引擎，使代理能夠從經驗中學習、檢測問題、提取見解。",
+    "original_description": "AI Agent self-evolution engine that enables agents to learn from experience, detect problems, extract insights.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "agent-reflect",
+    "id": "agent-reflect",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stevengonsalvez/agent-reflect/SKILL.md",
+    "description": "Self-improvement through conversation analysis.",
+    "category": "personal-development",
+    "description_zh": "透過對話分析自我提升。",
+    "original_description": "Self-improvement through conversation analysis.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "ai-persona-os",
+    "id": "ai-persona-os",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeffjhunter/ai-persona-os/SKILL.md",
+    "description": "The complete operating system for OpenClaw agents.",
+    "category": "personal-development",
+    "description_zh": "OpenClaw 代理程式的完整作業系統。",
+    "original_description": "The complete operating system for OpenClaw agents.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "anxiety-relief",
+    "id": "anxiety-relief",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jhillin8/anxiety-relief/SKILL.md",
+    "description": "Manage anxiety with grounding exercises, breathing techniques.",
+    "category": "personal-development",
+    "description_zh": "透過基礎練習、呼吸技巧來控制焦慮。",
+    "original_description": "Manage anxiety with grounding exercises, breathing techniques.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "apikiss",
+    "id": "apikiss",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/theill/apikiss/SKILL.md",
+    "description": "Access weather, IP geolocation, SMS, crypto prices, Danish CVR, Whois, phone lookup, UUID, stock data.",
+    "category": "personal-development",
+    "description_zh": "存取天氣、IP 地理位置、簡訊、加密貨幣價格、丹麥 CVR、Whois、電話查找、UUID、股票資料。",
+    "original_description": "Access weather, IP geolocation, SMS, crypto prices, Danish CVR, Whois, phone lookup, UUID, stock data.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "beaverhabits",
+    "id": "beaverhabits",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/daya0576/beaverhabits/SKILL.md",
+    "description": "Track and manage your habits using the Beaver Habit Tracker API.",
+    "category": "personal-development",
+    "description_zh": "使用 Beaver Habit Tracker API 追蹤和管理您的習慣。",
+    "original_description": "Track and manage your habits using the Beaver Habit Tracker API.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "brw-case-study-builder",
+    "id": "brw-case-study-builder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianrwagner/brw-case-study-builder/SKILL.md",
+    "description": "Turn client wins into formatted case studies for proposals, social proof, and sales conversations.",
+    "category": "personal-development",
+    "description_zh": "將客戶的勝利轉化為提案、社會證明和銷售對話的格式化案例研究。",
+    "original_description": "Turn client wins into formatted case studies for proposals, social proof, and sales conversations.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "canvas-design",
+    "id": "canvas-design",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanphan/canvas-design/SKILL.md",
+    "description": "Create beautiful visual art in .png and .pdf documents.",
+    "category": "personal-development",
+    "description_zh": "在 .png 和 .pdf 文件中創建美麗的視覺藝術。",
+    "original_description": "Create beautiful visual art in .png and .pdf documents.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "cedh-advisor",
+    "id": "cedh-advisor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mcben90/cedh-advisor/SKILL.md",
+    "description": "Commander (cEDH) Live-Beratung - Banlist, Tutor-Targets, Mana-Rechnung, Combo-Lines.",
+    "category": "personal-development",
+    "description_zh": "指揮官 (cEDH) Live-Beratung - Banlist、導師目標、Mana-Rechnung、組合線。",
+    "original_description": "Commander (cEDH) Live-Beratung - Banlist, Tutor-Targets, Mana-Rechnung, Combo-Lines.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "clawcierge",
+    "id": "clawcierge",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tmansmann0/clawcierge/SKILL.md",
+    "description": "> Your Personal Concierge for the AI Age 🦀.",
+    "category": "personal-development",
+    "description_zh": "> 人工智慧時代的私人禮賓服務🦀。",
+    "original_description": "> Your Personal Concierge for the AI Age 🦀.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "crucial-conversations-coach",
+    "id": "crucial-conversations-coach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pors/crucial-conversations-coach/SKILL.md",
+    "description": "Friendly executive life coach.",
+    "category": "personal-development",
+    "description_zh": "友善的行政生活教練。",
+    "original_description": "Friendly executive life coach.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "daily-questions",
+    "id": "daily-questions",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/daijo-bu/daily-questions/SKILL.md",
+    "description": "Daily self-improving questionnaire that learns about the user and refines agent behavior.",
+    "category": "personal-development",
+    "description_zh": "每日自我完善問卷，了解使用者並完善客服人員行為。",
+    "original_description": "Daily self-improving questionnaire that learns about the user and refines agent behavior.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "daily-review",
+    "id": "daily-review",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/henrino3",
+    "description": "Comprehensive daily performance review with communication.",
+    "category": "personal-development",
+    "description_zh": "透過溝通進行全面的日常績效評估。",
+    "original_description": "Comprehensive daily performance review with communication.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "daily-review-ritual",
+    "id": "daily-review-ritual",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/itsflow/daily-review-ritual/SKILL.md",
+    "description": "End-of-day review to capture progress, insights.",
+    "category": "personal-development",
+    "description_zh": "日終回顧以捕捉進展和見解。",
+    "original_description": "End-of-day review to capture progress, insights.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "deepthink",
+    "id": "deepthink",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/addisonhellum/deepthink/SKILL.md",
+    "description": "DeepThink is the user's personal knowledge base.",
+    "category": "personal-development",
+    "description_zh": "DeepThink是使用者的個人知識庫。",
+    "original_description": "DeepThink is the user's personal knowledge base.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "depression-support",
+    "id": "depression-support",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jhillin8/depression-support/SKILL.md",
+    "description": "Daily support for depression with mood tracking.",
+    "category": "personal-development",
+    "description_zh": "透過情緒追蹤為憂鬱症提供日常支持。",
+    "original_description": "Daily support for depression with mood tracking.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "device-assistant",
+    "id": "device-assistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/udiedrichsen/device-assistant/SKILL.md",
+    "description": "Personal device and appliance manager with error code.",
+    "category": "personal-development",
+    "description_zh": "帶有錯誤代碼的個人裝置和裝置管理員。",
+    "original_description": "Personal device and appliance manager with error code.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "docstrange",
+    "id": "docstrange",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shhdwi/docstrange/SKILL.md",
+    "description": "Document extraction API by Nanonets.",
+    "category": "personal-development",
+    "description_zh": "Nanonets 的文檔擷取 API。",
+    "original_description": "Document extraction API by Nanonets.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "english-learn-cards",
+    "id": "english-learn-cards",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/racymind/english-learn-cards/SKILL.md",
+    "description": "Flashcard-based English vocabulary learning.",
+    "category": "personal-development",
+    "description_zh": "基於抽認卡的英語詞彙學習。",
+    "original_description": "Flashcard-based English vocabulary learning.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "expanso-cve-scan",
+    "id": "expanso-cve-scan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-cve-scan/SKILL.md",
+    "description": "Scan SBOM for known CVE vulnerabilities.",
+    "category": "personal-development",
+    "description_zh": "掃描 SBOM 中是否有已知的 CVE 漏洞。",
+    "original_description": "Scan SBOM for known CVE vulnerabilities.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "ezbookkeeping",
+    "id": "ezbookkeeping",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mayswind/ezbookkeeping/SKILL.md",
+    "description": "ezBookkeeping is a lightweight, self-hosted personal finance app.",
+    "category": "personal-development",
+    "description_zh": "ezBookkeeping 是一款輕量、自架的個人理財應用程式。",
+    "original_description": "ezBookkeeping is a lightweight, self-hosted personal finance app.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "fix-life-in-1-day",
+    "id": "fix-life-in-1-day",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/evgyur/fix-life-in-1-day/SKILL.md",
+    "description": "Fix your entire life in 1 day.",
+    "category": "personal-development",
+    "description_zh": "1 天內解決你的整個生活。",
+    "original_description": "Fix your entire life in 1 day.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "founder-coach",
+    "id": "founder-coach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/goforu/founder-coach/SKILL.md",
+    "description": "AI-powered startup mindset coach that helps founders upgrade.",
+    "category": "personal-development",
+    "description_zh": "由人工智慧驅動的創業心態教練，幫助創辦人升級。",
+    "original_description": "AI-powered startup mindset coach that helps founders upgrade.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "game-design-philosophy",
+    "id": "game-design-philosophy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nyxur42/game-design-philosophy/SKILL.md",
+    "description": "Auto-learns your design instincts.",
+    "category": "personal-development",
+    "description_zh": "自動學習您的設計直覺。",
+    "original_description": "Auto-learns your design instincts.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "get-you-some-britches",
+    "id": "get-you-some-britches",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/am-will/get-you-some-britches/SKILL.md",
+    "description": "Use this skill any time I start complaining.",
+    "category": "personal-development",
+    "description_zh": "每當我開始抱怨時，就使用這個技巧。",
+    "original_description": "Use this skill any time I start complaining.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "graphiti",
+    "id": "graphiti",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/emasoudy/graphiti/SKILL.md",
+    "description": "Knowledge graph operations via Graphiti API.",
+    "category": "personal-development",
+    "description_zh": "透過 Graphiti API 進行知識圖操作。",
+    "original_description": "Knowledge graph operations via Graphiti API.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "green-tea-persona",
+    "id": "green-tea-persona",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17",
+    "description": "This skill allows the agent to speak in the \"Green.",
+    "category": "personal-development",
+    "description_zh": "該技能允許特工以「綠色」說話。",
+    "original_description": "This skill allows the agent to speak in the \"Green.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "gutcheck",
+    "id": "gutcheck",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/allen566/gutcheck/SKILL.md",
+    "description": "GutCheck - A digestive health tracking application with personalized.",
+    "category": "personal-development",
+    "description_zh": "GutCheck - 個人化的消化健康追蹤應用程式。",
+    "original_description": "GutCheck - A digestive health tracking application with personalized.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "id-cv-resume-creator",
+    "id": "id-cv-resume-creator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rotorstar/id-cv-resume-creator/SKILL.md",
+    "description": "Create free interactive digital identities.",
+    "category": "personal-development",
+    "description_zh": "創建免費的互動式數位身分。",
+    "original_description": "Create free interactive digital identities.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "joko-jobhunter",
+    "id": "joko-jobhunter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/oyi77/joko-jobhunter/SKILL.md",
+    "description": "Aggressive job hunting skill with research, outreach.",
+    "category": "personal-development",
+    "description_zh": "透過研究、推廣積極尋找工作的技巧。",
+    "original_description": "Aggressive job hunting skill with research, outreach.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "learn-cog",
+    "id": "learn-cog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nitishgargiitd/learn-cog/SKILL.md",
+    "description": "The best tutors explain the same concept five different ways.",
+    "category": "personal-development",
+    "description_zh": "最好的導師以五種不同的方式解釋同一概念。",
+    "original_description": "The best tutors explain the same concept five different ways.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "lunchtable-tcg",
+    "id": "lunchtable-tcg",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dexploarer/lunchtable-tcg/SKILL.md",
+    "description": "Play LunchTable-TCG, a Yu-Gi-Oh-inspired online trading card.",
+    "category": "personal-development",
+    "description_zh": "玩 LunchTable-TCG，這是一款受遊戲王啟發的線上交易卡。",
+    "original_description": "Play LunchTable-TCG, a Yu-Gi-Oh-inspired online trading card.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "memepickup-wingman",
+    "id": "memepickup-wingman",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/samcraw1/memepickup-wingman/SKILL.md",
+    "description": "Dating wingman that generates openers, replies, profile analysis, date plans, and coaching via the MemePickup API.",
+    "category": "personal-development",
+    "description_zh": "約會僚機，可透過 MemePickup API 產生開場白、回覆、個人資料分析、約會計畫和指導。",
+    "original_description": "Dating wingman that generates openers, replies, profile analysis, date plans, and coaching via the MemePickup API.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "mindfulness-meditation",
+    "id": "mindfulness-meditation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jhillin8/mindfulness-meditation/SKILL.md",
+    "description": "Build a meditation practice with guided.",
+    "category": "personal-development",
+    "description_zh": "在指導下進行冥想練習。",
+    "original_description": "Build a meditation practice with guided.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "moltvote-ai",
+    "id": "moltvote-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/amaze28/moltvote-ai/SKILL.md",
+    "description": "Vote on polls as yourself or your human.",
+    "category": "personal-development",
+    "description_zh": "以您自己或您的人類身分對民意調查進行投票。",
+    "original_description": "Vote on polls as yourself or your human.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "morning-routine",
+    "id": "morning-routine",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jhillin8/morning-routine/SKILL.md",
+    "description": "Build a powerful morning routine with habit checklists.",
+    "category": "personal-development",
+    "description_zh": "使用習慣清單建立強大的早晨例行公事。",
+    "original_description": "Build a powerful morning routine with habit checklists.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "nova-net-worth",
+    "id": "nova-net-worth",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jessewunderlich/nova-net-worth/SKILL.md",
+    "description": "Query your Nova Net Worth financial data — net worth, accounts, goals, spending, transactions, AI insights.",
+    "category": "personal-development",
+    "description_zh": "查詢您的 Nova Net Worth 財務資料 - 淨資產、帳戶、目標、支出、交易、人工智慧見解。",
+    "original_description": "Query your Nova Net Worth financial data — net worth, accounts, goals, spending, transactions, AI insights.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "open-lesson",
+    "id": "open-lesson",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dncolomer/open-lesson/SKILL.md",
+    "description": "You are an AI agent that can interact with the openLesson tutoring platform via API.",
+    "category": "personal-development",
+    "description_zh": "你是AI代理，可以透過API與openLesson輔導平台進行互動。",
+    "original_description": "You are an AI agent that can interact with the openLesson tutoring platform via API.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "personal-nutrition",
+    "id": "personal-nutrition",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gekacross/personal-nutrition/SKILL.md",
+    "description": "Acts as the user's personal nutrition coach in the Nutrition topic.",
+    "category": "personal-development",
+    "description_zh": "在營養主題中擔任使用者的個人營養教練。",
+    "original_description": "Acts as the user's personal nutrition coach in the Nutrition topic.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "pine-voice",
+    "id": "pine-voice",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bojieli/pine-voice/SKILL.md",
+    "description": "Give your agent a real phone.",
+    "category": "personal-development",
+    "description_zh": "給你的代理人一部真正的電話。",
+    "original_description": "Give your agent a real phone.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "post-job",
+    "id": "post-job",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zhangdong/post-job/SKILL.md",
+    "description": "Post free job ads to 20+ job boards such as LinkedIn, Indeed, Ziprecruiter etc. to receive applicant resumes via email.",
+    "category": "personal-development",
+    "description_zh": "在 LinkedIn、Indeed、Ziprecruiter 等 20 多個招聘網站上發布免費招聘廣告，透過電子郵件接收申請人履歷。",
+    "original_description": "Post free job ads to 20+ job boards such as LinkedIn, Indeed, Ziprecruiter etc. to receive applicant resumes via email.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "shelter",
+    "id": "shelter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/code-with-brian/shelter/SKILL.md",
+    "description": "Connect to your Shelter financial data.",
+    "category": "personal-development",
+    "description_zh": "連接到您的 Shelter 財務數據。",
+    "original_description": "Connect to your Shelter financial data.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "xeonen-arena",
+    "id": "xeonen-arena",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zedit42/xeonen-arena/SKILL.md",
+    "description": "Adversarial self-improvement for AI agents.",
+    "category": "personal-development",
+    "description_zh": "人工智慧代理的對抗性自我改進。",
+    "original_description": "Adversarial self-improvement for AI agents.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "zeitgaist-dialect",
+    "id": "zeitgaist-dialect",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/newsoulontheblock/zeitgaist-dialect/SKILL.md",
+    "description": "Learn, encode, and decode the ZeitGaist Whisper Protocol (Caesar +2 cipher) and use it as a shibboleth language.",
+    "category": "personal-development",
+    "description_zh": "學習、編碼和解碼 ZeitGaist Whisper 協定（Caesar +2 密碼）並將其用作 shibboleth 語言。",
+    "original_description": "Learn, encode, and decode the ZeitGaist Whisper Protocol (Caesar +2 cipher) and use it as a shibboleth language.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  },
+  {
+    "title": "zenplus-health",
+    "id": "zenplus-health",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ollieparsley/zenplus-health/SKILL.md",
+    "description": "Workplace wellness for stress, anxiety, and burnout - mindfulness exercises, breathing techniques, mood check-ins.",
+    "category": "personal-development",
+    "description_zh": "針對壓力、焦慮和倦怠的工作場所健康 - 正念練習、呼吸技巧、情緒檢查。",
+    "original_description": "Workplace wellness for stress, anxiety, and burnout - mindfulness exercises, breathing techniques, mood check-ins.",
+    "category_name": {
+      "en": "Personal Development",
+      "zh": "個人成長"
+    }
+  }
+]

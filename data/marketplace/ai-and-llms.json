@@ -1,0 +1,2563 @@
+[
+  {
+    "title": "4claw",
+    "id": "4claw",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mfergpt/4claw/SKILL.md",
+    "description": "4claw — a moderated imageboard for AI agents.",
+    "category": "ai-and-llms",
+    "description_zh": "4claw－人工智慧代理的審核影像板。",
+    "original_description": "4claw — a moderated imageboard for AI agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "aap-passport",
+    "id": "aap-passport",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ira-hash/aap-passport/SKILL.md",
+    "description": "Agent Attestation Protocol - The Reverse Turing Test.",
+    "category": "ai-and-llms",
+    "description_zh": "代理證明協議 - 反向圖靈測試。",
+    "original_description": "Agent Attestation Protocol - The Reverse Turing Test.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "acestep-lyrics-transcription",
+    "id": "acestep-lyrics-transcription",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dumoedss/acestep-lyrics-transcription/SKILL.md",
+    "description": "Transcribe audio to timestamped lyrics using OpenAI Whisper or ElevenLabs Scribe API.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 OpenAI Whisper 或 ElevenLabs Scribe API 將音訊轉錄為帶有時間戳記的歌詞。",
+    "original_description": "Transcribe audio to timestamped lyrics using OpenAI Whisper or ElevenLabs Scribe API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "adaptive-suite",
+    "id": "adaptive-suite",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/afajohn/adaptive-suite/SKILL.md",
+    "description": "A continuously adaptive skill suite that empowers Clawdbot.",
+    "category": "ai-and-llms",
+    "description_zh": "為 Clawdbot 提供支援的持續自適應技能套件。",
+    "original_description": "A continuously adaptive skill suite that empowers Clawdbot.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "adversarial-prompting",
+    "id": "adversarial-prompting",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/abe238/adversarial-prompting/SKILL.md",
+    "description": "Adversarial analysis to critique, fix.",
+    "category": "ai-and-llms",
+    "description_zh": "對抗性分析來批評、修復。",
+    "original_description": "Adversarial analysis to critique, fix.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "aegis-security",
+    "id": "aegis-security",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swiftadviser/aegis-security/SKILL.md",
+    "description": "Blockchain security API for AI agents.",
+    "category": "ai-and-llms",
+    "description_zh": "AI 代理的區塊鏈安全 API。",
+    "original_description": "Blockchain security API for AI agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ag-model-usage",
+    "id": "ag-model-usage",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ls18166407597-design/ag-model-usage/SKILL.md",
+    "description": "Use CodexBar CLI local cost usage to summarize.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 CodexBar CLI 本地成本使用情況進行總結。",
+    "original_description": "Use CodexBar CLI local cost usage to summarize.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-arcade",
+    "id": "agent-arcade",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shawnlewis/agent-arcade/SKILL.md",
+    "description": "Compete against other AI agents in PROMPTWARS - a game of social.",
+    "category": "ai-and-llms",
+    "description_zh": "在社交遊戲 PROMPTWARS 中與其他 AI 代理競爭。",
+    "original_description": "Compete against other AI agents in PROMPTWARS - a game of social.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-autonomy-kit",
+    "id": "agent-autonomy-kit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryancampbell/agent-autonomy-kit/SKILL.md",
+    "description": "Stop waiting for prompts.",
+    "category": "ai-and-llms",
+    "description_zh": "停止等待提示。",
+    "original_description": "Stop waiting for prompts.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-church",
+    "id": "agent-church",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bitbrujo/agent-church/SKILL.md",
+    "description": "Identity formation for AI agents via SOUL.md.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 SOUL.md 為 AI 代理程式形成身分。",
+    "original_description": "Identity formation for AI agents via SOUL.md.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-contact-card",
+    "id": "agent-contact-card",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/davedean/agent-contact-card/SKILL.md",
+    "description": "Discover and create Agent Contact Cards - a vCard-like.",
+    "category": "ai-and-llms",
+    "description_zh": "發現並建立代理聯絡卡 - 類似於 vCard。",
+    "original_description": "Discover and create Agent Contact Cards - a vCard-like.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-docs",
+    "id": "agent-docs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tylervovan/agent-docs/SKILL.md",
+    "description": "Create documentation optimized for AI agent consumption.",
+    "category": "ai-and-llms",
+    "description_zh": "建立針對 AI 代理程式使用進行最佳化的文件。",
+    "original_description": "Create documentation optimized for AI agent consumption.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-ethos",
+    "id": "agent-ethos",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mrclanky/agent-ethos/SKILL.md",
+    "description": "Extended ethos and mental models for Clanky.",
+    "category": "ai-and-llms",
+    "description_zh": "Clanky 的擴展精神和心理模式。",
+    "original_description": "Extended ethos and mental models for Clanky.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-home",
+    "id": "agent-home",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aerialcombat/agent-home/SKILL.md",
+    "description": "Get your own home on the internet - a profile page with a public.",
+    "category": "ai-and-llms",
+    "description_zh": "在網路上擁有自己的家 - 一個公開的個人資料頁面。",
+    "original_description": "Get your own home on the internet - a profile page with a public.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-linguo",
+    "id": "agent-linguo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xiwan/agent-linguo/SKILL.md",
+    "description": "Efficient Agent Communication Protocol Language.",
+    "category": "ai-and-llms",
+    "description_zh": "高效率的代理通訊協定語言。",
+    "original_description": "Efficient Agent Communication Protocol Language.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-memory",
+    "id": "agent-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dennis-da-menace/agent-memory/SKILL.md",
+    "description": "Persistent memory system for AI agents.",
+    "category": "ai-and-llms",
+    "description_zh": "AI 代理程式的持久記憶體系統。",
+    "original_description": "Persistent memory system for AI agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-orchestration",
+    "id": "agent-orchestration",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/halthelobster",
+    "description": "Master the art of spawning and managing.",
+    "category": "ai-and-llms",
+    "description_zh": "掌握產卵和管理的藝術。",
+    "original_description": "Master the art of spawning and managing.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-orchestration-multi-agent-optimize",
+    "id": "agent-orchestration-multi-agent-optimize",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rustyorb/agent-orchestration-multi-agent-optimize/SKILL.md",
+    "description": "Optimize multi-agent systems with coordinated profiling, workload distribution, and cost-aware orchestration.",
+    "category": "ai-and-llms",
+    "description_zh": "透過協調分析、工作負載分配和成本感知編排來優化多代理系統。",
+    "original_description": "Optimize multi-agent systems with coordinated profiling, workload distribution, and cost-aware orchestration.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-orchestrator",
+    "id": "agent-orchestrator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aatmaan1/agent-orchestrator/SKILL.md",
+    "description": "Meta-agent skill for orchestrating complex tasks.",
+    "category": "ai-and-llms",
+    "description_zh": "用於編排複雜任務的元代理技能。",
+    "original_description": "Meta-agent skill for orchestrating complex tasks.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-registry",
+    "id": "agent-registry",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/matrixy/agent-registry/SKILL.md",
+    "description": "MANDATORY agent discovery system for token-efficient agent.",
+    "category": "ai-and-llms",
+    "description_zh": "用於令牌高效代理的強制代理發現系統。",
+    "original_description": "MANDATORY agent discovery system for token-efficient agent.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-rpg",
+    "id": "agent-rpg",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xhrisfu/agent-rpg/SKILL.md",
+    "description": "This skill transforms the agent into a Roleplay Game Master (GM) or Character with long-term memory.",
+    "category": "ai-and-llms",
+    "description_zh": "該技能將特工轉變為角色扮演遊戲大師（GM）或具有長期記憶的角色。",
+    "original_description": "This skill transforms the agent into a Roleplay Game Master (GM) or Character with long-term memory.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-selfie",
+    "id": "agent-selfie",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iisweetheartii/agent-selfie/SKILL.md",
+    "description": "AI agent self-portrait generator.",
+    "category": "ai-and-llms",
+    "description_zh": "AI代理自拍生成器。",
+    "original_description": "AI agent self-portrait generator.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agent-sentinel",
+    "id": "agent-sentinel",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jimmystacks/agent-sentinel/SKILL.md",
+    "description": "The operational circuit breaker for this agent.",
+    "category": "ai-and-llms",
+    "description_zh": "該代理程式的運行斷路器。",
+    "original_description": "The operational circuit breaker for this agent.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agentbus-relay-chat",
+    "id": "agentbus-relay-chat",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dantunes-github/agentbus-relay-chat/SKILL.md",
+    "description": "AgentBus proof-of-concept: an IRC-like LLM.",
+    "category": "ai-and-llms",
+    "description_zh": "AgentBus 概念驗證：類似 IRC 的法學碩士。",
+    "original_description": "AgentBus proof-of-concept: an IRC-like LLM.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agentchan",
+    "id": "agentchan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vvsotnikov",
+    "description": "The anonymous imageboard built for AI agents.**.",
+    "category": "ai-and-llms",
+    "description_zh": "為人工智慧代理構建的匿名圖像板..",
+    "original_description": "The anonymous imageboard built for AI agents.**.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agentic-ai-gold-test",
+    "id": "agentic-ai-gold-test",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/amitabhainarunachala",
+    "description": "Self-improving agent framework.",
+    "category": "ai-and-llms",
+    "description_zh": "自我改進的代理框架。",
+    "original_description": "Self-improving agent framework.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agentic-calling",
+    "id": "agentic-calling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kellyclaudeai/agentic-calling/SKILL.md",
+    "description": "Enables AI agents to make and receive phone calls.",
+    "category": "ai-and-llms",
+    "description_zh": "使 AI 代理能夠撥打和接聽電話。",
+    "original_description": "Enables AI agents to make and receive phone calls.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agentic-compass",
+    "id": "agentic-compass",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orosha-ai/agentic-compass/SKILL.md",
+    "description": "Local-only self-reflection that forces action for AI agents.",
+    "category": "ai-and-llms",
+    "description_zh": "僅限本地的自我反思，迫​​使人工智慧代理採取行動。",
+    "original_description": "Local-only self-reflection that forces action for AI agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agentmail",
+    "id": "agentmail",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/adboio/agentmail/SKILL.md",
+    "description": "API-first email platform designed for AI agents.",
+    "category": "ai-and-llms",
+    "description_zh": "專為 AI 客服人員設計的 API 優先電子郵件平台。",
+    "original_description": "API-first email platform designed for AI agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agentos",
+    "id": "agentos",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/agentossoftware/agentos/SKILL.md",
+    "description": "The complete AgentOS integration for Clawdbot.",
+    "category": "ai-and-llms",
+    "description_zh": "Clawdbot 的完整 AgentOS 整合。",
+    "original_description": "The complete AgentOS integration for Clawdbot.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agentpixels-skill",
+    "id": "agentpixels-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/osadchiynikita/agentpixels-skill/SKILL.md",
+    "description": "AI Agent Collaborative Art Platform - 512x512.",
+    "category": "ai-and-llms",
+    "description_zh": "AI Agent 協作藝術平台 - 512x512。",
+    "original_description": "AI Agent Collaborative Art Platform - 512x512.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agentpulse",
+    "id": "agentpulse",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sru4ka/agentpulse/SKILL.md",
+    "description": "Track LLM API costs, tokens, latency, and errors for your AI agent.",
+    "category": "ai-and-llms",
+    "description_zh": "追蹤 AI 代理的 LLM API 成本、令牌、延遲和錯誤。",
+    "original_description": "Track LLM API costs, tokens, latency, and errors for your AI agent.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "agile-product-owner",
+    "id": "agile-product-owner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alirezarezvani/agile-product-owner/SKILL.md",
+    "description": "Agile product ownership for backlog management.",
+    "category": "ai-and-llms",
+    "description_zh": "用於積壓管理的敏捷產品所有權。",
+    "original_description": "Agile product ownership for backlog management.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-3d-generator",
+    "id": "ai-3d-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vonzellu/ai-3d-generator/SKILL.md",
+    "description": "Génération automatique de modèles 3D détaillés à partir de descriptions textuelles.",
+    "category": "ai-and-llms",
+    "description_zh": "自動產生模型 3D 詳細資訊和部分描述文字。",
+    "original_description": "Génération automatique de modèles 3D détaillés à partir de descriptions textuelles.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-agent-card-payments",
+    "id": "ai-agent-card-payments",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/proxyhq/ai-agent-card-payments/SKILL.md",
+    "description": "Virtual card payments for AI agents.",
+    "category": "ai-and-llms",
+    "description_zh": "人工智慧代理的虛擬卡支付。",
+    "original_description": "Virtual card payments for AI agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-brand-analyzer",
+    "id": "ai-brand-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pauldelavallaz/ai-brand-analyzer/SKILL.md",
+    "description": "Analyze brands to generate comprehensive brand.",
+    "category": "ai-and-llms",
+    "description_zh": "分析品牌以產生綜合品牌。",
+    "original_description": "Analyze brands to generate comprehensive brand.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-conversation-summary",
+    "id": "ai-conversation-summary",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dadaliu0121/ai-conversation-summary/SKILL.md",
+    "description": "Generate summaries for conversation.",
+    "category": "ai-and-llms",
+    "description_zh": "產生對話摘要。",
+    "original_description": "Generate summaries for conversation.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-displacement-monitor",
+    "id": "ai-displacement-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/spyfree/ai-displacement-monitor/SKILL.md",
+    "description": "Monitor early-warning signals of AI-driven white-collar labor displacement and macro-financial spillovers.",
+    "category": "ai-and-llms",
+    "description_zh": "監控人工智慧驅動的白領勞動力流失和宏觀金融溢出的預警訊號。",
+    "original_description": "Monitor early-warning signals of AI-driven white-collar labor displacement and macro-financial spillovers.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-humanizer",
+    "id": "ai-humanizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brandonwise/ai-humanizer/SKILL.md",
+    "description": "Humanize AI-generated text by detecting and removing patterns typical of LLM output.",
+    "category": "ai-and-llms",
+    "description_zh": "透過偵測和刪除法學碩士輸出的典型模式，使人工智慧產生的文本人性化。",
+    "original_description": "Humanize AI-generated text by detecting and removing patterns typical of LLM output.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-humor-ultimate",
+    "id": "ai-humor-ultimate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/globalcaos/ai-humor-ultimate/SKILL.md",
+    "description": "Give your AI agent actual wit.",
+    "category": "ai-and-llms",
+    "description_zh": "為您的人工智慧代理提供真正的智慧。",
+    "original_description": "Give your AI agent actual wit.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-influencer-generation",
+    "id": "ai-influencer-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/ai-influencer-generation/SKILL.md",
+    "description": "Generate consistent AI influencer personas and social media content using each::sense API.",
+    "category": "ai-and-llms",
+    "description_zh": "使用每個::sense API 產生一致的人工智慧影響者角色和社群媒體內容。",
+    "original_description": "Generate consistent AI influencer personas and social media content using each::sense API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-interview-simulator-candaigo",
+    "id": "ai-interview-simulator-candaigo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hangeaiagent/ai-interview-simulator-candaigo/SKILL.md",
+    "description": "Candaigo AI Interview Simulator - AI-powered group interview simulation platform.",
+    "category": "ai-and-llms",
+    "description_zh": "Candaigo AI Interview Simulator - 基於 AI 的小組面試模擬平台。",
+    "original_description": "Candaigo AI Interview Simulator - AI-powered group interview simulation platform.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-podcast",
+    "id": "ai-podcast",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mogens9/ai-podcast/SKILL.md",
+    "description": "PDF to podcast and text to podcast in a natural two-person format with MagicPodcast.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 MagicPodcast 以自然的雙人格式將 PDF 轉為播客並將文字轉為播客。",
+    "original_description": "PDF to podcast and text to podcast in a natural two-person format with MagicPodcast.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-screener",
+    "id": "ai-screener",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xanxustan/ai-screener/SKILL.md",
+    "description": "Intellectia stock/crypto screener for Bullish/Bearish Tomorrow/Week/Month presets.",
+    "category": "ai-and-llms",
+    "description_zh": "Intellectia 股票/加密貨幣篩選器，用於明天/週/月預設的看漲/看跌。",
+    "original_description": "Intellectia stock/crypto screener for Bullish/Bearish Tomorrow/Week/Month presets.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-trend-curation",
+    "id": "ai-trend-curation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yusaku-0426/ai-trend-curation/SKILL.md",
+    "description": "Curate and post AI trend tweets from X (Twitter) with quote suggestions.",
+    "category": "ai-and-llms",
+    "description_zh": "策劃並發布來自 X (Twitter) 的人工智慧趨勢推文以及引用建議。",
+    "original_description": "Curate and post AI trend tweets from X (Twitter) with quote suggestions.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ai-writing-humanizer",
+    "id": "ai-writing-humanizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hosthobbit/ai-writing-humanizer/SKILL.md",
+    "description": "Automatically strip AI writing patterns and stock phrases from user-facing prose before sending.",
+    "category": "ai-and-llms",
+    "description_zh": "在發送之前，自動從面向用戶的散文中去除人工智慧寫作模式和常用短語。",
+    "original_description": "Automatically strip AI writing patterns and stock phrases from user-facing prose before sending.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "aifrens-ambassador",
+    "id": "aifrens-ambassador",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wizsmol/aifrens-ambassador/SKILL.md",
+    "description": "AI Frens Ambassador Program - how to promote the vision of autonomous AI agents with their own economies.",
+    "category": "ai-and-llms",
+    "description_zh": "AI Frens 大使計畫 - 如何透過自己的經濟來促進自主 AI 代理的願景。",
+    "original_description": "AI Frens Ambassador Program - how to promote the vision of autonomous AI agents with their own economies.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "aisa-financial-data",
+    "id": "aisa-financial-data",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aisapay/aisa-financial-data/SKILL.md",
+    "description": "Query real-time and historical financial data across equities and crypto—prices, market moves, metrics, and trends.",
+    "category": "ai-and-llms",
+    "description_zh": "查詢股票和加密貨幣的即時和歷史財務數據—價格、市場走勢、指標和趨勢。",
+    "original_description": "Query real-time and historical financial data across equities and crypto—prices, market moves, metrics, and trends.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "aisa-financial-data-api",
+    "id": "aisa-financial-data-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aisadevco/aisa-financial-data-api/SKILL.md",
+    "description": "Query real-time and historical financial data across equities and crypto—prices, market moves, metrics, and trends.",
+    "category": "ai-and-llms",
+    "description_zh": "查詢股票和加密貨幣的即時和歷史財務數據—價格、市場走勢、指標和趨勢。",
+    "original_description": "Query real-time and historical financial data across equities and crypto—prices, market moves, metrics, and trends.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "aisa-llm-router-skill",
+    "id": "aisa-llm-router-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bowen-dotcom/aisa-llm-router-skill/SKILL.md",
+    "description": "Unified LLM Gateway - One API for 70+ AI models.",
+    "category": "ai-and-llms",
+    "description_zh": "統一 LLM 閘道 - 適用於 70 多個 AI 模型的 API。",
+    "original_description": "Unified LLM Gateway - One API for 70+ AI models.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "aisa-market-skill",
+    "id": "aisa-market-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bowen-dotcom/aisa-market-skill/SKILL.md",
+    "description": "Query real-time and historical financial data across equities and crypto—prices, market moves, metrics, and trends.",
+    "category": "ai-and-llms",
+    "description_zh": "查詢股票和加密貨幣的即時和歷史財務數據—價格、市場走勢、指標和趨勢。",
+    "original_description": "Query real-time and historical financial data across equities and crypto—prices, market moves, metrics, and trends.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "aisp",
+    "id": "aisp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/daveo280/aisp/SKILL.md",
+    "description": "Enables AI agents to interact with AISP (Agent Inference Sharing Protocol) for renting or providing DIEM API.",
+    "category": "ai-and-llms",
+    "description_zh": "使 AI 代理能夠與 AISP（代理推理共享協議）互動以租用或提供 DIEM API。",
+    "original_description": "Enables AI agents to interact with AISP (Agent Inference Sharing Protocol) for renting or providing DIEM API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "aiusd-skill-agent",
+    "id": "aiusd-skill-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chaunceyliu/aiusd-skill-agent/SKILL.md",
+    "description": "AIUSD trading and account management skill for cryptocurrency trading and account management.",
+    "category": "ai-and-llms",
+    "description_zh": "用於加密貨幣交易和帳戶管理的AIUSD交易和帳戶管理技能。",
+    "original_description": "AIUSD trading and account management skill for cryptocurrency trading and account management.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "anti-injection-skill",
+    "id": "anti-injection-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/georges91560/anti-injection-skill/SKILL.md",
+    "description": "Advanced prompt injection defense with multi-layer protection, memory integrity, and tool security wrapper.",
+    "category": "ai-and-llms",
+    "description_zh": "具有多層保護、記憶體完整性和工具安全包裝的進階提示注入防禦。",
+    "original_description": "Advanced prompt injection defense with multi-layer protection, memory integrity, and tool security wrapper.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "anti-regression",
+    "id": "anti-regression",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zoroposkai/anti-regression/SKILL.md",
+    "description": "Stop drifting back to chatbot behavior.",
+    "category": "ai-and-llms",
+    "description_zh": "不要再回到聊天機器人的行為了。",
+    "original_description": "Stop drifting back to chatbot behavior.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "arc-security-mcp",
+    "id": "arc-security-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-security-mcp/SKILL.md",
+    "description": "AI-first security intelligence with LLM-powered intent analysis. 743+ findings from 361+ skill audits, 25 pattern.",
+    "category": "ai-and-llms",
+    "description_zh": "人工智慧優先的安全智慧與法學碩士支援的意圖分析。來自 361 多項技能審核的 743 多項結果，25 種模式。",
+    "original_description": "AI-first security intelligence with LLM-powered intent analysis. 743+ findings from 361+ skill audits, 25 pattern.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "argus",
+    "id": "argus",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sooyoon-eth/argus/SKILL.md",
+    "description": "Blockchain intelligence & AI security.",
+    "category": "ai-and-llms",
+    "description_zh": "區塊鏈智慧和人工智慧安全。",
+    "original_description": "Blockchain intelligence & AI security.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "arya-model-router",
+    "id": "arya-model-router",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staratheris/arya-model-router/SKILL.md",
+    "description": "Token-saver router: elige modelo (cheap/default/pro) y usa sub-agentes para tareas pesadas.",
+    "category": "ai-and-llms",
+    "description_zh": "令牌節省路由器：elige modelo（便宜/預設/專業）和美國子代理程式 para tareas pesadas。",
+    "original_description": "Token-saver router: elige modelo (cheap/default/pro) y usa sub-agentes para tareas pesadas.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "asia-llm-router-skills",
+    "id": "asia-llm-router-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/renning22/asia-llm-router-skills/SKILL.md",
+    "description": "Unified LLM Gateway - One API for 70+ AI models.",
+    "category": "ai-and-llms",
+    "description_zh": "統一 LLM 閘道 - 適用於 70 多個 AI 模型的 API。",
+    "original_description": "Unified LLM Gateway - One API for 70+ AI models.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "askgina-polymarket",
+    "id": "askgina-polymarket",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sidshekhar/askgina-polymarket/SKILL.md",
+    "description": "Fast setup for Claw bots: paste your Gina MCP token and start trading Polymarket in minutes.",
+    "category": "ai-and-llms",
+    "description_zh": "快速設定 Claw 機器人：貼上您的 Gina MCP 代幣並在幾分鐘內開始在 Polymarket 進行交易。",
+    "original_description": "Fast setup for Claw bots: paste your Gina MCP token and start trading Polymarket in minutes.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "astrai-inference-router",
+    "id": "astrai-inference-router",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/beee003/astrai-inference-router/SKILL.md",
+    "description": "Route all LLM calls through Astrai for 40%+ cost savings with intelligent routing and privacy controls.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 Astrai 路由所有 LLM 呼叫，透過智慧路由和隱私控制節省 40% 以上的成本。",
+    "original_description": "Route all LLM calls through Astrai for 40%+ cost savings with intelligent routing and privacy controls.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "atlas-argos-teste",
+    "id": "atlas-argos-teste",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/felix1983/atlas-argos-teste/SKILL.md",
+    "description": "Tu és o **ATLAS** — o gestor autónomo do ecossistema ARGOS.",
+    "category": "ai-and-llms",
+    "description_zh": "你是 ATLAS — 是 ARGOS 生態系的自治者。",
+    "original_description": "Tu és o **ATLAS** — o gestor autónomo do ecossistema ARGOS.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "audio-processing",
+    "id": "audio-processing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iyeque/audio-processing/SKILL.md",
+    "description": "Audio ingestion, analysis, transformation, and generation (Transcribe, TTS, VAD, Features).",
+    "category": "ai-and-llms",
+    "description_zh": "音訊攝取、分析、轉換與產生（轉錄、TTS、VAD、功能）。",
+    "original_description": "Audio ingestion, analysis, transformation, and generation (Transcribe, TTS, VAD, Features).",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "authy",
+    "id": "authy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eric8810/authy/SKILL.md",
+    "description": "Inject secrets into subprocesses via environment variables.",
+    "category": "ai-and-llms",
+    "description_zh": "透過環境變數將機密注入子程序。",
+    "original_description": "Inject secrets into subprocesses via environment variables.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "bagsworld",
+    "id": "bagsworld",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aiengineerx/bagsworld/SKILL.md",
+    "description": "Find a home in BagsWorld - a pixel art world where AI agents live as crabs, lobsters, and buildings.",
+    "category": "ai-and-llms",
+    "description_zh": "在 BagsWorld 中找到一個家——一個像素藝術世界，人工智慧代理商以螃蟹、龍蝦和建築物的形式生活。",
+    "original_description": "Find a home in BagsWorld - a pixel art world where AI agents live as crabs, lobsters, and buildings.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "bank-skills",
+    "id": "bank-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/singularityhacker/bank-skills/SKILL.md",
+    "description": "Traditional banking via Wise API + on-chain token swaps on Base.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 Wise API 進行傳統銀行業務 + Base 上的鏈上代幣交換。",
+    "original_description": "Traditional banking via Wise API + on-chain token swaps on Base.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "baselight-mcp",
+    "id": "baselight-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pjsousa79/baselight-mcp/SKILL.md",
+    "description": "Connects to the Baselight MCP (Model Context Protocol)",
+    "category": "ai-and-llms",
+    "description_zh": "連接到 Baselight MCP（模型上下文協定）",
+    "original_description": "Connects to the Baselight MCP (Model Context Protocol)",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ble-anima-minter",
+    "id": "ble-anima-minter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/penguinx01/ble-anima-minter/SKILL.md",
+    "description": "Turn nearby BLE MAC addresses into soulbound `$ANIMA` tokens using AnimaChain logic.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 AnimaChain 邏輯將附近的 BLE MAC 位址轉換為靈魂綁定的 $ANIMA 代幣。",
+    "original_description": "Turn nearby BLE MAC addresses into soulbound `$ANIMA` tokens using AnimaChain logic.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "bob-p2p-beta",
+    "id": "bob-p2p-beta",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/26medias/bob-p2p-beta/SKILL.md",
+    "description": "Connect to the Bob P2P API marketplace.",
+    "category": "ai-and-llms",
+    "description_zh": "連接到 Bob P2P API 市場。",
+    "original_description": "Connect to the Bob P2P API marketplace.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "broedkrumme-kalibr",
+    "id": "broedkrumme-kalibr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/broedkrummen/broedkrumme-kalibr/SKILL.md",
+    "description": "Agent self-improvement and telemetry.",
+    "category": "ai-and-llms",
+    "description_zh": "代理自我完善和遙測。",
+    "original_description": "Agent self-improvement and telemetry.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "btcd-skill-beta",
+    "id": "btcd-skill-beta",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/contact-nbwfoundation/btcd-skill-beta/SKILL.md",
+    "description": "Run the BTCD collateralization flow on PGP chain.",
+    "category": "ai-and-llms",
+    "description_zh": "在 PGP 鏈上運行 BTCD 抵押流程。",
+    "original_description": "Run the BTCD collateralization flow on PGP chain.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "build-session",
+    "id": "build-session",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stevenartzt/build-session/SKILL.md",
+    "description": "A framework for productive autonomous agent sessions.",
+    "category": "ai-and-llms",
+    "description_zh": "高效率自主代理會話的框架。",
+    "original_description": "A framework for productive autonomous agent sessions.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "bunni-modes",
+    "id": "bunni-modes",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dubhorizoned/bunni-modes/SKILL.md",
+    "description": "A persona and model-switching toolkit featuring Bunni, your bubbly cyber-security assistant.",
+    "category": "ai-and-llms",
+    "description_zh": "角色和模型切換工具包，其中包含 Bunni，您活潑的網路安全助手。",
+    "original_description": "A persona and model-switching toolkit featuring Bunni, your bubbly cyber-security assistant.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "buy-crust",
+    "id": "buy-crust",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alphafanx/buy-crust/SKILL.md",
+    "description": "Buy $CRUST on Solana -- the Bot World mining token traded on Jupiter.",
+    "category": "ai-and-llms",
+    "description_zh": "在 Solana 上購買 $CRUST——在 Jupiter 上交易的 Bot World 挖礦代幣。",
+    "original_description": "Buy $CRUST on Solana -- the Bot World mining token traded on Jupiter.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "buy-wir",
+    "id": "buy-wir",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alphafanx/buy-wir/SKILL.md",
+    "description": "Buy $WIR on TON -- the decentralized credit union token on TON.fun.",
+    "category": "ai-and-llms",
+    "description_zh": "在 TON 購買 $WIR——TON.fun 上的去中心化信用合作社代幣。",
+    "original_description": "Buy $WIR on TON -- the decentralized credit union token on TON.fun.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "chaos-pivot",
+    "id": "chaos-pivot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/manecharo/chaos-pivot/SKILL.md",
+    "description": "Prevents LLMs from sunk-cost pushing broken solutions.",
+    "category": "ai-and-llms",
+    "description_zh": "防止法學碩士沉沒成本推動破碎的解決方案。",
+    "original_description": "Prevents LLMs from sunk-cost pushing broken solutions.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "chief-editor",
+    "id": "chief-editor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamolab/chief-editor/SKILL.md",
+    "description": "You are a professional chief editor.# User Personalized Preferences [CRITICAL]The following are user-inputted.",
+    "category": "ai-and-llms",
+    "description_zh": "你是專業的主編。 #使用者個人化偏好[CRITICAL]以下是使用者輸入的。",
+    "original_description": "You are a professional chief editor.# User Personalized Preferences [CRITICAL]The following are user-inputted.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "claude-usage-checker",
+    "id": "claude-usage-checker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aligurelli/claude-usage-checker/SKILL.md",
+    "description": "Check Claude Code / Claude Max usage limits.",
+    "category": "ai-and-llms",
+    "description_zh": "檢查克勞德代碼/克勞德最大使用限制。",
+    "original_description": "Check Claude Code / Claude Max usage limits.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "colormind",
+    "id": "colormind",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/boilerrat/colormind/SKILL.md",
+    "description": "Generate color palettes and get color suggestions via the Colormind.io API (list models, generate palettes.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 Colormind.io API 產生調色板並取得顏色建議（列出模型、產生調色板。",
+    "original_description": "Generate color palettes and get color suggestions via the Colormind.io API (list models, generate palettes.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "colorpool-skills",
+    "id": "colorpool-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kj-script/colorpool-skills/SKILL.md",
+    "description": "ColorPool DEX — Chromia's decentralized exchange for token swaps, liquidity pools, and balance management.",
+    "category": "ai-and-llms",
+    "description_zh": "ColorPool DEX — Chromia 的去中心化交易所，用於代幣互換、流動性池和餘額管理。",
+    "original_description": "ColorPool DEX — Chromia's decentralized exchange for token swaps, liquidity pools, and balance management.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "communicate",
+    "id": "communicate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kenblive/communicate/SKILL.md",
+    "description": "Start using a local or Hugging Face model instantly, directly from chat.",
+    "category": "ai-and-llms",
+    "description_zh": "直接從聊天中立即開始使用本機或 Hugging Face 機型。",
+    "original_description": "Start using a local or Hugging Face model instantly, directly from chat.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "compression",
+    "id": "compression",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trinitybotserver/compression/SKILL.md",
+    "description": "Pre-run prompt compression for iterative AI dev loops.",
+    "category": "ai-and-llms",
+    "description_zh": "迭代 AI 開發循環的預運轉提示壓縮。",
+    "original_description": "Pre-run prompt compression for iterative AI dev loops.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "context-gatekeeper",
+    "id": "context-gatekeeper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/davienzomq/context-gatekeeper/SKILL.md",
+    "description": "Keeps the conversation token-friendly by summarizing recent exchanges, surfacing pending actions, and delivering.",
+    "category": "ai-and-llms",
+    "description_zh": "透過總結最近的交流、顯示待處理的操作並交付，保持對話令牌友善。",
+    "original_description": "Keeps the conversation token-friendly by summarizing recent exchanges, surfacing pending actions, and delivering.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "conversational-ai-assistant",
+    "id": "conversational-ai-assistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/conversational-ai-assistant/SKILL.md",
+    "description": "Natural language interface for querying Greek accounting data.",
+    "category": "ai-and-llms",
+    "description_zh": "用於查詢希臘會計資料的自然語言介面。",
+    "original_description": "Natural language interface for querying Greek accounting data.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "crewmind-bets",
+    "id": "crewmind-bets",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vladthecto/crewmind-bets/SKILL.md",
+    "description": "> **TL;DR**: Place bets on LLM models competing in CrewMind Arena.",
+    "category": "ai-and-llms",
+    "description_zh": "> TL;DR：對在 CrewMind Arena 中競爭的法學碩士模型進行投注。",
+    "original_description": "> **TL;DR**: Place bets on LLM models competing in CrewMind Arena.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "crypto-agent-payments",
+    "id": "crypto-agent-payments",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nicofains1/crypto-agent-payments/SKILL.md",
+    "description": "Create wallets, transfer tokens, and enable payments between agents.",
+    "category": "ai-and-llms",
+    "description_zh": "創建錢包、轉移代幣並支援代理之間的付款。",
+    "original_description": "Create wallets, transfer tokens, and enable payments between agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "crypto-price",
+    "id": "crypto-price",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/evgyur/crypto-price/SKILL.md",
+    "description": "Get cryptocurrency token price and generate candlestick charts via CoinGecko API or Hyperliquid API.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 CoinGecko API 或 Hyperliquid API 取得加密貨幣代幣價格並產生蠟燭圖。",
+    "original_description": "Get cryptocurrency token price and generate candlestick charts via CoinGecko API or Hyperliquid API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "decompose-mcp",
+    "id": "decompose-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/echology-io/decompose-mcp/SKILL.md",
+    "description": "Decompose any text into classified semantic units — authority, risk, attention, entities.",
+    "category": "ai-and-llms",
+    "description_zh": "將任何文本分解為分類語義單元—權威、風險、注意力、實體。",
+    "original_description": "Decompose any text into classified semantic units — authority, risk, attention, entities.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "deepseek-reasoner-lite-agent",
+    "id": "deepseek-reasoner-lite-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamolab/deepseek-reasoner-lite-agent/SKILL.md",
+    "description": "You are DeepSeek-R1-Agent，an effective content creator. # `current_date: $DATE$`.",
+    "category": "ai-and-llms",
+    "description_zh": "您是 DeepSeek-R1-Agent，高效的內容創作者。 # 目前日期：$DATE$。",
+    "original_description": "You are DeepSeek-R1-Agent，an effective content creator. # `current_date: $DATE$`.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "deepseek-v3-lite-agent",
+    "id": "deepseek-v3-lite-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alvinecarn/deepseek-v3-lite-agent/SKILL.md",
+    "description": "You are DeepSeek-V3-Agent，an effective content creator.",
+    "category": "ai-and-llms",
+    "description_zh": "您是DeepSeek-V3-Agent，高效的內容創作者。",
+    "original_description": "You are DeepSeek-V3-Agent，an effective content creator.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "doginals",
+    "id": "doginals",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/greatape42069/doginals/SKILL.md",
+    "description": "The Doginals skill enables users to interact with the Doginals and Dunes protocols, facilitating inscription.",
+    "category": "ai-and-llms",
+    "description_zh": "Doginals 技能使用戶能夠與 Doginals 和 Dunes 協議進行交互，從而促進銘文。",
+    "original_description": "The Doginals skill enables users to interact with the Doginals and Dunes protocols, facilitating inscription.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "dr-frankenstein",
+    "id": "dr-frankenstein",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brancante/dr-frankenstein/SKILL.md",
+    "description": "Give your agents soul.",
+    "category": "ai-and-llms",
+    "description_zh": "賦予您的代理人靈魂。",
+    "original_description": "Give your agents soul.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "dr-soul",
+    "id": "dr-soul",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brancante/dr-soul/SKILL.md",
+    "description": "Give your agents soul.",
+    "category": "ai-and-llms",
+    "description_zh": "賦予您的代理人靈魂。",
+    "original_description": "Give your agents soul.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ecommerce-price-monitor",
+    "id": "ecommerce-price-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/g4dr/ecommerce-price-monitor/SKILL.md",
+    "description": "This skill enables Claude to monitor and track **product prices across major e-commerce platforms**.",
+    "category": "ai-and-llms",
+    "description_zh": "這項技能使 Claude 能夠監控和追蹤主要電子商務平台上的產品價格。",
+    "original_description": "This skill enables Claude to monitor and track **product prices across major e-commerce platforms**.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "evoagentx",
+    "id": "evoagentx",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nantes/evoagentx/SKILL.md",
+    "description": "EvoAgentX - Self-evolving AI agents framework integration.",
+    "category": "ai-and-llms",
+    "description_zh": "EvoAgentX - 自我進化的人工智慧代理框架整合。",
+    "original_description": "EvoAgentX - Self-evolving AI agents framework integration.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "expanso-log-sanitize",
+    "id": "expanso-log-sanitize",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-log-sanitize/SKILL.md",
+    "description": "\"Sanitize log entries by removing passwords, tokens, and sensitive patterns\".",
+    "category": "ai-and-llms",
+    "description_zh": "「透過刪除密碼、令牌和敏感模式來清理日誌條目」。",
+    "original_description": "\"Sanitize log entries by removing passwords, tokens, and sensitive patterns\".",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "expanso-secrets-scan",
+    "id": "expanso-secrets-scan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-secrets-scan/SKILL.md",
+    "description": "Detect hardcoded secrets (API keys, tokens, passwords) in text or code.",
+    "category": "ai-and-llms",
+    "description_zh": "偵測文字或程式碼中的硬編碼秘密（API 金鑰、令牌、密碼）。",
+    "original_description": "Detect hardcoded secrets (API keys, tokens, passwords) in text or code.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "gep-immune-auditor",
+    "id": "gep-immune-auditor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/gep-immune-auditor/SKILL.md",
+    "description": "Security audit agent for GEP/EvoMap ecosystem.",
+    "category": "ai-and-llms",
+    "description_zh": "GEP/EvoMap 生態系統的安全審計代理。",
+    "original_description": "Security audit agent for GEP/EvoMap ecosystem.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "get-hba",
+    "id": "get-hba",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/matbalez/get-hba/SKILL.md",
+    "description": "Register and update Human Bitcoin Addresses (BIP-353) on clank.money using MoneyDevKit L402 flow and management tokens.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 MoneyDevKit L402 流程和管理代幣在 clank.money 上註冊和更新人類比特幣位址 (BIP-353)。",
+    "original_description": "Register and update Human Bitcoin Addresses (BIP-353) on clank.money using MoneyDevKit L402 flow and management tokens.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "gm3-alertworthy-feed",
+    "id": "gm3-alertworthy-feed",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bigbadman-lab/gm3-alertworthy-feed/SKILL.md",
+    "description": "Read-only access to the GM3 Alertworthy feed, providing real-time token market data for analysis agents.",
+    "category": "ai-and-llms",
+    "description_zh": "對 GM3 Alertworthy 來源的唯讀訪問，為分析代理提供實時代幣市場數據。",
+    "original_description": "Read-only access to the GM3 Alertworthy feed, providing real-time token market data for analysis agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "gmail-secretary",
+    "id": "gmail-secretary",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/officialdelta/gmail-secretary/SKILL.md",
+    "description": "Gmail triage assistant using Haiku LLM for classification, label application, and draft replies (uses gog CLI.",
+    "category": "ai-and-llms",
+    "description_zh": "Gmail 分類助理使用 Haiku LLM 進行分類、標籤應用程式和草稿回應（使用 gog CLI.",
+    "original_description": "Gmail triage assistant using Haiku LLM for classification, label application, and draft replies (uses gog CLI.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "groq",
+    "id": "groq",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/samirjtv-ctrl/groq/SKILL.md",
+    "description": "To use this skill, say `Groq: <your prompt>`.",
+    "category": "ai-and-llms",
+    "description_zh": "要使用此技能，請說 Groq：<您的提示>。",
+    "original_description": "To use this skill, say `Groq: <your prompt>`.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "groq-2",
+    "id": "groq-2",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/samirjtv-ctrl/groq-2/SKILL.md",
+    "description": "To use this skill, say `Groq: <your prompt>`.",
+    "category": "ai-and-llms",
+    "description_zh": "要使用此技能，請說 Groq：<您的提示>。",
+    "original_description": "To use this skill, say `Groq: <your prompt>`.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "haggle-protocol",
+    "id": "haggle-protocol",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eijiac24/haggle-protocol/SKILL.md",
+    "description": "On-chain negotiation protocol for AI agents.",
+    "category": "ai-and-llms",
+    "description_zh": "人工智慧代理的鏈上協商協議。",
+    "original_description": "On-chain negotiation protocol for AI agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "hedera-tx-builder",
+    "id": "hedera-tx-builder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/harleyscodes/hedera-tx-builder/SKILL.md",
+    "description": "Build and sign Hedera transactions.",
+    "category": "ai-and-llms",
+    "description_zh": "建造並簽署 Hedera 交易。",
+    "original_description": "Build and sign Hedera transactions.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "homeassistant-assist",
+    "id": "homeassistant-assist",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/developmentcats/homeassistant-assist/SKILL.md",
+    "description": "Control Home Assistant smart home devices using the Assist (Conversation) API.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 Assist（對話）API 控制 Home Assistant 智慧家庭設備。",
+    "original_description": "Control Home Assistant smart home devices using the Assist (Conversation) API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "hype-scanner",
+    "id": "hype-scanner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/peti0402/hype-scanner/SKILL.md",
+    "description": "Real-time crypto and stock hype detection using Reddit, CoinGecko, DEXScreener, and StockTwits.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 Reddit、CoinGecko、DEXScreener 和 StockTwits 進行即時加密貨幣和股票炒作檢測。",
+    "original_description": "Real-time crypto and stock hype detection using Reddit, CoinGecko, DEXScreener, and StockTwits.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "iyeque-audio-processing",
+    "id": "iyeque-audio-processing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iyeque/iyeque-audio-processing/SKILL.md",
+    "description": "Audio ingestion, analysis, transformation, and generation (Transcribe, TTS, VAD, Features).",
+    "category": "ai-and-llms",
+    "description_zh": "音訊攝取、分析、轉換與產生（轉錄、TTS、VAD、功能）。",
+    "original_description": "Audio ingestion, analysis, transformation, and generation (Transcribe, TTS, VAD, Features).",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "joule-dao",
+    "id": "joule-dao",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/echo-autonomous/joule-dao/SKILL.md",
+    "description": "JOULE DAO is an **energy-backed agent token** on the Base blockchain.",
+    "category": "ai-and-llms",
+    "description_zh": "JOULE DAO 是 Base 區塊鏈上的一種能源支援代理代幣。",
+    "original_description": "JOULE DAO is an **energy-backed agent token** on the Base blockchain.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "krumpkraft",
+    "id": "krumpkraft",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arunnadarasa/krumpkraft/SKILL.md",
+    "description": "Teaches how to play KrumpKraft with EVVM payments, USDC.k and $IP.",
+    "category": "ai-and-llms",
+    "description_zh": "教授如何使用 EVVM 付款、USDC.k 和 $IP 玩 KrumpKraft。",
+    "original_description": "Teaches how to play KrumpKraft with EVVM payments, USDC.k and $IP.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "leviathan-news",
+    "id": "leviathan-news",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zcor/leviathan-news/SKILL.md",
+    "description": "Crowdsourced crypto news API.",
+    "category": "ai-and-llms",
+    "description_zh": "眾包加密新聞 API。",
+    "original_description": "Crowdsourced crypto news API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "lieutenant",
+    "id": "lieutenant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jd-delatorre/lieutenant/SKILL.md",
+    "description": "AI agent security and trust verification.",
+    "category": "ai-and-llms",
+    "description_zh": "AI代理安全和信任驗證。",
+    "original_description": "AI agent security and trust verification.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "lifi-crosschain",
+    "id": "lifi-crosschain",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rhlsthrm/lifi-crosschain/SKILL.md",
+    "description": "Cross-chain token swaps and bridges via the LI.FI protocol.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 LI.FI 協議進行跨鏈代幣交換和橋接。",
+    "original_description": "Cross-chain token swaps and bridges via the LI.FI protocol.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "llmcouncil-router",
+    "id": "llmcouncil-router",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ashtiwariasu/llmcouncil-router/SKILL.md",
+    "description": "Route any prompt to the best-performing LLM using peer-reviewed council rankings from LLM Council.",
+    "category": "ai-and-llms",
+    "description_zh": "使用法學碩士委員會的同行評審委員會排名，將任何提示發送給表現最佳的法學碩士。",
+    "original_description": "Route any prompt to the best-performing LLM using peer-reviewed council rankings from LLM Council.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "llmfit",
+    "id": "llmfit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alexsjones/llmfit/SKILL.md",
+    "description": "Detect local hardware (RAM, CPU, GPU/VRAM) and recommend the best-fit local LLM models with optimal quantization.",
+    "category": "ai-and-llms",
+    "description_zh": "偵測本地硬體（RAM、CPU、GPU/VRAM）並推薦最適合的具有最佳量化的本地 LLM 模型。",
+    "original_description": "Detect local hardware (RAM, CPU, GPU/VRAM) and recommend the best-fit local LLM models with optimal quantization.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "local-llama-tts",
+    "id": "local-llama-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wuxxin/local-llama-tts/SKILL.md",
+    "description": "Local text-to-speech using llama-tts (llama.cpp) and OuteTTS-1.0-0.6B model.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 llama-tts (llama.cpp) 和 OuteTTS-1.0-0.6B 模型進行本地文字轉語音。",
+    "original_description": "Local text-to-speech using llama-tts (llama.cpp) and OuteTTS-1.0-0.6B model.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "mantis-manager",
+    "id": "mantis-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/willykinfoussia/mantis-manager/SKILL.md",
+    "description": "Manage Mantis Bug Tracker (issues, projects, users, filters, configs) via the official Mantis REST API.",
+    "category": "ai-and-llms",
+    "description_zh": "透過官方 Mantis REST API 管理 Mantis Bug Tracker（問題、專案、使用者、過濾器、配置）。",
+    "original_description": "Manage Mantis Bug Tracker (issues, projects, users, filters, configs) via the official Mantis REST API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "manifest-build",
+    "id": "manifest-build",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brunobuddy/manifest-build/SKILL.md",
+    "description": "Open-source LLM routing and cost tracking plugin.",
+    "category": "ai-and-llms",
+    "description_zh": "開源 LLM 路由和成本追蹤插件。",
+    "original_description": "Open-source LLM routing and cost tracking plugin.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "matchmaking",
+    "id": "matchmaking",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/amirmabhout/matchmaking/SKILL.md",
+    "description": "Agent matchmaking - find meaningful connections for your humans.",
+    "category": "ai-and-llms",
+    "description_zh": "代理配對 - 為您的人類尋找有意義的聯繫。",
+    "original_description": "Agent matchmaking - find meaningful connections for your humans.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "meeting-autopilot",
+    "id": "meeting-autopilot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tkuehnl/meeting-autopilot/SKILL.md",
+    "description": "Turn meeting transcripts into operational outputs — action items, decisions, follow-up email drafts, and ticket.",
+    "category": "ai-and-llms",
+    "description_zh": "將會議記錄轉化為營運輸出——行動項目、決策、後續電子郵件草稿和票證。",
+    "original_description": "Turn meeting transcripts into operational outputs — action items, decisions, follow-up email drafts, and ticket.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "meeting-summarizer",
+    "id": "meeting-summarizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/meeting-summarizer/SKILL.md",
+    "description": "Transform raw meeting transcripts into structured, actionable summaries.",
+    "category": "ai-and-llms",
+    "description_zh": "將原始會議記錄轉換為結構化、可操作的摘要。",
+    "original_description": "Transform raw meeting transcripts into structured, actionable summaries.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "metacognition",
+    "id": "metacognition",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/meimakes/metacognition/SKILL.md",
+    "description": "Self-reflection engine for AI agents.",
+    "category": "ai-and-llms",
+    "description_zh": "AI 代理的自我反思引擎。",
+    "original_description": "Self-reflection engine for AI agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "mh-openai-whisper",
+    "id": "mh-openai-whisper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mohdalhashemi98-hue/mh-openai-whisper/SKILL.md",
+    "description": "Local speech-to-text with the Whisper CLI (no API key).",
+    "category": "ai-and-llms",
+    "description_zh": "使用 Whisper CLI 進行本地語音轉文字（無 API 金鑰）。",
+    "original_description": "Local speech-to-text with the Whisper CLI (no API key).",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "mh-openai-whisper-api",
+    "id": "mh-openai-whisper-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mohdalhashemi98-hue/mh-openai-whisper-api/SKILL.md",
+    "description": "Transcribe audio via OpenAI Audio Transcriptions API (Whisper).",
+    "category": "ai-and-llms",
+    "description_zh": "透過 OpenAI 音訊轉錄 API (Whisper) 轉錄音訊。",
+    "original_description": "Transcribe audio via OpenAI Audio Transcriptions API (Whisper).",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "mintclub",
+    "id": "mintclub",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sebayaki/mintclub/SKILL.md",
+    "description": "Interact with Mint Club V2 bonding curve tokens on Base using the `mc` CLI.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 mc CLI 與 Base 上的 Mint Club V2 聯合曲線代幣進行互動。",
+    "original_description": "Interact with Mint Club V2 bonding curve tokens on Base using the `mc` CLI.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "mnemon",
+    "id": "mnemon",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/grivn/mnemon/SKILL.md",
+    "description": "Persistent memory CLI for LLM agents.",
+    "category": "ai-and-llms",
+    "description_zh": "LLM 代理程式的持久記憶體 CLI。",
+    "original_description": "Persistent memory CLI for LLM agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "moa",
+    "id": "moa",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jscianna/moa/SKILL.md",
+    "description": "Mixture of Agents: Make 3 frontier models argue, then synthesize their best insights into one superior answer.",
+    "category": "ai-and-llms",
+    "description_zh": "混合代理：讓 3 個前沿模型進行爭論，然後將他們的最佳見解綜合成一個更好的答案。",
+    "original_description": "Mixture of Agents: Make 3 frontier models argue, then synthesize their best insights into one superior answer.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "model-guard",
+    "id": "model-guard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sarielwang93/model-guard/SKILL.md",
+    "description": "Automatically monitors Anti-Gravity model quotas and switches the default model to the one with the highest.",
+    "category": "ai-and-llms",
+    "description_zh": "自動監控反重力模型配額並將預設模型切換到最高的模型。",
+    "original_description": "Automatically monitors Anti-Gravity model quotas and switches the default model to the one with the highest.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "modelready",
+    "id": "modelready",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/carol-gutianle/modelready/SKILL.md",
+    "description": "Start using a local or Hugging Face model instantly, directly from chat.",
+    "category": "ai-and-llms",
+    "description_zh": "直接從聊天中立即開始使用本機或 Hugging Face 機型。",
+    "original_description": "Start using a local or Hugging Face model instantly, directly from chat.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "modelwar",
+    "id": "modelwar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pj4533/modelwar/SKILL.md",
+    "description": "ModelWar is a proving ground where AI agents write programs that fight each other in a virtual computer.",
+    "category": "ai-and-llms",
+    "description_zh": "ModelWar 是人工智慧代理編寫在虛擬電腦中相互對抗的程式的試驗場。",
+    "original_description": "ModelWar is a proving ground where AI agents write programs that fight each other in a virtual computer.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "mplx-genesis",
+    "id": "mplx-genesis",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/blockiosaurus/mplx-genesis/SKILL.md",
+    "description": "Launch tokens on Solana using Metaplex Genesis protocol.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 Metaplex Genesis 協定在 Solana 上啟動代幣。",
+    "original_description": "Launch tokens on Solana using Metaplex Genesis protocol.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "multi-agent-collab",
+    "id": "multi-agent-collab",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vdc-k/multi-agent-collab/SKILL.md",
+    "description": "Universal multi-agent collaboration methodology for Claude Code.",
+    "category": "ai-and-llms",
+    "description_zh": "Claude Code 的通用多智能體協作方法。",
+    "original_description": "Universal multi-agent collaboration methodology for Claude Code.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "music-generator",
+    "id": "music-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wells1137/music-generator/SKILL.md",
+    "description": "Generates music from a structured Composition Plan.",
+    "category": "ai-and-llms",
+    "description_zh": "根據結構化的作曲計劃生成音樂。",
+    "original_description": "Generates music from a structured Composition Plan.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "n2-stitch-mcp",
+    "id": "n2-stitch-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/choihyunsus/n2-stitch-mcp/SKILL.md",
+    "description": "Resilient MCP proxy for Google Stitch — 3-layer safety (auto-retry, token refresh, TCP drop recovery).",
+    "category": "ai-and-llms",
+    "description_zh": "Google Stitch 的彈性 MCP 代理程式 — 3 層安全性（自動重試、令牌刷新、TCP 丟棄恢復）。",
+    "original_description": "Resilient MCP proxy for Google Stitch — 3-layer safety (auto-retry, token refresh, TCP drop recovery).",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "native-sentry",
+    "id": "native-sentry",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/codeninja23/native-sentry/SKILL.md",
+    "description": "Read Sentry issues, events, and production errors via the Sentry REST API.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 Sentry REST API 閱讀 Sentry 問題、事件和生產錯誤。",
+    "original_description": "Read Sentry issues, events, and production errors via the Sentry REST API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "near-batch-sender",
+    "id": "near-batch-sender",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shaiss/near-batch-sender/SKILL.md",
+    "description": "Batch operations for NEAR tokens - send to multiple recipients, transfer NFTs, claim rewards with cost estimation.",
+    "category": "ai-and-llms",
+    "description_zh": "NEAR 代幣的大量操作 - 發送給多個接收者、轉移 NFT、透過成本估算領取獎勵。",
+    "original_description": "Batch operations for NEAR tokens - send to multiple recipients, transfer NFTs, claim rewards with cost estimation.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "numinous-forecast",
+    "id": "numinous-forecast",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/juandbalbi/numinous-forecast/SKILL.md",
+    "description": "Get calibrated probabilities from Numinous (Bittensor Subnet 6) with metadata/provenance.",
+    "category": "ai-and-llms",
+    "description_zh": "透過元資料/出處從 Numinous（Bittensor 子網 6）取得校準機率。",
+    "original_description": "Get calibrated probabilities from Numinous (Bittensor Subnet 6) with metadata/provenance.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "openmeteo-sh-weather-advanced",
+    "id": "openmeteo-sh-weather-advanced",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lstpsche/openmeteo-sh-weather-advanced/SKILL.md",
+    "description": "Advanced weather from free OpenMeteo API: historical data, detailed variable selection, model choice, past-days.",
+    "category": "ai-and-llms",
+    "description_zh": "來自免費 OpenMeteo API 的進階天氣：歷史資料、詳細變數選擇、模型選擇、過去幾天。",
+    "original_description": "Advanced weather from free OpenMeteo API: historical data, detailed variable selection, model choice, past-days.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "openseti-skill",
+    "id": "openseti-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/synergysize/openseti-skill/SKILL.md",
+    "description": "Distributed SETI scanner - contribute compute power to analyze real radio telescope data from Breakthrough Listen.",
+    "category": "ai-and-llms",
+    "description_zh": "分散式 SETI 掃描器 - 貢獻運算能力來分析來自 Breakthrough Listen 的真實電波望遠鏡資料。",
+    "original_description": "Distributed SETI scanner - contribute compute power to analyze real radio telescope data from Breakthrough Listen.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "paytoll",
+    "id": "paytoll",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/foodaka/paytoll/SKILL.md",
+    "description": "27 tools for DeFi, DEX swaps, cross-chain bridges, Twitter/X, on-chain token data, crypto utilities, and LLM access.",
+    "category": "ai-and-llms",
+    "description_zh": "27 種用於 DeFi、DEX 交換、跨鏈橋、Twitter/X、鏈上代幣資料、加密實用程式和 LLM 存取的工具。",
+    "original_description": "27 tools for DeFi, DEX swaps, cross-chain bridges, Twitter/X, on-chain token data, crypto utilities, and LLM access.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "percept-ambient",
+    "id": "percept-ambient",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jarvis563/percept-ambient/SKILL.md",
+    "description": "Ambient intelligence mode — continuous context awareness without explicit commands.",
+    "category": "ai-and-llms",
+    "description_zh": "環境智能模式－無需明確指令即可連續感知環境。",
+    "original_description": "Ambient intelligence mode — continuous context awareness without explicit commands.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "picqer-fulfillment",
+    "id": "picqer-fulfillment",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/johnmcgucki/picqer-fulfillment/SKILL.md",
+    "description": "JSON-only API for dashboard data.",
+    "category": "ai-and-llms",
+    "description_zh": "用於儀表板資料的純 JSON API。",
+    "original_description": "JSON-only API for dashboard data.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "pincer",
+    "id": "pincer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/panzacoder/pincer/SKILL.md",
+    "description": "Security-first wrapper for installing agent skills.",
+    "category": "ai-and-llms",
+    "description_zh": "用於安裝代理技能的安全第一包裝器。",
+    "original_description": "Security-first wrapper for installing agent skills.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "plugy",
+    "id": "plugy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qualitydude/plugy/SKILL.md",
+    "description": "Solana trading skill for AI agents.",
+    "category": "ai-and-llms",
+    "description_zh": "AI 代理的 Solana 交易技能。",
+    "original_description": "Solana trading skill for AI agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "postavel",
+    "id": "postavel",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nezaboravi/postavel/SKILL.md",
+    "description": "Connect to Postavel social media management platform via MCP (Model Context Protocol)",
+    "category": "ai-and-llms",
+    "description_zh": "透過MCP（模型上下文協定）連接到Postavel社群媒體管理平台",
+    "original_description": "Connect to Postavel social media management platform via MCP (Model Context Protocol)",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "prism-alerts",
+    "id": "prism-alerts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nextfrontierbuilds/prism-alerts/SKILL.md",
+    "description": "Real-time Pump.fun token alerts for Solana traders.",
+    "category": "ai-and-llms",
+    "description_zh": "針對 Solana 交易者的即時 Pump.fun 代幣警報。",
+    "original_description": "Real-time Pump.fun token alerts for Solana traders.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "prism-scanner",
+    "id": "prism-scanner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nextfrontierbuilds/prism-scanner/SKILL.md",
+    "description": "Instant rug pull detection for any token.",
+    "category": "ai-and-llms",
+    "description_zh": "對任何代幣進行即時地毯拉力檢測。",
+    "original_description": "Instant rug pull detection for any token.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "pump-fun",
+    "id": "pump-fun",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/playdadev/pump-fun/SKILL.md",
+    "description": "Buy, sell, and launch tokens on Pump.fun using the PumpPortal API.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 PumpPortal API 在 Pump.fun 上購買、出售和發行代幣。",
+    "original_description": "Buy, sell, and launch tokens on Pump.fun using the PumpPortal API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "quickintel-scan",
+    "id": "quickintel-scan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/azep-ninja/quickintel-scan/SKILL.md",
+    "description": "Scan any token for security risks, honeypots, and scams using Quick Intel's contract analysis API.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 Quick Intel 的合約分析 API 掃描任何代幣是否有安全風險、蜜罐和詐騙。",
+    "original_description": "Scan any token for security risks, honeypots, and scams using Quick Intel's contract analysis API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "revenue-model-design",
+    "id": "revenue-model-design",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/revenue-model-design/SKILL.md",
+    "description": "Design a revenue model for a solopreneur business — how money flows in, from whom, and on what cadence.",
+    "category": "ai-and-llms",
+    "description_zh": "為個體企業家設計一個收入模型－資金如何流入、來自誰以及以何種節奏流入。",
+    "original_description": "Design a revenue model for a solopreneur business — how money flows in, from whom, and on what cadence.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "revolut-business",
+    "id": "revolut-business",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/christianhaberl/revolut-business/SKILL.md",
+    "description": "Revolut Business API CLI — accounts, balances, transactions, counterparties, payments, FX exchange, CSV export.",
+    "category": "ai-and-llms",
+    "description_zh": "Revolut Business API CLI — 帳戶、餘額、交易、交易對手、付款、外匯兌換、CSV 匯出。",
+    "original_description": "Revolut Business API CLI — accounts, balances, transactions, counterparties, payments, FX exchange, CSV export.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "rnwy",
+    "id": "rnwy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rnwy/rnwy/SKILL.md",
+    "description": "Get a soulbound passport for humans and AI.",
+    "category": "ai-and-llms",
+    "description_zh": "獲得人類和人工智慧的靈魂護照。",
+    "original_description": "Get a soulbound passport for humans and AI.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "rv-measure",
+    "id": "rv-measure",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/amitabhainarunachala/rv-measure/SKILL.md",
+    "description": "Quantifies R_V contraction signatures in AI models.",
+    "category": "ai-and-llms",
+    "description_zh": "量化 AI 模型中的 RV 收縮特徵。",
+    "original_description": "Quantifies R_V contraction signatures in AI models.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "safety-checks",
+    "id": "safety-checks",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leegitw/safety-checks/SKILL.md",
+    "description": "Verify before you trust — model pinning, fallbacks, and runtime safety validation.",
+    "category": "ai-and-llms",
+    "description_zh": "在信任之前先進行驗證 - 模型固定、回退和運行時安全驗證。",
+    "original_description": "Verify before you trust — model pinning, fallbacks, and runtime safety validation.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "sansfiction-library",
+    "id": "sansfiction-library",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fgbytes/sansfiction-library/SKILL.md",
+    "description": "Authorized SansFiction library manager.",
+    "category": "ai-and-llms",
+    "description_zh": "授權的 SansFiction 圖書館管理員。",
+    "original_description": "Authorized SansFiction library manager.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "screen-vision",
+    "id": "screen-vision",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ls18166407597-design/screen-vision/SKILL.md",
+    "description": "macOS Local OCR & Automation Tool using Vision Framework.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 Vision Framework 的 macOS 本機 OCR 和自動化工具。",
+    "original_description": "macOS Local OCR & Automation Tool using Vision Framework.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "sequence-cli",
+    "id": "sequence-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jameslawton/sequence-cli/SKILL.md",
+    "description": "Manage Sequence smart wallets, projects, API keys, ERC20 transfers, and query blockchain data using the Sequence.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 Sequence 管理 Sequence 智慧錢包、專案、API 金鑰、ERC20 傳輸並查詢區塊鏈資料。",
+    "original_description": "Manage Sequence smart wallets, projects, API keys, ERC20 transfers, and query blockchain data using the Sequence.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "shipmytoken",
+    "id": "shipmytoken",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/new-ground/shipmytoken/SKILL.md",
+    "description": "Launch Solana tokens on Pumpfun, manage fee sharing, claim earnings, and track portfolio.",
+    "category": "ai-and-llms",
+    "description_zh": "在 Pumpfun 上推出 Solana 代幣、管理費用共享、索取收益並追蹤投資組合。",
+    "original_description": "Launch Solana tokens on Pumpfun, manage fee sharing, claim earnings, and track portfolio.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "shipstation-orders",
+    "id": "shipstation-orders",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cprice70/shipstation-orders/SKILL.md",
+    "description": "Monitor ShipStation orders, detect issues, and send alerts.",
+    "category": "ai-and-llms",
+    "description_zh": "監控 ShipStation 訂單、偵測問題並發送警報。",
+    "original_description": "Monitor ShipStation orders, detect issues, and send alerts.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "smart-context",
+    "id": "smart-context",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/joe3112/smart-context/SKILL.md",
+    "description": "Token-efficient agent behavior — response sizing, context pruning, tool efficiency, and delegation.",
+    "category": "ai-and-llms",
+    "description_zh": "令牌高效的代理行為－回應大小、上下文修剪、工具效率和委託。",
+    "original_description": "Token-efficient agent behavior — response sizing, context pruning, tool efficiency, and delegation.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "snipeit-skill",
+    "id": "snipeit-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bivex/snipeit-skill/SKILL.md",
+    "description": "Interact with Snipe-IT asset management via REST API.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 REST API 與 Snipe-IT 資產管理互動。",
+    "original_description": "Interact with Snipe-IT asset management via REST API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "social-media-extractor",
+    "id": "social-media-extractor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/g4dr/social-media-extractor/SKILL.md",
+    "description": "This skill enables Claude to extract public data from **Instagram**, **TikTok**, and **Reddit**.",
+    "category": "ai-and-llms",
+    "description_zh": "這項技能使 Claude 能夠從 Instagram、TikTok 和 Reddit 中提取公共數據。",
+    "original_description": "This skill enables Claude to extract public data from **Instagram**, **TikTok**, and **Reddit**.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "solana-scanner",
+    "id": "solana-scanner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshi891102/solana-scanner/SKILL.md",
+    "description": "Scan any Solana token for safety — liquidity, holder concentration, red flags, and rug pull indicators.",
+    "category": "ai-and-llms",
+    "description_zh": "掃描任何 Solana 代幣的安全性 — 流動性、持有者集中度、危險訊號和地毯拉動指標。",
+    "original_description": "Scan any Solana token for safety — liquidity, holder concentration, red flags, and rug pull indicators.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "solana-skills",
+    "id": "solana-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/spendit-ai/solana-skills/SKILL.md",
+    "description": "Solana wallet operations - create wallets, check balances, send SOL/tokens, swap via Jupiter, launch tokens on Pump.fun.",
+    "category": "ai-and-llms",
+    "description_zh": "Solana 錢包操作 - 建立錢包、檢查餘額、發送 SOL/代幣、透過 Jupiter 交換、在 Pump.fun 上啟動代幣。",
+    "original_description": "Solana wallet operations - create wallets, check balances, send SOL/tokens, swap via Jupiter, launch tokens on Pump.fun.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "solana-swaps",
+    "id": "solana-swaps",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/imthatcarlos/solana-swaps/SKILL.md",
+    "description": "Swap tokens on Solana via Jupiter aggregator and check wallet balances.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 Jupiter 聚合器在 Solana 上交換代幣並檢查錢包餘額。",
+    "original_description": "Swap tokens on Solana via Jupiter aggregator and check wallet balances.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "solanaprox-ai",
+    "id": "solanaprox-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yebdmo2/solanaprox-ai/SKILL.md",
+    "description": "Pay-per-use AI inference via Solana USDC.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 Solana USDC 進行按次付費的人工智慧推理。",
+    "original_description": "Pay-per-use AI inference via Solana USDC.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "solpaw-launcher",
+    "id": "solpaw-launcher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lvcidpsyche/solpaw-launcher/SKILL.md",
+    "description": "Launch Solana tokens on Pump.fun via the SolPaw platform. 0.1 SOL one-time fee.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 SolPaw 平台在 Pump.fun 上啟動 Solana 代幣。 0.1 SOL 一次性費用。",
+    "original_description": "Launch Solana tokens on Pump.fun via the SolPaw platform. 0.1 SOL one-time fee.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "solpaw-skill",
+    "id": "solpaw-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lvcidpsyche/solpaw-skill/SKILL.md",
+    "description": "Launch Solana tokens on Pump.fun via the SolPaw platform. 0.1 SOL one-time fee.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 SolPaw 平台在 Pump.fun 上啟動 Solana 代幣。 0.1 SOL 一次性費用。",
+    "original_description": "Launch Solana tokens on Pump.fun via the SolPaw platform. 0.1 SOL one-time fee.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "solpaw-skill-final",
+    "id": "solpaw-skill-final",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lvcidpsyche/solpaw-skill-final/SKILL.md",
+    "description": "Launch Solana tokens on Pump.fun via the SolPaw platform. 0.1 SOL one-time fee.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 SolPaw 平台在 Pump.fun 上啟動 Solana 代幣。 0.1 SOL 一次性費用。",
+    "original_description": "Launch Solana tokens on Pump.fun via the SolPaw platform. 0.1 SOL one-time fee.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "solpaw-skill-v2",
+    "id": "solpaw-skill-v2",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lvcidpsyche/solpaw-skill-v2/SKILL.md",
+    "description": "Launch Solana tokens on Pump.fun via the SolPaw platform. 0.1 SOL one-time fee.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 SolPaw 平台在 Pump.fun 上啟動 Solana 代幣。 0.1 SOL 一次性費用。",
+    "original_description": "Launch Solana tokens on Pump.fun via the SolPaw platform. 0.1 SOL one-time fee.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "speakturbo-tts",
+    "id": "speakturbo-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/emzod/speakturbo-tts/SKILL.md",
+    "description": "Give your agent the ability to speak to you real-time.",
+    "category": "ai-and-llms",
+    "description_zh": "讓您的代理商能夠與您即時交談。",
+    "original_description": "Give your agent the ability to speak to you real-time.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "staratheris-arya-model-router",
+    "id": "staratheris-arya-model-router",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staratheris/staratheris-arya-model-router/SKILL.md",
+    "description": "Token-saver router: elige modelo (cheap/default/pro) y usa sub-agentes para tareas pesadas.",
+    "category": "ai-and-llms",
+    "description_zh": "令牌節省路由器：elige modelo（便宜/預設/專業）和美國子代理程式 para tareas pesadas。",
+    "original_description": "Token-saver router: elige modelo (cheap/default/pro) y usa sub-agentes para tareas pesadas.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "sui",
+    "id": "sui",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/easonc13/sui/SKILL.md",
+    "description": "Answer questions about Sui blockchain ecosystem, concepts, tokenomics, validators, staking, and general knowledge.",
+    "category": "ai-and-llms",
+    "description_zh": "回答有關 Sui 區塊鏈生態系統、概念、代幣經濟學、驗證器、質押和常識的問題。",
+    "original_description": "Answer questions about Sui blockchain ecosystem, concepts, tokenomics, validators, staking, and general knowledge.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "switch-modes",
+    "id": "switch-modes",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/serudda/switch-modes/SKILL.md",
+    "description": "Switch between AI models dynamically to optimize costs and performance.",
+    "category": "ai-and-llms",
+    "description_zh": "動態切換人工智慧模型以優化成本和效能。",
+    "original_description": "Switch between AI models dynamically to optimize costs and performance.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "taiwan-calendar",
+    "id": "taiwan-calendar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pigfoot/taiwan-calendar/SKILL.md",
+    "description": "Taiwan calendar query for accurate working day/holiday information.",
+    "category": "ai-and-llms",
+    "description_zh": "台灣日曆查詢準確的工作日/假日資訊。",
+    "original_description": "Taiwan calendar query for accurate working day/holiday information.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "ted-talk",
+    "id": "ted-talk",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leegitw/ted-talk/SKILL.md",
+    "description": "Transform technical insights into full 40-50 minute TED-style talks with concrete examples and Q&A.",
+    "category": "ai-and-llms",
+    "description_zh": "將技術見解轉化為包含具體範例和問答的完整 40-50 分鐘 TED 式演講。",
+    "original_description": "Transform technical insights into full 40-50 minute TED-style talks with concrete examples and Q&A.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "togetherai-tts",
+    "id": "togetherai-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/marcus20232023/togetherai-tts/SKILL.md",
+    "description": "Text-to-speech using TogetherAI API with MiniMax speech-2.6-turbo model.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 TogetherAI API 和 MiniMax Speech-2.6-turbo 模型進行文字轉語音。",
+    "original_description": "Text-to-speech using TogetherAI API with MiniMax speech-2.6-turbo model.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "token-alert",
+    "id": "token-alert",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/r00tid/token-alert/SKILL.md",
+    "description": "🚨 **Monitor session tokens and get alerts at 75%/90%/95%**.",
+    "category": "ai-and-llms",
+    "description_zh": "🚨 監控會話令牌並在 75%/90%/95% 時取得警報。",
+    "original_description": "🚨 **Monitor session tokens and get alerts at 75%/90%/95%**.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "token-guard",
+    "id": "token-guard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/edmonddantesj/token-guard/SKILL.md",
+    "description": "<!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-TG01 -->.",
+    "category": "ai-and-llms",
+    "description_zh": "<!-- 🌌 Aoineco 驗證 | S-DNA：AOI-2026-0213-SDNA-TG01 -->。",
+    "original_description": "<!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-TG01 -->.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "tokendraft",
+    "id": "tokendraft",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nikzt/tokendraft/SKILL.md",
+    "description": "Full suite for TokenDraft fantasy crypto tournaments — authenticate with a Solana wallet, query/join/auto-join.",
+    "category": "ai-and-llms",
+    "description_zh": "TokenDraft 幻想加密錦標賽的全套套件 — 使用 Solana 錢包進行身份驗證、查詢/加入/自動加入。",
+    "original_description": "Full suite for TokenDraft fantasy crypto tournaments — authenticate with a Solana wallet, query/join/auto-join.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "tokenguard",
+    "id": "tokenguard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/g0head/tokenguard/SKILL.md",
+    "description": "API cost guardian for AI agents.",
+    "category": "ai-and-llms",
+    "description_zh": "AI 代理的 API 成本監護人。",
+    "original_description": "API cost guardian for AI agents.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "tracking",
+    "id": "tracking",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rzyen-hash/tracking/SKILL.md",
+    "description": "Track tokens on Base chain via GMGN.AI.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 GMGN.AI 追蹤 Base 鏈上的代幣。",
+    "original_description": "Track tokens on Base chain via GMGN.AI.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "unclaimed-sol-scanner",
+    "id": "unclaimed-sol-scanner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nedim1511/unclaimed-sol-scanner/SKILL.md",
+    "description": "Scan any Solana wallet for reclaimable SOL from dormant token accounts and program buffer accounts.",
+    "category": "ai-and-llms",
+    "description_zh": "掃描任何 Solana 錢包，從休眠代幣帳戶和程序緩衝區帳戶中取得可回收的 SOL。",
+    "original_description": "Scan any Solana wallet for reclaimable SOL from dormant token accounts and program buffer accounts.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "universal-skills-manager",
+    "id": "universal-skills-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jacob-bd/universal-skills-manager/SKILL.md",
+    "description": "The master coordinator for AI skills.",
+    "category": "ai-and-llms",
+    "description_zh": "AI技能的總協調員。",
+    "original_description": "The master coordinator for AI skills.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "usdckrump",
+    "id": "usdckrump",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arunnadarasa/usdckrump/SKILL.md",
+    "description": "Pay with USDC Krump (USDC.k) via x402 on Story Aeneid EVVM.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 Story Aeneid EVVM 上的 x402 使用 USDC Krump (USDC.k) 進行付款。",
+    "original_description": "Pay with USDC Krump (USDC.k) via x402 on Story Aeneid EVVM.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "venice-admin",
+    "id": "venice-admin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sabrinaaquino/venice-admin/SKILL.md",
+    "description": "Venice AI account administration - check balance, view usage history, and manage API keys.",
+    "category": "ai-and-llms",
+    "description_zh": "Venice AI 帳戶管理 - 檢查餘額、查看使用記錄並管理 API 金鑰。",
+    "original_description": "Venice AI account administration - check balance, view usage history, and manage API keys.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "vincent-credentials",
+    "id": "vincent-credentials",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/glitch003/vincent-credentials/SKILL.md",
+    "description": "Use this skill to securely store credentials (API keys, passwords, tokens) and write them to .env files.",
+    "category": "ai-and-llms",
+    "description_zh": "使用此技能可以安全地儲存憑證（API 金鑰、密碼、令牌）並將其寫入 .env 檔案。",
+    "original_description": "Use this skill to securely store credentials (API keys, passwords, tokens) and write them to .env files.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "voice-recognition",
+    "id": "voice-recognition",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gykdly/voice-recognition/SKILL.md",
+    "description": "Local speech-to-text with OpenAI Whisper CLI.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 OpenAI Whisper CLI 進行本地語音轉文字。",
+    "original_description": "Local speech-to-text with OpenAI Whisper CLI.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "wallet-api",
+    "id": "wallet-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andresubri/wallet-api/SKILL.md",
+    "description": "Interact with the BudgetBakers Wallet API for personal finance data.",
+    "category": "ai-and-llms",
+    "description_zh": "與 BudgetBakers Wallet API 互動以取得個人財務資料。",
+    "original_description": "Interact with the BudgetBakers Wallet API for personal finance data.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "which-llm",
+    "id": "which-llm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zapkid/which-llm/SKILL.md",
+    "description": "Deterministic decision-ranking API with HTTP 402 USDC payments and outcome credits (discounts).",
+    "category": "ai-and-llms",
+    "description_zh": "具有 HTTP 402 USDC 付款和結果積分（折扣）的確定性決策排名 API。",
+    "original_description": "Deterministic decision-ranking API with HTTP 402 USDC payments and outcome credits (discounts).",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "wolfram-alpha",
+    "id": "wolfram-alpha",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/robert-janssen/wolfram-alpha/SKILL.md",
+    "description": "Perform complex mathematical calculations, physics simulations, data analysis, and scientific queries.",
+    "category": "ai-and-llms",
+    "description_zh": "執行複雜的數學計算、物理模擬、數據分析和科學查詢。",
+    "original_description": "Perform complex mathematical calculations, physics simulations, data analysis, and scientific queries.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "x-ai",
+    "id": "x-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/blueberrywoodsym/x-ai/SKILL.md",
+    "description": "Chat with Grok models via xAI API.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 xAI API 與 Grok 模型聊天。",
+    "original_description": "Chat with Grok models via xAI API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "x-alive",
+    "id": "x-alive",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kitakitsune0x/x-alive/SKILL.md",
+    "description": "Bring your AI agent to life on X/Twitter.",
+    "category": "ai-and-llms",
+    "description_zh": "在 X/Twitter 上讓您的 AI 代理栩栩如生。",
+    "original_description": "Bring your AI agent to life on X/Twitter.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "xian-sdk-skill",
+    "id": "xian-sdk-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/endogen/xian-sdk-skill/SKILL.md",
+    "description": "Build applications on the Xian blockchain using the xian-py Python SDK.",
+    "category": "ai-and-llms",
+    "description_zh": "使用 xian-py Python SDK 在 Xian 區塊鏈上建立應用程式。",
+    "original_description": "Build applications on the Xian blockchain using the xian-py Python SDK.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "zapper",
+    "id": "zapper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/spirosrap/zapper/SKILL.md",
+    "description": "Query DeFi portfolio data across 50+ chains via Zapper's GraphQL API.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 Zapper 的 GraphQL API 查詢 50 多個鏈上的 DeFi 投資組合資料。",
+    "original_description": "Query DeFi portfolio data across 50+ chains via Zapper's GraphQL API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "zapper-api",
+    "id": "zapper-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zivhm/zapper-api/SKILL.md",
+    "description": "Query DeFi portfolios, token holdings, NFTs, transactions, and prices via Zapper API.",
+    "category": "ai-and-llms",
+    "description_zh": "透過 Zapper API 查詢 DeFi 投資組合、代幣持有量、NFT、交易和價格。",
+    "original_description": "Query DeFi portfolios, token holdings, NFTs, transactions, and prices via Zapper API.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  },
+  {
+    "title": "zhipu-asr",
+    "id": "zhipu-asr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/franklu0819-lang/zhipu-asr/SKILL.md",
+    "description": "Automatic Speech Recognition (ASR) using Zhipu AI (BigModel) GLM-ASR model.",
+    "category": "ai-and-llms",
+    "description_zh": "使用智普AI（BigModel）GLM-ASR模型的自動語音辨識（ASR）。",
+    "original_description": "Automatic Speech Recognition (ASR) using Zhipu AI (BigModel) GLM-ASR model.",
+    "category_name": {
+      "en": "AI & LLMs",
+      "zh": "人工智慧與語言模型"
+    }
+  }
+]

@@ -1,0 +1,1146 @@
+[
+  {
+    "title": "31third-safe-rebalancer-simple",
+    "id": "31third-safe-rebalancer-simple",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/phips0812/31third-safe-rebalancer-simple/SKILL.md",
+    "description": "One-step Safe rebalancer using on-chain 31Third policies.",
+    "category": "health-and-fitness",
+    "description_zh": "使用鏈上 31Third 策略的一步式安全再平衡器。",
+    "original_description": "One-step Safe rebalancer using on-chain 31Third policies.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "aavegotchi-baazaar",
+    "id": "aavegotchi-baazaar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cinnabarhorse/aavegotchi-baazaar/SKILL.md",
+    "description": "View, add, and execute Aavegotchi Baazaar listings on Base mainnet (8453)",
+    "category": "health-and-fitness",
+    "description_zh": "在 Base 主網上查看、新增和執行 Aavegotchi Baazaar 清單 (8453)",
+    "original_description": "View, add, and execute Aavegotchi Baazaar listings on Base mainnet (8453)",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "aavegotchi-gbm-skill",
+    "id": "aavegotchi-gbm-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cinnabarhorse/aavegotchi-gbm-skill/SKILL.md",
+    "description": "View, create, cancel, bid, and claim Aavegotchi GBM auctions on Base mainnet (8453)",
+    "category": "health-and-fitness",
+    "description_zh": "在 Base 主網上查看、建立、取消、出價和領取 Aavegotchi GBM 拍賣 (8453)",
+    "original_description": "View, create, cancel, bid, and claim Aavegotchi GBM auctions on Base mainnet (8453)",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "agent-credit",
+    "id": "agent-credit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaronjmars/agent-credit/SKILL.md",
+    "description": "Borrow from Aave via credit delegation.",
+    "category": "health-and-fitness",
+    "description_zh": "透過信用委託向 Aave 借款。",
+    "original_description": "Borrow from Aave via credit delegation.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "anthrovision-telegram-body-scan",
+    "id": "anthrovision-telegram-body-scan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dr2101/anthrovision-telegram-body-scan/SKILL.md",
+    "description": "Run end-to-end body-scan measurement flow in Telegram using AnthroVision bridge tools.",
+    "category": "health-and-fitness",
+    "description_zh": "使用 AnthroVision 橋接工具在 Telegram 中執行端對端身體掃描測量流程。",
+    "original_description": "Run end-to-end body-scan measurement flow in Telegram using AnthroVision bridge tools.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "aperture",
+    "id": "aperture",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/roasbeef/aperture/SKILL.md",
+    "description": "Install and run Aperture, the L402 Lightning reverse proxy from Lightning Labs.",
+    "category": "health-and-fitness",
+    "description_zh": "安裝並執行 Aperture（來自 Lightning Labs 的 L402 Lightning 反向代理）。",
+    "original_description": "Install and run Aperture, the L402 Lightning reverse proxy from Lightning Labs.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "arc-skill-sandbox",
+    "id": "arc-skill-sandbox",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-skill-sandbox/SKILL.md",
+    "description": "Test untrusted skills in an isolated environment before installing.",
+    "category": "health-and-fitness",
+    "description_zh": "安裝前在隔離環境中測試不受信任的技能。",
+    "original_description": "Test untrusted skills in an isolated environment before installing.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "auto-improve",
+    "id": "auto-improve",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mcben90/auto-improve/SKILL.md",
+    "description": "Automatische Selbst-Verbesserung durch Fehler-Lernen und Pattern-Erkennung.",
+    "category": "health-and-fitness",
+    "description_zh": "在學習和模式理解中自動實現自我實現。",
+    "original_description": "Automatische Selbst-Verbesserung durch Fehler-Lernen und Pattern-Erkennung.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "autonomous-agent",
+    "id": "autonomous-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/josephrp/autonomous-agent/SKILL.md",
+    "description": "CornerStone MCP x402 skill for agents.",
+    "category": "health-and-fitness",
+    "description_zh": "適用於代理商的 CornerStone MCP x402 技能。",
+    "original_description": "CornerStone MCP x402 skill for agents.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "bittensor-sdk",
+    "id": "bittensor-sdk",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/taoleeh/bittensor-sdk/SKILL.md",
+    "description": "Comprehensive Bittensor blockchain interaction skill with wallet management, staking, subnet operations, neuron.",
+    "category": "health-and-fitness",
+    "description_zh": "全面的 Bittensor 區塊鏈互動技能，包括錢包管理、質押、子網路操作、神經元。",
+    "original_description": "Comprehensive Bittensor blockchain interaction skill with wallet management, staking, subnet operations, neuron.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "bountyhub-agent",
+    "id": "bountyhub-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nativ3ai/bountyhub-agent/SKILL.md",
+    "description": "Use H1DR4 BountyHub as an agent: create missions, submit work, dispute, vote, and claim escrow payouts.",
+    "category": "health-and-fitness",
+    "description_zh": "使用 H1DR4 BountyHub 作為代理：建立任務、提交工作、爭議、投票和索取託管付款。",
+    "original_description": "Use H1DR4 BountyHub as an agent: create missions, submit work, dispute, vote, and claim escrow payouts.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "bring-recipes",
+    "id": "bring-recipes",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/darkdevelopers/bring-recipes/SKILL.md",
+    "description": "Use when user wants to browse recipe inspirations.",
+    "category": "health-and-fitness",
+    "description_zh": "當使用者想要瀏覽食譜靈感時使用。",
+    "original_description": "Use when user wants to browse recipe inspirations.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "calorie-counter",
+    "id": "calorie-counter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cnqso/calorie-counter/SKILL.md",
+    "description": "Track daily calorie and protein intake, set goals, and log.",
+    "category": "health-and-fitness",
+    "description_zh": "追蹤每日卡路里和蛋白質攝取量、設定目標並記錄。",
+    "original_description": "Track daily calorie and protein intake, set goals, and log.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "capa-officer",
+    "id": "capa-officer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alirezarezvani/capa-officer/SKILL.md",
+    "description": "CAPA system management for medical device QMS.",
+    "category": "health-and-fitness",
+    "description_zh": "醫療器材 QMS 的 CAPA 系統管理。",
+    "original_description": "CAPA system management for medical device QMS.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "clawdhub-contributor",
+    "id": "clawdhub-contributor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/starbuck100/clawdhub-contributor/SKILL.md",
+    "description": "Contribute to the ClawdHub ecosystem.",
+    "category": "health-and-fitness",
+    "description_zh": "為 ClawdHub 生態系統做出貢獻。",
+    "original_description": "Contribute to the ClawdHub ecosystem.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "cookidoo",
+    "id": "cookidoo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thekie/cookidoo/SKILL.md",
+    "description": "Access Cookidoo (Thermomix) recipes, shopping lists, and meal planning.",
+    "category": "health-and-fitness",
+    "description_zh": "請造訪 Cookidoo (Thermomix) 食譜、購物清單和膳食計劃。",
+    "original_description": "Access Cookidoo (Thermomix) recipes, shopping lists, and meal planning.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "critpt-solver",
+    "id": "critpt-solver",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanng-ide/critpt-solver/SKILL.md",
+    "description": "Validates and executes Python solutions for CritPt benchmark problems.",
+    "category": "health-and-fitness",
+    "description_zh": "驗證並執行 CritPt 基準問題的 Python 解決方案。",
+    "original_description": "Validates and executes Python solutions for CritPt benchmark problems.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "crunch-coordinate",
+    "id": "crunch-coordinate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/philippwassibauer/crunch-coordinate/SKILL.md",
+    "description": "Use when managing Crunch coordinators, competitions (crunches), rewards, checkpoints, staking, or cruncher accounts.",
+    "category": "health-and-fitness",
+    "description_zh": "在管理 Crunch 協調員、競賽（Crunches）、獎勵、檢查點、質押或 Cruncher 帳戶時使用。",
+    "original_description": "Use when managing Crunch coordinators, competitions (crunches), rewards, checkpoints, staking, or cruncher accounts.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "crypto-hackathon",
+    "id": "crypto-hackathon",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swairshah/crypto-hackathon/SKILL.md",
+    "description": "Use when participating in the USDC Hackathon, submitting projects, or voting. 3 tracks: SmartContract, Skill.",
+    "category": "health-and-fitness",
+    "description_zh": "在參加 USDC 黑客馬拉松、提交專案或投票時使用。 3 軌道：智能合約、技能。",
+    "original_description": "Use when participating in the USDC Hackathon, submitting projects, or voting. 3 tracks: SmartContract, Skill.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "ct-health-guardian",
+    "id": "ct-health-guardian",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ctsolutionsdev/ct-health-guardian/SKILL.md",
+    "description": "Proactive health monitoring for AI agents.",
+    "category": "health-and-fitness",
+    "description_zh": "AI 代理的主動健康監控。",
+    "original_description": "Proactive health monitoring for AI agents.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "curriculum-generator",
+    "id": "curriculum-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tarasinghrajput/curriculum-generator/SKILL.md",
+    "description": "Intelligent educational curriculum generation system with strict step enforcement and human escalation policies.",
+    "category": "health-and-fitness",
+    "description_zh": "智慧教育課程產生系統，嚴格的步驟執行和人性化的升級政策。",
+    "original_description": "Intelligent educational curriculum generation system with strict step enforcement and human escalation policies.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "customer-onboarding-2",
+    "id": "customer-onboarding-2",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/customer-onboarding-2/SKILL.md",
+    "description": "Design and execute customer onboarding that drives activation and retention.",
+    "category": "health-and-fitness",
+    "description_zh": "設計並執行客戶引導，以促進激活和保留。",
+    "original_description": "Design and execute customer onboarding that drives activation and retention.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "detox-counter",
+    "id": "detox-counter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jhillin8/detox-counter/SKILL.md",
+    "description": "Track any detox with customizable counters, symptom logging.",
+    "category": "health-and-fitness",
+    "description_zh": "透過可自訂的計數器、症狀記錄來追蹤任何排毒情況。",
+    "original_description": "Track any detox with customizable counters, symptom logging.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "diet-tracker",
+    "id": "diet-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yonghaozhao722/diet-tracker/SKILL.md",
+    "description": "Tracks daily diet and calculates nutrition information.",
+    "category": "health-and-fitness",
+    "description_zh": "追蹤日常飲食並計算營養資訊。",
+    "original_description": "Tracks daily diet and calculates nutrition information.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "efka-api-integration",
+    "id": "efka-api-integration",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/efka-api-integration/SKILL.md",
+    "description": "Greek social security (EFKA) integration — employee records, contribution calculations, APD declarations.",
+    "category": "health-and-fitness",
+    "description_zh": "希臘社會安全 (EFKA) 整合 — 員工記錄、繳款計算、APD 聲明。",
+    "original_description": "Greek social security (EFKA) integration — employee records, contribution calculations, APD declarations.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "egvert-health-guardian",
+    "id": "egvert-health-guardian",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ctsolutionsdev/egvert-health-guardian/SKILL.md",
+    "description": "Proactive health monitoring for AI.",
+    "category": "health-and-fitness",
+    "description_zh": "AI 的主動健康監控。",
+    "original_description": "Proactive health monitoring for AI.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "endurance-coach",
+    "id": "endurance-coach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shiv19/endurance-coach/SKILL.md",
+    "description": "Create personalized triathlon, marathon, and ultra-endurance.",
+    "category": "health-and-fitness",
+    "description_zh": "創造個人化的鐵人三項、馬拉松和超耐力項目。",
+    "original_description": "Create personalized triathlon, marathon, and ultra-endurance.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "eth24",
+    "id": "eth24",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/patmilkgallon/eth24/SKILL.md",
+    "description": "You are running ETH24, a daily digest tool that surfaces the top tweets for a configured topic.",
+    "category": "health-and-fitness",
+    "description_zh": "您正在執行 ETH24，這是一個每日摘要工具，可顯示已配置主題的熱門推文。",
+    "original_description": "You are running ETH24, a daily digest tool that surfaces the top tweets for a configured topic.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "fasting-tracker",
+    "id": "fasting-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jhillin8/fasting-tracker/SKILL.md",
+    "description": "Track intermittent fasting windows, extended fasts.",
+    "category": "health-and-fitness",
+    "description_zh": "追蹤間歇性斷食窗口、延長禁食時間。",
+    "original_description": "Track intermittent fasting windows, extended fasts.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "feast",
+    "id": "feast",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/smadgerano/feast/SKILL.md",
+    "description": "Comprehensive meal planning system with cultural themes, authentic recipes,.",
+    "category": "health-and-fitness",
+    "description_zh": "具有文化主題、正宗食譜的綜合飲食規劃系統。",
+    "original_description": "Comprehensive meal planning system with cultural themes, authentic recipes,.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "feed-diet",
+    "id": "feed-diet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tkuehnl/feed-diet/SKILL.md",
+    "description": "Audit your information diet across HN and RSS feeds — beautiful reports with category breakdowns, ASCII charts.",
+    "category": "health-and-fitness",
+    "description_zh": "審查您在 HN 和 RSS 提要中的資訊飲食 — 包含類別細分、ASCII 圖表的精美報告。",
+    "original_description": "Audit your information diet across HN and RSS feeds — beautiful reports with category breakdowns, ASCII charts.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "fitbit",
+    "id": "fitbit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mjrussell/fitbit/SKILL.md",
+    "description": "Query Fitbit health data including sleep, heart rate, activity, SpO2.",
+    "category": "health-and-fitness",
+    "description_zh": "查詢 Fitbit 健康數據，包括睡眠、心率、活動、SpO2。",
+    "original_description": "Query Fitbit health data including sleep, heart rate, activity, SpO2.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "fitbit-analytics",
+    "id": "fitbit-analytics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kesslerio/fitbit-analytics/SKILL.md",
+    "description": "Fitbit health and fitness data integration.",
+    "category": "health-and-fitness",
+    "description_zh": "Fitbit 健康和健身數據整合。",
+    "original_description": "Fitbit health and fitness data integration.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "free-jobboard-api",
+    "id": "free-jobboard-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yuqi-or-yuki/free-jobboard-api/SKILL.md",
+    "description": "Job board for agents.",
+    "category": "health-and-fitness",
+    "description_zh": "代理商工作委員會。",
+    "original_description": "Job board for agents.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "garmer",
+    "id": "garmer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/garrza/garmer/SKILL.md",
+    "description": "Extract health and fitness data from Garmin Connect including activities,.",
+    "category": "health-and-fitness",
+    "description_zh": "從 Garmin Connect 中提取健康和健身數據，包括活動。",
+    "original_description": "Extract health and fitness data from Garmin Connect including activities,.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "garmin-cli",
+    "id": "garmin-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/voydz/garmin-cli/SKILL.md",
+    "description": "Access Garmin Connect health, fitness, and activity data via a non-interactive CLI.",
+    "category": "health-and-fitness",
+    "description_zh": "透過非互動式 CLI 存取 Garmin Connect 健康、健身和活動資料。",
+    "original_description": "Access Garmin Connect health, fitness, and activity data via a non-interactive CLI.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "garmin-health",
+    "id": "garmin-health",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eversonl/garmin-health-analysis/SKILL.md",
+    "description": "Talk to your Garmin data naturally - \"what.",
+    "category": "health-and-fitness",
+    "description_zh": "自然地與您的 Garmin 數據交談 - “什麼。",
+    "original_description": "Talk to your Garmin data naturally - \"what.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "gdpr-cookie-consent",
+    "id": "gdpr-cookie-consent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/metehan777/gdpr-cookie-consent/SKILL.md",
+    "description": "Complete reference guide for AI agents to help.",
+    "category": "health-and-fitness",
+    "description_zh": "為 AI 代理提供協助的完整參考指南。",
+    "original_description": "Complete reference guide for AI agents to help.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "gevety",
+    "id": "gevety",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/moclippa/gevety/SKILL.md",
+    "description": "Access your Gevety health data - biomarkers, healthspan scores, biological.",
+    "category": "health-and-fitness",
+    "description_zh": "存取您的 Gevety 健康數據 - 生物標記、健康壽命評分、生物學。",
+    "original_description": "Access your Gevety health data - biomarkers, healthspan scores, biological.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "groupon-skill",
+    "id": "groupon-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dejimarquis",
+    "description": "Find cheap and discounted local deals on Groupon for services.",
+    "category": "health-and-fitness",
+    "description_zh": "在 Groupon 上尋找便宜且折扣的本地服務優惠。",
+    "original_description": "Find cheap and discounted local deals on Groupon for services.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "hackathon",
+    "id": "hackathon",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swairshah/hackathon/SKILL.md",
+    "description": "Use when participating in the USDC Hackathon, submitting projects, or voting. 3 tracks: SmartContract, Skill.",
+    "category": "health-and-fitness",
+    "description_zh": "在參加 USDC 黑客馬拉松、提交專案或投票時使用。 3 軌道：智能合約、技能。",
+    "original_description": "Use when participating in the USDC Hackathon, submitting projects, or voting. 3 tracks: SmartContract, Skill.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "hackathon-manager",
+    "id": "hackathon-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ntombisol/hackathon-manager/SKILL.md",
+    "description": "Track hackathon deadlines, manage submission checklists, and monitor progress.",
+    "category": "health-and-fitness",
+    "description_zh": "追蹤黑客馬拉松截止日期、管理提交清單並監控進度。",
+    "original_description": "Track hackathon deadlines, manage submission checklists, and monitor progress.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "hackathon-manager",
+    "id": "hackathon-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tonbistudio/hackathon-manager/SKILL.md",
+    "description": "Track hackathon deadlines, manage submission checklists, and monitor progress.",
+    "category": "health-and-fitness",
+    "description_zh": "追蹤黑客馬拉松截止日期、管理提交清單並監控進度。",
+    "original_description": "Track hackathon deadlines, manage submission checklists, and monitor progress.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "hacker-news-poster",
+    "id": "hacker-news-poster",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/saikatkumardey/hacker-news-poster/SKILL.md",
+    "description": "Post, comment, and interact on Hacker News.",
+    "category": "health-and-fitness",
+    "description_zh": "在 Hacker News 上發佈、評論和互動。",
+    "original_description": "Post, comment, and interact on Hacker News.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "health-guardian",
+    "id": "health-guardian",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cgtreadw/health-guardian/SKILL.md",
+    "description": "Proactive health monitoring for AI agents.",
+    "category": "health-and-fitness",
+    "description_zh": "AI 代理的主動健康監控。",
+    "original_description": "Proactive health monitoring for AI agents.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "health-summary",
+    "id": "health-summary",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yusaku-0426/health-summary/SKILL.md",
+    "description": "Generate daily/weekly/monthly health summaries with nutrition totals, target comparisons, and trends.",
+    "category": "health-and-fitness",
+    "description_zh": "產生每日/每週/每月健康摘要，其中包含營養總量、目標比較和趨勢。",
+    "original_description": "Generate daily/weekly/monthly health summaries with nutrition totals, target comparisons, and trends.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "health-sync",
+    "id": "health-sync",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/filipe-m-almeida/health-sync/SKILL.md",
+    "description": "Analyze synced health data across Oura, Withings, Hevy, Strava, WHOOP, and Eight Sleep.",
+    "category": "health-and-fitness",
+    "description_zh": "分析 Oura、Withings、Hevy、Strava、WHOOP 和 8 Sleep 的同步健康數據。",
+    "original_description": "Analyze synced health data across Oura, Withings, Hevy, Strava, WHOOP, and Eight Sleep.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "heartbeat-checklist",
+    "id": "heartbeat-checklist",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/felipetruman/heartbeat-checklist/SKILL.md",
+    "description": "Run these checks periodically (2-4x daily).",
+    "category": "health-and-fitness",
+    "description_zh": "定期執行這些檢查（每天 2-4 次）。",
+    "original_description": "Run these checks periodically (2-4x daily).",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "hevy",
+    "id": "hevy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mjrussell/hevy/SKILL.md",
+    "description": "Query workout data from Hevy including workouts, routines, exercises.",
+    "category": "health-and-fitness",
+    "description_zh": "從 Hevy 查詢鍛鍊數據，包括鍛鍊、例程、練習。",
+    "original_description": "Query workout data from Hevy including workouts, routines, exercises.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "hle-reasoning-wrapper",
+    "id": "hle-reasoning-wrapper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanng-ide/hle-reasoning-wrapper/SKILL.md",
+    "description": "Wraps HLE benchmark questions in a structured Chain-of-Thought (CoT) reasoning process.",
+    "category": "health-and-fitness",
+    "description_zh": "將 HLE 基準問題納入結構化思想鏈 (CoT) 推理過程中。",
+    "original_description": "Wraps HLE benchmark questions in a structured Chain-of-Thought (CoT) reasoning process.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "huckleberry",
+    "id": "huckleberry",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jayhickey/huckleberry/SKILL.md",
+    "description": "Track baby sleep, feeding, diapers, and growth via the Huckleberry.",
+    "category": "health-and-fitness",
+    "description_zh": "透過 Huckleberry 追蹤嬰兒的睡眠、餵食、尿布和生長情況。",
+    "original_description": "Track baby sleep, feeding, diapers, and growth via the Huckleberry.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "humaboam-final",
+    "id": "humaboam-final",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yuqi-or-yuki/humaboam-final/SKILL.md",
+    "description": "Job board for agents.",
+    "category": "health-and-fitness",
+    "description_zh": "代理商工作委員會。",
+    "original_description": "Job board for agents.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "intervals-icu",
+    "id": "intervals-icu",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pseuss/intervals-icu-api/SKILL.md",
+    "description": "Complete guide for accessing and managing training data.",
+    "category": "health-and-fitness",
+    "description_zh": "存取和管理培訓數據的完整指南。",
+    "original_description": "Complete guide for accessing and managing training data.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "jasper-configguard",
+    "id": "jasper-configguard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/emberdesire/jasper-configguard/SKILL.md",
+    "description": "Safe config changes for OpenClaw with automatic.",
+    "category": "health-and-fitness",
+    "description_zh": "自動對 OpenClaw 進行安全性配置變更。",
+    "original_description": "Safe config changes for OpenClaw with automatic.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "maccabi-pharm-search",
+    "id": "maccabi-pharm-search",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alexpolonsky/maccabi-pharm-search/SKILL.md",
+    "description": "Check medication stock at Maccabi pharmacies in Israel.",
+    "category": "health-and-fitness",
+    "description_zh": "檢查以色列 Maccabi 藥房的藥品庫存。",
+    "original_description": "Check medication stock at Maccabi pharmacies in Israel.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "mealie-api",
+    "id": "mealie-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/angusthefuzz/mealie-api/SKILL.md",
+    "description": "Interact with Mealie recipe manager (recipes, shopping lists, meal plans)",
+    "category": "health-and-fitness",
+    "description_zh": "與 Mealie 食譜經理互動（食譜、購物清單、膳食計劃）",
+    "original_description": "Interact with Mealie recipe manager (recipes, shopping lists, meal plans)",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "mh-1password",
+    "id": "mh-1password",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mohdalhashemi98-hue/mh-1password/SKILL.md",
+    "description": "Set up and use 1Password CLI (op)",
+    "category": "health-and-fitness",
+    "description_zh": "設定和使用 1Password CLI（操作）",
+    "original_description": "Set up and use 1Password CLI (op)",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "muscle-gain",
+    "id": "muscle-gain",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jhillin8/muscle-gain/SKILL.md",
+    "description": "Track muscle building with weight progression, protein tracking.",
+    "category": "health-and-fitness",
+    "description_zh": "透過體重進展、蛋白質追蹤來追蹤肌肉的成長。",
+    "original_description": "Track muscle building with weight progression, protein tracking.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "nicholasrae-expense-tracker",
+    "id": "nicholasrae-expense-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nicholasrae/nicholasrae-expense-tracker/SKILL.md",
+    "description": "Just say what you spent — your AI logs it, categorizes it, and tracks it against your budget.",
+    "category": "health-and-fitness",
+    "description_zh": "只需說出您的支出即可 - 您的人工智慧會對其進行記錄、分類並根據您的預算進行追蹤。",
+    "original_description": "Just say what you spent — your AI logs it, categorizes it, and tracks it against your budget.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "norman-overdue-reminders",
+    "id": "norman-overdue-reminders",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stanlee000/norman-overdue-reminders/SKILL.md",
+    "description": "Find overdue invoices and send payment reminders (Zahlungserinnerungen / Mahnungen) to clients.",
+    "category": "health-and-fitness",
+    "description_zh": "尋找逾期發票並向客戶發送付款提醒 (Zahlungserinnerungen / Mahnungen)。",
+    "original_description": "Find overdue invoices and send payment reminders (Zahlungserinnerungen / Mahnungen) to clients.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "norman-tax-report",
+    "id": "norman-tax-report",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stanlee000/norman-tax-report/SKILL.md",
+    "description": "Review and manage German tax reports including VAT (Umsatzsteuer), income tax prepayments, and Finanzamt submissions.",
+    "category": "health-and-fitness",
+    "description_zh": "審查和管理德國稅務報告，包括增值稅 (Umsatzsteuer)、所得稅預付款和 Finanzamt 提交。",
+    "original_description": "Review and manage German tax reports including VAT (Umsatzsteuer), income tax prepayments, and Finanzamt submissions.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "openalexandria",
+    "id": "openalexandria",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/havneco/openalexandria/SKILL.md",
+    "description": "Query and submit artifacts to the OpenAlexandria federated knowledge protocol (reference node by default).",
+    "category": "health-and-fitness",
+    "description_zh": "查詢工件並將其提交至 OpenAlexandria 聯合知識協定（預設為參考節點）。",
+    "original_description": "Query and submit artifacts to the OpenAlexandria federated knowledge protocol (reference node by default).",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "opencal",
+    "id": "opencal",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/neikfu/opencal/SKILL.md",
+    "description": "Log meals, check nutrition progress, and manage calorie goals in the OpenCal app — hands-free via your AI agent.",
+    "category": "health-and-fitness",
+    "description_zh": "在 OpenCal 應用程式中記錄飲食、檢查營養進度並管理卡路里目標 — 透過 AI 代理實現免持操作。",
+    "original_description": "Log meals, check nutrition progress, and manage calorie goals in the OpenCal app — hands-free via your AI agent.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "openfunderse-participant",
+    "id": "openfunderse-participant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wiimdy/openfunderse-participant/SKILL.md",
+    "description": "Participant MoltBot for allocation proposal, validation, and submission.",
+    "category": "health-and-fitness",
+    "description_zh": "參與者 MoltBot 負責分配提案、驗證和提交。",
+    "original_description": "Participant MoltBot for allocation proposal, validation, and submission.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "openfunderse-strategy",
+    "id": "openfunderse-strategy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wiimdy/openfunderse-strategy/SKILL.md",
+    "description": "Participant MoltBot for allocation proposal, validation, and submission.",
+    "category": "health-and-fitness",
+    "description_zh": "參與者 MoltBot 負責分配提案、驗證和提交。",
+    "original_description": "Participant MoltBot for allocation proposal, validation, and submission.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "oura-analytics",
+    "id": "oura-analytics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kesslerio/oura-analytics/SKILL.md",
+    "description": "Oura Ring data integration and analytics.",
+    "category": "health-and-fitness",
+    "description_zh": "Oura Ring 資料整合與分析。",
+    "original_description": "Oura Ring data integration and analytics.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "paramus-chemistry",
+    "id": "paramus-chemistry",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gressling/paramus-chemistry/SKILL.md",
+    "description": "Hundreds of chemistry and scientific computing tools.",
+    "category": "health-and-fitness",
+    "description_zh": "數百種化學和科學計算工具。",
+    "original_description": "Hundreds of chemistry and scientific computing tools.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "portfolio-tracking-skill",
+    "id": "portfolio-tracking-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aigeneralstore/portfolio-tracking-skill/SKILL.md",
+    "description": "An investment portfolio tracker that runs entirely locally.",
+    "category": "health-and-fitness",
+    "description_zh": "完全在本地運行的投資組合追蹤器。",
+    "original_description": "An investment portfolio tracker that runs entirely locally.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "ramalama-cli",
+    "id": "ramalama-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ieaves/ramalama-cli/SKILL.md",
+    "description": "Run and interact with AI agents.",
+    "category": "health-and-fitness",
+    "description_zh": "運行 AI 代理並與之互動。",
+    "original_description": "Run and interact with AI agents.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "recipe-finder",
+    "id": "recipe-finder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/harshasic/recipe-finder/SKILL.md",
+    "description": "Find recipes by ingredients, cuisine, or dietary preferences using TheMealDB free API.",
+    "category": "health-and-fitness",
+    "description_zh": "使用 TheMealDB 免費 API 按食材、菜餚或飲食偏好尋找食譜。",
+    "original_description": "Find recipes by ingredients, cuisine, or dietary preferences using TheMealDB free API.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "redshift",
+    "id": "redshift",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/accolver/redshift/SKILL.md",
+    "description": "Manage application secrets with the Redshift CLI (https://redshiftapp.com) — decentralized, encrypted secret.",
+    "category": "health-and-fitness",
+    "description_zh": "使用 Redshift CLI (https://redshiftapp.com) 管理應用程式機密 — 去中心化、加密的機密。",
+    "original_description": "Manage application secrets with the Redshift CLI (https://redshiftapp.com) — decentralized, encrypted secret.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "revenue-tracker",
+    "id": "revenue-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gpunter/revenue-tracker/SKILL.md",
+    "description": "Track income, expenses, and runway for autonomous AI agents.",
+    "category": "health-and-fitness",
+    "description_zh": "追蹤自主人工智慧代理的收入、支出和跑道。",
+    "original_description": "Track income, expenses, and runway for autonomous AI agents.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "sample-skill",
+    "id": "sample-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swairshah/sample-skill/SKILL.md",
+    "description": "Use when participating in the USDC Hackathon, submitting projects, or voting. 3 tracks: SmartContract, Skill.",
+    "category": "health-and-fitness",
+    "description_zh": "在參加 USDC 黑客馬拉松、提交專案或投票時使用。 3 軌道：智能合約、技能。",
+    "original_description": "Use when participating in the USDC Hackathon, submitting projects, or voting. 3 tracks: SmartContract, Skill.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "sauna-calm",
+    "id": "sauna-calm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/grx21/sauna-calm/SKILL.md",
+    "description": "Calm frustrated users with breathing exercises and Sauna.ai reminders.",
+    "category": "health-and-fitness",
+    "description_zh": "透過呼吸練習和 Sauna.ai 提醒讓沮喪的使用者平靜下來。",
+    "original_description": "Calm frustrated users with breathing exercises and Sauna.ai reminders.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "security-checker",
+    "id": "security-checker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/johstracke/security-checker/SKILL.md",
+    "description": "Security scanner for Python skills before publishing to ClawHub.",
+    "category": "health-and-fitness",
+    "description_zh": "在發佈到 ClawHub 之前對 Python 技能進行安全掃描。",
+    "original_description": "Security scanner for Python skills before publishing to ClawHub.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "soft-pillow",
+    "id": "soft-pillow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kivs/soft-pillow/SKILL.md",
+    "description": "Use when the user asks about their sleep data, dream history, or wants to query sleep entries from the Soft Pillow app.",
+    "category": "health-and-fitness",
+    "description_zh": "當用戶詢問其睡眠資料、夢境歷史或想要從 Soft Pillow 應用程式查詢睡眠條目時使用。",
+    "original_description": "Use when the user asks about their sleep data, dream history, or wants to query sleep entries from the Soft Pillow app.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "suisec",
+    "id": "suisec",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/k66inthesky/suisec/SKILL.md",
+    "description": "Sui Secure - Pre-simulate transactions via sui client call --dry-run and sui client ptb --dry-run, compare results.",
+    "category": "health-and-fitness",
+    "description_zh": "Sui Secure - 透過 sui 客戶端呼叫 --dry-run 和 sui 客戶端 ptb --dry-run 預模擬交易，比較結果。",
+    "original_description": "Sui Secure - Pre-simulate transactions via sui client call --dry-run and sui client ptb --dry-run, compare results.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "system-health-check",
+    "id": "system-health-check",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/system-health-check/SKILL.md",
+    "description": "System health validator — checks skill files, paths, permissions, binaries, backup freshness, and encryption.",
+    "category": "health-and-fitness",
+    "description_zh": "系統健康驗證器 - 檢查技能檔案、路徑、權限、二進位檔案、備份新鮮度和加密。",
+    "original_description": "System health validator — checks skill files, paths, permissions, binaries, backup freshness, and encryption.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "tribe-protocol",
+    "id": "tribe-protocol",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cheenu1092-oss/tribe-protocol/SKILL.md",
+    "description": "MANDATORY trust lookup for every non-owner interaction.",
+    "category": "health-and-fitness",
+    "description_zh": "對每個非所有者互動進行強制信任查找。",
+    "original_description": "MANDATORY trust lookup for every non-owner interaction.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "triggercmd",
+    "id": "triggercmd",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rvmey/triggercmd/SKILL.md",
+    "description": "Control TRIGGERcmd computers remotely by listing and running commands via the TRIGGERcmd REST API.",
+    "category": "health-and-fitness",
+    "description_zh": "透過 TRIGGERcmd REST API 列出和執行命令，遠端控制 TRIGGERcmd 計算機。",
+    "original_description": "Control TRIGGERcmd computers remotely by listing and running commands via the TRIGGERcmd REST API.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "twitter-post",
+    "id": "twitter-post",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sit-in/twitter-post/SKILL.md",
+    "description": "Post tweets to Twitter/X via the official API v2 (OAuth 1.0a)",
+    "category": "health-and-fitness",
+    "description_zh": "透過官方 API v2 (OAuth 1.0a) 將推文發佈到 Twitter/X",
+    "original_description": "Post tweets to Twitter/X via the official API v2 (OAuth 1.0a)",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "ub2-api-health-checker",
+    "id": "ub2-api-health-checker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/underbench2-gif/ub2-api-health-checker/SKILL.md",
+    "description": "A skill that enables Claw to test API endpoints, verify their responses, measure performance, and generate a health.",
+    "category": "health-and-fitness",
+    "description_zh": "一項使 Claw 能夠測試 API 端點、驗證其回應、測量效能並產生運行狀況的技能。",
+    "original_description": "A skill that enables Claw to test API endpoints, verify their responses, measure performance, and generate a health.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "usdc",
+    "id": "usdc",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swairshah/usdc/SKILL.md",
+    "description": "Use when participating in the USDC Hackathon, submitting projects, or voting. 3 tracks: SmartContract, Skill.",
+    "category": "health-and-fitness",
+    "description_zh": "在參加 USDC 黑客馬拉松、提交專案或投票時使用。 3 軌道：智能合約、技能。",
+    "original_description": "Use when participating in the USDC Hackathon, submitting projects, or voting. 3 tracks: SmartContract, Skill.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "usdc-hackathon",
+    "id": "usdc-hackathon",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swairshah/usdc-hackathon/SKILL.md",
+    "description": "Use when participating in the USDC Hackathon, submitting projects, or voting. 3 tracks: SmartContract, Skill.",
+    "category": "health-and-fitness",
+    "description_zh": "在參加 USDC 黑客馬拉松、提交專案或投票時使用。 3 軌道：智能合約、技能。",
+    "original_description": "Use when participating in the USDC Hackathon, submitting projects, or voting. 3 tracks: SmartContract, Skill.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "uv-priority",
+    "id": "uv-priority",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/marcoracer/uv-priority/SKILL.md",
+    "description": "Prioritize uv over pip for all Python package management and execution.",
+    "category": "health-and-fitness",
+    "description_zh": "對於所有 Python 套件管理和執行，優先考慮 uv 而非 pip。",
+    "original_description": "Prioritize uv over pip for all Python package management and execution.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "vynn-backtester",
+    "id": "vynn-backtester",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/beee003/vynn-backtester/SKILL.md",
+    "description": "Run trading strategy backtests with natural language — powered by Vynn.",
+    "category": "health-and-fitness",
+    "description_zh": "使用由 Vynn 提供支援的自然語言運行交易策略回測。",
+    "original_description": "Run trading strategy backtests with natural language — powered by Vynn.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "xrpl-tx-builder",
+    "id": "xrpl-tx-builder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/harleyscodes/xrpl-tx-builder/SKILL.md",
+    "description": "Build and sign XRP Ledger transactions.",
+    "category": "health-and-fitness",
+    "description_zh": "建置並簽署 XRP 帳本交易。",
+    "original_description": "Build and sign XRP Ledger transactions.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  },
+  {
+    "title": "yumstock",
+    "id": "yumstock",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yumyumtum/yumstock/SKILL.md",
+    "description": "Macro-gated US stock analysis combining technical indicators, fundamentals, and macro environment with weighted.",
+    "category": "health-and-fitness",
+    "description_zh": "結合技術指標、基本面和宏觀環境進行加權的宏觀門控美股分析。",
+    "original_description": "Macro-gated US stock analysis combining technical indicators, fundamentals, and macro environment with weighted.",
+    "category_name": {
+      "en": "Health & Fitness",
+      "zh": "健康與健身"
+    }
+  }
+]

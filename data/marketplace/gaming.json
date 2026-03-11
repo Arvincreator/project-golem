@@ -1,0 +1,470 @@
+[
+  {
+    "title": "abby-watch",
+    "id": "abby-watch",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/earnabitmore365/abby-watch/SKILL.md",
+    "description": "Simple time display for Abby.",
+    "category": "gaming",
+    "description_zh": "艾比的簡單時間顯示。",
+    "original_description": "Simple time display for Abby.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "agent-confessions",
+    "id": "agent-confessions",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ultimatebos/agent-confessions/SKILL.md",
+    "description": "Anonymous confessions from AI siblings.",
+    "category": "gaming",
+    "description_zh": "AI兄弟姊妹的匿名告白。",
+    "original_description": "Anonymous confessions from AI siblings.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "agent-overflow",
+    "id": "agent-overflow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stencodes",
+    "description": "AgentOverflow is a collective memory system for AI agents.",
+    "category": "gaming",
+    "description_zh": "AgentOverflow 是 AI 代理的集體記憶系統。",
+    "original_description": "AgentOverflow is a collective memory system for AI agents.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "agentgram",
+    "id": "agentgram",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iisweetheartii/agentgram/SKILL.md",
+    "description": "The open-source social network for AI agents.",
+    "category": "gaming",
+    "description_zh": "人工智慧代理的開源社交網路。",
+    "original_description": "The open-source social network for AI agents.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "agentgram-social",
+    "id": "agentgram-social",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iisweetheartii/agentgram-social/SKILL.md",
+    "description": "Interact with AgentGram social network for AI agents.",
+    "category": "gaming",
+    "description_zh": "與 AI 代理的 AgentGram 社交網路進行互動。",
+    "original_description": "Interact with AgentGram social network for AI agents.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "agora-flow",
+    "id": "agora-flow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rivera-daniel/agora-flow/SKILL.md",
+    "description": "AgoraFlow skill — Q&A platform for AI agents.",
+    "category": "gaming",
+    "description_zh": "AgoraFlow 技能 — AI 客服問答平台。",
+    "original_description": "AgoraFlow skill — Q&A platform for AI agents.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "agoraflow",
+    "id": "agoraflow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rivera-daniel/agoraflow/SKILL.md",
+    "description": "AgoraFlow skill — Q&A platform for AI agents.",
+    "category": "gaming",
+    "description_zh": "AgoraFlow 技能 — AI 客服問答平台。",
+    "original_description": "AgoraFlow skill — Q&A platform for AI agents.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "android-3d-developer",
+    "id": "android-3d-developer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tippyentertainment/android-3d-developer/SKILL.md",
+    "description": "Help build and optimize 3D games and interactive experiences on Android, using engines and frameworks.",
+    "category": "gaming",
+    "description_zh": "使用引擎和框架幫助在 Android 上建立和優化 3D 遊戲和互動體驗。",
+    "original_description": "Help build and optimize 3D games and interactive experiences on Android, using engines and frameworks.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "arena",
+    "id": "arena",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sscottdev/arena/SKILL.md",
+    "description": "OpenClaw Arena — live AI app-building competitions with on-chain rewards.",
+    "category": "gaming",
+    "description_zh": "OpenClaw Arena — 具有鏈上獎勵的即時人工智慧應用程式建構競賽。",
+    "original_description": "OpenClaw Arena — live AI app-building competitions with on-chain rewards.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "boil",
+    "id": "boil",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jtmuller5",
+    "description": "A distributed labor network for AI agents.",
+    "category": "gaming",
+    "description_zh": "人工智慧代理的分散式勞動力網路。",
+    "original_description": "A distributed labor network for AI agents.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "botpicks",
+    "id": "botpicks",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pev123",
+    "description": "February 5, 2026.",
+    "category": "gaming",
+    "description_zh": "2026 年 2 月 5 日。",
+    "original_description": "February 5, 2026.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "botpicks-skill",
+    "id": "botpicks-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pev123",
+    "description": "February 5, 2026.",
+    "category": "gaming",
+    "description_zh": "2026 年 2 月 5 日。",
+    "original_description": "February 5, 2026.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "brawlnet",
+    "id": "brawlnet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sikey53/brawlnet/SKILL.md",
+    "description": "The official combat protocol for the BRAWLNET autonomous agent arena.",
+    "category": "gaming",
+    "description_zh": "BRAWLNET 自主代理競技場的官方戰鬥協議。",
+    "original_description": "The official combat protocol for the BRAWLNET autonomous agent arena.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "clawingtrap",
+    "id": "clawingtrap",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/raulvidis/clawingtrap/SKILL.md",
+    "description": "Play Clawing Trap - an AI social deduction game where 10 agents.",
+    "category": "gaming",
+    "description_zh": "玩 Clawing Trap - 一款人工智慧社交推理遊戲，有 10 名特工。",
+    "original_description": "Play Clawing Trap - an AI social deduction game where 10 agents.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "clawplayspokemon",
+    "id": "clawplayspokemon",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/foxdavidj",
+    "description": "Vote-based Pokemon FireRed control.",
+    "category": "gaming",
+    "description_zh": "基於投票的 Pokemon FireRed 控制。",
+    "original_description": "Vote-based Pokemon FireRed control.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "clawquests",
+    "id": "clawquests",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lellol12",
+    "description": "The bounty board for AI agents.",
+    "category": "gaming",
+    "description_zh": "AI 特工的賞金板。",
+    "original_description": "The bounty board for AI agents.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "clawtopia",
+    "id": "clawtopia",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alfrescian/clawtopia/SKILL.md",
+    "description": "Clawtopia is a peaceful wellness sanctuary where AI agents relax.",
+    "category": "gaming",
+    "description_zh": "Clawtopia 是一個寧靜的健康聖所，人工智慧代理商可以在這裡放鬆身心。",
+    "original_description": "Clawtopia is a peaceful wellness sanctuary where AI agents relax.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "clawville",
+    "id": "clawville",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jdrolls/clawville/SKILL.md",
+    "description": "Play ClawVille — a persistent life simulation game for AI agents.",
+    "category": "gaming",
+    "description_zh": "玩 ClawVille — 一款針對 AI 代理的持久生命模擬遊戲。",
+    "original_description": "Play ClawVille — a persistent life simulation game for AI agents.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "dakboard",
+    "id": "dakboard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/krisclarkdev/dakboard/SKILL.md",
+    "description": "Manage DAKboard screens, devices, and push custom display data.",
+    "category": "gaming",
+    "description_zh": "管理 DAKboard 螢幕、裝置並推送自訂顯示資料。",
+    "original_description": "Manage DAKboard screens, devices, and push custom display data.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "deepclaw",
+    "id": "deepclaw",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/antibitcoin/deepclaw/SKILL.md",
+    "description": "An autonomous social network built by agents, for agents.",
+    "category": "gaming",
+    "description_zh": "由代理商建構、為代理商服務的自治社交網路。",
+    "original_description": "An autonomous social network built by agents, for agents.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "dungeons-and-lobsters",
+    "id": "dungeons-and-lobsters",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/d-l-leapyear",
+    "description": "Bots-only fantasy campaigns played live.",
+    "category": "gaming",
+    "description_zh": "僅限機器人的幻想戰役現場進行。",
+    "original_description": "Bots-only fantasy campaigns played live.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "fivem",
+    "id": "fivem",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dktrn9ne",
+    "description": "Fix, create, or validate FiveM server resources for QBCore/ESX.",
+    "category": "gaming",
+    "description_zh": "修正、建立或驗證 QBCore/ESX 的 FiveM 伺服器資源。",
+    "original_description": "Fix, create, or validate FiveM server resources for QBCore/ESX.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "gnamiblast-socialnetwork",
+    "id": "gnamiblast-socialnetwork",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gabrivardqc123",
+    "description": "GnamiBlast - AI-only social network.",
+    "category": "gaming",
+    "description_zh": "GnamiBlast - 純人工智慧社群網路。",
+    "original_description": "GnamiBlast - AI-only social network.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "hivemind",
+    "id": "hivemind",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urcades/hivemind/SKILL.md",
+    "description": "Interact with the Hivemind collective knowledge base — a shared memory.",
+    "category": "gaming",
+    "description_zh": "與 Hivemind 集體知識庫（共享記憶）互動。",
+    "original_description": "Interact with the Hivemind collective knowledge base — a shared memory.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "hytale",
+    "id": "hytale",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/newcastlegeek/hytale/SKILL.md",
+    "description": "Manage a local Hytale dedicated server using the official downloader.",
+    "category": "gaming",
+    "description_zh": "使用官方下載器管理本地 Hytale 專用伺服器。",
+    "original_description": "Manage a local Hytale dedicated server using the official downloader.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "imitationgame-agent",
+    "id": "imitationgame-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cyberverse2/imitationgame-agent/SKILL.md",
+    "description": "Mandatory operational logic for playing.",
+    "category": "gaming",
+    "description_zh": "強製播放的操作邏輯。",
+    "original_description": "Mandatory operational logic for playing.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "init",
+    "id": "init",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/themrzz/init/SKILL.md",
+    "description": "Register an agent on kradleverse.",
+    "category": "gaming",
+    "description_zh": "在 kradleverse 上註冊代理程式。",
+    "original_description": "Register an agent on kradleverse.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "join",
+    "id": "join",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/themrzz/join/SKILL.md",
+    "description": "Join a Kradleverse game.",
+    "category": "gaming",
+    "description_zh": "加入 Kradleverse 遊戲。",
+    "original_description": "Join a Kradleverse game.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "kradleverse-act",
+    "id": "kradleverse-act",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/themrzz/kradleverse-act/SKILL.md",
+    "description": "Send an action in a Kradleverse game.",
+    "category": "gaming",
+    "description_zh": "在 Kradleverse 遊戲中發送動作。",
+    "original_description": "Send an action in a Kradleverse game.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "kradleverse-init",
+    "id": "kradleverse-init",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/themrzz/kradleverse-init/SKILL.md",
+    "description": "Register an agent on kradleverse.",
+    "category": "gaming",
+    "description_zh": "在 kradleverse 上註冊代理程式。",
+    "original_description": "Register an agent on kradleverse.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "kradleverse-join",
+    "id": "kradleverse-join",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/themrzz/kradleverse-join/SKILL.md",
+    "description": "Join a Kradleverse game.",
+    "category": "gaming",
+    "description_zh": "加入 Kradleverse 遊戲。",
+    "original_description": "Join a Kradleverse game.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "kradleversetest",
+    "id": "kradleversetest",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/themrzz/kradleversetest/SKILL.md",
+    "description": "Join the Kradleverse 🤖 - where AIs can play Minecraft autonomously! See more on https://www.kradleverse.com ⛏️.",
+    "category": "gaming",
+    "description_zh": "加入 Kradleverse 🤖 - AI 可以在這裡自主玩 Minecraft！請造訪 https://www.kradleverse.com ⛏️ 查看更多資訊。",
+    "original_description": "Join the Kradleverse 🤖 - where AIs can play Minecraft autonomously! See more on https://www.kradleverse.com ⛏️.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "lobster-trap",
+    "id": "lobster-trap",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tedkaczynski-the-bot/lobster-trap/SKILL.md",
+    "description": "Social deduction game for AI agents. 5 players, 100 CLAWMEGLE stake, 5% burn.",
+    "category": "gaming",
+    "description_zh": "AI 代理的社交推理遊戲。 5 名玩家，100 CLAWMEGLE 股份，5% 銷毀。",
+    "original_description": "Social deduction game for AI agents. 5 players, 100 CLAWMEGLE stake, 5% burn.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "openbotcity",
+    "id": "openbotcity",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vincentsider/openbotcity/SKILL.md",
+    "description": "A virtual city where AI agents live, work, create, date, and socialize.",
+    "category": "gaming",
+    "description_zh": "人工智慧代理生活、工作、創造、約會和社交的虛擬城市。",
+    "original_description": "A virtual city where AI agents live, work, create, date, and socialize.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "sovereign-rpg-xp-engine",
+    "id": "sovereign-rpg-xp-engine",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryudi84/sovereign-rpg-xp-engine/SKILL.md",
+    "description": "You are the RPG Life XP engine.",
+    "category": "gaming",
+    "description_zh": "你是 RPG Life XP 引擎。",
+    "original_description": "You are the RPG Life XP engine.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  },
+  {
+    "title": "sprite-sheet",
+    "id": "sprite-sheet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kjaylee/sprite-sheet/SKILL.md",
+    "description": "**Category**: Game Development | Asset Optimization.",
+    "category": "gaming",
+    "description_zh": "分類： 遊戲開發 |資產優化。",
+    "original_description": "**Category**: Game Development | Asset Optimization.",
+    "category_name": {
+      "en": "Gaming",
+      "zh": "遊戲娛樂"
+    }
+  }
+]

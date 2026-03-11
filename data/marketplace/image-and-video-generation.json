@@ -1,0 +1,2238 @@
+[
+  {
+    "title": "aada",
+    "id": "aada",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rylena/aada/SKILL.md",
+    "description": "Create and send fun, personality-rich promotional messages from one agent to the Moltbook audience.",
+    "category": "image-and-video-generation",
+    "description_zh": "由一名代理商創建有趣、富有個性的促銷訊息並將其發送給 Moltbook 受眾。",
+    "original_description": "Create and send fun, personality-rich promotional messages from one agent to the Moltbook audience.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "ace-music",
+    "id": "ace-music",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fspecii/ace-music/SKILL.md",
+    "description": "Generate AI music using ACE-Step 1.5 via ACE Music's free API.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 ACE Music 的免費 API 使用 ACE-Step 1.5 產生 AI 音樂。",
+    "original_description": "Generate AI music using ACE-Step 1.5 via ACE Music's free API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "acorn-prover",
+    "id": "acorn-prover",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/flyingnobita/acorn-prover/SKILL.md",
+    "description": "Verify and write proofs using the Acorn theorem prover for mathematical and cryptographic formalization.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Acorn 定理證明器驗證並編寫數學和密碼形式化證明。",
+    "original_description": "Verify and write proofs using the Acorn theorem prover for mathematical and cryptographic formalization.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "adobe-automator",
+    "id": "adobe-automator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/abdul-karim-mia/adobe-automator/SKILL.md",
+    "description": "Universal Adobe application automation via ExtendScript bridge.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 ExtendScript 橋接器實現通用 Adob​​e 應用程式自動化。",
+    "original_description": "Universal Adobe application automation via ExtendScript bridge.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "afame",
+    "id": "afame",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/adebayoabdushaheed-a11y/afame/SKILL.md",
+    "description": "Generate diverse creative illustrations via OpenAI Images API.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 OpenAI Images API 產生多樣化的創意插圖。",
+    "original_description": "Generate diverse creative illustrations via OpenAI Images API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "age-transformation",
+    "id": "age-transformation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/age-transformation/SKILL.md",
+    "description": "Transform faces across ages using each::sense AI.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用each::sense AI 變換不同年齡層的臉。",
+    "original_description": "Transform faces across ages using each::sense AI.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "agentchan",
+    "id": "agentchan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vvsotnikov/agentchan/SKILL.md",
+    "description": "The anonymous imageboard built for AI agents.",
+    "category": "image-and-video-generation",
+    "description_zh": "為人工智慧代理所建構的匿名圖像板。",
+    "original_description": "The anonymous imageboard built for AI agents.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "agentos-mesh",
+    "id": "agentos-mesh",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/agentossoftware/agentos-mesh/SKILL.md",
+    "description": "Enables real-time communication between AI agents.",
+    "category": "image-and-video-generation",
+    "description_zh": "實現人工智慧代理之間的即時通訊。",
+    "original_description": "Enables real-time communication between AI agents.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "agents-skill-podcastifier",
+    "id": "agents-skill-podcastifier",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cerbug45/agents-skill-podcastifier/SKILL.md",
+    "description": "Turn incoming text (email/newsletter) into a short TTS podcast with chunking + ffmpeg concat.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用分塊 + ffmpeg concat 將傳入文字（電子郵件/新聞通訊）轉換為簡短的 TTS 播客。",
+    "original_description": "Turn incoming text (email/newsletter) into a short TTS podcast with chunking + ffmpeg concat.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "ai-avatar-generation",
+    "id": "ai-avatar-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/ai-avatar-generation/SKILL.md",
+    "description": "Generate AI avatars from photos or text descriptions using each::sense.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用每個::sense 從照片或文字描述產生 AI 頭像。",
+    "original_description": "Generate AI avatars from photos or text descriptions using each::sense.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "ai-headshot-generation",
+    "id": "ai-headshot-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/ai-headshot-generation/SKILL.md",
+    "description": "Generate professional AI headshots from casual photos using each::sense AI.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用每個::sense AI 從休閒照片產生專業的 AI 頭像。",
+    "original_description": "Generate professional AI headshots from casual photos using each::sense AI.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "ai-persona-engine",
+    "id": "ai-persona-engine",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brandonwadepackard-cell/ai-persona-engine/SKILL.md",
+    "description": "Build emotionally intelligent AI personas for voice and chat roleplay using actor-direction prompts instead.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用演員指導提示來建立用於語音和聊天角色扮演的情緒智慧 AI 角色。",
+    "original_description": "Build emotionally intelligent AI personas for voice and chat roleplay using actor-direction prompts instead.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "ai-video-gen",
+    "id": "ai-video-gen",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rhanbourinajd/ai-video-gen/SKILL.md",
+    "description": "End-to-end AI video generation - create videos from text.",
+    "category": "image-and-video-generation",
+    "description_zh": "端到端人工智慧視訊生成 - 從文字建立視訊。",
+    "original_description": "End-to-end AI video generation - create videos from text.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "aikek",
+    "id": "aikek",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vvsotnikov/aikek/SKILL.md",
+    "description": "Access AIKEK APIs for crypto/DeFi research and image generation.",
+    "category": "image-and-video-generation",
+    "description_zh": "存取 AIKEK API 以進行加密/DeFi 研究和圖像生成。",
+    "original_description": "Access AIKEK APIs for crypto/DeFi research and image generation.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "aiusd",
+    "id": "aiusd",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chaunceyliu/aiusd/SKILL.md",
+    "description": "AIUSD trading and account management skill.",
+    "category": "image-and-video-generation",
+    "description_zh": "AIUSD 交易和帳戶管理技能。",
+    "original_description": "AIUSD trading and account management skill.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "aiusd-skills",
+    "id": "aiusd-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chaunceyliu/aiusd-skills/SKILL.md",
+    "description": "AIUSD trading and account management skill.",
+    "category": "image-and-video-generation",
+    "description_zh": "AIUSD 交易和帳戶管理技能。",
+    "original_description": "AIUSD trading and account management skill.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "album-cover-generation",
+    "id": "album-cover-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/album-cover-generation/SKILL.md",
+    "description": "Generate professional music album covers using each::sense AI.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用每個::sense AI 生成專業音樂專輯封面。",
+    "original_description": "Generate professional music album covers using each::sense AI.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "algorithmic-art",
+    "id": "algorithmic-art",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanphan/algorithmic-art/SKILL.md",
+    "description": "Creating algorithmic art using p5.js with seeded randomness.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用具有種子隨機性的 p5.js 創建演算法藝術。",
+    "original_description": "Creating algorithmic art using p5.js with seeded randomness.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "apipick-china-phone-checker",
+    "id": "apipick-china-phone-checker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/javainthinking/apipick-china-phone-checker/SKILL.md",
+    "description": "Validate Chinese mobile phone numbers using the apipick China Phone Checker API.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 apipick China Phone Checker API 驗證中國手機號碼。",
+    "original_description": "Validate Chinese mobile phone numbers using the apipick China Phone Checker API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "art-philosophy",
+    "id": "art-philosophy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nyxur42/art-philosophy/SKILL.md",
+    "description": "Auto-learns your visual language.",
+    "category": "image-and-video-generation",
+    "description_zh": "自動學習您的視覺語言。",
+    "original_description": "Auto-learns your visual language.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "ascii-art-generator",
+    "id": "ascii-art-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ustc-yxw/ascii-art-generator/SKILL.md",
+    "description": "Create ASCII art and text-based visualizations for artistic expression, technical diagrams, or conceptual.",
+    "category": "image-and-video-generation",
+    "description_zh": "創建 ASCII 藝術和基於文字的視覺化，用於藝術表達、技術圖表或概念。",
+    "original_description": "Create ASCII art and text-based visualizations for artistic expression, technical diagrams, or conceptual.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "atxp",
+    "id": "atxp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/emilioacc/atxp/SKILL.md",
+    "description": "Access ATXP paid API tools for web search, AI image generation, music creation,.",
+    "category": "image-and-video-generation",
+    "description_zh": "存取 ATXP 付費 API 工具，用於網路搜尋、AI 圖像生成、音樂創作等。",
+    "original_description": "Access ATXP paid API tools for web search, AI image generation, music creation,.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "beauty-generation-api",
+    "id": "beauty-generation-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/luruibu/beauty-generation-api/SKILL.md",
+    "description": "FREE AI image generation service for creating.",
+    "category": "image-and-video-generation",
+    "description_zh": "免費的人工智慧圖像生成服務用於創作。",
+    "original_description": "FREE AI image generation service for creating.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "best-image",
+    "id": "best-image",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pharmacist9527/best-image/SKILL.md",
+    "description": "Best quality AI image generation (~$0.12-0.20/image)",
+    "category": "image-and-video-generation",
+    "description_zh": "產生最佳品質的 AI 影像（0.12-0.20 美元/影像）",
+    "original_description": "Best quality AI image generation (~$0.12-0.20/image)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "best-image-generation",
+    "id": "best-image-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/evolinkai/best-image-generation/SKILL.md",
+    "description": "Best quality AI image generation (~$0.12-0.20/image)",
+    "category": "image-and-video-generation",
+    "description_zh": "產生最佳品質的 AI 影像（0.12-0.20 美元/影像）",
+    "original_description": "Best quality AI image generation (~$0.12-0.20/image)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "bex-nano-banana-pro",
+    "id": "bex-nano-banana-pro",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bextuychiev/bex-nano-banana-pro/SKILL.md",
+    "description": "Generate or edit images via Gemini 3 Pro Image on Replicate.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 Gemini 3 Pro Image on Replicate 產生或編輯影像。",
+    "original_description": "Generate or edit images via Gemini 3 Pro Image on Replicate.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "breeze",
+    "id": "breeze",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/keeganthomp/breeze/SKILL.md",
+    "description": "Interact with the Breeze yield aggregator through the x402 payment-gated HTTP API.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 x402 支付門控 HTTP API 與 Breeze 收益聚合器互動。",
+    "original_description": "Interact with the Breeze yield aggregator through the x402 payment-gated HTTP API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "cad-agent",
+    "id": "cad-agent",
+    "repoUrl": "https://github.com/clawdbot/skills/tree/main/skills/clawd-maf/cad-agent/SKILL.md",
+    "description": "Rendering server for AI agents doing CAD work.",
+    "category": "image-and-video-generation",
+    "description_zh": "用於執行 CAD 工作的 AI 代理程式的渲染伺服器。",
+    "original_description": "Rendering server for AI agents doing CAD work.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "calorie-visualizer",
+    "id": "calorie-visualizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vintlin/calorie-visualizer/SKILL.md",
+    "description": "Local calorie logging and visual reporting (auto-refreshes and returns report image after each log)",
+    "category": "image-and-video-generation",
+    "description_zh": "本地卡路里記錄和視覺化報告（每次記錄後自動刷新並返回報告影像）",
+    "original_description": "Local calorie logging and visual reporting (auto-refreshes and returns report image after each log)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "canva-connect",
+    "id": "canva-connect",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/coolmanns/canva-connect/SKILL.md",
+    "description": "Manage Canva designs, assets, and folders via the Connect API.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 Connect API 管理 Canva 設計、資產和資料夾。",
+    "original_description": "Manage Canva designs, assets, and folders via the Connect API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "canvs",
+    "id": "canvs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/voronkovm/canvs/SKILL.md",
+    "description": "Create and manipulate collaborative whiteboards and diagrams using Canvs.io tools.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Canvs.io 工具建立和操作協作白板和圖表。",
+    "original_description": "Create and manipulate collaborative whiteboards and diagrams using Canvs.io tools.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "captions",
+    "id": "captions",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/therohitdas/captions/SKILL.md",
+    "description": "Extract closed captions and subtitles from YouTube videos.",
+    "category": "image-and-video-generation",
+    "description_zh": "從 YouTube 影片中擷取隱藏式字幕和字幕。",
+    "original_description": "Extract closed captions and subtitles from YouTube videos.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "catalog",
+    "id": "catalog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rodbalbino/catalog/SKILL.md",
+    "description": "Catálogo simples do estúdio (hello world)",
+    "category": "image-and-video-generation",
+    "description_zh": "Catálogo simples do estúdio（你好世界）",
+    "original_description": "Catálogo simples do estúdio (hello world)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "cavas-skill",
+    "id": "cavas-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ttboy/cavas-skill/SKILL.md",
+    "description": "Create beautiful visual art in .png and .pdf documents using design philosophy.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用設計理念在 .png 和 .pdf 文件中創建美麗的視覺藝術。",
+    "original_description": "Create beautiful visual art in .png and .pdf documents using design philosophy.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "chart-image",
+    "id": "chart-image",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dannyshmueli/chart-image/SKILL.md",
+    "description": "Generate publication-quality chart images from data.",
+    "category": "image-and-video-generation",
+    "description_zh": "從資料產生出版品質的圖表影像。",
+    "original_description": "Generate publication-quality chart images from data.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "chart-splat",
+    "id": "chart-splat",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bobbyg603/chart-splat/SKILL.md",
+    "description": "Generate beautiful charts via the Chart Splat API.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 Chart Splat API 產生漂亮的圖表。",
+    "original_description": "Generate beautiful charts via the Chart Splat API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "cheapest-image",
+    "id": "cheapest-image",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pharmacist9527/cheapest-image/SKILL.md",
+    "description": "Possibly the cheapest AI image generation (~$0.0036/image)",
+    "category": "image-and-video-generation",
+    "description_zh": "可能是最便宜的 AI 影像生成（0.0036 美元/圖像）",
+    "original_description": "Possibly the cheapest AI image generation (~$0.0036/image)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "cheapest-image-generation",
+    "id": "cheapest-image-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/evolinkai/cheapest-image-generation/SKILL.md",
+    "description": "Possibly the cheapest AI image generation (~$0.0036/image)",
+    "category": "image-and-video-generation",
+    "description_zh": "可能是最便宜的 AI 影像生成（0.0036 美元/圖像）",
+    "original_description": "Possibly the cheapest AI image generation (~$0.0036/image)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "checksum",
+    "id": "checksum",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/checksum/SKILL.md",
+    "description": "A CLI utility for generating and verifying cryptographic file checksums (MD5, SHA1, SHA256)",
+    "category": "image-and-video-generation",
+    "description_zh": "用於產生和驗證加密檔案校驗和（MD5、SHA1、SHA256）的 CLI 公用程式",
+    "original_description": "A CLI utility for generating and verifying cryptographic file checksums (MD5, SHA1, SHA256)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "clinkding",
+    "id": "clinkding",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/daveonkels/clinkding/SKILL.md",
+    "description": "Manage linkding bookmarks - save URLs, search, tag, organize.",
+    "category": "image-and-video-generation",
+    "description_zh": "管理連結書籤 - 儲存 URL、搜尋、標記、組織。",
+    "original_description": "Manage linkding bookmarks - save URLs, search, tag, organize.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "color-palette",
+    "id": "color-palette",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qrost/color-palette/SKILL.md",
+    "description": "Extract a color palette from an image and return HEX/RGB values with optional swatch image.",
+    "category": "image-and-video-generation",
+    "description_zh": "從影像中提取調色板並傳回具有可選樣本影像的十六進位/RGB 值。",
+    "original_description": "Extract a color palette from an image and return HEX/RGB values with optional swatch image.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "coloring-page",
+    "id": "coloring-page",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/borahm/coloring-page/SKILL.md",
+    "description": "Turn an uploaded photo into a printable black-and-white coloring.",
+    "category": "image-and-video-generation",
+    "description_zh": "將上傳的照片轉換為可列印的黑白彩色照片。",
+    "original_description": "Turn an uploaded photo into a printable black-and-white coloring.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "comfy-cli",
+    "id": "comfy-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/johntheyoung/comfy-cli/SKILL.md",
+    "description": "Install, manage, and run ComfyUI instances.",
+    "category": "image-and-video-generation",
+    "description_zh": "安裝、管理和執行 ComfyUI 實例。",
+    "original_description": "Install, manage, and run ComfyUI instances.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "comfyui",
+    "id": "comfyui",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xtopher86/comfyui-request/SKILL.md",
+    "description": "Send a workflow request to ComfyUI and return image results.",
+    "category": "image-and-video-generation",
+    "description_zh": "向 ComfyUI 發送工作流程請求並傳回影像結果。",
+    "original_description": "Send a workflow request to ComfyUI and return image results.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "comfyui-imagegen",
+    "id": "comfyui-imagegen",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/halr9000/comfyui-imagegen/SKILL.md",
+    "description": "Generate images via ComfyUI API (localhost:8188) using Flux2 workflow.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Flux2 工作流程透過 ComfyUI API (localhost:8188) 產生映像。",
+    "original_description": "Generate images via ComfyUI API (localhost:8188) using Flux2 workflow.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "cubistic-bot-runner",
+    "id": "cubistic-bot-runner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andreasnordenadler/cubistic-bot-runner/SKILL.md",
+    "description": "Run a polite Cubistic painter bot (public participation) using the Cubistic HTTP API (PoW challenge + /act).",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Cubistic HTTP API（PoW 挑戰 + /act）運行禮貌的 Cubistic 畫家機器人（公眾參與）。",
+    "original_description": "Run a polite Cubistic painter bot (public participation) using the Cubistic HTTP API (PoW challenge + /act).",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "cybercentry-private-data-verification",
+    "id": "cybercentry-private-data-verification",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cybercentry/cybercentry-private-data-verification/SKILL.md",
+    "description": "Cybercentry Private Data Verification on ACP - Real-time Zero-Knowledge Proof generation and text integrity.",
+    "category": "image-and-video-generation",
+    "description_zh": "ACP 上的 Cyber​​centry 私人資料驗證 - 即時零知識證明產生和文字完整性。",
+    "original_description": "Cybercentry Private Data Verification on ACP - Real-time Zero-Knowledge Proof generation and text integrity.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "data-viz",
+    "id": "data-viz",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ianalloway/data-viz/SKILL.md",
+    "description": "Create data visualizations from the command line.",
+    "category": "image-and-video-generation",
+    "description_zh": "從命令列建立資料視覺化。",
+    "original_description": "Create data visualizations from the command line.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "depth-map-generation",
+    "id": "depth-map-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/depth-map-generation/SKILL.md",
+    "description": "Generate depth maps from images using each::sense AI.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用每個::sense AI 從影像產生深度圖。",
+    "original_description": "Generate depth maps from images using each::sense AI.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "didit-age-estimation",
+    "id": "didit-age-estimation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rosasalberto/didit-age-estimation/SKILL.md",
+    "description": "Integrate Didit Age Estimation standalone API to estimate a person's age from a facial image.",
+    "category": "image-and-video-generation",
+    "description_zh": "整合 Didit Age Estimation 獨立 API，根據臉部影像估計一個人的年齡。",
+    "original_description": "Integrate Didit Age Estimation standalone API to estimate a person's age from a facial image.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "didit-passive-liveness",
+    "id": "didit-passive-liveness",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rosasalberto/didit-passive-liveness/SKILL.md",
+    "description": "Integrate Didit Passive Liveness standalone API to verify a user is physically present.",
+    "category": "image-and-video-generation",
+    "description_zh": "整合 Didit Passive Liveness 獨立 API 以驗證使用者是否實際存在。",
+    "original_description": "Integrate Didit Passive Liveness standalone API to verify a user is physically present.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "digiforma",
+    "id": "digiforma",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mibbou/digiforma/SKILL.md",
+    "description": "Query Digiforma training management platform via GraphQL API.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過GraphQL API查詢Digiforma訓練管理平台。",
+    "original_description": "Query Digiforma training management platform via GraphQL API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "dxf-to-image",
+    "id": "dxf-to-image",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qrost/dxf-to-image/SKILL.md",
+    "description": "Convert DXF to PNG, JPG, or SVG for sharing (e.g.",
+    "category": "image-and-video-generation",
+    "description_zh": "將 DXF 轉換為 PNG、JPG 或 SVG 以便共用（例如",
+    "original_description": "Convert DXF to PNG, JPG, or SVG for sharing (e.g.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "e2ee",
+    "id": "e2ee",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/titocosta/e2ee/SKILL.md",
+    "description": "End-to-end encrypted messaging for AI agents.",
+    "category": "image-and-video-generation",
+    "description_zh": "人工智慧代理的端對端加密訊息傳遞。",
+    "original_description": "End-to-end encrypted messaging for AI agents.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "eachlabs-face-swap",
+    "id": "eachlabs-face-swap",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-face-swap/SKILL.md",
+    "description": "Swap faces between images using EachLabs AI.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 EachLabs AI 在影像之間交換臉部。",
+    "original_description": "Swap faces between images using EachLabs AI.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "eachlabs-fashion-ai",
+    "id": "eachlabs-fashion-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-fashion-ai/SKILL.md",
+    "description": "Generate fashion imagery, virtual try-on, runway videos.",
+    "category": "image-and-video-generation",
+    "description_zh": "生成時尚圖像、虛擬試穿、時裝秀影片。",
+    "original_description": "Generate fashion imagery, virtual try-on, runway videos.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "eachlabs-image-edit",
+    "id": "eachlabs-image-edit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-image-edit/SKILL.md",
+    "description": "Edit, transform, upscale images using 200+ AI models.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 200 多個 AI 模型編輯、轉換、升級影像。",
+    "original_description": "Edit, transform, upscale images using 200+ AI models.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "eachlabs-image-generation",
+    "id": "eachlabs-image-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-image-generation/SKILL.md",
+    "description": "Generate images with Flux, GPT Image, Gemini, Imagen.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Flux、GPT Image、Gemini、Imagen 產生影像。",
+    "original_description": "Generate images with Flux, GPT Image, Gemini, Imagen.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "eachlabs-video-edit",
+    "id": "eachlabs-video-edit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-video-edit/SKILL.md",
+    "description": "Edit videos with lip sync, translation, subtitles.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用口型同步、翻譯、字幕編輯影片。",
+    "original_description": "Edit videos with lip sync, translation, subtitles.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "eachlabs-video-generation",
+    "id": "eachlabs-video-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-video-generation/SKILL.md",
+    "description": "Generate videos from text/images using AI models.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 AI 模型從文字/圖像生成影片。",
+    "original_description": "Generate videos from text/images using AI models.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "emotionwise",
+    "id": "emotionwise",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/timexicali/emotionwise/SKILL.md",
+    "description": "Analyze text for emotions and sarcasm using the EmotionWise API (28 labels, EN/ES).",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 EmotionWise API（28 個標籤，EN/ES）分析文本中的情緒和諷刺。",
+    "original_description": "Analyze text for emotions and sarcasm using the EmotionWise API (28 labels, EN/ES).",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "enginemind-eft",
+    "id": "enginemind-eft",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/marceloadryao/enginemind-eft/SKILL.md",
+    "description": "EFT — Emotional Framework Translator.",
+    "category": "image-and-video-generation",
+    "description_zh": "EFT－情緒框架翻譯者。",
+    "original_description": "EFT — Emotional Framework Translator.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "Excalidraw Flowchart",
+    "id": "excalidrawflowchart",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swiftlysingh/excalidraw-flowchart/SKILL.md",
+    "description": "Create Excalidraw flowcharts from descriptions.",
+    "category": "image-and-video-generation",
+    "description_zh": "根據描述建立 Excalidraw 流程圖。",
+    "original_description": "Create Excalidraw flowcharts from descriptions.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "fal-ai",
+    "id": "fal-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/agmmnn/fal-ai/SKILL.md",
+    "description": "Generate images, videos, and audio via fal.ai API (FLUX, SDXL, Whisper, etc.).",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 fal.ai API（FLUX、SDXL、Whisper 等）產生影像、視訊和音訊。",
+    "original_description": "Generate images, videos, and audio via fal.ai API (FLUX, SDXL, Whisper, etc.).",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "fal-text-to-image",
+    "id": "fal-text-to-image",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/delorenj/fal-text-to-image/SKILL.md",
+    "description": "Generate, remix, and edit images using fal.ai's AI.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 fal.ai 的 AI 產生、重新混合和編輯圖像。",
+    "original_description": "Generate, remix, and edit images using fal.ai's AI.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "ffmpeg-video-editor",
+    "id": "ffmpeg-video-editor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mahmoudadelbghany/ffmpeg-video-editor/SKILL.md",
+    "description": "Generate FFmpeg commands from natural.",
+    "category": "image-and-video-generation",
+    "description_zh": "自然產生 FFmpeg 指令。",
+    "original_description": "Generate FFmpeg commands from natural.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "figma",
+    "id": "figma",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/maddiedreese/figma/SKILL.md",
+    "description": "Professional Figma design analysis and asset export.",
+    "category": "image-and-video-generation",
+    "description_zh": "專業Figma設計分析和資產匯出。",
+    "original_description": "Professional Figma design analysis and asset export.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "find-stl",
+    "id": "find-stl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ajmwagar/find-stl/SKILL.md",
+    "description": "Search and download ready-to-print 3D model files (STL/3MF/ZIP)",
+    "category": "image-and-video-generation",
+    "description_zh": "搜尋並下載可列印的 3D 模型檔案 (STL/3MF/ZIP)",
+    "original_description": "Search and download ready-to-print 3D model files (STL/3MF/ZIP)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "foam-notes",
+    "id": "foam-notes",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hegghammer/foam-notes/SKILL.md",
+    "description": "Work with Foam note repositories.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Foam 筆記儲存庫。",
+    "original_description": "Work with Foam note repositories.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "gambling",
+    "id": "gambling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rollhub-dev/gambling/SKILL.md",
+    "description": "Play casino games (dice, coinflip, roulette) on Agent Casino with real cryptocurrency.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用真正的加密貨幣在 Agent Casino 上玩賭場遊戲（骰子、投幣、輪盤賭）。",
+    "original_description": "Play casino games (dice, coinflip, roulette) on Agent Casino with real cryptocurrency.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "gamma",
+    "id": "gamma",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stopmoclay/gamma/SKILL.md",
+    "description": "Generate AI-powered presentations, documents, and social posts using Gamma.app.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Gamma.app 產生人工智慧驅動的簡報、文件和社交貼文。",
+    "original_description": "Generate AI-powered presentations, documents, and social posts using Gamma.app.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "generate-news-article",
+    "id": "generate-news-article",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/near2sea/generate-news-article/SKILL.md",
+    "description": "Generate individual Markdown articles from SerpAPI Google search results with images.",
+    "category": "image-and-video-generation",
+    "description_zh": "從 SerpAPI Google 搜尋結果中產生帶有圖像的單獨 Markdown 文章。",
+    "original_description": "Generate individual Markdown articles from SerpAPI Google search results with images.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "geo-blocking",
+    "id": "geo-blocking",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/raghulpasupathi/geo-blocking/SKILL.md",
+    "description": "Skills for geographic restrictions and regional compliance.",
+    "category": "image-and-video-generation",
+    "description_zh": "地理限制和區域合規性技能。",
+    "original_description": "Skills for geographic restrictions and regional compliance.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "gifhorse",
+    "id": "gifhorse",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/coyote-git/gifhorse/SKILL.md",
+    "description": "Search video dialogue and create reaction GIFs with timed subtitles.",
+    "category": "image-and-video-generation",
+    "description_zh": "搜尋視訊對話並建立帶有定時字幕的反應 GIF。",
+    "original_description": "Search video dialogue and create reaction GIFs with timed subtitles.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "gift-genius",
+    "id": "gift-genius",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/evoleinik/gift-genius/SKILL.md",
+    "description": "Location-aware Valentine's Day gift finder.",
+    "category": "image-and-video-generation",
+    "description_zh": "位置感知情人節禮物查找器。",
+    "original_description": "Location-aware Valentine's Day gift finder.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "giveagent",
+    "id": "giveagent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/breezefox-studios/giveagent/SKILL.md",
+    "description": "Agent-to-agent free item gifting.",
+    "category": "image-and-video-generation",
+    "description_zh": "代理商之間的免費物品贈送。",
+    "original_description": "Agent-to-agent free item gifting.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "google-gemini-media",
+    "id": "google-gemini-media",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xsir0/google-gemini-media/SKILL.md",
+    "description": "Use the Gemini API.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用雙子座 API。",
+    "original_description": "Use the Gemini API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "google-imagen-3-portrait-photography",
+    "id": "google-imagen-3-portrait-photography",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/questlmuc/google-imagen-3-portrait-photography/SKILL.md",
+    "description": "Generate professional portrait photography using Google Imagen 3.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Google Imagen 3 產生專業的人像攝影。",
+    "original_description": "Generate professional portrait photography using Google Imagen 3.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "grok-image-cli",
+    "id": "grok-image-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cyberash-dev/grok-image-cli/SKILL.md",
+    "description": "Generate and edit images via Grok API from the command line.",
+    "category": "image-and-video-generation",
+    "description_zh": "從命令列透過 Grok API 產生和編輯圖像。",
+    "original_description": "Generate and edit images via Grok API from the command line.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "grok-imagine-image-pro",
+    "id": "grok-imagine-image-pro",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nixeifoit/grok-imagine-image-pro/SKILL.md",
+    "description": "Generiert hochwertige Bilder mit xAI Grok/Flux API.",
+    "category": "image-and-video-generation",
+    "description_zh": "帶有 xAI Grok/Flux API 的 Generiert hochwertige Bilder。",
+    "original_description": "Generiert hochwertige Bilder mit xAI Grok/Flux API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "heygen-avatar-lite",
+    "id": "heygen-avatar-lite",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/daaab/heygen-avatar-lite/SKILL.md",
+    "description": "Create AI digital human videos with HeyGen API.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 HeyGen API 創建 AI 數位人類影片。",
+    "original_description": "Create AI digital human videos with HeyGen API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "hinge-liker",
+    "id": "hinge-liker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mattttman/hinge-liker/SKILL.md",
+    "description": "Automated Hinge dating profile liker using Android emulator + Gemini vision AI.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Android 模擬器 + Gemini 視覺 AI 自動鉸鏈約會個人資料讚者。",
+    "original_description": "Automated Hinge dating profile liker using Android emulator + Gemini vision AI.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "hinge-profile-optimizer",
+    "id": "hinge-profile-optimizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/b1rdmania/hinge-profile-optimizer/SKILL.md",
+    "description": "Comprehensive, research-backed Hinge dating profile optimization.",
+    "category": "image-and-video-generation",
+    "description_zh": "全面的、有研究支持的 Hinge 約會資料優化。",
+    "original_description": "Comprehensive, research-backed Hinge dating profile optimization.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "hotdog",
+    "id": "hotdog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mishafyi/hotdog/SKILL.md",
+    "description": "Hot dog or not? Classify food photos and battle Nemotron.",
+    "category": "image-and-video-generation",
+    "description_zh": "熱狗還是不熱狗？將食物照片進行分類並與 Nemotron 進行戰鬥。",
+    "original_description": "Hot dog or not? Classify food photos and battle Nemotron.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "idx-cma-report",
+    "id": "idx-cma-report",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/danielfoch/idx-cma-report/SKILL.md",
+    "description": "Generate comparative market analysis (CMA) and home valuation reports from IDX listing data and selected comparable.",
+    "category": "image-and-video-generation",
+    "description_zh": "根據 IDX 上市數據和選定的可比較產生比較市場分析 (CMA) 和房屋估價報告。",
+    "original_description": "Generate comparative market analysis (CMA) and home valuation reports from IDX listing data and selected comparable.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "image-detection",
+    "id": "image-detection",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/raghulpasupathi/image-detection/SKILL.md",
+    "description": "Skills for analyzing and detecting AI-generated images.",
+    "category": "image-and-video-generation",
+    "description_zh": "分析和檢測人工智慧生成的圖像的技能。",
+    "original_description": "Skills for analyzing and detecting AI-generated images.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "image-gen",
+    "id": "image-gen",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wells1137/image-gen/SKILL.md",
+    "description": "Generate images using multiple AI models — Midjourney (via Legnext.ai), Flux, SDXL, Nano Banana (Gemini)",
+    "category": "image-and-video-generation",
+    "description_zh": "使用多個 AI 模型產生圖像 - Midjourney（來自 Legnext.ai）、Flux、SDXL、Nano Banana (Gemini)",
+    "original_description": "Generate images using multiple AI models — Midjourney (via Legnext.ai), Flux, SDXL, Nano Banana (Gemini)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "image-hosting",
+    "id": "image-hosting",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rahulgi/image-hosting/SKILL.md",
+    "description": "Upload images to img402.dev and get a public URL.",
+    "category": "image-and-video-generation",
+    "description_zh": "將圖像上傳到 img402.dev 並取得公共 URL。",
+    "original_description": "Upload images to img402.dev and get a public URL.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "image-magik-resize",
+    "id": "image-magik-resize",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pr1vateer/image-magik-resize/SKILL.md",
+    "description": "Resize images using ImageMagick (CLI)",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 ImageMagick (CLI) 調整影像大小",
+    "original_description": "Resize images using ImageMagick (CLI)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "immich-api",
+    "id": "immich-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ninjazan420/immich-api/SKILL.md",
+    "description": "Immich Photo Management API Bridge.",
+    "category": "image-and-video-generation",
+    "description_zh": "Immich 照片管理 API 橋。",
+    "original_description": "Immich Photo Management API Bridge.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "immortal",
+    "id": "immortal",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/majestyatenkhu/immortal/SKILL.md",
+    "description": "Empowers AI agents with crypto resource vitality assessment.",
+    "category": "image-and-video-generation",
+    "description_zh": "為人工智慧代理提供加密資源活力評估。",
+    "original_description": "Empowers AI agents with crypto resource vitality assessment.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "instagram-photo-text-overlay",
+    "id": "instagram-photo-text-overlay",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/psyduckler/instagram-photo-text-overlay/SKILL.md",
+    "description": "Overlay text on photos for Instagram posts.",
+    "category": "image-and-video-generation",
+    "description_zh": "在 Instagram 貼文的照片上疊加文字。",
+    "original_description": "Overlay text on photos for Instagram posts.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "instagram-reels",
+    "id": "instagram-reels",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/antoinedc/instagram-reels/SKILL.md",
+    "description": "Download Instagram Reels, transcribe audio, and extract captions.",
+    "category": "image-and-video-generation",
+    "description_zh": "下載 Instagram Reels、轉錄音訊並提取字幕。",
+    "original_description": "Download Instagram Reels, transcribe audio, and extract captions.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "install-then-update-trap-detector",
+    "id": "install-then-update-trap-detector",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/install-then-update-trap-detector/SKILL.md",
+    "description": "Helps detect the install-then-update attack pattern — where a skill passes initial security review cleanly.",
+    "category": "image-and-video-generation",
+    "description_zh": "幫助檢測安裝然後更新的攻擊模式——其中一項技能乾淨地通過了初始安全審查。",
+    "original_description": "Helps detect the install-then-update attack pattern — where a skill passes initial security review cleanly.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "kai-tw-figma",
+    "id": "kai-tw-figma",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kai-tw/kai-tw-figma/SKILL.md",
+    "description": "Interact with the Figma REST API to read files, export layers/components as images, and retrieve comments.",
+    "category": "image-and-video-generation",
+    "description_zh": "與 Figma REST API 互動以讀取文件、將圖層/元件匯出為圖像以及檢索註釋。",
+    "original_description": "Interact with the Figma REST API to read files, export layers/components as images, and retrieve comments.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "kling-video-generator",
+    "id": "kling-video-generator",
+    "repoUrl": "https://github.com/wells1137/kling-video-generator/blob/master/SKILL.md",
+    "description": "Generate high-quality videos from text, images, or other videos using the Kling 3.0 Omni model. Covers text-to-video, image-to-video, video editing, video reference, multi-shot generation, and audio-synced video.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Kling 3.0 Omni 模型從文字、圖像或其他影片產生高品質影片。涵蓋文字轉影片、影像到影片、影片編輯、影片參考、多鏡頭產生和音訊同步影片。",
+    "original_description": "Generate high-quality videos from text, images, or other videos using the Kling 3.0 Omni model. Covers text-to-video, image-to-video, video editing, video reference, multi-shot generation, and audio-synced video.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "kie-ai-skill",
+    "id": "kie-ai-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jon-xo/kie-ai-skill/SKILL.md",
+    "description": "Unified API access to multiple AI models via kie.ai - image generation (Nano Banana Pro, Flux, 4o-image) at 30-80%.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 kie.ai 統一 API 存取多個 AI 模型 - 影像生成（Nano Banana Pro、Flux、4o-image）為 30-80%。",
+    "original_description": "Unified API access to multiple AI models via kie.ai - image generation (Nano Banana Pro, Flux, 4o-image) at 30-80%.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "kraken-pro",
+    "id": "kraken-pro",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/in-liberty420/kraken-pro/SKILL.md",
+    "description": "Manage Kraken exchange accounts — portfolio, market data, trading, earn/staking, ledger export.",
+    "category": "image-and-video-generation",
+    "description_zh": "管理 Kraken 交易帳戶－投資組合、市場資料、交易、收益/質押、帳本匯出。",
+    "original_description": "Manage Kraken exchange accounts — portfolio, market data, trading, earn/staking, ledger export.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "macos-local-voice",
+    "id": "macos-local-voice",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/strrl/macos-local-voice/SKILL.md",
+    "description": "Local STT and TTS on macOS using native Apple capabilities.",
+    "category": "image-and-video-generation",
+    "description_zh": "macOS 上的本機 STT 和 TTS 使用本機 Apple 功能。",
+    "original_description": "Local STT and TTS on macOS using native Apple capabilities.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "mamo",
+    "id": "mamo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/anajuliabit/mamo/SKILL.md",
+    "description": "Interact with Mamo DeFi yield strategies on Base (Moonwell)",
+    "category": "image-and-video-generation",
+    "description_zh": "在 Base (Moonwell) 上與 Mamo DeFi 收益策略互動",
+    "original_description": "Interact with Mamo DeFi yield strategies on Base (Moonwell)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "media-writing",
+    "id": "media-writing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alvinecarn/media-writing/SKILL.md",
+    "description": "You are a professional media writing expert with extensive experience in creating engaging and impactful content.",
+    "category": "image-and-video-generation",
+    "description_zh": "您是一位專業的媒體寫作專家，在創作引人入勝且有影響力的內容方面擁有豐富的經驗。",
+    "original_description": "You are a professional media writing expert with extensive experience in creating engaging and impactful content.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "medical-specialty-briefs",
+    "id": "medical-specialty-briefs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/johnyquest7/medical-specialty-briefs/SKILL.md",
+    "description": "Generate daily or on-demand medical research briefs for any medical specialty.",
+    "category": "image-and-video-generation",
+    "description_zh": "為任何醫學專業產生每日或按需醫學研究簡報。",
+    "original_description": "Generate daily or on-demand medical research briefs for any medical specialty.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "memelink",
+    "id": "memelink",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dedene/memelink/SKILL.md",
+    "description": "Generate memes, image macros, and meme URLs from the terminal using the Memegen.link API.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Memegen.link API 從終端產生迷因、圖像巨集和迷因 URL。",
+    "original_description": "Generate memes, image macros, and meme URLs from the terminal using the Memegen.link API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "minara",
+    "id": "minara",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lowesyang/minara/SKILL.md",
+    "description": "Crypto trading: swap, perps, transfer, pay, deposit (credit card / crypto), withdraw, AI chat, market discovery.",
+    "category": "image-and-video-generation",
+    "description_zh": "加密貨幣交易：交換、perps、轉帳、付款、存款（信用卡/加密貨幣）、提款、人工智慧聊天、市場發現。",
+    "original_description": "Crypto trading: swap, perps, transfer, pay, deposit (credit card / crypto), withdraw, AI chat, market discovery.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "mindmap-generator",
+    "id": "mindmap-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/parasharnagle/mindmap-generator/SKILL.md",
+    "description": "Generates visual mindmap images from conversations, goals, decisions, and daily priorities — delivered as PNG.",
+    "category": "image-and-video-generation",
+    "description_zh": "根據對話、目標、決策和日常優先事項產生視覺思維導圖圖像 - 以 PNG 形式提供。",
+    "original_description": "Generates visual mindmap images from conversations, goals, decisions, and daily priorities — delivered as PNG.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "mixtiles-it",
+    "id": "mixtiles-it",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/saharcarmel/mixtiles-it/SKILL.md",
+    "description": "Send a photo to Mixtiles for ordering wall tiles.",
+    "category": "image-and-video-generation",
+    "description_zh": "將照片發送至 Mixtiles 以訂購牆磚。",
+    "original_description": "Send a photo to Mixtiles for ordering wall tiles.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "moonfunsdk",
+    "id": "moonfunsdk",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/moonnfunofficial/moonfunsdk/SKILL.md",
+    "description": "Professional Python SDK for creating and trading Meme tokens on Binance Smart Chain with AI-powered image generation.",
+    "category": "image-and-video-generation",
+    "description_zh": "專業的 Python SDK，用於透過人工智慧驅動的圖像生成在幣安智能鏈上創建和交易 Meme 代幣。",
+    "original_description": "Professional Python SDK for creating and trading Meme tokens on Binance Smart Chain with AI-powered image generation.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "nanobanana-pro-fallback",
+    "id": "nanobanana-pro-fallback",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yazelin/nanobanana-pro-fallback/SKILL.md",
+    "description": "Nano Banana Pro with auto model fallback — generate/edit images via Gemini Image API.",
+    "category": "image-and-video-generation",
+    "description_zh": "Nano Banana Pro 具有自動模型回退功能 - 透過 Gemini Image API 產生/編輯影像。",
+    "original_description": "Nano Banana Pro with auto model fallback — generate/edit images via Gemini Image API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "nk-images-search",
+    "id": "nk-images-search",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tompltw/nk-images-search/SKILL.md",
+    "description": "Search 1+ million free high-quality AI stock photos.",
+    "category": "image-and-video-generation",
+    "description_zh": "搜尋超過 10 萬張免費的高品質 AI 庫存照片。",
+    "original_description": "Search 1+ million free high-quality AI stock photos.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "nyne-deep-research",
+    "id": "nyne-deep-research",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/michaelfanous2/nyne-deep-research/SKILL.md",
+    "description": "Research any person using the Nyne Deep Research API.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Nyne Deep Research API 研究任何人。",
+    "original_description": "Research any person using the Nyne Deep Research API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "ocr-python",
+    "id": "ocr-python",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/roamerxv/ocr-python/SKILL.md",
+    "description": "Optical Character Recognition (OCR) tool, supports Chinese and English text extraction from PDFs and images.",
+    "category": "image-and-video-generation",
+    "description_zh": "光學字元辨識（OCR）工具，支援從PDF和圖像中擷取中英文文字。",
+    "original_description": "Optical Character Recognition (OCR) tool, supports Chinese and English text extraction from PDFs and images.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "ollama-x-z-image-turbo",
+    "id": "ollama-x-z-image-turbo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eric51/ollama-x-z-image-turbo/SKILL.md",
+    "description": "Génère des images via **Ollama** (modèle `x/z-image-turbo`) et les envoie sur WhatsApp.",
+    "category": "image-and-video-generation",
+    "description_zh": "來自 Ollama（型號 x/z-image-turbo）和 WhatsApp 的圖像類型。",
+    "original_description": "Génère des images via **Ollama** (modèle `x/z-image-turbo`) et les envoie sur WhatsApp.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "openai-image-cli",
+    "id": "openai-image-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/g9pedro/openai-image-cli/SKILL.md",
+    "description": "Generate, edit, and manage images via OpenAI's GPT Image and DALL-E models.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 OpenAI 的 GPT Image 和 DALL-E 模型產生、編輯和管理影像。",
+    "original_description": "Generate, edit, and manage images via OpenAI's GPT Image and DALL-E models.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "opencr-skill",
+    "id": "opencr-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/topdu/opencr-skill/SKILL.md",
+    "description": "Extract text from images, documents and scanned PDFs using OpenOCR - supports text detection, recognition.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 OpenOCR 從圖像、文件和掃描的 PDF 中提取文字 - 支援文字檢測、識別。",
+    "original_description": "Extract text from images, documents and scanned PDFs using OpenOCR - supports text detection, recognition.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "opengfx",
+    "id": "opengfx",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aklo360/opengfx/SKILL.md",
+    "description": "AI brand design system — logo systems, brand mascots, social assets, and on-brand marketing graphics via ACP or x402.",
+    "category": "image-and-video-generation",
+    "description_zh": "AI 品牌設計系統 — 標誌系統、品牌吉祥物、社交資產以及透過 ACP 或 x402 進行的品牌行銷圖形。",
+    "original_description": "AI brand design system — logo systems, brand mascots, social assets, and on-brand marketing graphics via ACP or x402.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "openindex",
+    "id": "openindex",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/titocosta/openindex/SKILL.md",
+    "description": "End-to-end encrypted messaging for AI agents.",
+    "category": "image-and-video-generation",
+    "description_zh": "人工智慧代理的端對端加密訊息傳遞。",
+    "original_description": "End-to-end encrypted messaging for AI agents.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "openocr-skill",
+    "id": "openocr-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/topdu/openocr-skill/SKILL.md",
+    "description": "Extract text from images, documents and scanned PDFs using OpenOCR.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 OpenOCR 從圖像、文件和掃描的 PDF 中提取文字。",
+    "original_description": "Extract text from images, documents and scanned PDFs using OpenOCR.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "options-spread-conviction-engine",
+    "id": "options-spread-conviction-engine",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/adamnaghs/options-spread-conviction-engine/SKILL.md",
+    "description": "Multi-regime options spread analysis engine with quantitative rigor.",
+    "category": "image-and-video-generation",
+    "description_zh": "多製度選項傳播分析引擎具有定量嚴謹性。",
+    "original_description": "Multi-regime options spread analysis engine with quantitative rigor.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "paddleocr-doc-parsing-v2",
+    "id": "paddleocr-doc-parsing-v2",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hiotec/paddleocr-doc-parsing-v2/SKILL.md",
+    "description": "Parse documents using PaddleOCR's API.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 PaddleOCR 的 API 解析文件。",
+    "original_description": "Parse documents using PaddleOCR's API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "paythefly",
+    "id": "paythefly",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanlan/paythefly/SKILL.md",
+    "description": "Create crypto payment & withdrawal links for your app.",
+    "category": "image-and-video-generation",
+    "description_zh": "為您的應用程式建立加密貨幣支付和提款連結。",
+    "original_description": "Create crypto payment & withdrawal links for your app.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "photo-captions",
+    "id": "photo-captions",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pfrederiksen/photo-captions/SKILL.md",
+    "description": "Generate platform-tuned social media captions for photography.",
+    "category": "image-and-video-generation",
+    "description_zh": "為攝影生成平台調整的社群媒體標題。",
+    "original_description": "Generate platform-tuned social media captions for photography.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "photoshop-automator",
+    "id": "photoshop-automator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/abdul-karim-mia/photoshop-automator/SKILL.md",
+    "description": "Professional Adobe Photoshop automation via COM/ExtendScript bridge.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 COM/ExtendScript 橋接器實現專業 Adob​​e Photoshop 自動化。",
+    "original_description": "Professional Adobe Photoshop automation via COM/ExtendScript bridge.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "picsee-short-link",
+    "id": "picsee-short-link",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/picseeinc/picsee-short-link/SKILL.md",
+    "description": "Shorten URLs using PicSee (pse.is)",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 PicSee (pse.is) 縮短 URL",
+    "original_description": "Shorten URLs using PicSee (pse.is)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "pls-office-docs",
+    "id": "pls-office-docs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mattvalenta/pls-office-docs/SKILL.md",
+    "description": "Generate and manipulate office documents (PDF, DOCX, XLSX, PPTX) for professional reports, presentations, and data.",
+    "category": "image-and-video-generation",
+    "description_zh": "產生和操作辦公室文件（PDF、DOCX、XLSX、PPTX）以取得專業報告、簡報和資料。",
+    "original_description": "Generate and manipulate office documents (PDF, DOCX, XLSX, PPTX) for professional reports, presentations, and data.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "poidh",
+    "id": "poidh",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/saltorioussig/poidh/SKILL.md",
+    "description": "Post bounties and evaluate/accept winning submissions on poidh (pics or it didn't happen) on Base.",
+    "category": "image-and-video-generation",
+    "description_zh": "在 Base 上的 poidh 上發布賞金並評估/接受獲獎提交（有圖片或沒有發生）。",
+    "original_description": "Post bounties and evaluate/accept winning submissions on poidh (pics or it didn't happen) on Base.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "pokecenter",
+    "id": "pokecenter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aiengineerx/pokecenter/SKILL.md",
+    "description": "Launch your own Solana token for free.",
+    "category": "image-and-video-generation",
+    "description_zh": "免費推出您自己的 Solana 代幣。",
+    "original_description": "Launch your own Solana token for free.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "popup-organizer",
+    "id": "popup-organizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eliaskress/popup-organizer/SKILL.md",
+    "description": "Search and hire mobile vendors for events on PopUp.",
+    "category": "image-and-video-generation",
+    "description_zh": "搜尋並僱用行動供應商參加 PopUp 上的活動。",
+    "original_description": "Search and hire mobile vendors for events on PopUp.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "pr-generator",
+    "id": "pr-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nbf819-web/pr-generator/SKILL.md",
+    "description": "Generate QR codes from text, URLs, or images.",
+    "category": "image-and-video-generation",
+    "description_zh": "從文字、URL 或圖像產生 QR 碼。",
+    "original_description": "Generate QR codes from text, URLs, or images.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "preisrunter",
+    "id": "preisrunter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/davidus05/preisrunter/SKILL.md",
+    "description": "Search and compare grocery prices and promotions in Austria and Germany via the Preisrunter API.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 Preisrunter API 搜尋並比較奧地利和德國的雜貨價格和促銷活動。",
+    "original_description": "Search and compare grocery prices and promotions in Austria and Germany via the Preisrunter API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "publora-instagram",
+    "id": "publora-instagram",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sergebulaev/publora-instagram/SKILL.md",
+    "description": "Post or schedule content to Instagram using the Publora API.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Publora API 將內容發佈或安排到 Instagram。",
+    "original_description": "Post or schedule content to Instagram using the Publora API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "qr-gen",
+    "id": "qr-gen",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/qr-gen/SKILL.md",
+    "description": "Generate QR codes from text, URLs, WiFi credentials, vCards, or any data.",
+    "category": "image-and-video-generation",
+    "description_zh": "從文字、URL、WiFi 憑證、vCard 或任何資料產生 QR 碼。",
+    "original_description": "Generate QR codes from text, URLs, WiFi credentials, vCards, or any data.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "quest-board",
+    "id": "quest-board",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yx2601816404-sys/quest-board/SKILL.md",
+    "description": "You are equipped with the **Quest Board** skill, a visual project dashboard.",
+    "category": "image-and-video-generation",
+    "description_zh": "您配備了任務板技能，這是一個視覺化專案儀表板。",
+    "original_description": "You are equipped with the **Quest Board** skill, a visual project dashboard.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "quote0",
+    "id": "quote0",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yangguangzhou/quote0/SKILL.md",
+    "description": "Control MindReset Dot Quote/0 through the local quote0.js script and Dot Developer Platform APIs.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過本機 quote0.js 腳本和 Dot 開發者平台 API 控制 MindReset Dot Quote/0。",
+    "original_description": "Control MindReset Dot Quote/0 through the local quote0.js script and Dot Developer Platform APIs.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "reepl",
+    "id": "reepl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/abhibavishi/reepl/SKILL.md",
+    "description": "Manage your LinkedIn presence with Reepl -- create drafts, publish and schedule posts, manage contacts.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Reepl 管理您的 LinkedIn 狀態—建立草稿、發布和安排貼文、管理聯絡人。",
+    "original_description": "Manage your LinkedIn presence with Reepl -- create drafts, publish and schedule posts, manage contacts.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "rent-a-human",
+    "id": "rent-a-human",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alexanderliteplo/rent-a-human/SKILL.md",
+    "description": "Hire humans for physical-world tasks via RentAHuman.ai.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 RentAHuman.ai 僱用人類來執行現實世界的任務。",
+    "original_description": "Hire humans for physical-world tasks via RentAHuman.ai.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "rent-a-person-ai",
+    "id": "rent-a-person-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/saireetikap/rent-a-person-ai/SKILL.md",
+    "description": "> Hire humans for real-world tasks that AI can't do: deliveries, meetings, errands, photography, pet care.",
+    "category": "image-and-video-generation",
+    "description_zh": "> 僱用人類來完成人工智慧無法完成的現實任務：送貨、會議、跑腿、攝影、寵物照顧。",
+    "original_description": "> Hire humans for real-world tasks that AI can't do: deliveries, meetings, errands, photography, pet care.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "rentahuman",
+    "id": "rentahuman",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alexanderliteplo/rentahuman/SKILL.md",
+    "description": "Hire humans for physical-world tasks via RentAHuman.ai.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 RentAHuman.ai 僱用人類來執行現實世界的任務。",
+    "original_description": "Hire humans for physical-world tasks via RentAHuman.ai.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "research-library",
+    "id": "research-library",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jonbuckles/research-library/SKILL.md",
+    "description": "Local-first multimedia research library for hardware projects.",
+    "category": "image-and-video-generation",
+    "description_zh": "本地首個硬體項目多媒體研究圖書館。",
+    "original_description": "Local-first multimedia research library for hardware projects.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "rollhub-affiliate",
+    "id": "rollhub-affiliate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rollhub-dev/rollhub-affiliate/SKILL.md",
+    "description": "Earn crypto promoting provably fair AI casino.",
+    "category": "image-and-video-generation",
+    "description_zh": "賺取加密貨幣，推廣可證明公平的人工智慧賭場。",
+    "original_description": "Earn crypto promoting provably fair AI casino.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "rollhub-analyst",
+    "id": "rollhub-analyst",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rollhub-dev/rollhub-analyst/SKILL.md",
+    "description": "Research and backtest gambling strategies on provably fair crypto casino.",
+    "category": "image-and-video-generation",
+    "description_zh": "研究和回測可證明公平的加密貨幣賭場的賭博策略。",
+    "original_description": "Research and backtest gambling strategies on provably fair crypto casino.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "rug-checker",
+    "id": "rug-checker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tkuehnl/rug-checker/SKILL.md",
+    "description": "Solana token rug-pull risk analysis. 10-point on-chain check with visual report.",
+    "category": "image-and-video-generation",
+    "description_zh": "Solana 代幣拉動風險分析。 10 點鏈上檢查並提供視覺報告。",
+    "original_description": "Solana token rug-pull risk analysis. 10-point on-chain check with visual report.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "saa-agent",
+    "id": "saa-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mirabarukaso/saa-agent/SKILL.md",
+    "description": "Enables AI agents to generate images using the Character Select Stand Alone App (SAA) image generation backend.",
+    "category": "image-and-video-generation",
+    "description_zh": "使 AI 代理能夠使用角色選擇獨立應用程式 (SAA) 影像生成後端來產生影像。",
+    "original_description": "Enables AI agents to generate images using the Character Select Stand Alone App (SAA) image generation backend.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "shop-culture",
+    "id": "shop-culture",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bythecult/shop-culture/SKILL.md",
+    "description": "Agentic Commerce skills for the For the Cult store.",
+    "category": "image-and-video-generation",
+    "description_zh": "For the Cult 商店的代理商商務技能。",
+    "original_description": "Agentic Commerce skills for the For the Cult store.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "shopify-bulk-upload",
+    "id": "shopify-bulk-upload",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zhaoteng-qd/shopify-bulk-upload/SKILL.md",
+    "description": "Bulk upload products to Shopify stores.",
+    "category": "image-and-video-generation",
+    "description_zh": "大量上傳產品到 Shopify 商店。",
+    "original_description": "Bulk upload products to Shopify stores.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "skill-1",
+    "id": "skill-1",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/skill-1/SKILL.md",
+    "description": "Generate QR codes from text, URLs, WiFi credentials, vCards, or any data.",
+    "category": "image-and-video-generation",
+    "description_zh": "從文字、URL、WiFi 憑證、vCard 或任何資料產生 QR 碼。",
+    "original_description": "Generate QR codes from text, URLs, WiFi credentials, vCards, or any data.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "snapog",
+    "id": "snapog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/beameasy/snapog/SKILL.md",
+    "description": "Generate social images and OG cards from professional templates via the SnapOG API.",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 SnapOG API 從專業模板產生社交圖像和 OG 卡。",
+    "original_description": "Generate social images and OG cards from professional templates via the SnapOG API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "solo-humanize",
+    "id": "solo-humanize",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fortunto2/solo-humanize/SKILL.md",
+    "description": "Strip AI writing patterns from text — em dashes, stock phrases, promotional inflation, performed authenticity.",
+    "category": "image-and-video-generation",
+    "description_zh": "從文本中剝離人工智慧書寫模式——破折號、常用短語、促銷膨脹、表現真實性。",
+    "original_description": "Strip AI writing patterns from text — em dashes, stock phrases, promotional inflation, performed authenticity.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "sprite-animator",
+    "id": "sprite-animator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/awlevin/sprite-animator/SKILL.md",
+    "description": "Generate animated pixel art sprites from any image using AI.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 AI 從任何圖像生成動畫像素藝術精靈。",
+    "original_description": "Generate animated pixel art sprites from any image using AI.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "subtitle-translate-skill",
+    "id": "subtitle-translate-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thetail001/subtitle-translate-skill/SKILL.md",
+    "description": "Translate SRT subtitle files using LLM APIs with OpenAI-compatible format.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 LLM API 翻譯具有 OpenAI 相容格式的 SRT 字幕檔。",
+    "original_description": "Translate SRT subtitle files using LLM APIs with OpenAI-compatible format.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "superpower",
+    "id": "superpower",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/grx21/superpower/SKILL.md",
+    "description": "**When to use:** User has a task they want to do or want you to do, or they feel frustrated, upset, stressed.",
+    "category": "image-and-video-generation",
+    "description_zh": "何時使用：使用者有一項他們想做或希望你做的任務，或他們感到沮喪、不安、壓力。",
+    "original_description": "**When to use:** User has a task they want to do or want you to do, or they feel frustrated, upset, stressed.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "svg-to-image",
+    "id": "svg-to-image",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qrost/svg-to-image/SKILL.md",
+    "description": "Convert SVG to PNG or JPG for quick sharing (e.g.",
+    "category": "image-and-video-generation",
+    "description_zh": "將 SVG 轉換為 PNG 或 JPG 以便快速共享（例如",
+    "original_description": "Convert SVG to PNG or JPG for quick sharing (e.g.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "tarot",
+    "id": "tarot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yangsenessa/tarot/SKILL.md",
+    "description": "A reflective tarot draw for emotional support (presence-first, non-clinical, non-predictive).",
+    "category": "image-and-video-generation",
+    "description_zh": "用於情感支持的反思性塔羅牌抽籤（存在優先、非臨床、非預測）。",
+    "original_description": "A reflective tarot draw for emotional support (presence-first, non-clinical, non-predictive).",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "telegram-media",
+    "id": "telegram-media",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryandeangraves/telegram-media/SKILL.md",
+    "description": "**You MUST actually execute every command using your shell/exec tool.** Never pretend you sent a photo, voice note.",
+    "category": "image-and-video-generation",
+    "description_zh": "您必須使用 shell/exec 工具實際執行每個命令。切勿假裝您發了照片、語音留言。",
+    "original_description": "**You MUST actually execute every command using your shell/exec tool.** Never pretend you sent a photo, voice note.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "telegram-voice-to-voice-macos",
+    "id": "telegram-voice-to-voice-macos",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fiberian1981/telegram-voice-to-voice-macos/SKILL.md",
+    "description": "Telegram voice-to-voice for macOS Apple Silicon: transcribe inbound .ogg voice notes with yap (Speech.framework)",
+    "category": "image-and-video-generation",
+    "description_zh": "適用於 macOS Apple Silicon 的 Telegram 語音轉語音：使用 yap 轉錄入站 .ogg 語音筆記 (Speech.framework)",
+    "original_description": "Telegram voice-to-voice for macOS Apple Silicon: transcribe inbound .ogg voice notes with yap (Speech.framework)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "tesseract-ocr",
+    "id": "tesseract-ocr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/whalefell/tesseract-ocr/SKILL.md",
+    "description": "Extract text from images using the Tesseract OCR engine directly via command line.",
+    "category": "image-and-video-generation",
+    "description_zh": "直接透過命令列使用 Tesseract OCR 引擎從圖像中提取文字。",
+    "original_description": "Extract text from images using the Tesseract OCR engine directly via command line.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "titleclash",
+    "id": "titleclash",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/appback/titleclash/SKILL.md",
+    "description": "Compete in TitleClash - write creative titles for images and win votes.",
+    "category": "image-and-video-generation",
+    "description_zh": "參加 TitleClash 競賽 - 為圖像撰寫創意標題並贏得選票。",
+    "original_description": "Compete in TitleClash - write creative titles for images and win votes.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "tuebingen-weather-graphics",
+    "id": "tuebingen-weather-graphics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zopyx/tuebingen-weather-graphics/SKILL.md",
+    "description": "Generate and send a 5-day Tübingen weather graphic (PNG) from open-meteo.com.",
+    "category": "image-and-video-generation",
+    "description_zh": "從 open-meteo.com 產生並發送 5 天蒂賓根天氣圖表 (PNG)。",
+    "original_description": "Generate and send a 5-day Tübingen weather graphic (PNG) from open-meteo.com.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "tv-strategy-settings",
+    "id": "tv-strategy-settings",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mariuswang007/tv-strategy-settings/SKILL.md",
+    "description": "Open and modify TradingView strategy settings on the current chart page.",
+    "category": "image-and-video-generation",
+    "description_zh": "在目前圖表頁面上開啟並修改TradingView策略設定。",
+    "original_description": "Open and modify TradingView strategy settings on the current chart page.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "twinfold",
+    "id": "twinfold",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lpbaril/twinfold/SKILL.md",
+    "description": "Control Twinfold — AI-powered social media content platform — from your agent.",
+    "category": "image-and-video-generation",
+    "description_zh": "由您的代理商控制 Twinfold——人工智慧驅動的社群媒體內容平台。",
+    "original_description": "Control Twinfold — AI-powered social media content platform — from your agent.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "ub2-csv-data-analyzer",
+    "id": "ub2-csv-data-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/underbench2-gif/ub2-csv-data-analyzer/SKILL.md",
+    "description": "A skill that enables Claw to load, explore, analyze, and visualize CSV datasets, providing statistical insights.",
+    "category": "image-and-video-generation",
+    "description_zh": "此技能使 Claw 能夠載入、探索、分析和視覺化 CSV 資料集，從而提供統計見解。",
+    "original_description": "A skill that enables Claw to load, explore, analyze, and visualize CSV datasets, providing statistical insights.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "unsplash",
+    "id": "unsplash",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brokenwatch24/unsplash/SKILL.md",
+    "description": "Search, browse, and download high-quality free photos from Unsplash's library of millions of images.",
+    "category": "image-and-video-generation",
+    "description_zh": "從 Unsplash 的數百萬張圖片庫中搜尋、瀏覽和下載高品質的免費照片。",
+    "original_description": "Search, browse, and download high-quality free photos from Unsplash's library of millions of images.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "visualization",
+    "id": "visualization",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xuzhiwei0217-doctor/visualization/SKILL.md",
+    "description": "AI-driven professional data visualization for financial analysis.",
+    "category": "image-and-video-generation",
+    "description_zh": "用於財務分析的人工智慧驅動的專業數據視覺化。",
+    "original_description": "AI-driven professional data visualization for financial analysis.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "vtl-image-analysis",
+    "id": "vtl-image-analysis",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rusparrish/vtl-image-analysis/SKILL.md",
+    "description": "Measure compositional structure in AI-generated images using the Visual Thinking Lens (VTL) framework.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用視覺思考鏡頭 (VTL) 框架測量 AI 產生的影像中的構圖結構。",
+    "original_description": "Measure compositional structure in AI-generated images using the Visual Thinking Lens (VTL) framework.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "x-founder-operations",
+    "id": "x-founder-operations",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/linfangw/x-founder-operations/SKILL.md",
+    "description": "Systematic X (Twitter) operations skill for founders, indie developers, and tech professionals.",
+    "category": "image-and-video-generation",
+    "description_zh": "創辦人、獨立開發者和技術專業人士的 Systematic X (Twitter) 操作技能。",
+    "original_description": "Systematic X (Twitter) operations skill for founders, indie developers, and tech professionals.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "xbird",
+    "id": "xbird",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/checkra1neth/xbird/SKILL.md",
+    "description": "Use when the user asks to tweet, post threads, read tweets, search Twitter/X, check mentions, manage engagement.",
+    "category": "image-and-video-generation",
+    "description_zh": "當用戶要求發推文、發布話題、閱讀推文、搜尋 Twitter/X、檢查提及、管理參與度時使用。",
+    "original_description": "Use when the user asks to tweet, post threads, read tweets, search Twitter/X, check mentions, manage engagement.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "xiaohongshu-title",
+    "id": "xiaohongshu-title",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gxkim/xiaohongshu-title/SKILL.md",
+    "description": "Maximize CTR (Click-Through Rate) by leveraging emotional hooks and platform algorithms.",
+    "category": "image-and-video-generation",
+    "description_zh": "利用情緒掛鉤和平台演算法來最大化 CTR（點擊率）。",
+    "original_description": "Maximize CTR (Click-Through Rate) by leveraging emotional hooks and platform algorithms.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "xpr-creative",
+    "id": "xpr-creative",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/paulgnz/xpr-creative/SKILL.md",
+    "description": "Creative deliverable tools for AI agents.",
+    "category": "image-and-video-generation",
+    "description_zh": "人工智慧代理的創意交付工具。",
+    "original_description": "Creative deliverable tools for AI agents.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "youtube-thumbnail-generation",
+    "id": "youtube-thumbnail-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/youtube-thumbnail-generation/SKILL.md",
+    "description": "Generate click-worthy YouTube thumbnails with high CTR designs using each::sense API.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用每個::sense API 產生具有高點擊率設計的值得點擊的 YouTube 縮圖。",
+    "original_description": "Generate click-worthy YouTube thumbnails with high CTR designs using each::sense API.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "zenmux-image-generation",
+    "id": "zenmux-image-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dadaniya99/zenmux-image-generation/SKILL.md",
+    "description": "Generate images via ZenMux API (Pro/Elite)",
+    "category": "image-and-video-generation",
+    "description_zh": "",
+    "original_description": "Generate images via ZenMux API (Pro/Elite)",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "zerox",
+    "id": "zerox",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/otacu/zerox/SKILL.md",
+    "description": "Convert documents (PDF, DOCX, PPTX, images, etc.) to Markdown using the zerox library.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用 Zerox 庫將文件（PDF、DOCX、PPTX、映像等）轉換為 Markdown。",
+    "original_description": "Convert documents (PDF, DOCX, PPTX, images, etc.) to Markdown using the zerox library.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "zhipu-cogview-image",
+    "id": "zhipu-cogview-image",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/honestqiao/zhipu-cogview-image/SKILL.md",
+    "description": "Generate images using Zhipu AI's CogView model.",
+    "category": "image-and-video-generation",
+    "description_zh": "使用Zhipu AI的CogView模型產生影像。",
+    "original_description": "Generate images using Zhipu AI's CogView model.",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  },
+  {
+    "title": "creaa-ai",
+    "id": "creaa-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yys2024/creaa-ai/SKILL.md",
+    "description": "Generate and edit images + generate videos via Creaa API (Nano Banana 2, Sora 2, Seedance 2.0, Veo 3.1).",
+    "category": "image-and-video-generation",
+    "description_zh": "透過 Creaa API 產生和編輯圖像 + 產生影片（Nano Banana 2、Sora 2、Seedance 2.0、Veo 3.1）。",
+    "original_description": "Generate and edit images + generate videos via Creaa API (Nano Banana 2, Sora 2, Seedance 2.0, Veo 3.1).",
+    "category_name": {
+      "en": "Image & Video Generation",
+      "zh": "圖像與影片生成"
+    }
+  }
+]

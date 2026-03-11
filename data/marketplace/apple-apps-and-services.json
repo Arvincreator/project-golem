@@ -1,0 +1,574 @@
+[
+  {
+    "title": "alter-actions",
+    "id": "alter-actions",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/olivieralter/alter-actions/SKILL.md",
+    "description": "Trigger Alter macOS app actions via x-callback-urls.",
+    "category": "apple-apps-and-services",
+    "description_zh": "透過 x-callback-urls 觸發更改 macOS 應用程式操作。",
+    "original_description": "Trigger Alter macOS app actions via x-callback-urls.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "apple-contacts",
+    "id": "apple-contacts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tyler6204/apple-contacts/SKILL.md",
+    "description": "Look up contacts from macOS Contacts.app.",
+    "category": "apple-apps-and-services",
+    "description_zh": "從 macOS Contacts.app 尋找聯絡人。",
+    "original_description": "Look up contacts from macOS Contacts.app.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "apple-find-my-local",
+    "id": "apple-find-my-local",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/loganprit/apple-find-my-local/SKILL.md",
+    "description": "Control Apple Find My app via Peekaboo to locate people, devices, and items (AirTags)",
+    "category": "apple-apps-and-services",
+    "description_zh": "透過 Peekaboo 控制 Apple Find My 應用程式來定位人員、裝置和物品 (AirTags)",
+    "original_description": "Control Apple Find My app via Peekaboo to locate people, devices, and items (AirTags)",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "apple-health-skill",
+    "id": "apple-health-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nftechie/apple-health-skill/SKILL.md",
+    "description": "Talk to your Apple Health data — ask questions about your workouts, heart rate, activity rings, and fitness trends.",
+    "category": "apple-apps-and-services",
+    "description_zh": "查閱您的 Apple Health 數據 — 詢問有關您的運動、心率、活動環和健身趨勢的問題。",
+    "original_description": "Talk to your Apple Health data — ask questions about your workouts, heart rate, activity rings, and fitness trends.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "apple-mail-search",
+    "id": "apple-mail-search",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mneves75/apple-mail-search/SKILL.md",
+    "description": "Fast Apple Mail search via SQLite on macOS.",
+    "category": "apple-apps-and-services",
+    "description_zh": "在 macOS 上透過 SQLite 快速搜尋 Apple Mail。",
+    "original_description": "Fast Apple Mail search via SQLite on macOS.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "apple-music",
+    "id": "apple-music",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tyler6204/apple-music/SKILL.md",
+    "description": "Search Apple Music, add songs to library, manage playlists, control.",
+    "category": "apple-apps-and-services",
+    "description_zh": "搜尋 Apple Music、將歌曲新增至庫、管理播放清單、控制。",
+    "original_description": "Search Apple Music, add songs to library, manage playlists, control.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "apple-photos",
+    "id": "apple-photos",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tyler6204/apple-photos/SKILL.md",
+    "description": "Apple Photos.app integration for macOS.",
+    "category": "apple-apps-and-services",
+    "description_zh": "適用於 macOS 的 Apple Photos.app 整合。",
+    "original_description": "Apple Photos.app integration for macOS.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "apple-remind-me",
+    "id": "apple-remind-me",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/plgonzalezrx8/apple-remind-me/SKILL.md",
+    "description": "Natural language reminders that create actual Apple.",
+    "category": "apple-apps-and-services",
+    "description_zh": "自然語言提醒創造了真正的蘋果。",
+    "original_description": "Natural language reminders that create actual Apple.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "apple-search-ads-skill",
+    "id": "apple-search-ads-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trebuhs/apple-search-ads-skill/SKILL.md",
+    "description": "Manage Apple Search Ads campaigns, ad groups, keywords, and reports via the asa-cli tool.",
+    "category": "apple-apps-and-services",
+    "description_zh": "透過 asa-cli 工具管理 Apple Search Ads 廣告活動、廣告群組、關鍵字和報導。",
+    "original_description": "Manage Apple Search Ads campaigns, ad groups, keywords, and reports via the asa-cli tool.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "appletv",
+    "id": "appletv",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lucakaufmann/appletv/SKILL.md",
+    "description": "Control Apple TV via pyatv.",
+    "category": "apple-apps-and-services",
+    "description_zh": "透過 pyatv 控制 Apple TV。",
+    "original_description": "Control Apple TV via pyatv.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "callmac",
+    "id": "callmac",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jooey/callmac/SKILL.md",
+    "description": "Remote voice control for Mac from mobile devices using commands like /callmac.",
+    "category": "apple-apps-and-services",
+    "description_zh": "使用 /callmac 等命令從行動裝置對 Mac 進行遠端語音控制。",
+    "original_description": "Remote voice control for Mac from mobile devices using commands like /callmac.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "clawdbot-macos-build",
+    "id": "clawdbot-macos-build",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/manish-basargekar/clawdbot-macos-build/SKILL.md",
+    "description": "Build the Clawdbot macOS menu bar app.",
+    "category": "apple-apps-and-services",
+    "description_zh": "建立 Clawdbot macOS 功能表列應用程式。",
+    "original_description": "Build the Clawdbot macOS menu bar app.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "clawdbot-skill-voice-wake-say",
+    "id": "clawdbot-skill-voice-wake-say",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xadenryan/clawdbot-skill-voice-wake-say/SKILL.md",
+    "description": "Speak responses aloud on macOS.",
+    "category": "apple-apps-and-services",
+    "description_zh": "在 macOS 上大聲說出答案。",
+    "original_description": "Speak responses aloud on macOS.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "drafts",
+    "id": "drafts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nerveband/drafts/SKILL.md",
+    "description": "Manage Drafts app notes via CLI on macOS.",
+    "category": "apple-apps-and-services",
+    "description_zh": "在 macOS 上透過 CLI 管理草稿應用筆記。",
+    "original_description": "Manage Drafts app notes via CLI on macOS.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "findmy-location",
+    "id": "findmy-location",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/poiley/findmy-location/SKILL.md",
+    "description": "Track a shared contact's location via Apple Find.",
+    "category": "apple-apps-and-services",
+    "description_zh": "透過 Apple Find 追蹤共享聯絡人的位置。",
+    "original_description": "Track a shared contact's location via Apple Find.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "fzf-fuzzy-finder",
+    "id": "fzf-fuzzy-finder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arnarsson/fzf-fuzzy-finder/SKILL.md",
+    "description": "Command-line fuzzy finder for interactive filtering.",
+    "category": "apple-apps-and-services",
+    "description_zh": "用於互動式過濾的命令列模糊查找器。",
+    "original_description": "Command-line fuzzy finder for interactive filtering.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "get-focus-mode",
+    "id": "get-focus-mode",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nickchristensen/get-focus-mode/SKILL.md",
+    "description": "Get the current macOS Focus.",
+    "category": "apple-apps-and-services",
+    "description_zh": "取得目前的 macOS 焦點。",
+    "original_description": "Get the current macOS Focus.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "healthkit-sync",
+    "id": "healthkit-sync",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mneves75/healthkit-sync/SKILL.md",
+    "description": "iOS HealthKit data sync CLI commands and patterns.",
+    "category": "apple-apps-and-services",
+    "description_zh": "iOS HealthKit 資料同步 CLI 指令和模式。",
+    "original_description": "iOS HealthKit data sync CLI commands and patterns.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "hergunmac",
+    "id": "hergunmac",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ahmetsemsettinozdemirden/hergunmac/SKILL.md",
+    "description": "Access AI-powered football match predictions.",
+    "category": "apple-apps-and-services",
+    "description_zh": "訪問人工智慧支援的足球比賽預測。",
+    "original_description": "Access AI-powered football match predictions.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "homebrew",
+    "id": "homebrew",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thesethrose/homebrew/SKILL.md",
+    "description": "Homebrew package manager for macOS.",
+    "category": "apple-apps-and-services",
+    "description_zh": "適用於 macOS 的 Homebrew 套件管理器。",
+    "original_description": "Homebrew package manager for macOS.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "icloud-findmy",
+    "id": "icloud-findmy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/liamnichols/icloud-findmy/SKILL.md",
+    "description": "Query Find My locations and battery status for family devices.",
+    "category": "apple-apps-and-services",
+    "description_zh": "查詢家庭設備的「尋找我的位置」和電池狀態。",
+    "original_description": "Query Find My locations and battery status for family devices.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "ics-import-on-iphone",
+    "id": "ics-import-on-iphone",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sbhhbs/ics-import-on-iphone/SKILL.md",
+    "description": "Create calendar events by generating valid .ics files when direct calendar access is unavailable.",
+    "category": "apple-apps-and-services",
+    "description_zh": "當直接日曆存取不可用時，透過產生有效的 .ics 檔案來建立日曆事件。",
+    "original_description": "Create calendar events by generating valid .ics files when direct calendar access is unavailable.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "imessage-signal-analyzer",
+    "id": "imessage-signal-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/terellison/imessage-signal-analyzer/SKILL.md",
+    "description": "Analyze iMessage (macOS) and Signal conversation history to reveal relationship dynamics — message volume.",
+    "category": "apple-apps-and-services",
+    "description_zh": "分析 iMessage (macOS) 和 Signal 對話歷史記錄以揭示關係動態 - 訊息量。",
+    "original_description": "Analyze iMessage (macOS) and Signal conversation history to reveal relationship dynamics — message volume.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "inkjet",
+    "id": "inkjet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaronchartier/inkjet/SKILL.md",
+    "description": "Print text, images, and QR codes to a wireless Bluetooth thermal printer.",
+    "category": "apple-apps-and-services",
+    "description_zh": "使用無線藍牙熱感印表機列印文字、影像和二維碼。",
+    "original_description": "Print text, images, and QR codes to a wireless Bluetooth thermal printer.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "mac-notes-agent",
+    "id": "mac-notes-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swancho/mac-notes-agent/SKILL.md",
+    "description": "Integrate with the macOS Notes app (Apple Notes)",
+    "category": "apple-apps-and-services",
+    "description_zh": "與 macOS Notes 應用程式整合 (Apple Notes)",
+    "original_description": "Integrate with the macOS Notes app (Apple Notes)",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "mac-tts",
+    "id": "mac-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kalijason/mac-tts/SKILL.md",
+    "description": "Text-to-speech using macOS built-in `say` command.",
+    "category": "apple-apps-and-services",
+    "description_zh": "使用 macOS 內建 say 指令進行文字轉語音。",
+    "original_description": "Text-to-speech using macOS built-in `say` command.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "macos-native-automation",
+    "id": "macos-native-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/theagentwire/macos-native-automation/SKILL.md",
+    "description": "Hardware-level mouse, keyboard & dialog automation on macOS via CGEvent + AppleScript.",
+    "category": "apple-apps-and-services",
+    "description_zh": "透過 CGEvent + AppleScript 在 macOS 上實現硬體級滑鼠、鍵盤和對話方塊自動化。",
+    "original_description": "Hardware-level mouse, keyboard & dialog automation on macOS via CGEvent + AppleScript.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "managing-apple-notes",
+    "id": "managing-apple-notes",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wangwalk/managing-apple-notes/SKILL.md",
+    "description": "Manage Apple Notes from the terminal using the inotes CLI.",
+    "category": "apple-apps-and-services",
+    "description_zh": "使用 inotes CLI 從終端機管理 Apple Notes。",
+    "original_description": "Manage Apple Notes from the terminal using the inotes CLI.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "meow-finder",
+    "id": "meow-finder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/abgohel/meow-finder/SKILL.md",
+    "description": "CLI tool to discover AI tools.",
+    "category": "apple-apps-and-services",
+    "description_zh": "用於發現 AI 工具的 CLI 工具。",
+    "original_description": "CLI tool to discover AI tools.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "mh-apple-reminders",
+    "id": "mh-apple-reminders",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mohdalhashemi98-hue/mh-apple-reminders/SKILL.md",
+    "description": "Manage Apple Reminders via remindctl CLI (list, add, edit, complete, delete)",
+    "category": "apple-apps-and-services",
+    "description_zh": "透過remindctl CLI管理Apple提醒（清單、新增、編輯、完成、刪除）",
+    "original_description": "Manage Apple Reminders via remindctl CLI (list, add, edit, complete, delete)",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "mlx-stt",
+    "id": "mlx-stt",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/guoqiao/mlx-stt/SKILL.md",
+    "description": "Speech-To-Text with MLX (Apple Silicon) and GLM-ASR-Nano-2512 locally.",
+    "category": "apple-apps-and-services",
+    "description_zh": "本地使用 MLX (Apple Silicon) 和 GLM-ASR-Nano-2512 進行語音轉文字。",
+    "original_description": "Speech-To-Text with MLX (Apple Silicon) and GLM-ASR-Nano-2512 locally.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "mlx-swift-lm",
+    "id": "mlx-swift-lm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ronaldmannak",
+    "description": "MLX Swift LM - Run LLMs and VLMs on Apple Silicon using MLX.",
+    "category": "apple-apps-and-services",
+    "description_zh": "MLX Swift LM - 使用 MLX 在 Apple Silicon 上執行 LLM 和 VLM.",
+    "original_description": "MLX Swift LM - Run LLMs and VLMs on Apple Silicon using MLX.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "mlx-tts",
+    "id": "mlx-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/guoqiao/mlx-tts/SKILL.md",
+    "description": "Text-To-Speech with MLX (Apple Silicon) and opensource models (default QWen3-TTS) locally.",
+    "category": "apple-apps-and-services",
+    "description_zh": "在本地使用 MLX (Apple Silicon) 和開源模型（預設 QWen3-TTS）進行文字轉語音。",
+    "original_description": "Text-To-Speech with MLX (Apple Silicon) and opensource models (default QWen3-TTS) locally.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "mole-mac-cleanup",
+    "id": "mole-mac-cleanup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bjesuiter/mole-mac-cleanup/SKILL.md",
+    "description": "Mac cleanup & optimization tool combining CleanMyMac.",
+    "category": "apple-apps-and-services",
+    "description_zh": "結合 CleanMyMac 的 Mac 清理和優化工具。",
+    "original_description": "Mac cleanup & optimization tool combining CleanMyMac.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "monolith",
+    "id": "monolith",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/slaviquee/monolith/SKILL.md",
+    "description": "Secure crypto wallet for AI agents.",
+    "category": "apple-apps-and-services",
+    "description_zh": "人工智慧代理的安全加密錢包。",
+    "original_description": "Secure crypto wallet for AI agents.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "my-tesla",
+    "id": "my-tesla",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/officialpm/my-tesla/SKILL.md",
+    "description": "Control Tesla vehicles from macOS via the Tesla Owner API using teslapy.",
+    "category": "apple-apps-and-services",
+    "description_zh": "使用 teslapy 透過 Tesla Owner API 從 macOS 控制 Tesla 車輛。",
+    "original_description": "Control Tesla vehicles from macOS via the Tesla Owner API using teslapy.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "network-scanner",
+    "id": "network-scanner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/florianbeer/network-scanner/SKILL.md",
+    "description": "Scan networks to discover devices, gather MAC addresses.",
+    "category": "apple-apps-and-services",
+    "description_zh": "掃描網路以發現設備、收集 MAC 位址。",
+    "original_description": "Scan networks to discover devices, gather MAC addresses.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "omarchy",
+    "id": "omarchy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/achals-iglu/omarchy/SKILL.md",
+    "description": "Omarchy operating guardrails for day-to-day system work: assume the host is Omarchy by default, choose.",
+    "category": "apple-apps-and-services",
+    "description_zh": "Omarchy操作護欄進行日常系統工作：假設主機預設為Omarchy，選擇。",
+    "original_description": "Omarchy operating guardrails for day-to-day system work: assume the host is Omarchy by default, choose.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "pattern-finder",
+    "id": "pattern-finder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leegitw/pattern-finder/SKILL.md",
+    "description": "Discover what two sources agree on — find the signal.",
+    "category": "apple-apps-and-services",
+    "description_zh": "發現兩個消息來源的一致之處－找到訊號。",
+    "original_description": "Discover what two sources agree on — find the signal.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "say",
+    "id": "say",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tobihagemann/say/SKILL.md",
+    "description": "Text-to-Speech via macOS say command with Siri Natural Voices.",
+    "category": "apple-apps-and-services",
+    "description_zh": "透過 macOS 使用 Siri 自然語音說出指令進行文字轉語音。",
+    "original_description": "Text-to-Speech via macOS say command with Siri Natural Voices.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "shortcuts-generator",
+    "id": "shortcuts-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/erik-agens/shortcuts-skill/SKILL.md",
+    "description": "Generate macOS/iOS Shortcuts by creating plist files.",
+    "category": "apple-apps-and-services",
+    "description_zh": "透過建立 plist 檔案產生 macOS/iOS 捷徑。",
+    "original_description": "Generate macOS/iOS Shortcuts by creating plist files.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "skill-email-management",
+    "id": "skill-email-management",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/latisen/skill-email-management/SKILL.md",
+    "description": "Expert email management assistant for Apple.",
+    "category": "apple-apps-and-services",
+    "description_zh": "Apple 的專家電子郵件管理助理。",
+    "original_description": "Expert email management assistant for Apple.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "testflight-monitor",
+    "id": "testflight-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jon-xo/testflight-monitor/SKILL.md",
+    "description": "Monitor available TestFlight beta slots with smart app lookups and silent batch checking.",
+    "category": "apple-apps-and-services",
+    "description_zh": "透過智慧型應用程式尋找和靜默批量檢查來監控可用的 TestFlight beta 插槽。",
+    "original_description": "Monitor available TestFlight beta slots with smart app lookups and silent batch checking.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  },
+  {
+    "title": "voice-wake-say",
+    "id": "voice-wake-say",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xadenryan/voice-wake-say/SKILL.md",
+    "description": "Speak responses aloud on macOS using the built-in `say`.",
+    "category": "apple-apps-and-services",
+    "description_zh": "使用內置的 say 在 macOS 上大聲說出答案。",
+    "original_description": "Speak responses aloud on macOS using the built-in `say`.",
+    "category_name": {
+      "en": "Apple Apps & Services",
+      "zh": "Apple 應用與服務"
+    }
+  }
+]

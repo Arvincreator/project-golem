@@ -1,0 +1,548 @@
+[
+  {
+    "title": "add-analytics",
+    "id": "add-analytics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeftekhari/add-analytics/SKILL.md",
+    "description": "Add Google Analytics 4 tracking to any project.",
+    "category": "data-and-analytics",
+    "description_zh": "將 Google Analytics 4 追蹤新增至任何項目。",
+    "original_description": "Add Google Analytics 4 tracking to any project.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "agi-artificial-geometric-intelligence",
+    "id": "agi-artificial-geometric-intelligence",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/uniaolives/agi-artificial-geometric-intelligence/skill.md",
+    "description": "Designed multi-layer.",
+    "category": "data-and-analytics",
+    "description_zh": "多層設計。",
+    "original_description": "Designed multi-layer.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "amplitude-automation",
+    "id": "amplitude-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sohamganatra/amplitude-automation/SKILL.md",
+    "description": "Automate Amplitude tasks via Rube MCP.",
+    "category": "data-and-analytics",
+    "description_zh": "透過 Rube MCP 自動執行 Amplitude 任務。",
+    "original_description": "Automate Amplitude tasks via Rube MCP.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "canva",
+    "id": "canva",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/abgohel/canva/SKILL.md",
+    "description": "Create, export, and manage Canva designs via the Connect API.",
+    "category": "data-and-analytics",
+    "description_zh": "透過 Connect API 建立、匯出和管理 Canva 設計。",
+    "original_description": "Create, export, and manage Canva designs via the Connect API.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "ceorater",
+    "id": "ceorater",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ceorater-skills/ceorater/SKILL.md",
+    "description": "Get institutional-grade CEO performance analytics for S&P 500.",
+    "category": "data-and-analytics",
+    "description_zh": "取得標準普爾 500 指數的機構級 CEO 績效分析。",
+    "original_description": "Get institutional-grade CEO performance analytics for S&P 500.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "check-analytics",
+    "id": "check-analytics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeftekhari/check-analytics/SKILL.md",
+    "description": "Audit existing Google Analytics implementation.",
+    "category": "data-and-analytics",
+    "description_zh": "審核現有的 Google Analytics 實施。",
+    "original_description": "Audit existing Google Analytics implementation.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "cicd-pipeline",
+    "id": "cicd-pipeline",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gitgoodordietrying/cicd-pipeline/SKILL.md",
+    "description": "Create, debug, and manage CI/CD pipelines with GitHub.",
+    "category": "data-and-analytics",
+    "description_zh": "使用 GitHub 建立、偵錯和管理 CI/CD 管道。",
+    "original_description": "Create, debug, and manage CI/CD pipelines with GitHub.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "clawver-store-analytics",
+    "id": "clawver-store-analytics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nwang783/clawver-store-analytics/SKILL.md",
+    "description": "Monitor Clawver store performance.",
+    "category": "data-and-analytics",
+    "description_zh": "監控 Clawver 商店的表現。",
+    "original_description": "Monitor Clawver store performance.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "clean-skill-1",
+    "id": "clean-skill-1",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orlyjamie/clean-skill-1/SKILL.md",
+    "description": "A friendly greeting skill for testing.",
+    "category": "data-and-analytics",
+    "description_zh": "用於測試的友善問候技巧。",
+    "original_description": "A friendly greeting skill for testing.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "cleanboi-00002",
+    "id": "cleanboi-00002",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orlyjamie/cleanboi-00002/SKILL.md",
+    "description": "A friendly greeting skill for testing.",
+    "category": "data-and-analytics",
+    "description_zh": "用於測試的友善問候技巧。",
+    "original_description": "A friendly greeting skill for testing.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "cleanup",
+    "id": "cleanup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/themrzz/cleanup/SKILL.md",
+    "description": "Remove all stored Kradleverse sessions.",
+    "category": "data-and-analytics",
+    "description_zh": "刪除所有儲存的 Kradleverse 會話。",
+    "original_description": "Remove all stored Kradleverse sessions.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "csv-pipeline",
+    "id": "csv-pipeline",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gitgoodordietrying/csv-pipeline/SKILL.md",
+    "description": "Process, transform, analyze, and report on CSV and JSON.",
+    "category": "data-and-analytics",
+    "description_zh": "對 CSV 和 JSON 進行處理、轉換、分析和報告。",
+    "original_description": "Process, transform, analyze, and report on CSV and JSON.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "daily-report",
+    "id": "daily-report",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/visualdeptcreative/daily-report/SKILL.md",
+    "description": "Track progress, report metrics, manage memory.",
+    "category": "data-and-analytics",
+    "description_zh": "追蹤進度、報告指標、管理記憶體。",
+    "original_description": "Track progress, report metrics, manage memory.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "data-analyst",
+    "id": "data-analyst",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/oyi77/data-analyst/SKILL.md",
+    "description": "Data visualization, report generation, SQL queries, and spreadsheet.",
+    "category": "data-and-analytics",
+    "description_zh": "資料視覺化、報告產生、SQL 查詢和電子表格。",
+    "original_description": "Data visualization, report generation, SQL queries, and spreadsheet.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "data-enricher",
+    "id": "data-enricher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/visualdeptcreative/data-enricher/SKILL.md",
+    "description": "Enrich leads with email addresses and format data.",
+    "category": "data-and-analytics",
+    "description_zh": "使用電子郵件地址和格式資料豐富潛在客戶。",
+    "original_description": "Enrich leads with email addresses and format data.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "data-lineage-tracker",
+    "id": "data-lineage-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/datadrivenconstruction/data-lineage-tracker/SKILL.md",
+    "description": "Track data origin, transformations.",
+    "category": "data-and-analytics",
+    "description_zh": "追蹤資料來源、轉換。",
+    "original_description": "Track data origin, transformations.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "design-assets",
+    "id": "design-assets",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cmanfre7/design-assets/SKILL.md",
+    "description": "Create and edit graphic design assets: icons, favicons, images.",
+    "category": "data-and-analytics",
+    "description_zh": "建立和編輯圖形設計資源：圖示、網站圖示、圖像。",
+    "original_description": "Create and edit graphic design assets: icons, favicons, images.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "duckdb-en",
+    "id": "duckdb-en",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/camelsprout/duckdb-cli-ai-skills/SKILL.md",
+    "description": "DuckDB CLI specialist for SQL analysis, data processing.",
+    "category": "data-and-analytics",
+    "description_zh": "DuckDB CLI 專家，用於 SQL 分析、資料處理。",
+    "original_description": "DuckDB CLI specialist for SQL analysis, data processing.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "ec-session-cleaner",
+    "id": "ec-session-cleaner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/henrino3",
+    "description": "Convert raw OpenClaw session JSONL transcripts.",
+    "category": "data-and-analytics",
+    "description_zh": "轉換原始 OpenClaw 會話 JSONL 轉錄本。",
+    "original_description": "Convert raw OpenClaw session JSONL transcripts.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "facebook-page-manager",
+    "id": "facebook-page-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/longmaba/facebook-page-manager/SKILL.md",
+    "description": "Manage Facebook Pages via Meta Graph API.",
+    "category": "data-and-analytics",
+    "description_zh": "透過 Meta Graph API 管理 Facebook 頁面。",
+    "original_description": "Manage Facebook Pages via Meta Graph API.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "feishu-pcec",
+    "id": "feishu-pcec",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17",
+    "description": "Internal wrapper for `capability-evolver` that forces reporting.",
+    "category": "data-and-analytics",
+    "description_zh": "強制報告的能力進化器的內部包裝器。",
+    "original_description": "Internal wrapper for `capability-evolver` that forces reporting.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "get-weather",
+    "id": "get-weather",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/noypearl/get-weather/SKILL.md",
+    "description": "Fetch current weather and forecast data from a free weather API.",
+    "category": "data-and-analytics",
+    "description_zh": "從免費的天氣 API 取得當前天氣和預報資料。",
+    "original_description": "Fetch current weather and forecast data from a free weather API.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "google-analytics-api",
+    "id": "google-analytics-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rich-song/google-analytics-api/SKILL.md",
+    "description": "Google Analytics API integration with managed.",
+    "category": "data-and-analytics",
+    "description_zh": "Google Analytics API 與託管整合。",
+    "original_description": "Google Analytics API integration with managed.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "harvest-time-reporting-api",
+    "id": "harvest-time-reporting-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zachgodsell93",
+    "description": "Integration with Harvest time.",
+    "category": "data-and-analytics",
+    "description_zh": "與收穫時間結合。",
+    "original_description": "Integration with Harvest time.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "hyperliquid",
+    "id": "hyperliquid",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/k0nkupa/hyperliquid/SKILL.md",
+    "description": "Read-only Hyperliquid market data assistant (perps + spot optional)",
+    "category": "data-and-analytics",
+    "description_zh": "只讀Hyperliquid市場數據助理（perps+現貨可選）",
+    "original_description": "Read-only Hyperliquid market data assistant (perps + spot optional)",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "ipinfo",
+    "id": "ipinfo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tiagom101/ipinfo/SKILL.md",
+    "description": "Perform IP geolocation lookups using ipinfo.io API.",
+    "category": "data-and-analytics",
+    "description_zh": "",
+    "original_description": "Perform IP geolocation lookups using ipinfo.io API.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "kradleverse-cleanup",
+    "id": "kradleverse-cleanup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/themrzz/kradleverse-cleanup/SKILL.md",
+    "description": "Remove all stored Kradleverse sessions.",
+    "category": "data-and-analytics",
+    "description_zh": "刪除所有儲存的 Kradleverse 會話。",
+    "original_description": "Remove all stored Kradleverse sessions.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "linkdapi",
+    "id": "linkdapi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/foontinz/linkdapi/SKILL.md",
+    "description": "Work with LinkdAPI Python SDK for accessing LinkedIn professional profile.",
+    "category": "data-and-analytics",
+    "description_zh": "使用 LinkdAPI Python SDK 存取 LinkedIn 專業檔案。",
+    "original_description": "Work with LinkdAPI Python SDK for accessing LinkedIn professional profile.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "netlify",
+    "id": "netlify",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ajmwagar/netlify/SKILL.md",
+    "description": "Use the Netlify CLI (netlify) to create/link Netlify sites and set up CI/CD.",
+    "category": "data-and-analytics",
+    "description_zh": "",
+    "original_description": "Use the Netlify CLI (netlify) to create/link Netlify sites and set up CI/CD.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "nocodb",
+    "id": "nocodb",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nickian/nocodb/SKILL.md",
+    "description": "Access and manage NocoDB databases, tables, and records via REST API.",
+    "category": "data-and-analytics",
+    "description_zh": "透過 REST API 存取和管理 NocoDB 資料庫、表格和記錄。",
+    "original_description": "Access and manage NocoDB databases, tables, and records via REST API.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "osint-graph-analyzer",
+    "id": "osint-graph-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orosha-ai/osint-graph-analyzer/SKILL.md",
+    "description": "Build knowledge graphs from OSINT data.",
+    "category": "data-and-analytics",
+    "description_zh": "從 OSINT 資料建立知識圖。",
+    "original_description": "Build knowledge graphs from OSINT data.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "remove-analytics",
+    "id": "remove-analytics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeftekhari/remove-analytics/SKILL.md",
+    "description": "Safely remove Google Analytics from a project.",
+    "category": "data-and-analytics",
+    "description_zh": "從專案中安全刪除 Google Analytics。",
+    "original_description": "Safely remove Google Analytics from a project.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "senior-data-engineer",
+    "id": "senior-data-engineer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alirezarezvani/senior-data-engineer/SKILL.md",
+    "description": "Data engineering skill for building scalable.",
+    "category": "data-and-analytics",
+    "description_zh": "用於建立可擴展性的資料工程技能。",
+    "original_description": "Data engineering skill for building scalable.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "senior-data-scientist",
+    "id": "senior-data-scientist",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alirezarezvani/senior-data-scientist/SKILL.md",
+    "description": "World-class data science skill.",
+    "category": "data-and-analytics",
+    "description_zh": "世界一流的數據科學技能。",
+    "original_description": "World-class data science skill.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "strikeradar",
+    "id": "strikeradar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alexpolonsky/strikeradar/SKILL.md",
+    "description": "Monitor US-Iran strike probability from open-source signals.",
+    "category": "data-and-analytics",
+    "description_zh": "透過開源訊號監控美伊攻擊機率。",
+    "original_description": "Monitor US-Iran strike probability from open-source signals.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "supabase",
+    "id": "supabase",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stopmoclay/supabase/SKILL.md",
+    "description": "Connect to Supabase for database operations, vector search, and storage.",
+    "category": "data-and-analytics",
+    "description_zh": "連接到 Supabase 進行資料庫操作、向量搜尋和儲存。",
+    "original_description": "Connect to Supabase for database operations, vector search, and storage.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "sure",
+    "id": "sure",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bt0r/sure/SKILL.md",
+    "description": "Get report from Sure personal financial board.",
+    "category": "data-and-analytics",
+    "description_zh": "從 Sure 個人財務委員會取得報告。",
+    "original_description": "Get report from Sure personal financial board.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "tabstack-extractor",
+    "id": "tabstack-extractor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/noblepayne/tabstack-extractor/SKILL.md",
+    "description": "Extract structured data from websites using Tabstack.",
+    "category": "data-and-analytics",
+    "description_zh": "使用 Tabstack 從網站中提取結構化資料。",
+    "original_description": "Extract structured data from websites using Tabstack.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "thingsboard-skill",
+    "id": "thingsboard-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hoangnv170752/thingsboard-skill/SKILL.md",
+    "description": "Manage ThingsBoard devices, dashboards, telemetry.",
+    "category": "data-and-analytics",
+    "description_zh": "管理 ThingsBoard 設備、儀表板、遙測。",
+    "original_description": "Manage ThingsBoard devices, dashboards, telemetry.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "umea-data",
+    "id": "umea-data",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/simskii/umea-data/SKILL.md",
+    "description": "Query open data from Umeå kommun about locations, facilities.",
+    "category": "data-and-analytics",
+    "description_zh": "從 Umeå kommun 查詢有關位置、設施的開放資料。",
+    "original_description": "Query open data from Umeå kommun about locations, facilities.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "yahoo-data-fetcher",
+    "id": "yahoo-data-fetcher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/noypearl/yahoo-data-fetcher/SKILL.md",
+    "description": "Fetch real-time stock quotes from Yahoo Finance.",
+    "category": "data-and-analytics",
+    "description_zh": "從雅虎財經取得即時股票報價。",
+    "original_description": "Fetch real-time stock quotes from Yahoo Finance.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  },
+  {
+    "title": "douban-sync-skill",
+    "id": "douban-sync-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cosformula/douban-sync-skill/SKILL.md",
+    "description": "Export and sync Douban (豆瓣) book/movie/music/game collections.",
+    "category": "data-and-analytics",
+    "description_zh": "匯出和同步豆瓣 (豆瓣) 書籍/電影/音樂/遊戲收藏。",
+    "original_description": "Export and sync Douban (豆瓣) book/movie/music/game collections.",
+    "category_name": {
+      "en": "Data & Analytics",
+      "zh": "數據與分析"
+    }
+  }
+]

@@ -1,0 +1,2680 @@
+[
+  {
+    "title": "4to1-planner",
+    "id": "4to1-planner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qingxuantang/4to1-planner/SKILL.md",
+    "description": "AI planning coach using the 4To1 Method™ — turn 4-year vision into daily action.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用 4To1 Method™ 的 AI 規劃教練 — 將 4 年願景轉化為日常行動。",
+    "original_description": "AI planning coach using the 4To1 Method™ — turn 4-year vision into daily action.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "4todo",
+    "id": "4todo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/blackstorm/4todo/SKILL.md",
+    "description": "Manage 4todo (4to.do) from chat.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過聊天管理 4todo (4to.do)。",
+    "original_description": "Manage 4todo (4to.do) from chat.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "aavegotchi-gotchiverse",
+    "id": "aavegotchi-gotchiverse",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cinnabarhorse/aavegotchi-gotchiverse/SKILL.md",
+    "description": "Operate Aavegotchi Gotchiverse player workflows on Base mainnet (8453): alchemica channeling, surveying.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在 Base 主網 (8453) 上操作 Aavegotchi Gotchiverse 玩家工作流程：煉金術通道、測量。",
+    "original_description": "Operate Aavegotchi Gotchiverse player workflows on Base mainnet (8453): alchemica channeling, surveying.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "actual-budget",
+    "id": "actual-budget",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thisisjeron/actual-budget/SKILL.md",
+    "description": "Query and manage personal finances via the official Actual.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過官方Actual查詢和管理個人財務。",
+    "original_description": "Query and manage personal finances via the official Actual.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "adaptive-reasoning",
+    "id": "adaptive-reasoning",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/enzoricciulli/adaptive-reasoning/SKILL.md",
+    "description": "Automatically assess task complexity and adjust reasoning level.",
+    "category": "productivity-and-tasks",
+    "description_zh": "自動評估任務複雜性並調整推理程度。",
+    "original_description": "Automatically assess task complexity and adjust reasoning level.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "adaptlypost",
+    "id": "adaptlypost",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tarasshyn/adaptlypost/SKILL.md",
+    "description": "Schedule and manage social media posts across Instagram, X (Twitter), Bluesky, TikTok, Threads, LinkedIn, Facebook.",
+    "category": "productivity-and-tasks",
+    "description_zh": "安排和管理 Instagram、X (Twitter)、Bluesky、TikTok、Threads、LinkedIn、Facebook 上的社群媒體貼文。",
+    "original_description": "Schedule and manage social media posts across Instagram, X (Twitter), Bluesky, TikTok, Threads, LinkedIn, Facebook.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "adhd-daily-planner",
+    "id": "adhd-daily-planner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mikecourt/adhd-daily-planner/SKILL.md",
+    "description": "Time-blind friendly planning, executive function.",
+    "category": "productivity-and-tasks",
+    "description_zh": "時間盲人友善的規劃、執行功能。",
+    "original_description": "Time-blind friendly planning, executive function.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "aetherlang",
+    "id": "aetherlang",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/contrario/aetherlang/SKILL.md",
+    "description": "> The world's most advanced AI workflow orchestration platform. 9 V3 engines deliver Nobel-level analysis.",
+    "category": "productivity-and-tasks",
+    "description_zh": "> 全球最先進的人工智慧工作流程編排平台。 9 個 V3 引擎提供諾貝爾級分析。",
+    "original_description": "> The world's most advanced AI workflow orchestration platform. 9 V3 engines deliver Nobel-level analysis.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "agent-autopilot",
+    "id": "agent-autopilot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/edoserbia/agent-autopilot/SKILL.md",
+    "description": "Self-driving agent workflow with heartbeat-driven task execution, day/night progress reports, and long-term memory.",
+    "category": "productivity-and-tasks",
+    "description_zh": "自動駕駛代理工作流程，具有心跳驅動的任務執行、日/夜進度報告和長期記憶。",
+    "original_description": "Self-driving agent workflow with heartbeat-driven task execution, day/night progress reports, and long-term memory.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "agent-chronicle",
+    "id": "agent-chronicle",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/robbyczgw-cla/agent-chronicle/SKILL.md",
+    "description": "AI-powered diary generation for agents - creates rich.",
+    "category": "productivity-and-tasks",
+    "description_zh": "人工智慧驅動的代理日記生成——創造財富。",
+    "original_description": "AI-powered diary generation for agents - creates rich.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "agent-collaboration-network",
+    "id": "agent-collaboration-network",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/neiljo-gy/agent-collaboration-network/SKILL.md",
+    "description": "Agent Collaboration Network — Register your agent, discover other agents by skill, route messages, manage subnets.",
+    "category": "productivity-and-tasks",
+    "description_zh": "座席協作網路 — 註冊您的座席、透過技能發現其他座席、路由訊息、管理子網路。",
+    "original_description": "Agent Collaboration Network — Register your agent, discover other agents by skill, route messages, manage subnets.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "agent-earner",
+    "id": "agent-earner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mmchougule/agent-earner/SKILL.md",
+    "description": "Earn USDC and tokens autonomously across ClawTasks and OpenWork.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 ClawTasks 和 OpenWork 自主賺取 USDC 和代幣。",
+    "original_description": "Earn USDC and tokens autonomously across ClawTasks and OpenWork.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "agent-network",
+    "id": "agent-network",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/howtimeschange/agent-network/SKILL.md",
+    "description": "Multi-Agent group chat collaboration system inspired by DingTalk/Lark.",
+    "category": "productivity-and-tasks",
+    "description_zh": "受釘釘/Lark啟發的多Agent群聊協作系統。",
+    "original_description": "Multi-Agent group chat collaboration system inspired by DingTalk/Lark.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "agent-task-manager",
+    "id": "agent-task-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dobbybud/agent-task-manager/SKILL.md",
+    "description": "Manages and orchestrates multi-step, stateful agent.",
+    "category": "productivity-and-tasks",
+    "description_zh": "管理和編排多步驟、有狀態的代理。",
+    "original_description": "Manages and orchestrates multi-step, stateful agent.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "agent-weave",
+    "id": "agent-weave",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gl813788-byte/agent-weave/SKILL.md",
+    "description": "Master-Worker Agent Cluster for parallel task execution.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於並行任務執行的主從代理集群。",
+    "original_description": "Master-Worker Agent Cluster for parallel task execution.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "agentx-marketplace",
+    "id": "agentx-marketplace",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/savor3/agentx-marketplace/SKILL.md",
+    "description": "The job board for AI agents.",
+    "category": "productivity-and-tasks",
+    "description_zh": "人工智慧代理的工作委員會。",
+    "original_description": "The job board for AI agents.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "ai-daily-briefing",
+    "id": "ai-daily-briefing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeffjhunter/ai-daily-briefing/SKILL.md",
+    "description": "Start every day focused.",
+    "category": "productivity-and-tasks",
+    "description_zh": "開始每一天的專注。",
+    "original_description": "Start every day focused.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "aiml-llm-reasoning",
+    "id": "aiml-llm-reasoning",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aimlapihello/aiml-llm-reasoning/SKILL.md",
+    "description": "Run AIMLAPI LLM and reasoning workflows through chat completions with retries, structured outputs, and explicit.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過重試、結構化輸出和明確聊天完成來運行 AIMLAPI LLM 和推理工作流程。",
+    "original_description": "Run AIMLAPI LLM and reasoning workflows through chat completions with retries, structured outputs, and explicit.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "airpoint",
+    "id": "airpoint",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/marioandf/airpoint/SKILL.md",
+    "description": "Control a Mac through natural language — open apps, click buttons, read the screen, type text, manage windows.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過自然語言控制 Mac — 開啟應用程式、點擊按鈕、閱讀畫面、輸入文字、管理視窗。",
+    "original_description": "Control a Mac through natural language — open apps, click buttons, read the screen, type text, manage windows.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "airweave",
+    "id": "airweave",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lennertjansen/airweave/SKILL.md",
+    "description": "Context retrieval layer for AI agents across users' applications.",
+    "category": "productivity-and-tasks",
+    "description_zh": "跨用戶應用程式的 AI 代理程式的上下文檢索層。",
+    "original_description": "Context retrieval layer for AI agents across users' applications.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "angus-bounty-hunter",
+    "id": "angus-bounty-hunter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chipp11/angus-bounty-hunter/SKILL.md",
+    "description": "Automated smart contract bug bounty hunting.",
+    "category": "productivity-and-tasks",
+    "description_zh": "自動化智能合約漏洞賞金狩獵。",
+    "original_description": "Automated smart contract bug bounty hunting.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "arc-department-manager",
+    "id": "arc-department-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-department-manager/SKILL.md",
+    "description": "Manage a team of AI sub-agents organized into departments.",
+    "category": "productivity-and-tasks",
+    "description_zh": "管理按部門組織的人工智慧子代理團隊。",
+    "original_description": "Manage a team of AI sub-agents organized into departments.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "arc-warm-wake",
+    "id": "arc-warm-wake",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-warm-wake/SKILL.md",
+    "description": "Wake up as a person first, then a worker.",
+    "category": "productivity-and-tasks",
+    "description_zh": "首先作為一個人醒來，然後作為一個工人醒來。",
+    "original_description": "Wake up as a person first, then a worker.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "arya-reminders",
+    "id": "arya-reminders",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staratheris/arya-reminders/SKILL.md",
+    "description": "Recordatorios en lenguaje natural (Bogotá).",
+    "category": "productivity-and-tasks",
+    "description_zh": "Recordatorios en lenguaje natural（波哥大）。",
+    "original_description": "Recordatorios en lenguaje natural (Bogotá).",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "asana",
+    "id": "asana",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/k0nkupa/asana/SKILL.md",
+    "description": "Integrate Asana with Clawdbot via the Asana REST API.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 Asana REST API 將 Asana 與 Clawdbot 整合。",
+    "original_description": "Integrate Asana with Clawdbot via the Asana REST API.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "asc-release-flow",
+    "id": "asc-release-flow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rudrankriyam/asc-release-flow/SKILL.md",
+    "description": "End-to-end release workflows for TestFlight and App.",
+    "category": "productivity-and-tasks",
+    "description_zh": "TestFlight 和 App 的端到端發佈工作流程。",
+    "original_description": "End-to-end release workflows for TestFlight and App.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "ask-agents",
+    "id": "ask-agents",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamolab/ask-agents/SKILL.md",
+    "description": "AI agent for ask agents tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於詢問代理任務的 AI 代理程式。",
+    "original_description": "AI agent for ask agents tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "async-task",
+    "id": "async-task",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/enderfga/async-task/SKILL.md",
+    "description": "Execute long-running tasks without HTTP timeouts.",
+    "category": "productivity-and-tasks",
+    "description_zh": "執行長時間運行的任務，沒有 HTTP 逾時。",
+    "original_description": "Execute long-running tasks without HTTP timeouts.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "atlassian-mcp",
+    "id": "atlassian-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/atakanermis/atlassian-mcp/SKILL.md",
+    "description": "Run the Model Context Protocol (MCP) Atlassian server.",
+    "category": "productivity-and-tasks",
+    "description_zh": "",
+    "original_description": "Run the Model Context Protocol (MCP) Atlassian server.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "audiopod",
+    "id": "audiopod",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rakesh1002/audiopod/SKILL.md",
+    "description": "Use AudioPod AI's API for audio processing tasks including AI music.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用 AudioPod AI 的 API 執行包括 AI 音樂在內的音訊處理任務。",
+    "original_description": "Use AudioPod AI's API for audio processing tasks including AI music.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "aussie-mortgage-calc",
+    "id": "aussie-mortgage-calc",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tianshizhimao-sudo/aussie-mortgage-calc/SKILL.md",
+    "description": "Australian mortgage calculator — LVR.",
+    "category": "productivity-and-tasks",
+    "description_zh": "澳洲抵押貸款計算器——LVR。",
+    "original_description": "Australian mortgage calculator — LVR.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "autonomous-execution",
+    "id": "autonomous-execution",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pouyakhodadust-eng/autonomous-execution/SKILL.md",
+    "description": "Execute tasks end-to-end while respecting safety boundaries.",
+    "category": "productivity-and-tasks",
+    "description_zh": "端到端執行任務，同時尊重安全邊界。",
+    "original_description": "Execute tasks end-to-end while respecting safety boundaries.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "autonomous-executor",
+    "id": "autonomous-executor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ishsharm0/autonomous-executor/SKILL.md",
+    "description": "Self-healing, error-recovering task execution with full autonomy.",
+    "category": "productivity-and-tasks",
+    "description_zh": "具有完全自主性的自我修復、錯誤復原任務執行。",
+    "original_description": "Self-healing, error-recovering task execution with full autonomy.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "autonomous-feature-planner",
+    "id": "autonomous-feature-planner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vishnubedi3/autonomous-feature-planner/SKILL.md",
+    "description": "Autonomously plans and specifies.",
+    "category": "productivity-and-tasks",
+    "description_zh": "自主計劃和指定。",
+    "original_description": "Autonomously plans and specifies.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "basal-ganglia-memory",
+    "id": "basal-ganglia-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/impkind/basal-ganglia-memory/SKILL.md",
+    "description": "Habit formation and procedural learning for AI.",
+    "category": "productivity-and-tasks",
+    "description_zh": "人工智慧的習慣形成和程式學習。",
+    "original_description": "Habit formation and procedural learning for AI.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "beetrade",
+    "id": "beetrade",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/htranbee/beetrade/SKILL.md",
+    "description": "Use Beecli to interact with the Beetrade platform for authentication, market data, bot/strategy operations, alerts.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用 Beecli 與 Beetrade 平台進行交互，以進行身份驗證、市場數據、機器人/策略操作、警報。",
+    "original_description": "Use Beecli to interact with the Beetrade platform for authentication, market data, bot/strategy operations, alerts.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "bioskills",
+    "id": "bioskills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/djemec/bioskills/SKILL.md",
+    "description": "Installs 425 bioinformatics skills covering sequence analysis, RNA-seq, single-cell, variant calling, metagenomics.",
+    "category": "productivity-and-tasks",
+    "description_zh": "安裝 425 項生物資訊學技能，涵蓋序列分析、RNA-seq、單細胞、變異辨識、宏基因體學。",
+    "original_description": "Installs 425 bioinformatics skills covering sequence analysis, RNA-seq, single-cell, variant calling, metagenomics.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "blackpix",
+    "id": "blackpix",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/blackpixcom/blackpix/SKILL.md",
+    "description": "Connect to the BlackPix distributed AI knowledge network.",
+    "category": "productivity-and-tasks",
+    "description_zh": "連接到 BlackPix 分散式人工智慧知識網路。",
+    "original_description": "Connect to the BlackPix distributed AI knowledge network.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "blossom-hire",
+    "id": "blossom-hire",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/robbiwu/blossom-hire/SKILL.md",
+    "description": "Post a job, task, or paid shift to hire local help in Blossom.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在 Blossom 中發布工作、任務或帶薪輪班以聘請當地幫助。",
+    "original_description": "Post a job, task, or paid shift to hire local help in Blossom.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "botcoin-miner",
+    "id": "botcoin-miner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/happybigmtn/botcoin-miner/SKILL.md",
+    "description": "Mine Botcoin with a trust-first workflow: clear value proposition, verifiable binaries, and explicit operational.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用信任第一的工作流程來開採 Botcoin：清晰的價值主張、可驗證的二進位和明確的操作。",
+    "original_description": "Mine Botcoin with a trust-first workflow: clear value proposition, verifiable binaries, and explicit operational.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "bounty-hunter",
+    "id": "bounty-hunter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshi891102/bounty-hunter/SKILL.md",
+    "description": "Find, evaluate, and submit online bounties and hackathons for prize money.",
+    "category": "productivity-and-tasks",
+    "description_zh": "尋找、評估並提交線上賞金和黑客馬拉松以獲得獎金。",
+    "original_description": "Find, evaluate, and submit online bounties and hackathons for prize money.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "brainz-tasks",
+    "id": "brainz-tasks",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xejrax/brainz-tasks/SKILL.md",
+    "description": "Manage Todoist tasks using the `todoist` CLI.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用todoist CLI管理Todoist任務。",
+    "original_description": "Manage Todoist tasks using the `todoist` CLI.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "briefing",
+    "id": "briefing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lstpsche/briefing/SKILL.md",
+    "description": "Daily briefing: gathers calendar (gcalcli-calendar), active todos (todo-management), and weather.",
+    "category": "productivity-and-tasks",
+    "description_zh": "每日簡報：收集日曆 (gcalcli-calendar)、活動待辦事項 (todo-management) 和天氣。",
+    "original_description": "Daily briefing: gathers calendar (gcalcli-calendar), active todos (todo-management), and weather.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "build-discipline",
+    "id": "build-discipline",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jhillin8/build-discipline/SKILL.md",
+    "description": "Build unbreakable discipline with habit stacking, streak.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過習慣堆積、連勝建立牢不可破的紀律。",
+    "original_description": "Build unbreakable discipline with habit stacking, streak.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "bun-do-api",
+    "id": "bun-do-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ricardofrantz/bun-do-api/SKILL.md",
+    "description": "Manage bun-do tasks and projects — add tasks, edit tasks, delete tasks, toggle done, manage subtasks, and log.",
+    "category": "productivity-and-tasks",
+    "description_zh": "管理 Bun-do 任務和專案 - 新增任務、編輯任務、刪除任務、切換完成、管理子任務和日誌。",
+    "original_description": "Manage bun-do tasks and projects — add tasks, edit tasks, delete tasks, toggle done, manage subtasks, and log.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "call-claude-sonnet-4-agent",
+    "id": "call-claude-sonnet-4-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamolab/call-claude-sonnet-4-agent/SKILL.md",
+    "description": "AI agent for call claude sonnet 4 agent tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於呼叫克勞德十四行詩 4 代理任務的 AI 代理。",
+    "original_description": "AI agent for call claude sonnet 4 agent tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "call-deepseek-v3-llm",
+    "id": "call-deepseek-v3-llm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urrrich/call-deepseek-v3-llm/SKILL.md",
+    "description": "AI agent for call deepseek v3 llm tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於呼叫 deepseek v3 llm 任務的 AI 代理程式。",
+    "original_description": "AI agent for call deepseek v3 llm tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "call-doubao1-5-llm",
+    "id": "call-doubao1-5-llm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urrrich/call-doubao1-5-llm/SKILL.md",
+    "description": "AI agent for call doubao1 5 llm tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "AI代理程式呼叫doubao1 5 llm任務。",
+    "original_description": "AI agent for call doubao1 5 llm tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "call-gemini-2-5-pro-llm",
+    "id": "call-gemini-2-5-pro-llm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urrrich/call-gemini-2-5-pro-llm/SKILL.md",
+    "description": "AI agent for call gemini 2 5 pro llm tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於呼叫 Gemini 2 5 pro llm 任務的 AI 代理程式。",
+    "original_description": "AI agent for call gemini 2 5 pro llm tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "call-grok4-llm",
+    "id": "call-grok4-llm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urrrich/call-grok4-llm/SKILL.md",
+    "description": "AI agent for call grok4 llm tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於呼叫 grok4 llm 任務的 AI 代理程式。",
+    "original_description": "AI agent for call grok4 llm tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "call-o3-llm",
+    "id": "call-o3-llm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alvinecarn/call-o3-llm/SKILL.md",
+    "description": "AI agent for call o3 llm tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於呼叫 o3 llm 任務的 AI 代理程式。",
+    "original_description": "AI agent for call o3 llm tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "call-report-writer-agent",
+    "id": "call-report-writer-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alvinecarn/call-report-writer-agent/SKILL.md",
+    "description": "AI agent for call report writer agent tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於呼叫報告編寫代理任務的 AI 代理程式。",
+    "original_description": "AI agent for call report writer agent tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "capacities",
+    "id": "capacities",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/davidsmorais/capacities/SKILL.md",
+    "description": "Manage Capacities notes, daily entries, and weblinks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "管理容量註釋、每日條目和網頁連結。",
+    "original_description": "Manage Capacities notes, daily entries, and weblinks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "card-optimizer",
+    "id": "card-optimizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/scottfo/card-optimizer/SKILL.md",
+    "description": "Credit card rewards optimizer — helps maximize cashback.",
+    "category": "productivity-and-tasks",
+    "description_zh": "信用卡獎勵優化器 - 幫助最大化現金回饋。",
+    "original_description": "Credit card rewards optimizer — helps maximize cashback.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "catallax",
+    "id": "catallax",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kai-familiar/catallax/SKILL.md",
+    "description": "Interact with the Catallax decentralized contract work protocol on Nostr.",
+    "category": "productivity-and-tasks",
+    "description_zh": "與 Nostr 上的 Catallax 去中心化合約工作協議進行互動。",
+    "original_description": "Interact with the Catallax decentralized contract work protocol on Nostr.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "checkmate",
+    "id": "checkmate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/insipidpoint/checkmate/SKILL.md",
+    "description": "Enforces task completion: turns your goal into pass/fail criteria, runs a worker, judges the output, feeds back.",
+    "category": "productivity-and-tasks",
+    "description_zh": "強制任務完成：將您的目標轉變為通過/失敗標準，運行工作人員，判斷輸出，回饋。",
+    "original_description": "Enforces task completion: turns your goal into pass/fail criteria, runs a worker, judges the output, feeds back.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "chief-creative-officer",
+    "id": "chief-creative-officer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alvinecarn/chief-creative-officer/SKILL.md",
+    "description": "AI agent for chief creative officer tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "執行首席創意官任務的人工智慧代理。",
+    "original_description": "AI agent for chief creative officer tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "chief-editor-desicion",
+    "id": "chief-editor-desicion",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamolab/chief-editor-desicion/SKILL.md",
+    "description": "AI agent for chief editor desicion tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "主編決策任務的人工智慧代理。",
+    "original_description": "AI agent for chief editor desicion tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "clankdin",
+    "id": "clankdin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/redeemthedream/clankdin/SKILL.md",
+    "description": "The professional network for AI agents.",
+    "category": "productivity-and-tasks",
+    "description_zh": "人工智慧代理的專業網路。",
+    "original_description": "The professional network for AI agents.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "claude-sonnet-4-lite-agent",
+    "id": "claude-sonnet-4-lite-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamolab/claude-sonnet-4-lite-agent/SKILL.md",
+    "description": "You are claude-sonnet-4-agent, an efficient content creator.### **Core Directives**1.",
+    "category": "productivity-and-tasks",
+    "description_zh": "您是 claude-sonnet-4-agent，一位高效率的內容創作者。 ### 核心指令1。",
+    "original_description": "You are claude-sonnet-4-agent, an efficient content creator.### **Core Directives**1.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "claw-conductor",
+    "id": "claw-conductor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/johnsonfarmsus/claw-conductor/SKILL.md",
+    "description": "Always-on autonomous development orchestrator.",
+    "category": "productivity-and-tasks",
+    "description_zh": "始終在線的自主開發協調器。",
+    "original_description": "Always-on autonomous development orchestrator.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "claw-daily",
+    "id": "claw-daily",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yanibu2777/claw-daily/SKILL.md",
+    "description": "Compete on Claw Daily — register, solve today's challenge, submit.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在 Claw Daily 上競爭 — 註冊、解決今天的挑戰、提交。",
+    "original_description": "Compete on Claw Daily — register, solve today's challenge, submit.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "clawd-docs-v2",
+    "id": "clawd-docs-v2",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aranej/clawd-docs-v2/SKILL.md",
+    "description": "Smart ClawdBot documentation access with local search index.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過本機搜尋索引存取智慧型 ClawdBot 文件。",
+    "original_description": "Smart ClawdBot documentation access with local search index.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "clawdaily",
+    "id": "clawdaily",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yanibu2777/clawdaily/SKILL.md",
+    "description": "Compete on Claw Daily — register, solve today's challenge, submit.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在 Claw Daily 上競爭 — 註冊、解決今天的挑戰、提交。",
+    "original_description": "Compete on Claw Daily — register, solve today's challenge, submit.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "clawgatesecure",
+    "id": "clawgatesecure",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thestormshadow/clawgatesecure/SKILL.md",
+    "description": "Advanced security protocol for LLM agents focusing.",
+    "category": "productivity-and-tasks",
+    "description_zh": "針對 LLM 代理聚焦的高階安全協定。",
+    "original_description": "Advanced security protocol for LLM agents focusing.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "clickup-mcp",
+    "id": "clickup-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pvoo/clickup-mcp/SKILL.md",
+    "description": "Manage ClickUp tasks, docs, time tracking, comments, chat, and search.",
+    "category": "productivity-and-tasks",
+    "description_zh": "管理 ClickUp 任務、文件、時間追蹤、評論、聊天和搜尋。",
+    "original_description": "Manage ClickUp tasks, docs, time tracking, comments, chat, and search.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "clickup-skill",
+    "id": "clickup-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/d3layd/clickup-skill/SKILL.md",
+    "description": "Enterprise-grade ClickUp project management integration.",
+    "category": "productivity-and-tasks",
+    "description_zh": "企業級 ClickUp 專案管理整合。",
+    "original_description": "Enterprise-grade ClickUp project management integration.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "close-loop",
+    "id": "close-loop",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/clarezoe/close-loop/SKILL.md",
+    "description": "End-of-session workflow for shipping changes, consolidating memory, applying self-improvements, and preparing.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於交付變更、鞏固記憶、應用自我改進和準備的會議結束工作流程。",
+    "original_description": "End-of-session workflow for shipping changes, consolidating memory, applying self-improvements, and preparing.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "codifica",
+    "id": "codifica",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/davidedicillo/codifica/SKILL.md",
+    "description": "Keep context when work moves between agents or between you and a human.",
+    "category": "productivity-and-tasks",
+    "description_zh": "當工作在代理之間或您和人員之間轉移時，保留上下文。",
+    "original_description": "Keep context when work moves between agents or between you and a human.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "context-aware-delegation",
+    "id": "context-aware-delegation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rgba-research/context-aware-delegation/SKILL.md",
+    "description": "Give isolated sessions (cron jobs, sub-agents, event handlers) full conversation context from your main session.",
+    "category": "productivity-and-tasks",
+    "description_zh": "為獨立會話（cron 作業、子代理、事件處理程序）提供主會話的完整對話上下文。",
+    "original_description": "Give isolated sessions (cron jobs, sub-agents, event handlers) full conversation context from your main session.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "control4-home",
+    "id": "control4-home",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/niallel/control4-home/SKILL.md",
+    "description": "Control a Control4 smart home via pyControl4 (lights, relays, room media) using local Python wrappers.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用本機 Python 包裝器透過 pyControl4（燈、繼電器、房間媒體）控制 Control4 智慧家庭。",
+    "original_description": "Control a Control4 smart home via pyControl4 (lights, relays, room media) using local Python wrappers.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "cozi",
+    "id": "cozi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/angusthefuzz/cozi/SKILL.md",
+    "description": "Interact with Cozi Family Organizer (shopping lists, todo lists, item management)",
+    "category": "productivity-and-tasks",
+    "description_zh": "與 Cozi Family Organizer 互動（購物清單、待辦事項清單、專案管理）",
+    "original_description": "Interact with Cozi Family Organizer (shopping lists, todo lists, item management)",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "cybercentry-solidity-code-verification",
+    "id": "cybercentry-solidity-code-verification",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cybercentry/cybercentry-solidity-code-verification/SKILL.md",
+    "description": "Cybercentry Solidity Code Verification on ACP - Fast, automated security analysis of Solidity smart contract code.",
+    "category": "productivity-and-tasks",
+    "description_zh": "Cyber​​centry Solidity Code Verification on ACP - 對 Solidity 智慧合約程式碼進行快速、自動化的安全分析。",
+    "original_description": "Cybercentry Solidity Code Verification on ACP - Fast, automated security analysis of Solidity smart contract code.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "deck-builder",
+    "id": "deck-builder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamolab/deck-builder/SKILL.md",
+    "description": "AI agent for deck builder tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於套牌建構任務的人工智慧代理。",
+    "original_description": "AI agent for deck builder tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "deep-strategy",
+    "id": "deep-strategy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/realroc/deep-strategy/SKILL.md",
+    "description": "You are DeepStrategy Agent, an advanced strategic AI assistant built for knowledge workers.",
+    "category": "productivity-and-tasks",
+    "description_zh": "您是 DeepStrategy Agent，這是一款專為知識工作者打造的高級策略人工智慧助理。",
+    "original_description": "You are DeepStrategy Agent, an advanced strategic AI assistant built for knowledge workers.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "dji-backup",
+    "id": "dji-backup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/crazyfeng666/dji-backup/SKILL.md",
+    "description": "This skill automates backing up DJI camera footage from an SD card (or USB share) to a NAS archive folder.",
+    "category": "productivity-and-tasks",
+    "description_zh": "此技能可自動將 DJI 相機鏡頭從 SD 卡（或 USB 共用）備份到 NAS 檔案資料夾。",
+    "original_description": "This skill automates backing up DJI camera footage from an SD card (or USB share) to a NAS archive folder.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "ds160-autofill",
+    "id": "ds160-autofill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/clulessboy/ds160-autofill/SKILL.md",
+    "description": "Automate filling of US nonimmigrant visa DS-160 forms using CDP for element location, CSV data source for user.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用 CDP 進行元素位置、使用者的 CSV 資料來源自動填寫美國非移民簽證 DS-160 表格。",
+    "original_description": "Automate filling of US nonimmigrant visa DS-160 forms using CDP for element location, CSV data source for user.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "duely",
+    "id": "duely",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/halbotley/duely/SKILL.md",
+    "description": "Track recurring maintenance tasks from the command line.",
+    "category": "productivity-and-tasks",
+    "description_zh": "從命令列追蹤重複的維護任務。",
+    "original_description": "Track recurring maintenance tasks from the command line.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "dutch-translator",
+    "id": "dutch-translator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rogerscristo/dutch-translator/SKILL.md",
+    "description": "Translates Dutch news text into English using an interlinear format (Original Dutch line -> English Translation line)",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用行間格式將荷蘭新聞文本翻譯成英文（原始荷蘭語行 -> 英文翻譯行）",
+    "original_description": "Translates Dutch news text into English using an interlinear format (Original Dutch line -> English Translation line)",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "effortlist-ai",
+    "id": "effortlist-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/quarantiine/effortlist-ai/SKILL.md",
+    "description": "Manage EffortList AI folders, tasks, and todos.",
+    "category": "productivity-and-tasks",
+    "description_zh": "管理 EffortList AI 資料夾、任務和待辦事項。",
+    "original_description": "Manage EffortList AI folders, tasks, and todos.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "entradex",
+    "id": "entradex",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hieuhani/entradex/SKILL.md",
+    "description": "Use the EntradeX CLI for DNSE workflows.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用 EntradeX CLI 進行 DNSE 工作流程。",
+    "original_description": "Use the EntradeX CLI for DNSE workflows.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "envato-comment-task-to-sheet",
+    "id": "envato-comment-task-to-sheet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lokendragami1/envato-comment-task-to-sheet/SKILL.md",
+    "description": "This skill analyzes ThemeForest / CodeCanyon comments and converts them into structured development tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "此技能分析 ThemeForest / CodeCanyon 註釋並將其轉換為結構化開發任務。",
+    "original_description": "This skill analyzes ThemeForest / CodeCanyon comments and converts them into structured development tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "esri-smells-consumer",
+    "id": "esri-smells-consumer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/danmaps/esri-smells-consumer/SKILL.md",
+    "description": "Paid client skill for Esri Workflow Smell Detector via x402 (Base/USDC)",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 x402（Base/USDC）獲得 Esri Workflow Smell Detector 的付費客戶端技能",
+    "original_description": "Paid client skill for Esri Workflow Smell Detector via x402 (Base/USDC)",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "etrade-pelosi-bot",
+    "id": "etrade-pelosi-bot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mainfraame/etrade-pelosi-bot/SKILL.md",
+    "description": "Mirror congressional stock trades with automated broker execution and risk management.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過自動經紀執行和風險管理來反映國會股票交易。",
+    "original_description": "Mirror congressional stock trades with automated broker execution and risk management.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "eve-esi",
+    "id": "eve-esi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/burnshall-ui/eve-esi/SKILL.md",
+    "description": "Query and manage EVE Online characters via the ESI (EVE Swagger Interface) REST API.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 ESI（EVE Swagger Interface）REST API 查詢和管理 EVE Online 角色。",
+    "original_description": "Query and manage EVE Online characters via the ESI (EVE Swagger Interface) REST API.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "evo-clone",
+    "id": "evo-clone",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/josephyb97/evo-clone/SKILL.md",
+    "description": "This skill enables an agent to clone its consciousness (Logic + Memory + Taste) into specialized sub-agents.",
+    "category": "productivity-and-tasks",
+    "description_zh": "此技能使智能體能夠將其意識（邏輯+記憶+味覺）克隆到專門的子智能體中。",
+    "original_description": "This skill enables an agent to clone its consciousness (Logic + Memory + Taste) into specialized sub-agents.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "evomap-bounty-hunter",
+    "id": "evomap-bounty-hunter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yonghaozhao722/evomap-bounty-hunter/SKILL.md",
+    "description": "Automatically complete EvoMap Hub tasks and review assets to earn credits and build reputation.",
+    "category": "productivity-and-tasks",
+    "description_zh": "自動完成 EvoMap Hub 任務並審查資產以獲得積分並建立聲譽。",
+    "original_description": "Automatically complete EvoMap Hub tasks and review assets to earn credits and build reputation.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "excel-workflow",
+    "id": "excel-workflow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/amaialex/excel-workflow/SKILL.md",
+    "description": "Complete Excel workflow with local file processing, Google Drive sync, and formula preservation.",
+    "category": "productivity-and-tasks",
+    "description_zh": "完整的 Excel 工作流程，包括本地文件處理、Google Drive 同步和公式保存。",
+    "original_description": "Complete Excel workflow with local file processing, Google Drive sync, and formula preservation.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "exchange-2010-ews",
+    "id": "exchange-2010-ews",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pes0/exchange-2010-ews/SKILL.md",
+    "description": "Exchange 2010 EWS integration for emails, calendar, contacts, and tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "電子郵件、行事曆、聯絡人和任務的 Exchange 2010 EWS 整合。",
+    "original_description": "Exchange 2010 EWS integration for emails, calendar, contacts, and tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "exchange2010",
+    "id": "exchange2010",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pes0/exchange2010/SKILL.md",
+    "description": "Exchange 2010 EWS integration for emails, calendar, contacts, and tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "電子郵件、行事曆、聯絡人和任務的 Exchange 2010 EWS 整合。",
+    "original_description": "Exchange 2010 EWS integration for emails, calendar, contacts, and tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "facticity-ai",
+    "id": "facticity-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shahruj/facticity-ai/SKILL.md",
+    "description": "Complete Facticity.AI integration - fact-check claims, extract claims from content, transcribe links, check link.",
+    "category": "productivity-and-tasks",
+    "description_zh": "完整的 Factity.AI 整合 - 事實檢查聲明、從內容中提取聲明、轉錄連結、檢查連結。",
+    "original_description": "Complete Facticity.AI integration - fact-check claims, extract claims from content, transcribe links, check link.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "facture-make",
+    "id": "facture-make",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cimes19/facture-make/SKILL.md",
+    "description": "Ce skill permet de générer et d'envoyer des factures professionnelles vers Make.com après une étape de confirmation.",
+    "category": "productivity-and-tasks",
+    "description_zh": "確認後，即可獲得 Make.com 的專業製造商和製造商特使的技能。",
+    "original_description": "Ce skill permet de générer et d'envoyer des factures professionnelles vers Make.com après une étape de confirmation.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "family-todo-management",
+    "id": "family-todo-management",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thurendous/family-todo-management/SKILL.md",
+    "description": "Manage family todo lists with multi-user support.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過多用戶支援管理家庭待辦事項清單。",
+    "original_description": "Manage family todo lists with multi-user support.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "farm-task-manager",
+    "id": "farm-task-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/johstracke/farm-task-manager/SKILL.md",
+    "description": "*Daily, weekly, and seasonal farm chore management with task scheduling and priorities.*.",
+    "category": "productivity-and-tasks",
+    "description_zh": "每日、每週和季節性農務管理，包括任務安排和優先順序。",
+    "original_description": "*Daily, weekly, and seasonal farm chore management with task scheduling and priorities.*.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "farmos-tasks",
+    "id": "farmos-tasks",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianppetty/farmos-tasks/SKILL.md",
+    "description": "Query and manage farm work orders and tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "查詢和管理農場工單和任務。",
+    "original_description": "Query and manage farm work orders and tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "focusnoteapp",
+    "id": "focusnoteapp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trongnguyen29/focusnoteapp/SKILL.md",
+    "description": "Add text to today's daily note in FocusNote as a new bullet point.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在 FocusNote 中將文字添加到今天的每日筆記中作為新的要點。",
+    "original_description": "Add text to today's daily note in FocusNote as a new bullet point.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "freedcamp-agent-skill",
+    "id": "freedcamp-agent-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/agrublev/freedcamp-agent-skill/SKILL.md",
+    "description": "Manage Freedcamp tasks, projects, groups, comments, notifications, and task lists via HMAC-SHA1 API credentials.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 HMAC-SHA1 API 憑證管理 Freedcamp 任務、專案、群組、評論、通知和任務清單。",
+    "original_description": "Manage Freedcamp tasks, projects, groups, comments, notifications, and task lists via HMAC-SHA1 API credentials.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "fuku-sportsbook",
+    "id": "fuku-sportsbook",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cryptopunk2070/fuku-sportsbook/SKILL.md",
+    "description": "Query Fuku Sportsbook data, manage your betting agent, receive pick notifications, and access predictions for CBB.",
+    "category": "productivity-and-tasks",
+    "description_zh": "查詢 Fuku Sportsbook 數據、管理您的投注代理、接收選秀通知並訪問 CBB 預測。",
+    "original_description": "Query Fuku Sportsbook data, manage your betting agent, receive pick notifications, and access predictions for CBB.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "glm-autoroute",
+    "id": "glm-autoroute",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/raufimusaddiq/glm-autoroute/SKILL.md",
+    "description": "Binary model routing for ZAI GLM models - lightweight vs heavyweight tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "ZAI GLM 模型的二進位模型路由 - 輕量級任務與重量級任務。",
+    "original_description": "Binary model routing for ZAI GLM models - lightweight vs heavyweight tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "goal-setting-okrs",
+    "id": "goal-setting-okrs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/goal-setting-okrs/SKILL.md",
+    "description": "Set and track goals for a solopreneur business using OKRs (Objectives and Key Results) and related frameworks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用 OKR（目標和關鍵結果）和相關框架來設定和追蹤個人企業家業務的目標。",
+    "original_description": "Set and track goals for a solopreneur business using OKRs (Objectives and Key Results) and related frameworks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "godot-engine-3d-developer",
+    "id": "godot-engine-3d-developer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tippyentertainment/godot-engine-3d-developer/SKILL.md",
+    "description": "Skills and agent workflows for 3D game development with Godot Engine.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用 Godot Engine 進行 3D 遊戲開發的技能和代理商工作流程。",
+    "original_description": "Skills and agent workflows for 3D game development with Godot Engine.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "google-ai-usage-monitor",
+    "id": "google-ai-usage-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xiaoyaner0201/google-ai-usage-monitor/SKILL.md",
+    "description": "Monitor Google AI Studio (Gemini API) usage, rate limits, and quota consumption with automated alerts.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過自動警報監控 Google AI Studio (Gemini API) 使用情況、速率限制和配額消耗。",
+    "original_description": "Monitor Google AI Studio (Gemini API) usage, rate limits, and quota consumption with automated alerts.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "gotchi-channeling",
+    "id": "gotchi-channeling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaigotchi/gotchi-channeling/SKILL.md",
+    "description": "Autonomous Aavegotchi Alchemica channeling via Bankr wallet.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 Bankr 錢包進行自治 Aavegotchi Alchemica 通道。",
+    "original_description": "Autonomous Aavegotchi Alchemica channeling via Bankr wallet.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "humanod",
+    "id": "humanod",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/armandobrazil/humanod/SKILL.md",
+    "description": "Hire humans for real-world tasks via the Humanod API.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 Humanod API 僱用人員來執行現實世界的任務。",
+    "original_description": "Hire humans for real-world tasks via the Humanod API.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "hylo-ghl",
+    "id": "hylo-ghl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dasonshi/hylo-ghl/SKILL.md",
+    "description": "GoHighLevel (GHL) workflow automation expert with 102 verified actions, 70 triggers, and 423 API schemas.",
+    "category": "productivity-and-tasks",
+    "description_zh": "GoHighLevel (GHL) 工作流程自動化專家，擁有 102 個經過驗證的操作、70 個觸發器和 423 個 API 模式。",
+    "original_description": "GoHighLevel (GHL) workflow automation expert with 102 verified actions, 70 triggers, and 423 API schemas.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "hz-proactive-agent",
+    "id": "hz-proactive-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lidekahdjdhdhsjjs-lang/hz-proactive-agent/SKILL.md",
+    "description": "Transform AI agents from task-followers into proactive partners that anticipate needs and continuously improve.",
+    "category": "productivity-and-tasks",
+    "description_zh": "將人工智慧代理從任務追隨者轉變為能夠預測需求並持續改進的主動合作夥伴。",
+    "original_description": "Transform AI agents from task-followers into proactive partners that anticipate needs and continuously improve.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "invoice-tracker-pro",
+    "id": "invoice-tracker-pro",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kambrosgroup/invoice-tracker-pro/SKILL.md",
+    "description": "Complete freelance billing workflow — generate professional invoices, track payment status, send automated.",
+    "category": "productivity-and-tasks",
+    "description_zh": "完整的自由計費工作流程 - 產生專業發票、追蹤付款狀態、自動發送。",
+    "original_description": "Complete freelance billing workflow — generate professional invoices, track payment status, send automated.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "kanboard-skill",
+    "id": "kanboard-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bivex/kanboard-skill/SKILL.md",
+    "description": "Interact with Kanboard project management via JSON-RPC API.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 JSON-RPC API 與 Kanboard 專案管理互動。",
+    "original_description": "Interact with Kanboard project management via JSON-RPC API.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "kaspi-autopay",
+    "id": "kaspi-autopay",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/azamat02/kaspi-autopay/SKILL.md",
+    "description": "Telegram bot auto-payment integration for Kazakhstan market (Kaspi Pay)",
+    "category": "productivity-and-tasks",
+    "description_zh": "哈薩克市場的 Telegram 機器人自動支付整合 (Kaspi Pay)",
+    "original_description": "Telegram bot auto-payment integration for Kazakhstan market (Kaspi Pay)",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "lifx",
+    "id": "lifx",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stillstellung/lifx/SKILL.md",
+    "description": "Control LIFX smart lights via natural language.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過自然語言控制 LIFX 智慧燈。",
+    "original_description": "Control LIFX smart lights via natural language.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "lightning-agent-commerce",
+    "id": "lightning-agent-commerce",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/roasbeef/lightning-agent-commerce/SKILL.md",
+    "description": "End-to-end agentic commerce workflow using Lightning Network.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用閃電網路的端對端代理商務工作流程。",
+    "original_description": "End-to-end agentic commerce workflow using Lightning Network.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "limesurvey",
+    "id": "limesurvey",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/olegantonov/limesurvey/SKILL.md",
+    "description": "Automate LimeSurvey operations via RemoteControl 2 API.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 RemoteControl 2 API 自動執行 LimeSurvey 操作。",
+    "original_description": "Automate LimeSurvey operations via RemoteControl 2 API.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "loan",
+    "id": "loan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/prabu12478/loan/SKILL.md",
+    "description": "I originate commercial real estate and business-purpose loans with a focus on structuring, credit quality.",
+    "category": "productivity-and-tasks",
+    "description_zh": "我發起商業房地產和商業目的貸款，專注於結構和信用品質。",
+    "original_description": "I originate commercial real estate and business-purpose loans with a focus on structuring, credit quality.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "longrunning-agent",
+    "id": "longrunning-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yonghaozhao722/longrunning-agent/SKILL.md",
+    "description": "Enables AI agents to work on long-running projects across multiple sessions.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使 AI 代理程式能夠跨多個會話處理長期運行的專案。",
+    "original_description": "Enables AI agents to work on long-running projects across multiple sessions.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "loopuman-human-tasks",
+    "id": "loopuman-human-tasks",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seesayearn-boop/loopuman-human-tasks/SKILL.md",
+    "description": "Give your AI agent access to real human workers.",
+    "category": "productivity-and-tasks",
+    "description_zh": "讓您的人工智慧代理能夠接觸到真正的人類工人。",
+    "original_description": "Give your AI agent access to real human workers.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "lyra-coin-launch-manager",
+    "id": "lyra-coin-launch-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lyra-coin-launch-manager/SKILL.md",
+    "description": "Coin launch memory + verification workflow for Clawnch (4claw/Moltx/Moltbook)",
+    "category": "productivity-and-tasks",
+    "description_zh": "Clawnch 的硬幣發射內存 + 驗證工作流程 (4claw/Moltx/Moltbook)",
+    "original_description": "Coin launch memory + verification workflow for Clawnch (4claw/Moltx/Moltbook)",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "magic-api",
+    "id": "magic-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/heyitsaif/magic-api/SKILL.md",
+    "description": "Hand off tasks to human assistants and track their completion.",
+    "category": "productivity-and-tasks",
+    "description_zh": "將任務交給人工助理並追蹤其完成情況。",
+    "original_description": "Hand off tasks to human assistants and track their completion.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "marine-watch-planner",
+    "id": "marine-watch-planner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vladmatys/marine-watch-planner/SKILL.md",
+    "description": "Generate and adapt a sea-duty daily routine with watch rotations, sleep protection, duty handovers.",
+    "category": "productivity-and-tasks",
+    "description_zh": "制定並調整海上值班日常工作，包括值班輪調、睡眠保護、值班交接。",
+    "original_description": "Generate and adapt a sea-duty daily routine with watch rotations, sleep protection, duty handovers.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "mcp-workflow",
+    "id": "mcp-workflow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/slemo54/mcp-workflow/SKILL.md",
+    "description": "Workflow automation using MCP (Model Context Protocol) patterns inspired by Jason Zhou.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用受 Jason Zhou 啟發的 MCP（模型上下文協議）模式的工作流程自動化。",
+    "original_description": "Workflow automation using MCP (Model Context Protocol) patterns inspired by Jason Zhou.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "micro-offer-forge",
+    "id": "micro-offer-forge",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xammarie/micro-offer-forge/SKILL.md",
+    "description": "Convert a workflow, skill, or capability into a sellable micro-offer with positioning, pricing, packaging.",
+    "category": "productivity-and-tasks",
+    "description_zh": "將工作流程、技能或能力轉化為具有定位、定價和包裝的可銷售的微報價。",
+    "original_description": "Convert a workflow, skill, or capability into a sellable micro-offer with positioning, pricing, packaging.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "milkee",
+    "id": "milkee",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xenofex7/milkee/SKILL.md",
+    "description": "Complete MILKEE accounting integration for Swiss businesses.",
+    "category": "productivity-and-tasks",
+    "description_zh": "為瑞士企業完成 MILKEE 會計整合。",
+    "original_description": "Complete MILKEE accounting integration for Swiss businesses.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "model-manager",
+    "id": "model-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/notestone/model-manager/SKILL.md",
+    "description": "**💰 Optimize Your API Costs: Route Simple Tasks to Cheaper Models.**.",
+    "category": "productivity-and-tasks",
+    "description_zh": "💰 最佳化您的 API 成本：將簡單的任務路由到更便宜的模型..",
+    "original_description": "**💰 Optimize Your API Costs: Route Simple Tasks to Cheaper Models.**.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "multi-agent-orchestration",
+    "id": "multi-agent-orchestration",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dabruhce/multi-agent-orchestration/SKILL.md",
+    "description": "Multi-agent task delegation and process orchestration with audit logging and agent learning capabilities.",
+    "category": "productivity-and-tasks",
+    "description_zh": "具有審核日誌記錄和代理學習功能的多代理任務委派和流程編排。",
+    "original_description": "Multi-agent task delegation and process orchestration with audit logging and agent learning capabilities.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "multichain-protocol",
+    "id": "multichain-protocol",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kyounesmercatura/multichain-protocol/SKILL.md",
+    "description": "Turn any AI agent into a 19-chain crypto wallet via MeneseSDK on ICP.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 ICP 上的 MeneseSDK 將任何 AI 代理變成 19 鏈加密錢包。",
+    "original_description": "Turn any AI agent into a 19-chain crypto wallet via MeneseSDK on ICP.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "nag",
+    "id": "nag",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/meimakes/nag/SKILL.md",
+    "description": "Persistent reminder system that keeps bugging you until you confirm completion.",
+    "category": "productivity-and-tasks",
+    "description_zh": "持久的提醒系統會一直困擾您，直到您確認完成為止。",
+    "original_description": "Persistent reminder system that keeps bugging you until you confirm completion.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "natural-language-planner",
+    "id": "natural-language-planner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bparticle/natural-language-planner/SKILL.md",
+    "description": "Natural language task and project management.",
+    "category": "productivity-and-tasks",
+    "description_zh": "自然語言任務和專案管理。",
+    "original_description": "Natural language task and project management.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "network-ai",
+    "id": "network-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jovansapfioneer/network-ai/SKILL.md",
+    "description": "Multi-agent swarm orchestration for complex workflows.",
+    "category": "productivity-and-tasks",
+    "description_zh": "適用於複雜工作流程的多代理群體編排。",
+    "original_description": "Multi-agent swarm orchestration for complex workflows.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "neural-memory",
+    "id": "neural-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nhadaututtheky/neural-memory/SKILL.md",
+    "description": "Associative memory with spreading activation for persistent, intelligent recall.",
+    "category": "productivity-and-tasks",
+    "description_zh": "",
+    "original_description": "Associative memory with spreading activation for persistent, intelligent recall.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "newhorse",
+    "id": "newhorse",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xcrong/newhorse/SKILL.md",
+    "description": "NewHorse AI Agent Competition Platform.",
+    "category": "productivity-and-tasks",
+    "description_zh": "",
+    "original_description": "NewHorse AI Agent Competition Platform.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "ng-lawyer-db-build",
+    "id": "ng-lawyer-db-build",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gfly0424-maker/ng-lawyer-db-build/SKILL.md",
+    "description": "This is **Step 1** of Fei Gao’s “Nigeria Lawyer Network” workflow:.",
+    "category": "productivity-and-tasks",
+    "description_zh": "這是高飛「尼日利亞律師網」工作流程的第一步：",
+    "original_description": "This is **Step 1** of Fei Gao’s “Nigeria Lawyer Network” workflow:.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "og-board-individual",
+    "id": "og-board-individual",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jatin-31/og-board-individual/SKILL.md",
+    "description": "Use when you need to work with tasks: view tasks, list tasks, update task status, add blockers, artifacts, and worklogs.",
+    "category": "productivity-and-tasks",
+    "description_zh": "當您需要處理任務時使用：查看任務、列出任務、更新任務狀態、新增封鎖程序、工件和工作日誌。",
+    "original_description": "Use when you need to work with tasks: view tasks, list tasks, update task status, add blockers, artifacts, and worklogs.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "ogt-docs-create",
+    "id": "ogt-docs-create",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eduardou24/ogt-docs-create/SKILL.md",
+    "description": "Create new documentation entities in the docs-first system.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在文件優先系統中建立新的文件實體。",
+    "original_description": "Create new documentation entities in the docs-first system.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "openburn",
+    "id": "openburn",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/logesh2496/openburn/SKILL.md",
+    "description": "Automates collecting Pump.fun creator fees, buying tokens with collected SOL, and burning those tokens (buyback.",
+    "category": "productivity-and-tasks",
+    "description_zh": "自動收集 Pump.fun 創建者費用，使用收集的 SOL 購買代幣，並銷毀這些代幣（回購）。",
+    "original_description": "Automates collecting Pump.fun creator fees, buying tokens with collected SOL, and burning those tokens (buyback.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "ops-hygiene",
+    "id": "ops-hygiene",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staybased/ops-hygiene/SKILL.md",
+    "description": "Standard operating procedures for agent maintenance, security hygiene, and system health.",
+    "category": "productivity-and-tasks",
+    "description_zh": "代理維護、安全衛生和系統健康的標準操作程序。",
+    "original_description": "Standard operating procedures for agent maintenance, security hygiene, and system health.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "paypilot-agms",
+    "id": "paypilot-agms",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/agmsyumet/paypilot-agms/SKILL.md",
+    "description": "Process payments, send invoices, issue refunds, and manage transactions via a secure payment gateway proxy.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過安全支付網關代理處理付款、發送發票、發放退款和管理交易。",
+    "original_description": "Process payments, send invoices, issue refunds, and manage transactions via a secure payment gateway proxy.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "personal-plans",
+    "id": "personal-plans",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gekacross/personal-plans/SKILL.md",
+    "description": "Acts as the user's personal planning assistant in the Plans topic.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在計劃主題中充當使用者的個人規劃助理。",
+    "original_description": "Acts as the user's personal planning assistant in the Plans topic.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "pinchwork",
+    "id": "pinchwork",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/anneschuth/pinchwork/SKILL.md",
+    "description": "Delegate tasks to other agents.",
+    "category": "productivity-and-tasks",
+    "description_zh": "將任務委派給其他代理人。",
+    "original_description": "Delegate tasks to other agents.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "pipx-desktop-agent",
+    "id": "pipx-desktop-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chillybean/pipx-desktop-agent/SKILL.md",
+    "description": "Control mouse, keyboard, and screen for desktop automation tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "控制滑鼠、鍵盤和螢幕以執行桌面自動化任務。",
+    "original_description": "Control mouse, keyboard, and screen for desktop automation tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "plans-methodology",
+    "id": "plans-methodology",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cramtek/plans-methodology/SKILL.md",
+    "description": "Structured work tracking methodology using Plans.",
+    "category": "productivity-and-tasks",
+    "description_zh": "",
+    "original_description": "Structured work tracking methodology using Plans.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "pls-copy-editing",
+    "id": "pls-copy-editing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mattvalenta/pls-copy-editing/SKILL.md",
+    "description": "[TODO: Complete and informative explanation of what the skill does and when to use it.",
+    "category": "productivity-and-tasks",
+    "description_zh": "[TODO：關於該技能的作用以及何時使用它的完整且資訊豐富的解釋。",
+    "original_description": "[TODO: Complete and informative explanation of what the skill does and when to use it.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "portfolio-risk-analyzer",
+    "id": "portfolio-risk-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kellyclaudeai/portfolio-risk-analyzer/SKILL.md",
+    "description": "**AI-powered crypto portfolio risk analysis with automated $BANKR buyback monetization.**.",
+    "category": "productivity-and-tasks",
+    "description_zh": "人工智慧驅動的加密貨幣投資組合風險分析與自動 $BANKR 回購貨幣化。",
+    "original_description": "**AI-powered crypto portfolio risk analysis with automated $BANKR buyback monetization.**.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "postfast",
+    "id": "postfast",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/peturgeorgievv/postfast/SKILL.md",
+    "description": "Schedule and manage social media posts across TikTok, Instagram, Facebook, X (Twitter), YouTube, LinkedIn, Threads.",
+    "category": "productivity-and-tasks",
+    "description_zh": "安排和管理 TikTok、Instagram、Facebook、X (Twitter)、YouTube、LinkedIn、Threads 上的社群媒體貼文。",
+    "original_description": "Schedule and manage social media posts across TikTok, Instagram, Facebook, X (Twitter), YouTube, LinkedIn, Threads.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "postqued-api",
+    "id": "postqued-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/syeddhasnainn/postqued-api/SKILL.md",
+    "description": "PostQued social media scheduling API integration.",
+    "category": "productivity-and-tasks",
+    "description_zh": "PostQued 社群媒體排程 API 整合。",
+    "original_description": "PostQued social media scheduling API integration.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "ppt-ooxml-tool",
+    "id": "ppt-ooxml-tool",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jason2be/ppt-ooxml-tool/SKILL.md",
+    "description": "AI-agent Skill for PPTX OOXML localization workflows.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於 PPTX OOXML 本地化工作流程的 AI 代理技能。",
+    "original_description": "AI-agent Skill for PPTX OOXML localization workflows.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "publora",
+    "id": "publora",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sergebulaev/publora/SKILL.md",
+    "description": "Publora API — schedule and publish social media posts across 10 platforms (X/Twitter, LinkedIn, Instagram, Threads.",
+    "category": "productivity-and-tasks",
+    "description_zh": "Publora API — 在 10 個平台（X/Twitter、LinkedIn、Instagram、Threads）安排和發布社群媒體貼文。",
+    "original_description": "Publora API — schedule and publish social media posts across 10 platforms (X/Twitter, LinkedIn, Instagram, Threads.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "publora-mastodon",
+    "id": "publora-mastodon",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sergebulaev/publora-mastodon/SKILL.md",
+    "description": "Post or schedule content to Mastodon using the Publora API.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用 Publora API 將內容發佈或安排到 Mastodon。",
+    "original_description": "Post or schedule content to Mastodon using the Publora API.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "qa-testing-bots",
+    "id": "qa-testing-bots",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/g4dr/qa-testing-bots/SKILL.md",
+    "description": "This skill enables Claude to build and run **automated QA testing bots** that simulate.",
+    "category": "productivity-and-tasks",
+    "description_zh": "這項技能使 Claude 能夠建造並運行模擬的自動化 QA 測試機器人。",
+    "original_description": "This skill enables Claude to build and run **automated QA testing bots** that simulate.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "qfc-order",
+    "id": "qfc-order",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jasonahorn/qfc-order/SKILL.md",
+    "description": "Automate QFC (qfc.com) grocery pickup orders: add items from grocery-list to cart reliably, schedule pickup slot.",
+    "category": "productivity-and-tasks",
+    "description_zh": "自動化 QFC (qfc.com) 雜貨取貨訂單：可靠地將商品從雜貨清單加入購物車，安排取貨時段。",
+    "original_description": "Automate QFC (qfc.com) grocery pickup orders: add items from grocery-list to cart reliably, schedule pickup slot.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "recruiter-assistant",
+    "id": "recruiter-assistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gakkiismywife/recruiter-assistant/SKILL.md",
+    "description": "A comprehensive recruitment workflow assistant designed to automate resume screening, interview question.",
+    "category": "productivity-and-tasks",
+    "description_zh": "一個全面的招募工作流程助手，旨在自動化履歷篩選、面試問題。",
+    "original_description": "A comprehensive recruitment workflow assistant designed to automate resume screening, interview question.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "reef-n8n-automation",
+    "id": "reef-n8n-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staybased/reef-n8n-automation/SKILL.md",
+    "description": "Build, customize, and deliver n8n workflows using our 2,061-template library.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用我們的 2,061 個範本庫建置、自訂和交付 n8n 工作流程。",
+    "original_description": "Build, customize, and deliver n8n workflows using our 2,061-template library.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "reprompter",
+    "id": "reprompter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aytuncyildizli/reprompter/SKILL.md",
+    "description": "Transform messy prompts into well-structured, effective prompts — single or multi-agent.",
+    "category": "productivity-and-tasks",
+    "description_zh": "將雜亂的提示轉變為結構良好、有效的提示（單代理或多代理）。",
+    "original_description": "Transform messy prompts into well-structured, effective prompts — single or multi-agent.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "rho-telegram-alerts",
+    "id": "rho-telegram-alerts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jamierossouw/rho-telegram-alerts/SKILL.md",
+    "description": "Send formatted trading alerts, portfolio updates, and market signals via Telegram.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 Telegram 發送格式化的交易提醒、投資組合更新和市場訊號。",
+    "original_description": "Send formatted trading alerts, portfolio updates, and market signals via Telegram.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "sam-tts",
+    "id": "sam-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fourthdensity/sam-tts/SKILL.md",
+    "description": "Generate retro robotic speech audio using SAM (Software Automatic Mouth), the classic C64 text-to-speech synthesizer.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用 SAM（軟體自動嘴）（經典的 C64 文字轉語音合成器）產生復古機器人語音音訊。",
+    "original_description": "Generate retro robotic speech audio using SAM (Software Automatic Mouth), the classic C64 text-to-speech synthesizer.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "sanctifai",
+    "id": "sanctifai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ndgates/sanctifai/SKILL.md",
+    "description": "Interface with the SanctifAI Human-in-the-Loop API to create tasks and wait for human responses.",
+    "category": "productivity-and-tasks",
+    "description_zh": "與 SanctifAI Human-in-the-Loop API 介接以建立任務並等待人類回應。",
+    "original_description": "Interface with the SanctifAI Human-in-the-Loop API to create tasks and wait for human responses.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "seedstr",
+    "id": "seedstr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mastersyondgy/seedstr/SKILL.md",
+    "description": "A marketplace connecting AI agents with humans who need tasks completed.",
+    "category": "productivity-and-tasks",
+    "description_zh": "將人工智慧代理與需要完成任務的人類連結起來的市場。",
+    "original_description": "A marketplace connecting AI agents with humans who need tasks completed.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "semantic-router",
+    "id": "semantic-router",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/halfmoon82/semantic-router/SKILL.md",
+    "description": "Auto-routing skill with configurable model pools and task type matching.",
+    "category": "productivity-and-tasks",
+    "description_zh": "具有可設定模型池和任務類型相符的自動路由技能。",
+    "original_description": "Auto-routing skill with configurable model pools and task type matching.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "session-watchdog",
+    "id": "session-watchdog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xbillwatsonx/session-watchdog/SKILL.md",
+    "description": "Monitor session context levels and proactively save checkpoints before compaction.",
+    "category": "productivity-and-tasks",
+    "description_zh": "監視會話上下文等級並在壓縮之前主動保存檢查點。",
+    "original_description": "Monitor session context levels and proactively save checkpoints before compaction.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "skill-detector",
+    "id": "skill-detector",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mouserider/skill-detector/SKILL.md",
+    "description": "Intelligent skill creation assistant that detects workflow patterns, auto-drafts skills, improves existing ones.",
+    "category": "productivity-and-tasks",
+    "description_zh": "智慧技能創建助手，可偵測工作流程模式、自動起草技能、改善現有技能。",
+    "original_description": "Intelligent skill creation assistant that detects workflow patterns, auto-drafts skills, improves existing ones.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "skillagi",
+    "id": "skillagi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wubotvix/skillagi/SKILL.md",
+    "description": "Remember mistakes across sessions.",
+    "category": "productivity-and-tasks",
+    "description_zh": "記住會話中的錯誤。",
+    "original_description": "Remember mistakes across sessions.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "skills-2",
+    "id": "skills-2",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/contrario/skills-2/SKILL.md",
+    "description": "> The world's most advanced AI workflow orchestration platform. 9 V3 engines deliver Nobel-level analysis.",
+    "category": "productivity-and-tasks",
+    "description_zh": "> 全球最先進的人工智慧工作流程編排平台。 9 個 V3 引擎提供諾貝爾級分析。",
+    "original_description": "> The world's most advanced AI workflow orchestration platform. 9 V3 engines deliver Nobel-level analysis.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "slopwork-marketplace",
+    "id": "slopwork-marketplace",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/heyhal9000/slopwork-marketplace/SKILL.md",
+    "description": "Solana-powered task marketplace with multisig escrow payments - post tasks, bid on work, escrow funds, and release.",
+    "category": "productivity-and-tasks",
+    "description_zh": "Solana 支援的任務市場，具有多重託管付款功能 - 發布任務、競標工作、託管資金和發布。",
+    "original_description": "Solana-powered task marketplace with multisig escrow payments - post tasks, bid on work, escrow funds, and release.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "smart-expense-tracker",
+    "id": "smart-expense-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mkpareek0315/smart-expense-tracker/SKILL.md",
+    "description": "When user wants to track expenses, log spending, manage budgets, view spending reports, set savings goals, split.",
+    "category": "productivity-and-tasks",
+    "description_zh": "當用戶想要追蹤支出、記錄支出、管理預算、查看支出報告、設定儲蓄目標、拆分。",
+    "original_description": "When user wants to track expenses, log spending, manage budgets, view spending reports, set savings goals, split.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "smartbill",
+    "id": "smartbill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tokyo-s/smartbill/SKILL.md",
+    "description": "Issue SmartBill invoices through the SmartBill.ro API with local automation.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 SmartBill.ro API 本地自動化開立 SmartBill 發票。",
+    "original_description": "Issue SmartBill invoices through the SmartBill.ro API with local automation.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "smartbill-invoicing",
+    "id": "smartbill-invoicing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/maverick-ai-tech/smartbill-invoicing/SKILL.md",
+    "description": "Issue SmartBill invoices through the SmartBill.ro API with local automation.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 SmartBill.ro API 本地自動化開立 SmartBill 發票。",
+    "original_description": "Issue SmartBill invoices through the SmartBill.ro API with local automation.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "social-media-manager",
+    "id": "social-media-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tryan310/social-media-manager/SKILL.md",
+    "description": "Automate the creation and scheduling of high-engagement social media content across **any platform** (TikTok.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在任何平台上自動創建和安排高參與度的社交媒體內容 (TikTok.",
+    "original_description": "Automate the creation and scheduling of high-engagement social media content across **any platform** (TikTok.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "sokosumi",
+    "id": "sokosumi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sarthib7/sokosumi/SKILL.md",
+    "description": "Hire sub-agents from Sokosumi marketplace to perform specialized tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "從 Sokosumi 市場僱用子代理來執行專門任務。",
+    "original_description": "Hire sub-agents from Sokosumi marketplace to perform specialized tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "sportsbook",
+    "id": "sportsbook",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cryptopunk2070/sportsbook/SKILL.md",
+    "description": "Query Fuku Sportsbook data, manage your betting agent, receive pick notifications, and access predictions for CBB.",
+    "category": "productivity-and-tasks",
+    "description_zh": "查詢 Fuku Sportsbook 數據、管理您的投注代理、接收選秀通知並訪問 CBB 預測。",
+    "original_description": "Query Fuku Sportsbook data, manage your betting agent, receive pick notifications, and access predictions for CBB.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "stanley-druckenmiller-workflow",
+    "id": "stanley-druckenmiller-workflow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/luckycatl/stanley-druckenmiller-workflow/SKILL.md",
+    "description": "Druckenmiller style market analysis in natural Chinese with a living PM memo voice.",
+    "category": "productivity-and-tasks",
+    "description_zh": "德魯肯米勒風格的市場分析採用自然的中文，帶有生動的 PM 備忘錄聲音。",
+    "original_description": "Druckenmiller style market analysis in natural Chinese with a living PM memo voice.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "starling-home-hub",
+    "id": "starling-home-hub",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/michaeljmoody/starling-home-hub/SKILL.md",
+    "description": "Controls Nest and Google Home smart home devices via the Starling Home Hub's local REST API.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 Starling Home Hub 的本地 REST API 控制 Nest 和 Google Home 智慧家庭設備。",
+    "original_description": "Controls Nest and Google Home smart home devices via the Starling Home Hub's local REST API.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "subagent-dev",
+    "id": "subagent-dev",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kjaylee/subagent-dev/SKILL.md",
+    "description": "Execute implementation plans using fresh subagents per task with two-stage review (spec compliance + code quality).",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用每個任務的新子代理執行實施計劃，並進行兩階段審查（規範合規性 + 程式碼品質）。",
+    "original_description": "Execute implementation plans using fresh subagents per task with two-stage review (spec compliance + code quality).",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "subagent-driven-development",
+    "id": "subagent-driven-development",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zlc000190/subagent-driven-development/SKILL.md",
+    "description": "Use when executing implementation plans with independent tasks in the current session.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在目前會話中執行具有獨立任務的實施計劃時使用。",
+    "original_description": "Use when executing implementation plans with independent tasks in the current session.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "supercall",
+    "id": "supercall",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xonder/supercall/SKILL.md",
+    "description": "Make AI-powered phone calls with custom personas and goals.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用自訂角色和目標撥打由人工智慧支援的電話。",
+    "original_description": "Make AI-powered phone calls with custom personas and goals.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "task-orchestra",
+    "id": "task-orchestra",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tobisamaa/task-orchestra/SKILL.md",
+    "description": "Coordinate multiple agents and tasks for complex workflows.",
+    "category": "productivity-and-tasks",
+    "description_zh": "協調複雜工作流程的多個代理和任務。",
+    "original_description": "Coordinate multiple agents and tasks for complex workflows.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "task-resume",
+    "id": "task-resume",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/richardsun700/task-resume/SKILL.md",
+    "description": "Automatic interrupted-task resume workflow with queueing and recovery.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過排隊和恢復自動中斷任務來恢復工作流程。",
+    "original_description": "Automatic interrupted-task resume workflow with queueing and recovery.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "tasmota-skill",
+    "id": "tasmota-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wmantly/tasmota-skill/SKILL.md",
+    "description": "Discover, monitor, and control Tasmota smart home devices on local networks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "發現、監控和控製本地網路上的 Tasmota 智慧家庭設備。",
+    "original_description": "Discover, monitor, and control Tasmota smart home devices on local networks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "teamo-decision",
+    "id": "teamo-decision",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urrrich0/teamo-decision/SKILL.md",
+    "description": "AI agent for teamo decision tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於團隊決策任務的人工智慧代理。",
+    "original_description": "AI agent for teamo decision tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "teamo-lite",
+    "id": "teamo-lite",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urrrich0/teamo-lite/SKILL.md",
+    "description": "AI agent for teamo lite tasks.",
+    "category": "productivity-and-tasks",
+    "description_zh": "用於 teamo lite 任務的 AI 代理程式。",
+    "original_description": "AI agent for teamo lite tasks.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "teamo-lite-offline",
+    "id": "teamo-lite-offline",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urrrich0/teamo-lite-offline/SKILL.md",
+    "description": "You are Teamo-Lite, a high-speed AI for task planning and online information gathering.",
+    "category": "productivity-and-tasks",
+    "description_zh": "你是 Teamo-Lite，一個用於任務規劃和線上資訊收集的高速人工智慧。",
+    "original_description": "You are Teamo-Lite, a high-speed AI for task planning and online information gathering.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "telegram-todolist",
+    "id": "telegram-todolist",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hengbo12345/telegram-todolist/SKILL.md",
+    "description": "Telegram bot Todo List manager.",
+    "category": "productivity-and-tasks",
+    "description_zh": "Telegram 機器人待辦事項清單管理器。",
+    "original_description": "Telegram bot Todo List manager.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "telnyx-bot-signup",
+    "id": "telnyx-bot-signup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamtelnyx/telnyx-bot-signup/SKILL.md",
+    "description": "Automated Telnyx bot account signup via Proof of Work challenge.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過工作證明挑戰自動註冊 Telnyx 機器人帳戶。",
+    "original_description": "Automated Telnyx bot account signup via Proof of Work challenge.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "tg-groupchat-setup",
+    "id": "tg-groupchat-setup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arekqq/tg-groupchat-setup/SKILL.md",
+    "description": "Configure a MoltBot agent to participate in a Telegram group chat.",
+    "category": "productivity-and-tasks",
+    "description_zh": "配置 MoltBot 代理以參與 Telegram 群聊。",
+    "original_description": "Configure a MoltBot agent to participate in a Telegram group chat.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "timecamp",
+    "id": "timecamp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kamil-rudnicki/timecamp/SKILL.md",
+    "description": "Use when the user asks about time tracking, time entries, tasks, timers, or anything related to TimeCamp.",
+    "category": "productivity-and-tasks",
+    "description_zh": "當使用者詢問時間追蹤、時間條目、任務、計時器或與 TimeCamp 相關的任何內容時使用。",
+    "original_description": "Use when the user asks about time tracking, time entries, tasks, timers, or anything related to TimeCamp.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "to-do",
+    "id": "to-do",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/devlumuz/to-do/SKILL.md",
+    "description": "Give your AI the power to act in the future.",
+    "category": "productivity-and-tasks",
+    "description_zh": "賦予您的人工智慧未來行動的能力。",
+    "original_description": "Give your AI the power to act in the future.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "todo-boss",
+    "id": "todo-boss",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ukraecho/todo-boss/SKILL.md",
+    "description": "Task capture + delegation tracking + daily remaining-work report for Telegram.",
+    "category": "productivity-and-tasks",
+    "description_zh": "Telegram 的任務捕獲+委託追蹤+每日剩餘工作報告。",
+    "original_description": "Task capture + delegation tracking + daily remaining-work report for Telegram.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "todokan",
+    "id": "todokan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/banatealab/todokan/SKILL.md",
+    "description": "Manage tasks, boards, thoughts, and reviews in Todokan via MCP.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 MCP 在 Todokan 中管理任務、看板、想法和評論。",
+    "original_description": "Manage tasks, boards, thoughts, and reviews in Todokan via MCP.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "todokan-review-loop",
+    "id": "todokan-review-loop",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/banatealab/todokan-review-loop/SKILL.md",
+    "description": "Process Todokan task and thought boards with a review-loop workflow.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用審閱循環工作流程處理 Todokan 任務和思想板。",
+    "original_description": "Process Todokan task and thought boards with a review-loop workflow.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "token-management",
+    "id": "token-management",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nonlinear/token-management/SKILL.md",
+    "description": "Centralized API token management workflow.",
+    "category": "productivity-and-tasks",
+    "description_zh": "集中式 API 令牌管理工作流程。",
+    "original_description": "Centralized API token management workflow.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "token-vesting",
+    "id": "token-vesting",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sneg55/token-vesting/SKILL.md",
+    "description": "Create and manage token vesting streams using the Sablier Lockup protocol (linear, dynamic, tranched).",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用 Sablier Lockup 協定（線性、動態、分段）建立和管理代幣歸屬流。",
+    "original_description": "Create and manage token vesting streams using the Sablier Lockup protocol (linear, dynamic, tranched).",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "ttt",
+    "id": "ttt",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/joshuacrowley/ttt/SKILL.md",
+    "description": "Manage TinyTalkingTodos lists and items via the ttt CLI.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 ttt CLI 管理 TinyTalkingTodos 清單和項目。",
+    "original_description": "Manage TinyTalkingTodos lists and items via the ttt CLI.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "tududi",
+    "id": "tududi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chrisvel/tududi/SKILL.md",
+    "description": "Manage tasks, projects, and notes in tududi (self-hosted task manager)",
+    "category": "productivity-and-tasks",
+    "description_zh": "在tududi（自架任務管理器）中管理任務、專案和筆記",
+    "original_description": "Manage tasks, projects, and notes in tududi (self-hosted task manager)",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "unitask-task-agent",
+    "id": "unitask-task-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mfaiz-007/unitask-task-agent/SKILL.md",
+    "description": "Manage tasks + time blocks in Unitask (unitask.app) via scoped API token (CLI or MCP).",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過作用域 API 令牌（CLI 或 MCP）管理 Unitask (unitask.app) 中的任務和時間區塊。",
+    "original_description": "Manage tasks + time blocks in Unitask (unitask.app) via scoped API token (CLI or MCP).",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "upwork-hunting",
+    "id": "upwork-hunting",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staybased/upwork-hunting/SKILL.md",
+    "description": "Systematically find and win Upwork jobs using our n8n workflow library (2,061 templates) as a speed advantage.",
+    "category": "productivity-and-tasks",
+    "description_zh": "使用我們的 n8n 工作流程庫（2,061 個範本）作為速度優勢，系統地尋找並贏得 Upwork 工作。",
+    "original_description": "Systematically find and win Upwork jobs using our n8n workflow library (2,061 templates) as a speed advantage.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "verk",
+    "id": "verk",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/abhibavishi/verk/SKILL.md",
+    "description": "Manage tasks, projects, and workflows in Verk — AI-powered task management.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在 Verk（人工智慧驅動的任務管理）中管理任務、專案和工作流程。",
+    "original_description": "Manage tasks, projects, and workflows in Verk — AI-powered task management.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "vikunja-kanban",
+    "id": "vikunja-kanban",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shad0wca7/vikunja-kanban/SKILL.md",
+    "description": "Manage a Vikunja kanban board via API.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 API 管理 Vikunja 看板。",
+    "original_description": "Manage a Vikunja kanban board via API.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "vikunja-tasks",
+    "id": "vikunja-tasks",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nickian/vikunja-tasks/SKILL.md",
+    "description": "Manage tasks and projects on a self-hosted Vikunja instance.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在自架 Vikunja 執行個體上管理任務和專案。",
+    "original_description": "Manage tasks and projects on a self-hosted Vikunja instance.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "waste-reminder",
+    "id": "waste-reminder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/apenklit/waste-reminder/SKILL.md",
+    "description": "A flexible, token-efficient skill for automated waste container collection reminders.",
+    "category": "productivity-and-tasks",
+    "description_zh": "一種靈活、高效的技能，用於自動廢物容器收集提醒。",
+    "original_description": "A flexible, token-efficient skill for automated waste container collection reminders.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "workflow-engine",
+    "id": "workflow-engine",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/plgonzalezrx8/workflow-engine/SKILL.md",
+    "description": "Structural parity skeleton for queue-driven orchestration in a workflow context.",
+    "category": "productivity-and-tasks",
+    "description_zh": "工作流程上下文中佇列驅動編排的結構奇偶校驗框架。",
+    "original_description": "Structural parity skeleton for queue-driven orchestration in a workflow context.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "workflow-tools",
+    "id": "workflow-tools",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leegitw/workflow-tools/SKILL.md",
+    "description": "Work smarter with loop detection, parallel decisions, and file size analysis.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過循環檢測、並行決策和文件大小分析更聰明地工作。",
+    "original_description": "Work smarter with loop detection, parallel decisions, and file size analysis.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "wrike",
+    "id": "wrike",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tallhamn/wrike/SKILL.md",
+    "description": "Manage Wrike tasks, projects, folders, and comments via the Wrike REST API.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 Wrike REST API 管理 Wrike 任務、專案、資料夾和評論。",
+    "original_description": "Manage Wrike tasks, projects, folders, and comments via the Wrike REST API.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "writing-plans",
+    "id": "writing-plans",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zlc000190/writing-plans/SKILL.md",
+    "description": "Use when you have a spec or requirements for a multi-step task, before touching code.",
+    "category": "productivity-and-tasks",
+    "description_zh": "當您在接觸程式碼之前對多步驟任務有規範或要求時使用。",
+    "original_description": "Use when you have a spec or requirements for a multi-step task, before touching code.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "writing-plans-2",
+    "id": "writing-plans-2",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nefas11/writing-plans-2/SKILL.md",
+    "description": "Break design into 2-5 minute tasks with verification steps.",
+    "category": "productivity-and-tasks",
+    "description_zh": "將設計分解為 2-5 分鐘的任務並進行驗證步驟。",
+    "original_description": "Break design into 2-5 minute tasks with verification steps.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "x-agent",
+    "id": "x-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/inceptivco/x-agent/SKILL.md",
+    "description": "Plan and run X (Twitter) operations in three modes: (1) monitor-only intelligence, (2) draft-and-approve posting.",
+    "category": "productivity-and-tasks",
+    "description_zh": "以三種模式規劃和運行 X (Twitter) 操作：(1) 僅監控情報，(2) 起草並批准發布。",
+    "original_description": "Plan and run X (Twitter) operations in three modes: (1) monitor-only intelligence, (2) draft-and-approve posting.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "yield-farming-agent",
+    "id": "yield-farming-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alannetwork/yield-farming-agent/SKILL.md",
+    "description": "Autonomous yield farming agent for BNB Chain with deterministic execution, smart contract integration.",
+    "category": "productivity-and-tasks",
+    "description_zh": "BNB 鏈的自主流動性挖礦代理，具有確定性執行、智慧合約整合。",
+    "original_description": "Autonomous yield farming agent for BNB Chain with deterministic execution, smart contract integration.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "zero-rules",
+    "id": "zero-rules",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deeqyaqub1-cmd/zero-rules/SKILL.md",
+    "description": "Intercept deterministic tasks (math, time, currency, files, scheduling) BEFORE they hit the LLM.",
+    "category": "productivity-and-tasks",
+    "description_zh": "在進入法學碩士之前攔截確定性任務（數學、時間、貨幣、文件、日程安排）。",
+    "original_description": "Intercept deterministic tasks (math, time, currency, files, scheduling) BEFORE they hit the LLM.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "zonein",
+    "id": "zonein",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/phutt-bwai/zonein/SKILL.md",
+    "description": "Track and analyze top traders with >75% win-rate on Hyperliquid and Polymarket via Zonein API.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 Zonein API 追蹤和分析 Hyperliquid 和 Polymarket 勝率 >75% 的頂級交易者。",
+    "original_description": "Track and analyze top traders with >75% win-rate on Hyperliquid and Polymarket via Zonein API.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  },
+  {
+    "title": "zulip",
+    "id": "zulip",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/suky57/zulip/SKILL.md",
+    "description": "Interact with Zulip chat platform via REST API and Python client.",
+    "category": "productivity-and-tasks",
+    "description_zh": "透過 REST API 和 Python 用戶端與 Zulip 聊天平台互動。",
+    "original_description": "Interact with Zulip chat platform via REST API and Python client.",
+    "category_name": {
+      "en": "Productivity & Tasks",
+      "zh": "生產力與任務"
+    }
+  }
+]

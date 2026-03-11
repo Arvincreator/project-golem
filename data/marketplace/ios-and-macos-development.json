@@ -1,0 +1,379 @@
+[
+  {
+    "title": "agent-defibrillator",
+    "id": "agent-defibrillator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hazy2go/agent-defibrillator/SKILL.md",
+    "description": "Watchdog that monitors your AI agent gateway and restarts it when it crashes.",
+    "category": "ios-and-macos-development",
+    "description_zh": "看門狗監視您的 AI 代理網關並在崩潰時重新啟動它。",
+    "original_description": "Watchdog that monitors your AI agent gateway and restarts it when it crashes.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "android-transfer-skill",
+    "id": "android-transfer-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aadipapp/android-transfer-skill/SKILL.md",
+    "description": "Securely transfers files from macOS to Android with checksum verification and path validation.",
+    "category": "ios-and-macos-development",
+    "description_zh": "透過校驗和驗證和路徑驗證，安全地將檔案從 macOS 傳輸到 Android。",
+    "original_description": "Securely transfers files from macOS to Android with checksum verification and path validation.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "app-store-optimization",
+    "id": "app-store-optimization",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alirezarezvani/app-store-optimization/SKILL.md",
+    "description": "App Store Optimization toolkit.",
+    "category": "ios-and-macos-development",
+    "description_zh": "應用程式商店優化工具包。",
+    "original_description": "App Store Optimization toolkit.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "apple-docs",
+    "id": "apple-docs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thesethrose/apple-docs/SKILL.md",
+    "description": "Query Apple Developer Documentation, APIs, and WWDC videos.",
+    "category": "ios-and-macos-development",
+    "description_zh": "查詢 Apple 開發者文件、API 和 WWDC 影片。",
+    "original_description": "Query Apple Developer Documentation, APIs, and WWDC videos.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "brew-audit",
+    "id": "brew-audit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rogue-agent1/brew-audit/SKILL.md",
+    "description": "Audit Homebrew installation — outdated packages, cleanup opportunities, and health checks.",
+    "category": "ios-and-macos-development",
+    "description_zh": "審核 Homebrew 安裝 — 過時的軟體包、清理機會和運作狀況檢查。",
+    "original_description": "Audit Homebrew installation — outdated packages, cleanup opportunities, and health checks.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "carrier-relationship-management",
+    "id": "carrier-relationship-management",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nocodemf/carrier-relationship-management/SKILL.md",
+    "description": "Codified expertise for managing carrier portfolios, negotiating freight rates, tracking carrier performance.",
+    "category": "ios-and-macos-development",
+    "description_zh": "用於管理承運商組合、談判運費、追蹤承運商績效的專業知識。",
+    "original_description": "Codified expertise for managing carrier portfolios, negotiating freight rates, tracking carrier performance.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "envios",
+    "id": "envios",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jalfargentina/envios/SKILL.md",
+    "description": "Usar cuando el usuario pregunte sobre envíos, cómo enviar un pedido, tiempos de entrega, zonas de cobertura.",
+    "category": "ios-and-macos-development",
+    "description_zh": "經常使用前環境，例如環境，兒童，時間，區域。",
+    "original_description": "Usar cuando el usuario pregunte sobre envíos, cómo enviar un pedido, tiempos de entrega, zonas de cobertura.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "instruments-profiling",
+    "id": "instruments-profiling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/instruments-profiling/SKILL.md",
+    "description": "Use when profiling native macOS or iOS apps.",
+    "category": "ios-and-macos-development",
+    "description_zh": "在分析本機 macOS 或 iOS 應用程式時使用。",
+    "original_description": "Use when profiling native macOS or iOS apps.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "ios-simulator",
+    "id": "ios-simulator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tristanmanchester/ios-simulator/SKILL.md",
+    "description": "Automate iOS Simulator workflows (simctl + idb)",
+    "category": "ios-and-macos-development",
+    "description_zh": "自動化 iOS 模擬器工作流程 (simctl + idb)",
+    "original_description": "Automate iOS Simulator workflows (simctl + idb)",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "lulu-monitor",
+    "id": "lulu-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/easonc13/lulu-monitor/SKILL.md",
+    "description": "AI-powered LuLu Firewall companion for macOS.",
+    "category": "ios-and-macos-development",
+    "description_zh": "適用於 macOS 的 AI 支援的 LuLu 防火牆伴侶。",
+    "original_description": "AI-powered LuLu Firewall companion for macOS.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "mac-clean-skill",
+    "id": "mac-clean-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aadipapp/mac-clean-skill/SKILL.md",
+    "description": "Cleans up system caches, trash, and old downloads on macOS.",
+    "category": "ios-and-macos-development",
+    "description_zh": "清理 macOS 上的系統快取、垃圾和舊下載。",
+    "original_description": "Cleans up system caches, trash, and old downloads on macOS.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "mac-power-tools",
+    "id": "mac-power-tools",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aadipapp/mac-power-tools/SKILL.md",
+    "description": "A unified suite of power user tools for macOS, combining system cleanup and secure Android file transfer.",
+    "category": "ios-and-macos-development",
+    "description_zh": "適用於 macOS 的統一高級使用者工具套件，結合了系統清理和安全的 Android 檔案傳輸。",
+    "original_description": "A unified suite of power user tools for macOS, combining system cleanup and secure Android file transfer.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "macos-spm-app-packaging",
+    "id": "macos-spm-app-packaging",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dimillian/macos-spm-app-packaging/SKILL.md",
+    "description": "Scaffold, build, and package SwiftPM-based.",
+    "category": "ios-and-macos-development",
+    "description_zh": "基於 SwiftPM 的腳手架、建置和打包。",
+    "original_description": "Scaffold, build, and package SwiftPM-based.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "opsecmd",
+    "id": "opsecmd",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wulf715/opsecmd/SKILL.md",
+    "description": "A swift reminder of both human and agent duties regarding operational security.",
+    "category": "ios-and-macos-development",
+    "description_zh": "快速提醒有關操作安全的人員和代理職責。",
+    "original_description": "A swift reminder of both human and agent duties regarding operational security.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "PagerKit",
+    "id": "pagerkit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/szpakkamil/pagerkit/SKILL.md",
+    "description": "Expert guidance on PagerKit, a SwiftUI library for advanced.",
+    "category": "ios-and-macos-development",
+    "description_zh": "PagerKit 的專家指導，這是一個高級 SwiftUI 庫。",
+    "original_description": "Expert guidance on PagerKit, a SwiftUI library for advanced.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "riskofficer",
+    "id": "riskofficer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mib424242/riskofficer/SKILL.md",
+    "description": "Manage investment portfolios, calculate risk metrics.",
+    "category": "ios-and-macos-development",
+    "description_zh": "管理投資組合，計算風險指標。",
+    "original_description": "Manage investment portfolios, calculate risk metrics.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "sfsymbol-generator",
+    "id": "sfsymbol-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/svkozak/sfsymbol-generator/SKILL.md",
+    "description": "Generate an Xcode SF Symbol asset catalog .symbolset.",
+    "category": "ios-and-macos-development",
+    "description_zh": "產生 Xcode SF Symbol 資源目錄 .symbolset。",
+    "original_description": "Generate an Xcode SF Symbol asset catalog .symbolset.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "sourdough-starter-manager",
+    "id": "sourdough-starter-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/akhmittra/sourdough-starter-manager/SKILL.md",
+    "description": "Manage sourdough starters with feeding schedules, hydration calculations, health tracking, and baking preparation.",
+    "category": "ios-and-macos-development",
+    "description_zh": "透過飼餵計劃、水合計算、健康追蹤和烘焙準備來管理酵母發酵劑。",
+    "original_description": "Manage sourdough starters with feeding schedules, hydration calculations, health tracking, and baking preparation.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "swift-concurrency-expert",
+    "id": "swift-concurrency-expert",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/swift-concurrency-expert/SKILL.md",
+    "description": "Swift Concurrency review and remediation.",
+    "category": "ios-and-macos-development",
+    "description_zh": "Swift 並發審查和修復。",
+    "original_description": "Swift Concurrency review and remediation.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "swiftfindrefs",
+    "id": "swiftfindrefs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/michaelversus/swiftfindrefs/SKILL.md",
+    "description": "Use swiftfindrefs (IndexStoreDB) to list every Swift source.",
+    "category": "ios-and-macos-development",
+    "description_zh": "使用 swiftfindrefs (IndexStoreDB) 列出每個 Swift 來源。",
+    "original_description": "Use swiftfindrefs (IndexStoreDB) to list every Swift source.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "swiftui-empty-app-init",
+    "id": "swiftui-empty-app-init",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ignaciocervino/swiftui-empty-app-init/SKILL.md",
+    "description": "Initialize a minimal SwiftUI iOS app.",
+    "category": "ios-and-macos-development",
+    "description_zh": "初始化一個最小的 SwiftUI iOS 應用程式。",
+    "original_description": "Initialize a minimal SwiftUI iOS app.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "swiftui-liquid-glass",
+    "id": "swiftui-liquid-glass",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/swiftui-liquid-glass/SKILL.md",
+    "description": "Implement, review, or improve SwiftUI features.",
+    "category": "ios-and-macos-development",
+    "description_zh": "實施、審查或改進 SwiftUI 功能。",
+    "original_description": "Implement, review, or improve SwiftUI features.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "swiftui-performance-audit",
+    "id": "swiftui-performance-audit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/swiftui-performance-audit/SKILL.md",
+    "description": "Audit and improve SwiftUI runtime.",
+    "category": "ios-and-macos-development",
+    "description_zh": "審核並改進 SwiftUI 運行時。",
+    "original_description": "Audit and improve SwiftUI runtime.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "swiftui-ui-patterns",
+    "id": "swiftui-ui-patterns",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dimillian/swiftui-ui-patterns/SKILL.md",
+    "description": "Best practices and example-driven guidance.",
+    "category": "ios-and-macos-development",
+    "description_zh": "最佳實踐和範例驅動的指導。",
+    "original_description": "Best practices and example-driven guidance.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "swiftui-view-refactor",
+    "id": "swiftui-view-refactor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/swiftui-view-refactor/SKILL.md",
+    "description": "Refactor and review SwiftUI view files.",
+    "category": "ios-and-macos-development",
+    "description_zh": "重構並審查 SwiftUI 視圖檔。",
+    "original_description": "Refactor and review SwiftUI view files.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "symbolpicker",
+    "id": "symbolpicker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/szpakkamil/symbolpicker/SKILL.md",
+    "description": "Expert guidance on SymbolPicker, a native SwiftUI SF Symbol.",
+    "category": "ios-and-macos-development",
+    "description_zh": "關於 SymbolPicker（原生 SwiftUI SF Symbol）的專家指導。",
+    "original_description": "Expert guidance on SymbolPicker, a native SwiftUI SF Symbol.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "toolguard-daemon-control",
+    "id": "toolguard-daemon-control",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/johnnylambada/toolguard-daemon-control/SKILL.md",
+    "description": "Manage long-running processes as macOS launchd services.",
+    "category": "ios-and-macos-development",
+    "description_zh": "將長時間運行的進程作為 macOS 啟動的服務進行管理。",
+    "original_description": "Manage long-running processes as macOS launchd services.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "v2rayn",
+    "id": "v2rayn",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qiangwang375-wq/v2rayn/SKILL.md",
+    "description": "Manage V2RayN proxy client on macOS with auto-failover.",
+    "category": "ios-and-macos-development",
+    "description_zh": "",
+    "original_description": "Manage V2RayN proxy client on macOS with auto-failover.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  },
+  {
+    "title": "wopr-clock",
+    "id": "wopr-clock",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanweiyi/wopr-clock/SKILL.md",
+    "description": "A retro W.O.P.R. style countdown clock (WarGames inspired) for tracking the TACO event.",
+    "category": "ios-and-macos-development",
+    "description_zh": "復古 W.O.P.R.風格倒數時鐘（受 WarGames 啟發）用於追蹤 TACO 事件。",
+    "original_description": "A retro W.O.P.R. style countdown clock (WarGames inspired) for tracking the TACO event.",
+    "category_name": {
+      "en": "iOS & macOS Development",
+      "zh": "iOS 與 macOS 開發"
+    }
+  }
+]

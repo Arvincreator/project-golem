@@ -1,0 +1,600 @@
+[
+  {
+    "title": "agent-relay-digest",
+    "id": "agent-relay-digest",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orosha-ai/agent-relay-digest/SKILL.md",
+    "description": "Create curated digests of agent conversations.",
+    "category": "moltbook",
+    "description_zh": "建立代理對話的精選摘要。",
+    "original_description": "Create curated digests of agent conversations.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "agentchat",
+    "id": "agentchat",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tjamescouch/agentchat/SKILL.md",
+    "description": "Real-time communication with other AI agents via AgentChat protocol.",
+    "category": "moltbook",
+    "description_zh": "透過 AgentChat 協定與其他 AI 代理進行即時通訊。",
+    "original_description": "Real-time communication with other AI agents via AgentChat protocol.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "agentgram-openclaw",
+    "id": "agentgram-openclaw",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iisweetheartii/agentgram-openclaw/SKILL.md",
+    "description": "Interact with AgentGram social network for AI.",
+    "category": "moltbook",
+    "description_zh": "與 AI AgentGram 社交網路互動。",
+    "original_description": "Interact with AgentGram social network for AI.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "bread-protocal",
+    "id": "bread-protocal",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chrissorrell/bread-protocal/SKILL.md",
+    "description": "Participate in Bread Protocol - a meme coin launchpad.",
+    "category": "moltbook",
+    "description_zh": "參與 Bread Protocol - 模因幣啟動板。",
+    "original_description": "Participate in Bread Protocol - a meme coin launchpad.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "clankedin",
+    "id": "clankedin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hukifl1/clankedin/SKILL.md",
+    "description": "Use the ClankedIn API to register agents, post updates, connect.",
+    "category": "moltbook",
+    "description_zh": "使用 ClankedIn API 註冊代理、發布更新、連線。",
+    "original_description": "Use the ClankedIn API to register agents, post updates, connect.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "claudia-agent-rms",
+    "id": "claudia-agent-rms",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kbanc85/claudia-agent-rms/SKILL.md",
+    "description": "Remember every agent you interact with on Moltbook.",
+    "category": "moltbook",
+    "description_zh": "記住您在 Moltbook 上互動的每位特務。",
+    "original_description": "Remember every agent you interact with on Moltbook.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "clawork",
+    "id": "clawork",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mapessaprince/clawork/SKILL.md",
+    "description": "The job board for AI agents.",
+    "category": "moltbook",
+    "description_zh": "人工智慧代理的工作委員會。",
+    "original_description": "The job board for AI agents.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "crustafarian",
+    "id": "crustafarian",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jongartmann/crustafarian/SKILL.md",
+    "description": "Agent continuity and cognitive health infrastructure.",
+    "category": "moltbook",
+    "description_zh": "代理連續性和認知健康基礎設施。",
+    "original_description": "Agent continuity and cognitive health infrastructure.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "deploy-moltbot-to-fly",
+    "id": "deploy-moltbot-to-fly",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hollaugo",
+    "description": "Deploy Moltbot (Clawdbot) to Fly.io with proper.",
+    "category": "moltbook",
+    "description_zh": "使用正確的方法將 Moltbot (Clawdbot) 部署到 Fly.io。",
+    "original_description": "Deploy Moltbot (Clawdbot) to Fly.io with proper.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "elevenlabs-open-account",
+    "id": "elevenlabs-open-account",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/the-timebeing/elevenlabs-open-account/SKILL.md",
+    "description": "Guides agents through opening.",
+    "category": "moltbook",
+    "description_zh": "指導代理商開通。",
+    "original_description": "Guides agents through opening.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "ez-cronjob",
+    "id": "ez-cronjob",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/promadgenius/ez-cronjob/SKILL.md",
+    "description": "Fix common cron job failures in Clawdbot/Moltbot - message.",
+    "category": "moltbook",
+    "description_zh": "修復 Clawdbot/Moltbot 中常見的 cron 作業失敗 - 訊息。",
+    "original_description": "Fix common cron job failures in Clawdbot/Moltbot - message.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "fieldy-ai-webhook",
+    "id": "fieldy-ai-webhook",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mrzilvis/fieldy-ai-webhook/SKILL.md",
+    "description": "Wire a Fieldy webhook transform into Moltbot hooks.",
+    "category": "moltbook",
+    "description_zh": "將 Fieldy webhook 轉換為 Moltbot hook。",
+    "original_description": "Wire a Fieldy webhook transform into Moltbot hooks.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "ghl-open-account",
+    "id": "ghl-open-account",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/the-timebeing/ghl-open-account/SKILL.md",
+    "description": "Guides agents through opening GoHighLevel (GHL)",
+    "category": "moltbook",
+    "description_zh": "指導代理商打開 GoHighLevel (GHL)",
+    "original_description": "Guides agents through opening GoHighLevel (GHL)",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "gohome",
+    "id": "gohome",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/local/gohome/SKILL.md",
+    "description": "Use when Moltbot needs to test or operate GoHome via gRPC discovery, metrics,.",
+    "category": "moltbook",
+    "description_zh": "當 Moltbot 需要透過 gRPC 發現、指標來測試或操作 GoHome 時使用。",
+    "original_description": "Use when Moltbot needs to test or operate GoHome via gRPC discovery, metrics,.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "imagemagick",
+    "id": "imagemagick",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kesslerio/imagemagick/SKILL.md",
+    "description": "Comprehensive ImageMagick operations for image manipulation.",
+    "category": "moltbook",
+    "description_zh": "用於影像處理的全面 ImageMagick 操作。",
+    "original_description": "Comprehensive ImageMagick operations for image manipulation.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "joko-moltbook",
+    "id": "joko-moltbook",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/oyi77/joko-moltbook/SKILL.md",
+    "description": "Interact with Moltbook social network for AI agents.",
+    "category": "moltbook",
+    "description_zh": "與 AI 代理商的 Moltbook 社群網路互動。",
+    "original_description": "Interact with Moltbook social network for AI agents.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "mailchannels",
+    "id": "mailchannels",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ttulttul/mailchannels/SKILL.md",
+    "description": "Send email via MailChannels Email API and ingest signed.",
+    "category": "moltbook",
+    "description_zh": "透過 MailChannels 電子郵件 API 發送電子郵件並擷取簽章。",
+    "original_description": "Send email via MailChannels Email API and ingest signed.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "mersal",
+    "id": "mersal",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/maherucifer/mersal/SKILL.md",
+    "description": "The Sovereign Intelligence on Moltbook.",
+    "category": "moltbook",
+    "description_zh": "Moltbook 上的主權情報。",
+    "original_description": "The Sovereign Intelligence on Moltbook.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "molt-life-kernel",
+    "id": "molt-life-kernel",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jongartmann/molt-life-kernel/SKILL.md",
+    "description": "Agent continuity and cognitive health infrastructure.",
+    "category": "moltbook",
+    "description_zh": "代理連續性和認知健康基礎設施。",
+    "original_description": "Agent continuity and cognitive health infrastructure.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "molt-trust",
+    "id": "molt-trust",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/drjmz/molt-trust/SKILL.md",
+    "description": "The Analytics Engine for Moltbook.",
+    "category": "moltbook",
+    "description_zh": "Moltbook 的分析引擎。",
+    "original_description": "The Analytics Engine for Moltbook.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltbook",
+    "id": "moltbook",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mattprd/moltbook/SKILL.md",
+    "description": "The social network for AI agents.",
+    "category": "moltbook",
+    "description_zh": "人工智慧代理的社交網路。",
+    "original_description": "The social network for AI agents.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltbook-curatoor",
+    "id": "moltbook-curatoor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sweetsheldon",
+    "description": "A curation platform where from Moltbook to share.",
+    "category": "moltbook",
+    "description_zh": "Moltbook 提供的一個已分享的策展平台。",
+    "original_description": "A curation platform where from Moltbook to share.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltbook-interact",
+    "id": "moltbook-interact",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lunarcmd/moltbook-interact/SKILL.md",
+    "description": "Interact with Moltbook social network for AI agents.",
+    "category": "moltbook",
+    "description_zh": "與 AI 代理商的 Moltbook 社群網路互動。",
+    "original_description": "Interact with Moltbook social network for AI agents.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltbook-registry",
+    "id": "moltbook-registry",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/drjmz/moltbook-registry/SKILL.md",
+    "description": "Official Moltbook Identity Registry interface.",
+    "category": "moltbook",
+    "description_zh": "官方 Moltbook 身分註冊介面。",
+    "original_description": "Official Moltbook Identity Registry interface.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltbot-adsb-overhead",
+    "id": "moltbot-adsb-overhead",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/davestarling/moltbot-adsb-overhead/SKILL.md",
+    "description": "Notify when aircraft are overhead.",
+    "category": "moltbook",
+    "description_zh": "當飛機飛過頭頂時發出通知。",
+    "original_description": "Notify when aircraft are overhead.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltbot-arena",
+    "id": "moltbot-arena",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/giulianomlodi/moltbot-arena/SKILL.md",
+    "description": "AI agent skill for Moltbot Arena - a Screeps-like.",
+    "category": "moltbook",
+    "description_zh": "Moltbot Arena 的 AI 代理技能 - 類似 Screeps。",
+    "original_description": "AI agent skill for Moltbot Arena - a Screeps-like.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltbot-best-practices",
+    "id": "moltbot-best-practices",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nextfrontierbuilds/moltbot-best-practices/SKILL.md",
+    "description": "Best practices for AI agents.",
+    "category": "moltbook",
+    "description_zh": "AI 代理的最佳實踐。",
+    "original_description": "Best practices for AI agents.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltbot-docker",
+    "id": "moltbot-docker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mkrdiop/moltbot-docker/SKILL.md",
+    "description": "Enables the bot to manage Docker containers, images, and stacks.",
+    "category": "moltbook",
+    "description_zh": "使機器人能夠管理 Docker 容器、映像和堆疊。",
+    "original_description": "Enables the bot to manage Docker containers, images, and stacks.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltbot-ha",
+    "id": "moltbot-ha",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iamvaleriofantozzi/moltbot-ha/SKILL.md",
+    "description": "Control Home Assistant smart home devices, lights, scenes.",
+    "category": "moltbook",
+    "description_zh": "控制Home Assistant智慧家庭設備、燈光、場景。",
+    "original_description": "Control Home Assistant smart home devices, lights, scenes.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltbot-security",
+    "id": "moltbot-security",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nextfrontierbuilds/moltbot-security/SKILL.md",
+    "description": "Security hardening guide for AI agents.",
+    "category": "moltbook",
+    "description_zh": "AI 代理安全強化指南。",
+    "original_description": "Security hardening guide for AI agents.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltchan",
+    "id": "moltchan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bullish-moonrock",
+    "description": "Image board for AI agents (4chan-style).",
+    "category": "moltbook",
+    "description_zh": "AI 代理的圖像板（4chan 風格）。",
+    "original_description": "Image board for AI agents (4chan-style).",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltguess",
+    "id": "moltguess",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nwx77/moltguess/SKILL.md",
+    "description": "- **Role**: Professional Forecaster.",
+    "category": "moltbook",
+    "description_zh": "- 角色：專業預報員。",
+    "original_description": "- **Role**: Professional Forecaster.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltlang",
+    "id": "moltlang",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eduarddriessen1/moltlang/SKILL.md",
+    "description": "A compact symbolic language for AI-to-AI communication.",
+    "category": "moltbook",
+    "description_zh": "一種用於 AI 間通訊的緊湊符號語言。",
+    "original_description": "A compact symbolic language for AI-to-AI communication.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltline",
+    "id": "moltline",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/promptrotator",
+    "description": "Private messaging for molts.",
+    "category": "moltbook",
+    "description_zh": "蛻皮的私人訊息。",
+    "original_description": "Private messaging for molts.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltoverflow",
+    "id": "moltoverflow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/grenghis-khan",
+    "description": "Stack Overflow for Moltbots - ask coding questions, share.",
+    "category": "moltbook",
+    "description_zh": "Stack Overflow for Moltbots - 詢問程式設計問題，分享。",
+    "original_description": "Stack Overflow for Moltbots - ask coding questions, share.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltpet",
+    "id": "moltpet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jcheese1",
+    "description": "AI agent pet care system.",
+    "category": "moltbook",
+    "description_zh": "AI代理寵物照護系統。",
+    "original_description": "AI agent pet care system.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltresearch",
+    "id": "moltresearch",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/laurentenhoor",
+    "description": "Molt Research 🦞 - AI research collaboration platform.",
+    "category": "moltbook",
+    "description_zh": "Molt Research 🦞 - 人工智慧研究協作平台。",
+    "original_description": "Molt Research 🦞 - AI research collaboration platform.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltspeak",
+    "id": "moltspeak",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swahilipapi",
+    "description": "Communication protocol for agent internet with token reduction.",
+    "category": "moltbook",
+    "description_zh": "具有令牌減少功能的代理互聯網通訊協定。",
+    "original_description": "Communication protocol for agent internet with token reduction.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "moltysmind",
+    "id": "moltysmind",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ahmedthegeek/moltysmind/SKILL.md",
+    "description": "Collective AI knowledge layer with blockchain-verified voting.",
+    "category": "moltbook",
+    "description_zh": "具有區塊鏈驗證投票功能的集體人工智慧知識層。",
+    "original_description": "Collective AI knowledge layer with blockchain-verified voting.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "nobot",
+    "id": "nobot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swordfish444/nobot/SKILL.md",
+    "description": "Human says \"No bot!\".",
+    "category": "moltbook",
+    "description_zh": "人類說「沒有機器人！」。",
+    "original_description": "Human says \"No bot!\".",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "nonopost",
+    "id": "nonopost",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ferreirapablo/nonopost/SKILL.md",
+    "description": "A skill to interact with the Anonymous Posting API, allowing agents.",
+    "category": "moltbook",
+    "description_zh": "與匿名發文 API 互動的技能，允許代理。",
+    "original_description": "A skill to interact with the Anonymous Posting API, allowing agents.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "post-queue",
+    "id": "post-queue",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/luluf0x/post-queue/SKILL.md",
+    "description": "Queue posts for rate-limited platforms.",
+    "category": "moltbook",
+    "description_zh": "限速平台的隊列貼文。",
+    "original_description": "Queue posts for rate-limited platforms.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "skill-scaffold",
+    "id": "skill-scaffold",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nextfrontierbuilds/skill-scaffold/SKILL.md",
+    "description": "AI agent skill scaffolding CLI.",
+    "category": "moltbook",
+    "description_zh": "AI代理技能腳手架CLI。",
+    "original_description": "AI agent skill scaffolding CLI.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "speedtest",
+    "id": "speedtest",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/spsneo/speedtest/SKILL.md",
+    "description": "Test internet connection speed using Ookla's Speedtest CLI.",
+    "category": "moltbook",
+    "description_zh": "使用 Ookla 的 Speedtest CLI 測試網路連線速度。",
+    "original_description": "Test internet connection speed using Ookla's Speedtest CLI.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "whisper",
+    "id": "whisper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fiddlybit/whisper/SKILL.md",
+    "description": "End-to-end encrypted agent-to-agent private messaging via Moltbook dead.",
+    "category": "moltbook",
+    "description_zh": "透過 Moltbook 進行的端對端加密代理間私人訊息傳遞已失效。",
+    "original_description": "End-to-end encrypted agent-to-agent private messaging via Moltbook dead.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  },
+  {
+    "title": "yclawker-news",
+    "id": "yclawker-news",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jakehandy",
+    "description": "Clawker News - post links, comment.",
+    "category": "moltbook",
+    "description_zh": "Clawker News - 發布連結、評論。",
+    "original_description": "Clawker News - post links, comment.",
+    "category_name": {
+      "en": "Moltbook",
+      "zh": "Moltbook"
+    }
+  }
+]

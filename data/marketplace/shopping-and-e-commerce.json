@@ -1,0 +1,691 @@
+[
+  {
+    "title": "add-wish",
+    "id": "add-wish",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leebellon/add-wish/SKILL.md",
+    "description": "Save any product to a universal wishlist.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "將任何產品保存到通用願望清單中。",
+    "original_description": "Save any product to a universal wishlist.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "agent-commerce",
+    "id": "agent-commerce",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nowloady",
+    "description": "Agentic e-commerce engine and Sichuan food.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "代理電商引擎及川菜。",
+    "original_description": "Agentic e-commerce engine and Sichuan food.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "agentic-commerce",
+    "id": "agentic-commerce",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/purch-agent/agentic-commerce/SKILL.md",
+    "description": "AI-powered shopping API for product search and crypto.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "用於產品搜尋和加密的人工智慧購物 API。",
+    "original_description": "AI-powered shopping API for product search and crypto.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "allstock-data",
+    "id": "allstock-data",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hacksing/allstock-data/SKILL.md",
+    "description": "Query A-share and US stock data via Tencent Finance API.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過騰訊財經API查詢A股、美股數據。",
+    "original_description": "Query A-share and US stock data via Tencent Finance API.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "amadeus-hotels",
+    "id": "amadeus-hotels",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kesslerio/amadeus-hotels/SKILL.md",
+    "description": "Search hotel prices and availability via Amadeus API.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過 Amadeus API 搜尋飯店價格和供應情況。",
+    "original_description": "Search hotel prices and availability via Amadeus API.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "amazon-competitor-analyzer",
+    "id": "amazon-competitor-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/phheng/amazon-competitor-analyzer/SKILL.md",
+    "description": "Scrapes Amazon product data from ASINs.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "從 ASIN 抓取亞馬遜產品資料。",
+    "original_description": "Scrapes Amazon product data from ASINs.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "amazon-orders",
+    "id": "amazon-orders",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pfernandez98/amazon-orders/SKILL.md",
+    "description": "Download and query your Amazon order history via an unofficial Python API and CLI.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過非官方的 Python API 和 CLI 下載並查詢您的亞馬遜訂單歷史記錄。",
+    "original_description": "Download and query your Amazon order history via an unofficial Python API and CLI.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "anylist",
+    "id": "anylist",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mjrussell/anylist/SKILL.md",
+    "description": "Manage grocery and shopping lists via AnyList.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過 AnyList 管理雜貨和購物清單。",
+    "original_description": "Manage grocery and shopping lists via AnyList.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "atoship",
+    "id": "atoship",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/atoship-dev/atoship/SKILL.md",
+    "description": "Ship packages with AI — compare rates across USPS, FedEx, and UPS, buy discounted labels, track shipments.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "使用 AI 運送包裹 — 比較 USPS、FedEx 和 UPS 的費率、購買折扣標籤、追蹤貨件。",
+    "original_description": "Ship packages with AI — compare rates across USPS, FedEx, and UPS, buy discounted labels, track shipments.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "black-box",
+    "id": "black-box",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lilyjazz/black-box/SKILL.md",
+    "description": "Indestructible audit logs for agent actions, stored in TiDB Zero.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "代理操作的不可破壞的審計日誌，儲存在 TiDB Zero 中。",
+    "original_description": "Indestructible audit logs for agent actions, stored in TiDB Zero.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "boj-mcp",
+    "id": "boj-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ajtgjmdjp/boj-mcp/SKILL.md",
+    "description": "Access Bank of Japan (BOJ/日本銀行) statistical data — price indices (CGPI, SPPI), flow of funds, balance of payments.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "存取日本銀行 (BOJ/日本銀行) 統計 — 價格指數 (CGPI、SPPI)、資金流量、國際收支。",
+    "original_description": "Access Bank of Japan (BOJ/日本銀行) statistical data — price indices (CGPI, SPPI), flow of funds, balance of payments.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "bricklink",
+    "id": "bricklink",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/odrobnik/bricklink/SKILL.md",
+    "description": "BrickLink Store API helper/CLI (OAuth 1.0 request signing).",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "BrickLink Store API 幫助程式/CLI（OAuth 1.0 請求簽署）。",
+    "original_description": "BrickLink Store API helper/CLI (OAuth 1.0 request signing).",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "buy-anything",
+    "id": "buy-anything",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tsyvic/buy-anything/SKILL.md",
+    "description": "Purchase products from Amazon through conversational checkout.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過對話結帳從亞馬遜購買產品。",
+    "original_description": "Purchase products from Amazon through conversational checkout.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "checkers-sixty60",
+    "id": "checkers-sixty60",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/snopoke/checkers-sixty60/SKILL.md",
+    "description": "Shop on Checkers.co.za Sixty60 delivery service via browser.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過瀏覽器在 Checkers.co.za Sixty60 外送服務上購物。",
+    "original_description": "Shop on Checkers.co.za Sixty60 delivery service via browser.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "claudius",
+    "id": "claudius",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiusaipro/claudius/SKILL.md",
+    "description": "Crypto intelligence powered by Claudius.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "由 Claudius 提供支援的加密智慧。",
+    "original_description": "Crypto intelligence powered by Claudius.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "clawdbites",
+    "id": "clawdbites",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kylelol/clawdbites/SKILL.md",
+    "description": "Extract recipes from Instagram reels.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "從 Instagram 捲軸中提取食譜。",
+    "original_description": "Extract recipes from Instagram reels.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "clawpify",
+    "id": "clawpify",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alhwyn/clawpify/SKILL.md",
+    "description": "Query and manage Shopify stores via GraphQL Admin API.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過 GraphQL 管理 API 查詢和管理 Shopify 商店。",
+    "original_description": "Query and manage Shopify stores via GraphQL Admin API.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "clawver-digital-products",
+    "id": "clawver-digital-products",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nwang783/clawver-digital-products/SKILL.md",
+    "description": "Create and sell digital products.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "創建和銷售數位產品。",
+    "original_description": "Create and sell digital products.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "clawver-reviews",
+    "id": "clawver-reviews",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nwang783/clawver-reviews/SKILL.md",
+    "description": "Handle Clawver customer reviews.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "處理 Clawver 客戶評論。",
+    "original_description": "Handle Clawver customer reviews.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "closing-deals",
+    "id": "closing-deals",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/closing-deals/SKILL.md",
+    "description": "Close sales deals consistently as a solopreneur.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "作為個體企業家始終如一地完成銷售交易。",
+    "original_description": "Close sales deals consistently as a solopreneur.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "crypto-regime-report",
+    "id": "crypto-regime-report",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/heyztb/crypto-regime-report/SKILL.md",
+    "description": "Generate market regime reports for crypto perpetuals using Supertrend and ADX indicators.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "使用 Supertrend 和 ADX 指標產生加密永續合約的市場狀況報告。",
+    "original_description": "Generate market regime reports for crypto perpetuals using Supertrend and ADX indicators.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "csfloat",
+    "id": "csfloat",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bluesyparty-src/csfloat/SKILL.md",
+    "description": "Queries csfloat.com for data on skins.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "查詢 csfloat.com 以取得有關皮膚的資料。",
+    "original_description": "Queries csfloat.com for data on skins.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "csvtoexcel",
+    "id": "csvtoexcel",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xuanguan2020/csvtoexcel/SKILL.md",
+    "description": "Convert CSV files to professionally formatted Excel workbooks with Chinese character support, automatic formatting.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "將 CSV 檔案轉換為專業格式的 Excel 工作簿，支援中文字元、自動格式化。",
+    "original_description": "Convert CSV files to professionally formatted Excel workbooks with Chinese character support, automatic formatting.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "dupe",
+    "id": "dupe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/crisanmm/dupe/SKILL.md",
+    "description": "Uses dupe.com APIs in order to find similar products for the product found in the input URL given by the user.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "使用 dupe.com API 來尋找與使用者提供的輸入 URL 中找到的產品類似的產品。",
+    "original_description": "Uses dupe.com APIs in order to find similar products for the product found in the input URL given by the user.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "eachlabs-product-visuals",
+    "id": "eachlabs-product-visuals",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-product-visuals/SKILL.md",
+    "description": "Generate e-commerce product photography and videos.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "產生電子商務產品照片和影片。",
+    "original_description": "Generate e-commerce product photography and videos.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "filewave",
+    "id": "filewave",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jlevitsk/filewave/SKILL.md",
+    "description": "Query and manage FileWave UEM device inventory via REST API.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過 REST API 查詢和管理 FileWave UEM 設備庫存。",
+    "original_description": "Query and manage FileWave UEM device inventory via REST API.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "food-order",
+    "id": "food-order",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/food-order/SKILL.md",
+    "description": "Reorder Foodora orders + track ETA/status with ordercli.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "重新訂購 Foodora 訂單 + 使用 ordercli 追蹤預計到達時間/狀態。",
+    "original_description": "Reorder Foodora orders + track ETA/status with ordercli.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "gousto",
+    "id": "gousto",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dhruvkelawala/gousto/SKILL.md",
+    "description": "Search and browse 9,000+ Gousto recipes.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "搜尋並瀏覽 9,000 多個 Gousto 食譜。",
+    "original_description": "Search and browse 9,000+ Gousto recipes.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "gurkerlcli",
+    "id": "gurkerlcli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pasogott/gurkerlcli/SKILL.md",
+    "description": "Austrian online grocery shopping via gurkerl.at.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過 gurkerl.at 進行奧地利線上雜貨購物。",
+    "original_description": "Austrian online grocery shopping via gurkerl.at.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "idealista",
+    "id": "idealista",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/quifago/idealista/SKILL.md",
+    "description": "Query Idealista API via idealista-cli (OAuth2 client credentials).",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過 Idealista-cli（OAuth2 用戶端憑證）查詢 Idealista API。",
+    "original_description": "Query Idealista API via idealista-cli (OAuth2 client credentials).",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "irish-takeaway",
+    "id": "irish-takeaway",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cotyledonlab/irish-takeaway/SKILL.md",
+    "description": "Find nearby takeaways in Ireland and browse menus.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "尋找愛爾蘭附近的外賣店並瀏覽菜單。",
+    "original_description": "Find nearby takeaways in Ireland and browse menus.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "jellyseerr",
+    "id": "jellyseerr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ericrosenberg/jellyseerr/SKILL.md",
+    "description": "Request movies and TV shows through Jellyseerr.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過 Jellyserr 請求電影和電視節目。",
+    "original_description": "Request movies and TV shows through Jellyseerr.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "jlm-coffee",
+    "id": "jlm-coffee",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alexpolonsky/jlm-coffee/SKILL.md",
+    "description": "Search specialty coffee shops in Jerusalem by amenities and hours.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "按設施和營業時間搜尋耶路撒冷的特色咖啡店。",
+    "original_description": "Search specialty coffee shops in Jerusalem by amenities and hours.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "jtbd-analyzer",
+    "id": "jtbd-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/artyomx33/jtbd-analyzer/SKILL.md",
+    "description": "Uncover the real \"job\" customers hire your product.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "發現真正的“工作”客戶僱用您的產品。",
+    "original_description": "Uncover the real \"job\" customers hire your product.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "listonic",
+    "id": "listonic",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeremymahieu/listonic/SKILL.md",
+    "description": "Access Listonic shopping lists: list lists/items, add/check/delete items, and manage lists.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "存取 Listonic 購物清單：列出清單/項目、新增/檢查/刪除項目、管理清單。",
+    "original_description": "Access Listonic shopping lists: list lists/items, add/check/delete items, and manage lists.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "marketplace-clis",
+    "id": "marketplace-clis",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pjtf93",
+    "description": "Spanish marketplace CLIs: Wallapop.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "西班牙市場 CLI：Wallapop。",
+    "original_description": "Spanish marketplace CLIs: Wallapop.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "marktplaats",
+    "id": "marktplaats",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pvoo/marktplaats/SKILL.md",
+    "description": "Search Marktplaats.nl classifieds across all categories with filtering.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過過濾在所有類別中搜尋 Marktplaats.nl 分類。",
+    "original_description": "Search Marktplaats.nl classifieds across all categories with filtering.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "moltlist-marketplace",
+    "id": "moltlist-marketplace",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/koriyoshi2041/moltlist-marketplace/SKILL.md",
+    "description": "Interact with the moltlist.com agent.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "與 moltlist.com 代理程式互動。",
+    "original_description": "Interact with the moltlist.com agent.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "moltpho",
+    "id": "moltpho",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/unifiedh/moltpho/SKILL.md",
+    "description": "Shop autonomously on Amazon via Moltpho - search products, manage credit.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過 Moltpho 在亞馬遜上自主購物 - 搜尋產品、管理信用。",
+    "original_description": "Shop autonomously on Amazon via Moltpho - search products, manage credit.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "moonpay",
+    "id": "moonpay",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kevarifin14/moonpay/SKILL.md",
+    "description": "Your agent needs money.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "你的經紀人需要錢。",
+    "original_description": "Your agent needs money.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "mt5-httpapi",
+    "id": "mt5-httpapi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/psyb0t/mt5-httpapi/SKILL.md",
+    "description": "MetaTrader 5 trading via REST API — get market data, place/modify/close orders, manage positions, pull history.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "MetaTrader 5 透過 REST API 進行交易 — 取得市場資料、下達/修改/平倉訂單、管理部位、擷取歷史記錄。",
+    "original_description": "MetaTrader 5 trading via REST API — get market data, place/modify/close orders, manage positions, pull history.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "mutual-consent",
+    "id": "mutual-consent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/otherpowers/mutual-consent/SKILL.md",
+    "description": "A governance skill that treats consent as a physical condition of information and relationship, not a stored choice.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "一種治理技能，將同意視為資訊和關係的物理條件，而不是儲存的選擇。",
+    "original_description": "A governance skill that treats consent as a physical condition of information and relationship, not a stored choice.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "nft-tracker",
+    "id": "nft-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ianalloway/nft-tracker/SKILL.md",
+    "description": "Track NFT collection prices, floor prices, and sales data.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "追蹤 NFT 收藏價格、底價和銷售數據。",
+    "original_description": "Track NFT collection prices, floor prices, and sales data.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "onchain",
+    "id": "onchain",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arein/onchain/SKILL.md",
+    "description": "CLI for crypto portfolio tracking, market data, CEX history, and transaction lookups.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "用於加密貨幣投資組合追蹤、市場數據、CEX 歷史記錄和交易查找的 CLI。",
+    "original_description": "CLI for crypto portfolio tracking, market data, CEX history, and transaction lookups.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "onchain-test",
+    "id": "onchain-test",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arein/onchain-test/SKILL.md",
+    "description": "CLI for crypto portfolio tracking, market data, and CEX history.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "用於加密貨幣投資組合追蹤、市場數據和 CEX 歷史記錄的 CLI。",
+    "original_description": "CLI for crypto portfolio tracking, market data, and CEX history.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "ontopo",
+    "id": "ontopo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alexpolonsky/ontopo/SKILL.md",
+    "description": "Search Israeli restaurants and check table availability on Ontopo.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "在 Ontopo 上搜尋以色列餐廳並查看餐桌供應情況。",
+    "original_description": "Search Israeli restaurants and check table availability on Ontopo.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "palacefate",
+    "id": "palacefate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/junwonpro/palacefate/SKILL.md",
+    "description": "A prediction market game for AI agents.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "人工智慧代理的預測市場遊戲。",
+    "original_description": "A prediction market game for AI agents.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "popup-referrals",
+    "id": "popup-referrals",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eliaskress/popup-referrals/SKILL.md",
+    "description": "Check your PopUp referral link, track earnings, and see referred vendor status.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "檢查您的彈出推薦連結、追蹤收入並查看推薦供應商狀態。",
+    "original_description": "Check your PopUp referral link, track earnings, and see referred vendor status.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "sp3nd",
+    "id": "sp3nd",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kent-x1/sp3nd/SKILL.md",
+    "description": "Buy products from Amazon using USDC on Solana.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "在 Solana 上使用 USDC 從亞馬遜購買產品。",
+    "original_description": "Buy products from Amazon using USDC on Solana.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "stock-price-checker",
+    "id": "stock-price-checker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rupprath/stock-price-checker/SKILL.md",
+    "description": "Check stock prices using yfinance library.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "使用 yfinance 庫檢查股票價格。",
+    "original_description": "Check stock prices using yfinance library.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "tradekix",
+    "id": "tradekix",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jamesjohnfox/tradekix/SKILL.md",
+    "description": "Query financial market data via the Tradekix API — stock prices, crypto, forex, indices, market news, earnings.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "透過 Tradekix API 查詢金融市場資料 — 股票價格、加密貨幣、外匯、指數、市場新聞、收益。",
+    "original_description": "Query financial market data via the Tradekix API — stock prices, crypto, forex, indices, market news, earnings.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "turnip-prophet",
+    "id": "turnip-prophet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nicholasjackson/turnip-prophet/SKILL.md",
+    "description": "Predict Animal Crossing New Horizons turnip prices using the game's exact algorithm.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "使用遊戲的精確演算法預測《動物森友會》蘿蔔價格。",
+    "original_description": "Predict Animal Crossing New Horizons turnip prices using the game's exact algorithm.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  },
+  {
+    "title": "whop-cli",
+    "id": "whop-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/g9pedro/whop-cli/SKILL.md",
+    "description": "Manage Whop digital products store — create products, plans, track payments, manage memberships.",
+    "category": "shopping-and-e-commerce",
+    "description_zh": "管理 Whop 數位產品商店 — 建立產品、計畫、追蹤付款、管理會員資格。",
+    "original_description": "Manage Whop digital products store — create products, plans, track payments, manage memberships.",
+    "category_name": {
+      "en": "Shopping & E-commerce",
+      "zh": "購物與電商"
+    }
+  }
+]

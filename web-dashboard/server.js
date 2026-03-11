@@ -474,6 +474,151 @@ class WebServer {
         });
 
 
+        this.app.get('/api/skills/marketplace', (req, res) => {
+            try {
+                const marketplaceDir = path.join(process.cwd(), 'data', 'marketplace');
+                let allSkills = [];
+
+                const { search, category, page = 1, limit = 20 } = req.query;
+
+                if (category && category !== 'all') {
+                    const catFile = path.join(marketplaceDir, `${category}.json`);
+                    if (fs.existsSync(catFile)) {
+                        allSkills = JSON.parse(fs.readFileSync(catFile, 'utf8'));
+                    }
+                } else {
+                    if (fs.existsSync(marketplaceDir)) {
+                        const files = fs.readdirSync(marketplaceDir).filter(f => f.endsWith('.json'));
+                        for (const file of files) {
+                            const data = JSON.parse(fs.readFileSync(path.join(marketplaceDir, file), 'utf8'));
+                            allSkills = allSkills.concat(data);
+                        }
+                    }
+                }
+
+                if (category && category !== 'all') {
+                    allSkills = allSkills.filter(s => s.category === category);
+                }
+                if (search) {
+                    const term = search.toLowerCase();
+                    allSkills = allSkills.filter(s => s.title.toLowerCase().includes(term) || s.description.toLowerCase().includes(term));
+                }
+
+                const total = allSkills.length;
+                const startIndex = (Number(page) - 1) * Number(limit);
+                const endIndex = startIndex + Number(limit);
+                const skills = allSkills.slice(startIndex, endIndex);
+
+                return res.json({ skills, total });
+            } catch (e) {
+                console.error("Failed to read marketplace skills:", e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
+        this.app.post('/api/skills/marketplace/install', async (req, res) => {
+            try {
+                const { id, repoUrl } = req.body;
+                if (!id || !repoUrl) return res.status(400).json({ error: 'Missing id or repoUrl' });
+
+                let rawUrl = repoUrl
+                    .replace('github.com', 'raw.githubusercontent.com')
+                    .replace('/tree/', '/');
+
+                if (!rawUrl.toLowerCase().endsWith('.md')) {
+                    if (rawUrl.endsWith('/')) rawUrl += 'SKILL.md';
+                    else rawUrl += '/SKILL.md';
+                }
+
+                const https = require('https');
+
+                async function fetchWithFallback(url, id) {
+                    const tryUrls = [
+                        url, // Original
+                        url.replace(/\/SKILL\.md$/i, `/${id}/SKILL.md`), // Subdir + SKILL.md
+                        url.replace(/\/SKILL\.md$/i, `/${id}/skill.md`), // Subdir + skill.md
+                        url.endsWith('SKILL.md') ? url.replace('SKILL.md', 'skill.md') : url + '/skill.md' // Root skill.md
+                    ];
+
+                    // Remove duplicates
+                    const uniqueUrls = [...new Set(tryUrls)];
+
+                    for (const targetUrl of uniqueUrls) {
+                        try {
+                            const data = await new Promise((resolve, reject) => {
+                                const options = {
+                                    headers: { 'User-Agent': 'Golem-Dashboard-Installer' }
+                                };
+                                https.get(targetUrl, options, (response) => {
+                                    if (response.statusCode === 200) {
+                                        let body = '';
+                                        response.on('data', chunk => body += chunk);
+                                        response.on('end', () => resolve(body));
+                                    } else {
+                                        resolve(null);
+                                    }
+                                }).on('error', (e) => resolve(null));
+                            });
+                            if (data) return data;
+                        } catch (e) {
+                            continue;
+                        }
+                    }
+                    return null;
+                }
+
+                const content = await fetchWithFallback(rawUrl, id);
+                if (!content) {
+                    return res.status(404).json({ error: 'Skill markdown not found even after trying subdirectories' });
+                }
+
+                const safeId = id.replace(/[^a-z0-9_-]/gi, '_').toLowerCase();
+                const libPath = path.join(process.cwd(), 'src', 'skills', 'lib');
+                const filePath = path.join(libPath, `${safeId}.md`);
+
+                let title = safeId;
+                // Remove BOM if present, then trim
+                let parsedContent = content.toString().replace(/^\uFEFF/, '').trim();
+
+                // Parse YAML frontmatter if present (allowing for any stray spaces before ---)
+                const fmMatch = parsedContent.match(/^\s*---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+                if (fmMatch) {
+                    const yaml = fmMatch[1];
+                    const nameMatch = yaml.match(/^name:\s*(.+)$/m);
+                    if (nameMatch) {
+                        title = nameMatch[1].replace(/^["']|["']$/g, '').trim();
+                    }
+                    parsedContent = fmMatch[2].trim();
+                } else {
+                    // Fallback to first heading
+                    const hMatch = parsedContent.match(/^#+\s+(.+)$/m);
+                    if (hMatch) title = hMatch[1].trim();
+                }
+
+                // Wrap with Golem standard tag
+                const finalContent = `【已載入技能：${title}】\n\n${parsedContent}`;
+
+                fs.writeFileSync(filePath, finalContent, 'utf8');
+                console.log(`✨ [WebServer] Marketplace skill installed: ${safeId}.md`);
+
+                const SkillIndexManager = require('../src/managers/SkillIndexManager');
+                const { GOLEMS_CONFIG, MEMORY_BASE_DIR, GOLEM_MODE } = require('../src/config');
+                const targetDirs = GOLEM_MODE === 'SINGLE'
+                    ? [MEMORY_BASE_DIR]
+                    : GOLEMS_CONFIG.map(g => path.join(MEMORY_BASE_DIR, g.id));
+
+                for (const dir of targetDirs) {
+                    const idx = new SkillIndexManager(dir);
+                    idx.addSkill(safeId).catch(e => console.error(`[SkillIndex][${path.basename(dir)}] MarketplaceInstall-Add Error for ${safeId}:`, e.message));
+                }
+
+                return res.json({ success: true, id: safeId });
+            } catch (e) {
+                console.error('Failed to install marketplace skill:', e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
         this.app.get('/api/skills', async (req, res) => {
             try {
                 const libPath = path.join(process.cwd(), 'src', 'skills', 'lib');

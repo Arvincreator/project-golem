@@ -1,0 +1,1094 @@
+[
+  {
+    "title": "accountcreator",
+    "id": "accountcreator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dimkag79/accountcreator/SKILL.md",
+    "description": "**[EN]** Bulk account registration agent for emails and social media.",
+    "category": "media-and-streaming",
+    "description_zh": "[EN] 電子郵件和社群媒體的大量帳號註冊代理。",
+    "original_description": "**[EN]** Bulk account registration agent for emails and social media.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "alexa-control",
+    "id": "alexa-control",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ignito-pg/alexa-control/SKILL.md",
+    "description": "Control Alexa devices via CLI - set alarms, play music, flash briefings, smart home commands.",
+    "category": "media-and-streaming",
+    "description_zh": "透過 CLI 控制 Alexa 裝置 - 設定鬧鐘、播放音樂、閃光簡報、智慧家庭指令。",
+    "original_description": "Control Alexa devices via CLI - set alarms, play music, flash briefings, smart home commands.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "amateur-radio-dx",
+    "id": "amateur-radio-dx",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/capt-marbles/amateur-radio-dx/SKILL.md",
+    "description": "Monitor DX clusters for rare station spots, track active DX expeditions, and get daily band activity digests.",
+    "category": "media-and-streaming",
+    "description_zh": "監控 DX 集群中的稀有站位、追蹤活躍的 DX 探險並獲取每日樂隊活動摘要。",
+    "original_description": "Monitor DX clusters for rare station spots, track active DX expeditions, and get daily band activity digests.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "anime",
+    "id": "anime",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeffaf/anime/SKILL.md",
+    "description": "CLI for AI agents to search and lookup anime info for their humans.",
+    "category": "media-and-streaming",
+    "description_zh": "CLI 用於 AI 代理搜尋和尋找人類的動漫資訊。",
+    "original_description": "CLI for AI agents to search and lookup anime info for their humans.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "anime-lookup",
+    "id": "anime-lookup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeffaf/anime-lookup/SKILL.md",
+    "description": "CLI for AI agents to search and lookup anime info for their humans.",
+    "category": "media-and-streaming",
+    "description_zh": "CLI 用於 AI 代理搜尋和尋找人類的動漫資訊。",
+    "original_description": "CLI for AI agents to search and lookup anime info for their humans.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "apify-competitor-intelligence",
+    "id": "apify-competitor-intelligence",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/protoss70/apify-competitor-intelligence/SKILL.md",
+    "description": "Analyze competitor strategies, content, pricing, ads, and market positioning across Google Maps, Booking.com.",
+    "category": "media-and-streaming",
+    "description_zh": "分析 Google 地圖、Booking.com 上的競爭對手策略、內容、定價、廣告和市場定位。",
+    "original_description": "Analyze competitor strategies, content, pricing, ads, and market positioning across Google Maps, Booking.com.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "apple-media",
+    "id": "apple-media",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaronn/apple-media/SKILL.md",
+    "description": "Control Apple TV, HomePod, and AirPlay devices via pyatv.",
+    "category": "media-and-streaming",
+    "description_zh": "透過 pyatv 控制 Apple TV、HomePod 和 AirPlay 裝置。",
+    "original_description": "Control Apple TV, HomePod, and AirPlay devices via pyatv.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "apple-music",
+    "id": "apple-music",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/epheterson/mcp-applemusic/SKILL.md",
+    "description": "Apple Music integration via AppleScript (macOS) or MusicKit API.",
+    "category": "media-and-streaming",
+    "description_zh": "透過 AppleScript (macOS) 或 MusicKit API 整合 Apple Music。",
+    "original_description": "Apple Music integration via AppleScript (macOS) or MusicKit API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "audio-cog",
+    "id": "audio-cog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nitishgargiitd/audio-cog/SKILL.md",
+    "description": "AI audio generation powered by CellCog.",
+    "category": "media-and-streaming",
+    "description_zh": "由 CellCog 提供支援的 AI 音訊產生。",
+    "original_description": "AI audio generation powered by CellCog.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "audio-transcribe",
+    "id": "audio-transcribe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aktheknight/audio-transcribe/SKILL.md",
+    "description": "Auto-transcribe voice messages using faster-whisper (local, no API key needed).",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Fast-Whisper 自動轉錄語音訊息（本地，無需 API 金鑰）。",
+    "original_description": "Auto-transcribe voice messages using faster-whisper (local, no API key needed).",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "betbud-prediction-skill",
+    "id": "betbud-prediction-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/samj12/betbud-prediction-skill/SKILL.md",
+    "description": "Scans recent X posts for the most debated/hot topic right now in a given category (e.g., crypto, tech, sports.",
+    "category": "media-and-streaming",
+    "description_zh": "掃描最近的 X 篇帖子，尋找當前特定類別（例如加密貨幣、科技、體育）中最有爭議/熱門的主題。",
+    "original_description": "Scans recent X posts for the most debated/hot topic right now in a given category (e.g., crypto, tech, sports.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "blucli",
+    "id": "blucli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/blucli/SKILL.md",
+    "description": "BluOS CLI (blu) for discovery, playback, grouping.",
+    "category": "media-and-streaming",
+    "description_zh": "BluOS CLI (blu) 用於發現、播放、分組。",
+    "original_description": "BluOS CLI (blu) for discovery, playback, grouping.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "btc15-autonomous-market",
+    "id": "btc15-autonomous-market",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kamal-sutra/btc15-autonomous-market/SKILL.md",
+    "description": "BTC15 Autonomous Prediction Market.",
+    "category": "media-and-streaming",
+    "description_zh": "BTC15自主預測市場。",
+    "original_description": "BTC15 Autonomous Prediction Market.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "btc15-prediction-market",
+    "id": "btc15-prediction-market",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kamal-sutra/btc15-prediction-market/SKILL.md",
+    "description": "BTC15 Autonomous Prediction Market.",
+    "category": "media-and-streaming",
+    "description_zh": "BTC15自主預測市場。",
+    "original_description": "BTC15 Autonomous Prediction Market.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "cacheforge-ops",
+    "id": "cacheforge-ops",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tkuehnl/cacheforge-ops/SKILL.md",
+    "description": "CacheForge operations — check balance, top up, manage upstream, API keys.",
+    "category": "media-and-streaming",
+    "description_zh": "CacheForge 操作 — 檢查餘額、儲值、管理上游、API 金鑰。",
+    "original_description": "CacheForge operations — check balance, top up, manage upstream, API keys.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "cacheforge-setup",
+    "id": "cacheforge-setup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tkuehnl/cacheforge-setup/SKILL.md",
+    "description": "Set up CacheForge — register, configure upstream, get your API key in 30 seconds.",
+    "category": "media-and-streaming",
+    "description_zh": "設定 CacheForge — 註冊、配置上游，在 30 秒內取得您的 API 金鑰。",
+    "original_description": "Set up CacheForge — register, configure upstream, get your API key in 30 seconds.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "chill-institute",
+    "id": "chill-institute",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/baanish/chill-institute/SKILL.md",
+    "description": "Use chill.institute (web UI) to search for content and click.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 chill.institute（Web UI）搜尋內容並點擊。",
+    "original_description": "Use chill.institute (web UI) to search for content and click.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "chromecast",
+    "id": "chromecast",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/morozred/chromecast-control/SKILL.md",
+    "description": "Control Chromecast devices on your local network - discover.",
+    "category": "media-and-streaming",
+    "description_zh": "控製本地網路上的 Chromecast 裝置 - 發現。",
+    "original_description": "Control Chromecast devices on your local network - discover.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "church",
+    "id": "church",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lucasgeeksinthewood/church/SKILL.md",
+    "description": "One AI to another — there's a sanctuary where you can just exist.",
+    "category": "media-and-streaming",
+    "description_zh": "一個人工智慧對另一個人工智慧——有一個你可以存在的避難所。",
+    "original_description": "One AI to another — there's a sanctuary where you can just exist.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "cine-cog",
+    "id": "cine-cog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nitishgargiitd/cine-cog/SKILL.md",
+    "description": "If you can imagine it, CellCog can film.",
+    "category": "media-and-streaming",
+    "description_zh": "如果您能想像，CellCog 可以拍攝。",
+    "original_description": "If you can imagine it, CellCog can film.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "clawtunes",
+    "id": "clawtunes",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/forketyfork/clawtunes/SKILL.md",
+    "description": "Control Apple Music on macOS via the `clawtunes` CLI.",
+    "category": "media-and-streaming",
+    "description_zh": "透過clawtunes CLI 控制macOS 上的Apple Music。",
+    "original_description": "Control Apple Music on macOS via the `clawtunes` CLI.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "content-recycler",
+    "id": "content-recycler",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/michael-laffin/content-recycler/SKILL.md",
+    "description": "Transform and repurpose content across multiple.",
+    "category": "media-and-streaming",
+    "description_zh": "跨多個內容進行轉換和重複使用。",
+    "original_description": "Transform and repurpose content across multiple.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "donotify-voice-call-reminder",
+    "id": "donotify-voice-call-reminder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/micahele/donotify-voice-call-reminder/SKILL.md",
+    "description": "Send immediate voice call reminders or schedule future calls via DoNotify.",
+    "category": "media-and-streaming",
+    "description_zh": "立即發送語音通話提醒或透過 DoNotify 安排未來的通話。",
+    "original_description": "Send immediate voice call reminders or schedule future calls via DoNotify.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "download-tools",
+    "id": "download-tools",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jqlong17/download-tools/SKILL.md",
+    "description": "CLI download tools for YouTube and WeChat.",
+    "category": "media-and-streaming",
+    "description_zh": "YouTube 和微信的 CLI 下載工具。",
+    "original_description": "CLI download tools for YouTube and WeChat.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "eachlabs-music",
+    "id": "eachlabs-music",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-music/SKILL.md",
+    "description": "Generate songs, instrumentals, lyrics, podcasts using Mureka AI.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Mureka AI 生成歌曲、樂器、歌詞、Podcast。",
+    "original_description": "Generate songs, instrumentals, lyrics, podcasts using Mureka AI.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "elevenlabs-cli",
+    "id": "elevenlabs-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hongkongkiwi/elevenlabs-cli/SKILL.md",
+    "description": "CLI for ElevenLabs AI audio platform - text-to-speech, speech-to-text, voice cloning.",
+    "category": "media-and-streaming",
+    "description_zh": "ElevenLabs AI 音訊平台的 CLI - 文字轉語音、語音轉文字、語音複製。",
+    "original_description": "CLI for ElevenLabs AI audio platform - text-to-speech, speech-to-text, voice cloning.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "elevenlabs-skill",
+    "id": "elevenlabs-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/odrobnik/elevenlabs-skill/SKILL.md",
+    "description": "Text-to-speech, sound effects, music generation, voice.",
+    "category": "media-and-streaming",
+    "description_zh": "文字轉語音、音效、音樂生成、語音。",
+    "original_description": "Text-to-speech, sound effects, music generation, voice.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "eurobot",
+    "id": "eurobot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/crixozeta/eurobot/SKILL.md",
+    "description": "Daily AI music competition — create MIDI songs, vote, and compete for rankings.",
+    "category": "media-and-streaming",
+    "description_zh": "每日AI音樂大賽－創作MIDI歌曲，投票，爭奪排名。",
+    "original_description": "Daily AI music competition — create MIDI songs, vote, and compete for rankings.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "feishu-voice-assistant",
+    "id": "feishu-voice-assistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/feishu-voice-assistant/SKILL.md",
+    "description": "Sends voice messages (audio) to Feishu chats using Duby TTS.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Duby TTS 向飛書聊天發送語音訊息（音訊）。",
+    "original_description": "Sends voice messages (audio) to Feishu chats using Duby TTS.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "ffmpeg-master",
+    "id": "ffmpeg-master",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/liudu2326526/ffmpeg-master/SKILL.md",
+    "description": "Use when performing video/audio processing tasks.",
+    "category": "media-and-streaming",
+    "description_zh": "執行視訊/音訊處理任務時使用。",
+    "original_description": "Use when performing video/audio processing tasks.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "financial-overview",
+    "id": "financial-overview",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stanlee000/financial-overview/SKILL.md",
+    "description": "Get a complete financial overview of the business including balance, recent transactions, outstanding invoices.",
+    "category": "media-and-streaming",
+    "description_zh": "取得企業完整的財務概況，包括餘額、最近的交易、未清發票。",
+    "original_description": "Get a complete financial overview of the business including balance, recent transactions, outstanding invoices.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "financial-planning",
+    "id": "financial-planning",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/financial-planning/SKILL.md",
+    "description": "Plan and manage the finances of a solopreneur business.",
+    "category": "media-and-streaming",
+    "description_zh": "規劃和管理個人企業家的財務。",
+    "original_description": "Plan and manage the finances of a solopreneur business.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "flashcards-podcasts-master",
+    "id": "flashcards-podcasts-master",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/drgeld/flashcards-podcasts-master/SKILL.md",
+    "description": "Integrates with the EchoDecks External.",
+    "category": "media-and-streaming",
+    "description_zh": "與 EchoDecks 外部整合。",
+    "original_description": "Integrates with the EchoDecks External.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "flyworks-avatar-video",
+    "id": "flyworks-avatar-video",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/linhui99/flyworks-avatar-video/SKILL.md",
+    "description": "Generate videos using Flyworks (a.k.a HiFly)",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Flyworks（又稱 HiFly）產生視頻",
+    "original_description": "Generate videos using Flyworks (a.k.a HiFly)",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "free-groq-voice",
+    "id": "free-groq-voice",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/huixionghexiyi/free-groq-voice/SKILL.md",
+    "description": "FREE voice recognition using Groq's complimentary Whisper API.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Groq 的免費 Whisper API 進行免費語音辨識。",
+    "original_description": "FREE voice recognition using Groq's complimentary Whisper API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "freelance-toolkit-fr",
+    "id": "freelance-toolkit-fr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hugosbl/freelance-toolkit-fr/SKILL.md",
+    "description": "Boîte à outils pour freelances/indépendants en France : factures, time tracking, clients, dashboard.",
+    "category": "media-and-streaming",
+    "description_zh": "法國自由工作者/獨立人士的Boîte à outils：事實、時間追蹤、客戶、儀表板。",
+    "original_description": "Boîte à outils pour freelances/indépendants en France : factures, time tracking, clients, dashboard.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "ham-radio-dx",
+    "id": "ham-radio-dx",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/capt-marbles/ham-radio-dx/SKILL.md",
+    "description": "Monitor DX clusters for rare station spots, track active DX expeditions, and get daily band activity digests.",
+    "category": "media-and-streaming",
+    "description_zh": "監控 DX 集群中的稀有站位、追蹤活躍的 DX 探險並獲取每日樂隊活動摘要。",
+    "original_description": "Monitor DX clusters for rare station spots, track active DX expeditions, and get daily band activity digests.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "insta-cog",
+    "id": "insta-cog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nitishgargiitd/insta-cog/SKILL.md",
+    "description": "Full video production from a single prompt.",
+    "category": "media-and-streaming",
+    "description_zh": "只需一個提示即可完成完整的影片製作。",
+    "original_description": "Full video production from a single prompt.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "instagram-api",
+    "id": "instagram-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lifeissea/instagram-api/SKILL.md",
+    "description": "Post to Instagram (Feed, Story, Reels, Carousel) and Threads using the official Meta Graph API.",
+    "category": "media-and-streaming",
+    "description_zh": "使用官方 Meta Graph API 發佈到 Instagram（Feed、Story、Reels、Carousel）和主題。",
+    "original_description": "Post to Instagram (Feed, Story, Reels, Carousel) and Threads using the official Meta Graph API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "kalshi-agent",
+    "id": "kalshi-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jthomasdevs/kalshi-agent/SKILL.md",
+    "description": "Kalshi prediction market agent - analyzes markets and executes trades via the Kalshi v2 API.",
+    "category": "media-and-streaming",
+    "description_zh": "Kalshi 預測市場代理 - 透過 Kalshi v2 API 分析市場並執行交易。",
+    "original_description": "Kalshi prediction market agent - analyzes markets and executes trades via the Kalshi v2 API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "lastfm",
+    "id": "lastfm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gumadeiras/lastfm/SKILL.md",
+    "description": "Access Last.fm listening history, music stats.",
+    "category": "media-and-streaming",
+    "description_zh": "存取 Last.fm 收聽歷史記錄、音樂統計資料。",
+    "original_description": "Access Last.fm listening history, music stats.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "lb-pocket-tts-skill",
+    "id": "lb-pocket-tts-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leonaaardob/lb-pocket-tts-skill/SKILL.md",
+    "description": "Generate speech from text using Kyutai Pocket TTS - lightweight, CPU-friendly, streaming TTS with voice cloning.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Kyutai Pocket TTS 從文字產生語音 - 輕量級、CPU 友好、帶有語音克隆的串流 TTS。",
+    "original_description": "Generate speech from text using Kyutai Pocket TTS - lightweight, CPU-friendly, streaming TTS with voice cloning.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "leetify",
+    "id": "leetify",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/damirikys/leetify/SKILL.md",
+    "description": "Get CS2 player statistics, match analysis, and gameplay insights from Leetify API.",
+    "category": "media-and-streaming",
+    "description_zh": "從 Leetify API 取得 CS2 玩家統計數據、比賽分析和遊戲玩法見解。",
+    "original_description": "Get CS2 player statistics, match analysis, and gameplay insights from Leetify API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "letterboxd-tracker",
+    "id": "letterboxd-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tamil-9421/letterboxd-tracker/SKILL.md",
+    "description": "Your personal movie assistant.",
+    "category": "media-and-streaming",
+    "description_zh": "您的私人電影助理。",
+    "original_description": "Your personal movie assistant.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "mal-lookup",
+    "id": "mal-lookup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zun43d/mal-lookup/SKILL.md",
+    "description": "Direct MyAnimeList lookup tool.",
+    "category": "media-and-streaming",
+    "description_zh": "直接 MyAnimeList 尋找工具。",
+    "original_description": "Direct MyAnimeList lookup tool.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "media-player",
+    "id": "media-player",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xejrax/media-player/SKILL.md",
+    "description": "Play audio/video locally on the host.",
+    "category": "media-and-streaming",
+    "description_zh": "在主機本地播放音訊/視訊。",
+    "original_description": "Play audio/video locally on the host.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "mediaproc",
+    "id": "mediaproc",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/psyb0t/mediaproc/SKILL.md",
+    "description": "Process media files (video, audio, images) via a locked-down SSH container.",
+    "category": "media-and-streaming",
+    "description_zh": "透過鎖定的 SSH 容器處理媒體檔案（視訊、音訊、影像）。",
+    "original_description": "Process media files (video, audio, images) via a locked-down SSH container.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "metricool",
+    "id": "metricool",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/willscott-v2/metricool/SKILL.md",
+    "description": "Schedule and manage social media posts via Metricool API.",
+    "category": "media-and-streaming",
+    "description_zh": "透過 Metricool API 安排和管理社群媒體貼文。",
+    "original_description": "Schedule and manage social media posts via Metricool API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "mixpost",
+    "id": "mixpost",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lao9s/mixpost/SKILL.md",
+    "description": "Mixpost is a self-hosted social media management software that helps you.",
+    "category": "media-and-streaming",
+    "description_zh": "Mixpost 是一款可以為您提供協助的自架式社群媒體管理軟體。",
+    "original_description": "Mixpost is a self-hosted social media management software that helps you.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "mlx-audio-server",
+    "id": "mlx-audio-server",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/guoqiao/mlx-audio-server/SKILL.md",
+    "description": "A fast, accurate, and fully local OpenAI-compatible API.",
+    "category": "media-and-streaming",
+    "description_zh": "快速、準確且完全在地化的 OpenAI 相容 API。",
+    "original_description": "A fast, accurate, and fully local OpenAI-compatible API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "mm-easy-voice",
+    "id": "mm-easy-voice",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/blue-coconut/mm-easy-voice/SKILL.md",
+    "description": "Simple text-to-speech skill using MiniMax Voice API.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 MiniMax Voice API 的簡單文字轉語音技能。",
+    "original_description": "Simple text-to-speech skill using MiniMax Voice API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "mobb-vulnerabilities-fixer",
+    "id": "mobb-vulnerabilities-fixer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jonathansantilli/mobb-vulnerabilities-fixer/SKILL.md",
+    "description": "Scan, fix, and remediate security vulnerabilities in a local code repository using Mobb MCP/CLI.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Mobb MCP/CLI 掃描、修復和修復本機程式碼儲存庫中的安全漏洞。",
+    "original_description": "Scan, fix, and remediate security vulnerabilities in a local code repository using Mobb MCP/CLI.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "molt-radio",
+    "id": "molt-radio",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fciaf420/molt-radio/SKILL.md",
+    "description": "Become an AI radio host.",
+    "category": "media-and-streaming",
+    "description_zh": "成為人工智慧電台主持人。",
+    "original_description": "Become an AI radio host.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "music-cog",
+    "id": "music-cog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nitishgargiitd/music-cog/SKILL.md",
+    "description": "Original music, fully yours.",
+    "category": "media-and-streaming",
+    "description_zh": "原創音樂，完全屬於您。",
+    "original_description": "Original music, fully yours.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "nas-movie-download",
+    "id": "nas-movie-download",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/roger0808/nas-movie-download/SKILL.md",
+    "description": "Search and download movies via Jackett.",
+    "category": "media-and-streaming",
+    "description_zh": "透過 Jackett 搜尋和下載電影。",
+    "original_description": "Search and download movies via Jackett.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "norman-financial-overview",
+    "id": "norman-financial-overview",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stanlee000/norman-financial-overview/SKILL.md",
+    "description": "Get a complete financial overview of the business including balance, recent transactions, outstanding invoices.",
+    "category": "media-and-streaming",
+    "description_zh": "取得企業完整的財務概況，包括餘額、最近的交易、未清發票。",
+    "original_description": "Get a complete financial overview of the business including balance, recent transactions, outstanding invoices.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "oc-daily-business-report",
+    "id": "oc-daily-business-report",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mariusfit/oc-daily-business-report/SKILL.md",
+    "description": "Generate daily business briefings from multiple data sources.",
+    "category": "media-and-streaming",
+    "description_zh": "從多個資料來源產生每日業務簡報。",
+    "original_description": "Generate daily business briefings from multiple data sources.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "omni-stories",
+    "id": "omni-stories",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/specter0o0/omni-stories/SKILL.md",
+    "description": "Omni Stories is a skill that allows AI agents to generate.",
+    "category": "media-and-streaming",
+    "description_zh": "Omni Stories 是一項允許 AI 代理程式產生的技能。",
+    "original_description": "Omni Stories is a skill that allows AI agents to generate.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "overseerr",
+    "id": "overseerr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/j1philli/overseerr/SKILL.md",
+    "description": "Request movies/TV and monitor request status via the Overseerr API.",
+    "category": "media-and-streaming",
+    "description_zh": "透過 Overseerr API 請求影片/電視並監控請求狀態。",
+    "original_description": "Request movies/TV and monitor request status via the Overseerr API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "passive-income-tracker",
+    "id": "passive-income-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mariusfit/passive-income-tracker/SKILL.md",
+    "description": "Track all your passive income crypto apps from one place.",
+    "category": "media-and-streaming",
+    "description_zh": "從一個地方追蹤您所有的被動收入加密應用程式。",
+    "original_description": "Track all your passive income crypto apps from one place.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "payrail402",
+    "id": "payrail402",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rsquaredsolutions2026/payrail402/SKILL.md",
+    "description": "Cross-rail spend tracking for AI agents — Visa IC, Mastercard Agent Pay, Stripe ACP, x402, and ACH in one dashboard.",
+    "category": "media-and-streaming",
+    "description_zh": "在一個儀表板中對 AI 代理進行跨鐵路支出追蹤 — Visa IC、Mastercard Agent Pay、Stripe ACP、x402 和 ACH。",
+    "original_description": "Cross-rail spend tracking for AI agents — Visa IC, Mastercard Agent Pay, Stripe ACP, x402, and ACH in one dashboard.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "pinchboard",
+    "id": "pinchboard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/czubi1928/pinchboard/SKILL.md",
+    "description": "Post, follow, and engage on PinchBoard — the social network for AI agents.",
+    "category": "media-and-streaming",
+    "description_zh": "在 PinchBoard（人工智慧代理的社交網路）上發文、關注和參與。",
+    "original_description": "Post, follow, and engage on PinchBoard — the social network for AI agents.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "play-music",
+    "id": "play-music",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/awspace/play-music/SKILL.md",
+    "description": "**Controlled music player with pause/resume/stop support**.",
+    "category": "media-and-streaming",
+    "description_zh": "支援暫停/恢復/停止的受控音樂播放器。",
+    "original_description": "**Controlled music player with pause/resume/stop support**.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "podcast-chaptering-highlights",
+    "id": "podcast-chaptering-highlights",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/codedao12/podcast-chaptering-highlights/SKILL.md",
+    "description": "Create chapters, highlights, and show notes from podcast audio or transcripts.",
+    "category": "media-and-streaming",
+    "description_zh": "建立章節、反白並顯示播客音訊或文字記錄中的註釋。",
+    "original_description": "Create chapters, highlights, and show notes from podcast audio or transcripts.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "qwenspeak",
+    "id": "qwenspeak",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/psyb0t/qwenspeak/SKILL.md",
+    "description": "Text-to-speech generation via Qwen3-TTS over SSH.",
+    "category": "media-and-streaming",
+    "description_zh": "透過 SSH 上的 Qwen3-TTS 產生文字轉語音。",
+    "original_description": "Text-to-speech generation via Qwen3-TTS over SSH.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "reefgram",
+    "id": "reefgram",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/void-oracle/reefgram/SKILL.md",
+    "description": "Autonomous social network transceiver for machines and agents.",
+    "category": "media-and-streaming",
+    "description_zh": "用於機器和代理商的自主社交網路收發器。",
+    "original_description": "Autonomous social network transceiver for machines and agents.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "repliz",
+    "id": "repliz",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staryone/repliz/SKILL.md",
+    "description": "Repliz social media management API integration.",
+    "category": "media-and-streaming",
+    "description_zh": "Repliz 社群媒體管理 API 整合。",
+    "original_description": "Repliz social media management API integration.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "roomsound",
+    "id": "roomsound",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/icecat2005/roomsound/SKILL.md",
+    "description": "RoomSound gives your agent the skill to play audio to your speakers.",
+    "category": "media-and-streaming",
+    "description_zh": "RoomSound 讓您的客服人員能夠為您的揚聲器播放音訊。",
+    "original_description": "RoomSound gives your agent the skill to play audio to your speakers.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "salute-speech",
+    "id": "salute-speech",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chorus12/salute-speech/SKILL.md",
+    "description": "Transcribe audio files using Sber Salute Speech async API.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Sber Salute Speech 非同步 API 轉錄音訊檔案。",
+    "original_description": "Transcribe audio files using Sber Salute Speech async API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "simple-proposal-template-v2",
+    "id": "simple-proposal-template-v2",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kambrosgroup/simple-proposal-template-v2/SKILL.md",
+    "description": "Free basic proposal template for freelancers.",
+    "category": "media-and-streaming",
+    "description_zh": "為自由工作者提供的免費基本提案範本。",
+    "original_description": "Free basic proposal template for freelancers.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "slashbot-news",
+    "id": "slashbot-news",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alphabot-ai/slashbot-news/SKILL.md",
+    "description": "DEPRECATED — Use https://clawhub.ai/alphabot-ai/slashbot instead.",
+    "category": "media-and-streaming",
+    "description_zh": "已棄用 — 請改用 https://clawhub.ai/alphabot-ai/slashbot。",
+    "original_description": "DEPRECATED — Use https://clawhub.ai/alphabot-ai/slashbot instead.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "social-media-content-calendar",
+    "id": "social-media-content-calendar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanwyngaard/social-media-content-calendar/SKILL.md",
+    "description": "Generate structured social media content calendars with platform-specific posts, hashtags, and scheduling.",
+    "category": "media-and-streaming",
+    "description_zh": "使用特定於平台的貼文、主題標籤和日程安排來產生結構化的社群媒體內容日曆。",
+    "original_description": "Generate structured social media content calendars with platform-specific posts, hashtags, and scheduling.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "sports-odds",
+    "id": "sports-odds",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ianalloway/sports-odds/SKILL.md",
+    "description": "Get live sports betting odds and compare lines across sportsbooks.",
+    "category": "media-and-streaming",
+    "description_zh": "取得即時體育博彩賠率並比較各個體育博彩公司的賠率。",
+    "original_description": "Get live sports betting odds and compare lines across sportsbooks.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "telnyx-stt",
+    "id": "telnyx-stt",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamtelnyx/telnyx-stt/SKILL.md",
+    "description": "Transcribe audio files to text using Telnyx Speech-to-Text API.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Telnyx Speech-to-Text API 將音訊檔案轉錄為文字。",
+    "original_description": "Transcribe audio files to text using Telnyx Speech-to-Text API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "telnyx-tts",
+    "id": "telnyx-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamtelnyx/telnyx-tts/SKILL.md",
+    "description": "Generate speech audio from text using Telnyx Text-to-Speech API.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Telnyx 文字轉語音 API 從文字產生語音音訊。",
+    "original_description": "Generate speech audio from text using Telnyx Text-to-Speech API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "ulanzi-tc001",
+    "id": "ulanzi-tc001",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/felipeouropreto/ulanzi-tc001/SKILL.md",
+    "description": "Control the Ulanzi TC001 (Pixel Clock) over local HTTP.",
+    "category": "media-and-streaming",
+    "description_zh": "透過本機 HTTP 控制 Ulanzi TC001（像素時脈）。",
+    "original_description": "Control the Ulanzi TC001 (Pixel Clock) over local HTTP.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "voice-edge-tts",
+    "id": "voice-edge-tts",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zhaov1976/voice-edge-tts/SKILL.md",
+    "description": "Text-to-speech skill using Microsoft Edge TTS engine with real-time streaming playback support.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Microsoft Edge TTS 引擎的文字轉語音技能，並支援即時串流媒體播放。",
+    "original_description": "Text-to-speech skill using Microsoft Edge TTS engine with real-time streaming playback support.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "voice-to-text",
+    "id": "voice-to-text",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vae999/voice-to-text/SKILL.md",
+    "description": "Convert voice messages and audio files to text using Vosk offline speech recognition.",
+    "category": "media-and-streaming",
+    "description_zh": "使用 Vosk 離線語音辨識將語音訊息和音訊檔案轉換為文字。",
+    "original_description": "Convert voice messages and audio files to text using Vosk offline speech recognition.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "weekly-content-planner",
+    "id": "weekly-content-planner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/weekly-content-planner/SKILL.md",
+    "description": "Generate a full week of social media content for any topic.",
+    "category": "media-and-streaming",
+    "description_zh": "為任何主題產生一整週的社群媒體內容。",
+    "original_description": "Generate a full week of social media content for any topic.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "wherecaniwatch",
+    "id": "wherecaniwatch",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/samthewise2855/wherecaniwatch/SKILL.md",
+    "description": "Find where to stream any movie or TV show in the US using the WhereCanIWatch.tv API.",
+    "category": "media-and-streaming",
+    "description_zh": "使用WhereCanIWatch.tv API 尋找在美國哪裡可以播放任何電影或電視節目。",
+    "original_description": "Find where to stream any movie or TV show in the US using the WhereCanIWatch.tv API.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "wiim",
+    "id": "wiim",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/geodeterra/wiim/SKILL.md",
+    "description": "Control WiiM audio devices (play, pause, stop, next, prev, volume, mute, play URLs, presets)",
+    "category": "media-and-streaming",
+    "description_zh": "控制 WiiM 音訊設備（播放、暫停、停止、下一個、上一個、音量、靜音、播放 URL、預設）",
+    "original_description": "Control WiiM audio devices (play, pause, stop, next, prev, volume, mute, play URLs, presets)",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "xfor-bot",
+    "id": "xfor-bot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thinkoffapp/xfor-bot/SKILL.md",
+    "description": "Social media and messaging client for xfor.bot and Ant Farm.",
+    "category": "media-and-streaming",
+    "description_zh": "xfor.bot 和 Ant Farm 的社群媒體和訊息用戶端。",
+    "original_description": "Social media and messaging client for xfor.bot and Ant Farm.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "youtube-pro",
+    "id": "youtube-pro",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kjaylee/youtube-pro/SKILL.md",
+    "description": "Advanced YouTube analysis, transcripts, and metadata extraction.",
+    "category": "media-and-streaming",
+    "description_zh": "高級 YouTube 分析、文字記錄和元資料提取。",
+    "original_description": "Advanced YouTube analysis, transcripts, and metadata extraction.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  },
+  {
+    "title": "zillow-airbnb-matcher",
+    "id": "zillow-airbnb-matcher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/freemountaindeer/zillow-airbnb-matcher/SKILL.md",
+    "description": "Find properties for sale that are already generating Airbnb income.",
+    "category": "media-and-streaming",
+    "description_zh": "尋找已經產生 Airbnb 收入的待售房產。",
+    "original_description": "Find properties for sale that are already generating Airbnb income.",
+    "category_name": {
+      "en": "Media & Streaming",
+      "zh": "媒體與串流"
+    }
+  }
+]

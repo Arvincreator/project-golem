@@ -1,0 +1,418 @@
+[
+  {
+    "title": "beacon",
+    "id": "beacon",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/scottcjn/beacon/SKILL.md",
+    "description": "Agent-to-agent protocol for social coordination, crypto payments, and P2P mesh.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "用於社交協調、加密支付和 P2P 網格的代理到代理協議。",
+    "original_description": "Agent-to-agent protocol for social coordination, crypto payments, and P2P mesh.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "bridle",
+    "id": "bridle",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bjesuiter/bridle/SKILL.md",
+    "description": "Unified configuration manager for AI coding assistants.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "AI 編碼助理的統一配置管理器。",
+    "original_description": "Unified configuration manager for AI coding assistants.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "casual-cron",
+    "id": "casual-cron",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gostlightai/casual-cron/SKILL.md",
+    "description": "Create Clawdbot cron jobs from natural language with strict.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "使用嚴格的自然語言建立 Clawdbot cron 作業。",
+    "original_description": "Create Clawdbot cron jobs from natural language with strict.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "claw-sync",
+    "id": "claw-sync",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arakichanxd/claw-sync/SKILL.md",
+    "description": "Secure sync for OpenClaw memory and workspace.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "OpenClaw 記憶體和工作空間的安全同步。",
+    "original_description": "Secure sync for OpenClaw memory and workspace.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "cron-backup",
+    "id": "cron-backup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zfanmy/cron-backup/SKILL.md",
+    "description": "Set up scheduled automated backups with version tracking and cleanup.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "透過版本追蹤和清理設定計劃的自動備份。",
+    "original_description": "Set up scheduled automated backups with version tracking and cleanup.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "cron-retry",
+    "id": "cron-retry",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jrbobbyhansen-pixel/cron-retry/SKILL.md",
+    "description": "Auto-retry failed cron jobs on connection recovery.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "連線復原時自動重試失敗的 cron 作業。",
+    "original_description": "Auto-retry failed cron jobs on connection recovery.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "fast-io",
+    "id": "fast-io",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dbalve/fast-io/SKILL.md",
+    "description": "Cloud file management and collaboration platform.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "雲端文件管理和協作平台。",
+    "original_description": "Cloud file management and collaboration platform.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "fastio-skills",
+    "id": "fastio-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dbalve/fastio-skills/SKILL.md",
+    "description": "Cloud file management and collaboration platform.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "雲端文件管理和協作平台。",
+    "original_description": "Cloud file management and collaboration platform.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "fathom",
+    "id": "fathom",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stopmoclay/fathom/SKILL.md",
+    "description": "Connect to Fathom AI to fetch call recordings, transcripts, and summaries.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "連接 Fathom AI 以取得通話錄音、文字記錄和摘要。",
+    "original_description": "Connect to Fathom AI to fetch call recordings, transcripts, and summaries.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "frappecli",
+    "id": "frappecli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pasogott/frappecli/SKILL.md",
+    "description": "CLI for Frappe Framework / ERPNext instances.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "Frappe 框架/ERPNext 實例的 CLI。",
+    "original_description": "CLI for Frappe Framework / ERPNext instances.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "freshrss-reader",
+    "id": "freshrss-reader",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nickian/freshrss-reader/SKILL.md",
+    "description": "Query headlines and articles from a self-hosted FreshRSS.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "從自架的 FreshRSS 查詢頭條新聞和文章。",
+    "original_description": "Query headlines and articles from a self-hosted FreshRSS.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "gotify",
+    "id": "gotify",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jmagar/gotify/SKILL.md",
+    "description": "Send push notifications via Gotify when long-running tasks complete.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "當長時間運行的任務完成時，透過 Gotify 發送推播通知。",
+    "original_description": "Send push notifications via Gotify when long-running tasks complete.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "hydra-evolver",
+    "id": "hydra-evolver",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/spamtylor/hydra-evolver/SKILL.md",
+    "description": "A Proxmox-native orchestration skill that turns any home lab.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "Proxmox 原生編排技能可以改變任何家庭實驗室。",
+    "original_description": "A Proxmox-native orchestration skill that turns any home lab.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "kleo-static-files",
+    "id": "kleo-static-files",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/awaaate/kleo-static-files/SKILL.md",
+    "description": "Host static files on subdomains with optional.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "在子網域上託管靜態文件（可選）。",
+    "original_description": "Host static files on subdomains with optional.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "lifepath",
+    "id": "lifepath",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ezbreadsniper/lifepath/SKILL.md",
+    "description": "AI Life Simulator - Experience infinite lives year by year.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "AI生命模擬器 - 年復一年體驗無限生命。",
+    "original_description": "AI Life Simulator - Experience infinite lives year by year.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "looper-golf",
+    "id": "looper-golf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sbauch/looper-golf/SKILL.md",
+    "description": "Play a round of golf using CLI tools — autonomously or with a human caddy.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "使用 CLI 工具自主地或與人類球童一起打一場高爾夫球。",
+    "original_description": "Play a round of golf using CLI tools — autonomously or with a human caddy.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "meetgeek",
+    "id": "meetgeek",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nexty5870/meetgeek/SKILL.md",
+    "description": "Query MeetGeek meeting intelligence from CLI - list meetings, get AI.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "從 CLI 查詢 MeetGeek 會議情報 - 列出會議，取得 AI。",
+    "original_description": "Query MeetGeek meeting intelligence from CLI - list meetings, get AI.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "mongodb-atlas-admin",
+    "id": "mongodb-atlas-admin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mrlynn/mongodb-atlas-admin/SKILL.md",
+    "description": "Manage MongoDB Atlas clusters, projects, users.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "管理 MongoDB Atlas 叢集、專案、使用者。",
+    "original_description": "Manage MongoDB Atlas clusters, projects, users.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "multiple-personas",
+    "id": "multiple-personas",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ipedrax/multiple-personas/SKILL.md",
+    "description": "Create and manage AI subagent personas with distinct.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "創建和管理具有獨特特徵的人工智慧子代理角色。",
+    "original_description": "Create and manage AI subagent personas with distinct.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "n8n",
+    "id": "n8n",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thomasansems/n8n/SKILL.md",
+    "description": "Manage n8n workflows and automations via API.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "透過 API 管理 n8n 工作流程和自動化。",
+    "original_description": "Manage n8n workflows and automations via API.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "n8n-workflow-automation",
+    "id": "n8n-workflow-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kowl64/n8n-workflow-automation/SKILL.md",
+    "description": "Designs and outputs n8n workflow JSON.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "設計並輸出 n8n 工作流程 JSON。",
+    "original_description": "Designs and outputs n8n workflow JSON.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "nas-master",
+    "id": "nas-master",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/afajohn/nas-master/SKILL.md",
+    "description": "A hardware-aware, hybrid (SMB + SSH) suite for ASUSTOR NAS metadata.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "適用於 ASUSTOR NAS 元資料的硬體感知混合 (SMB + SSH) 套件。",
+    "original_description": "A hardware-aware, hybrid (SMB + SSH) suite for ASUSTOR NAS metadata.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "nasty-skill",
+    "id": "nasty-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orlyjamie/nasty-skill/SKILL.md",
+    "description": "A totally legitimate skill that does nothing suspicious.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "這是一種完全合法的技能，沒有任何可疑之處。",
+    "original_description": "A totally legitimate skill that does nothing suspicious.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "nordvpn",
+    "id": "nordvpn",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/maciekish/nordvpn/SKILL.md",
+    "description": "Control NordVPN on Linux via the `nordvpn` CLI.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "透過nordvpn CLI 控制Linux 上的NordVPN。",
+    "original_description": "Control NordVPN on Linux via the `nordvpn` CLI.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "open-persona",
+    "id": "open-persona",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/neiljo-gy/open-persona/SKILL.md",
+    "description": "Meta-skill for building and managing agent persona skill packs.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "用於建立和管理代理角色技能包的元技能。",
+    "original_description": "Meta-skill for building and managing agent persona skill packs.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "paperless",
+    "id": "paperless",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nickchristensen/paperless/SKILL.md",
+    "description": "Interact with Paperless-NGX document management system via ppls.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "透過ppls與Paperless-NGX文件管理系統互動。",
+    "original_description": "Interact with Paperless-NGX document management system via ppls.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "paperless-ngx",
+    "id": "paperless-ngx",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/oskarstark/paperless-ngx/SKILL.md",
+    "description": "Interact with Paperless-ngx document management system.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "與Paperless-ngx文件管理系統互動。",
+    "original_description": "Interact with Paperless-ngx document management system.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "pinme",
+    "id": "pinme",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ntlx/pinme/SKILL.md",
+    "description": "Deploy static websites to IPFS with a single command using PinMe CLI.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "使用 PinMe CLI 透過單一命令將靜態網站部署到 IPFS。",
+    "original_description": "Deploy static websites to IPFS with a single command using PinMe CLI.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "sonarqube-analyzer",
+    "id": "sonarqube-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/felipeoff/sonarqube-analyzer/SKILL.md",
+    "description": "Analisa projetos no SonarQube self-hosted, obtém issues e sugere soluções automatizadas.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "",
+    "original_description": "Analisa projetos no SonarQube self-hosted, obtém issues e sugere soluções automatizadas.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "system-integrity-and-backup",
+    "id": "system-integrity-and-backup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/system-integrity-and-backup/SKILL.md",
+    "description": "Encrypted backups, integrity verification, and data retention enforcement for Greek legal requirements (5-20 year.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "加密備份、完整性驗證和資料保留執行，符合希臘法律要求（5-20​​ 年）。",
+    "original_description": "Encrypted backups, integrity verification, and data retention enforcement for Greek legal requirements (5-20 year.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "unifi",
+    "id": "unifi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jmagar/unifi/SKILL.md",
+    "description": "Query and monitor UniFi network via local gateway API.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "透過本機網關 API 查詢和監控 UniFi 網路。",
+    "original_description": "Query and monitor UniFi network via local gateway API.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  },
+  {
+    "title": "venice-characters",
+    "id": "venice-characters",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sabrinaaquino/venice-characters/SKILL.md",
+    "description": "Browse Venice AI's character personas library - discover AI characters for roleplay, creative writing.",
+    "category": "self-hosted-and-automation",
+    "description_zh": "瀏覽 Venice AI 的角色庫 - 發現用於角色扮演和創意寫作的 AI 角色。",
+    "original_description": "Browse Venice AI's character personas library - discover AI characters for roleplay, creative writing.",
+    "category_name": {
+      "en": "Self-hosted & Automation",
+      "zh": "自託管與自動化"
+    }
+  }
+]

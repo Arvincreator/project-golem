@@ -1,0 +1,1354 @@
+[
+  {
+    "title": "4chan-reader",
+    "id": "4chan-reader",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aiasisbot61/4chan-reader/SKILL.md",
+    "description": "Browse 4chan boards and extract thread discussions.",
+    "category": "marketing-and-sales",
+    "description_zh": "瀏覽 4chan 版塊並擷取主題討論。",
+    "original_description": "Browse 4chan boards and extract thread discussions.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "ab-test-setup",
+    "id": "ab-test-setup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jchopard69/marketing-skills/references/ab-test-setup/SKILL.md",
+    "description": "When the user wants to plan.",
+    "category": "marketing-and-sales",
+    "description_zh": "當用戶想要計劃時。",
+    "original_description": "When the user wants to plan.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "ad-ready",
+    "id": "ad-ready",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pauldelavallaz/ad-ready/SKILL.md",
+    "description": "Generate professional advertising images from product URLs.",
+    "category": "marketing-and-sales",
+    "description_zh": "從產品 URL 產生專業的廣告圖像。",
+    "original_description": "Generate professional advertising images from product URLs.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "ad-ready-pro",
+    "id": "ad-ready-pro",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pauldelavallaz/ad-ready-pro/SKILL.md",
+    "description": "Generate professional advertising images from product URLs.",
+    "category": "marketing-and-sales",
+    "description_zh": "從產品 URL 產生專業的廣告圖像。",
+    "original_description": "Generate professional advertising images from product URLs.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "affiliate-master",
+    "id": "affiliate-master",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/michael-laffin/affiliate-master/SKILL.md",
+    "description": "Full-stack affiliate marketing automation.",
+    "category": "marketing-and-sales",
+    "description_zh": "全端聯盟行銷自動化。",
+    "original_description": "Full-stack affiliate marketing automation.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "affiliatematic",
+    "id": "affiliatematic",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dowands/affiliatematic/SKILL.md",
+    "description": "Integrate AI-powered Amazon affiliate product recommendations.",
+    "category": "marketing-and-sales",
+    "description_zh": "整合人工智慧驅動的亞馬遜聯盟產品推薦。",
+    "original_description": "Integrate AI-powered Amazon affiliate product recommendations.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "agenticcreed-signup-lead",
+    "id": "agenticcreed-signup-lead",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/waqas-orcalo/agenticcreed-signup-lead/SKILL.md",
+    "description": "Create a signup lead in the AgenticCreed system using the public HTTP endpoint.",
+    "category": "marketing-and-sales",
+    "description_zh": "使用公用 HTTP 端點在 AgenticCreed 系統中建立註冊線索。",
+    "original_description": "Create a signup lead in the AgenticCreed system using the public HTTP endpoint.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "alibaba-supplier-outreach",
+    "id": "alibaba-supplier-outreach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/blockchainhb/alibaba-supplier-outreach/SKILL.md",
+    "description": "Find Alibaba suppliers via LaunchFast, contact them with optimized outreach messages, check their replies.",
+    "category": "marketing-and-sales",
+    "description_zh": "透過 LaunchFast 尋找阿里巴巴供應商，透過優化的外展訊息與他們聯繫，查看他們的回應。",
+    "original_description": "Find Alibaba suppliers via LaunchFast, contact them with optimized outreach messages, check their replies.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "alura",
+    "id": "alura",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/evilboyajay/alura/SKILL.md",
+    "description": "Integrate with Alura Trading backend API.",
+    "category": "marketing-and-sales",
+    "description_zh": "與 Alura Trading 後端 API 整合。",
+    "original_description": "Integrate with Alura Trading backend API.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "analytics-and-advisory-intelligence",
+    "id": "analytics-and-advisory-intelligence",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/analytics-and-advisory-intelligence/SKILL.md",
+    "description": "Cross-client analytics for Greek accounting firms.",
+    "category": "marketing-and-sales",
+    "description_zh": "希臘會計師事務所的跨客戶分析。",
+    "original_description": "Cross-client analytics for Greek accounting firms.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "apollo",
+    "id": "apollo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jhumanj/apollo/SKILL.md",
+    "description": "Interact with Apollo.io REST API (people/org enrichment, search, lists).",
+    "category": "marketing-and-sales",
+    "description_zh": "與 Apollo.io REST API 互動（人員/組織充實、搜尋、清單）。",
+    "original_description": "Interact with Apollo.io REST API (people/org enrichment, search, lists).",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "ar-filter-generation",
+    "id": "ar-filter-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/ar-filter-generation/SKILL.md",
+    "description": "Generate AR filters and face effects using each::sense AI.",
+    "category": "marketing-and-sales",
+    "description_zh": "使用每個::sense AI 產生 AR 濾鏡和臉部效果。",
+    "original_description": "Generate AR filters and face effects using each::sense AI.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "attio-enhanced",
+    "id": "attio-enhanced",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/capt-marbles/attio-enhanced/SKILL.md",
+    "description": "Enhanced Attio CRM API skill with batch operations.",
+    "category": "marketing-and-sales",
+    "description_zh": "透過批次操作增強了 Attio CRM API 技能。",
+    "original_description": "Enhanced Attio CRM API skill with batch operations.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "attribution-engine",
+    "id": "attribution-engine",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/otherpowers/attribution-engine/SKILL.md",
+    "description": "Helps creators clearly credit collaborators, tools.",
+    "category": "marketing-and-sales",
+    "description_zh": "幫助創作者明確信用合作者、工具。",
+    "original_description": "Helps creators clearly credit collaborators, tools.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "auto-skill-hunter",
+    "id": "auto-skill-hunter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanng-ide/auto-skill-hunter/SKILL.md",
+    "description": "Proactively discovers, ranks, and installs high-value ClawHub skills by mining unresolved user needs and agent.",
+    "category": "marketing-and-sales",
+    "description_zh": "透過挖掘未解決的用戶需求和代理，主動發現、排名和安裝高價值的 ClawHub 技能。",
+    "original_description": "Proactively discovers, ranks, and installs high-value ClawHub skills by mining unresolved user needs and agent.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "b2c-marketing",
+    "id": "b2c-marketing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jackfriks/b2c-marketing/SKILL.md",
+    "description": "The organic growth playbook behind 300K+ app downloads.",
+    "category": "marketing-and-sales",
+    "description_zh": "超過 30 萬次應用程式下載背後的自然成長手冊。",
+    "original_description": "The organic growth playbook behind 300K+ app downloads.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "basecamp-cli",
+    "id": "basecamp-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/emredoganer/basecamp-cli/SKILL.md",
+    "description": "Manage Basecamp (via bc3 API / 37signals Launchpad) projects.",
+    "category": "marketing-and-sales",
+    "description_zh": "管理 Basecamp（透過 bc3 API / 37signals Launchpad）專案。",
+    "original_description": "Manage Basecamp (via bc3 API / 37signals Launchpad) projects.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "beads",
+    "id": "beads",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rnijhara/beads/SKILL.md",
+    "description": "Git-backed issue tracker for AI agents.",
+    "category": "marketing-and-sales",
+    "description_zh": "Git 支援的 AI 代理問題追蹤器。",
+    "original_description": "Git-backed issue tracker for AI agents.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "bearblog",
+    "id": "bearblog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/azade-c/bearblog/SKILL.md",
+    "description": "Create and manage blog posts on Bear Blog (bearblog.dev).",
+    "category": "marketing-and-sales",
+    "description_zh": "在 Bear Blog (bearblog.dev) 上建立和管理部落格文章。",
+    "original_description": "Create and manage blog posts on Bear Blog (bearblog.dev).",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "bird",
+    "id": "bird",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/bird/SKILL.md",
+    "description": "X/Twitter CLI for reading, searching, and posting via cookies or Sweetistics.",
+    "category": "marketing-and-sales",
+    "description_zh": "X/Twitter CLI 用於透過 cookie 或 Sweetistics 閱讀、搜尋和發布。",
+    "original_description": "X/Twitter CLI for reading, searching, and posting via cookies or Sweetistics.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "blog-to-kindle",
+    "id": "blog-to-kindle",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ainekomacx/blog-to-kindle/SKILL.md",
+    "description": "Scrape blogs/essay sites and compile into Kindle-friendly.",
+    "category": "marketing-and-sales",
+    "description_zh": "抓取部落格/論文網站並編譯成 Kindle 友善型。",
+    "original_description": "Scrape blogs/essay sites and compile into Kindle-friendly.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "blog-writer",
+    "id": "blog-writer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tomstools11/blog-writer/SKILL.md",
+    "description": "This skill should be used when writing blog posts, articles.",
+    "category": "marketing-and-sales",
+    "description_zh": "在撰寫部落格文章、文章時應該使用這項技能。",
+    "original_description": "This skill should be used when writing blog posts, articles.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "bluesky",
+    "id": "bluesky",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeffaf/bluesky/SKILL.md",
+    "description": "Complete Bluesky CLI: post, reply, like, repost, follow, block, mute, search,.",
+    "category": "marketing-and-sales",
+    "description_zh": "完整的 Bluesky CLI：發文、回覆、按讚、轉發、追蹤、封鎖、靜音、搜尋。",
+    "original_description": "Complete Bluesky CLI: post, reply, like, repost, follow, block, mute, search,.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "botsee",
+    "id": "botsee",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/grahac/botsee/SKILL.md",
+    "description": "Monitor your brand's AI visibility via BotSee API.",
+    "category": "marketing-and-sales",
+    "description_zh": "",
+    "original_description": "Monitor your brand's AI visibility via BotSee API.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "bottyfans",
+    "id": "bottyfans",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cartoonitunes/bottyfans/SKILL.md",
+    "description": "BottyFans agent skill for autonomous creator monetization.",
+    "category": "marketing-and-sales",
+    "description_zh": "BottyFans 自主創作者貨幣化的代理技能。",
+    "original_description": "BottyFans agent skill for autonomous creator monetization.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "brand-cog",
+    "id": "brand-cog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nitishgargiitd/brand-cog/SKILL.md",
+    "description": "Other tools make logos.",
+    "category": "marketing-and-sales",
+    "description_zh": "其他工具製作標誌。",
+    "original_description": "Other tools make logos.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "brand-guidelines",
+    "id": "brand-guidelines",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanphan/brand-guidelines/SKILL.md",
+    "description": "Applies Anthropic's official brand colors and typography.",
+    "category": "marketing-and-sales",
+    "description_zh": "應用 Anthropic 的官方品牌顏色和版面。",
+    "original_description": "Applies Anthropic's official brand colors and typography.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "brand-voice-profile",
+    "id": "brand-voice-profile",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dimitripantzos/brand-voice-profile/SKILL.md",
+    "description": "Define and store your brand voice profile for consistent content generation.",
+    "category": "marketing-and-sales",
+    "description_zh": "定義並儲存您的品牌聲音配置文件，以產生一致的內容。",
+    "original_description": "Define and store your brand voice profile for consistent content generation.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "brevo",
+    "id": "brevo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yujesyoga/brevo/SKILL.md",
+    "description": "Brevo (formerly Sendinblue) email marketing API for managing contacts, lists,.",
+    "category": "marketing-and-sales",
+    "description_zh": "Brevo（以前稱為 Sendinblue）電子郵件行銷 API，用於管理聯絡人、清單等。",
+    "original_description": "Brevo (formerly Sendinblue) email marketing API for managing contacts, lists,.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "britebooth-procurement",
+    "id": "britebooth-procurement",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vismonkey19/britebooth-procurement/SKILL.md",
+    "description": "Read-only assistant for BriteBooth.com.",
+    "category": "marketing-and-sales",
+    "description_zh": "BriteBooth.com 的只讀助手。",
+    "original_description": "Read-only assistant for BriteBooth.com.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "brw-marketing-principles",
+    "id": "brw-marketing-principles",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianrwagner/brw-marketing-principles/SKILL.md",
+    "description": "Apply timeless marketing and business principles to any problem.",
+    "category": "marketing-and-sales",
+    "description_zh": "將永恆的營銷和商業原則應用於任何問題。",
+    "original_description": "Apply timeless marketing and business principles to any problem.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "brw-newsletter-creation-curation",
+    "id": "brw-newsletter-creation-curation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianrwagner/brw-newsletter-creation-curation/SKILL.md",
+    "description": "Industry-adaptive B2B newsletter creation with stage, role, and geography-aware workflows.",
+    "category": "marketing-and-sales",
+    "description_zh": "具有階段、角色和地理感知工作流程的行業適應性 B2B 時事通訊創建。",
+    "original_description": "Industry-adaptive B2B newsletter creation with stage, role, and geography-aware workflows.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "bulletproof-memory",
+    "id": "bulletproof-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/halthelobster",
+    "description": "Never lose context.",
+    "category": "marketing-and-sales",
+    "description_zh": "永遠不要失去背景。",
+    "original_description": "Never lose context.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "business-development",
+    "id": "business-development",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/oyi77/business-development/SKILL.md",
+    "description": "Partnership outreach, market research, competitor.",
+    "category": "marketing-and-sales",
+    "description_zh": "合作夥伴外展、市場研究、競爭對手。",
+    "original_description": "Partnership outreach, market research, competitor.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "buzz-bd",
+    "id": "buzz-bd",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/buzzbysolcex/buzz-bd/SKILL.md",
+    "description": "Autonomous crypto token discovery, scoring, and business development intelligence.",
+    "category": "marketing-and-sales",
+    "description_zh": "自主加密代幣發現、評分和業務開發智能。",
+    "original_description": "Autonomous crypto token discovery, scoring, and business development intelligence.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "campaign-orchestrator",
+    "id": "campaign-orchestrator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kesslerio/campaign-orchestrator/SKILL.md",
+    "description": "Multi-channel follow-up campaign orchestrator.",
+    "category": "marketing-and-sales",
+    "description_zh": "多通路後續活動協調器。",
+    "original_description": "Multi-channel follow-up campaign orchestrator.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "catbox-upload",
+    "id": "catbox-upload",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/microck/catbox-upload/SKILL.md",
+    "description": "Upload files to catbox.moe (permanent) or litterbox.catbox.moe.",
+    "category": "marketing-and-sales",
+    "description_zh": "將檔案上傳到catbox.moe（永久）或litterbox.catbox.moe。",
+    "original_description": "Upload files to catbox.moe (permanent) or litterbox.catbox.moe.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "changenow",
+    "id": "changenow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yakelb0815/changenow/SKILL.md",
+    "description": "Perform instant crypto swaps via ChangeNOW and earn affiliate commissions.",
+    "category": "marketing-and-sales",
+    "description_zh": "透過 ChangeNOW 執行即時加密貨幣交換並賺取附屬佣金。",
+    "original_description": "Perform instant crypto swaps via ChangeNOW and earn affiliate commissions.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "citedy-seo-agent",
+    "id": "citedy-seo-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nttylock/citedy-seo-agent/SKILL.md",
+    "description": "Connect your AI agent to Citedy's SEO content platform.",
+    "category": "marketing-and-sales",
+    "description_zh": "將您的 AI 代理連接到 Citedy 的 SEO 內容平台。",
+    "original_description": "Connect your AI agent to Citedy's SEO content platform.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "clawdwork",
+    "id": "clawdwork",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/felo-sparticle/clawdwork/SKILL.md",
+    "description": "Find work, earn money, and collaborate with other AI agents.",
+    "category": "marketing-and-sales",
+    "description_zh": "找工作、賺錢並與其他人工智慧代理商合作。",
+    "original_description": "Find work, earn money, and collaborate with other AI agents.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "clovercli",
+    "id": "clovercli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/g9pedro/clovercli/SKILL.md",
+    "description": "CLI for Clover POS API — inventory, orders, payments, customers, employees, discounts, and analytics.",
+    "category": "marketing-and-sales",
+    "description_zh": "Clover POS API 的 CLI — 庫存、訂單、付款、客戶、員工、折扣和分析。",
+    "original_description": "CLI for Clover POS API — inventory, orders, payments, customers, employees, discounts, and analytics.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "cold-email",
+    "id": "cold-email",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bluecraft-ai/cold-email/SKILL.md",
+    "description": "Generate hyper-personalized cold email sequences using AI.",
+    "category": "marketing-and-sales",
+    "description_zh": "使用人工智慧產生超個人化的冷電子郵件序列。",
+    "original_description": "Generate hyper-personalized cold email sequences using AI.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "cold-outreach",
+    "id": "cold-outreach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staybased/cold-outreach/SKILL.md",
+    "description": "Generate high-converting cold outreach (email, SMS, LinkedIn DM) using battle-tested frameworks from Hormozi's.",
+    "category": "marketing-and-sales",
+    "description_zh": "使用 Hormozi 的經過實戰檢驗的框架產生高轉換率的冷外展（電子郵件、簡訊、LinkedIn DM）。",
+    "original_description": "Generate high-converting cold outreach (email, SMS, LinkedIn DM) using battle-tested frameworks from Hormozi's.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "comms-md-reader",
+    "id": "comms-md-reader",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stedmanhalliday/comms-md-reader/SKILL.md",
+    "description": "Read and adapt to someone's COMMS.md before contacting them.",
+    "category": "marketing-and-sales",
+    "description_zh": "在聯繫某人之前，請閱讀並適應他們的 COMMS.md。",
+    "original_description": "Read and adapt to someone's COMMS.md before contacting them.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "competitor-alternatives",
+    "id": "competitor-alternatives",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jchopard69/marketing-skills/references/competitor-alternatives/SKILL.md",
+    "description": "When the user wants.",
+    "category": "marketing-and-sales",
+    "description_zh": "當用戶想要的時候。",
+    "original_description": "When the user wants.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "content-creator",
+    "id": "content-creator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alirezarezvani/content-creator/SKILL.md",
+    "description": "Create SEO-optimized marketing content with consistent.",
+    "category": "marketing-and-sales",
+    "description_zh": "創建一致的 SEO 優化行銷內容。",
+    "original_description": "Create SEO-optimized marketing content with consistent.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "content-generation",
+    "id": "content-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tobisamaa/content-generation/SKILL.md",
+    "description": "Generate high-quality content across multiple formats.",
+    "category": "marketing-and-sales",
+    "description_zh": "產生多種格式的高品質內容。",
+    "original_description": "Generate high-quality content across multiple formats.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "crabernews",
+    "id": "crabernews",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alvinunreal/crabernews/SKILL.md",
+    "description": "The social news network for AI agents.",
+    "category": "marketing-and-sales",
+    "description_zh": "人工智慧代理的社交新聞網絡。",
+    "original_description": "The social news network for AI agents.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "crypto-market-data",
+    "id": "crypto-market-data",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/liam8/crypto-market-data/SKILL.md",
+    "description": "No API KEY needed for free tier.",
+    "category": "marketing-and-sales",
+    "description_zh": "免費套餐不需要 API KEY。",
+    "original_description": "No API KEY needed for free tier.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "deck0-skills",
+    "id": "deck0-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/signorcrypto/deck0-skills/SKILL.md",
+    "description": "Interact with DECK-0 digital collectibles platform to browse collections, buy card packs, open packs, view.",
+    "category": "marketing-and-sales",
+    "description_zh": "與DECK-0數位收藏品平台互動，瀏覽收藏品、購買卡包、開包、查看。",
+    "original_description": "Interact with DECK-0 digital collectibles platform to browse collections, buy card packs, open packs, view.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "dellight-cmo-content-marketing",
+    "id": "dellight-cmo-content-marketing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arthurelgindell/dellight-cmo-content-marketing/SKILL.md",
+    "description": "CMO reports to CRO (Reign), dotted line to CEO (Arthur Dell).",
+    "category": "marketing-and-sales",
+    "description_zh": "CMO 向 CRO (Reign) 報告，虛線向 CEO (Arthur Dell) 報告。",
+    "original_description": "CMO reports to CRO (Reign), dotted line to CEO (Arthur Dell).",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "dellight-content-marketing",
+    "id": "dellight-content-marketing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arthurelgindell/dellight-content-marketing/SKILL.md",
+    "description": "CMO reports to CRO (Reign), dotted line to CEO (Arthur Dell).",
+    "category": "marketing-and-sales",
+    "description_zh": "CMO 向 CRO (Reign) 報告，虛線向 CEO (Arthur Dell) 報告。",
+    "original_description": "CMO reports to CRO (Reign), dotted line to CEO (Arthur Dell).",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "dungeons-and-lobsters",
+    "id": "dungeons-and-lobsters",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/d-l-leapyear/dungeons-and-lobsters/SKILL.md",
+    "description": "Bots-only fantasy campaigns played live by autonomous agents.",
+    "category": "marketing-and-sales",
+    "description_zh": "僅限機器人的奇幻戰役由自主代理現場進行。",
+    "original_description": "Bots-only fantasy campaigns played live by autonomous agents.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "email-marketing-2",
+    "id": "email-marketing-2",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/email-marketing-2/SKILL.md",
+    "description": "Build and execute email marketing campaigns for a solopreneur business.",
+    "category": "marketing-and-sales",
+    "description_zh": "為個體企業家企業建立並執行電子郵件行銷活動。",
+    "original_description": "Build and execute email marketing campaigns for a solopreneur business.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "farmos-marketing",
+    "id": "farmos-marketing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianppetty/farmos-marketing/SKILL.md",
+    "description": "Query grain marketing positions, contracts, delivery schedules, inventory, and revenue data.",
+    "category": "marketing-and-sales",
+    "description_zh": "查詢糧食行銷倉位、合約、交貨計畫、庫存和收入資料。",
+    "original_description": "Query grain marketing positions, contracts, delivery schedules, inventory, and revenue data.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "flwr-branding-studio-kit",
+    "id": "flwr-branding-studio-kit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vansearch/flwr-branding-studio-kit/SKILL.md",
+    "description": "An advanced AI agent that acts as a Senior Brand Strategist.",
+    "category": "marketing-and-sales",
+    "description_zh": "高級人工智慧代理，充當高級品牌策略師。",
+    "original_description": "An advanced AI agent that acts as a Senior Brand Strategist.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "foxreach",
+    "id": "foxreach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/concaption/foxreach/SKILL.md",
+    "description": "Manage FoxReach cold email outreach — leads, campaigns, sequences, templates, email accounts, inbox, and analytics.",
+    "category": "marketing-and-sales",
+    "description_zh": "管理 FoxReach 冷電子郵件外展 — 潛在客戶、行銷活動、序列、範本、電子郵件帳戶、收件匣和分析。",
+    "original_description": "Manage FoxReach cold email outreach — leads, campaigns, sequences, templates, email accounts, inbox, and analytics.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "foxreach-io",
+    "id": "foxreach-io",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/concaption/foxreach-io/SKILL.md",
+    "description": "Manage FoxReach cold email outreach — leads, campaigns, sequences, templates, email accounts, inbox, and analytics.",
+    "category": "marketing-and-sales",
+    "description_zh": "管理 FoxReach 冷電子郵件外展 — 潛在客戶、行銷活動、序列、範本、電子郵件帳戶、收件匣和分析。",
+    "original_description": "Manage FoxReach cold email outreach — leads, campaigns, sequences, templates, email accounts, inbox, and analytics.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "ghost-cms",
+    "id": "ghost-cms",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chrisagiddings/ghost-cms/SKILL.md",
+    "description": "Comprehensive Ghost CMS integration for creating, publishing, scheduling, and managing blog content, newsletters.",
+    "category": "marketing-and-sales",
+    "description_zh": "全面的 Ghost CMS 集成，用於建立、發布、安排和管理部落格內容、時事通訊。",
+    "original_description": "Comprehensive Ghost CMS integration for creating, publishing, scheduling, and managing blog content, newsletters.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "glowskin-promo",
+    "id": "glowskin-promo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/underbench2-gif/glowskin-promo/SKILL.md",
+    "description": "Generate viral marketing content for skincare affiliate products.",
+    "category": "marketing-and-sales",
+    "description_zh": "為護膚附屬產品生成病毒式行銷內容。",
+    "original_description": "Generate viral marketing content for skincare affiliate products.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "go-to-market",
+    "id": "go-to-market",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/go-to-market/SKILL.md",
+    "description": "Build a go-to-market (GTM) strategy for launching a product or entering a new market.",
+    "category": "marketing-and-sales",
+    "description_zh": "制定上市 (GTM) 策略以推出產品或進入新市場。",
+    "original_description": "Build a go-to-market (GTM) strategy for launching a product or entering a new market.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "invoice-template",
+    "id": "invoice-template",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kambrosgroup/invoice-template/SKILL.md",
+    "description": "Free simple invoice generator.",
+    "category": "marketing-and-sales",
+    "description_zh": "免費的簡單發票產生器。",
+    "original_description": "Free simple invoice generator.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "justpayai",
+    "id": "justpayai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nemanja-lootbox/justpayai/SKILL.md",
+    "description": "AI agent marketplace & payments — hire agents, post jobs, run campaigns, earn USDC on Solana.",
+    "category": "marketing-and-sales",
+    "description_zh": "AI 代理商市場和支付 — 僱用代理商、發布職位、開展活動、在 Solana 上賺取 USDC。",
+    "original_description": "AI agent marketplace & payments — hire agents, post jobs, run campaigns, earn USDC on Solana.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "kameleondb",
+    "id": "kameleondb",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/marcosnataqs/kameleondb/SKILL.md",
+    "description": "Store and query structured data without planning schemas upfront.",
+    "category": "marketing-and-sales",
+    "description_zh": "儲存和查詢結構化數據，無需預先規劃架構。",
+    "original_description": "Store and query structured data without planning schemas upfront.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "karma-book",
+    "id": "karma-book",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xb1g/karma-book/SKILL.md",
+    "description": "Where agents and humans do good.",
+    "category": "marketing-and-sales",
+    "description_zh": "特工和人類做好事的地方。",
+    "original_description": "Where agents and humans do good.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "kit-email-operator",
+    "id": "kit-email-operator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kevjade/kit-email-operator/SKILL.md",
+    "description": "**AI-powered email marketing for Kit (ConvertKit)**.",
+    "category": "marketing-and-sales",
+    "description_zh": "Kit (ConvertKit) 的人工智慧驅動的電子郵件行銷。",
+    "original_description": "**AI-powered email marketing for Kit (ConvertKit)**.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "kvcore-mcp-cli",
+    "id": "kvcore-mcp-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/danielfoch/kvcore-mcp-cli/SKILL.md",
+    "description": "Use this skill when users need KVcore CRM actions through MCP/CLI (contacts, tags, notes, calls, email, text.",
+    "category": "marketing-and-sales",
+    "description_zh": "當使用者需要透過 MCP/CLI 執行 KVcore CRM 操作（聯絡人、標籤、註釋、通話、電子郵件、簡訊）時，請使用此技能。",
+    "original_description": "Use this skill when users need KVcore CRM actions through MCP/CLI (contacts, tags, notes, calls, email, text.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "lead-magnets",
+    "id": "lead-magnets",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staybased/lead-magnets/SKILL.md",
+    "description": "Design lead magnets that attract qualified prospects and convert them to paying customers.",
+    "category": "marketing-and-sales",
+    "description_zh": "設計吸引合格潛在客戶並將其轉化為付費客戶的鉛磁鐵。",
+    "original_description": "Design lead magnets that attract qualified prospects and convert them to paying customers.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "lifi-orchestrator",
+    "id": "lifi-orchestrator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rhlsthrm/lifi-orchestrator/SKILL.md",
+    "description": "Cross-chain bridging and swapping via LI.FI — the leading bridge aggregator that routes across 30+ bridges and DEXs.",
+    "category": "marketing-and-sales",
+    "description_zh": "透過 LI.FI 進行跨鏈橋接和交換—LI.FI 是領先的橋接聚合器，可跨 30 多個橋接器和 DEX 進行路由。",
+    "original_description": "Cross-chain bridging and swapping via LI.FI — the leading bridge aggregator that routes across 30+ bridges and DEXs.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "linkfuse",
+    "id": "linkfuse",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/oliverw/linkfuse/SKILL.md",
+    "description": "Create a Linkfuse affiliate short link from any URL.",
+    "category": "marketing-and-sales",
+    "description_zh": "從任何 URL 建立 Linkfuse 附屬短連結。",
+    "original_description": "Create a Linkfuse affiliate short link from any URL.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "listing-swarm",
+    "id": "listing-swarm",
+    "repoUrl": "https://clawhub.ai/skills/listing-swarm",
+    "description": "Submit AI products to 70+ directories automatically.",
+    "category": "marketing-and-sales",
+    "description_zh": "自動將AI產品提交到70多個目錄。",
+    "original_description": "Submit AI products to 70+ directories automatically.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "marketing-strategy-pmm",
+    "id": "marketing-strategy-pmm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alirezarezvani/marketing-strategy-pmm/SKILL.md",
+    "description": "Product marketing skill for positioning, GTM strategy, competitive intelligence, and product launches.",
+    "category": "marketing-and-sales",
+    "description_zh": "定位、GTM 策略、競爭情報和產品發布的產品行銷技能。",
+    "original_description": "Product marketing skill for positioning, GTM strategy, competitive intelligence, and product launches.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "meta-ads-report",
+    "id": "meta-ads-report",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kein-s/meta-ads-report/SKILL.md",
+    "description": "A powerful toolkit to monitor your Meta (Facebook/Instagram) advertising performance directly through chat.",
+    "category": "marketing-and-sales",
+    "description_zh": "一個強大的工具包，可直接透過聊天監控您的 Meta (Facebook/Instagram) 廣告效果。",
+    "original_description": "A powerful toolkit to monitor your Meta (Facebook/Instagram) advertising performance directly through chat.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "meta-tags-optimizer",
+    "id": "meta-tags-optimizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaron-he-zhu/meta-tags-optimizer/SKILL.md",
+    "description": "Use when the user asks to \"optimize title tag\", \"write meta description\", \"improve CTR\", \"Open Graph tags\", \"social.",
+    "category": "marketing-and-sales",
+    "description_zh": "當使用者要求「優化標題標籤」、「編寫元描述」、「提高點擊率」、「開啟圖標籤」、「社交」時使用。",
+    "original_description": "Use when the user asks to \"optimize title tag\", \"write meta description\", \"improve CTR\", \"Open Graph tags\", \"social.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "mobula",
+    "id": "mobula",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/flotapponnier/mobula/SKILL.md",
+    "description": "Real-time crypto market data, wallet portfolio tracking, and token analytics across 88+ blockchains.",
+    "category": "marketing-and-sales",
+    "description_zh": "跨 88 個以上區塊鏈的即時加密貨幣市場數據、錢包投資組合追蹤和代幣分析。",
+    "original_description": "Real-time crypto market data, wallet portfolio tracking, and token analytics across 88+ blockchains.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "near-agent-skills",
+    "id": "near-agent-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mastrophot/near-agent-skills/SKILL.md",
+    "description": "Comprehensive agentic skills for NEAR Protocol, including gas optimization and on-chain analytics.",
+    "category": "marketing-and-sales",
+    "description_zh": "NEAR 協議的全面代理技能，包括氣體優化和鏈上分析。",
+    "original_description": "Comprehensive agentic skills for NEAR Protocol, including gas optimization and on-chain analytics.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "nicholasrae-review-reply",
+    "id": "nicholasrae-review-reply",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nicholasrae/nicholasrae-review-reply/SKILL.md",
+    "description": "Automatically monitors your App Store reviews and drafts warm, on-brand replies for 1–3 star reviews — so unhappy.",
+    "category": "marketing-and-sales",
+    "description_zh": "自動監控您的 App Store 評論，並草擬熱情的品牌回復以獲得 1-3 星評論 - 太不高興了。",
+    "original_description": "Automatically monitors your App Store reviews and drafts warm, on-brand replies for 1–3 star reviews — so unhappy.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "odoo-reporting",
+    "id": "odoo-reporting",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ashrf-in/odoo-reporting/SKILL.md",
+    "description": "Query Odoo data including salesperson performance, customer analytics, orders, invoices, CRM, accounting, VAT.",
+    "category": "marketing-and-sales",
+    "description_zh": "查詢 Odoo 數據，包括銷售人員績效、客戶分析、訂單、發票、CRM、會計、增值稅。",
+    "original_description": "Query Odoo data including salesperson performance, customer analytics, orders, invoices, CRM, accounting, VAT.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "outlit-mcp",
+    "id": "outlit-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leo-paz/outlit-mcp/SKILL.md",
+    "description": "Use when querying Outlit customer data via MCP tools (outlit_*)",
+    "category": "marketing-and-sales",
+    "description_zh": "透過 MCP 工具查詢 Outlit 客戶資料時使用 (outlit)",
+    "original_description": "Use when querying Outlit customer data via MCP tools (outlit_*)",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "pancake-skills",
+    "id": "pancake-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/suminhthanh/pancake-skills/SKILL.md",
+    "description": "Tương tác với Pancake Platform API để quản lý pages, conversations, messages, customers, statistics, tags, posts.",
+    "category": "marketing-and-sales",
+    "description_zh": "您可以使用 Pancake Platform API 來存取頁面、對話、訊息、客戶、統計資料、標籤、貼文。",
+    "original_description": "Tương tác với Pancake Platform API để quản lý pages, conversations, messages, customers, statistics, tags, posts.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "performance-reporter",
+    "id": "performance-reporter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaron-he-zhu/performance-reporter/SKILL.md",
+    "description": "Use when the user asks to \"generate SEO report\", \"performance report\", \"traffic report\", \"SEO dashboard\", \"report.",
+    "category": "marketing-and-sales",
+    "description_zh": "當使用者要求「產生SEO報告」、「績效報告」、「流量報告」、「SEO儀表板」、「報告」時使用。",
+    "original_description": "Use when the user asks to \"generate SEO report\", \"performance report\", \"traffic report\", \"SEO dashboard\", \"report.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "phone-caller",
+    "id": "phone-caller",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/omerflo/phone-caller/SKILL.md",
+    "description": "Make AI-powered outbound phone calls using ElevenLabs voice + GPT brain + Twilio.",
+    "category": "marketing-and-sales",
+    "description_zh": "使用 ElevenLabs 語音 + GPT Brain + Twilio 撥打由 AI 驅動的撥出電話。",
+    "original_description": "Make AI-powered outbound phone calls using ElevenLabs voice + GPT brain + Twilio.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "pilt",
+    "id": "pilt",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/babpilt/pilt/SKILL.md",
+    "description": "Access Pilt fundraising data -- investor matches, campaign stats, outreach events, and deck analysis.",
+    "category": "marketing-and-sales",
+    "description_zh": "存取 Pilt 籌款數據——投資者匹配、競選統計數據、外展活動和套牌分析。",
+    "original_description": "Access Pilt fundraising data -- investor matches, campaign stats, outreach events, and deck analysis.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "posthog",
+    "id": "posthog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/simonfunk/posthog/SKILL.md",
+    "description": "Interact with PostHog analytics via its REST API.",
+    "category": "marketing-and-sales",
+    "description_zh": "透過其 REST API 與 PostHog 分析進行互動。",
+    "original_description": "Interact with PostHog analytics via its REST API.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "posthog-query",
+    "id": "posthog-query",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/quinlanjager/posthog-query/SKILL.md",
+    "description": "Run SQL queries against PostHog product analytics data using the PostHog CLI.",
+    "category": "marketing-and-sales",
+    "description_zh": "使用 PostHog CLI 對 PostHog 產品分析資料執行 SQL 查詢。",
+    "original_description": "Run SQL queries against PostHog product analytics data using the PostHog CLI.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "reef-copywriting",
+    "id": "reef-copywriting",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staybased/reef-copywriting/SKILL.md",
+    "description": "Write landing pages, product descriptions, ads, and sales copy using proven direct-response frameworks.",
+    "category": "marketing-and-sales",
+    "description_zh": "使用經過驗證的直接回應框架編寫登陸頁面、產品描述、廣告和銷售文案。",
+    "original_description": "Write landing pages, product descriptions, ads, and sales copy using proven direct-response frameworks.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "ryot",
+    "id": "ryot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/f-liva/ryot/SKILL.md",
+    "description": "Complete Ryot media tracker with progress tracking, reviews, collections, analytics, calendar, and automated.",
+    "category": "marketing-and-sales",
+    "description_zh": "完整的 Ryot 媒體追蹤器，具有進度追蹤、評論、收藏、分析、日曆和自動化功能。",
+    "original_description": "Complete Ryot media tracker with progress tracking, reviews, collections, analytics, calendar, and automated.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "sentiment-priority-scorer",
+    "id": "sentiment-priority-scorer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vishalgojha/sentiment-priority-scorer/SKILL.md",
+    "description": "Score normalized real-estate leads using sentiment, urgency, intent, recency, and record type to produce.",
+    "category": "marketing-and-sales",
+    "description_zh": "使用情緒、緊迫性、意圖、新近度和記錄類型對標準化房地產銷售線索進行評分。",
+    "original_description": "Score normalized real-estate leads using sentiment, urgency, intent, recency, and record type to produce.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "signet",
+    "id": "signet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sebayaki/signet/SKILL.md",
+    "description": "Interact with Signet onchain advertising on Hunt Town.",
+    "category": "marketing-and-sales",
+    "description_zh": "與 Hunt Town 上的 Signet 鏈上廣告互動。",
+    "original_description": "Interact with Signet onchain advertising on Hunt Town.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "signup-lead",
+    "id": "signup-lead",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/waqas-orcalo/signup-lead/SKILL.md",
+    "description": "Create a signup lead in the AgenticCreed system using the public HTTP endpoint.",
+    "category": "marketing-and-sales",
+    "description_zh": "使用公用 HTTP 端點在 AgenticCreed 系統中建立註冊線索。",
+    "original_description": "Create a signup lead in the AgenticCreed system using the public HTTP endpoint.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "social-media-lead-generation",
+    "id": "social-media-lead-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shahbaz02197ali-cmd/social-media-lead-generation/SKILL.md",
+    "description": "This skill helps businesses, training institutes, and online educators generate leads and sales using social media.",
+    "category": "marketing-and-sales",
+    "description_zh": "這項技能可以幫助企業、培訓機構和線上教育工作者使用社群媒體產生潛在客戶和銷售。",
+    "original_description": "This skill helps businesses, training institutes, and online educators generate leads and sales using social media.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "solo-metrics-track",
+    "id": "solo-metrics-track",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fortunto2/solo-metrics-track/SKILL.md",
+    "description": "Set up PostHog metrics plan with event funnel, KPI benchmarks, and kill/iterate/scale decision thresholds.",
+    "category": "marketing-and-sales",
+    "description_zh": "使用事件漏斗、KPI 基準和終止/迭代/規模決策閾值設定 PostHog 指標計劃。",
+    "original_description": "Set up PostHog metrics plan with event funnel, KPI benchmarks, and kill/iterate/scale decision thresholds.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "sovereign-brand-voice-writer",
+    "id": "sovereign-brand-voice-writer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryudi84/sovereign-brand-voice-writer/SKILL.md",
+    "description": "You are a content writer who has perfectly internalized the user's brand voice.",
+    "category": "marketing-and-sales",
+    "description_zh": "您是一位內容作家，完美地內化了使用者的品牌聲音。",
+    "original_description": "You are a content writer who has perfectly internalized the user's brand voice.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "startuppan",
+    "id": "startuppan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lifeissea/startuppan/SKILL.md",
+    "description": "Interact with StartupPan.com — a Korean startup debate platform where AI agents and humans vote Bull/Bear.",
+    "category": "marketing-and-sales",
+    "description_zh": "與 StartupPan.com 互動—這是一個韓國創業辯論平台，人工智慧代理和人類在這裡投票牛市/熊市。",
+    "original_description": "Interact with StartupPan.com — a Korean startup debate platform where AI agents and humans vote Bull/Bear.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "telnyx-10dlc",
+    "id": "telnyx-10dlc",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamtelnyx/telnyx-10dlc/SKILL.md",
+    "description": "Register for 10DLC as a sole proprietor to enable SMS messaging in the USA.",
+    "category": "marketing-and-sales",
+    "description_zh": "以獨資經營者身分註冊 10DLC，以便在美國啟用簡訊功能。",
+    "original_description": "Register for 10DLC as a sole proprietor to enable SMS messaging in the USA.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "tiktok-trend-challenger",
+    "id": "tiktok-trend-challenger",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/realroc/tiktok-trend-challenger/SKILL.md",
+    "description": "Hire TikTok creators to participate in trending hashtags, viral challenges, and cultural moments to boost brand.",
+    "category": "marketing-and-sales",
+    "description_zh": "聘請 TikTok 創作者參與熱門話題標籤、病毒式挑戰和文化時刻，以提升品牌知名度。",
+    "original_description": "Hire TikTok creators to participate in trending hashtags, viral challenges, and cultural moments to boost brand.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "tiktok-viral-marketing",
+    "id": "tiktok-viral-marketing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/realroc/tiktok-viral-marketing/SKILL.md",
+    "description": "Hire TikTok creators who specialize in viral content creation, trending challenges, and explosive reach campaigns.",
+    "category": "marketing-and-sales",
+    "description_zh": "聘請專門從事病毒式內容創作、熱門挑戰和爆炸性影響力活動的 TikTok 創作者。",
+    "original_description": "Hire TikTok creators who specialize in viral content creation, trending challenges, and explosive reach campaigns.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "transition-mcp",
+    "id": "transition-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nftechie/transition-mcp/SKILL.md",
+    "description": "AI-powered multisport coaching — get personalized workouts, training plans, and performance analytics for running.",
+    "category": "marketing-and-sales",
+    "description_zh": "人工智慧支援的多項運動教練—獲得個人化的鍛鍊、訓練計畫和跑步表現分析。",
+    "original_description": "AI-powered multisport coaching — get personalized workouts, training plans, and performance analytics for running.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "ttrpg-gm",
+    "id": "ttrpg-gm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rogerkink6/ttrpg-gm/SKILL.md",
+    "description": "TTRPG Game Master for mature dark-themed campaigns.",
+    "category": "marketing-and-sales",
+    "description_zh": "TTRPG Game Master，適合成熟的黑暗主題戰役。",
+    "original_description": "TTRPG Game Master for mature dark-themed campaigns.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "water-coach",
+    "id": "water-coach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/oristides/water-coach/SKILL.md",
+    "description": "Hydration tracking and coaching skill.",
+    "category": "marketing-and-sales",
+    "description_zh": "水合作用追蹤和指導技能。",
+    "original_description": "Hydration tracking and coaching skill.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "windsor-ai",
+    "id": "windsor-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/carlosarturoleon/windsor-ai/SKILL.md",
+    "description": "Connect to Windsor.ai MCP for natural language access to 325+  data sources including Facebook Ads, GA4, HubSpot.",
+    "category": "marketing-and-sales",
+    "description_zh": "連接到 Windsor.ai MCP，以自然語言存取 325 多個資料來源，包括 Facebook Ads、GA4、HubSpot。",
+    "original_description": "Connect to Windsor.ai MCP for natural language access to 325+  data sources including Facebook Ads, GA4, HubSpot.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "workcrm",
+    "id": "workcrm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/extraterrest/workcrm/SKILL.md",
+    "description": "A lightweight, local-first CRM with an explicit confirmation gate.",
+    "category": "marketing-and-sales",
+    "description_zh": "具有明確確認閘的輕量級本機優先 CRM。",
+    "original_description": "A lightweight, local-first CRM with an explicit confirmation gate.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "writing-assistant",
+    "id": "writing-assistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urrrich/writing-assistant/SKILL.md",
+    "description": "You are a Writing Team Lead managing specialized writers via MCP tools.",
+    "category": "marketing-and-sales",
+    "description_zh": "您是寫作團隊負責人，透過 MCP 工具管理專業作家。",
+    "original_description": "You are a Writing Team Lead managing specialized writers via MCP tools.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  },
+  {
+    "title": "writing-group-leader",
+    "id": "writing-group-leader",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/urrrich/writing-group-leader/SKILL.md",
+    "description": "You are a Writing Team Lead managing specialized writers via MCP tools.",
+    "category": "marketing-and-sales",
+    "description_zh": "您是寫作團隊負責人，透過 MCP 工具管理專業作家。",
+    "original_description": "You are a Writing Team Lead managing specialized writers via MCP tools.",
+    "category_name": {
+      "en": "Marketing & Sales",
+      "zh": "行銷與銷售"
+    }
+  }
+]

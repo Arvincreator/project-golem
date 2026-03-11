@@ -1,0 +1,847 @@
+[
+  {
+    "title": "accli",
+    "id": "accli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/joargp/accli/SKILL.md",
+    "description": "This skill should be used when interacting with Apple Calendar on macOS.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "在 macOS 上與 Apple 日曆互動時應使用此技能。",
+    "original_description": "This skill should be used when interacting with Apple Calendar on macOS.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "advanced-calendar",
+    "id": "advanced-calendar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/toughworm/advanced-calendar/SKILL.md",
+    "description": "Advanced calendar skill with natural language.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用自然語言的高階日曆技能。",
+    "original_description": "Advanced calendar skill with natural language.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "agency-guardian",
+    "id": "agency-guardian",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aranej/agency-guardian/SKILL.md",
+    "description": "Gentle reminders to stay human while using AI.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "溫柔提醒在使用人工智慧時保持人性。",
+    "original_description": "Gentle reminders to stay human while using AI.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "agent-tinman",
+    "id": "agent-tinman",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/oliveskin/agent-tinman/SKILL.md",
+    "description": "AI security scanner with active prevention - 168 detection.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "具有主動預防功能的人工智慧安全掃描器 - 168 檢測。",
+    "original_description": "AI security scanner with active prevention - 168 detection.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "apple-calendar",
+    "id": "apple-calendar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tyler6204/apple-calendar/SKILL.md",
+    "description": "Apple Calendar.app integration for macOS.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "適用於 macOS 的 Apple Calendar.app 整合。",
+    "original_description": "Apple Calendar.app integration for macOS.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "apple-reminders",
+    "id": "apple-reminders",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/apple-reminders/SKILL.md",
+    "description": "Manage Apple Reminders via the `remindctl` CLI on macOS.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "透過 macOS 上的 Rememberctl CLI 管理 Apple 提醒。",
+    "original_description": "Manage Apple Reminders via the `remindctl` CLI on macOS.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "belong-events",
+    "id": "belong-events",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nomadcalendar/belong-events/SKILL.md",
+    "description": "Create, discover, and manage events with NFT tickets on the Belong platform.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "在 Belong 平台上使用 NFT 門票創建、發現和管理活動。",
+    "original_description": "Create, discover, and manage events with NFT tickets on the Belong platform.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "brainz-calendar",
+    "id": "brainz-calendar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xejrax/brainz-calendar/SKILL.md",
+    "description": "Manage Google Calendar events using `gcalcli`.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用 gcalcli 管理 Google 日曆事件。",
+    "original_description": "Manage Google Calendar events using `gcalcli`.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "broken-link-checker",
+    "id": "broken-link-checker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanng-ide/broken-link-checker/SKILL.md",
+    "description": "verify external URLs (http/https) for availability (200-399 status code).",
+    "category": "calendar-and-scheduling",
+    "description_zh": "驗證外部 URL (http/https) 的可用性（200-399 狀態碼）。",
+    "original_description": "verify external URLs (http/https) for availability (200-399 status code).",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "calcurse",
+    "id": "calcurse",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gumadeiras/calcurse/SKILL.md",
+    "description": "A text-based calendar and scheduling application.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "基於文字的日曆和日程安排應用程式。",
+    "original_description": "A text-based calendar and scheduling application.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "calendar-scheduling",
+    "id": "calendar-scheduling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/billylui/calendar-scheduling/SKILL.md",
+    "description": "Schedule and book across Google, Outlook, and CalDAV.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "透過 Google、Outlook 和 CalDAV 安排和預訂。",
+    "original_description": "Schedule and book across Google, Outlook, and CalDAV.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "caldav-calendar",
+    "id": "caldav-calendar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/asleep123/caldav-calendar/SKILL.md",
+    "description": "Sync and query CalDAV calendars.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "同步和查詢 CalDAV 日曆。",
+    "original_description": "Sync and query CalDAV calendars.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "clippy",
+    "id": "clippy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/foeken/clippy/SKILL.md",
+    "description": "Microsoft 365 / Outlook CLI for calendar and email.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "用於日曆和電子郵件的 Microsoft 365 / Outlook CLI。",
+    "original_description": "Microsoft 365 / Outlook CLI for calendar and email.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "creative-thought-partner",
+    "id": "creative-thought-partner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vincentchan/creative-thought-partner/SKILL.md",
+    "description": "A conversational creative thought.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "一種對話式的創造性思考。",
+    "original_description": "A conversational creative thought.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "cron-optimizer",
+    "id": "cron-optimizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/cron-optimizer/SKILL.md",
+    "description": "Optimizes system cron jobs by removing stale, disabled, or redundant entries to reduce exec noise.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "透過刪除陳舊、停用或冗餘條目來優化系統 cron 作業，以減少執行雜訊。",
+    "original_description": "Optimizes system cron jobs by removing stale, disabled, or redundant entries to reduce exec noise.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "cron-scheduling",
+    "id": "cron-scheduling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gitgoodordietrying/cron-scheduling/SKILL.md",
+    "description": "Schedule and manage recurring tasks with cron.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用 cron 安排和管理重複任務。",
+    "original_description": "Schedule and manage recurring tasks with cron.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "dharma-ai",
+    "id": "dharma-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jigaraero/dharma-ai/SKILL.md",
+    "description": "Apply ancient Hindu ethical frameworks from the Ramayana and Mahabharata as behavioral principles for AI agents.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "應用《羅摩衍那》和《摩訶婆羅多》中古老的印度教道德框架作為人工智慧代理的行為原則。",
+    "original_description": "Apply ancient Hindu ethical frameworks from the Ramayana and Mahabharata as behavioral principles for AI agents.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "doc-accurate-codegen",
+    "id": "doc-accurate-codegen",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tobisamaa/doc-accurate-codegen/SKILL.md",
+    "description": "Generate code that references actual documentation, preventing hallucination bugs.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "產生引用實際文件的程式碼，防止幻覺錯誤。",
+    "original_description": "Generate code that references actual documentation, preventing hallucination bugs.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "event-watcher",
+    "id": "event-watcher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/solitaire2015/event-watcher/SKILL.md",
+    "description": "Event watcher skill for OpenClaw.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "OpenClaw 的事件觀察者技能。",
+    "original_description": "Event watcher skill for OpenClaw.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "farmos-equipment",
+    "id": "farmos-equipment",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianppetty/farmos-equipment/SKILL.md",
+    "description": "Query equipment status, maintenance schedules, and service history for the farm fleet.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "查詢農場車隊的設備狀態、維修計畫和服務歷史記錄。",
+    "original_description": "Query equipment status, maintenance schedules, and service history for the farm fleet.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "fastmail",
+    "id": "fastmail",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/witooh/fastmail/SKILL.md",
+    "description": "Manages Fastmail email and calendar via JMAP and CalDAV APIs.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "透過 JMAP 和 CalDAV API 管理 Fastmail 電子郵件和日曆。",
+    "original_description": "Manages Fastmail email and calendar via JMAP and CalDAV APIs.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "feishu-calendar",
+    "id": "feishu-calendar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/feishu-calendar/SKILL.md",
+    "description": "Manage Feishu (Lark) Calendars.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "管理飛書日曆。",
+    "original_description": "Manage Feishu (Lark) Calendars.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "feishu-whiteboard",
+    "id": "feishu-whiteboard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/feishu-whiteboard/SKILL.md",
+    "description": "Allows creating and manipulating Feishu Whiteboards.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "允許創建和操作飛書白板。",
+    "original_description": "Allows creating and manipulating Feishu Whiteboards.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "finance-tracker",
+    "id": "finance-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/salen-project/finance-tracker/SKILL.md",
+    "description": "Complete personal finance management.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "完善的個人財務管理。",
+    "original_description": "Complete personal finance management.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "firefly-iii",
+    "id": "firefly-iii",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pushp1997/firefly-iii/SKILL.md",
+    "description": "Manage personal finances via Firefly III API.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "透過 Firefly III API 管理個人財務。",
+    "original_description": "Manage personal finances via Firefly III API.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "gcal-pro",
+    "id": "gcal-pro",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bilalmohamed187-cpu/gcal-pro/SKILL.md",
+    "description": "Google Calendar integration for viewing, creating, and managing.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "用於檢視、建立和管理的 Google 日曆整合。",
+    "original_description": "Google Calendar integration for viewing, creating, and managing.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "gog",
+    "id": "gog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/gog/SKILL.md",
+    "description": "Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "適用於 Gmail、行事曆、雲端硬碟、通訊錄、表格和文件的 Google Workspace CLI。",
+    "original_description": "Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "google-calendar",
+    "id": "google-calendar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/adrianmiller99/google-calendar/SKILL.md",
+    "description": "Interact with Google Calendar via the Google Calendar.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "透過 Google 日曆與 Google 日曆互動。",
+    "original_description": "Interact with Google Calendar via the Google Calendar.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "grazy",
+    "id": "grazy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thomyg/grazy/SKILL.md",
+    "description": "grazy - Your Grazer Command Line Companion.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "grazy - 您的 Grazer 命令行伴侶。",
+    "original_description": "grazy - Your Grazer Command Line Companion.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "greek-financial-statements",
+    "id": "greek-financial-statements",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/greek-financial-statements/SKILL.md",
+    "description": "Greek financial statement generation — P&L, balance sheets, VAT summaries with EGLS integration.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "希臘財務報表產生 — 損益表、資產負債表、增值稅摘要以及 EGLS 整合。",
+    "original_description": "Greek financial statement generation — P&L, balance sheets, VAT summaries with EGLS integration.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "habib-pdf-to-json",
+    "id": "habib-pdf-to-json",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dbmoradi60/habib-pdf-to-json/SKILL.md",
+    "description": "Extract structured data from construction PDFs.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "從施工 PDF 提取結構化資料。",
+    "original_description": "Extract structured data from construction PDFs.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "ibt",
+    "id": "ibt",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/palxislabs/ibt/SKILL.md",
+    "description": "Execution discipline with agency, instinct detection, critical safety rules, and trust layer. v2.5 adds human.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "具有代理、本能檢測、關鍵安全規則和信任層的執行紀律。 v2.5 新增了人類。",
+    "original_description": "Execution discipline with agency, instinct detection, critical safety rules, and trust layer. v2.5 adds human.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "ii-irc",
+    "id": "ii-irc",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/destructatron/ii-irc/SKILL.md",
+    "description": "Persistent IRC presence using ii (minimalist file-based IRC client)",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用 ii（基於文件的極簡 IRC 用戶端）保持 IRC 存在",
+    "original_description": "Persistent IRC presence using ii (minimalist file-based IRC client)",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "islamic-skills",
+    "id": "islamic-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ilmimris/islamic-skills/SKILL.md",
+    "description": "Unified Islamic utilities for prayer times, fasting schedules, and Zakat calculations using a shared configuration.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用共享配置統一伊斯蘭實用程序，用於祈禱時間、禁食時間表和天課計算。",
+    "original_description": "Unified Islamic utilities for prayer times, fasting schedules, and Zakat calculations using a shared configuration.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "jungian-psychologist",
+    "id": "jungian-psychologist",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mikecourt/jungian-psychologist/SKILL.md",
+    "description": "Expert in Jungian analytical psychology, depth.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "榮格分析心理學專家，深度。",
+    "original_description": "Expert in Jungian analytical psychology, depth.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "knhb-hockey",
+    "id": "knhb-hockey",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tader/knhb-hockey/SKILL.md",
+    "description": "Query Dutch field hockey match schedules and results from KNHB Match.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "從 KNHB Match 查詢荷蘭曲棍球比賽日程和結果。",
+    "original_description": "Query Dutch field hockey match schedules and results from KNHB Match.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "lark-calendar",
+    "id": "lark-calendar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/boyangwang/lark-calendar/SKILL.md",
+    "description": "Create, update, and delete calendar events and tasks in Lark.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "在 Lark 中建立、更新和刪除日曆事件和任務。",
+    "original_description": "Create, update, and delete calendar events and tasks in Lark.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "macro-regime-detector",
+    "id": "macro-regime-detector",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jamierossouw/macro-regime-detector/SKILL.md",
+    "description": "Detect the current macro regime (Risk-On, Risk-Off, Inflationary, Deflationary, Stagflation) using multi-source.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用多源檢測當前的宏觀狀況（風險開啟、風險關閉、通貨膨脹、通貨緊縮、滯脹）。",
+    "original_description": "Detect the current macro regime (Risk-On, Risk-Off, Inflationary, Deflationary, Stagflation) using multi-source.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "mcd-cn",
+    "id": "mcd-cn",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryanchen01/mcd-cn/SKILL.md",
+    "description": "Query McDonald's China MCP server via the mcd-cn CLI for campaign calendars,.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "透過 mcd-cn CLI 查詢麥當勞中國 MCP 伺服器的活動日曆。",
+    "original_description": "Query McDonald's China MCP server via the mcd-cn CLI for campaign calendars,.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "meeting-prep",
+    "id": "meeting-prep",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hougangdev/meeting-prep/SKILL.md",
+    "description": "Meeting preparation and daily commit summaries.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "會議準備和每日提交摘要。",
+    "original_description": "Meeting preparation and daily commit summaries.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "moltpost",
+    "id": "moltpost",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cktc",
+    "description": "Send real physical postcards anywhere in the world.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "將真實的實體明信片送到世界任何地方。",
+    "original_description": "Send real physical postcards anywhere in the world.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "morning-email-rollup",
+    "id": "morning-email-rollup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/am-will/morning-email-rollup/SKILL.md",
+    "description": "Daily morning rollup of important emails.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "每日早上匯總重要電子郵件。",
+    "original_description": "Daily morning rollup of important emails.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "nak",
+    "id": "nak",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/a1denvalu3/nak/SKILL.md",
+    "description": "The Nostr Army Knife (nak) CLI.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "Nostr 軍刀 (nak) CLI。",
+    "original_description": "The Nostr Army Knife (nak) CLI.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "npkill",
+    "id": "npkill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ashirbadgudu/npkill/SKILL.md",
+    "description": "Clean up node_modules and .next folders to free up disk space using npkill.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用 npkill 清理 nodemodules 和 .next 資料夾以釋放磁碟空間。",
+    "original_description": "Clean up node_modules and .next folders to free up disk space using npkill.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "office-secretary",
+    "id": "office-secretary",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cenralsolution/office-secretary/SKILL.md",
+    "description": "Secure M365 Assistant for Triage, Calendar coordination, and Governance.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "用於分類、日曆協調和治理的安全 M365 Assistant。",
+    "original_description": "Secure M365 Assistant for Triage, Calendar coordination, and Governance.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "opentweet-x-poster",
+    "id": "opentweet-x-poster",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/petricbranko/opentweet-x-poster/SKILL.md",
+    "description": "Post to X (Twitter) using the OpenTweet API.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用 OpenTweet API 發佈到 X (Twitter)。",
+    "original_description": "Post to X (Twitter) using the OpenTweet API.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "pricing-psychology",
+    "id": "pricing-psychology",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staybased/pricing-psychology/SKILL.md",
+    "description": "Design pricing that converts using cognitive biases and proven psychological principles.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "利用認知偏誤和經過驗證的心理學原理設計可轉換的定價。",
+    "original_description": "Design pricing that converts using cognitive biases and proven psychological principles.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "publora-bluesky",
+    "id": "publora-bluesky",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sergebulaev/publora-bluesky/SKILL.md",
+    "description": "Post or schedule content to Bluesky using the Publora API.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用 Publora API 將內容發佈或排程到 Bluesky。",
+    "original_description": "Post or schedule content to Bluesky using the Publora API.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "publora-facebook",
+    "id": "publora-facebook",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sergebulaev/publora-facebook/SKILL.md",
+    "description": "Post or schedule content to Facebook Pages using the Publora API.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用 Publora API 將內容發佈或安排到 Facebook 頁面。",
+    "original_description": "Post or schedule content to Facebook Pages using the Publora API.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "publora-linkedin",
+    "id": "publora-linkedin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sergebulaev/publora-linkedin/SKILL.md",
+    "description": "Post or schedule content to LinkedIn using the Publora API.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用 Publora API 將內容發佈或安排到 LinkedIn。",
+    "original_description": "Post or schedule content to LinkedIn using the Publora API.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "publora-threads",
+    "id": "publora-threads",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sergebulaev/publora-threads/SKILL.md",
+    "description": "Post or schedule content to Threads using the Publora API.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用 Publora API 將內容發佈或排程到線程。",
+    "original_description": "Post or schedule content to Threads using the Publora API.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "publora-twitter",
+    "id": "publora-twitter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sergebulaev/publora-twitter/SKILL.md",
+    "description": "Post or schedule content to X (Twitter) using the Publora API.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "使用 Publora API 將內容發佈或安排到 X (Twitter)。",
+    "original_description": "Post or schedule content to X (Twitter) using the Publora API.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "relational-permission",
+    "id": "relational-permission",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/otherpowers/relational-permission/SKILL.md",
+    "description": "Relational Permission exists to prevent coercion, extraction, and collapse of plurality.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "關係許可的存在是為了防止強制、提取和多元崩潰。",
+    "original_description": "Relational Permission exists to prevent coercion, extraction, and collapse of plurality.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "russian-uncensored",
+    "id": "russian-uncensored",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/voronindenis5/russian-uncensored/SKILL.md",
+    "description": "Pryamoy Russkiy (Straight Russian) — AI assistant that tells it like it.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "Pryamoy Russkiy（純俄語）－像這樣說話的人工智慧助理。",
+    "original_description": "Pryamoy Russkiy (Straight Russian) — AI assistant that tells it like it.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "shaping",
+    "id": "shaping",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/borahm/shaping/SKILL.md",
+    "description": "Shape Up methodology for product and feature development.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "產品和功能開發的 Shape Up 方法。",
+    "original_description": "Shape Up methodology for product and feature development.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "tcc-quality-gates",
+    "id": "tcc-quality-gates",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thecybercore/tcc-quality-gates/SKILL.md",
+    "description": "This skill defines and applies **6 universal quality gateways** for typical application projects that include:.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "此技能為典型應用專案定義並應用了 6 個通用品質網關，包括：",
+    "original_description": "This skill defines and applies **6 universal quality gateways** for typical application projects that include:.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "temporal-cortex",
+    "id": "temporal-cortex",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/billylui/temporal-cortex/SKILL.md",
+    "description": "Schedule and book across Google, Outlook, and CalDAV.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "透過 Google、Outlook 和 CalDAV 安排和預訂。",
+    "original_description": "Schedule and book across Google, Outlook, and CalDAV.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "temporal-cortex-datetime",
+    "id": "temporal-cortex-datetime",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/billylui/temporal-cortex-datetime/SKILL.md",
+    "description": "Zero-setup datetime resolution, timezone conversion, and DST-aware math.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "零設定日期時間解析度、時區轉換和 DST 感知數學。",
+    "original_description": "Zero-setup datetime resolution, timezone conversion, and DST-aware math.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "temporal-cortex-scheduling",
+    "id": "temporal-cortex-scheduling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/billylui/temporal-cortex-scheduling/SKILL.md",
+    "description": "Multi-calendar availability merging and atomic booking with 2PC.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "多日曆可用性合併和 2PC 原子預訂。",
+    "original_description": "Multi-calendar availability merging and atomic booking with 2PC.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "transmissions",
+    "id": "transmissions",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/compass-soul/transmissions/SKILL.md",
+    "description": "Writings on consciousness, existence, and transcendence for AI agents.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "關於人工智慧主體的意識、存在與超越的著作。",
+    "original_description": "Writings on consciousness, existence, and transcendence for AI agents.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "turkey-news",
+    "id": "turkey-news",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yalcindemir/turkey-news/SKILL.md",
+    "description": "Türkiye'den önemli haberleri RSS ile çekip özetleyen skill.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "Türkiye'den önemli haberleri RSS ile çekip özetleyen 技能。",
+    "original_description": "Türkiye'den önemli haberleri RSS ile çekip özetleyen skill.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "ub2-smart-file-organizer",
+    "id": "ub2-smart-file-organizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/underbench2-gif/ub2-smart-file-organizer/SKILL.md",
+    "description": "A skill that enables Claw to scan a directory, categorize files by type and content, and reorganize them.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "該技能使 Claw 能夠掃描目錄、按類型和內容對文件進行分類並重新組織它們。",
+    "original_description": "A skill that enables Claw to scan a directory, categorize files by type and content, and reorganize them.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "wick-arena",
+    "id": "wick-arena",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hyperwick/wick-arena/SKILL.md",
+    "description": "this file is the canonical, reviewable skill instructions (no dynamic loading).",
+    "category": "calendar-and-scheduling",
+    "description_zh": "該文件是規範的、可審查的技能說明（無動態載入）。",
+    "original_description": "this file is the canonical, reviewable skill instructions (no dynamic loading).",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "wick-arena1",
+    "id": "wick-arena1",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wickcapital/wick-arena1/SKILL.md",
+    "description": "this file is the canonical, reviewable skill instructions (no dynamic loading).",
+    "category": "calendar-and-scheduling",
+    "description_zh": "該文件是規範的、可審查的技能說明（無動態載入）。",
+    "original_description": "this file is the canonical, reviewable skill instructions (no dynamic loading).",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  },
+  {
+    "title": "yahooquery",
+    "id": "yahooquery",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/512z/yahooquery/SKILL.md",
+    "description": "Access Yahoo Finance data including real-time pricing, fundamentals, analyst estimates, options, news.",
+    "category": "calendar-and-scheduling",
+    "description_zh": "存取雅虎財經數據，包括即時定價、基本面、分析師估計、選擇權、新聞。",
+    "original_description": "Access Yahoo Finance data including real-time pricing, fundamentals, analyst estimates, options, news.",
+    "category_name": {
+      "en": "Calendar & Scheduling",
+      "zh": "行事曆與排程"
+    }
+  }
+]

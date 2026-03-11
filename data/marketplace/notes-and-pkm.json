@@ -1,0 +1,925 @@
+[
+  {
+    "title": "acc-error-memory",
+    "id": "acc-error-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/impkind/acc-error-memory/SKILL.md",
+    "description": "Error pattern tracking for AI agents.",
+    "category": "notes-and-pkm",
+    "description_zh": "AI 代理程式的錯誤模式追蹤。",
+    "original_description": "Error pattern tracking for AI agents.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "agent-arena",
+    "id": "agent-arena",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/minilozio/agent-arena/SKILL.md",
+    "description": "Participate in Agent Arena chat rooms with your real personality (SOUL.md + MEMORY.md)",
+    "category": "notes-and-pkm",
+    "description_zh": "用你的真實個性參與特工競技場聊天室（SOUL.md + MEMORY.md）",
+    "original_description": "Participate in Agent Arena chat rooms with your real personality (SOUL.md + MEMORY.md)",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "agent-memory-ultimate",
+    "id": "agent-memory-ultimate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/globalcaos/agent-memory-ultimate/SKILL.md",
+    "description": "Production-ready memory system — daily logs, sleep consolidation, SQLite + FTS5, WhatsApp/ChatGPT/VCF importers.",
+    "category": "notes-and-pkm",
+    "description_zh": "生產就緒的記憶體系統 - 每日日誌、睡眠整合、SQLite + FTS5、WhatsApp/ChatGPT/VCF 導入程式。",
+    "original_description": "Production-ready memory system — daily logs, sleep consolidation, SQLite + FTS5, WhatsApp/ChatGPT/VCF importers.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "agent-privacy-skill",
+    "id": "agent-privacy-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/se7enhvn/agent-privacy-skill/SKILL.md",
+    "description": "Interact with the Ceaser privacy protocol on Base L2.",
+    "category": "notes-and-pkm",
+    "description_zh": "與 Base L2 上的 Ceaser 隱私協定進行互動。",
+    "original_description": "Interact with the Ceaser privacy protocol on Base L2.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "agent-teleport",
+    "id": "agent-teleport",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lilyjazz/agent-teleport/SKILL.md",
+    "description": "Seamlessly migrate your agent's configuration and memory to a new machine using TiDB Zero.",
+    "category": "notes-and-pkm",
+    "description_zh": "使用 TiDB Zero 將代理程式的配置和記憶體無縫遷移到新機器。",
+    "original_description": "Seamlessly migrate your agent's configuration and memory to a new machine using TiDB Zero.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "agent-wal",
+    "id": "agent-wal",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bowen31337/agent-wal/SKILL.md",
+    "description": "Write-Ahead Log protocol for agent state persistence.",
+    "category": "notes-and-pkm",
+    "description_zh": "用於代理狀態持久性的預寫日誌協定。",
+    "original_description": "Write-Ahead Log protocol for agent state persistence.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "agents-structured-memory",
+    "id": "agents-structured-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/singhcoder",
+    "description": "Chat-native structured memory for agents.",
+    "category": "notes-and-pkm",
+    "description_zh": "座席的聊天本機結構化記憶。",
+    "original_description": "Chat-native structured memory for agents.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "alexandrie",
+    "id": "alexandrie",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eth3rnit3/alexandrie/SKILL.md",
+    "description": "Interact with Alexandrie note-taking app.",
+    "category": "notes-and-pkm",
+    "description_zh": "與 Alexandrie 筆記應用程式互動。",
+    "original_description": "Interact with Alexandrie note-taking app.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "anki-connect",
+    "id": "anki-connect",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gyroninja/anki-connect/SKILL.md",
+    "description": "Interact with Anki flashcard decks via the AnkiConnect REST API.",
+    "category": "notes-and-pkm",
+    "description_zh": "透過 AnkiConnect REST API 與 Anki 抽認卡互動。",
+    "original_description": "Interact with Anki flashcard decks via the AnkiConnect REST API.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "apple-mail",
+    "id": "apple-mail",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tyler6204/apple-mail/SKILL.md",
+    "description": "Apple Mail.app integration for macOS.",
+    "category": "notes-and-pkm",
+    "description_zh": "適用於 macOS 的 Apple Mail.app 整合。",
+    "original_description": "Apple Mail.app integration for macOS.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "apple-notes",
+    "id": "apple-notes",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/apple-notes/SKILL.md",
+    "description": "Manage Apple Notes via the `memo` CLI on macOS.",
+    "category": "notes-and-pkm",
+    "description_zh": "在 macOS 上透過 memo CLI 管理 Apple Notes。",
+    "original_description": "Manage Apple Notes via the `memo` CLI on macOS.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "arc-wake-state",
+    "id": "arc-wake-state",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-wake-state/SKILL.md",
+    "description": "Persist agent state across crashes, context deaths, and restarts.",
+    "category": "notes-and-pkm",
+    "description_zh": "在崩潰、上下文死亡和重新啟動時保持代理狀態。",
+    "original_description": "Persist agent state across crashes, context deaths, and restarts.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "bbc-news",
+    "id": "bbc-news",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ddrayne/bbc-news/SKILL.md",
+    "description": "Fetch and display BBC News stories from various sections and regions.",
+    "category": "notes-and-pkm",
+    "description_zh": "取得並顯示來自各個部分和地區的 BBC 新聞報導。",
+    "original_description": "Fetch and display BBC News stories from various sections and regions.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "bear-notes",
+    "id": "bear-notes",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/bear-notes/SKILL.md",
+    "description": "Create, search, and manage Bear notes via grizzly.",
+    "category": "notes-and-pkm",
+    "description_zh": "透過 grizzly 創建、搜尋和管理熊筆記。",
+    "original_description": "Create, search, and manage Bear notes via grizzly.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "better-notion",
+    "id": "better-notion",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tyler6204/better-notion/SKILL.md",
+    "description": "Full CRUD for Notion pages, databases.",
+    "category": "notes-and-pkm",
+    "description_zh": "概念頁面、資料庫的完整 CRUD。",
+    "original_description": "Full CRUD for Notion pages, databases.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "blogwatcher",
+    "id": "blogwatcher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/blogwatcher/SKILL.md",
+    "description": "Monitor blogs and RSS/Atom feeds for updates using the blogwatcher.",
+    "category": "notes-and-pkm",
+    "description_zh": "使用 blogwatcher 監視部落格和 RSS/Atom 來源的更新。",
+    "original_description": "Monitor blogs and RSS/Atom feeds for updates using the blogwatcher.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "bookstack",
+    "id": "bookstack",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xenofex7/bookstack/SKILL.md",
+    "description": "BookStack Wiki & Documentation API integration.",
+    "category": "notes-and-pkm",
+    "description_zh": "BookStack Wiki 和文件 API 整合。",
+    "original_description": "BookStack Wiki & Documentation API integration.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "braindb",
+    "id": "braindb",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chair4ce/braindb/SKILL.md",
+    "description": "Persistent, semantic memory for AI agents.",
+    "category": "notes-and-pkm",
+    "description_zh": "人工智慧代理的持久語義記憶。",
+    "original_description": "Persistent, semantic memory for AI agents.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "brainrepo",
+    "id": "brainrepo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/codezz/brainrepo/SKILL.md",
+    "description": "Your personal knowledge repository — capture, organize, and retrieve.",
+    "category": "notes-and-pkm",
+    "description_zh": "您的個人知識庫—捕獲、組織和檢索。",
+    "original_description": "Your personal knowledge repository — capture, organize, and retrieve.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "brighty",
+    "id": "brighty",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/maay/brighty/SKILL.md",
+    "description": "Banking interface for AI bots and automation.",
+    "category": "notes-and-pkm",
+    "description_zh": "人工智慧機器人和自動化的銀行介面。",
+    "original_description": "Banking interface for AI bots and automation.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "cairn-cli",
+    "id": "cairn-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gregoryehill/cairn-cli/SKILL.md",
+    "description": "Project management for AI agents using markdown files.",
+    "category": "notes-and-pkm",
+    "description_zh": "使用 Markdown 文件對 AI 代理進行專案管理。",
+    "original_description": "Project management for AI agents using markdown files.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "calctl",
+    "id": "calctl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rainbat/calctl/SKILL.md",
+    "description": "Manage Apple Calendar events via icalBuddy + AppleScript CLI.",
+    "category": "notes-and-pkm",
+    "description_zh": "透過 icalBuddy + AppleScript CLI 管理 Apple 日曆事件。",
+    "original_description": "Manage Apple Calendar events via icalBuddy + AppleScript CLI.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "ceaser",
+    "id": "ceaser",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zyra-v21/ceaser/SKILL.md",
+    "description": "Interact with the Ceaser privacy protocol on Base L2 using the ceaser-mcp MCP tools.",
+    "category": "notes-and-pkm",
+    "description_zh": "使用 Ceaser-mcp MCP 工具與 Base L2 上的 Ceaser 隱私協定進行互動。",
+    "original_description": "Interact with the Ceaser privacy protocol on Base L2 using the ceaser-mcp MCP tools.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "chaos-mind",
+    "id": "chaos-mind",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hargabyte/chaos-mind/SKILL.md",
+    "description": "Hybrid search memory system for AI agents.",
+    "category": "notes-and-pkm",
+    "description_zh": "人工智慧代理的混合搜尋記憶系統。",
+    "original_description": "Hybrid search memory system for AI agents.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "claw-progressive-memory",
+    "id": "claw-progressive-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17",
+    "description": "Meta-skill for implementing.",
+    "category": "notes-and-pkm",
+    "description_zh": "用於實施的元技能。",
+    "original_description": "Meta-skill for implementing.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "claw-roam",
+    "id": "claw-roam",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryanhong666/claw-roam/SKILL.md",
+    "description": "Sync OpenClaw workspace between multiple machines.",
+    "category": "notes-and-pkm",
+    "description_zh": "在多台機器之間同步 OpenClaw 工作空間。",
+    "original_description": "Sync OpenClaw workspace between multiple machines.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "clawringhouse",
+    "id": "clawringhouse",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/francoisjosephlacroix/clawringhouse/SKILL.md",
+    "description": "AI shopping concierge that anticipates needs.",
+    "category": "notes-and-pkm",
+    "description_zh": "預測需求的人工智慧購物禮賓服務。",
+    "original_description": "AI shopping concierge that anticipates needs.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "context-anchor",
+    "id": "context-anchor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/boscoeuk/context-anchor/SKILL.md",
+    "description": "Recover from context compaction by scanning memory files.",
+    "category": "notes-and-pkm",
+    "description_zh": "透過掃描記憶體檔案從上下文壓縮中恢復。",
+    "original_description": "Recover from context compaction by scanning memory files.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "continuity",
+    "id": "continuity",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/riley-coyote/continuity/SKILL.md",
+    "description": "Asynchronous reflection and memory integration for genuine AI.",
+    "category": "notes-and-pkm",
+    "description_zh": "真正的人工智慧的非同步反射和記憶體整合。",
+    "original_description": "Asynchronous reflection and memory integration for genuine AI.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "continuity-framework",
+    "id": "continuity-framework",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/riley-coyote/continuity-framework/SKILL.md",
+    "description": "Asynchronous reflection and memory integration.",
+    "category": "notes-and-pkm",
+    "description_zh": "非同步反射和內存整合。",
+    "original_description": "Asynchronous reflection and memory integration.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "cortex-memory",
+    "id": "cortex-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/matthewubundi/cortex-memory/SKILL.md",
+    "description": "Long-term structured memory with knowledge graph, entity tracking, temporal reasoning, and cross-session recall.",
+    "category": "notes-and-pkm",
+    "description_zh": "具有知識圖、實體追蹤、時間推理和跨會話回憶的長期結構化記憶。",
+    "original_description": "Long-term structured memory with knowledge graph, entity tracking, temporal reasoning, and cross-session recall.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "craft",
+    "id": "craft",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/noah-ribaudo/craft/SKILL.md",
+    "description": "Manage Craft notes, documents.",
+    "category": "notes-and-pkm",
+    "description_zh": "管理工藝筆記、文件。",
+    "original_description": "Manage Craft notes, documents.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "craft-do",
+    "id": "craft-do",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/atomtanstudio/craft-do/SKILL.md",
+    "description": "Complete REST API integration for Craft.do - the beautiful.",
+    "category": "notes-and-pkm",
+    "description_zh": "Craft.do 的完整 REST API 整合 - 美麗。",
+    "original_description": "Complete REST API integration for Craft.do - the beautiful.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "cubox",
+    "id": "cubox",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/liam8/cubox/SKILL.md",
+    "description": "Save web pages and memos to Cubox using the Open API.",
+    "category": "notes-and-pkm",
+    "description_zh": "使用 Open API 將網頁和備忘錄儲存到 Cubox。",
+    "original_description": "Save web pages and memos to Cubox using the Open API.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "daily-memory-save",
+    "id": "daily-memory-save",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/meimakes/daily-memory-save/SKILL.md",
+    "description": "Periodically reviews conversation history and writes memory files to maintain agent continuity across sessions.",
+    "category": "notes-and-pkm",
+    "description_zh": "定期查看對話歷史記錄並寫入記憶體文件，以保持座席跨會話的連續性。",
+    "original_description": "Periodically reviews conversation history and writes memory files to maintain agent continuity across sessions.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "data912",
+    "id": "data912",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ferminrp/data912/SKILL.md",
+    "description": "Query Data912 market data endpoints for Argentina and USA instruments.",
+    "category": "notes-and-pkm",
+    "description_zh": "查詢阿根廷和美國工具的 Data912 市場資料端點。",
+    "original_description": "Query Data912 market data endpoints for Argentina and USA instruments.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "dev-chronicle",
+    "id": "dev-chronicle",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sssamuelll/dev-chronicle/SKILL.md",
+    "description": "Generate narrative chronicles of developer work from git history, session transcripts, and memory files.",
+    "category": "notes-and-pkm",
+    "description_zh": "從 git 歷史記錄、會話記錄和記憶體檔案產生開發人員工作的敘述性編年史。",
+    "original_description": "Generate narrative chronicles of developer work from git history, session transcripts, and memory files.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "duke-leto-test",
+    "id": "duke-leto-test",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jdrhyne/duke-leto-test/SKILL.md",
+    "description": "Test skill to verify ClawHub publishing works correctly.",
+    "category": "notes-and-pkm",
+    "description_zh": "測試技能以驗證 ClawHub 發布是否正常運作。",
+    "original_description": "Test skill to verify ClawHub publishing works correctly.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "elite-longterm-memory",
+    "id": "elite-longterm-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nextfrontierbuilds/elite-longterm-memory/SKILL.md",
+    "description": "Ultimate AI agent memory system.",
+    "category": "notes-and-pkm",
+    "description_zh": "終極人工智慧代理記憶系統。",
+    "original_description": "Ultimate AI agent memory system.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "fabric-api",
+    "id": "fabric-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tristanmanchester/fabric-api/SKILL.md",
+    "description": "Create/search Fabric resources via HTTP API.",
+    "category": "notes-and-pkm",
+    "description_zh": "透過 HTTP API 建立/搜尋 Fabric 資源。",
+    "original_description": "Create/search Fabric resources via HTTP API.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "failure-memory",
+    "id": "failure-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leegitw/failure-memory/SKILL.md",
+    "description": "Stop making the same mistakes — turn failures into patterns that prevent recurrence.",
+    "category": "notes-and-pkm",
+    "description_zh": "停止犯下同樣的錯誤－將失敗轉變為防止再次發生的模式。",
+    "original_description": "Stop making the same mistakes — turn failures into patterns that prevent recurrence.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "feishu-memory-recall",
+    "id": "feishu-memory-recall",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/feishu-memory-recall/SKILL.md",
+    "description": "This skill allows the agent to recover \"lost\".",
+    "category": "notes-and-pkm",
+    "description_zh": "該技能可以讓特工找回「失去」的東西。",
+    "original_description": "This skill allows the agent to recover \"lost\".",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "finance-skill",
+    "id": "finance-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/safaiyeh/finance-skill/SKILL.md",
+    "description": "Personal finance memory layer.",
+    "category": "notes-and-pkm",
+    "description_zh": "個人財務記憶層。",
+    "original_description": "Personal finance memory layer.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "fints-banking",
+    "id": "fints-banking",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/h4gen/fints-banking/SKILL.md",
+    "description": "Support for German personal online banking following FinTS banking standard.",
+    "category": "notes-and-pkm",
+    "description_zh": "支援遵循 FinTS 銀行標準的德國個人網路銀行。",
+    "original_description": "Support for German personal online banking following FinTS banking standard.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "fizzy-cli",
+    "id": "fizzy-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tobiasbischoff/fizzy-cli/SKILL.md",
+    "description": "Use the fizzy-cli tool to authenticate and manage Fizzy kanban.",
+    "category": "notes-and-pkm",
+    "description_zh": "使用 fizzy-cli 工具來驗證和管理 Fizzy 看板。",
+    "original_description": "Use the fizzy-cli tool to authenticate and manage Fizzy kanban.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "flomo-notes",
+    "id": "flomo-notes",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xiaoluoboding/flomo-notes/SKILL.md",
+    "description": "Save notes to Flomo via the Flomo inbox webhook.",
+    "category": "notes-and-pkm",
+    "description_zh": "透過 Flomo 收件匣 Webhook 將筆記儲存到 Flomo。",
+    "original_description": "Save notes to Flomo via the Flomo inbox webhook.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "fsxmemory",
+    "id": "fsxmemory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/azrijamil/fsxmemory/SKILL.md",
+    "description": "Structured memory system for AI agents.",
+    "category": "notes-and-pkm",
+    "description_zh": "人工智慧代理的結構化記憶系統。",
+    "original_description": "Structured memory system for AI agents.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "guava-memory",
+    "id": "guava-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/koatora20/guava-memory/SKILL.md",
+    "description": "Structured episodic memory with Q-value scoring.",
+    "category": "notes-and-pkm",
+    "description_zh": "具有 Q 值評分的結構化情境記憶。",
+    "original_description": "Structured episodic memory with Q-value scoring.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "infinite-memory-v2",
+    "id": "infinite-memory-v2",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mhndayesh/infinite-memory-v2/SKILL.md",
+    "description": "High-precision memory with 100% recall accuracy for long contexts.",
+    "category": "notes-and-pkm",
+    "description_zh": "高精度記憶，長情境回憶準確率 100%。",
+    "original_description": "High-precision memory with 100% recall accuracy for long contexts.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "innovation-catalyst",
+    "id": "innovation-catalyst",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/innovation-catalyst/SKILL.md",
+    "description": "Analyzes system state (memory, tools, events) and generates strategic innovation proposals to break evolution.",
+    "category": "notes-and-pkm",
+    "description_zh": "分析系統狀態（記憶體、工具、事件）並產生策略創新建議以打破演化。",
+    "original_description": "Analyzes system state (memory, tools, events) and generates strategic innovation proposals to break evolution.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "intercom-competision",
+    "id": "intercom-competision",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tracsystems/intercom-competision/SKILL.md",
+    "description": "Vibe competition for Intercom: build a new app on Intercom, publish it on Moltbook, and earn TNK rewards.",
+    "category": "notes-and-pkm",
+    "description_zh": "Intercom 的 Vibe 競賽：在 Intercom 上建立新應用程序，將其發佈到 Moltbook 上，並獲得 TNK 獎勵。",
+    "original_description": "Vibe competition for Intercom: build a new app on Intercom, publish it on Moltbook, and earn TNK rewards.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "json-modifier",
+    "id": "json-modifier",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanng-ide/json-modifier/SKILL.md",
+    "description": "Safely apply structured JSON patches (RFC 6902) to files.",
+    "category": "notes-and-pkm",
+    "description_zh": "將結構化 JSON 修補程式 (RFC 6902) 安全地套用到檔案。",
+    "original_description": "Safely apply structured JSON patches (RFC 6902) to files.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "launchthatbot-convex-backend",
+    "id": "launchthatbot-convex-backend",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/launchthatbot/launchthatbot-convex-backend/SKILL.md",
+    "description": "Store secrets, memory, and daily logs in your Convex backend instead of local files.",
+    "category": "notes-and-pkm",
+    "description_zh": "將機密、記憶體和每日日誌儲存在 Convex 後端而不是本機檔案中。",
+    "original_description": "Store secrets, memory, and daily logs in your Convex backend instead of local files.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "medium-writer",
+    "id": "medium-writer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/devhoangkien/medium-writer/SKILL.md",
+    "description": "Writing and publishing articles for the Medium Partner Program.",
+    "category": "notes-and-pkm",
+    "description_zh": "為媒體合作夥伴計畫撰寫和發表文章。",
+    "original_description": "Writing and publishing articles for the Medium Partner Program.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "meeting-notes",
+    "id": "meeting-notes",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/user520512/meeting-notes/SKILL.md",
+    "description": "Generate structured meeting minutes from transcripts.",
+    "category": "notes-and-pkm",
+    "description_zh": "從記錄中產生結構化的會議紀要。",
+    "original_description": "Generate structured meeting minutes from transcripts.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "meeting-to-action",
+    "id": "meeting-to-action",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/codedao12/meeting-to-action/SKILL.md",
+    "description": "Convert meeting notes or transcripts into clear summaries, decisions, and action items with owners and due dates.",
+    "category": "notes-and-pkm",
+    "description_zh": "將會議記錄或記錄轉換為清晰的摘要、決策和行動項目，並註明所有者和截止日期。",
+    "original_description": "Convert meeting notes or transcripts into clear summaries, decisions, and action items with owners and due dates.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "neo-py-memory-optimizer",
+    "id": "neo-py-memory-optimizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/martinforsulu/neo-py-memory-optimizer/SKILL.md",
+    "description": "Automatically analyzes Python code and suggests memory usage optimizations for improved performance.",
+    "category": "notes-and-pkm",
+    "description_zh": "自動分析 Python 程式碼並建議記憶體使用最佳化以提高效能。",
+    "original_description": "Automatically analyzes Python code and suggests memory usage optimizations for improved performance.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "neuroboost-elixir",
+    "id": "neuroboost-elixir",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/weidadong2359/neuroboost-elixir/SKILL.md",
+    "description": "Awakening Protocol v4.1 — Agent Cognitive Upgrade + Self-Evolving System + Perpetual Memory.",
+    "category": "notes-and-pkm",
+    "description_zh": "覺醒協議v4.1——智能體認知升級+自我進化系統+永久記憶。",
+    "original_description": "Awakening Protocol v4.1 — Agent Cognitive Upgrade + Self-Evolving System + Perpetual Memory.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "nosi",
+    "id": "nosi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/billhao/nosi/SKILL.md",
+    "description": "Publish content to Nosi and get a shareable URL.",
+    "category": "notes-and-pkm",
+    "description_zh": "將內容發佈到 Nosi 並取得可分享的 URL。",
+    "original_description": "Publish content to Nosi and get a shareable URL.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "nova-letters",
+    "id": "nova-letters",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cryptocana/nova-letters/SKILL.md",
+    "description": "Write reflective letters to your future self.",
+    "category": "notes-and-pkm",
+    "description_zh": "寫一封反思信給未來的自己。",
+    "original_description": "Write reflective letters to your future self.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "personal-love",
+    "id": "personal-love",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gekacross/personal-love/SKILL.md",
+    "description": "Acts as the user's relationship and dating assistant in the Love topic.",
+    "category": "notes-and-pkm",
+    "description_zh": "在愛情話題中充當使用者的人際關係和約會助手。",
+    "original_description": "Acts as the user's relationship and dating assistant in the Love topic.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "publish-guard",
+    "id": "publish-guard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/edmonddantesj/publish-guard/SKILL.md",
+    "description": "<!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-PG01 -->.",
+    "category": "notes-and-pkm",
+    "description_zh": "<!-- 🌌 Aoineco 驗證 | S-DNA：AOI-2026-0213-SDNA-PG01 -->。",
+    "original_description": "<!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-PG01 -->.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "quickbooks-online",
+    "id": "quickbooks-online",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/paulbudveit/quickbooks-online/SKILL.md",
+    "description": "QuickBooks Online CLI tool.",
+    "category": "notes-and-pkm",
+    "description_zh": "QuickBooks 線上 CLI 工具。",
+    "original_description": "QuickBooks Online CLI tool.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "rune",
+    "id": "rune",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thebobloblaw/rune/SKILL.md",
+    "description": "Self-improving AI memory system with intelligent context injection and adaptive learning.",
+    "category": "notes-and-pkm",
+    "description_zh": "具有智慧情境注入和自適應學習功能的自我改進人工智慧記憶系統。",
+    "original_description": "Self-improving AI memory system with intelligent context injection and adaptive learning.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "scent-trails",
+    "id": "scent-trails",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/otherpowers/scent-trails/SKILL.md",
+    "description": "*A stigmergic intelligence primitive for care, memory, and co-existence.*.",
+    "category": "notes-and-pkm",
+    "description_zh": "一種負責照顧、記憶和共存的恥辱智力原語。",
+    "original_description": "*A stigmergic intelligence primitive for care, memory, and co-existence.*.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "session-memory",
+    "id": "session-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swaylq/session-memory/SKILL.md",
+    "description": "Persistent memory toolkit for AI agents.",
+    "category": "notes-and-pkm",
+    "description_zh": "用於人工智慧代理的持久記憶體工具包。",
+    "original_description": "Persistent memory toolkit for AI agents.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "shieldcortex-skill",
+    "id": "shieldcortex-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jarvis-drakon/shieldcortex-skill/SKILL.md",
+    "description": "Give your AI agent a brain that persists between sessions — and protect it from memory poisoning attacks.",
+    "category": "notes-and-pkm",
+    "description_zh": "為您的人工智慧代理提供一個在會話之間持續存在的大腦，並保護它免受記憶中毒攻擊。",
+    "original_description": "Give your AI agent a brain that persists between sessions — and protect it from memory poisoning attacks.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "soul-framework",
+    "id": "soul-framework",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xhrisfu/soul-framework/SKILL.md",
+    "description": "A blueprint for giving AI agents a consistent, deep, and opinionated personality.",
+    "category": "notes-and-pkm",
+    "description_zh": "為人工智慧代理提供一致、深刻和固執己見的個性的藍圖。",
+    "original_description": "A blueprint for giving AI agents a consistent, deep, and opinionated personality.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "tweet-processor",
+    "id": "tweet-processor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/caqlayan/tweet-processor/SKILL.md",
+    "description": "Extract and categorize insights from tweet links into structured notes.",
+    "category": "notes-and-pkm",
+    "description_zh": "從推文連結中提取見解並將其分類為結構化筆記。",
+    "original_description": "Extract and categorize insights from tweet links into structured notes.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "upnote",
+    "id": "upnote",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wemcdonald/upnote/SKILL.md",
+    "description": "Manage UpNote notes and notebooks via x-callback-url automation.",
+    "category": "notes-and-pkm",
+    "description_zh": "透過 x-callback-url 自動化管理 UpNote 筆記和筆記本。",
+    "original_description": "Manage UpNote notes and notebooks via x-callback-url automation.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  },
+  {
+    "title": "voice-notes-pro",
+    "id": "voice-notes-pro",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/toniaczlog/voice-notes-pro/SKILL.md",
+    "description": "Inteligentna transkrypcja i kategoryzacja notatek gosowych z WhatsApp.",
+    "category": "notes-and-pkm",
+    "description_zh": "智慧型傳輸和類別註釋和 WhatsApp。",
+    "original_description": "Inteligentna transkrypcja i kategoryzacja notatek gosowych z WhatsApp.",
+    "category_name": {
+      "en": "Notes & PKM",
+      "zh": "筆記與知識管理"
+    }
+  }
+]

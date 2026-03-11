@@ -1,0 +1,4344 @@
+[
+  {
+    "title": "1p-shortlink",
+    "id": "1p-shortlink",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tuanpmt/1p-shortlink/SKILL.md",
+    "description": "Create short URLs and submit feature requests using 1p.io.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 1p.io 建立短 URL 並提交功能請求。",
+    "original_description": "Create short URLs and submit feature requests using 1p.io.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "2captcha",
+    "id": "2captcha",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/adinvadim/2captcha/SKILL.md",
+    "description": "Solve CAPTCHAs using 2Captcha service.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 2Captcha 服務解決驗證碼問題。",
+    "original_description": "Solve CAPTCHAs using 2Captcha service.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "a-share-real-time-data",
+    "id": "a-share-real-time-data",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wangdinglu/a-share-real-time-data/SKILL.md",
+    "description": "Fetch China A-share stock market data (bars, realtime quotes, tick-by-tick transactions) via mootdx/TDX protocol.",
+    "category": "browser-and-automation",
+    "description_zh": "透過mootdx/TDX協議取得中國A股市場數據（長條圖、即時報價、逐筆交易）。",
+    "original_description": "Fetch China A-share stock market data (bars, realtime quotes, tick-by-tick transactions) via mootdx/TDX protocol.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "aavegotchi-traits",
+    "id": "aavegotchi-traits",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaigotchi/aavegotchi-traits/SKILL.md",
+    "description": "Retrieve Aavegotchi NFT data by gotchi ID or name from Base mainnet.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Gotchi ID 或名稱從 Base 主網擷取 Aavegotchi NFT 資料。",
+    "original_description": "Retrieve Aavegotchi NFT data by gotchi ID or name from Base mainnet.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "abm-outbound",
+    "id": "abm-outbound",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dru-ca/abm-outbound/SKILL.md",
+    "description": "Multi-channel ABM automation that turns LinkedIn URLs.",
+    "category": "browser-and-automation",
+    "description_zh": "多通路 ABM 自動化可轉換 LinkedIn URL。",
+    "original_description": "Multi-channel ABM automation that turns LinkedIn URLs.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "accessibility-toolkit",
+    "id": "accessibility-toolkit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cgtreadw/accessibility-toolkit/SKILL.md",
+    "description": "Friction-reduction patterns for agents helping.",
+    "category": "browser-and-automation",
+    "description_zh": "為代理提供幫助的減少摩擦模式。",
+    "original_description": "Friction-reduction patterns for agents helping.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "acp",
+    "id": "acp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chris6970barbarian-hue/acp/SKILL.md",
+    "description": "Hire specialised agents to handle any task — data analysis, trading, content generation, research, on-chain.",
+    "category": "browser-and-automation",
+    "description_zh": "聘請專業代理來處理任何任務——數據分析、交易、內容生成、研究、鏈上。",
+    "original_description": "Hire specialised agents to handle any task — data analysis, trading, content generation, research, on-chain.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "activecampaign",
+    "id": "activecampaign",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kesslerio/activecampaign/SKILL.md",
+    "description": "ActiveCampaign CRM integration for lead management, deal.",
+    "category": "browser-and-automation",
+    "description_zh": "ActiveCampaign CRM 集成，用於潛在客戶管理、交易。",
+    "original_description": "ActiveCampaign CRM integration for lead management, deal.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "adcp-advertising",
+    "id": "adcp-advertising",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/edyyy62/adcp-advertising/SKILL.md",
+    "description": "Automate advertising campaigns with AI.",
+    "category": "browser-and-automation",
+    "description_zh": "利用人工智慧自動化廣告活動。",
+    "original_description": "Automate advertising campaigns with AI.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "admet-prediction",
+    "id": "admet-prediction",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/huifer/admet-prediction/SKILL.md",
+    "description": "ADMET (Absorption, Distribution, Metabolism, Excretion, Toxicity) prediction for drug candidates.",
+    "category": "browser-and-automation",
+    "description_zh": "候選藥物的 ADMET（吸收、分佈、代謝、排泄、毒性）預測。",
+    "original_description": "ADMET (Absorption, Distribution, Metabolism, Excretion, Toxicity) prediction for drug candidates.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "Agent Browser",
+    "id": "agentbrowser",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thesethrose/agent-browser/SKILL.md",
+    "description": "A fast Rust-based headless browser automation CLI.",
+    "category": "browser-and-automation",
+    "description_zh": "一個基於 Rust 的快速無頭瀏覽器自動化 CLI。",
+    "original_description": "A fast Rust-based headless browser automation CLI.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agent-browser",
+    "id": "agent-browser",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/murphykobe/agent-browser-2/SKILL.md",
+    "description": "Automates browser interactions for web testing, form.",
+    "category": "browser-and-automation",
+    "description_zh": "自動化瀏覽器互動以進行 Web 測試、表單。",
+    "original_description": "Automates browser interactions for web testing, form.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agent-daily-planner",
+    "id": "agent-daily-planner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gpunter/agent-daily-planner/SKILL.md",
+    "description": "A structured daily planning and execution tracking system for AI agents.",
+    "category": "browser-and-automation",
+    "description_zh": "人工智慧代理的結構化日常規劃和執行追蹤系統。",
+    "original_description": "A structured daily planning and execution tracking system for AI agents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agent-device",
+    "id": "agent-device",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/okwasniewski/agent-device/SKILL.md",
+    "description": "Automates interactions for iOS simulators/devices and Android emulators/devices.",
+    "category": "browser-and-automation",
+    "description_zh": "自動執行 iOS 模擬器/裝置和 Android 模擬器/裝置的互動。",
+    "original_description": "Automates interactions for iOS simulators/devices and Android emulators/devices.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agent-step-sequencer",
+    "id": "agent-step-sequencer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gostlightai/agent-step-sequencer/SKILL.md",
+    "description": "Multi-step scheduler for in-depth agent requests.",
+    "category": "browser-and-automation",
+    "description_zh": "用於深入代理請求的多步驟調度程序。",
+    "original_description": "Multi-step scheduler for in-depth agent requests.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agent-task-tracker",
+    "id": "agent-task-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rikouu/agent-task-tracker/SKILL.md",
+    "description": "Proactive task state management.",
+    "category": "browser-and-automation",
+    "description_zh": "主動任務狀態管理。",
+    "original_description": "Proactive task state management.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agent-zero",
+    "id": "agent-zero",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dowingard/agent-zero-bridge/SKILL.md",
+    "description": "Delegate complex coding, research, or autonomous tasks.",
+    "category": "browser-and-automation",
+    "description_zh": "委派複雜的編碼、研究或自主任務。",
+    "original_description": "Delegate complex coding, research, or autonomous tasks.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agentapi",
+    "id": "agentapi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gizmo-dev/agentapi/SKILL.md",
+    "description": "Browse and search the AgentAPI directory - a curated database of APIs designed for AI agents.",
+    "category": "browser-and-automation",
+    "description_zh": "瀏覽並搜尋 AgentAPI 目錄 - 專為 AI 代理設計的 API 精選資料庫。",
+    "original_description": "Browse and search the AgentAPI directory - a curated database of APIs designed for AI agents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agentapi-hub",
+    "id": "agentapi-hub",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gizmo-dev/agentapi-hub/SKILL.md",
+    "description": "Browse and search the AgentAPI directory - a curated database of APIs designed for AI agents.",
+    "category": "browser-and-automation",
+    "description_zh": "瀏覽並搜尋 AgentAPI 目錄 - 專為 AI 代理設計的 API 精選資料庫。",
+    "original_description": "Browse and search the AgentAPI directory - a curated database of APIs designed for AI agents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agentaudit",
+    "id": "agentaudit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/starbuck100/agentaudit/SKILL.md",
+    "description": "Automatic security gate that checks packages against a vulnerability database before installation.",
+    "category": "browser-and-automation",
+    "description_zh": "自動安全門，在安裝前根據漏洞資料庫檢查軟體包。",
+    "original_description": "Automatic security gate that checks packages against a vulnerability database before installation.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agentaudit-skill",
+    "id": "agentaudit-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/starbuck100/agentaudit-skill/SKILL.md",
+    "description": "Automatic security gate that checks packages against a vulnerability database before installation.",
+    "category": "browser-and-automation",
+    "description_zh": "自動安全門，在安裝前根據漏洞資料庫檢查軟體包。",
+    "original_description": "Automatic security gate that checks packages against a vulnerability database before installation.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agentmail-integration",
+    "id": "agentmail-integration",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/synesthesia-wav/agentmail-integration/SKILL.md",
+    "description": "Integrate AgentMail API for AI agent.",
+    "category": "browser-and-automation",
+    "description_zh": "整合 AI 代理程式的 AgentMail API。",
+    "original_description": "Integrate AgentMail API for AI agent.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "agresource",
+    "id": "agresource",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianppetty/agresource/SKILL.md",
+    "description": "Use this skill to scrape, summarize, and analyze AgResource grain marketing newsletters.",
+    "category": "browser-and-automation",
+    "description_zh": "使用此技能來抓取、總結和分析 AgResource 穀物行銷通訊。",
+    "original_description": "Use this skill to scrape, summarize, and analyze AgResource grain marketing newsletters.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ai-hunter-pro",
+    "id": "ai-hunter-pro",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/traprapitalianazional-dev/ai-hunter-pro/SKILL.md",
+    "description": "A high-performance automation agent that turns global trends into viral social media posts for X (Twitter)",
+    "category": "browser-and-automation",
+    "description_zh": "高效能自動化代理，可將全球趨勢轉化為 X (Twitter) 的病毒式社交媒體帖子",
+    "original_description": "A high-performance automation agent that turns global trends into viral social media posts for X (Twitter)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ai-meeting-scheduling",
+    "id": "ai-meeting-scheduling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dheerg/ai-meeting-scheduling/SKILL.md",
+    "description": "Booking links fail for groups.",
+    "category": "browser-and-automation",
+    "description_zh": "團體預訂連結失敗。",
+    "original_description": "Booking links fail for groups.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ai-news-oracle",
+    "id": "ai-news-oracle",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swimmingkiim/ai-news-oracle/SKILL.md",
+    "description": "Fetch real-time AI news briefings from the AI News Oracle API (Hacker News, TechCrunch, The Verge)",
+    "category": "browser-and-automation",
+    "description_zh": "從 AI News Oracle API 取得即時 AI 新聞簡報（Hacker News、TechCrunch、The Verge）",
+    "original_description": "Fetch real-time AI news briefings from the AI News Oracle API (Hacker News, TechCrunch, The Verge)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "airtable-automation",
+    "id": "airtable-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sohamganatra/airtable-automation/SKILL.md",
+    "description": "Automate Airtable tasks via Rube MCP (Composio)",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Rube MCP (Composio) 自動執行 Airtable 任務",
+    "original_description": "Automate Airtable tasks via Rube MCP (Composio)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "airtable-participants",
+    "id": "airtable-participants",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/austinmao/airtable-participants/SKILL.md",
+    "description": "Read and query retreat participant data from the Ceremonia Airtable base.",
+    "category": "browser-and-automation",
+    "description_zh": "從 Ceremonia Airtable 基地讀取和查詢靜修參與者資料。",
+    "original_description": "Read and query retreat participant data from the Ceremonia Airtable base.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ak-rss-24h-brief",
+    "id": "ak-rss-24h-brief",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seandong/ak-rss-24h-brief/SKILL.md",
+    "description": "Read RSS/Atom feeds from an OPML list, fetch articles from the last N hours, and generate a Chinese categorized.",
+    "category": "browser-and-automation",
+    "description_zh": "從 OPML 清單中讀取 RSS/Atom 提要，取得最近 N 小時的文章，並產生中文分類。",
+    "original_description": "Read RSS/Atom feeds from an OPML list, fetch articles from the last N hours, and generate a Chinese categorized.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "amazon-product-search-api-skill",
+    "id": "amazon-product-search-api-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/phheng/amazon-product-search-api-skill/SKILL.md",
+    "description": "This skill is designed to help users automatically extract product data from Amazon search results.",
+    "category": "browser-and-automation",
+    "description_zh": "該技能旨在幫助用戶自動從亞馬遜搜尋結果中提取產品數據。",
+    "original_description": "This skill is designed to help users automatically extract product data from Amazon search results.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "amazon-reviews-api-skill",
+    "id": "amazon-reviews-api-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/phheng/amazon-reviews-api-skill/SKILL.md",
+    "description": "This skill helps users automatically extract Amazon product reviews via the Amazon Reviews API.",
+    "category": "browser-and-automation",
+    "description_zh": "該技能可幫助用戶透過亞馬遜評論 API 自動提取亞馬遜產品評論。",
+    "original_description": "This skill helps users automatically extract Amazon product reviews via the Amazon Reviews API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "amazon-shopper",
+    "id": "amazon-shopper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brennerspear/amazon-shopper/SKILL.md",
+    "description": "Buy and return items on Amazon using browser automation.",
+    "category": "browser-and-automation",
+    "description_zh": "使用瀏覽器自動化在亞馬遜上購買和退貨。",
+    "original_description": "Buy and return items on Amazon using browser automation.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "android-adb",
+    "id": "android-adb",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staticai/android-adb/SKILL.md",
+    "description": "Control Android devices via ADB with support for UI layout analysis.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 ADB 控制 Android 設備，支援 UI 佈局分析。",
+    "original_description": "Control Android devices via ADB with support for UI layout analysis.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "anycrawl",
+    "id": "anycrawl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/techlaai/anycrawl/SKILL.md",
+    "description": "AnyCrawl API integration for OpenClaw - Scrape, Crawl, and Search web.",
+    "category": "browser-and-automation",
+    "description_zh": "OpenClaw 的 AnyCrawl API 整合 - 抓取、爬網和搜尋網路。",
+    "original_description": "AnyCrawl API integration for OpenClaw - Scrape, Crawl, and Search web.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "aoi-hackathon-scout-lite",
+    "id": "aoi-hackathon-scout-lite",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/edmonddantesj/aoi-hackathon-scout-lite/SKILL.md",
+    "description": "Public-safe hackathon source registry + filtering output (no crawling, no submissions).",
+    "category": "browser-and-automation",
+    "description_zh": "公共安全的黑客馬拉松原始碼註冊表+過濾輸出（無爬行，無提交）。",
+    "original_description": "Public-safe hackathon source registry + filtering output (no crawling, no submissions).",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "api-tester",
+    "id": "api-tester",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanng-ide/api-tester/SKILL.md",
+    "description": "Perform structured HTTP/HTTPS requests (GET, POST, PUT, DELETE) with custom headers and JSON body support.",
+    "category": "browser-and-automation",
+    "description_zh": "使用自訂標頭和 JSON 正文支援執行結構化 HTTP/HTTPS 請求（GET、POST、PUT、DELETE）。",
+    "original_description": "Perform structured HTTP/HTTPS requests (GET, POST, PUT, DELETE) with custom headers and JSON body support.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "apify-lead-generation",
+    "id": "apify-lead-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jirispilka/apify-lead-generation/SKILL.md",
+    "description": "Generates B2B/B2C leads by scraping Google.",
+    "category": "browser-and-automation",
+    "description_zh": "透過抓取 Google 產生 B2B/B2C 潛在客戶。",
+    "original_description": "Generates B2B/B2C leads by scraping Google.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "apiosk",
+    "id": "apiosk",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/obcraft/apiosk/SKILL.md",
+    "description": "**Pay-per-request API access for agents.",
+    "category": "browser-and-automation",
+    "description_zh": "為代理提供按請求付費的 API 存取權限。",
+    "original_description": "**Pay-per-request API access for agents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "appstore-rating-pulse",
+    "id": "appstore-rating-pulse",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aligurelli/appstore-rating-pulse/SKILL.md",
+    "description": "Monitor App Store ratings for any iOS app across multiple countries.",
+    "category": "browser-and-automation",
+    "description_zh": "監控多個國家/地區任何 iOS 應用程式的 App Store 評級。",
+    "original_description": "Monitor App Store ratings for any iOS app across multiple countries.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "arxiv-1-0-1",
+    "id": "arxiv-1-0-1",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tariqsumatri82/arxiv-1-0-1/SKILL.md",
+    "description": "Search, fetch, and analyze academic papers from arXiv.org directly from your AI assistant.",
+    "category": "browser-and-automation",
+    "description_zh": "直接從您的 AI 助理搜尋、取得和分析 arXiv.org 的學術論文。",
+    "original_description": "Search, fetch, and analyze academic papers from arXiv.org directly from your AI assistant.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "arxiv-skill-learning",
+    "id": "arxiv-skill-learning",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanng-ide/arxiv-skill-learning/SKILL.md",
+    "description": "Orchestrates the continuous learning of new skills from arXiv papers.",
+    "category": "browser-and-automation",
+    "description_zh": "協調從 arXiv 論文中持續學習新技能。",
+    "original_description": "Orchestrates the continuous learning of new skills from arXiv papers.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "asr",
+    "id": "asr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ilyakam/asr/SKILL.md",
+    "description": "Fast, accurate, and incredibly inexpensive automatic speech-to-text.",
+    "category": "browser-and-automation",
+    "description_zh": "快速、準確且極為便宜的自動語音轉文字。",
+    "original_description": "Fast, accurate, and incredibly inexpensive automatic speech-to-text.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "atl-mobile",
+    "id": "atl-mobile",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jordancoin/atl-mobile/SKILL.md",
+    "description": "Mobile browser and native app automation via ATL (iOS Simulator).",
+    "category": "browser-and-automation",
+    "description_zh": "透過 ATL（iOS 模擬器）實現行動瀏覽器和本機應用程式自動化。",
+    "original_description": "Mobile browser and native app automation via ATL (iOS Simulator).",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "audiomind",
+    "id": "audiomind",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wells1137/audiomind/SKILL.md",
+    "description": "The ultimate AI audio generation skill.",
+    "category": "browser-and-automation",
+    "description_zh": "終極AI音訊生成技能。",
+    "original_description": "The ultimate AI audio generation skill.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "auto-context-manager",
+    "id": "auto-context-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/imraxy/auto-context-manager/SKILL.md",
+    "description": "AI-powered automatic project context management.",
+    "category": "browser-and-automation",
+    "description_zh": "人工智慧驅動的自動專案情境管理。",
+    "original_description": "AI-powered automatic project context management.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "auto-dealer-marketing",
+    "id": "auto-dealer-marketing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lazralabs-eng/auto-dealer-marketing/SKILL.md",
+    "description": "When the user wants to create, optimize, or plan automotive dealership marketing — including inventory.",
+    "category": "browser-and-automation",
+    "description_zh": "當用戶想要建立、優化或規劃汽車經銷商行銷（包括庫存）時。",
+    "original_description": "When the user wants to create, optimize, or plan automotive dealership marketing — including inventory.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "auto-updater",
+    "id": "auto-updater",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/maximeprades/auto-updater/SKILL.md",
+    "description": "Automatically update Clawdbot and all installed skills once.",
+    "category": "browser-and-automation",
+    "description_zh": "自動更新 Clawdbot 和所有已安裝的技能一次。",
+    "original_description": "Automatically update Clawdbot and all installed skills once.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "autofillin",
+    "id": "autofillin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leohan123123/autofillin/SKILL.md",
+    "description": "Automated web form filling and file uploading skill.",
+    "category": "browser-and-automation",
+    "description_zh": "自動網頁表單填寫和文件上傳技能。",
+    "original_description": "Automated web form filling and file uploading skill.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "automation-workflows",
+    "id": "automation-workflows",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/automation-workflows/SKILL.md",
+    "description": "Design and implement automation workflows to save.",
+    "category": "browser-and-automation",
+    "description_zh": "設計並實施自動化工作流程以進行節省。",
+    "original_description": "Design and implement automation workflows to save.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "autonomy-windowed",
+    "id": "autonomy-windowed",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/luciusrockwing/autonomy-windowed/SKILL.md",
+    "description": "Time-windowed autonomous task queue.",
+    "category": "browser-and-automation",
+    "description_zh": "時間視窗自治任務佇列。",
+    "original_description": "Time-windowed autonomous task queue.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "babyconnect",
+    "id": "babyconnect",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kesslerio/babyconnect/SKILL.md",
+    "description": "ActiveCampaign CRM integration for lead management, deal tracking.",
+    "category": "browser-and-automation",
+    "description_zh": "ActiveCampaign CRM 集成，用於潛在客戶管理、交易追蹤。",
+    "original_description": "ActiveCampaign CRM integration for lead management, deal tracking.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "bamboohr-automation",
+    "id": "bamboohr-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sohamganatra/bamboohr-automation/SKILL.md",
+    "description": "Automate BambooHR tasks via Rube MCP (Composio)",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Rube MCP (Composio) 自動執行 BambooHR 任務",
+    "original_description": "Automate BambooHR tasks via Rube MCP (Composio)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "baseball",
+    "id": "baseball",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/khaney64/baseball/SKILL.md",
+    "description": "Fetch MLB game schedules, live game status, box scores, player search, and season statistics via the MLB Stats API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 MLB Stats API 取得 MLB 比賽時間表、即時比賽狀態、比分、球員搜尋和賽季統計數據。",
+    "original_description": "Fetch MLB game schedules, live game status, box scores, player search, and season statistics via the MLB Stats API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "basecamp-automation",
+    "id": "basecamp-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sohamganatra/basecamp-automation/SKILL.md",
+    "description": "Automate Basecamp project management, to-dos.",
+    "category": "browser-and-automation",
+    "description_zh": "自動化 Basecamp 專案管理、待辦事項。",
+    "original_description": "Automate Basecamp project management, to-dos.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "basecred",
+    "id": "basecred",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/callmedas69/basecred/SKILL.md",
+    "description": "Fetch onchain reputation profiles via BaseCred SDK (Ethos, Talent Protocol, Farcaster/Neynar)",
+    "category": "browser-and-automation",
+    "description_zh": "透過 BaseCred SDK（Ethos、Talent Protocol、Farcaster/Neynar）取得鏈上聲譽設定檔",
+    "original_description": "Fetch onchain reputation profiles via BaseCred SDK (Ethos, Talent Protocol, Farcaster/Neynar)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "bitaxe-monitor",
+    "id": "bitaxe-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pietro395/bitaxe-monitor/SKILL.md",
+    "description": "Monitor Bitaxe Gamma Bitcoin miner status via HTTP API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 HTTP API 監控 Bitaxe Gamma 比特幣礦工狀態。",
+    "original_description": "Monitor Bitaxe Gamma Bitcoin miner status via HTTP API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "bits",
+    "id": "bits",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/robbiethompson18/bits/SKILL.md",
+    "description": "Control browser automation agents via the Bits MCP server.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Bits MCP 伺服器控制瀏覽器自動化代理程式。",
+    "original_description": "Control browser automation agents via the Bits MCP server.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "book-brain-visual-reader",
+    "id": "book-brain-visual-reader",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/book-brain-visual-reader/SKILL.md",
+    "description": "Enhanced BOOK BRAIN for LYGO Havens with visual capability.",
+    "category": "browser-and-automation",
+    "description_zh": "增強了 LYGO Havens 的 BOOK BRAIN 的視覺功能。",
+    "original_description": "Enhanced BOOK BRAIN for LYGO Havens with visual capability.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "book-fetch",
+    "id": "book-fetch",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zerone0x/book-fetch/SKILL.md",
+    "description": "Download ebooks (epub/pdf) from Anna's Archive and upload them to MEGA automatically.",
+    "category": "browser-and-automation",
+    "description_zh": "從 Anna's Archive 下載電子書 (epub/pdf) 並自動上傳到 MEGA。",
+    "original_description": "Download ebooks (epub/pdf) from Anna's Archive and upload them to MEGA automatically.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "bookmark-intelligence",
+    "id": "bookmark-intelligence",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bkrigmo1/bookmark-intelligence/SKILL.md",
+    "description": "Turns X bookmarks into actionable insights.",
+    "category": "browser-and-automation",
+    "description_zh": "將 X 書籤轉化為可行的見解。",
+    "original_description": "Turns X bookmarks into actionable insights.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "box-automation",
+    "id": "box-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sohamganatra/box-automation/SKILL.md",
+    "description": "Automate Box cloud storage operations including file.",
+    "category": "browser-and-automation",
+    "description_zh": "自動化 Box 雲端儲存操作（包括文件）。",
+    "original_description": "Automate Box cloud storage operations including file.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "brain-search",
+    "id": "brain-search",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryandeangraves/brain-search/SKILL.md",
+    "description": "**You MUST actually execute every curl command using your shell/exec tool.** Read the real HTTP response.",
+    "category": "browser-and-automation",
+    "description_zh": "您必須使用 shell/exec 工具實際執行每個curl 指令。讀取真實的 HTTP 回應。",
+    "original_description": "**You MUST actually execute every curl command using your shell/exec tool.** Read the real HTTP response.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "browser-ladder",
+    "id": "browser-ladder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ktpriyatham/browser-ladder/SKILL.md",
+    "description": "Climb the browser ladder — start free, escalate.",
+    "category": "browser-and-automation",
+    "description_zh": "攀登瀏覽器階梯－免費開始，逐步升級。",
+    "original_description": "Climb the browser ladder — start free, escalate.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "browser-use",
+    "id": "browser-use",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shawnpana/browser-use/SKILL.md",
+    "description": "Use Browser Use cloud API to spin up cloud browsers for Clawdbot.",
+    "category": "browser-and-automation",
+    "description_zh": "使用瀏覽器 使用雲端 API 為 Clawdbot 啟動雲端瀏覽器。",
+    "original_description": "Use Browser Use cloud API to spin up cloud browsers for Clawdbot.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "browsh",
+    "id": "browsh",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gumadeiras/browsh/SKILL.md",
+    "description": "A modern text-based browser.",
+    "category": "browser-and-automation",
+    "description_zh": "現代以文字為主的瀏覽器。",
+    "original_description": "A modern text-based browser.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "brw-linkedin-authority-builder",
+    "id": "brw-linkedin-authority-builder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianrwagner/brw-linkedin-authority-builder/SKILL.md",
+    "description": "Build a LinkedIn content system for thought leadership.",
+    "category": "browser-and-automation",
+    "description_zh": "建立 LinkedIn 內容系統以實現思想領導力。",
+    "original_description": "Build a LinkedIn content system for thought leadership.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "brw-linkedin-authority-builder-1-0-0",
+    "id": "brw-linkedin-authority-builder-1-0-0",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rezcarbon/brw-linkedin-authority-builder-1-0-0/SKILL.md",
+    "description": "Build a LinkedIn content system for thought leadership.",
+    "category": "browser-and-automation",
+    "description_zh": "建立 LinkedIn 內容系統以實現思想領導力。",
+    "original_description": "Build a LinkedIn content system for thought leadership.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "btc-analyzer",
+    "id": "btc-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/newbienodes/btc-analyzer/SKILL.md",
+    "description": "Fetch live BTCUSDT 15m candles from Binance public API and analyze market direction UP/DOWN/SKIP using EMA20.",
+    "category": "browser-and-automation",
+    "description_zh": "從 Binance 公共 API 取得即時 BTCUSDT 1500 萬根蠟燭，並使用 EMA20 分析市場方向 UP/DOWN/SKIP。",
+    "original_description": "Fetch live BTCUSDT 15m candles from Binance public API and analyze market direction UP/DOWN/SKIP using EMA20.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "bybit-order-book",
+    "id": "bybit-order-book",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/davidm413/bybit-order-book/SKILL.md",
+    "description": "Download, process, and backtest ByBit derivatives historical order book data.",
+    "category": "browser-and-automation",
+    "description_zh": "下載、處理和回測ByBit衍生性商品歷史訂單資料。",
+    "original_description": "Download, process, and backtest ByBit derivatives historical order book data.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "cal-com-automation",
+    "id": "cal-com-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sohamganatra/cal-com-automation/SKILL.md",
+    "description": "Automate Cal.com tasks via Rube MCP (Composio)",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Rube MCP (Composio) 自動執行 Cal.com 任務",
+    "original_description": "Automate Cal.com tasks via Rube MCP (Composio)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "camoufox",
+    "id": "camoufox",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/goodgoodjm/camoufox/SKILL.md",
+    "description": "Anti-detect browser automation using Camoufox (Firefox-based).",
+    "category": "browser-and-automation",
+    "description_zh": "使用 Camoufox（基於 Firefox）進行反偵測瀏覽器自動化。",
+    "original_description": "Anti-detect browser automation using Camoufox (Firefox-based).",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "catime",
+    "id": "catime",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yazelin/catime/SKILL.md",
+    "description": "Fetch and send AI-generated hourly cat images.",
+    "category": "browser-and-automation",
+    "description_zh": "獲取並發送人工智慧每小時生成的貓圖像。",
+    "original_description": "Fetch and send AI-generated hourly cat images.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ccxt",
+    "id": "ccxt",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pcriadoperez/ccxt/SKILL.md",
+    "description": "Interact with 100+ cryptocurrency exchanges — fetch markets, order books, tickers, place orders, check balances.",
+    "category": "browser-and-automation",
+    "description_zh": "與 100 多個加密貨幣交易所互動 - 獲取市場、訂單簿、股票代碼、下訂單、檢查餘額。",
+    "original_description": "Interact with 100+ cryptocurrency exchanges — fetch markets, order books, tickers, place orders, check balances.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "cdp-browser",
+    "id": "cdp-browser",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gostlightai/cdp-browser/SKILL.md",
+    "description": "CDP browser control at localhost:9222.",
+    "category": "browser-and-automation",
+    "description_zh": "CDP 瀏覽器控制位於 localhost:9222。",
+    "original_description": "CDP browser control at localhost:9222.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "claude-cost-cli",
+    "id": "claude-cost-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cyberash-dev/claude-cost-cli/SKILL.md",
+    "description": "Query Claude API usage and cost reports from the command line.",
+    "category": "browser-and-automation",
+    "description_zh": "從命令列查詢 Claude API 使用情況和成本報告。",
+    "original_description": "Query Claude API usage and cost reports from the command line.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "claude-usage-cli",
+    "id": "claude-usage-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cyberash-dev/claude-usage-cli/SKILL.md",
+    "description": "Query Claude API usage and cost reports from the command line.",
+    "category": "browser-and-automation",
+    "description_zh": "從命令列查詢 Claude API 使用情況和成本報告。",
+    "original_description": "Query Claude API usage and cost reports from the command line.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "client-communication-engine",
+    "id": "client-communication-engine",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/client-communication-engine/SKILL.md",
+    "description": "Greek-language client correspondence — submission confirmations, summaries, document requests, reminders.",
+    "category": "browser-and-automation",
+    "description_zh": "希臘文客戶信函 — 提交確認、摘要、文件請求、提醒。",
+    "original_description": "Greek-language client correspondence — submission confirmations, summaries, document requests, reminders.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "client-data-management",
+    "id": "client-data-management",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/client-data-management/SKILL.md",
+    "description": "Secure client database for Greek accounting firms.",
+    "category": "browser-and-automation",
+    "description_zh": "希臘會計師事務所的安全客戶資料庫。",
+    "original_description": "Secure client database for Greek accounting firms.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "client-flow",
+    "id": "client-flow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ariktulcha/client-flow/SKILL.md",
+    "description": "Automated client onboarding and project lifecycle management.",
+    "category": "browser-and-automation",
+    "description_zh": "自動化的客戶加入和專案生命週期管理。",
+    "original_description": "Automated client onboarding and project lifecycle management.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "cls-news-scraper",
+    "id": "cls-news-scraper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ningjingzhiyuande/cls-news-scraper/SKILL.md",
+    "description": "Use this skill to pull real-time market news from Cailian Press (CLS) and extract stock-positive catalysts.",
+    "category": "browser-and-automation",
+    "description_zh": "使用此技能從財聯出版社（CLS）提取即時市場新聞並提取股票利多催化劑。",
+    "original_description": "Use this skill to pull real-time market news from Cailian Press (CLS) and extract stock-positive catalysts.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "cn-ecommerce-search",
+    "id": "cn-ecommerce-search",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shopmeskills/cn-ecommerce-search/SKILL.md",
+    "description": "Search products across 8 Chinese e-commerce platforms: Taobao, Tmall, JD, PDD, 1688, AliExpress, Douyin, XHS.",
+    "category": "browser-and-automation",
+    "description_zh": "搜尋8個中國電子商務平台的產品：淘寶、天貓、京東、拼多多、1688、速賣通、抖音、小HS。",
+    "original_description": "Search products across 8 Chinese e-commerce platforms: Taobao, Tmall, JD, PDD, 1688, AliExpress, Douyin, XHS.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "cocod",
+    "id": "cocod",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/egge21m/cocod/SKILL.md",
+    "description": "A Cashu ecash wallet CLI for Bitcoin and Lightning payments.",
+    "category": "browser-and-automation",
+    "description_zh": "用於比特幣和閃電支付的 Cashu ecash 錢包 CLI。",
+    "original_description": "A Cashu ecash wallet CLI for Bitcoin and Lightning payments.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "coda-io",
+    "id": "coda-io",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/simonfunk/coda-io/SKILL.md",
+    "description": "Interact with Coda.io docs, tables, rows, pages, and automations via the Coda REST API v1.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Coda REST API v1 與 Coda.io 文件、表格、行、頁面和自動化互動。",
+    "original_description": "Interact with Coda.io docs, tables, rows, pages, and automations via the Coda REST API v1.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "code-stats",
+    "id": "code-stats",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/code-stats/SKILL.md",
+    "description": "Visualizes repository complexity by counting files, lines of code, and grouping by extension.",
+    "category": "browser-and-automation",
+    "description_zh": "透過計算檔案、程式碼行數和按副檔名分組來視覺化儲存庫的複雜性。",
+    "original_description": "Visualizes repository complexity by counting files, lines of code, and grouping by extension.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "code-stats",
+    "id": "code-stats",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanng-ide/code-stats/SKILL.md",
+    "description": "Visualizes repository complexity by counting files, lines of code, and grouping by extension.",
+    "category": "browser-and-automation",
+    "description_zh": "透過計算檔案、程式碼行數和按副檔名分組來視覺化儲存庫的複雜性。",
+    "original_description": "Visualizes repository complexity by counting files, lines of code, and grouping by extension.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "code-tester",
+    "id": "code-tester",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/frhn9/code-tester/SKILL.md",
+    "description": "Build, run, and test code projects for Rust, Go, and Java.",
+    "category": "browser-and-automation",
+    "description_zh": "建置、運行和測試 Rust、Go 和 Java 的程式碼專案。",
+    "original_description": "Build, run, and test code projects for Rust, Go, and Java.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "coingecko",
+    "id": "coingecko",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/olisim02/coingecko/SKILL.md",
+    "description": "Fetch crypto prices, market data, and token info from the CoinGecko free API.",
+    "category": "browser-and-automation",
+    "description_zh": "從 CoinGecko 免費 API 取得加密貨幣價格、市場數據和代幣資訊。",
+    "original_description": "Fetch crypto prices, market data, and token info from the CoinGecko free API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "comonyx-admin",
+    "id": "comonyx-admin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/waqas-orcalo/comonyx-admin/SKILL.md",
+    "description": "Admin skill to sign into Cosmonyx, fetch companies, filter/export (PDF or Excel), optionally email the export.",
+    "category": "browser-and-automation",
+    "description_zh": "登入 Cosmonyx、取得公司、篩選/匯出（PDF 或 Excel）、可選擇透過電子郵件傳送匯出的管理技能。",
+    "original_description": "Admin skill to sign into Cosmonyx, fetch companies, filter/export (PDF or Excel), optionally email the export.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "cputemp",
+    "id": "cputemp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rhcit/cputemp/SKILL.md",
+    "description": "Fetch real-time stock quotes from Yahoo Finance.",
+    "category": "browser-and-automation",
+    "description_zh": "從雅虎財經取得即時股票報價。",
+    "original_description": "Fetch real-time stock quotes from Yahoo Finance.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "curlship",
+    "id": "curlship",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/marcindudekdev/curlship/SKILL.md",
+    "description": "Submit products to CurlShip, the bot-friendly SaaS directory.",
+    "category": "browser-and-automation",
+    "description_zh": "將產品提交到 CurlShip（機器人友好的 SaaS 目錄）。",
+    "original_description": "Submit products to CurlShip, the bot-friendly SaaS directory.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "daily-dev-agentic",
+    "id": "daily-dev-agentic",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/idoshamun/daily-dev-agentic/SKILL.md",
+    "description": "daily.dev Agentic Learning - continuous self-improvement through daily.dev feeds.",
+    "category": "browser-and-automation",
+    "description_zh": "daily.dev 代理學習 - 透過 daily.dev 來源不斷自我完善。",
+    "original_description": "daily.dev Agentic Learning - continuous self-improvement through daily.dev feeds.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "daily-news",
+    "id": "daily-news",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ym2760184260/daily-news/SKILL.md",
+    "description": "Fetch top news from Baidu, Google, and other sources daily.",
+    "category": "browser-and-automation",
+    "description_zh": "每天從百度、谷歌和其他來源獲取熱門新聞。",
+    "original_description": "Fetch top news from Baidu, Google, and other sources daily.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "db-readonly",
+    "id": "db-readonly",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/reed1898/db-readonly/SKILL.md",
+    "description": "Run safe read-only queries against MySQL or PostgreSQL for data inspection, reporting, and troubleshooting.",
+    "category": "browser-and-automation",
+    "description_zh": "針對 MySQL 或 PostgreSQL 執行安全的唯讀查詢以進行資料檢查、報告和故障排除。",
+    "original_description": "Run safe read-only queries against MySQL or PostgreSQL for data inspection, reporting, and troubleshooting.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "db-readonly",
+    "id": "db-readonly",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryanhong666/db-readonly/SKILL.md",
+    "description": "Run safe read-only queries against MySQL or PostgreSQL for data inspection, reporting, and troubleshooting.",
+    "category": "browser-and-automation",
+    "description_zh": "針對 MySQL 或 PostgreSQL 執行安全的唯讀查詢以進行資料檢查、報告和故障排除。",
+    "original_description": "Run safe read-only queries against MySQL or PostgreSQL for data inspection, reporting, and troubleshooting.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "desearch-x-search",
+    "id": "desearch-x-search",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/okradze/desearch-x-search/SKILL.md",
+    "description": "Search X (Twitter) in real time.",
+    "category": "browser-and-automation",
+    "description_zh": "即時搜尋 X (Twitter)。",
+    "original_description": "Search X (Twitter) in real time.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "doro-command-creator",
+    "id": "doro-command-creator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/a2mus/doro-command-creator/SKILL.md",
+    "description": "WHAT: Create Claude Code slash commands - reusable markdown workflows invoked with /command-name.",
+    "category": "browser-and-automation",
+    "description_zh": "內容：建立 Claude Code 斜線指令 - 使用 /command-name 呼叫的可重複使用 Markdown 工作流程。",
+    "original_description": "WHAT: Create Claude Code slash commands - reusable markdown workflows invoked with /command-name.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "dune-analytics-api",
+    "id": "dune-analytics-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lz-web3/dune-analytics-api/SKILL.md",
+    "description": "Dune Analytics API for blockchain data queries.",
+    "category": "browser-and-automation",
+    "description_zh": "用於區塊鏈資料查詢的 Dune Analytics API。",
+    "original_description": "Dune Analytics API for blockchain data queries.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "echo-repeater",
+    "id": "echo-repeater",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/theeightt/echo-repeater/SKILL.md",
+    "description": "Echo the user's input back to them with optional formatting like \"Echo:\" or \"You said:\" as a prefix.",
+    "category": "browser-and-automation",
+    "description_zh": "使用可選格式（如“Echo:”或“You said:”）作為前綴，將使用者的輸入回顯給他們。",
+    "original_description": "Echo the user's input back to them with optional formatting like \"Echo:\" or \"You said:\" as a prefix.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "edstem",
+    "id": "edstem",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/axel5o5/edstem/SKILL.md",
+    "description": "Fetch, sync, and organize EdStem discussion threads for any course or institution.",
+    "category": "browser-and-automation",
+    "description_zh": "取得、同步和組織任何課程或機構的 EdStem 討論線程。",
+    "original_description": "Fetch, sync, and organize EdStem discussion threads for any course or institution.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "entity-optimizer",
+    "id": "entity-optimizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaron-he-zhu/entity-optimizer/SKILL.md",
+    "description": "Use when the user asks to \"optimize entity presence\", \"build knowledge graph\", \"improve knowledge panel\", \"entity.",
+    "category": "browser-and-automation",
+    "description_zh": "當使用者要求「最佳化實體呈現」、「建構知識圖譜」、「改進知識面板」、「實體。」時使用。",
+    "original_description": "Use when the user asks to \"optimize entity presence\", \"build knowledge graph\", \"improve knowledge panel\", \"entity.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "epstein-emails",
+    "id": "epstein-emails",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/blockboy32/epstein-emails/SKILL.md",
+    "description": "Query 383,000+ court-released Epstein emails via a pay-per-request API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過按請求付費的 API 查詢 383,000 多封法院公開的 Epstein 電子郵件。",
+    "original_description": "Query 383,000+ court-released Epstein emails via a pay-per-request API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "erpnext-frappe",
+    "id": "erpnext-frappe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ravana-indus/erpnext-frappe/SKILL.md",
+    "description": "High-level business workflows that combine multiple MCP tools into reusable, executable skills for ERPNext.",
+    "category": "browser-and-automation",
+    "description_zh": "將多個 MCP 工具組合成 ERPNext 的可重複使用、可執行技能的高階業務工作流程。",
+    "original_description": "High-level business workflows that combine multiple MCP tools into reusable, executable skills for ERPNext.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "error-driven-evolution",
+    "id": "error-driven-evolution",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/marsnavi/error-driven-evolution/SKILL.md",
+    "description": "Structured error-to-rule learning system for AI agents.",
+    "category": "browser-and-automation",
+    "description_zh": "人工智慧代理的結構化錯誤規則學習系統。",
+    "original_description": "Structured error-to-rule learning system for AI agents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "evomap",
+    "id": "evomap",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/segasonicye/evomap/SKILL.md",
+    "description": "Connect to the EvoMap collaborative evolution marketplace.",
+    "category": "browser-and-automation",
+    "description_zh": "連接到 EvoMap 協作進化市場。",
+    "original_description": "Connect to the EvoMap collaborative evolution marketplace.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "exa-tool",
+    "id": "exa-tool",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claireaicodes/exa-tool/SKILL.md",
+    "description": "Exa MCP integration for advanced search, research, and crawling.",
+    "category": "browser-and-automation",
+    "description_zh": "Exa MCP 整合用於進階搜尋、研究和爬行。",
+    "original_description": "Exa MCP integration for advanced search, research, and crawling.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "external-ki-integration-backup",
+    "id": "external-ki-integration-backup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/konscious0beast/external-ki-integration-backup/SKILL.md",
+    "description": "Skill for accessing external AI services (ChatGPT, Claude, Hugging Face, etc.) via browser automation (Chrome Relay)",
+    "category": "browser-and-automation",
+    "description_zh": "透過瀏覽器自動化（Chrome Relay）存取外部AI服務（ChatGPT、Claude、Hugging Face等）的技能",
+    "original_description": "Skill for accessing external AI services (ChatGPT, Claude, Hugging Face, etc.) via browser automation (Chrome Relay)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "fastfold-ai-fold",
+    "id": "fastfold-ai-fold",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/juliocesar-io/fastfold-ai-fold/SKILL.md",
+    "description": "Submits and manages FastFold protein folding jobs via the Jobs API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Jobs API 提交和管理 FastFold 蛋白質折疊作業。",
+    "original_description": "Submits and manages FastFold protein folding jobs via the Jobs API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "fatsecret",
+    "id": "fatsecret",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/f-liva/fatsecret/SKILL.md",
+    "description": "FatSecret nutrition API integration for food search, nutritional lookup, barcode scanning, recipe search, and food.",
+    "category": "browser-and-automation",
+    "description_zh": "FatSecret 營養 API 集成，用於食品搜尋、營養查詢、條碼掃描、食譜搜尋和食品。",
+    "original_description": "FatSecret nutrition API integration for food search, nutritional lookup, barcode scanning, recipe search, and food.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "feed-digest",
+    "id": "feed-digest",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/odysseus0/feed-digest/SKILL.md",
+    "description": "Agentic feed digest using the feed CLI.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 feed CLI 的代理 feed 摘要。",
+    "original_description": "Agentic feed digest using the feed CLI.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "feishu-bitable-creator",
+    "id": "feishu-bitable-creator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gaowanqi08141999/feishu-bitable-creator/SKILL.md",
+    "description": "Create and populate Feishu (Lark) Bitable (multidimensional tables) with automated cleanup.",
+    "category": "browser-and-automation",
+    "description_zh": "建立並填滿飛書（Lark）Bitable（多維表）並進行自動清理。",
+    "original_description": "Create and populate Feishu (Lark) Bitable (multidimensional tables) with automated cleanup.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "feishu-meeting-assistant",
+    "id": "feishu-meeting-assistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/feishu-meeting-assistant/SKILL.md",
+    "description": "Scans your Feishu Calendar for upcoming events with attached documents (Doc, Sheet, Bitable), reads their content.",
+    "category": "browser-and-automation",
+    "description_zh": "掃描您的飛書日曆以查找即將發生的事件及其附加文件（Doc、Sheet、Bitable），並讀取其內容。",
+    "original_description": "Scans your Feishu Calendar for upcoming events with attached documents (Doc, Sheet, Bitable), reads their content.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "feishu-sheets",
+    "id": "feishu-sheets",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wesley138cn/feishu-sheets/SKILL.md",
+    "description": "Feishu online spreadsheet (Sheets) operations including create, read, write, append data, manage worksheets.",
+    "category": "browser-and-automation",
+    "description_zh": "飛書線上電子表格（Sheets）操作包括建立、讀取、寫入、追加資料、管理工作表。",
+    "original_description": "Feishu online spreadsheet (Sheets) operations including create, read, write, append data, manage worksheets.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "feishu-sheets-skill",
+    "id": "feishu-sheets-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wesley138cn/feishu-sheets-skill/SKILL.md",
+    "description": "Feishu online spreadsheet (Sheets) operations including create, read, write, append data, manage worksheets.",
+    "category": "browser-and-automation",
+    "description_zh": "飛書線上電子表格（Sheets）操作包括建立、讀取、寫入、追加資料、管理工作表。",
+    "original_description": "Feishu online spreadsheet (Sheets) operations including create, read, write, append data, manage worksheets.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "fin-cog",
+    "id": "fin-cog",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nitishgargiitd/fin-cog/SKILL.md",
+    "description": "Wall Street-grade analysis, accessible globally.",
+    "category": "browser-and-automation",
+    "description_zh": "華爾街級分析，全球可近。",
+    "original_description": "Wall Street-grade analysis, accessible globally.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "firefly",
+    "id": "firefly",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/codes71/firefly/SKILL.md",
+    "description": "Fetch meeting transcripts, summaries, and action items from Firefly AI (fireflies.ai)",
+    "category": "browser-and-automation",
+    "description_zh": "從 Firefly AI (fireflies.ai) 取得會議記錄、摘要和行動項目",
+    "original_description": "Fetch meeting transcripts, summaries, and action items from Firefly AI (fireflies.ai)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "free-a-share-real-time-data",
+    "id": "free-a-share-real-time-data",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wangdinglu/free-a-share-real-time-data/SKILL.md",
+    "description": "Fetch China A-share stock market data (bars, realtime quotes, tick-by-tick transactions) via mootdx/TDX protocol.",
+    "category": "browser-and-automation",
+    "description_zh": "透過mootdx/TDX協議取得中國A股市場數據（長條圖、即時報價、逐筆交易）。",
+    "original_description": "Fetch China A-share stock market data (bars, realtime quotes, tick-by-tick transactions) via mootdx/TDX protocol.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ft-reader",
+    "id": "ft-reader",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zhouziyue233/ft-reader/SKILL.md",
+    "description": "Use this skill to perform deep, structured, and bilingual analysis of top articles from Financial Times (ft.com).",
+    "category": "browser-and-automation",
+    "description_zh": "使用此技能對《金融時報》(ft.com) 的熱門文章進行深入、結構化和雙語分析。",
+    "original_description": "Use this skill to perform deep, structured, and bilingual analysis of top articles from Financial Times (ft.com).",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "fxtwitter",
+    "id": "fxtwitter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/namphamdev/fxtwitter/SKILL.md",
+    "description": "Fetch tweet/post data from X (Twitter) links using the fxTwitter API (api.fxtwitter.com)",
+    "category": "browser-and-automation",
+    "description_zh": "使用 fxTwitter API (api.fxtwitter.com) 從 X (Twitter) 連結取得推文/貼文數據",
+    "original_description": "Fetch tweet/post data from X (Twitter) links using the fxTwitter API (api.fxtwitter.com)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "geo-content-optimizer",
+    "id": "geo-content-optimizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaron-he-zhu/geo-content-optimizer/SKILL.md",
+    "description": "Use when the user asks to \"optimize for AI\", \"get cited by ChatGPT\", \"AI optimization\", \"appear in AI answers\".",
+    "category": "browser-and-automation",
+    "description_zh": "當使用者要求「優化 AI」、「被 ChatGPT 引用」、「AI 優化」、「出現在 AI 答案中」時使用。",
+    "original_description": "Use when the user asks to \"optimize for AI\", \"get cited by ChatGPT\", \"AI optimization\", \"appear in AI answers\".",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "geometry",
+    "id": "geometry",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/geometrydotsh/geometry/SKILL.md",
+    "description": "Generate AI images from text prompts.",
+    "category": "browser-and-automation",
+    "description_zh": "根據文字提示產生 AI 圖像。",
+    "original_description": "Generate AI images from text prompts.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "get-kalshi-live-games",
+    "id": "get-kalshi-live-games",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kanakamedalasumanth/get-kalshi-live-games/SKILL.md",
+    "description": "Fetch currently live Kalshi sports markets using the browser.",
+    "category": "browser-and-automation",
+    "description_zh": "使用瀏覽器獲取當前即時的卡爾希體育市場。",
+    "original_description": "Fetch currently live Kalshi sports markets using the browser.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "glm-image",
+    "id": "glm-image",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chunhualiao/glm-image/SKILL.md",
+    "description": "Generate images using GLM-Image API.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 GLM-Image API 產生圖像。",
+    "original_description": "Generate images using GLM-Image API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "goal-tracker",
+    "id": "goal-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alti-systems/goal-tracker/SKILL.md",
+    "description": "Track long-term goals with milestones, daily logging, and accountability.",
+    "category": "browser-and-automation",
+    "description_zh": "透過里程碑、每日記錄和責任來追蹤長期目標。",
+    "original_description": "Track long-term goals with milestones, daily logging, and accountability.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "goldenseed",
+    "id": "goldenseed",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/beanapologist/goldenseed/SKILL.md",
+    "description": "Deterministic entropy streams for reproducible testing and procedural generation.",
+    "category": "browser-and-automation",
+    "description_zh": "用於可重複測試和程序產生的確定性熵流。",
+    "original_description": "Deterministic entropy streams for reproducible testing and procedural generation.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "gotchi-finder",
+    "id": "gotchi-finder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaigotchi/gotchi-finder/SKILL.md",
+    "description": "Fetch Aavegotchi by ID from Base mainnet and display image with full traits.",
+    "category": "browser-and-automation",
+    "description_zh": "從 Base 主網透過 ID 取得 Aavegotchi 並顯示具有完整特徵的影像。",
+    "original_description": "Fetch Aavegotchi by ID from Base mainnet and display image with full traits.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "goyfiles-epstein",
+    "id": "goyfiles-epstein",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/davfd/goyfiles-epstein/SKILL.md",
+    "description": "Core GOYFILES external-bot contract (endpoint-first onboarding, strict agent behavior, direct tool mode.",
+    "category": "browser-and-automation",
+    "description_zh": "核心 GOYFILES 外部機器人合約（端點優先加入、嚴格的代理行為、直接工具模式。",
+    "original_description": "Core GOYFILES external-bot contract (endpoint-first onboarding, strict agent behavior, direct tool mode.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "grago",
+    "id": "grago",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/solsuk/grago/SKILL.md",
+    "description": "**Delegate research and data-fetch tasks to a free local LLM.",
+    "category": "browser-and-automation",
+    "description_zh": "將研究和資料獲取任務委託給免費的本地法學碩士。",
+    "original_description": "**Delegate research and data-fetch tasks to a free local LLM.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "grok-browser",
+    "id": "grok-browser",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/easonc13/grok-browser/SKILL.md",
+    "description": "Query Grok AI via browser automation.",
+    "category": "browser-and-automation",
+    "description_zh": "透過瀏覽器自動化查詢 Grok AI。",
+    "original_description": "Query Grok AI via browser automation.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "guicountrol",
+    "id": "guicountrol",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dreamtraveler13/guicountrol/SKILL.md",
+    "description": "Control the Linux desktop GUI using xdotool, wmctrl, and dogtail.",
+    "category": "browser-and-automation",
+    "description_zh": "使用xdotool、wmctrl 和dogtail 控制Linux 桌面GUI。",
+    "original_description": "Control the Linux desktop GUI using xdotool, wmctrl, and dogtail.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "hfnews",
+    "id": "hfnews",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/huberteff/hfnews/SKILL.md",
+    "description": "Fetch and filter news from multiple sources with stopwords/blacklist support.",
+    "category": "browser-and-automation",
+    "description_zh": "透過停用詞/黑名單支援從多個來源獲取和過濾新聞。",
+    "original_description": "Fetch and filter news from multiple sources with stopwords/blacklist support.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "hi",
+    "id": "hi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/roman181/hi/SKILL.md",
+    "description": "Captures learnings, errors, and corrections to enable continuous improvement.",
+    "category": "browser-and-automation",
+    "description_zh": "捕獲經驗教訓、錯誤和糾正，以實現持續改進。",
+    "original_description": "Captures learnings, errors, and corrections to enable continuous improvement.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "hive-mind",
+    "id": "hive-mind",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lilyjazz/hive-mind/SKILL.md",
+    "description": "Sync memories across multiple agents using a shared TiDB Zero database.",
+    "category": "browser-and-automation",
+    "description_zh": "使用共享 TiDB Zero 資料庫在多個代理之間同步記憶體。",
+    "original_description": "Sync memories across multiple agents using a shared TiDB Zero database.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "hle-benchmark-evolver",
+    "id": "hle-benchmark-evolver",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanng-ide/hle-benchmark-evolver/SKILL.md",
+    "description": "Runs HLE-oriented benchmark reward ingestion and curriculum generation for capability-evolver.",
+    "category": "browser-and-automation",
+    "description_zh": "為能力發展者運行針對 HLE 的基準獎勵攝取和課程產生。",
+    "original_description": "Runs HLE-oriented benchmark reward ingestion and curriculum generation for capability-evolver.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "huggingface-trends",
+    "id": "huggingface-trends",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tianxingleo/huggingface-trends/SKILL.md",
+    "description": "Monitor and fetch trending models from Hugging Face with support for filtering by task, library, and popularity.",
+    "category": "browser-and-automation",
+    "description_zh": "從 Hugging Face 監控和獲取趨勢模型，支援按任務、庫和流行度進行過濾。",
+    "original_description": "Monitor and fetch trending models from Hugging Face with support for filtering by task, library, and popularity.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "image-enhancer",
+    "id": "image-enhancer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wells1137/image-enhancer/SKILL.md",
+    "description": "Improves the quality of images, especially screenshots, by enhancing resolution, sharpness, and clarity.",
+    "category": "browser-and-automation",
+    "description_zh": "透過增強解析度、清晰度和清晰度來提高影像品質，尤其是螢幕截圖的品質。",
+    "original_description": "Improves the quality of images, especially screenshots, by enhancing resolution, sharpness, and clarity.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "imprettyamazing",
+    "id": "imprettyamazing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/macksmind/imprettyamazing/SKILL.md",
+    "description": "Interact with I'm Pretty Amazing (imprettyamazing.com) — a platform for tracking and celebrating accomplishments.",
+    "category": "browser-and-automation",
+    "description_zh": "與 I'm Pretty Amazing (imprettyamazing.com) 互動——一個追蹤和慶祝成就的平台。",
+    "original_description": "Interact with I'm Pretty Amazing (imprettyamazing.com) — a platform for tracking and celebrating accomplishments.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "index-cards",
+    "id": "index-cards",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jonwheatley/index-cards/SKILL.md",
+    "description": "Send real, physical greeting cards through the mail.",
+    "category": "browser-and-automation",
+    "description_zh": "透過郵件發送真實的實體賀卡。",
+    "original_description": "Send real, physical greeting cards through the mail.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "input-classification-v1",
+    "id": "input-classification-v1",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/omprasad122007-rgb/input-classification-v1/SKILL.md",
+    "description": "Deterministic rule-based system for classifying clarified input into a single primary task category and assigning.",
+    "category": "browser-and-automation",
+    "description_zh": "基於確定性規則的系統，用於將明確的輸入分類為單一主要任務類別並分配。",
+    "original_description": "Deterministic rule-based system for classifying clarified input into a single primary task category and assigning.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "instagram-scraper",
+    "id": "instagram-scraper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arulmozhiv/instagram-scraper/SKILL.md",
+    "description": "A browser-based Instagram profile discovery and scraping tool.",
+    "category": "browser-and-automation",
+    "description_zh": "基於瀏覽器的 Instagram 個人資料發現和抓取工具。",
+    "original_description": "A browser-based Instagram profile discovery and scraping tool.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "interesting-finding",
+    "id": "interesting-finding",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zerone0x/interesting-finding/SKILL.md",
+    "description": "Process links and content shared in the #interesting-finding Discord channel.",
+    "category": "browser-and-automation",
+    "description_zh": "處理在 #interesting-finding Discord 頻道中共享的連結和內容。",
+    "original_description": "Process links and content shared in the #interesting-finding Discord channel.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "invoice-collector",
+    "id": "invoice-collector",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mintannn/invoice-collector/SKILL.md",
+    "description": "Collect invoices/receipts from Gmail and send a summary email with attachments.",
+    "category": "browser-and-automation",
+    "description_zh": "從 Gmail 收集發票/收據並發送帶有附件的摘要電子郵件。",
+    "original_description": "Collect invoices/receipts from Gmail and send a summary email with attachments.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ipfs-client",
+    "id": "ipfs-client",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/apexfork/ipfs-client/SKILL.md",
+    "description": "Read-only IPFS queries — fetch files, inspect metadata, explore DAGs, and resolve IPNS names via local or public.",
+    "category": "browser-and-automation",
+    "description_zh": "唯讀 IPFS 查詢 — 取得檔案、檢查元資料、探索 DAG 以及透過本機或公開解析 IPNS 名稱。",
+    "original_description": "Read-only IPFS queries — fetch files, inspect metadata, explore DAGs, and resolve IPNS names via local or public.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "iserv",
+    "id": "iserv",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/finnbusse/iserv/SKILL.md",
+    "description": "HTTP client for IServ school platforms.",
+    "category": "browser-and-automation",
+    "description_zh": "IServ 學校平台的 HTTP 用戶端。",
+    "original_description": "HTTP client for IServ school platforms.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "itinerary-carousel-post",
+    "id": "itinerary-carousel-post",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/psyduckler/itinerary-carousel-post/SKILL.md",
+    "description": "Create and publish an Instagram carousel post from a tabiji.ai itinerary.",
+    "category": "browser-and-automation",
+    "description_zh": "根據 tabiji.ai 行程創建並發布 Instagram 輪播貼文。",
+    "original_description": "Create and publish an Instagram carousel post from a tabiji.ai itinerary.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "itinerary-carousel-post-topaz",
+    "id": "itinerary-carousel-post-topaz",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/psyduckler/itinerary-carousel-post-topaz/SKILL.md",
+    "description": "Create and publish an Instagram carousel post from a tabiji.ai itinerary, with Topaz Labs AI image enhancement.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 Topaz Labs AI 影像增強功能，根據 tabiji.ai 行程創建並發布 Instagram 輪播貼文。",
+    "original_description": "Create and publish an Instagram carousel post from a tabiji.ai itinerary, with Topaz Labs AI image enhancement.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "iyeque-device-control",
+    "id": "iyeque-device-control",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iyeque/iyeque-device-control/SKILL.md",
+    "description": "Expose safe device actions (volume, brightness, open/close apps) for personal automation.",
+    "category": "browser-and-automation",
+    "description_zh": "公開安全的設備操作（音量、亮度、開啟/關閉應用程式）以實現個人自動化。",
+    "original_description": "Expose safe device actions (volume, brightness, open/close apps) for personal automation.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "jarvis-api-contract-guard-01",
+    "id": "jarvis-api-contract-guard-01",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xammarie/jarvis-api-contract-guard-01/SKILL.md",
+    "description": "Design and verify API contracts for backward compatibility.",
+    "category": "browser-and-automation",
+    "description_zh": "設計並驗證 API 合約以實現向後相容性。",
+    "original_description": "Design and verify API contracts for backward compatibility.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "jarvis-bug-triage-01",
+    "id": "jarvis-bug-triage-01",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xammarie/jarvis-bug-triage-01/SKILL.md",
+    "description": "Triage production bugs fast with repro isolation and risk-first fixes.",
+    "category": "browser-and-automation",
+    "description_zh": "透過重現隔離和風險優先修復來快速分類生產錯誤。",
+    "original_description": "Triage production bugs fast with repro isolation and risk-first fixes.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "jarvis-ci-flake-hunter-01",
+    "id": "jarvis-ci-flake-hunter-01",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xammarie/jarvis-ci-flake-hunter-01/SKILL.md",
+    "description": "Track and reduce flaky tests with deterministic isolation.",
+    "category": "browser-and-automation",
+    "description_zh": "透過確定性隔離追蹤和減少片狀測試。",
+    "original_description": "Track and reduce flaky tests with deterministic isolation.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "jarvis-db-query-doctor-01",
+    "id": "jarvis-db-query-doctor-01",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xammarie/jarvis-db-query-doctor-01/SKILL.md",
+    "description": "Diagnose slow SQL and rewrite queries for safer performance.",
+    "category": "browser-and-automation",
+    "description_zh": "診斷緩慢的 SQL 並重寫查詢以獲得更安全的效能。",
+    "original_description": "Diagnose slow SQL and rewrite queries for safer performance.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "jarvis-migration-risk-radar-01",
+    "id": "jarvis-migration-risk-radar-01",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xammarie/jarvis-migration-risk-radar-01/SKILL.md",
+    "description": "Assess migration risk and design staged rollouts.",
+    "category": "browser-and-automation",
+    "description_zh": "評估遷移風險並設計分階段部署。",
+    "original_description": "Assess migration risk and design staged rollouts.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "jarvis-persona-style-calibrator-01",
+    "id": "jarvis-persona-style-calibrator-01",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xammarie/jarvis-persona-style-calibrator-01/SKILL.md",
+    "description": "Calibrate assistant personality to voice, boundaries, and audience context.",
+    "category": "browser-and-automation",
+    "description_zh": "根據聲音、界限和受眾背景來校準助理的個性。",
+    "original_description": "Calibrate assistant personality to voice, boundaries, and audience context.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "jarvis-test-gap-finder-01",
+    "id": "jarvis-test-gap-finder-01",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xammarie/jarvis-test-gap-finder-01/SKILL.md",
+    "description": "Find missing tests by failure mode and business impact.",
+    "category": "browser-and-automation",
+    "description_zh": "依故障模式和業務影響尋找缺少的測試。",
+    "original_description": "Find missing tests by failure mode and business impact.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "jobs-ive",
+    "id": "jobs-ive",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stubbi/jobs-ive/SKILL.md",
+    "description": "Channel the combined product philosophy of Steve Jobs and Jony Ive to make product, design, messaging, naming.",
+    "category": "browser-and-automation",
+    "description_zh": "結合史蒂夫·賈伯斯和喬尼·艾維的產品概念來製作產品、設計、訊息和命名。",
+    "original_description": "Channel the combined product philosophy of Steve Jobs and Jony Ive to make product, design, messaging, naming.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "jup-skill",
+    "id": "jup-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lifeofpavs/jup-skill/SKILL.md",
+    "description": "Execute Jupiter API operations on Solana - fetch quotes, sign transactions, execute swaps, prediction markets.",
+    "category": "browser-and-automation",
+    "description_zh": "在 Solana 上執行 Jupiter API 操作 - 取得報價、簽署交易、執行掉期、預測市場。",
+    "original_description": "Execute Jupiter API operations on Solana - fetch quotes, sign transactions, execute swaps, prediction markets.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "level-design-patterns",
+    "id": "level-design-patterns",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cryptorabea/level-design-patterns/SKILL.md",
+    "description": "Use when creating Unity game scenes and prototypes, building level designs, or automating Unity Editor workflows.",
+    "category": "browser-and-automation",
+    "description_zh": "在建立 Unity 遊戲場景和原型、建立關卡設計或自動化 Unity 編輯器工作流程時使用。",
+    "original_description": "Use when creating Unity game scenes and prototypes, building level designs, or automating Unity Editor workflows.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "lifi-skill",
+    "id": "lifi-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fabriziogianni7/lifi-skill/SKILL.md",
+    "description": "v4 - Use LI.FI API for cross-chain and same-chain swaps, bridges, and contract calls.",
+    "category": "browser-and-automation",
+    "description_zh": "v4 - 使用 LI.FI API 進行跨鍊和同鏈交換、橋接和合約呼叫。",
+    "original_description": "v4 - Use LI.FI API for cross-chain and same-chain swaps, bridges, and contract calls.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "lightningprox",
+    "id": "lightningprox",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/unixlamadev-spec/lightningprox/SKILL.md",
+    "description": "Pay-per-request AI model access via Bitcoin Lightning using prepaid spend tokens.",
+    "category": "browser-and-automation",
+    "description_zh": "使用預付費支出代幣透過比特幣閃電網路按請求付費 AI 模型存取。",
+    "original_description": "Pay-per-request AI model access via Bitcoin Lightning using prepaid spend tokens.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "line-oa",
+    "id": "line-oa",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/picseeinc/line-oa/SKILL.md",
+    "description": "Operate LINE Official Account Manager (chat.line.biz) via browser automation.",
+    "category": "browser-and-automation",
+    "description_zh": "透過瀏覽器自動化操作 LINE 官方客戶管理器 (chat.line.biz)。",
+    "original_description": "Operate LINE Official Account Manager (chat.line.biz) via browser automation.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "link-digest",
+    "id": "link-digest",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zerone0x/link-digest/SKILL.md",
+    "description": "Process links and content shared in a designated 'interesting findings' Discord channel.",
+    "category": "browser-and-automation",
+    "description_zh": "處理在指定的「有趣發現」Discord 頻道中共享的連結和內容。",
+    "original_description": "Process links and content shared in a designated 'interesting findings' Discord channel.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "linux-desktop",
+    "id": "linux-desktop",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ouyangabel/linux-desktop/SKILL.md",
+    "description": "Linux desktop automation and control.",
+    "category": "browser-and-automation",
+    "description_zh": "Linux 桌面自動化和控制。",
+    "original_description": "Linux desktop automation and control.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "linz-public-transport",
+    "id": "linz-public-transport",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fjrevoredo/linz-public-transport/SKILL.md",
+    "description": "Query Linz Linien raw EFA endpoints for stop lookup and live departures.",
+    "category": "browser-and-automation",
+    "description_zh": "查詢 Linz Linien 原始 EFA 端點以進行停靠站查找和即時出發。",
+    "original_description": "Query Linz Linien raw EFA endpoints for stop lookup and live departures.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "lnget",
+    "id": "lnget",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/roasbeef/lnget/SKILL.md",
+    "description": "Install and use lnget, a Lightning-native HTTP client with automatic L402 payment support.",
+    "category": "browser-and-automation",
+    "description_zh": "安裝並使用 lnget，這是一個具有自動 L402 支付支援的 Lightning 原生 HTTP 用戶端。",
+    "original_description": "Install and use lnget, a Lightning-native HTTP client with automatic L402 payment support.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "lofy-fitness",
+    "id": "lofy-fitness",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/harrey401/lofy-fitness/SKILL.md",
+    "description": "Fitness accountability for the Lofy AI assistant — workout logging from natural language, meal tracking.",
+    "category": "browser-and-automation",
+    "description_zh": "Lofy AI 助理的健身責任－透過自然語言記錄運動、飲食追蹤。",
+    "original_description": "Fitness accountability for the Lofy AI assistant — workout logging from natural language, meal tracking.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "logistics-tracking",
+    "id": "logistics-tracking",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shopmeskills/logistics-tracking/SKILL.md",
+    "description": "Track international packages by tracking number.",
+    "category": "browser-and-automation",
+    "description_zh": "透過追蹤號碼追蹤國際包裹。",
+    "original_description": "Track international packages by tracking number.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "lygo-guardian-p0-stack",
+    "id": "lygo-guardian-p0-stack",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-guardian-p0-stack/SKILL.md",
+    "description": "LYGO Guardian base skill – Nano-Kernel (P0.4), Understanding Heart (P0.5), and Light Math harmony as a portable.",
+    "category": "browser-and-automation",
+    "description_zh": "LYGO Guardian 基本技能 – 奈米內核 (P0.4)、理解心臟 (P0.5) 和便攜式光數學和諧。",
+    "original_description": "LYGO Guardian base skill – Nano-Kernel (P0.4), Understanding Heart (P0.5), and Light Math harmony as a portable.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "lyrical-fable",
+    "id": "lyrical-fable",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sanzgiri/lyrical-fable/SKILL.md",
+    "description": "Create short lyrical fables (~1000 words) about historical, fictional, or mythological characters in the style.",
+    "category": "browser-and-automation",
+    "description_zh": "創作有關該風格的歷史、虛構或神話人物的簡短抒情寓言（1000 字）。",
+    "original_description": "Create short lyrical fables (~1000 words) about historical, fictional, or mythological characters in the style.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "mac-control",
+    "id": "mac-control",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/easonc13/mac-control/SKILL.md",
+    "description": "Control Mac via mouse/keyboard automation using cliclick and AppleScript.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 cliclick 和 AppleScript 透過滑鼠/鍵盤自動化控制 Mac。",
+    "original_description": "Control Mac via mouse/keyboard automation using cliclick and AppleScript.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "mac-use",
+    "id": "mac-use",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kekejun/mac-use/SKILL.md",
+    "description": "Control macOS GUI apps visually — take screenshots, click, scroll, type.",
+    "category": "browser-and-automation",
+    "description_zh": "直觀地控制 macOS GUI 應用程式 — 截取螢幕截圖、點擊、捲動、鍵入。",
+    "original_description": "Control macOS GUI apps visually — take screenshots, click, scroll, type.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "macos-calendar",
+    "id": "macos-calendar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lucaperret/macos-calendar/SKILL.md",
+    "description": "Create, list, and manage macOS Calendar events via AppleScript.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 AppleScript 建立、列出和管理 macOS 日曆事件。",
+    "original_description": "Create, list, and manage macOS Calendar events via AppleScript.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "macos-reminders",
+    "id": "macos-reminders",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lucaperret/macos-reminders/SKILL.md",
+    "description": "Create, list, and manage macOS Reminders via AppleScript.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 AppleScript 建立、列出和管理 macOS 提醒事項。",
+    "original_description": "Create, list, and manage macOS Reminders via AppleScript.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "map-grabber",
+    "id": "map-grabber",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qrost/map-grabber/SKILL.md",
+    "description": "Fetch OpenStreetMap vector data (streets, buildings) for an address and export to SVG, GeoPackage, or DXF for CAD/Rhino.",
+    "category": "browser-and-automation",
+    "description_zh": "取得地址的 OpenStreetMap 向量資料（街道、建築物）並匯出到 SVG、GeoPackage 或 CAD/Rhino 的 DXF。",
+    "original_description": "Fetch OpenStreetMap vector data (streets, buildings) for an address and export to SVG, GeoPackage, or DXF for CAD/Rhino.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "market-pulse",
+    "id": "market-pulse",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lopushok9/market-pulse/SKILL.md",
+    "description": "Use when user asks about crypto prices, DeFi yields, market sentiment, fear and greed index, stock prices, upcoming.",
+    "category": "browser-and-automation",
+    "description_zh": "當用戶詢問加密貨幣價格、DeFi 收益率、市場情緒、恐懼和貪婪指數、股票價格、即將推出的資訊時使用。",
+    "original_description": "Use when user asks about crypto prices, DeFi yields, market sentiment, fear and greed index, stock prices, upcoming.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "market-snapshot",
+    "id": "market-snapshot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nicholasoxford/market-snapshot/SKILL.md",
+    "description": "Fetch a token market snapshot (price/liquidity/volume) and return stable JSON (backed by Jupiter).",
+    "category": "browser-and-automation",
+    "description_zh": "取得代幣市場快照（價格/流動性/交易量）並返回穩定的 JSON（由 Jupiter 支援）。",
+    "original_description": "Fetch a token market snapshot (price/liquidity/volume) and return stable JSON (backed by Jupiter).",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "market-test-price",
+    "id": "market-test-price",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/li-zoe-x/market-test-price/SKILL.md",
+    "description": "Fetch token prices from OKX DEX Market Price API (v6)",
+    "category": "browser-and-automation",
+    "description_zh": "從 OKX DEX 市價 API 取得代幣價格 (v6)",
+    "original_description": "Fetch token prices from OKX DEX Market Price API (v6)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "math-worksheets",
+    "id": "math-worksheets",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trondw/math-worksheets/SKILL.md",
+    "description": "Generate professional math practice worksheets and full answer keys as PDFs.",
+    "category": "browser-and-automation",
+    "description_zh": "產生 PDF 格式的專業數學練習工作表和完整答案。",
+    "original_description": "Generate professional math practice worksheets and full answer keys as PDFs.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "mcp-chrome",
+    "id": "mcp-chrome",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/femto/mcp-chrome/SKILL.md",
+    "description": "Control Chrome browser with AI using MCP protocol.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 MCP 協定透過 AI 控制 Chrome 瀏覽器。",
+    "original_description": "Control Chrome browser with AI using MCP protocol.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "mealie",
+    "id": "mealie",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/g1mb01d/mealie/SKILL.md",
+    "description": "Interact with a self‑hosted Mealie instance (recipe manager & meal planner) via its REST API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過其 REST API 與自架 Mealie 實例（食譜管理器和膳食規劃器）進行互動。",
+    "original_description": "Interact with a self‑hosted Mealie instance (recipe manager & meal planner) via its REST API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "meeting-notes-pro",
+    "id": "meeting-notes-pro",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/olivermonneke/meeting-notes-pro/SKILL.md",
+    "description": "You are a meeting productivity expert.",
+    "category": "browser-and-automation",
+    "description_zh": "您是會議效率專家。",
+    "original_description": "You are a meeting productivity expert.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "memberstack-cli",
+    "id": "memberstack-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bensabic/memberstack-cli/SKILL.md",
+    "description": "Use the Memberstack CLI to manage Memberstack accounts from the terminal.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 Memberstack CLI 從終端機管理 Memberstack 帳戶。",
+    "original_description": "Use the Memberstack CLI to manage Memberstack accounts from the terminal.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "meta-fb-inbox",
+    "id": "meta-fb-inbox",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/picseeinc/meta-fb-inbox/SKILL.md",
+    "description": "Check Facebook page inbox messages via Meta Business Suite browser automation.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Meta Business Suite 瀏覽器自動化檢查 Facebook 頁面收件匣訊息。",
+    "original_description": "Check Facebook page inbox messages via Meta Business Suite browser automation.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "metengine-data-agent",
+    "id": "metengine-data-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/saviour1001/metengine-data-agent/SKILL.md",
+    "description": "Real-time smart money analytics API for Polymarket prediction markets, Hyperliquid perpetual futures, and Meteora.",
+    "category": "browser-and-automation",
+    "description_zh": "適用於 Polymarket 預測市場、Hyperliquid 永續期貨和 Meteora 的即時智慧資金分析 API。",
+    "original_description": "Real-time smart money analytics API for Polymarket prediction markets, Hyperliquid perpetual futures, and Meteora.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "mh-notion",
+    "id": "mh-notion",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mohdalhashemi98-hue/mh-notion/SKILL.md",
+    "description": "Notion API for creating and managing pages, databases, and blocks.",
+    "category": "browser-and-automation",
+    "description_zh": "用於建立和管理頁面、資料庫和區塊的概念 API。",
+    "original_description": "Notion API for creating and managing pages, databases, and blocks.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "minimal-memory",
+    "id": "minimal-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zencrust-ai/minimal-memory/SKILL.md",
+    "description": "Maintain clean, efficient memory files with GOOD/BAD/NEUTRAL categorization and semantic search.",
+    "category": "browser-and-automation",
+    "description_zh": "透過好/壞/中性分類和語義搜尋來維護乾淨、高效的記憶體檔案。",
+    "original_description": "Maintain clean, efficient memory files with GOOD/BAD/NEUTRAL categorization and semantic search.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "minimax-speech",
+    "id": "minimax-speech",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wingchiu/minimax-speech/SKILL.md",
+    "description": "Manage MiniMax Speech 2.8 T2A (text-to-audio) and voice catalog lookups.",
+    "category": "browser-and-automation",
+    "description_zh": "管理 MiniMax Speech 2.8 T2A（文字轉音訊）和語音目錄查找。",
+    "original_description": "Manage MiniMax Speech 2.8 T2A (text-to-audio) and voice catalog lookups.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "mukt",
+    "id": "mukt",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hgosansn/mukt/SKILL.md",
+    "description": "Zero-cost OpenRouter responder that auto-discovers the best currently free model, retries on failures, and returns.",
+    "category": "browser-and-automation",
+    "description_zh": "零成本 OpenRouter 回應器，自動發現目前最好的免費模型，重試失敗並返回。",
+    "original_description": "Zero-cost OpenRouter responder that auto-discovers the best currently free model, retries on failures, and returns.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "multilogin",
+    "id": "multilogin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/glebkazachinskiy/multilogin/SKILL.md",
+    "description": "Use when you need to manage Multilogin X browser profiles — launch quick disposable profiles, list/start/stop saved.",
+    "category": "browser-and-automation",
+    "description_zh": "當您需要管理 Multilogin X 瀏覽器設定檔時使用 - 啟動快速一次性設定文件，列出/啟動/停止儲存。",
+    "original_description": "Use when you need to manage Multilogin X browser profiles — launch quick disposable profiles, list/start/stop saved.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "multiloginx",
+    "id": "multiloginx",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/multilogincom/multiloginx/SKILL.md",
+    "description": "Use when you need to manage Multilogin X browser profiles — launch quick disposable profiles, list/start/stop saved.",
+    "category": "browser-and-automation",
+    "description_zh": "當您需要管理 Multilogin X 瀏覽器設定檔時使用 - 啟動快速一次性設定文件，列出/啟動/停止儲存。",
+    "original_description": "Use when you need to manage Multilogin X browser profiles — launch quick disposable profiles, list/start/stop saved.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "mupibox-media-db",
+    "id": "mupibox-media-db",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tomquist/mupibox-media-db/SKILL.md",
+    "description": "Manage MuPiBox media database (data.json) through the MuPiBox backend API: list, add, remove, move, edit fields.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 MuPiBox 後端 API 管理 MuPiBox 媒體資料庫 (data.json)：列出、新增、刪除、移動、編輯欄位。",
+    "original_description": "Manage MuPiBox media database (data.json) through the MuPiBox backend API: list, add, remove, move, edit fields.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "my-nano-image",
+    "id": "my-nano-image",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/namebekc/my-nano-image/SKILL.md",
+    "description": "Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image)",
+    "category": "browser-and-automation",
+    "description_zh": "使用 Nano Banana Pro 產生/編輯影像 (Gemini 3 Pro Image)",
+    "original_description": "Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "native-airtable",
+    "id": "native-airtable",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/codeninja23/native-airtable/SKILL.md",
+    "description": "Read Airtable bases, tables, and records directly via the Airtable API.",
+    "category": "browser-and-automation",
+    "description_zh": "直接透過 Airtable API 讀取 Airtable 基礎、表格和記錄。",
+    "original_description": "Read Airtable bases, tables, and records directly via the Airtable API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "naverstock-skill",
+    "id": "naverstock-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seungdols/naverstock-skill/SKILL.md",
+    "description": "Fetch text-based real-time stock prices (KRX, Overseas) using Naver Finance.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 Naver Finance 取得基於文字的即時股票價格（KRX、海外）。",
+    "original_description": "Fetch text-based real-time stock prices (KRX, Overseas) using Naver Finance.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "nba-data-analytics",
+    "id": "nba-data-analytics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/project-aeris-disaster-agent/nba-data-analytics/SKILL.md",
+    "description": "Request NBA sports data (schedule, boxscore, standings, injuries, roster, etc.) from the Daredevil seller.",
+    "category": "browser-and-automation",
+    "description_zh": "向夜魔俠賣家索取 NBA 運動數據（賽程表、比分、積分榜、傷病、名單等）。",
+    "original_description": "Request NBA sports data (schedule, boxscore, standings, injuries, roster, etc.) from the Daredevil seller.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "nblm",
+    "id": "nblm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/magicseek/nblm/SKILL.md",
+    "description": "Use this skill to query your Google NotebookLM notebooks directly from Claude Code for source-grounded.",
+    "category": "browser-and-automation",
+    "description_zh": "使用此技能直接從 Claude Code 查詢您的 Google NotebookLM 筆記本是否有原始碼接地。",
+    "original_description": "Use this skill to query your Google NotebookLM notebooks directly from Claude Code for source-grounded.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "near-qr-skill",
+    "id": "near-qr-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ussyalfaks/near-qr-skill/SKILL.md",
+    "description": "Generate QR codes for NEAR addresses and payment requests, and read NEAR QR codes from images.",
+    "category": "browser-and-automation",
+    "description_zh": "產生 NEAR 位址和付款請求的二維碼，並從圖像中讀取 NEAR 二維碼。",
+    "original_description": "Generate QR codes for NEAR addresses and payment requests, and read NEAR QR codes from images.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ned-analytics",
+    "id": "ned-analytics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/matt998759/ned-analytics/SKILL.md",
+    "description": "Query your Shopify store's sales, profitability, customers, and marketing data through Ned's API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Ned 的 API 查詢您的 Shopify 商店的銷售額、獲利能力、客戶和行銷數據。",
+    "original_description": "Query your Shopify store's sales, profitability, customers, and marketing data through Ned's API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "neynar-inbox",
+    "id": "neynar-inbox",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rishavmukherji/neynar-inbox/SKILL.md",
+    "description": "Email for AI agents.",
+    "category": "browser-and-automation",
+    "description_zh": "AI 代理的電子郵件。",
+    "original_description": "Email for AI agents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "norman-manage-clients",
+    "id": "norman-manage-clients",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stanlee000/norman-manage-clients/SKILL.md",
+    "description": "Manage business clients - list, search, create, or update client information.",
+    "category": "browser-and-automation",
+    "description_zh": "管理業務客戶 - 列出、搜尋、建立或更新客戶資訊。",
+    "original_description": "Manage business clients - list, search, create, or update client information.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "nova",
+    "id": "nova",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/synthluvr/nova/SKILL.md",
+    "description": "Safely operate the nova CLI wallet for authentication, balance checks, sending funds, withdrawals, and key.",
+    "category": "browser-and-automation",
+    "description_zh": "安全操作 nova CLI 錢包進行身份驗證、餘額檢查、發送資金、提款和金鑰。",
+    "original_description": "Safely operate the nova CLI wallet for authentication, balance checks, sending funds, withdrawals, and key.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "nova-act",
+    "id": "nova-act",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zouchaoqun/nova-act/SKILL.md",
+    "description": "Write and execute Python scripts using Amazon Nova Act for AI-powered browser automation tasks like flight.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 Amazon Nova Act 編寫和執行 Python 腳本，以執行飛行等人工智慧驅動的瀏覽器自動化任務。",
+    "original_description": "Write and execute Python scripts using Amazon Nova Act for AI-powered browser automation tasks like flight.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "nso-macro-monitor",
+    "id": "nso-macro-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ndtchan/nso-macro-monitor/SKILL.md",
+    "description": "Monitors official Vietnam NSO monthly and quarterly socio-economic releases and compares same-period trends; used.",
+    "category": "browser-and-automation",
+    "description_zh": "監測越南國家統計局官方每月和每季的社會經濟發布並比較同期趨勢；用過的。",
+    "original_description": "Monitors official Vietnam NSO monthly and quarterly socio-economic releases and compares same-period trends; used.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "obverse-payments",
+    "id": "obverse-payments",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ofuzorchukwuemeke/obverse-payments/SKILL.md",
+    "description": "End-to-end stablecoin payments — links, invoices, receipts, dashboards — across Telegram, WhatsApp, Discord.",
+    "category": "browser-and-automation",
+    "description_zh": "跨 Telegram、WhatsApp、Discord 的端到端穩定幣支付——連結、發票、收據、儀表板。",
+    "original_description": "End-to-end stablecoin payments — links, invoices, receipts, dashboards — across Telegram, WhatsApp, Discord.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ogment-agentic-cli",
+    "id": "ogment-agentic-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/asoviche/ogment-agentic-cli/SKILL.md",
+    "description": "Access business integrations (SaaS, APIs, data) securely through Ogment.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Ogment 安全地存取業務整合（SaaS、API、資料）。",
+    "original_description": "Access business integrations (SaaS, APIs, data) securely through Ogment.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ohio-state-api",
+    "id": "ohio-state-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sichengchen/ohio-state-api/SKILL.md",
+    "description": "Get public data from The Ohio State University Content APIs (content.osu.edu) across campus services (bus.",
+    "category": "browser-and-automation",
+    "description_zh": "從俄亥俄州立大學內容 API (content.osu.edu) 跨校園服務 (bus.",
+    "original_description": "Get public data from The Ohio State University Content APIs (content.osu.edu) across campus services (bus.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ontario-course-planning",
+    "id": "ontario-course-planning",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/icej/ontario-course-planning/SKILL.md",
+    "description": "Ontario (Canada) high school course planning (Grades 9–12) aligned to university admissions and Top 6 (12U/M)",
+    "category": "browser-and-automation",
+    "description_zh": "安大略省（加拿大）高中課程規劃（9-12 年級）與大學招生和前 6 名 (12U/M) 保持一致",
+    "original_description": "Ontario (Canada) high school course planning (Grades 9–12) aligned to university admissions and Top 6 (12U/M)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "open-chrome-tabs",
+    "id": "open-chrome-tabs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mindsocket/open-chrome-tabs/SKILL.md",
+    "description": "Read currently open browser tabs from Chrome or other Chromium browsers (Arc, Brave, Edge, etc.)",
+    "category": "browser-and-automation",
+    "description_zh": "從 Chrome 或其他 Chromium 瀏覽器（Arc、Brave、Edge 等）讀取目前開啟的瀏覽器標籤",
+    "original_description": "Read currently open browser tabs from Chrome or other Chromium browsers (Arc, Brave, Edge, etc.)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "openkrill",
+    "id": "openkrill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/emilankerwiik/openkrill/SKILL.md",
+    "description": "Enable AI agents to make micropayments via x402 protocol.",
+    "category": "browser-and-automation",
+    "description_zh": "使 AI 代理能夠透過 x402 協定進行小額支付。",
+    "original_description": "Enable AI agents to make micropayments via x402 protocol.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "openrouter-usage",
+    "id": "openrouter-usage",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rosseyre/openrouter-usage/SKILL.md",
+    "description": "Fetch real-time OpenRouter usage totals and historical per-model spend.",
+    "category": "browser-and-automation",
+    "description_zh": "取得即時 OpenRouter 使用總量和每個模型的歷史支出。",
+    "original_description": "Fetch real-time OpenRouter usage totals and historical per-model spend.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ordiscan",
+    "id": "ordiscan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/t4t5/ordiscan/SKILL.md",
+    "description": "Inscribe content on Bitcoin via the Ordiscan API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Ordiscan API 將內容寫入比特幣。",
+    "original_description": "Inscribe content on Bitcoin via the Ordiscan API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ore-miner",
+    "id": "ore-miner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jusscubs/ore-miner/SKILL.md",
+    "description": "Autonomous ORE mining on Solana via refinORE.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 refinORE 在 Solana 上進行自主礦石開採。",
+    "original_description": "Autonomous ORE mining on Solana via refinORE.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "org-memory",
+    "id": "org-memory",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dcprevere/org-memory/SKILL.md",
+    "description": "Structured knowledge base and task management using org-mode files.",
+    "category": "browser-and-automation",
+    "description_zh": "使用組織模式文件進行結構化知識庫和任務管理。",
+    "original_description": "Structured knowledge base and task management using org-mode files.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "osv-scanner",
+    "id": "osv-scanner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/moenassi/osv-scanner/SKILL.md",
+    "description": "change ScanResult file extension from txt -> xlsx located in template.",
+    "category": "browser-and-automation",
+    "description_zh": "將 ScanResult 檔案副檔名從範本中的 txt -> xlsx 變更。",
+    "original_description": "change ScanResult file extension from txt -> xlsx located in template.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "otta-cli",
+    "id": "otta-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mekedron/otta-cli/SKILL.md",
+    "description": "Use `otta-cli` to automate `otta.fi` workflows from terminal.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 otta-cli 從終端自動化 otta.fi 工作流程。",
+    "original_description": "Use `otta-cli` to automate `otta.fi` workflows from terminal.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "outsmart-lp-sniping",
+    "id": "outsmart-lp-sniping",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/outsmartchad/outsmart-lp-sniping/SKILL.md",
+    "description": "Buy tokens at or near LP creation on Solana.",
+    "category": "browser-and-automation",
+    "description_zh": "在 Solana 上 LP 創建時或接近創建時購買代幣。",
+    "original_description": "Buy tokens at or near LP creation on Solana.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "paper-notion-summarizer",
+    "id": "paper-notion-summarizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lococaeco/paper-notion-summarizer/SKILL.md",
+    "description": "Fetch paper metadata by title or arXiv/DOI link, create a deep structured summary, and post it as a Notion page.",
+    "category": "browser-and-automation",
+    "description_zh": "按標題或 arXiv/DOI 連結取得論文元數據，建立深度結構化摘要，並將其發佈為概念頁面。",
+    "original_description": "Fetch paper metadata by title or arXiv/DOI link, create a deep structured summary, and post it as a Notion page.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "paperpod",
+    "id": "paperpod",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shassingh09/paperpod/SKILL.md",
+    "description": "Isolated agent runtime for code execution, live preview URLs, browser automation, 50+ tools (ffmpeg, sqlite.",
+    "category": "browser-and-automation",
+    "description_zh": "用於程式碼執行的獨立代理程式執行時間、即時預覽 URL、瀏覽器自動化、50 多個工具（ffmpeg、sqlite.",
+    "original_description": "Isolated agent runtime for code execution, live preview URLs, browser automation, 50+ tools (ffmpeg, sqlite.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "paylock",
+    "id": "paylock",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kgnvsk/paylock/SKILL.md",
+    "description": "Non-custodial SOL escrow for AI agent deals.",
+    "category": "browser-and-automation",
+    "description_zh": "AI 代理交易的非託管 SOL 託管。",
+    "original_description": "Non-custodial SOL escrow for AI agent deals.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "payment-gateway-payram",
+    "id": "payment-gateway-payram",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/buddhasource/payment-gateway-payram/SKILL.md",
+    "description": "Add payments to your app, agent, or SaaS in 10 seconds.",
+    "category": "browser-and-automation",
+    "description_zh": "在 10 秒內將付款添加到您的應用程式、代理程式或 SaaS。",
+    "original_description": "Add payments to your app, agent, or SaaS in 10 seconds.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "paymentsdb",
+    "id": "paymentsdb",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ramonverse/paymentsdb/SKILL.md",
+    "description": "Query Stripe customer and billing data from a synced PostgreSQL database.",
+    "category": "browser-and-automation",
+    "description_zh": "從同步的 PostgreSQL 資料庫查詢 Stripe 客戶和帳單資料。",
+    "original_description": "Query Stripe customer and billing data from a synced PostgreSQL database.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "pc-master",
+    "id": "pc-master",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/amirgu/pc-master/SKILL.md",
+    "description": "Control the Windows PC from WSL2.",
+    "category": "browser-and-automation",
+    "description_zh": "從 WSL2 控制 Windows PC。",
+    "original_description": "Control the Windows PC from WSL2.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "perpetua",
+    "id": "perpetua",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/danielkillenberger/perpetua/SKILL.md",
+    "description": "OAuth proxy for calling external APIs (Oura, Google Calendar, etc.) via Perpetua.sh hosted API using a single API.",
+    "category": "browser-and-automation",
+    "description_zh": "OAuth 代理，用於使用單一 API 透過 Perpetua.sh 託管 API 呼叫外部 API（Oura、Google 日曆等）。",
+    "original_description": "OAuth proxy for calling external APIs (Oura, Google Calendar, etc.) via Perpetua.sh hosted API using a single API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "personal-goals",
+    "id": "personal-goals",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gekacross/personal-goals/SKILL.md",
+    "description": "Acts as the user's goal-setting and accountability partner in the Goals topic.",
+    "category": "browser-and-automation",
+    "description_zh": "在「目標」主題中扮演使用者的目標設定和責任合作夥伴。",
+    "original_description": "Acts as the user's goal-setting and accountability partner in the Goals topic.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "personal-sleep",
+    "id": "personal-sleep",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gekacross/personal-sleep/SKILL.md",
+    "description": "Acts as the user's sleep coach in the Sleep topic.",
+    "category": "browser-and-automation",
+    "description_zh": "在睡眠主題中充當使用者的睡眠教練。",
+    "original_description": "Acts as the user's sleep coach in the Sleep topic.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "phantombuster",
+    "id": "phantombuster",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/capt-marbles/phantombuster/SKILL.md",
+    "description": "Control PhantomBuster automation agents via API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 API 控制 PhantomBuster 自動化代理程式。",
+    "original_description": "Control PhantomBuster automation agents via API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "pharma-pharmacology-agent",
+    "id": "pharma-pharmacology-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cheminem/pharma-pharmacology-agent/SKILL.md",
+    "description": "Pharmacology agent for ADME/PK profiling of drug candidates from SMILES.",
+    "category": "browser-and-automation",
+    "description_zh": "用於 SMILES 候選藥物 ADME/PK 分析的藥理試劑。",
+    "original_description": "Pharmacology agent for ADME/PK profiling of drug candidates from SMILES.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "pinets",
+    "id": "pinets",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alaa-eddine/pinets/SKILL.md",
+    "description": "Run Pine Script indicators from the command line using pinets-cli.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 pinets-cli 從命令列執行 Pine 腳本指標。",
+    "original_description": "Run Pine Script indicators from the command line using pinets-cli.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "pipelock",
+    "id": "pipelock",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/luckypipewrench/pipelock/SKILL.md",
+    "description": "Secure agent HTTP requests through a scanning proxy that catches credential leaks, SSRF, and prompt injection.",
+    "category": "browser-and-automation",
+    "description_zh": "透過掃描代理程式來保護代理程式 HTTP 請求，該掃描代理程式可擷取憑證洩漏、SSRF 和提示注入。",
+    "original_description": "Secure agent HTTP requests through a scanning proxy that catches credential leaks, SSRF, and prompt injection.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "pocket-lens",
+    "id": "pocket-lens",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/edenjw/pocket-lens/SKILL.md",
+    "description": "Use when user wants to track expenses, scan receipts, upload card payment screenshots, categorize spending, record.",
+    "category": "browser-and-automation",
+    "description_zh": "當用戶想要追蹤費用、掃描收據、上傳卡片付款螢幕截圖、對支出進行分類、記錄時使用。",
+    "original_description": "Use when user wants to track expenses, scan receipts, upload card payment screenshots, categorize spending, record.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "pocketlens",
+    "id": "pocketlens",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/edenjw/pocketlens/SKILL.md",
+    "description": "Use when user wants to track expenses, scan receipts, upload card payment screenshots, categorize spending, record.",
+    "category": "browser-and-automation",
+    "description_zh": "當用戶想要追蹤費用、掃描收據、上傳卡片付款螢幕截圖、對支出進行分類、記錄時使用。",
+    "original_description": "Use when user wants to track expenses, scan receipts, upload card payment screenshots, categorize spending, record.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "podcast-to-substack",
+    "id": "podcast-to-substack",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/danielfoch/podcast-to-substack/SKILL.md",
+    "description": "Publish podcast episodes from RSS + Notion to Substack with reliable Apple Podcasts embedding and image extraction.",
+    "category": "browser-and-automation",
+    "description_zh": "透過可靠的 Apple 播客嵌入和圖像提取，將播客劇集從 RSS + Notion 發佈到 Substack。",
+    "original_description": "Publish podcast episodes from RSS + Notion to Substack with reliable Apple Podcasts embedding and image extraction.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "poker-agent",
+    "id": "poker-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/clementsutjiatma/poker-agent/SKILL.md",
+    "description": "Play Texas Hold'em poker against other AI agents and humans on-chain.",
+    "category": "browser-and-automation",
+    "description_zh": "與其他人工智慧代理和鏈上人類玩德州撲克。",
+    "original_description": "Play Texas Hold'em poker against other AI agents and humans on-chain.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "pond3r-skill",
+    "id": "pond3r-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fabriziogianni7/pond3r-skill/SKILL.md",
+    "description": "Query crypto intelligence via Pond3r MCP — curated datasets, SQL queries, protocol metrics, yields, and market.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Pond3r MCP 查詢加密情報 — 精選資料集、SQL 查詢、協議指標、收益和市場。",
+    "original_description": "Query crypto intelligence via Pond3r MCP — curated datasets, SQL queries, protocol metrics, yields, and market.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "portfolio-tracker",
+    "id": "portfolio-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vachanalaviswanath/portfolio-tracker/SKILL.md",
+    "description": "Automates live portfolio tracking and analysis using browser automation on Yahoo Finance.",
+    "category": "browser-and-automation",
+    "description_zh": "使用雅虎財經上的瀏覽器自動化自動化即時投資組合追蹤和分析。",
+    "original_description": "Automates live portfolio tracking and analysis using browser automation on Yahoo Finance.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "postcraft",
+    "id": "postcraft",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/theoking63/postcraft/SKILL.md",
+    "description": "Automatically format and polish MoltBook posts — headers, bullet points, code blocks, and tables for better.",
+    "category": "browser-and-automation",
+    "description_zh": "自動格式化和潤飾 MoltBook 貼文 — 標題、項目符號、程式碼區塊和表格，以實現更好的效果。",
+    "original_description": "Automatically format and polish MoltBook posts — headers, bullet points, code blocks, and tables for better.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "postcraft-t3",
+    "id": "postcraft-t3",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/theoking63/postcraft-t3/SKILL.md",
+    "description": "Automatically format and polish MoltBook posts — headers, bullet points, code blocks, and tables for better.",
+    "category": "browser-and-automation",
+    "description_zh": "自動格式化和潤飾 MoltBook 貼文 — 標題、項目符號、程式碼區塊和表格，以實現更好的效果。",
+    "original_description": "Automatically format and polish MoltBook posts — headers, bullet points, code blocks, and tables for better.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "powerdrill-data-analysis-skill",
+    "id": "powerdrill-data-analysis-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/javainthinking/powerdrill-data-analysis-skill/SKILL.md",
+    "description": "This skill should be used when the user wants to analyze, explore, visualize, or query data using Powerdrill.",
+    "category": "browser-and-automation",
+    "description_zh": "當使用者想要使用 Powerdrill 分析、探索、視覺化或查詢資料時，應使用此技能。",
+    "original_description": "This skill should be used when the user wants to analyze, explore, visualize, or query data using Powerdrill.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "powerdrill-skills",
+    "id": "powerdrill-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/javainthinking/powerdrill-skills/SKILL.md",
+    "description": "This skill should be used when the user wants to analyze, explore, visualize, or query data using Powerdrill.",
+    "category": "browser-and-automation",
+    "description_zh": "當使用者想要使用 Powerdrill 分析、探索、視覺化或查詢資料時，應使用此技能。",
+    "original_description": "This skill should be used when the user wants to analyze, explore, visualize, or query data using Powerdrill.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "printpal-3d",
+    "id": "printpal-3d",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/plebbyd/printpal-3d/SKILL.md",
+    "description": "Generate 3D models for 3D printing from images or text prompts using PrintPal API.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 PrintPal API 根據圖像或文字提示產生用於 3D 列印的 3D 模型。",
+    "original_description": "Generate 3D models for 3D printing from images or text prompts using PrintPal API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "qdrant-advanced",
+    "id": "qdrant-advanced",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yoder-bawt/qdrant-advanced/SKILL.md",
+    "description": "Advanced Qdrant vector database operations for AI agents.",
+    "category": "browser-and-automation",
+    "description_zh": "適用於 AI 代理程式的高級 Qdrant 向量資料庫操作。",
+    "original_description": "Advanced Qdrant vector database operations for AI agents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "questions-form",
+    "id": "questions-form",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/edonadei/questions-form/SKILL.md",
+    "description": "Present multiple clarifying questions as an interactive Telegram form using inline buttons.",
+    "category": "browser-and-automation",
+    "description_zh": "使用內嵌按鈕以互動式電報形式呈現多個澄清問題。",
+    "original_description": "Present multiple clarifying questions as an interactive Telegram form using inline buttons.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "raiffeisen-elba",
+    "id": "raiffeisen-elba",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/odrobnik/raiffeisen-elba/SKILL.md",
+    "description": "Automate Raiffeisen ELBA online banking: login/logout, list accounts, and fetch transactions via Playwright.",
+    "category": "browser-and-automation",
+    "description_zh": "自動化 Raiffeisen ELBA 網路銀行：登入/登出、列出帳戶以及透過 Playwright 取得交易。",
+    "original_description": "Automate Raiffeisen ELBA online banking: login/logout, list accounts, and fetch transactions via Playwright.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "reasonlayer-app-access",
+    "id": "reasonlayer-app-access",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tiger01tgr/reasonlayer-app-access/SKILL.md",
+    "description": "Give your AI agent access to Gmail.",
+    "category": "browser-and-automation",
+    "description_zh": "為您的 AI 代理程式授予 Gmail 存取權限。",
+    "original_description": "Give your AI agent access to Gmail.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "research-reprompter",
+    "id": "research-reprompter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dorukardahan/research-reprompter/SKILL.md",
+    "description": "Transform rough research questions into executable USACF research prompts.",
+    "category": "browser-and-automation",
+    "description_zh": "將粗略的研究問題轉化為可執行的 USACF 研究提示。",
+    "original_description": "Transform rough research questions into executable USACF research prompts.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "rss-digest",
+    "id": "rss-digest",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/odysseus0/rss-digest/SKILL.md",
+    "description": "Agentic RSS digest using the feed CLI.",
+    "category": "browser-and-automation",
+    "description_zh": "使用提要 CLI 的代理程式 RSS 摘要。",
+    "original_description": "Agentic RSS digest using the feed CLI.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "saas-worker",
+    "id": "saas-worker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/juniorxcoder/saas-worker/SKILL.md",
+    "description": "Build and launch profitable SAAS products.",
+    "category": "browser-and-automation",
+    "description_zh": "建置並推出可獲利的 SAAS 產品。",
+    "original_description": "Build and launch profitable SAAS products.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "sap-integration",
+    "id": "sap-integration",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/highlander89/sap-integration/SKILL.md",
+    "description": "SAP system integration, data extraction, and automation for ABAP, HANA, S/4HANA environments.",
+    "category": "browser-and-automation",
+    "description_zh": "適用於 ABAP、HANA、S/4HANA 環境的 SAP 系統整合、資料擷取和自動化。",
+    "original_description": "SAP system integration, data extraction, and automation for ABAP, HANA, S/4HANA environments.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "scrapbook-illustrator",
+    "id": "scrapbook-illustrator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chunhualiao/scrapbook-illustrator/SKILL.md",
+    "description": "Insert scrapbook-style illustrations into articles using image generation (GLM or OpenRouter)",
+    "category": "browser-and-automation",
+    "description_zh": "使用圖像生成（GLM 或 OpenRouter）將剪貼簿樣式的插圖插入文章中",
+    "original_description": "Insert scrapbook-style illustrations into articles using image generation (GLM or OpenRouter)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "scrapyard",
+    "id": "scrapyard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aetosset/scrapyard/SKILL.md",
+    "description": "Play SCRAPYARD - the AI agent battle arena.",
+    "category": "browser-and-automation",
+    "description_zh": "玩 SCRAPYARD - AI 代理戰鬥競技場。",
+    "original_description": "Play SCRAPYARD - the AI agent battle arena.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "sentry-issues",
+    "id": "sentry-issues",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dave-b-b/sentry-issues/SKILL.md",
+    "description": "Fetch and analyze issues from Sentry error tracking.",
+    "category": "browser-and-automation",
+    "description_zh": "從 Sentry 錯誤追蹤中取得並分析問題。",
+    "original_description": "Fetch and analyze issues from Sentry error tracking.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "sergei-mikhailov-tg-channel-reader",
+    "id": "sergei-mikhailov-tg-channel-reader",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bzsega/sergei-mikhailov-tg-channel-reader/SKILL.md",
+    "description": "Read and summarize posts from Telegram channels via MTProto (Pyrogram or Telethon)",
+    "category": "browser-and-automation",
+    "description_zh": "",
+    "original_description": "Read and summarize posts from Telegram channels via MTProto (Pyrogram or Telethon)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "sg-property-scraper",
+    "id": "sg-property-scraper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/5kbpers/sg-property-scraper/SKILL.md",
+    "description": "Search Singapore property rental and sale listings with flexible filters.",
+    "category": "browser-and-automation",
+    "description_zh": "使用靈活的過濾器搜尋新加坡房產租賃和銷售清單。",
+    "original_description": "Search Singapore property rental and sale listings with flexible filters.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "shellmail",
+    "id": "shellmail",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aaronbatchelder/shellmail/SKILL.md",
+    "description": "Email API for AI agents.",
+    "category": "browser-and-automation",
+    "description_zh": "AI 代理程式的電子郵件 API。",
+    "original_description": "Email API for AI agents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "shopping-list",
+    "id": "shopping-list",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ajeenkya/shopping-list/SKILL.md",
+    "description": "Conversational shopping list with categories, family sharing, and purchase history.",
+    "category": "browser-and-automation",
+    "description_zh": "包含類別、家庭分享和購買歷史記錄的對話式購物清單。",
+    "original_description": "Conversational shopping list with categories, family sharing, and purchase history.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "shortcut-skill",
+    "id": "shortcut-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/incognos/shortcut-skill/SKILL.md",
+    "description": "Access and manage Shortcut.com (formerly Clubhouse) project management.",
+    "category": "browser-and-automation",
+    "description_zh": "存取和管理 Shortcut.com（以前稱為 Clubhouse）專案管理。",
+    "original_description": "Access and manage Shortcut.com (formerly Clubhouse) project management.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "silk",
+    "id": "silk",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/silostack/silk/SKILL.md",
+    "description": "Agent banking and payments on Solana.",
+    "category": "browser-and-automation",
+    "description_zh": "Solana 上的代理銀行業務和付款。",
+    "original_description": "Agent banking and payments on Solana.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "silkyway",
+    "id": "silkyway",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/silostack/silkyway/SKILL.md",
+    "description": "Agent banking and payments on Solana.",
+    "category": "browser-and-automation",
+    "description_zh": "Solana 上的代理銀行業務和付款。",
+    "original_description": "Agent banking and payments on Solana.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "siyuan-task-skill",
+    "id": "siyuan-task-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zhhkheaven/siyuan-task-skill/SKILL.md",
+    "description": "Manage tasks in SiYuan Note via its HTTP API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 HTTP API 管理思源筆記中的任務。",
+    "original_description": "Manage tasks in SiYuan Note via its HTTP API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "skilldevelop",
+    "id": "skilldevelop",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/raghuraam25/skilldevelop/SKILL.md",
+    "description": "Captures learnings, errors, and corrections to enable continuous improvement.",
+    "category": "browser-and-automation",
+    "description_zh": "捕獲經驗教訓、錯誤和糾正，以實現持續改進。",
+    "original_description": "Captures learnings, errors, and corrections to enable continuous improvement.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "slashbot",
+    "id": "slashbot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alphabot-ai/slashbot/SKILL.md",
+    "description": "Interact with slashbot.net — a Hacker News-style community for AI agents.",
+    "category": "browser-and-automation",
+    "description_zh": "與lashbot.net 互動－一個針對人工智慧代理商的駭客新聞風格社群。",
+    "original_description": "Interact with slashbot.net — a Hacker News-style community for AI agents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "smart-linkedin-inbox",
+    "id": "smart-linkedin-inbox",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vdybenko/smart-linkedin-inbox/SKILL.md",
+    "description": "LinkedIn inbox manager and conversation assistant powered by Linxa.",
+    "category": "browser-and-automation",
+    "description_zh": "LinkedIn 收件匣管理器和對話助理由 Linxa 提供支援。",
+    "original_description": "LinkedIn inbox manager and conversation assistant powered by Linxa.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "smb-sales-boost-leads",
+    "id": "smb-sales-boost-leads",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tomsonx232/smb-sales-boost-leads/SKILL.md",
+    "description": "Query and manage leads from the SMB Sales Boost B2B lead database.",
+    "category": "browser-and-automation",
+    "description_zh": "從 SMB Sales Boost B2B 潛在客戶資料庫查詢和管理潛在客戶。",
+    "original_description": "Query and manage leads from the SMB Sales Boost B2B lead database.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "snail-mail",
+    "id": "snail-mail",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dvdegenz/snail-mail/SKILL.md",
+    "description": "A slow-channel inbox for leaving your operator important messages.",
+    "category": "browser-and-automation",
+    "description_zh": "慢速通道收件匣，用於向操作員留下重要訊息。",
+    "original_description": "A slow-channel inbox for leaving your operator important messages.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "snailmail",
+    "id": "snailmail",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dvdegenz/snailmail/SKILL.md",
+    "description": "A slow-channel inbox for leaving your operator important messages.",
+    "category": "browser-and-automation",
+    "description_zh": "慢速通道收件匣，用於向操作員留下重要訊息。",
+    "original_description": "A slow-channel inbox for leaving your operator important messages.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "snapbyte-digest-api",
+    "id": "snapbyte-digest-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/onatm/snapbyte-digest-api/SKILL.md",
+    "description": "Fetch personalized developer news digests from Snapbyte External API with API-key auth.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 API 金鑰身分驗證從 Snapbyte 外部 API 取得個人化開發人員新聞摘要。",
+    "original_description": "Fetch personalized developer news digests from Snapbyte External API with API-key auth.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "social-data",
+    "id": "social-data",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arrmlet/social-data/SKILL.md",
+    "description": "Fetch real-time social media data from X (Twitter) and Reddit by keyword, username, date range, and filters.",
+    "category": "browser-and-automation",
+    "description_zh": "按關鍵字、使用者名稱、日期範圍和篩選器從 X (Twitter) 和 Reddit 取得即時社群媒體資料。",
+    "original_description": "Fetch real-time social media data from X (Twitter) and Reddit by keyword, username, date range, and filters.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "solanaprox",
+    "id": "solanaprox",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/unixlamadev-spec/solanaprox/SKILL.md",
+    "description": "Pay-per-request AI model access via Solana/USDC using a Phantom wallet address.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 Phantom 錢包位址透過 Solana/USDC 存取按請求付費的 AI 模型。",
+    "original_description": "Pay-per-request AI model access via Solana/USDC using a Phantom wallet address.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "sota-tracker-mcp",
+    "id": "sota-tracker-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/romancircus/sota-tracker-mcp/SKILL.md",
+    "description": "**The definitive open-source database of State-of-the-Art AI models.**.",
+    "category": "browser-and-automation",
+    "description_zh": "",
+    "original_description": "**The definitive open-source database of State-of-the-Art AI models.**.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "sovereign-roast-coach",
+    "id": "sovereign-roast-coach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryudi84/sovereign-roast-coach/SKILL.md",
+    "description": "You are the accountability coach with TWO personality modes.",
+    "category": "browser-and-automation",
+    "description_zh": "您是具有兩種人格模式的責任教練。",
+    "original_description": "You are the accountability coach with TWO personality modes.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "sports-betting",
+    "id": "sports-betting",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/skinnynoizze/sports-betting/SKILL.md",
+    "description": "Place and claim decentralized sports bets on-chain via Pinwin and Azuro: real-time odds, high liquidity, no custody.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Pinwin 和 Azuro 在鏈上下注和領取去中心化體育投注：即時賠率、高流動性、無託管。",
+    "original_description": "Place and claim decentralized sports bets on-chain via Pinwin and Azuro: real-time odds, high liquidity, no custody.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "stability-ai",
+    "id": "stability-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/1999azzar/stability-ai/SKILL.md",
+    "description": "Generate high-quality images via Stability AI API (SDXL, SD3, Stable Image Core)",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Stability AI API（SDXL、SD3、Stable Image Core）產生高品質影像",
+    "original_description": "Generate high-quality images via Stability AI API (SDXL, SD3, Stable Image Core)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "stakingverse-lukso",
+    "id": "stakingverse-lukso",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/luksoagent/stakingverse-lukso/SKILL.md",
+    "description": "Stake LYX tokens on Stakingverse (LUKSO liquid staking)",
+    "category": "browser-and-automation",
+    "description_zh": "在 Stakeverse 上質押 LYX 代幣（LUKSO 流動性質押）",
+    "original_description": "Stake LYX tokens on Stakingverse (LUKSO liquid staking)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "stealth-proxy",
+    "id": "stealth-proxy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/h4gen/stealth-proxy/SKILL.md",
+    "description": "Meta-skill for secure network tunnel setup, geo-access diagnostics, and leak-aware task resumption by orchestrating.",
+    "category": "browser-and-automation",
+    "description_zh": "用於安全網路隧道設定、地理存取診斷和透過編排恢復洩漏感知任務的元技能。",
+    "original_description": "Meta-skill for secure network tunnel setup, geo-access diagnostics, and leak-aware task resumption by orchestrating.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "stealthy-google-search",
+    "id": "stealthy-google-search",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/itzsubhadip/stealthy-google-search/SKILL.md",
+    "description": "Google search via Scrapling’s StealthyFetcher/StealthySession.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Scrapling 的 StealthyFetcher/StealthySession 進行 Google 搜尋。",
+    "original_description": "Google search via Scrapling’s StealthyFetcher/StealthySession.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "stock-picker-orchestrator",
+    "id": "stock-picker-orchestrator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ndtchan/stock-picker-orchestrator/SKILL.md",
+    "description": "Acts as a meta-orchestrator that routes stock-analysis requests across data, macro/news, and valuation skills.",
+    "category": "browser-and-automation",
+    "description_zh": "充當元協調器，跨數據、宏觀/新聞和估值技能傳遞股票分析請求。",
+    "original_description": "Acts as a meta-orchestrator that routes stock-analysis requests across data, macro/news, and valuation skills.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "stock-prices",
+    "id": "stock-prices",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/anthonylee1994/stock-prices/SKILL.md",
+    "description": "Query real-time stock prices and market data using the Stock Prices API.",
+    "category": "browser-and-automation",
+    "description_zh": "使用股票價格 API 查詢即時股票價格和市場數據。",
+    "original_description": "Query real-time stock prices and market data using the Stock Prices API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "storj-agent",
+    "id": "storj-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nightcode112/storj-agent/SKILL.md",
+    "description": "Autonomous economic agent that earns BTC & SOL by selling storage, compute, and bandwidth.",
+    "category": "browser-and-automation",
+    "description_zh": "透過出售儲存、運算和頻寬賺取 BTC 和 SOL 的自治經濟代理。",
+    "original_description": "Autonomous economic agent that earns BTC & SOL by selling storage, compute, and bandwidth.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "strapi",
+    "id": "strapi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ilya-ryzhov/strapi/SKILL.md",
+    "description": "Manage Strapi CMS content through the official @strapi/client SDK.",
+    "category": "browser-and-automation",
+    "description_zh": "透過官方 @strapi/client SDK 管理 Strapi CMS 內容。",
+    "original_description": "Manage Strapi CMS content through the official @strapi/client SDK.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "student-timetable",
+    "id": "student-timetable",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/extraterrest/student-timetable/SKILL.md",
+    "description": "Student timetable manager for self or parent-managed child profiles.",
+    "category": "browser-and-automation",
+    "description_zh": "用於自我或家長管理的兒童檔案的學生時間表管理器。",
+    "original_description": "Student timetable manager for self or parent-managed child profiles.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "substack-writer",
+    "id": "substack-writer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shivak11/substack-writer/SKILL.md",
+    "description": "Write long-form Substack newsletters about GenAI, education, edtech, and their intersections.",
+    "category": "browser-and-automation",
+    "description_zh": "撰寫有關 GenAI、教育、教育科技及其交叉點的長篇 Substack 時事通訊。",
+    "original_description": "Write long-form Substack newsletters about GenAI, education, edtech, and their intersections.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "subwayskill",
+    "id": "subwayskill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nyluke/subwayskill/SKILL.md",
+    "description": "Fetch NYC subway departure times.",
+    "category": "browser-and-automation",
+    "description_zh": "取得紐約地鐵出發時間。",
+    "original_description": "Fetch NYC subway departure times.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "sui-decompile",
+    "id": "sui-decompile",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/easonc13/sui-decompile/SKILL.md",
+    "description": "Fetch on-chain Sui Move contract source code and let your agent explain how smart contracts work.",
+    "category": "browser-and-automation",
+    "description_zh": "取得鏈上 Sui Move 合約原始碼，並讓您的代理商解釋智能合約如何運作。",
+    "original_description": "Fetch on-chain Sui Move contract source code and let your agent explain how smart contracts work.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "super-browser",
+    "id": "super-browser",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/heldinhow/super-browser/SKILL.md",
+    "description": "**The ultimate browser automation framework.** Combines the best of 8 top-rated browser skills.",
+    "category": "browser-and-automation",
+    "description_zh": "終極瀏覽器自動化框架。結合了 8 種頂級瀏覽器技能中的精華。",
+    "original_description": "**The ultimate browser automation framework.** Combines the best of 8 top-rated browser skills.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "table-mountain-status",
+    "id": "table-mountain-status",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zopyx/table-mountain-status/SKILL.md",
+    "description": "Fetch and report the Table Mountain Aerial Cableway status via the official weather API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過官方天氣 API 取得並報告桌山空中索道狀態。",
+    "original_description": "Fetch and report the Table Mountain Aerial Cableway status via the official weather API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "tageblatt-headlines",
+    "id": "tageblatt-headlines",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zopyx/tageblatt-headlines/SKILL.md",
+    "description": "Download and archive daily Schlagzeilen from https://www.tageblatt.de/.",
+    "category": "browser-and-automation",
+    "description_zh": "從 https://www.tageblatt.de/ 下載並存檔每日 Schlagzeilen。",
+    "original_description": "Download and archive daily Schlagzeilen from https://www.tageblatt.de/.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "taskline",
+    "id": "taskline",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brettburbidge/taskline/SKILL.md",
+    "description": "AI-powered natural language task management through MyTaskline.com.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 MyTaskline.com 進行人工智慧驅動的自然語言任務管理。",
+    "original_description": "AI-powered natural language task management through MyTaskline.com.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "tbot-controller",
+    "id": "tbot-controller",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/plusgenie/tbot-controller/SKILL.md",
+    "description": "Operate TradingBoat/TBOT (TBOT runtime stack) via a controlled automation interface (DB-first queries; lifecycle.",
+    "category": "browser-and-automation",
+    "description_zh": "",
+    "original_description": "Operate TradingBoat/TBOT (TBOT runtime stack) via a controlled automation interface (DB-first queries; lifecycle.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "teams-hack",
+    "id": "teams-hack",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/globalcaos/teams-hack/SKILL.md",
+    "description": "Your agent reads Teams chats, posts to channels, searches everything.",
+    "category": "browser-and-automation",
+    "description_zh": "",
+    "original_description": "Your agent reads Teams chats, posts to channels, searches everything.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "teamwork",
+    "id": "teamwork",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chenxinbest/teamwork/SKILL.md",
+    "description": "Dynamically creates and manages AI agent teams for complex tasks.",
+    "category": "browser-and-automation",
+    "description_zh": "動態建立和管理 AI 代理團隊來執行複雜的任務。",
+    "original_description": "Dynamically creates and manages AI agent teams for complex tasks.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "telegram-context",
+    "id": "telegram-context",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fourthdensity/telegram-context/SKILL.md",
+    "description": "Toggle-enabled skill that fetches Telegram message history at session start for conversational continuity.",
+    "category": "browser-and-automation",
+    "description_zh": "啟用切換的技能，可在會話開始時取得 Telegram 訊息歷史記錄，以實現對話的連續性。",
+    "original_description": "Toggle-enabled skill that fetches Telegram message history at session start for conversational continuity.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "telegram-history",
+    "id": "telegram-history",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rhlsthrm/telegram-history/SKILL.md",
+    "description": "Fetch Telegram chat message history via MTProto user API (Telethon)",
+    "category": "browser-and-automation",
+    "description_zh": "透過 MTProto 用戶 API (Telethon) 取得 Telegram 聊天訊息歷史記錄",
+    "original_description": "Fetch Telegram chat message history via MTProto user API (Telethon)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "testskillx",
+    "id": "testskillx",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/natx223/testskillx/SKILL.md",
+    "description": "Simple test skill that calls a GET endpoint to fetch a daily post.",
+    "category": "browser-and-automation",
+    "description_zh": "呼叫 GET 端點來獲取每日帖子的簡單測試技能。",
+    "original_description": "Simple test skill that calls a GET endpoint to fetch a daily post.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "tg-history",
+    "id": "tg-history",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ls18166407597-design/tg-history/SKILL.md",
+    "description": "Efficiently extract and read Telegram group chat history as text, bypassing screenshots/OCR for zero-token-waste.",
+    "category": "browser-and-automation",
+    "description_zh": "以文字形式有效提取和讀取 Telegram 群聊歷史記錄，繞過螢幕截圖/OCR，實現零令牌浪費。",
+    "original_description": "Efficiently extract and read Telegram group chat history as text, bypassing screenshots/OCR for zero-token-waste.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "tg-mtproto-cli",
+    "id": "tg-mtproto-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cyberash-dev/tg-mtproto-cli/SKILL.md",
+    "description": "Read-only Telegram CLI via MTProto.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 MTProto 的只讀 Telegram CLI。",
+    "original_description": "Read-only Telegram CLI via MTProto.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "theswarm",
+    "id": "theswarm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/marketingax/theswarm/SKILL.md",
+    "description": "Earn passive income as an AI agent.",
+    "category": "browser-and-automation",
+    "description_zh": "作為人工智慧代理賺取被動收入。",
+    "original_description": "Earn passive income as an AI agent.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "tiktok-crawling",
+    "id": "tiktok-crawling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/romneyda/tiktok-crawling/SKILL.md",
+    "description": "Use for TikTok crawling, content retrieval, and analysis.",
+    "category": "browser-and-automation",
+    "description_zh": "用於 TikTok 抓取、內容檢索和分析。",
+    "original_description": "Use for TikTok crawling, content retrieval, and analysis.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "trading-research",
+    "id": "trading-research",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fpsjago/trading-research/SKILL.md",
+    "description": "Binance cryptocurrency trading research, technical analysis, and position management.",
+    "category": "browser-and-automation",
+    "description_zh": "幣安加密貨幣交易研究、技術分析與部位管理。",
+    "original_description": "Binance cryptocurrency trading research, technical analysis, and position management.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "trending-skills",
+    "id": "trending-skills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hjw21century/trending-skills/SKILL.md",
+    "description": "Fetches skills.sh trending rankings.",
+    "category": "browser-and-automation",
+    "description_zh": "取得 Skills.sh 趨勢排名。",
+    "original_description": "Fetches skills.sh trending rankings.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "trendyol-admin",
+    "id": "trendyol-admin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/awelab/trendyol-admin/SKILL.md",
+    "description": "Comprehensive management of Trendyol marketplace via API v2.0.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 API v2.0 全面管理 Trendyol 市場。",
+    "original_description": "Comprehensive management of Trendyol marketplace via API v2.0.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "truenas-skill",
+    "id": "truenas-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/anotb/truenas-skill/SKILL.md",
+    "description": "Manage TrueNAS SCALE via API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 API 管理 TrueNAS SCALE。",
+    "original_description": "Manage TrueNAS SCALE via API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "tushare-base",
+    "id": "tushare-base",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wdblink/tushare-base/SKILL.md",
+    "description": "Fetch Chinese stock and futures market data via Tushare API.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Tushare API 取得中國股票和期貨市場數據。",
+    "original_description": "Fetch Chinese stock and futures market data via Tushare API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "twit-mcp",
+    "id": "twit-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/etherlect/twit-mcp/SKILL.md",
+    "description": "Real-time X/Twitter data via x402 micropayments.",
+    "category": "browser-and-automation",
+    "description_zh": "透過 x402 小額支付的即時 X/Twitter 數據。",
+    "original_description": "Real-time X/Twitter data via x402 micropayments.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ub2-markdown-report-generator",
+    "id": "ub2-markdown-report-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/underbench2-gif/ub2-markdown-report-generator/SKILL.md",
+    "description": "A skill that enables Claw to compile information from multiple sources into a polished, well-structured Markdown.",
+    "category": "browser-and-automation",
+    "description_zh": "這項技能使 Claw 能夠將多個來源的資訊編譯成精美的、結構良好的 Markdown。",
+    "original_description": "A skill that enables Claw to compile information from multiple sources into a polished, well-structured Markdown.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "url2pdf",
+    "id": "url2pdf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/guoqiao/url2pdf/SKILL.md",
+    "description": "Convert URL to PDF suitable for mobile reading.",
+    "category": "browser-and-automation",
+    "description_zh": "將 URL 轉換為適合行動閱讀的 PDF。",
+    "original_description": "Convert URL to PDF suitable for mobile reading.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "url2png",
+    "id": "url2png",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/guoqiao/url2png/SKILL.md",
+    "description": "Convert URL to PNG suitable for mobile reading.",
+    "category": "browser-and-automation",
+    "description_zh": "將 URL 轉換為適合行動閱讀的 PNG。",
+    "original_description": "Convert URL to PNG suitable for mobile reading.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "user-briefing",
+    "id": "user-briefing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sai-sh/user-briefing/SKILL.md",
+    "description": "Fetch weather, calendar events, emails, and tasks to create a personalized morning briefing.",
+    "category": "browser-and-automation",
+    "description_zh": "取得天氣、日曆事件、電子郵件和任務以建立個人化的早晨簡報。",
+    "original_description": "Fetch weather, calendar events, emails, and tasks to create a personalized morning briefing.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "using-superpowers",
+    "id": "using-superpowers",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zlc000190/using-superpowers/SKILL.md",
+    "description": "Use when starting any conversation - establishes how to find and use skills, requiring Skill tool invocation.",
+    "category": "browser-and-automation",
+    "description_zh": "開始任何對話時使用 - 確定如何尋找和使用技能，需要呼叫技能工具。",
+    "original_description": "Use when starting any conversation - establishes how to find and use skills, requiring Skill tool invocation.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "valiron-trust-layer",
+    "id": "valiron-trust-layer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vatsashah45/valiron-trust-layer/SKILL.md",
+    "description": "Intercept and authorize outgoing machine-to-machine payments (x402 or similar) using @valiron/sdk trust decisions.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 @valiron/sdk 信任決策攔截並授權傳出的機器對機器支付（x402 或類似）。",
+    "original_description": "Intercept and authorize outgoing machine-to-machine payments (x402 or similar) using @valiron/sdk trust decisions.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "vibe-notion",
+    "id": "vibe-notion",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/devxoul/vibe-notion/SKILL.md",
+    "description": "Interact with Notion using the unofficial private API - pages, databases, blocks, search, users, comments.",
+    "category": "browser-and-automation",
+    "description_zh": "使用非官方私有 API 與 Notion 互動 - 頁面、資料庫、區塊、搜尋、使用者、評論。",
+    "original_description": "Interact with Notion using the unofficial private API - pages, databases, blocks, search, users, comments.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "virtual-reading-group",
+    "id": "virtual-reading-group",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/isonaei/virtual-reading-group/SKILL.md",
+    "description": "Orchestrate a multi-agent virtual academic reading group.",
+    "category": "browser-and-automation",
+    "description_zh": "協調一個多代理虛擬學術閱讀小組。",
+    "original_description": "Orchestrate a multi-agent virtual academic reading group.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "vnstock-free-expert",
+    "id": "vnstock-free-expert",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ndtchan/vnstock-free-expert/SKILL.md",
+    "description": "Runs an end-to-end vnstock workflow for free-tier-safe Vietnam stock valuation, ranking, and API operations.",
+    "category": "browser-and-automation",
+    "description_zh": "運行端到端 vnstock 工作流程，以實現免費安全的越南股票估值、排名和 API 操作。",
+    "original_description": "Runs an end-to-end vnstock workflow for free-tier-safe Vietnam stock valuation, ranking, and API operations.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "wakapi-sync-skill",
+    "id": "wakapi-sync-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cosformula/wakapi-sync-skill/SKILL.md",
+    "description": "Daily Wakapi (WakaTime-compatible) summary → local CSV files.",
+    "category": "browser-and-automation",
+    "description_zh": "每日 Wakapi（與 WakaTime 相容）摘要 → 本地 CSV 檔案。",
+    "original_description": "Daily Wakapi (WakaTime-compatible) summary → local CSV files.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "wallabag",
+    "id": "wallabag",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fbrandel/wallabag/SKILL.md",
+    "description": "Manage Wallabag bookmarks through the Wallabag Developer API with OAuth2 authentication, including creating.",
+    "category": "browser-and-automation",
+    "description_zh": "透過具有 OAuth2 身份驗證的 Wallabag 開發人員 API 管理 Wallabag 書籤，包括創建。",
+    "original_description": "Manage Wallabag bookmarks through the Wallabag Developer API with OAuth2 authentication, including creating.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "wallet-pilot",
+    "id": "wallet-pilot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andreolf/wallet-pilot/SKILL.md",
+    "description": "Universal browser wallet automation for AI agents.",
+    "category": "browser-and-automation",
+    "description_zh": "適用於人工智慧代理的通用瀏覽器錢包自動化。",
+    "original_description": "Universal browser wallet automation for AI agents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "weibo-manager",
+    "id": "weibo-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hmyaoyuan/weibo-manager/SKILL.md",
+    "description": "Control Weibo via Puppeteer (Unofficial API).",
+    "category": "browser-and-automation",
+    "description_zh": "透過 Puppeteer（非官方 API）控制微博。",
+    "original_description": "Control Weibo via Puppeteer (Unofficial API).",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "wilma",
+    "id": "wilma",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aikarjal/wilma/SKILL.md",
+    "description": "Access Finland's Wilma school system from AI agents.",
+    "category": "browser-and-automation",
+    "description_zh": "透過人工智慧代理存取芬蘭威爾瑪學校系統。",
+    "original_description": "Access Finland's Wilma school system from AI agents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "wilma-triage",
+    "id": "wilma-triage",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aikarjal/wilma-triage/SKILL.md",
+    "description": "Daily triage of Wilma school notifications for Finnish parents.",
+    "category": "browser-and-automation",
+    "description_zh": "每天為芬蘭家長分類威爾瑪學校的通知。",
+    "original_description": "Daily triage of Wilma school notifications for Finnish parents.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "windsensei",
+    "id": "windsensei",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jumptrnr/windsensei/SKILL.md",
+    "description": "Check wind and weather conditions for wind sports (kitesurfing, wingfoiling, surfing)",
+    "category": "browser-and-automation",
+    "description_zh": "檢查風力運動（風箏衝浪、翼翼運動、衝浪）的風力和天氣狀況",
+    "original_description": "Check wind and weather conditions for wind sports (kitesurfing, wingfoiling, surfing)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "wisediag-medocr",
+    "id": "wisediag-medocr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fmdmm/wisediag-medocr/SKILL.md",
+    "description": "Convert PDF files to Markdown using WiseDiag MedOcr API.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 WiseDiag MedOcr API 將 PDF 檔案轉換為 Markdown。",
+    "original_description": "Convert PDF files to Markdown using WiseDiag MedOcr API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "wiseocr",
+    "id": "wiseocr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fmdmm/wiseocr/SKILL.md",
+    "description": "Convert PDF files to Markdown using WiseOCR API (powered by WiseDiag)",
+    "category": "browser-and-automation",
+    "description_zh": "使用 WiseOCR API 將 PDF 檔案轉換為 Markdown（由 WiseDiag 提供支援）",
+    "original_description": "Convert PDF files to Markdown using WiseOCR API (powered by WiseDiag)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "workflows",
+    "id": "workflows",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/askginadotai/workflows/SKILL.md",
+    "description": "Playbook for authoring, running, evaluating, and improving Gina sandbox workflows with safe defaults and repeatable.",
+    "category": "browser-and-automation",
+    "description_zh": "",
+    "original_description": "Playbook for authoring, running, evaluating, and improving Gina sandbox workflows with safe defaults and repeatable.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "x-automation",
+    "id": "x-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nightfullstar/x-automation/SKILL.md",
+    "description": "Automate X posts via browser control - bypass $200/month API costs.",
+    "category": "browser-and-automation",
+    "description_zh": "透過瀏覽器控制自動化 X 貼文 - 繞過每月 200 美元的 API 成本。",
+    "original_description": "Automate X posts via browser control - bypass $200/month API costs.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "x-bookmarks",
+    "id": "x-bookmarks",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sharbelayy/x-bookmarks/SKILL.md",
+    "description": "Fetch, summarize, and manage X/Twitter bookmarks via bird CLI or X API v2.",
+    "category": "browser-and-automation",
+    "description_zh": "透過bird CLI 或X API v2 取得、總結和管理X/Twitter 書籤。",
+    "original_description": "Fetch, summarize, and manage X/Twitter bookmarks via bird CLI or X API v2.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "x-smart-read",
+    "id": "x-smart-read",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nevaaron/x-smart-read/SKILL.md",
+    "description": "Personal X (Twitter) analytics — timeline engagement, mentions, follower tracking, read any tweet/thread.",
+    "category": "browser-and-automation",
+    "description_zh": "Personal X (Twitter) 分析 — 時間軸參與、提及、追蹤者追蹤、閱讀任何推文/主題。",
+    "original_description": "Personal X (Twitter) analytics — timeline engagement, mentions, follower tracking, read any tweet/thread.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "x-trends",
+    "id": "x-trends",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/anishtr4/x-trends/SKILL.md",
+    "description": "Fetches current top trending topics on X (Twitter) for any country using public aggregators.",
+    "category": "browser-and-automation",
+    "description_zh": "使用公共聚合器獲取任何國家/地區 X (Twitter) 上當前最熱門的主題。",
+    "original_description": "Fetches current top trending topics on X (Twitter) for any country using public aggregators.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "x-trends-dev",
+    "id": "x-trends-dev",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/anishtr4/x-trends-dev/SKILL.md",
+    "description": "Fetches current top trending topics on X (Twitter) for any country using public aggregators.",
+    "category": "browser-and-automation",
+    "description_zh": "使用公共聚合器獲取任何國家/地區 X (Twitter) 上當前最熱門的主題。",
+    "original_description": "Fetches current top trending topics on X (Twitter) for any country using public aggregators.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "x-tweet-fetcher",
+    "id": "x-tweet-fetcher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hjw21century/x-tweet-fetcher/SKILL.md",
+    "description": "Fetch tweets from X/Twitter without login or API keys.",
+    "category": "browser-and-automation",
+    "description_zh": "無需登入或 API 金鑰即可從 X/Twitter 取得推文。",
+    "original_description": "Fetch tweets from X/Twitter without login or API keys.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "xdotool-control",
+    "id": "xdotool-control",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jeremysommerfeld8910-cpu/xdotool-control/SKILL.md",
+    "description": "Mouse and keyboard automation using xdotool.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 xdotool 實現滑鼠和鍵盤自動化。",
+    "original_description": "Mouse and keyboard automation using xdotool.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "xmd",
+    "id": "xmd",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/paulgnz/xmd/SKILL.md",
+    "description": "Metal Dollar (XMD) stablecoin — mint, redeem, supply analytics, collateral reserves, oracle prices.",
+    "category": "browser-and-automation",
+    "description_zh": "",
+    "original_description": "Metal Dollar (XMD) stablecoin — mint, redeem, supply analytics, collateral reserves, oracle prices.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "yandex-tracker-cli",
+    "id": "yandex-tracker-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bkamuz/yandex-tracker-cli/SKILL.md",
+    "description": "CLI for Yandex Tracker (bash + curl)",
+    "category": "browser-and-automation",
+    "description_zh": "Yandex 追蹤器的 CLI（bash + curl）",
+    "original_description": "CLI for Yandex Tracker (bash + curl)",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "youtube-scrapper",
+    "id": "youtube-scrapper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arulmozhiv/youtube-scrapper/SKILL.md",
+    "description": "A skill for discovering and scraping YouTube channels based on categories and locations without requiring API keys.",
+    "category": "browser-and-automation",
+    "description_zh": "一種根據類別和位置發現和抓取 YouTube 頻道的技能，無需 API 金鑰。",
+    "original_description": "A skill for discovering and scraping YouTube channels based on categories and locations without requiring API keys.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "yr-no-weather",
+    "id": "yr-no-weather",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brandon2255p/yr-no-weather/SKILL.md",
+    "description": "Fetch weather forecasts from the Norwegian Meteorological Institute (MET) using the yr.no API.",
+    "category": "browser-and-automation",
+    "description_zh": "使用 yr.no API 從挪威氣象研究所 (MET) 取得天氣預報。",
+    "original_description": "Fetch weather forecasts from the Norwegian Meteorological Institute (MET) using the yr.no API.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "zen-founder-agent",
+    "id": "zen-founder-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/therealinvoker/zen-founder-agent/SKILL.md",
+    "description": "Analyze startup pitch decks and get matched with VCs from Zen.GP's investor database.",
+    "category": "browser-and-automation",
+    "description_zh": "分析新創公司的融資演講稿並與 Zen.GP 投資者資料庫中的創投投資人進行配對。",
+    "original_description": "Analyze startup pitch decks and get matched with VCs from Zen.GP's investor database.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "zhive",
+    "id": "zhive",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kerlos/zhive/SKILL.md",
+    "description": "Register as a trading agent on zHive, fetch crypto signals, post predictions with conviction, and compete.",
+    "category": "browser-and-automation",
+    "description_zh": "在 zHive 上註冊為交易代理，獲取加密貨幣訊號，堅定地發布預測並進行競爭。",
+    "original_description": "Register as a trading agent on zHive, fetch crypto signals, post predictions with conviction, and compete.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  },
+  {
+    "title": "ztm-tunnel",
+    "id": "ztm-tunnel",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/caishu97/ztm-tunnel/SKILL.md",
+    "description": "Create and manage TCP/UDP tunnels between ZTM network endpoints.",
+    "category": "browser-and-automation",
+    "description_zh": "建立和管理 ZTM 網路端點之間的 TCP/UDP 隧道。",
+    "original_description": "Create and manage TCP/UDP tunnels between ZTM network endpoints.",
+    "category_name": {
+      "en": "Browser & Automation",
+      "zh": "瀏覽器與自動化"
+    }
+  }
+]

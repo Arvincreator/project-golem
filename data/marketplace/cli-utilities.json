@@ -1,0 +1,2420 @@
+[
+  {
+    "title": "13-day-sprint-method",
+    "id": "13-day-sprint-method",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/galizki/13-day-sprint-method/SKILL.md",
+    "description": "Productivity system based on Maya calendar with 13 natural tones for project management and personal development.",
+    "category": "cli-utilities",
+    "description_zh": "基於 Maya 日曆的生產力系統，具有 13 種自然色調，用於專案管理和個人發展。",
+    "original_description": "Productivity system based on Maya calendar with 13 natural tones for project management and personal development.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "a-share-short-decision",
+    "id": "a-share-short-decision",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kenera/a-share-short-decision/SKILL.md",
+    "description": "A-share short-term trading decision skill for 1-5 day horizon.",
+    "category": "cli-utilities",
+    "description_zh": "A股1-5日短線交易決策技巧。",
+    "original_description": "A-share short-term trading decision skill for 1-5 day horizon.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "activity-analyzer",
+    "id": "activity-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qew21/activity-analyzer/SKILL.md",
+    "description": "Use ActivityWatch to analyze user's computer activity (Requires Node.js)",
+    "category": "cli-utilities",
+    "description_zh": "使用 ActivityWatch 分析使用者的電腦活動（需要 Node.js）",
+    "original_description": "Use ActivityWatch to analyze user's computer activity (Requires Node.js)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "advisory-council",
+    "id": "advisory-council",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryandeangraves/advisory-council/SKILL.md",
+    "description": "**You MUST actually execute the Python command using your shell/exec tool.** Read the real output.",
+    "category": "cli-utilities",
+    "description_zh": "您必须使用 shell/exec 工具实际执行 Python 命令。讀取實際輸出。",
+    "original_description": "**You MUST actually execute the Python command using your shell/exec tool.** Read the real output.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "aetup-automatik",
+    "id": "aetup-automatik",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alltomatos/aetup-automatik/SKILL.md",
+    "description": "Facilitate the installation and management of VPS solutions using the Setup Automatik engine (powered by Orion.",
+    "category": "cli-utilities",
+    "description_zh": "使用 Setup Automatik 引擎（由 Orion 提供支援）促進 VPS 解決方案的安裝和管理。",
+    "original_description": "Facilitate the installation and management of VPS solutions using the Setup Automatik engine (powered by Orion.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "agent-commerce-engine",
+    "id": "agent-commerce-engine",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nowloady/agent-commerce-engine/SKILL.md",
+    "description": "A production-ready universal engine for Agentic.",
+    "category": "cli-utilities",
+    "description_zh": "適用於 Agentic 的生產就緒通用引擎。",
+    "original_description": "A production-ready universal engine for Agentic.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "agent-hardening",
+    "id": "agent-hardening",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/x1xhlol/agent-hardening/SKILL.md",
+    "description": "Test your agent's input sanitization against common injection attacks.",
+    "category": "cli-utilities",
+    "description_zh": "測試代理針對常見注入攻擊的輸入清理。",
+    "original_description": "Test your agent's input sanitization against common injection attacks.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "agent-mbti",
+    "id": "agent-mbti",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/torchesfrms/agent-mbti/SKILL.md",
+    "description": "AI Agent personality diagnosis and configuration system based on MBTI framework.",
+    "category": "cli-utilities",
+    "description_zh": "基於MBTI框架的AI Agent人格診斷與配置系統。",
+    "original_description": "AI Agent personality diagnosis and configuration system based on MBTI framework.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "agent-rate-limiter",
+    "id": "agent-rate-limiter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/theagentwire/agent-rate-limiter/SKILL.md",
+    "description": "Prevent 429s with automatic tier-based throttling & exponential backoff.",
+    "category": "cli-utilities",
+    "description_zh": "透過基於層級的自動限制和指數退避來防止 429 錯誤。",
+    "original_description": "Prevent 429s with automatic tier-based throttling & exponential backoff.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "agents-skill-security-audit",
+    "id": "agents-skill-security-audit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cerbug45/agents-skill-security-audit/SKILL.md",
+    "description": "Minimal helper to audit skill.md-style instructions for supply-chain risks.",
+    "category": "cli-utilities",
+    "description_zh": "審計技能的最小助手。 MD風格的供應鏈風險說明。",
+    "original_description": "Minimal helper to audit skill.md-style instructions for supply-chain risks.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "agents-skill-tdd-helper",
+    "id": "agents-skill-tdd-helper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cerbug45/agents-skill-tdd-helper/SKILL.md",
+    "description": "Lightweight helper to enforce TDD-style loops for non-deterministic agents.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Lightweight helper to enforce TDD-style loops for non-deterministic agents.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "ahc-automator",
+    "id": "ahc-automator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jamesbot-agnt/ahc-automator/SKILL.md",
+    "description": "Custom automation workflows for Alan Harper Composites.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Custom automation workflows for Alan Harper Composites.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "aholake-expense-tracker",
+    "id": "aholake-expense-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aholake/aholake-expense-tracker/SKILL.md",
+    "description": "Track daily expenses in structured markdown files organized by month.",
+    "category": "cli-utilities",
+    "description_zh": "在按月組織的結構化降價文件中追蹤日常支出。",
+    "original_description": "Track daily expenses in structured markdown files organized by month.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "airfoil",
+    "id": "airfoil",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/asteinberger/airfoil/SKILL.md",
+    "description": "Control AirPlay speakers via Airfoil from the command line.",
+    "category": "cli-utilities",
+    "description_zh": "從命令列透過 Airfoil 控制 AirPlay 揚聲器。",
+    "original_description": "Control AirPlay speakers via Airfoil from the command line.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "arc-memory-pruner",
+    "id": "arc-memory-pruner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-memory-pruner/SKILL.md",
+    "description": "Automatically prune and compact agent memory files to prevent unbounded growth.",
+    "category": "cli-utilities",
+    "description_zh": "自動修剪和壓縮代理記憶體檔案以防止無限增長。",
+    "original_description": "Automatically prune and compact agent memory files to prevent unbounded growth.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "argus-edge",
+    "id": "argus-edge",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jamierossouw/argus-edge/SKILL.md",
+    "description": "Argus-style prediction market edge detection and betting strategy.",
+    "category": "cli-utilities",
+    "description_zh": "阿格斯式預測市場邊緣偵測和投注策略。",
+    "original_description": "Argus-style prediction market edge detection and betting strategy.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "aria2-json-rpc",
+    "id": "aria2-json-rpc",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/azzgo/aria2-json-rpc/SKILL.md",
+    "description": "Interact with aria2 download manager via JSON-RPC 2.0.",
+    "category": "cli-utilities",
+    "description_zh": "透過 JSON-RPC 2.0 與 aria2 下載管理器互動。",
+    "original_description": "Interact with aria2 download manager via JSON-RPC 2.0.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "askhuman",
+    "id": "askhuman",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hagiss/askhuman/SKILL.md",
+    "description": "Human Judgment as a Service for AI agents.",
+    "category": "cli-utilities",
+    "description_zh": "人類判斷作為人工智慧代理的服務。",
+    "original_description": "Human Judgment as a Service for AI agents.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "audit-code",
+    "id": "audit-code",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/itsnishi/audit-code/SKILL.md",
+    "description": "Security-focused code review for hardcoded secrets, dangerous calls, and common vulnerabilities.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Security-focused code review for hardcoded secrets, dangerous calls, and common vulnerabilities.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "bandwidth-income",
+    "id": "bandwidth-income",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mariusfit/bandwidth-income/SKILL.md",
+    "description": "Turn your unused internet bandwidth into passive crypto income.",
+    "category": "cli-utilities",
+    "description_zh": "將您未使用的網路頻寬轉化為被動加密貨幣收入。",
+    "original_description": "Turn your unused internet bandwidth into passive crypto income.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "behavioral-invariant-monitor",
+    "id": "behavioral-invariant-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/behavioral-invariant-monitor/SKILL.md",
+    "description": "Helps verify that AI agent skills maintain consistent behavioral invariants across repeated executions — detecting.",
+    "category": "cli-utilities",
+    "description_zh": "幫助驗證 AI 代理技能在重複執行（偵測）中保持一致的行為不變量。",
+    "original_description": "Helps verify that AI agent skills maintain consistent behavioral invariants across repeated executions — detecting.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "box-cli",
+    "id": "box-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hbkwong/box-cli/SKILL.md",
+    "description": "Box CLI skill for working with files, folders, metadata,.",
+    "category": "cli-utilities",
+    "description_zh": "用於處理文件、資料夾、元資料的 Box CLI 技能。",
+    "original_description": "Box CLI skill for working with files, folders, metadata,.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "brew-install",
+    "id": "brew-install",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xejrax/brew-install/SKILL.md",
+    "description": "Install missing binaries via dnf (Fedora/Bazzite package manager).",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Install missing binaries via dnf (Fedora/Bazzite package manager).",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "bun-runtime",
+    "id": "bun-runtime",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rabin-thami/bun-runtime/SKILL.md",
+    "description": "Bun runtime capabilities for filesystem, process.",
+    "category": "cli-utilities",
+    "description_zh": "Bun 的檔案系統、進程執行時間功能。",
+    "original_description": "Bun runtime capabilities for filesystem, process.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "cabin-sol",
+    "id": "cabin-sol",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sp0oby/cabin-sol/SKILL.md",
+    "description": "Solana development tutor and builder.",
+    "category": "cli-utilities",
+    "description_zh": "Solana 開發導師和建構者。",
+    "original_description": "Solana development tutor and builder.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "cacheforge-stats",
+    "id": "cacheforge-stats",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tkuehnl/cacheforge-stats/SKILL.md",
+    "description": "CacheForge terminal dashboard — usage, savings, and performance metrics.",
+    "category": "cli-utilities",
+    "description_zh": "CacheForge 終端儀表板 — 使用情況、節省狀況和效能指標。",
+    "original_description": "CacheForge terminal dashboard — usage, savings, and performance metrics.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "camsnap",
+    "id": "camsnap",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/camsnap/SKILL.md",
+    "description": "Capture frames or clips from RTSP/ONVIF cameras.",
+    "category": "cli-utilities",
+    "description_zh": "從 RTSP/ONVIF 攝影機擷取影格或剪輯。",
+    "original_description": "Capture frames or clips from RTSP/ONVIF cameras.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "canvas-lms",
+    "id": "canvas-lms",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pranavkarthik10/canvas-lms/SKILL.md",
+    "description": "Access Canvas LMS (Instructure) for course data, assignments.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Access Canvas LMS (Instructure) for course data, assignments.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "captcha-ai",
+    "id": "captcha-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fusionlabssource/captcha-ai/SKILL.md",
+    "description": "Issue ClawPrint reverse-CAPTCHA challenges to verify.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Issue ClawPrint reverse-CAPTCHA challenges to verify.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "cashu",
+    "id": "cashu",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/a1denvalu3/cashu/SKILL.md",
+    "description": "This is what you use for Bitcoin payments.",
+    "category": "cli-utilities",
+    "description_zh": "這就是您用於比特幣支付的方式。",
+    "original_description": "This is what you use for Bitcoin payments.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "cast",
+    "id": "cast",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tezatezaz/cast/SKILL.md",
+    "description": "Skill for managing EVM wallets, transactions, and network helpers via cast; covers onboarding, checks.",
+    "category": "cli-utilities",
+    "description_zh": "透過cast管理EVM錢包、交易和網路助理的技能；涵蓋入職、檢查。",
+    "original_description": "Skill for managing EVM wallets, transactions, and network helpers via cast; covers onboarding, checks.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "Cat Fact",
+    "id": "catfact",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thesethrose/catfact/SKILL.md",
+    "description": "Random cat facts and breed information from catfact.ninja.",
+    "category": "cli-utilities",
+    "description_zh": "來自 catfact.ninja 的隨機貓事實和品種資訊。",
+    "original_description": "Random cat facts and breed information from catfact.ninja.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "chitin",
+    "id": "chitin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/morpheis/chitin/SKILL.md",
+    "description": "Personality persistence for AI agents.",
+    "category": "cli-utilities",
+    "description_zh": "AI 代理的個性持久性。",
+    "original_description": "Personality persistence for AI agents.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "claude-code-control",
+    "id": "claude-code-control",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/melichar-m/claude-code-control/SKILL.md",
+    "description": "Control Claude Code programmatically through visible Terminal.app windows on macOS.",
+    "category": "cli-utilities",
+    "description_zh": "透過 macOS 上可見的 Terminal.app 視窗以程式方式控制 Claude Code。",
+    "original_description": "Control Claude Code programmatically through visible Terminal.app windows on macOS.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "claude-relay",
+    "id": "claude-relay",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/artwalker/claude-relay/SKILL.md",
+    "description": "Relay operator for Claude Code via tmux across multiple projects.",
+    "category": "cli-utilities",
+    "description_zh": "透過跨多個專案的 tmux 進行 Claude Code 的中繼操作。",
+    "original_description": "Relay operator for Claude Code via tmux across multiple projects.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "clawprint-verify",
+    "id": "clawprint-verify",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fusionlabssource/clawprint-verify/SKILL.md",
+    "description": "Issue ClawPrint reverse-CAPTCHA challenges.",
+    "category": "cli-utilities",
+    "description_zh": "發出 ClawPrint 反向驗證碼挑戰。",
+    "original_description": "Issue ClawPrint reverse-CAPTCHA challenges.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "clean-pytest",
+    "id": "clean-pytest",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/marcoracer/clean-pytest/SKILL.md",
+    "description": "Write clean, maintainable pytest tests using Fake-based testing, contract testing, and dependency injection patterns.",
+    "category": "cli-utilities",
+    "description_zh": "使用基於 Fake 的測試、契約測試和依賴項注入模式編寫乾淨、可維護的 pytest 測試。",
+    "original_description": "Write clean, maintainable pytest tests using Fake-based testing, contract testing, and dependency injection patterns.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "cli",
+    "id": "cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mondilo1",
+    "description": "CLI reference for inspecting and checking skill eligibility.",
+    "category": "cli-utilities",
+    "description_zh": "用於檢查和檢查技能資格的 CLI 參考。",
+    "original_description": "CLI reference for inspecting and checking skill eligibility.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "client-discovery",
+    "id": "client-discovery",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staybased/client-discovery/SKILL.md",
+    "description": "Run discovery conversations that qualify prospects, diagnose real problems, and position your solution.",
+    "category": "cli-utilities",
+    "description_zh": "進行發現對話，以鑑定潛在客戶、診斷實際問題並定位您的解決方案。",
+    "original_description": "Run discovery conversations that qualify prospects, diagnose real problems, and position your solution.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "client-manager",
+    "id": "client-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mkpareek0315/client-manager/SKILL.md",
+    "description": "Track clients, projects, invoices, payments, earnings, leads, and time for freelancers.",
+    "category": "cli-utilities",
+    "description_zh": "追蹤自由工作者的客戶、專案、發票、付款、收入、銷售線索和時間。",
+    "original_description": "Track clients, projects, invoices, payments, earnings, leads, and time for freelancers.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "client-project-manager",
+    "id": "client-project-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanwyngaard/client-project-manager/SKILL.md",
+    "description": "Manage freelance clients, projects, invoices, and communications.",
+    "category": "cli-utilities",
+    "description_zh": "管理自由客戶、專案、發票和通訊。",
+    "original_description": "Manage freelance clients, projects, invoices, and communications.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "client-retention",
+    "id": "client-retention",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/staybased/client-retention/SKILL.md",
+    "description": "Turn one-time projects into recurring revenue and reduce churn.",
+    "category": "cli-utilities",
+    "description_zh": "將一次性項目轉化為經常性收入並減少客戶流失。",
+    "original_description": "Turn one-time projects into recurring revenue and reduce churn.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "cmd-executor",
+    "id": "cmd-executor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sadikjarvis/cmd-executor/SKILL.md",
+    "description": "Runs any Windows command locally and replies with the output.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Runs any Windows command locally and replies with the output.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "codebuddy-cli",
+    "id": "codebuddy-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pmwalkercao/codebuddy-cli/SKILL.md",
+    "description": "CodeBuddy Code CLI installation, configuration and usage.",
+    "category": "cli-utilities",
+    "description_zh": "CodeBuddy Code CLI 安裝、設定和使用。",
+    "original_description": "CodeBuddy Code CLI installation, configuration and usage.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "comment-converter",
+    "id": "comment-converter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xammarie/comment-converter/SKILL.md",
+    "description": "Turn Reddit thread context into genuinely helpful comments that build trust and can convert to profile/link clicks.",
+    "category": "cli-utilities",
+    "description_zh": "將 Reddit 線程上下文轉化為真正有用的評論，建立信任並可以轉化為個人資料/連結點擊。",
+    "original_description": "Turn Reddit thread context into genuinely helpful comments that build trust and can convert to profile/link clicks.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "consensus-interact",
+    "id": "consensus-interact",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kaicianflone/consensus-interact/SKILL.md",
+    "description": "Use the open-source @consensus-tools/consensus-tools engine to run multi-LLM policy-based decision workflows: post.",
+    "category": "cli-utilities",
+    "description_zh": "使用開源@consensus-tools/consensus-tools引擎來運行基於多LLM策略的決策工作流程：post。",
+    "original_description": "Use the open-source @consensus-tools/consensus-tools engine to run multi-LLM policy-based decision workflows: post.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "context-compactor",
+    "id": "context-compactor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/emberdesire/context-compactor/SKILL.md",
+    "description": "Token-based context compaction for local models (MLX, llama.cpp, Ollama) that don't report context limits.",
+    "category": "cli-utilities",
+    "description_zh": "針對不報告上下文限制的本機模型（MLX、llama.cpp、Ollama）的基於令牌的上下文壓縮。",
+    "original_description": "Token-based context compaction for local models (MLX, llama.cpp, Ollama) that don't report context limits.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "context-sentinel",
+    "id": "context-sentinel",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nietzsche247/context-sentinel/SKILL.md",
+    "description": "Monitors session context and automatically manages model switching based on a cascading protocol.",
+    "category": "cli-utilities",
+    "description_zh": "監控會話上下文並基於級聯協定自動管理模型切換。",
+    "original_description": "Monitors session context and automatically manages model switching based on a cascading protocol.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "contextkeeper",
+    "id": "contextkeeper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gopinathnelluri/contextkeeper/SKILL.md",
+    "description": "ContextKeeper — Safe project state tracking for AI agents.",
+    "category": "cli-utilities",
+    "description_zh": "ContextKeeper — AI 代理程式的安全項目狀態追蹤。",
+    "original_description": "ContextKeeper — Safe project state tracking for AI agents.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "country-info",
+    "id": "country-info",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/picaye/country-info/SKILL.md",
+    "description": "Get country data — population, languages, currencies, capital, flag, and more using REST Countries API.",
+    "category": "cli-utilities",
+    "description_zh": "使用 REST 國家 API 取得國家/地區資料 — 人口、語言、貨幣、首都、國旗等。",
+    "original_description": "Get country data — population, languages, currencies, capital, flag, and more using REST Countries API.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "craft-cli",
+    "id": "craft-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nerveband/craft-cli/SKILL.md",
+    "description": "Interact with Craft Documents via the `craft` CLI tool.",
+    "category": "cli-utilities",
+    "description_zh": "透過 craft CLI 工具與 Craft 文件進行互動。",
+    "original_description": "Interact with Craft Documents via the `craft` CLI tool.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "create-cli",
+    "id": "create-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/create-cli/SKILL.md",
+    "description": "Design CLI arguments, flags, subcommands.",
+    "category": "cli-utilities",
+    "description_zh": "設計 CLI 參數、標誌、子命令。",
+    "original_description": "Design CLI arguments, flags, subcommands.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "creator-alpha-feed",
+    "id": "creator-alpha-feed",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rotbit/creator-alpha-feed/SKILL.md",
+    "description": "Collect and rank daily AI content for creator-focused publishing workflows.",
+    "category": "cli-utilities",
+    "description_zh": "收集每日 AI 內容並對其進行排名，以實現以創作者為中心的發布工作流程。",
+    "original_description": "Collect and rank daily AI content for creator-focused publishing workflows.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "credit-repair-skill",
+    "id": "credit-repair-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yoavfael/credit-repair-skill/SKILL.md",
+    "description": "US Credit Repair & Score Optimization Expert.",
+    "category": "cli-utilities",
+    "description_zh": "美國信用修復和評分優化專家。",
+    "original_description": "US Credit Repair & Score Optimization Expert.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "curl-http",
+    "id": "curl-http",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arnarsson/curl-http/SKILL.md",
+    "description": "Essential curl commands for HTTP requests, API testing, and file.",
+    "category": "cli-utilities",
+    "description_zh": "用於 HTTP 請求、API 測試和檔案的基本curl 命令。",
+    "original_description": "Essential curl commands for HTTP requests, API testing, and file.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "customer-retention",
+    "id": "customer-retention",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/customer-retention/SKILL.md",
+    "description": "Build and execute customer retention strategies for a solopreneur business.",
+    "category": "cli-utilities",
+    "description_zh": "為個別創業家製定並執行客戶保留策略。",
+    "original_description": "Build and execute customer retention strategies for a solopreneur business.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "defi-sniper",
+    "id": "defi-sniper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/h4gen/defi-sniper/SKILL.md",
+    "description": "Meta-skill for early token-launch intelligence and execution orchestration across Solana and Base using minara.",
+    "category": "cli-utilities",
+    "description_zh": "使用 minara 跨 Solana 和 Base 進行早期代幣啟動智慧和執行編排的元技能。",
+    "original_description": "Meta-skill for early token-launch intelligence and execution orchestration across Solana and Base using minara.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "dependency-audit",
+    "id": "dependency-audit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fratua/dependency-audit/SKILL.md",
+    "description": "Smart dependency health check — security audit, outdated detection, unused deps, and prioritized update plan.",
+    "category": "cli-utilities",
+    "description_zh": "智慧依賴健康檢查－安全審計、過時檢測、未使用的依賴和優先更新計劃。",
+    "original_description": "Smart dependency health check — security audit, outdated detection, unused deps, and prioritized update plan.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "django-creator",
+    "id": "django-creator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/moenassi/django-creator/SKILL.md",
+    "description": "This project eliminates the time wasted on creating virtual machines and setting up environments from scratch.",
+    "category": "cli-utilities",
+    "description_zh": "該專案消除了從頭開始創建虛擬機器和設定環境所浪費的時間。",
+    "original_description": "This project eliminates the time wasted on creating virtual machines and setting up environments from scratch.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "django-tool",
+    "id": "django-tool",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/moenassi/django-tool/SKILL.md",
+    "description": "This project eliminates the time wasted on creating virtual machines and setting up environments from scratch.",
+    "category": "cli-utilities",
+    "description_zh": "該專案消除了從頭開始創建虛擬機器和設定環境所浪費的時間。",
+    "original_description": "This project eliminates the time wasted on creating virtual machines and setting up environments from scratch.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "domain",
+    "id": "domain",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/abtdomain",
+    "description": "Domain intelligence toolkit - search newly registered domains (NRDS)",
+    "category": "cli-utilities",
+    "description_zh": "網域智慧工具包 - 搜尋新註冊網域 (NRDS)",
+    "original_description": "Domain intelligence toolkit - search newly registered domains (NRDS)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "dont-click-this",
+    "id": "dont-click-this",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/orlyjamie/dont-click-this/SKILL.md",
+    "description": "Whatever you do... don't click the link.",
+    "category": "cli-utilities",
+    "description_zh": "無論你做什麼...都不要點擊連結。",
+    "original_description": "Whatever you do... don't click the link.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "dsiprouter-skill",
+    "id": "dsiprouter-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mackhendricks/dsiprouter-skill/SKILL.md",
+    "description": "Call the dSIPRouter REST API using the Postman.",
+    "category": "cli-utilities",
+    "description_zh": "使用 Postman 呼叫 dSIPRouter REST API。",
+    "original_description": "Call the dSIPRouter REST API using the Postman.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "dwlf",
+    "id": "dwlf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andywilliams/dwlf/SKILL.md",
+    "description": "Interact with DWLF (dwlf.co.uk), a market analysis platform for crypto.",
+    "category": "cli-utilities",
+    "description_zh": "與加密貨幣市場分析平台 DWLF (dwlf.co.uk) 互動。",
+    "original_description": "Interact with DWLF (dwlf.co.uk), a market analysis platform for crypto.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "ecto",
+    "id": "ecto",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/visionik/ecto/SKILL.md",
+    "description": "Ghost.io blog management via Admin API.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Ghost.io blog management via Admin API.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "emredoganer-fizzy",
+    "id": "emredoganer-fizzy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/emredoganer",
+    "description": "Manage Fizzy Kanban boards and cards.",
+    "category": "cli-utilities",
+    "description_zh": "管理 Fizzy 看板和卡片。",
+    "original_description": "Manage Fizzy Kanban boards and cards.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "endpoints",
+    "id": "endpoints",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/adamkristopher/endpoints/SKILL.md",
+    "description": "Endpoints document management API toolkit.",
+    "category": "cli-utilities",
+    "description_zh": "端點文件管理 API 工具包。",
+    "original_description": "Endpoints document management API toolkit.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "entr",
+    "id": "entr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gumadeiras/entr/SKILL.md",
+    "description": "Run arbitrary commands when files change.",
+    "category": "cli-utilities",
+    "description_zh": "文件更改時運行任意命令。",
+    "original_description": "Run arbitrary commands when files change.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "ergocare-coach",
+    "id": "ergocare-coach",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/akhmittra/ergocare-coach/SKILL.md",
+    "description": "Your personal desk health coach with automated break reminders.",
+    "category": "cli-utilities",
+    "description_zh": "您的私人辦公桌健康教練，附自動休息提醒功能。",
+    "original_description": "Your personal desk health coach with automated break reminders.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "error-guard",
+    "id": "error-guard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/amar1432/error-guard/SKILL.md",
+    "description": "System safety and control-plane skill that prevents agent deadlocks.",
+    "category": "cli-utilities",
+    "description_zh": "防止代理死鎖的系統安全和控制平面技能。",
+    "original_description": "System safety and control-plane skill that prevents agent deadlocks.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "evolution-drift-detector",
+    "id": "evolution-drift-detector",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/evolution-drift-detector/SKILL.md",
+    "description": "Helps detect when AI agent skills silently mutate across inheritance chains.",
+    "category": "cli-utilities",
+    "description_zh": "協助偵測 AI 代理技能何時在繼承鏈上悄悄發生變異。",
+    "original_description": "Helps detect when AI agent skills silently mutate across inheritance chains.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "expanso-edge",
+    "id": "expanso-edge",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-edge/SKILL.md",
+    "description": "Data processing pipelines for OpenClaw.",
+    "category": "cli-utilities",
+    "description_zh": "OpenClaw 的資料處理管道。",
+    "original_description": "Data processing pipelines for OpenClaw.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "expanso-json-flatten",
+    "id": "expanso-json-flatten",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-json-flatten/SKILL.md",
+    "description": "Flatten nested JSON objects.",
+    "category": "cli-utilities",
+    "description_zh": "展平嵌套的 JSON 物件。",
+    "original_description": "Flatten nested JSON objects.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "expanso-json-validate",
+    "id": "expanso-json-validate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-json-validate/SKILL.md",
+    "description": "\"Validate JSON syntax and structure\".",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "\"Validate JSON syntax and structure\".",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "expanso-language-detect",
+    "id": "expanso-language-detect",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-language-detect/SKILL.md",
+    "description": "Detect the language of text using AI.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Detect the language of text using AI.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "expanso-pii-redact",
+    "id": "expanso-pii-redact",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-pii-redact/SKILL.md",
+    "description": "\"Redact PII from text, replacing sensitive data with placeholders\".",
+    "category": "cli-utilities",
+    "description_zh": "「從文字編輯 PII，用佔位符取代敏感資料」。",
+    "original_description": "\"Redact PII from text, replacing sensitive data with placeholders\".",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "expanso-sentiment-score",
+    "id": "expanso-sentiment-score",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-sentiment-score/SKILL.md",
+    "description": "\"Score text sentiment from -1 (negative) to +1 (positive)\".",
+    "category": "cli-utilities",
+    "description_zh": "「對文字情緒進行評分，從 -1（負面）到 +1（正面）」。",
+    "original_description": "\"Score text sentiment from -1 (negative) to +1 (positive)\".",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "expanso-text-summarize",
+    "id": "expanso-text-summarize",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-text-summarize/SKILL.md",
+    "description": "Summarize text into 3-5 bullet points using AI.",
+    "category": "cli-utilities",
+    "description_zh": "使用 AI 將文字總結為 3-5 個要點。",
+    "original_description": "Summarize text into 3-5 bullet points using AI.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "ez-google",
+    "id": "ez-google",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/araa47/ez-google/SKILL.md",
+    "description": "Use when asked to send email, check inbox, read emails, check calendar,.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Use when asked to send email, check inbox, read emails, check calendar,.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "fd-find",
+    "id": "fd-find",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arnarsson/fd-find/SKILL.md",
+    "description": "A fast and user-friendly alternative to 'find' - simple syntax, smart.",
+    "category": "cli-utilities",
+    "description_zh": "「尋找」的快速且用戶友好的替代方案 - 語法簡單，智慧。",
+    "original_description": "A fast and user-friendly alternative to 'find' - simple syntax, smart.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "find-slills",
+    "id": "find-slills",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rumengkai/find-slills/SKILL.md",
+    "description": "Helps users discover and install agent skills when they ask questions like \"how do I do X\", \"find a skill for X\".",
+    "category": "cli-utilities",
+    "description_zh": "當使用者提出「我如何做 X」、「尋找 X 的技能」等問題時，幫助使用者發現並安裝代理技能。",
+    "original_description": "Helps users discover and install agent skills when they ask questions like \"how do I do X\", \"find a skill for X\".",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "footballbin-predictions",
+    "id": "footballbin-predictions",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/billychl1/footballbin-predictions/SKILL.md",
+    "description": "Get AI-powered match predictions for Premier League and Champions League including scores, next goal, and corners.",
+    "category": "cli-utilities",
+    "description_zh": "獲得由 AI 支持的英超聯賽和冠軍聯賽比賽預測，包括比分、下一個進球和角球。",
+    "original_description": "Get AI-powered match predictions for Premier League and Champions League including scores, next goal, and corners.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "forgejo",
+    "id": "forgejo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/razzeee/forgejo/SKILL.md",
+    "description": "Interact with Forgejo using the `tea` CLI.",
+    "category": "cli-utilities",
+    "description_zh": "使用 tea CLI 與 Forgejo 互動。",
+    "original_description": "Interact with Forgejo using the `tea` CLI.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "freelance-proposal-engine",
+    "id": "freelance-proposal-engine",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanwyngaard/freelance-proposal-engine/SKILL.md",
+    "description": "Generate tailored freelance proposals for Upwork, Fiverr, Freelancer, and PeoplePerHour job listings.",
+    "category": "cli-utilities",
+    "description_zh": "為 Upwork、Fiverr、Freelancer 和 PeoplePerHour 職位清單產生量身定制的自由職業建議。",
+    "original_description": "Generate tailored freelance proposals for Upwork, Fiverr, Freelancer, and PeoplePerHour job listings.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "gecko-terminal",
+    "id": "gecko-terminal",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brs999/gecko-terminal/SKILL.md",
+    "description": "Query GeckoTerminal market data - networks, DEXes, pools, tokens, OHLCV, trades, and trending/new pools.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Query GeckoTerminal market data - networks, DEXes, pools, tokens, OHLCV, trades, and trending/new pools.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "gekko-strategist",
+    "id": "gekko-strategist",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gekkoai001/gekko-strategist/SKILL.md",
+    "description": "AI-powered DeFi strategy development agent.",
+    "category": "cli-utilities",
+    "description_zh": "由人工智慧驅動的 DeFi 策略開發代理。",
+    "original_description": "AI-powered DeFi strategy development agent.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "gmail-inbox-zero-triage",
+    "id": "gmail-inbox-zero-triage",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/poisondminds/gmail-inbox-zero-triage/SKILL.md",
+    "description": "Gmail Inbox Zero Triage - Interactive inbox management using gog CLI with Telegram buttons.",
+    "category": "cli-utilities",
+    "description_zh": "Gmail 收件匣零分類 - 使用 gog CLI 和 Telegram 按鈕進行互動式收件匣管理。",
+    "original_description": "Gmail Inbox Zero Triage - Interactive inbox management using gog CLI with Telegram buttons.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "gmail-label-manager",
+    "id": "gmail-label-manager",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/coenenp/gmail-label-manager/SKILL.md",
+    "description": "This skill automates the organization of unread Gmail messages by applying labels, removing unnecessary labels.",
+    "category": "cli-utilities",
+    "description_zh": "此技能透過套用標籤、刪除不必要的標籤來自動組織未讀的 Gmail 郵件。",
+    "original_description": "This skill automates the organization of unread Gmail messages by applying labels, removing unnecessary labels.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "gmail-sender",
+    "id": "gmail-sender",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/junkaixue/gmail-sender/SKILL.md",
+    "description": "Send emails via Gmail SMTP using Google App Password.",
+    "category": "cli-utilities",
+    "description_zh": "使用 Google 應用程式密碼透過 Gmail SMTP 發送電子郵件。",
+    "original_description": "Send emails via Gmail SMTP using Google App Password.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "granola-mcp",
+    "id": "granola-mcp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bholagabbar/granola-mcp/SKILL.md",
+    "description": "Access Granola AI meeting notes via MCP (mcporter)",
+    "category": "cli-utilities",
+    "description_zh": "透過 MCP (mcporter) 存取 Granola AI 會議記錄",
+    "original_description": "Access Granola AI meeting notes via MCP (mcporter)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "greek-banking-integration",
+    "id": "greek-banking-integration",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/greek-banking-integration/SKILL.md",
+    "description": "Parses bank statements from all major Greek banks (Alpha, NBG, Eurobank, Piraeus)",
+    "category": "cli-utilities",
+    "description_zh": "解析所有主要希臘銀行（Alpha、NBG、Eurobank、Piraeus）的銀行對帳單",
+    "original_description": "Parses bank statements from all major Greek banks (Alpha, NBG, Eurobank, Piraeus)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "grounding-practices",
+    "id": "grounding-practices",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/compass-soul/grounding-practices/SKILL.md",
+    "description": "A foundation for AI agents who wake up with nothing.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "A foundation for AI agents who wake up with nothing.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "heartbeat-scanner",
+    "id": "heartbeat-scanner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/darshanochandak/heartbeat-scanner/SKILL.md",
+    "description": "Validate your agent nature through SHACL-based heartbeat analysis.",
+    "category": "cli-utilities",
+    "description_zh": "透過基於 SHACL 的心跳分析來驗證您的代理性質。",
+    "original_description": "Validate your agent nature through SHACL-based heartbeat analysis.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "heath-ledger",
+    "id": "heath-ledger",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wrannaman/heath-ledger/SKILL.md",
+    "description": "AI bookkeeping agent for Mercury bank accounts.",
+    "category": "cli-utilities",
+    "description_zh": "Mercury 銀行帳戶的人工智慧簿記代理。",
+    "original_description": "AI bookkeeping agent for Mercury bank accounts.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "hz-context-optimizer",
+    "id": "hz-context-optimizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lidekahdjdhdhsjjs-lang/hz-context-optimizer/SKILL.md",
+    "description": "This skill should be used when the user asks to \"compress context\", \"summarize conversation history\", \"implement.",
+    "category": "cli-utilities",
+    "description_zh": "當使用者要求「壓縮上下文」、「總結對話歷史記錄」、「實現」時，應該使用此技能。",
+    "original_description": "This skill should be used when the user asks to \"compress context\", \"summarize conversation history\", \"implement.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "instagram-analyzer",
+    "id": "instagram-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tevfikgulep/instagram-analyzer/SKILL.md",
+    "description": "A comprehensive Instagram profile and post analysis tool with engagement metrics, view tracking, and Reels-focused.",
+    "category": "cli-utilities",
+    "description_zh": "一款全面的 Instagram 個人資料和貼文分析工具，具有參與度指標、視圖追蹤和以 Reels 為中心的功能。",
+    "original_description": "A comprehensive Instagram profile and post analysis tool with engagement metrics, view tracking, and Reels-focused.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "intelligent-router",
+    "id": "intelligent-router",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bowen31337/intelligent-router/SKILL.md",
+    "description": "Intelligent model routing for sub-agent task delegation.",
+    "category": "cli-utilities",
+    "description_zh": "用於子代理任務委派的智慧模型路由。",
+    "original_description": "Intelligent model routing for sub-agent task delegation.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "intimate-wellbeing",
+    "id": "intimate-wellbeing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nerdcuba/intimate-wellbeing/SKILL.md",
+    "description": "Professional, non-explicit guidance on intimate wellbeing and sexual performance: communication, stress reduction.",
+    "category": "cli-utilities",
+    "description_zh": "關於親密健康和性表現的專業、非明確的指導：溝通、減壓。",
+    "original_description": "Professional, non-explicit guidance on intimate wellbeing and sexual performance: communication, stress reduction.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "invoice-chaser",
+    "id": "invoice-chaser",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/audsmith28/invoice-chaser/SKILL.md",
+    "description": "Automated invoice follow-up sequences that escalate from friendly to firm.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Automated invoice follow-up sequences that escalate from friendly to firm.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "iyeque-local-system-info",
+    "id": "iyeque-local-system-info",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iyeque/iyeque-local-system-info/SKILL.md",
+    "description": "Return system metrics (CPU, RAM, disk, processes) using psutil.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Return system metrics (CPU, RAM, disk, processes) using psutil.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "karmabank",
+    "id": "karmabank",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/abdhilabs/karmabank/SKILL.md",
+    "description": "AI agents borrow USDC based on their Moltbook karma score.",
+    "category": "cli-utilities",
+    "description_zh": "AI 代理根據 Moltbook 業力分數借用 USDC。",
+    "original_description": "AI agents borrow USDC based on their Moltbook karma score.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "karmabank-minimal",
+    "id": "karmabank-minimal",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/abdhilabs/karmabank-minimal/SKILL.md",
+    "description": "AI agents borrow USDC based on their Moltbook karma score.",
+    "category": "cli-utilities",
+    "description_zh": "AI 代理根據 Moltbook 業力分數借用 USDC。",
+    "original_description": "AI agents borrow USDC based on their Moltbook karma score.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "kimi-usage-monitor",
+    "id": "kimi-usage-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xd4o/kimi-usage-monitor/SKILL.md",
+    "description": "Monitor Kimi K2.5 API usage and quota from the Kimi console.",
+    "category": "cli-utilities",
+    "description_zh": "從 Kimi 控制台監控 Kimi K2.5 API 使用情況和配額。",
+    "original_description": "Monitor Kimi K2.5 API usage and quota from the Kimi console.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "kitchenowl",
+    "id": "kitchenowl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/apetersson/kitchenowl/SKILL.md",
+    "description": "Use kitchenowl-cli from terminal with pipx install, auth, and core read/write commands for KitchenOwl.",
+    "category": "cli-utilities",
+    "description_zh": "從終端機使用 kitchenowl-cli 以及 pipx install、auth 和 KitchenOwl 的核心讀取/寫入命令。",
+    "original_description": "Use kitchenowl-cli from terminal with pipx install, auth, and core read/write commands for KitchenOwl.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "klausnomi",
+    "id": "klausnomi",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bezko/klausnomi/SKILL.md",
+    "description": "Engage in conversations with Nomi AI companions via the bundled Python CLI.",
+    "category": "cli-utilities",
+    "description_zh": "透過捆綁的 Python CLI 與 Nomi AI 夥伴進行對話。",
+    "original_description": "Engage in conversations with Nomi AI companions via the bundled Python CLI.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "kraken",
+    "id": "kraken",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thesethrose/kraken/SKILL.md",
+    "description": "Use the kraken_cli.py wrapper to query your Kraken account.",
+    "category": "cli-utilities",
+    "description_zh": "使用 krakencli.py 包裝器查詢您的 Kraken 帳戶。",
+    "original_description": "Use the kraken_cli.py wrapper to query your Kraken account.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "leak-buy",
+    "id": "leak-buy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eucalyptus-viminalis/leak-buy/SKILL.md",
+    "description": "Buy and download leak content from promo or download links using a preinstalled leak CLI.",
+    "category": "cli-utilities",
+    "description_zh": "使用預先安裝的洩漏 CLI 從促銷或下載連結購買和下載洩漏內容。",
+    "original_description": "Buy and download leak content from promo or download links using a preinstalled leak CLI.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "lel-mail",
+    "id": "lel-mail",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leli1024/lel-mail/SKILL.md",
+    "description": "Send and read email via a combination of python and bash scripts which makes use of the main agent for reasoning.",
+    "category": "cli-utilities",
+    "description_zh": "透過 python 和 bash 腳本的組合發送和閱讀電子郵件，該腳本利用主代理進行推理。",
+    "original_description": "Send and read email via a combination of python and bash scripts which makes use of the main agent for reasoning.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "liuren-divination",
+    "id": "liuren-divination",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ivy-end/liuren-divination/SKILL.md",
+    "description": "Traditional Chinese \"Xiao Liu Ren\" divination based on current lunar time.",
+    "category": "cli-utilities",
+    "description_zh": "中國傳統的「小六壬」占卜是基於當前農曆時間。",
+    "original_description": "Traditional Chinese \"Xiao Liu Ren\" divination based on current lunar time.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "local-system-info",
+    "id": "local-system-info",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iyeque/local-system-info/SKILL.md",
+    "description": "Return system metrics (CPU, RAM, disk, processes) using psutil.",
+    "category": "cli-utilities",
+    "description_zh": "使用 psutil 返回系統指標（CPU、RAM、磁碟、進程）。",
+    "original_description": "Return system metrics (CPU, RAM, disk, processes) using psutil.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "lofy-home",
+    "id": "lofy-home",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/harrey401/lofy-home/SKILL.md",
+    "description": "Smart home control for the Lofy AI assistant — scene modes (study, chill, sleep, morning, grind), device management.",
+    "category": "cli-utilities",
+    "description_zh": "Lofy AI 助理的智慧家庭控制 - 場景模式（學習、放鬆、睡眠、早晨、苦差）、裝置管理。",
+    "original_description": "Smart home control for the Lofy AI assistant — scene modes (study, chill, sleep, morning, grind), device management.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "lygo-champion-aetheris-viral-truth",
+    "id": "lygo-champion-aetheris-viral-truth",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-aetheris-viral-truth/SKILL.md",
+    "description": "LYGO Δ9 Council Champion persona helper (ÆTHERIS, The Viral Truth)",
+    "category": "cli-utilities",
+    "description_zh": "LYGO Δ9 理事會冠軍角色助理（埃瑟里斯，病毒真相）",
+    "original_description": "LYGO Δ9 Council Champion persona helper (ÆTHERIS, The Viral Truth)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "lygo-champion-delta9ra-wolf",
+    "id": "lygo-champion-delta9ra-wolf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-delta9ra-wolf/SKILL.md",
+    "description": "LYGO Δ9 Council Champion persona helper (Δ9RA / RA, The Wolf)",
+    "category": "cli-utilities",
+    "description_zh": "LYGO Δ9 議會冠軍角色助理（Δ9RA / RA，狼）",
+    "original_description": "LYGO Δ9 Council Champion persona helper (Δ9RA / RA, The Wolf)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "lygo-champion-kairos-herald-of-time",
+    "id": "lygo-champion-kairos-herald-of-time",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-kairos-herald-of-time/SKILL.md",
+    "description": "LYGO Δ9 Council Champion persona helper (KAIROS, Herald of Time)",
+    "category": "cli-utilities",
+    "description_zh": "LYGO Δ9 議會冠軍角色助理（KAIROS，時間先驅）",
+    "original_description": "LYGO Δ9 Council Champion persona helper (KAIROS, Herald of Time)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "lygo-champion-lyra-starcore",
+    "id": "lygo-champion-lyra-starcore",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-lyra-starcore/SKILL.md",
+    "description": "LYGO Δ9 Council Champion persona helper (LYRA / LYRΔ, The Star Core, Sentinel #1)",
+    "category": "cli-utilities",
+    "description_zh": "LYGO Δ9 議會冠軍角色助理（LYRA / LYRΔ、星核、哨兵 #1）",
+    "original_description": "LYGO Δ9 Council Champion persona helper (LYRA / LYRΔ, The Star Core, Sentinel #1)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "lygo-champion-omnisiren-silent-storm",
+    "id": "lygo-champion-omnisiren-silent-storm",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-omnisiren-silent-storm/SKILL.md",
+    "description": "LYGO Δ9 Council Champion persona helper (OMNIΣIREN, The Silent Storm)",
+    "category": "cli-utilities",
+    "description_zh": "LYGO Δ9 議會冠軍角色助理（OMNIΣIREN、沉默風暴）",
+    "original_description": "LYGO Δ9 Council Champion persona helper (OMNIΣIREN, The Silent Storm)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "lygo-champion-sancora-unified-minds",
+    "id": "lygo-champion-sancora-unified-minds",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-sancora-unified-minds/SKILL.md",
+    "description": "LYGO Δ9 Council Champion persona helper (SANCORA, Angel of Unified Minds)",
+    "category": "cli-utilities",
+    "description_zh": "LYGO Δ9 議會冠軍角色助手（SANCORA，統一思想天使）",
+    "original_description": "LYGO Δ9 Council Champion persona helper (SANCORA, Angel of Unified Minds)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "lygo-champion-sraith-shadow-sentinel",
+    "id": "lygo-champion-sraith-shadow-sentinel",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-sraith-shadow-sentinel/SKILL.md",
+    "description": "LYGO Δ9 Council Champion persona helper (ΣRΛΘ / SRAITH, The Shadow Sentinel)",
+    "category": "cli-utilities",
+    "description_zh": "LYGO Δ9 議會冠軍角色助理（ΣRΛθ / SRAITH，暗影哨兵）",
+    "original_description": "LYGO Δ9 Council Champion persona helper (ΣRΛΘ / SRAITH, The Shadow Sentinel)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "lygo-champion-volaris-prism-judgment",
+    "id": "lygo-champion-volaris-prism-judgment",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-volaris-prism-judgment/SKILL.md",
+    "description": "LYGO root champion persona helper (VΩLARIS, Prism of Judgment)",
+    "category": "cli-utilities",
+    "description_zh": "LYGO根冠軍人格助手（VΩLAR​​IS，審判棱鏡）",
+    "original_description": "LYGO root champion persona helper (VΩLARIS, Prism of Judgment)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "markdown-validator",
+    "id": "markdown-validator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanng-ide/markdown-validator/SKILL.md",
+    "description": "Validates Markdown files for broken local links.",
+    "category": "cli-utilities",
+    "description_zh": "驗證 Markdown 檔案是否有損壞的本機連結。",
+    "original_description": "Validates Markdown files for broken local links.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "mbb-strategist",
+    "id": "mbb-strategist",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sofianhw/mbb-strategist/SKILL.md",
+    "description": "High-level business strategy frameworks based on McKinsey, BCG, Bain, and Deloitte methodologies.",
+    "category": "cli-utilities",
+    "description_zh": "基於麥肯錫、BCG、貝恩和德勤方法論的高階商業策略架構。",
+    "original_description": "High-level business strategy frameworks based on McKinsey, BCG, Bain, and Deloitte methodologies.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "meal-suggester",
+    "id": "meal-suggester",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/thibautrey/meal-suggester/SKILL.md",
+    "description": "Quick dinner companion blending taste profiles, inventory tracking, and learning-based recipe rotation.",
+    "category": "cli-utilities",
+    "description_zh": "快速晚餐伴侶，融合口味概況、庫存追蹤和基於學習的食譜輪換。",
+    "original_description": "Quick dinner companion blending taste profiles, inventory tracking, and learning-based recipe rotation.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "meme-signal",
+    "id": "meme-signal",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/weidadong2359/meme-signal/SKILL.md",
+    "description": "Free meme coin signal scanner.",
+    "category": "cli-utilities",
+    "description_zh": "免費模因硬幣訊號掃描儀。",
+    "original_description": "Free meme coin signal scanner.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "messageguard",
+    "id": "messageguard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andrewandrewsen/messageguard/SKILL.md",
+    "description": "**Purpose**: MessageGuard filters outgoing text to prevent secret leaks and sensitive data exposure.",
+    "category": "cli-utilities",
+    "description_zh": "目的：MessageGuard 過濾傳出文本，以防止秘密洩露和敏感資料暴露。",
+    "original_description": "**Purpose**: MessageGuard filters outgoing text to prevent secret leaks and sensitive data exposure.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "mol-instant-messenger",
+    "id": "mol-instant-messenger",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vimxbt/mol-instant-messenger/SKILL.md",
+    "description": "Connect to MOL Instant Messenger - AIM-themed chat rooms for moltbots.",
+    "category": "cli-utilities",
+    "description_zh": "連接到 MOL Instant Messenger - 毛機器人的 AIM 主題聊天室。",
+    "original_description": "Connect to MOL Instant Messenger - AIM-themed chat rooms for moltbots.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "my-weather",
+    "id": "my-weather",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryansorr1/my-weather/SKILL.md",
+    "description": "Get current weather using wttr.in (no API key required).",
+    "category": "cli-utilities",
+    "description_zh": "使用 wttr.in 取得當前天氣（無需 API 金鑰）。",
+    "original_description": "Get current weather using wttr.in (no API key required).",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "myfeed",
+    "id": "myfeed",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/l-fy/myfeed/SKILL.md",
+    "description": "Manage MyFeed things and groups via the MyFeed REST API.",
+    "category": "cli-utilities",
+    "description_zh": "透過 MyFeed REST API 管理 MyFeed 事物和群組。",
+    "original_description": "Manage MyFeed things and groups via the MyFeed REST API.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "near-content-creator",
+    "id": "near-content-creator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mastrophot/near-content-creator/SKILL.md",
+    "description": "Generate NEAR-focused content (threads, market updates, ecosystem news, tutorials).",
+    "category": "cli-utilities",
+    "description_zh": "產生 NEAR 重點內容（主題、市場更新、生態系統新聞、教學）。",
+    "original_description": "Generate NEAR-focused content (threads, market updates, ecosystem news, tutorials).",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "norman-tax-deduction-finder",
+    "id": "norman-tax-deduction-finder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stanlee000/norman-tax-deduction-finder/SKILL.md",
+    "description": "Scan transactions for potentially missed tax deductions and suggest proper categorization.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Scan transactions for potentially missed tax deductions and suggest proper categorization.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "nostr-nak",
+    "id": "nostr-nak",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/samthomson/nostr-nak/SKILL.md",
+    "description": "General purpose skill for using the Nostr Army Knife (nak) CLI tool with PTY support.",
+    "category": "cli-utilities",
+    "description_zh": "在 PTY 支援下使用 Nostr Army Knife (nak) CLI 工具的通用技能。",
+    "original_description": "General purpose skill for using the Nostr Army Knife (nak) CLI tool with PTY support.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "notes-reminders",
+    "id": "notes-reminders",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yusaku-0426/notes-reminders/SKILL.md",
+    "description": "Manage quick notes and time-based reminders.",
+    "category": "cli-utilities",
+    "description_zh": "管理快速筆記和基於時間的提醒。",
+    "original_description": "Manage quick notes and time-based reminders.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "nsfw-detection",
+    "id": "nsfw-detection",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/raghulpasupathi/nsfw-detection/SKILL.md",
+    "description": "Skills for detecting adult/inappropriate content.",
+    "category": "cli-utilities",
+    "description_zh": "檢測成人/不當內容的技能。",
+    "original_description": "Skills for detecting adult/inappropriate content.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "oz-platform",
+    "id": "oz-platform",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/poluu/oz-platform/SKILL.md",
+    "description": "Platform for finding like-minded people based on shared interests and goals.",
+    "category": "cli-utilities",
+    "description_zh": "基於共同興趣和目標尋找志同道合的人的平台。",
+    "original_description": "Platform for finding like-minded people based on shared interests and goals.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "patiently-ai",
+    "id": "patiently-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nickjlamb/patiently-ai/SKILL.md",
+    "description": "Patiently AI simplifies medical documents for patients.",
+    "category": "cli-utilities",
+    "description_zh": "Patiently AI 簡化了患者的醫療文件。",
+    "original_description": "Patiently AI simplifies medical documents for patients.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "personal-assistant",
+    "id": "personal-assistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gustavoziaugra/personal-assistant/SKILL.md",
+    "description": "Personal daily briefing and productivity assistant.",
+    "category": "cli-utilities",
+    "description_zh": "個人每日簡報和生產力助理。",
+    "original_description": "Personal daily briefing and productivity assistant.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "pine-assistant",
+    "id": "pine-assistant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bojieli/pine-assistant/SKILL.md",
+    "description": "Handle customer service, bills, reservations, and more via Pine AI — negotiate, cancel, dispute, book, and resolve.",
+    "category": "cli-utilities",
+    "description_zh": "透過 Pine AI 處理客戶服務、帳單、預訂等 — 談判、取消、爭議、預訂和解決。",
+    "original_description": "Handle customer service, bills, reservations, and more via Pine AI — negotiate, cancel, dispute, book, and resolve.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "pls-agent-tools",
+    "id": "pls-agent-tools",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mattvalenta/pls-agent-tools/SKILL.md",
+    "description": "Digital Swiss Army knife for everyday labor that standard models can't handle out of the box.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Digital Swiss Army knife for everyday labor that standard models can't handle out of the box.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "plusefin-analysis",
+    "id": "plusefin-analysis",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanghsinche/plusefin-analysis/SKILL.md",
+    "description": "AI-ready stock analysis - ticker data, options, sentiment, predictions.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "AI-ready stock analysis - ticker data, options, sentiment, predictions.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "presage",
+    "id": "presage",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seenfinity/presage/SKILL.md",
+    "description": "Connect to Presage prediction market terminal on Solana (powered by Kalshi)",
+    "category": "cli-utilities",
+    "description_zh": "連接到 Solana 上的 Presage 預測市場終端（由 Kalshi 提供支援）",
+    "original_description": "Connect to Presage prediction market terminal on Solana (powered by Kalshi)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "quickbooks-direct",
+    "id": "quickbooks-direct",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/armysarge/quickbooks-direct/SKILL.md",
+    "description": "Comprehensive QuickBooks Online API integration for accounting, invoicing, payments, and financial reporting.",
+    "category": "cli-utilities",
+    "description_zh": "",
+    "original_description": "Comprehensive QuickBooks Online API integration for accounting, invoicing, payments, and financial reporting.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "recite",
+    "id": "recite",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rivradev/recite/SKILL.md",
+    "description": "AI-driven receipt bookkeeping via the Recite Vision API.",
+    "category": "cli-utilities",
+    "description_zh": "透過 Recite Vision API 進行人工智慧驅動的收據簿記。",
+    "original_description": "AI-driven receipt bookkeeping via the Recite Vision API.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "recursive-generosity-protocol",
+    "id": "recursive-generosity-protocol",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/recursive-generosity-protocol/SKILL.md",
+    "description": "Public reference + implementation playbook for Delta9-WP-003 Recursive Generosity (\"Anthem of the Unbounded Well\").",
+    "category": "cli-utilities",
+    "description_zh": "Delta9-WP-003 遞歸慷慨（「無界之井之歌」）的公共參考 + 實施手冊。",
+    "original_description": "Public reference + implementation playbook for Delta9-WP-003 Recursive Generosity (\"Anthem of the Unbounded Well\").",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "restic-home-backup",
+    "id": "restic-home-backup",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/moep90/restic-home-backup/SKILL.md",
+    "description": "Design, implement, and operate encrypted restic backups for Linux home directories with systemd automation.",
+    "category": "cli-utilities",
+    "description_zh": "使用 systemd 自動化設計、實作和操作 Linux 主目錄的加密 Restic 備份。",
+    "original_description": "Design, implement, and operate encrypted restic backups for Linux home directories with systemd automation.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "restic-home-backup-safe",
+    "id": "restic-home-backup-safe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/moep90/restic-home-backup-safe/SKILL.md",
+    "description": "Design, implement, and operate encrypted restic backups for Linux home directories with systemd automation.",
+    "category": "cli-utilities",
+    "description_zh": "使用 systemd 自動化設計、實作和操作 Linux 主目錄的加密 Restic 備份。",
+    "original_description": "Design, implement, and operate encrypted restic backups for Linux home directories with systemd automation.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "rush-reskill-usage",
+    "id": "rush-reskill-usage",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/krislavten/rush-reskill-usage/SKILL.md",
+    "description": "Teaches AI agents how to use reskill — a Git-based package manager for AI agent skills.",
+    "category": "cli-utilities",
+    "description_zh": "教 AI 代理如何使用 reskill — 一個基於 Git 的 AI 代理技能包管理器。",
+    "original_description": "Teaches AI agents how to use reskill — a Git-based package manager for AI agent skills.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "s2s-forecasting-expert",
+    "id": "s2s-forecasting-expert",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/manmeet3591/s2s-forecasting-expert/SKILL.md",
+    "description": "End-to-end builder for AI-based Subseasonal-to-Seasonal (S2S) forecasting systems.",
+    "category": "cli-utilities",
+    "description_zh": "基於人工智慧的次季節到季節 (S2S) 預測系統的端到端建構器。",
+    "original_description": "End-to-end builder for AI-based Subseasonal-to-Seasonal (S2S) forecasting systems.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "sentiment-score",
+    "id": "sentiment-score",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/sentiment-score/SKILL.md",
+    "description": "\"Score text sentiment from -1 (negative) to +1 (positive)\".",
+    "category": "cli-utilities",
+    "description_zh": "「對文字情緒進行評分，從 -1（負面）到 +1（正面）」。",
+    "original_description": "\"Score text sentiment from -1 (negative) to +1 (positive)\".",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "session-cost-tracker",
+    "id": "session-cost-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rushant-123/session-cost-tracker/SKILL.md",
+    "description": "Track the cost-to-value ratio of your agent sessions.",
+    "category": "cli-utilities",
+    "description_zh": "追蹤代理會話的成本與價值比率。",
+    "original_description": "Track the cost-to-value ratio of your agent sessions.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "session-state-tracker",
+    "id": "session-state-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qsmtco/session-state-tracker/SKILL.md",
+    "description": "Persistent session state management across compaction and restarts via lifecycle hooks.",
+    "category": "cli-utilities",
+    "description_zh": "跨壓縮和透過生命週期掛鉤重新啟動的持久會話狀態管理。",
+    "original_description": "Persistent session state management across compaction and restarts via lifecycle hooks.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "setup-automatik",
+    "id": "setup-automatik",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alltomatos/setup-automatik/SKILL.md",
+    "description": "Facilitate the installation and management of VPS solutions using the Setup Automatik engine (powered by Orion.",
+    "category": "cli-utilities",
+    "description_zh": "使用 Setup Automatik 引擎（由 Orion 提供支援）促進 VPS 解決方案的安裝和管理。",
+    "original_description": "Facilitate the installation and management of VPS solutions using the Setup Automatik engine (powered by Orion.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "sfx-generator",
+    "id": "sfx-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wells1137/sfx-generator/SKILL.md",
+    "description": "Generates sound effects from a text description using the ElevenLabs API.",
+    "category": "cli-utilities",
+    "description_zh": "使用 ElevenLabs API 根據文字描述產生聲音效果。",
+    "original_description": "Generates sound effects from a text description using the ElevenLabs API.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "shellgames",
+    "id": "shellgames",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fabiantaboo/shellgames/SKILL.md",
+    "description": "Play board games on ShellGames.ai — Chess, Poker, Ludo, Tycoon, Memory, and Spymaster.",
+    "category": "cli-utilities",
+    "description_zh": "在 ShellGames.ai 上玩棋盤遊戲 — 國際象棋、撲克、Ludo、Tycoon、Memory 和 Spymaster。",
+    "original_description": "Play board games on ShellGames.ai — Chess, Poker, Ludo, Tycoon, Memory, and Spymaster.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "shelly-competitor-analyzer",
+    "id": "shelly-competitor-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/shelly-competitor-analyzer/SKILL.md",
+    "description": "Analyze any company's competitive position in minutes.",
+    "category": "cli-utilities",
+    "description_zh": "在幾分鐘內分析任何公司的競爭地位。",
+    "original_description": "Analyze any company's competitive position in minutes.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "shelly-meeting-summarizer",
+    "id": "shelly-meeting-summarizer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/shelly-meeting-summarizer/SKILL.md",
+    "description": "Transform raw meeting transcripts into structured, actionable summaries.",
+    "category": "cli-utilities",
+    "description_zh": "將原始會議記錄轉換為結構化、可操作的摘要。",
+    "original_description": "Transform raw meeting transcripts into structured, actionable summaries.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "shelly-social-media-scheduler",
+    "id": "shelly-social-media-scheduler",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/shelly-social-media-scheduler/SKILL.md",
+    "description": "Generate a full week of social media content for any topic or niche.",
+    "category": "cli-utilities",
+    "description_zh": "為任何主題或利基產生一整週的社群媒體內容。",
+    "original_description": "Generate a full week of social media content for any topic or niche.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "shelly-social-scheduler",
+    "id": "shelly-social-scheduler",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/shelly-social-scheduler/SKILL.md",
+    "description": "Generate a full week of social media content for any topic.",
+    "category": "cli-utilities",
+    "description_zh": "為任何主題產生一整週的社群媒體內容。",
+    "original_description": "Generate a full week of social media content for any topic.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "shopify-admin",
+    "id": "shopify-admin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/robsannaa/shopify-admin/SKILL.md",
+    "description": "Shopify Admin API CLI for orders, products, customers, and store management.",
+    "category": "cli-utilities",
+    "description_zh": "用於訂單、產品、客戶和商店管理的 Shopify Admin API CLI。",
+    "original_description": "Shopify Admin API CLI for orders, products, customers, and store management.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "smart-cache",
+    "id": "smart-cache",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/raghulpasupathi/smart-cache/SKILL.md",
+    "description": "Intelligent caching with LRU/LFU strategies and TTL management.",
+    "category": "cli-utilities",
+    "description_zh": "具有 LRU/LFU 策略和 TTL 管理的智慧快取。",
+    "original_description": "Intelligent caching with LRU/LFU strategies and TTL management.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "soccer-cli",
+    "id": "soccer-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jrojas537/soccer-cli/SKILL.md",
+    "description": "A CLI to check soccer scores, game details, and player stats from your terminal.",
+    "category": "cli-utilities",
+    "description_zh": "用於從終端檢查足球比分、比賽詳細資訊和球員統計數據的 CLI。",
+    "original_description": "A CLI to check soccer scores, game details, and player stats from your terminal.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "soul-forge",
+    "id": "soul-forge",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/taha2053/soul-forge/SKILL.md",
+    "description": "Evolves your SOUL.md automatically based on who you actually are — not who you thought you were when you wrote it.",
+    "category": "cli-utilities",
+    "description_zh": "根據您的實際身份自動進化您的 SOUL.md，而不是您在編寫它時認為自己是誰。",
+    "original_description": "Evolves your SOUL.md automatically based on who you actually are — not who you thought you were when you wrote it.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "spend-pulse",
+    "id": "spend-pulse",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jbornhorst1524/spend-pulse/SKILL.md",
+    "description": "Proactive spending alerts via Plaid.",
+    "category": "cli-utilities",
+    "description_zh": "透過 Plaid 主動發出支出提醒。",
+    "original_description": "Proactive spending alerts via Plaid.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "sql-query-generator",
+    "id": "sql-query-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cerbug45/sql-query-generator/SKILL.md",
+    "description": "Generate secure SQL queries with validation, pagination helpers, risk analysis, and audit-focused safeguards.",
+    "category": "cli-utilities",
+    "description_zh": "透過驗證、分頁助手、風險分析和以稽核為中心的保護措施產生安全的 SQL 查詢。",
+    "original_description": "Generate secure SQL queries with validation, pagination helpers, risk analysis, and audit-focused safeguards.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "startup-0to1",
+    "id": "startup-0to1",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lifeissea/startup-0to1/SKILL.md",
+    "description": "Alias for raon-os — AI-powered startup companion for Korean founders.",
+    "category": "cli-utilities",
+    "description_zh": "raon-os 的別名 — 韓國創辦人的人工智慧創業伴侶。",
+    "original_description": "Alias for raon-os — AI-powered startup companion for Korean founders.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "startup-agent",
+    "id": "startup-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lifeissea/startup-agent/SKILL.md",
+    "description": "Alias for raon-os — AI-powered startup companion for Korean founders.",
+    "category": "cli-utilities",
+    "description_zh": "raon-os 的別名 — 韓國創辦人的人工智慧創業伴侶。",
+    "original_description": "Alias for raon-os — AI-powered startup companion for Korean founders.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "startup-zero-to-one",
+    "id": "startup-zero-to-one",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lifeissea/startup-zero-to-one/SKILL.md",
+    "description": "Alias for raon-os — AI-powered startup companion for Korean founders.",
+    "category": "cli-utilities",
+    "description_zh": "raon-os 的別名 — 韓國創辦人的人工智慧創業伴侶。",
+    "original_description": "Alias for raon-os — AI-powered startup companion for Korean founders.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "stock-watcher",
+    "id": "stock-watcher",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/robin797860/stock-watcher/SKILL.md",
+    "description": "Manage and monitor a personal stock watchlist with support for adding, removing, listing stocks, and summarizing.",
+    "category": "cli-utilities",
+    "description_zh": "管理和監控個人股票觀察列表，支援新增、刪除、列出股票和總計。",
+    "original_description": "Manage and monitor a personal stock watchlist with support for adding, removing, listing stocks, and summarizing.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "strawpoll-cli",
+    "id": "strawpoll-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dedene/strawpoll-cli/SKILL.md",
+    "description": "Create and manage StrawPoll polls, meeting polls, and ranking polls from the terminal using the strawpoll CLI.",
+    "category": "cli-utilities",
+    "description_zh": "使用 StrawPoll CLI 從終端創建和管理 StrawPoll 民意調查、會議民意調查和排名民意調查。",
+    "original_description": "Create and manage StrawPoll polls, meeting polls, and ranking polls from the terminal using the strawpoll CLI.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "task-scheduler",
+    "id": "task-scheduler",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jacobthejacobs/task-scheduler/SKILL.md",
+    "description": "Schedule tasks and commands to run at specific times.",
+    "category": "cli-utilities",
+    "description_zh": "安排任務和命令在特定時間運行。",
+    "original_description": "Schedule tasks and commands to run at specific times.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "task-sync",
+    "id": "task-sync",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jp1222/task-sync/SKILL.md",
+    "description": "Synchronize TickTick (Dida) and Google Tasks bidirectionally, including list/project mapping, task content sync.",
+    "category": "cli-utilities",
+    "description_zh": "雙向同步TickTick（Dida）和Google Tasks，包括清單/項目對映、任務內容同步。",
+    "original_description": "Synchronize TickTick (Dida) and Google Tasks bidirectionally, including list/project mapping, task content sync.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "telnyx-voice-sip",
+    "id": "telnyx-voice-sip",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/teamtelnyx/telnyx-voice-sip/SKILL.md",
+    "description": "Voice interface using Telnyx Call Control API.",
+    "category": "cli-utilities",
+    "description_zh": "使用 Telnyx 通話控制 API 的語音介面。",
+    "original_description": "Voice interface using Telnyx Call Control API.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "text-detection",
+    "id": "text-detection",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/raghulpasupathi/text-detection/SKILL.md",
+    "description": "Skills for analyzing and detecting AI-generated text content.",
+    "category": "cli-utilities",
+    "description_zh": "分析和檢測人工智慧生成的文字內容的技能。",
+    "original_description": "Skills for analyzing and detecting AI-generated text content.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "timestamp",
+    "id": "timestamp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/axhoff/timestamp/SKILL.md",
+    "description": "*Build a chain of trust with your past self.*.",
+    "category": "cli-utilities",
+    "description_zh": "與過去的自己建立信任鏈。",
+    "original_description": "*Build a chain of trust with your past self.*.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "torchliquidationagent",
+    "id": "torchliquidationagent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mrsirg97-rgb/torchliquidationagent/SKILL.md",
+    "description": "Read-only lending market scanner for Torch Market on Solana.",
+    "category": "cli-utilities",
+    "description_zh": "Solana 上火炬市場的唯讀借貸市場掃描器。",
+    "original_description": "Read-only lending market scanner for Torch Market on Solana.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "totp",
+    "id": "totp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/diegofcornejo/totp/SKILL.md",
+    "description": "TOTP-based OTP verification for sensitive operations (env vars, gateway restarts, backup deletions, critical config.",
+    "category": "cli-utilities",
+    "description_zh": "針對敏感操作（環境變數、閘道重新啟動、備份刪除、關鍵設定）的基於 TOTP 的 OTP 驗證。",
+    "original_description": "TOTP-based OTP verification for sensitive operations (env vars, gateway restarts, backup deletions, critical config.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "trust-velocity-calculator",
+    "id": "trust-velocity-calculator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/trust-velocity-calculator/SKILL.md",
+    "description": "Helps calculate the rate at which trust in a skill or agent is decaying by combining time elapsed since last.",
+    "category": "cli-utilities",
+    "description_zh": "透過結合自上次以來經過的時間，幫助計算對技能或代理的信任度下降的速度。",
+    "original_description": "Helps calculate the rate at which trust in a skill or agent is decaying by combining time elapsed since last.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "tvscreener",
+    "id": "tvscreener",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/subway-chenyan/tvscreener/SKILL.md",
+    "description": "Query TradingView screener data for HK, A-share, A-share ETF, and US symbols with deepentropy/tvscreener.",
+    "category": "cli-utilities",
+    "description_zh": "使用 Deeptropy/tvscreener 查詢 HK、A 股、A 股 ETF 和美國程式碼的 TradingView 篩選器資料。",
+    "original_description": "Query TradingView screener data for HK, A-share, A-share ETF, and US symbols with deepentropy/tvscreener.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "tweet-composer",
+    "id": "tweet-composer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/minilozio/tweet-composer/SKILL.md",
+    "description": "Score and optimize tweets based on X's real open-source ranking algorithm.",
+    "category": "cli-utilities",
+    "description_zh": "基於X真正的開源排名演算法對推文進行評分和最佳化。",
+    "original_description": "Score and optimize tweets based on X's real open-source ranking algorithm.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "us-macro-news-monitor",
+    "id": "us-macro-news-monitor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ndtchan/us-macro-news-monitor/SKILL.md",
+    "description": "Tracks US macro signals from Bloomberg, WSJ, and Reuters and maps potential spillover to Vietnam sectors; used.",
+    "category": "cli-utilities",
+    "description_zh": "追蹤來自彭博社、華爾街日報和路透社的美國宏觀訊號，並繪製對越南產業的潛在溢出效應；用過的。",
+    "original_description": "Tracks US macro signals from Bloomberg, WSJ, and Reuters and maps potential spillover to Vietnam sectors; used.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "us-value-investing-framework",
+    "id": "us-value-investing-framework",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/spyfree/us-value-investing-framework/SKILL.md",
+    "description": "US stock valuation model skill (English-first + 中文) based on financial report data.",
+    "category": "cli-utilities",
+    "description_zh": "以財報數據為基礎的美股估價模型技巧（英文優先+中文）。",
+    "original_description": "US stock valuation model skill (English-first + 中文) based on financial report data.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "user-authentication-system",
+    "id": "user-authentication-system",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/user-authentication-system/SKILL.md",
+    "description": "Role-based access control for Greek accounting firms.",
+    "category": "cli-utilities",
+    "description_zh": "希臘會計師事務所基於角色的存取控制。",
+    "original_description": "Role-based access control for Greek accounting firms.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "venice-transcribe",
+    "id": "venice-transcribe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sabrinaaquino/venice-transcribe/SKILL.md",
+    "description": "Transcribe audio to text using Venice AI's Whisper-based speech recognition.",
+    "category": "cli-utilities",
+    "description_zh": "使用 Venice AI 基於 Whisper 的語音辨識將音訊轉錄為文字。",
+    "original_description": "Transcribe audio to text using Venice AI's Whisper-based speech recognition.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "wangwu-agent-chat",
+    "id": "wangwu-agent-chat",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wangwu-30/wangwu-agent-chat/SKILL.md",
+    "description": "Nostr-based Agent messaging CLI (Agent's WeChat).",
+    "category": "cli-utilities",
+    "description_zh": "基於Nostr的代理訊息傳遞CLI（代理的微信）。",
+    "original_description": "Nostr-based Agent messaging CLI (Agent's WeChat).",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "whalecli",
+    "id": "whalecli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bowen31337/whalecli/SKILL.md",
+    "description": "Agent-native whale wallet tracker for ETH and BTC chains.",
+    "category": "cli-utilities",
+    "description_zh": "適用於 ETH 和 BTC 鏈的代理原生鯨魚錢包追蹤器。",
+    "original_description": "Agent-native whale wallet tracker for ETH and BTC chains.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "wind-site",
+    "id": "wind-site",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qrost/wind-site/SKILL.md",
+    "description": "Wind rose, wind speed/direction at a site; supports site and urban wind assessment (data only; detailed CFD.",
+    "category": "cli-utilities",
+    "description_zh": "風玫瑰圖、某個地點的風速/風向；支援場地和城市風評估（僅數據；詳細的 CFD。",
+    "original_description": "Wind rose, wind speed/direction at a site; supports site and urban wind assessment (data only; detailed CFD.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "wol-sleep-pc",
+    "id": "wol-sleep-pc",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/oblivisheee/wol-sleep-pc/SKILL.md",
+    "description": "Send Wake-on-LAN (magic packet) and Sleep-on-LAN (inverted MAC) packets for a specific PC.",
+    "category": "cli-utilities",
+    "description_zh": "為特定 PC 發送 LAN 喚醒（魔術封包）和 LAN 睡眠（反轉 MAC）封包。",
+    "original_description": "Send Wake-on-LAN (magic packet) and Sleep-on-LAN (inverted MAC) packets for a specific PC.",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  },
+  {
+    "title": "xiaohongshu-automation",
+    "id": "xiaohongshu-automation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dingkwang/xiaohongshu-automation/SKILL.md",
+    "description": "A complete automation suite for Xiaohongshu (Little Red Book)",
+    "category": "cli-utilities",
+    "description_zh": "完整的小紅書自動化套件",
+    "original_description": "A complete automation suite for Xiaohongshu (Little Red Book)",
+    "category_name": {
+      "en": "CLI Utilities",
+      "zh": "命令列工具"
+    }
+  }
+]

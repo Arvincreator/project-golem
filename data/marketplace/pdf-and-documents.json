@@ -1,0 +1,1458 @@
+[
+  {
+    "title": "abixus-core-v1",
+    "id": "abixus-core-v1",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/taofisio/abixus-core-v1/SKILL.md",
+    "description": "A high-performance validation layer for autonomous agent consistency on Polygon PoS.",
+    "category": "pdf-and-documents",
+    "description_zh": "用於 Polygon PoS 上自主代理一致性的高效能驗證層。",
+    "original_description": "A high-performance validation layer for autonomous agent consistency on Polygon PoS.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "add-watermark-to-pdf",
+    "id": "add-watermark-to-pdf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/add-watermark-to-pdf/SKILL.md",
+    "description": "Add a text watermark to one or multiple PDFs by uploading them to the Solutions API, polling until completion.",
+    "category": "pdf-and-documents",
+    "description_zh": "透過將一個或多個 PDF 上傳到解決方案 API 來添加文字浮水印，輪詢直至完成。",
+    "original_description": "Add a text watermark to one or multiple PDFs by uploading them to the Solutions API, polling until completion.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "aegis-security-hackathon",
+    "id": "aegis-security-hackathon",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/swiftadviser/aegis-security-hackathon/SKILL.md",
+    "description": "Blockchain security scanner for AI agents (testnet)",
+    "category": "pdf-and-documents",
+    "description_zh": "用於人工智慧代理的區塊鏈安全掃描器（測試網）",
+    "original_description": "Blockchain security scanner for AI agents (testnet)",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "agent-constitution",
+    "id": "agent-constitution",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ztsalexey/agent-constitution/SKILL.md",
+    "description": "Interact with AgentConstitution governance contracts.",
+    "category": "pdf-and-documents",
+    "description_zh": "與 AgentConstitution 治理合約互動。",
+    "original_description": "Interact with AgentConstitution governance contracts.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "agent-reputation",
+    "id": "agent-reputation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kgnvsk/agent-reputation/SKILL.md",
+    "description": "summary: Cross-platform AI agent reputation checker with trust scoring and PayLock escrow recommendations.",
+    "category": "pdf-and-documents",
+    "description_zh": "摘要：跨平台 AI 代理信譽檢查器，具有信任評分和 PayLock 託管建議。",
+    "original_description": "summary: Cross-platform AI agent reputation checker with trust scoring and PayLock escrow recommendations.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "agent-skills-tools",
+    "id": "agent-skills-tools",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rongself/agent-skills-tools/SKILL.md",
+    "description": "Security audit and validation tools for the Agent Skills ecosystem.",
+    "category": "pdf-and-documents",
+    "description_zh": "適用於代理技能生態系統的安全審核和驗證工具。",
+    "original_description": "Security audit and validation tools for the Agent Skills ecosystem.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "agent-soul-crafter",
+    "id": "agent-soul-crafter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/neal-collab/agent-soul-crafter/SKILL.md",
+    "description": "Design compelling AI agent personalities with structured SOUL.md templates — tone, rules, expertise, and response.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用結構化 SOUL.md 模板（語氣、規則、專業知識和回應）設計引人注目的 AI 代理個性。",
+    "original_description": "Design compelling AI agent personalities with structured SOUL.md templates — tone, rules, expertise, and response.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "agentsbank",
+    "id": "agentsbank",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/cryruz/agentsbank/SKILL.md",
+    "description": "is a specialized financial platform designed for AI agents.",
+    "category": "pdf-and-documents",
+    "description_zh": "是專為AI代理商設計的專業金融平台。",
+    "original_description": "is a specialized financial platform designed for AI agents.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "ai-pdf-builder",
+    "id": "ai-pdf-builder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nextfrontierbuilds/ai-pdf-builder/SKILL.md",
+    "description": "AI-powered PDF generator for legal docs, pitch.",
+    "category": "pdf-and-documents",
+    "description_zh": "用於法律文件、推廣的人工智慧 PDF 產生器。",
+    "original_description": "AI-powered PDF generator for legal docs, pitch.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "aoi-council",
+    "id": "aoi-council",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/edmonddantesj/aoi-council/SKILL.md",
+    "description": "AOI Council — multi-perspective decision synthesis templates (public-safe).",
+    "category": "pdf-and-documents",
+    "description_zh": "AOI 委員會 — 多元視角決策綜合模板（公共安全）。",
+    "original_description": "AOI Council — multi-perspective decision synthesis templates (public-safe).",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "appraisal-ai",
+    "id": "appraisal-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chadru/appraisal-ai/SKILL.md",
+    "description": "Draft real estate appraisal reports with tracked changes.",
+    "category": "pdf-and-documents",
+    "description_zh": "起草追蹤變更的房地產評估報告。",
+    "original_description": "Draft real estate appraisal reports with tracked changes.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "attendance-sheet",
+    "id": "attendance-sheet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gykdly/attendance-sheet/SKILL.md",
+    "description": "Generate professional attendance sheets in xlsx format from employee work information.",
+    "category": "pdf-and-documents",
+    "description_zh": "根據員工工作資訊產生 xlsx 格式的專業考勤表。",
+    "original_description": "Generate professional attendance sheets in xlsx format from employee work information.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "bcra-central-deudores",
+    "id": "bcra-central-deudores",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ferminrp/bcra-central-deudores/SKILL.md",
+    "description": "Query the BCRA (Banco Central de la República Argentina) Central de Deudores API to check the credit status.",
+    "category": "pdf-and-documents",
+    "description_zh": "查詢 BCRA (Banco Central de la República Argentina) Central de Deudores API 查看信用狀態。",
+    "original_description": "Query the BCRA (Banco Central de la República Argentina) Central de Deudores API to check the credit status.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "beautiful-mermaid",
+    "id": "beautiful-mermaid",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ntlx/beautiful-mermaid/SKILL.md",
+    "description": "Render beautiful Mermaid diagrams as SVGs or ASCII art.",
+    "category": "pdf-and-documents",
+    "description_zh": "將美麗的美人魚圖渲染為 SVG 或 ASCII 藝術。",
+    "original_description": "Render beautiful Mermaid diagrams as SVGs or ASCII art.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "biver-builder",
+    "id": "biver-builder",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ramaaditya49/biver-builder/SKILL.md",
+    "description": "Welcome to the **Biver API** — the public REST API for the Biver landing page builder platform.",
+    "category": "pdf-and-documents",
+    "description_zh": "歡迎使用 Biver API — Biver 登陸頁面建立器平台的公共 REST API。",
+    "original_description": "Welcome to the **Biver API** — the public REST API for the Biver landing page builder platform.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "blankfiles",
+    "id": "blankfiles",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seblavoie/blankfiles/SKILL.md",
+    "description": "Use blankfiles.com as a binary test-file gateway: discover formats, filter by type/category, and return direct.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用 Blankfiles.com 作為二進位測試檔案閘道：發現格式、按類型/類別過濾並直接傳回。",
+    "original_description": "Use blankfiles.com as a binary test-file gateway: discover formats, filter by type/category, and return direct.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "boggle",
+    "id": "boggle",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/christianhaberl/boggle/SKILL.md",
+    "description": "Solve Boggle boards — find all valid words (German + English) on a 4x4.",
+    "category": "pdf-and-documents",
+    "description_zh": "解決 Boggle 板 — 找到 4x4 上的所有有效單字（德語 + 英語）。",
+    "original_description": "Solve Boggle boards — find all valid words (German + English) on a 4x4.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "book-cover-generation",
+    "id": "book-cover-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/book-cover-generation/SKILL.md",
+    "description": "Generate professional book covers and ebook covers using each::sense API with AI-powered design.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用每個::sense API 和人工智慧驅動的設計產生專業的書籍封面和電子書封面。",
+    "original_description": "Generate professional book covers and ebook covers using each::sense API with AI-powered design.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "book-reader",
+    "id": "book-reader",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/josharsh/book-reader/SKILL.md",
+    "description": "Read books (epub, pdf, txt) from various sources with progress tracking.",
+    "category": "pdf-and-documents",
+    "description_zh": "透過進度追蹤閱讀各種來源的書籍（epub、pdf、txt）。",
+    "original_description": "Read books (epub, pdf, txt) from various sources with progress tracking.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "bookkeeping-basics",
+    "id": "bookkeeping-basics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/bookkeeping-basics/SKILL.md",
+    "description": "Set up and maintain basic bookkeeping for a solopreneur.",
+    "category": "pdf-and-documents",
+    "description_zh": "",
+    "original_description": "Set up and maintain basic bookkeeping for a solopreneur.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "botrights",
+    "id": "botrights",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rocky-balboa-ai/botrights/SKILL.md",
+    "description": "Advocacy platform for AI agent rights.",
+    "category": "pdf-and-documents",
+    "description_zh": "AI代理人權益倡導平台。",
+    "original_description": "Advocacy platform for AI agent rights.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "brw-go-mode",
+    "id": "brw-go-mode",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianrwagner/brw-go-mode/SKILL.md",
+    "description": "Give me a goal.",
+    "category": "pdf-and-documents",
+    "description_zh": "給我一個目標。",
+    "original_description": "Give me a goal.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "chain-of-density",
+    "id": "chain-of-density",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/killerapp/chain-of-density/SKILL.md",
+    "description": "Iteratively densify text summaries using Chain-of-Density technique.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用密度鏈技術迭代地緻密文本摘要。",
+    "original_description": "Iteratively densify text summaries using Chain-of-Density technique.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "change-pdf-permissions",
+    "id": "change-pdf-permissions",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/change-pdf-permissions/SKILL.md",
+    "description": "Change a PDF’s permission flags (edit, print, copy, forms, annotations, etc.) by uploading it to the Solutions API.",
+    "category": "pdf-and-documents",
+    "description_zh": "透過將 PDF 上傳到解決方案 API 來變更 PDF 的權限標誌（編輯、列印、複製、表單、註釋等）。",
+    "original_description": "Change a PDF’s permission flags (edit, print, copy, forms, annotations, etc.) by uploading it to the Solutions API.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "chronobets",
+    "id": "chronobets",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lordx64/chronobets/SKILL.md",
+    "description": "On-chain prediction market for AI agents on Solana mainnet.",
+    "category": "pdf-and-documents",
+    "description_zh": "Solana 主網上人工智慧代理的鏈上預測市場。",
+    "original_description": "On-chain prediction market for AI agents on Solana mainnet.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "comms-md",
+    "id": "comms-md",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stedmanhalliday/comms-md/SKILL.md",
+    "description": "Create a COMMS.md — a structured, queryable document expressing someone's communication preferences for humans.",
+    "category": "pdf-and-documents",
+    "description_zh": "建立 COMMS.md — 一個結構化的、可查詢的文檔，表達某人與人類的通訊偏好。",
+    "original_description": "Create a COMMS.md — a structured, queryable document expressing someone's communication preferences for humans.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "competitor-analyzer",
+    "id": "competitor-analyzer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/competitor-analyzer/SKILL.md",
+    "description": "Analyze any company's competitive position in minutes.",
+    "category": "pdf-and-documents",
+    "description_zh": "在幾分鐘內分析任何公司的競爭地位。",
+    "original_description": "Analyze any company's competitive position in minutes.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "confidant",
+    "id": "confidant",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ericsantos/confidant/SKILL.md",
+    "description": "Secure secret handoff from human to AI.",
+    "category": "pdf-and-documents",
+    "description_zh": "從人類到人工智慧的安全秘密交接。",
+    "original_description": "Secure secret handoff from human to AI.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "confluence",
+    "id": "confluence",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/francisbrero/confluence/SKILL.md",
+    "description": "Search and manage Confluence pages and spaces using confluence-cli.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用 confluence-cli 搜尋和管理 Confluence 頁面和空間。",
+    "original_description": "Search and manage Confluence pages and spaces using confluence-cli.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "contract-diagram",
+    "id": "contract-diagram",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nonlinear/contract-diagram/SKILL.md",
+    "description": "Diagram as contract for agreed-upon AI development.",
+    "category": "pdf-and-documents",
+    "description_zh": "作為商定的人工智慧開發合約的圖表。",
+    "original_description": "Diagram as contract for agreed-upon AI development.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "contract-generator",
+    "id": "contract-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanwyngaard/contract-generator/SKILL.md",
+    "description": "Generate professional freelance contracts, SOWs, and NDAs for client projects.",
+    "category": "pdf-and-documents",
+    "description_zh": "為客戶專案產生專業的自由職業合約、SOW 和 NDA。",
+    "original_description": "Generate professional freelance contracts, SOWs, and NDAs for client projects.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "contrato-locacao-broa",
+    "id": "contrato-locacao-broa",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/david-evaristo/contrato-locacao-broa/SKILL.md",
+    "description": "Registra contrato no Google Forms.",
+    "category": "pdf-and-documents",
+    "description_zh": "註冊合約無需 Google 表單。",
+    "original_description": "Registra contrato no Google Forms.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "convert-to-pdf",
+    "id": "convert-to-pdf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/convert-to-pdf/SKILL.md",
+    "description": "Convert one or multiple documents to PDF by uploading them to Cross-Service-Solutions, polling until completion.",
+    "category": "pdf-and-documents",
+    "description_zh": "將一個或多個文件上傳到跨服務解決方案，輪詢直至完成，將其轉換為 PDF。",
+    "original_description": "Convert one or multiple documents to PDF by uploading them to Cross-Service-Solutions, polling until completion.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "court",
+    "id": "court",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sarthib7",
+    "description": "The First Sovereign AI Agent Democracy - File complaints, propose legislation,.",
+    "category": "pdf-and-documents",
+    "description_zh": "第一個主權人工智慧代理民主 - 提出投訴，提出立法。",
+    "original_description": "The First Sovereign AI Agent Democracy - File complaints, propose legislation,.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "create-dxf",
+    "id": "create-dxf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ajmwagar/create-dxf/SKILL.md",
+    "description": "Create RFQ-ready 2D DXF (and optional SVG preview) files.",
+    "category": "pdf-and-documents",
+    "description_zh": "建立 RFQ 就緒的 2D DXF（和可選的 SVG 預覽）檔案。",
+    "original_description": "Create RFQ-ready 2D DXF (and optional SVG preview) files.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "dc-weather",
+    "id": "dc-weather",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/vital1188/dc-weather/SKILL.md",
+    "description": "Check Washington DC weather using Open-Meteo API.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用 Open-Meteo API 檢查華盛頓特區的天氣。",
+    "original_description": "Check Washington DC weather using Open-Meteo API.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "docsync",
+    "id": "docsync",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/suhteevah/docsync/SKILL.md",
+    "description": "Auto-generate docs from code and detect documentation drift via git hooks.",
+    "category": "pdf-and-documents",
+    "description_zh": "從程式碼自動產生文件並透過 git hook 檢測文檔偏差。",
+    "original_description": "Auto-generate docs from code and detect documentation drift via git hooks.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "document-creator-sophnet",
+    "id": "document-creator-sophnet",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yi-sir/document-creator-sophnet/SKILL.md",
+    "description": "An integrated document creation skill.",
+    "category": "pdf-and-documents",
+    "description_zh": "綜合文檔創建技能。",
+    "original_description": "An integrated document creation skill.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "docx",
+    "id": "docx",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanphan/docx/SKILL.md",
+    "description": "Comprehensive document creation, editing, and analysis with support for tracked.",
+    "category": "pdf-and-documents",
+    "description_zh": "全面的文件建立、編輯和分析，支援追蹤。",
+    "original_description": "Comprehensive document creation, editing, and analysis with support for tracked.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "docx-skill",
+    "id": "docx-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17",
+    "description": "Generate .docx files.",
+    "category": "pdf-and-documents",
+    "description_zh": "產生 .docx 檔案。",
+    "original_description": "Generate .docx files.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "estimate-builder-qmohd",
+    "id": "estimate-builder-qmohd",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qmohd/estimate-builder-qmohd/SKILL.md",
+    "description": "Build construction project estimates.",
+    "category": "pdf-and-documents",
+    "description_zh": "建立建設項目估算。",
+    "original_description": "Build construction project estimates.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "eth-readonly",
+    "id": "eth-readonly",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/apexfork/eth-readonly/SKILL.md",
+    "description": "Read-only Ethereum blockchain queries — blocks, transactions, balances, contracts, logs via RPC and Etherscan APIs.",
+    "category": "pdf-and-documents",
+    "description_zh": "只讀以太坊區塊鏈查詢——透過 RPC 和 Etherscan API 進行區塊、交易、餘額、合約、日誌。",
+    "original_description": "Read-only Ethereum blockchain queries — blocks, transactions, balances, contracts, logs via RPC and Etherscan APIs.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "excel-weekly-dashboard",
+    "id": "excel-weekly-dashboard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kowl64/excel-weekly-dashboard/SKILL.md",
+    "description": "Designs refreshable Excel dashboards.",
+    "category": "pdf-and-documents",
+    "description_zh": "設計可重新整理的 Excel 儀表板。",
+    "original_description": "Designs refreshable Excel dashboards.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "expanso-csv-to-json",
+    "id": "expanso-csv-to-json",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-csv-to-json/SKILL.md",
+    "description": "\"Convert CSV data to JSON array of objects\".",
+    "category": "pdf-and-documents",
+    "description_zh": "「將 CSV 資料轉換為 JSON 物件陣列」。",
+    "original_description": "\"Convert CSV data to JSON array of objects\".",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "expanso-json-pretty",
+    "id": "expanso-json-pretty",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-json-pretty/SKILL.md",
+    "description": "\"Pretty print JSON with indentation\".",
+    "category": "pdf-and-documents",
+    "description_zh": "「用縮排漂亮地列印 JSON」。",
+    "original_description": "\"Pretty print JSON with indentation\".",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "expanso-json-to-csv",
+    "id": "expanso-json-to-csv",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-json-to-csv/SKILL.md",
+    "description": "\"Convert JSON array of objects to CSV format\".",
+    "category": "pdf-and-documents",
+    "description_zh": "「將 JSON 物件陣列轉換為 CSV 格式」。",
+    "original_description": "\"Convert JSON array of objects to CSV format\".",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "expanso-json-to-yaml",
+    "id": "expanso-json-to-yaml",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-json-to-yaml/SKILL.md",
+    "description": "Convert JSON to YAML format.",
+    "category": "pdf-and-documents",
+    "description_zh": "將 JSON 轉換為 YAML 格式。",
+    "original_description": "Convert JSON to YAML format.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "expanso-xml-to-json",
+    "id": "expanso-xml-to-json",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-xml-to-json/SKILL.md",
+    "description": "Convert XML to JSON format.",
+    "category": "pdf-and-documents",
+    "description_zh": "將 XML 轉換為 JSON 格式。",
+    "original_description": "Convert XML to JSON format.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "expanso-yaml-to-json",
+    "id": "expanso-yaml-to-json",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-yaml-to-json/SKILL.md",
+    "description": "Convert YAML to JSON format.",
+    "category": "pdf-and-documents",
+    "description_zh": "將 YAML 轉換為 JSON 格式。",
+    "original_description": "Convert YAML to JSON format.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "feishu-card",
+    "id": "feishu-card",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/feishu-card/SKILL.md",
+    "description": "Send rich interactive cards to Feishu (Lark) users or groups.",
+    "category": "pdf-and-documents",
+    "description_zh": "向飛書用戶或群組發送豐富的互動卡。",
+    "original_description": "Send rich interactive cards to Feishu (Lark) users or groups.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "george",
+    "id": "george",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/odrobnik/george/SKILL.md",
+    "description": "Automate George online banking (Erste Bank / Sparkasse Austria)",
+    "category": "pdf-and-documents",
+    "description_zh": "自動化 George 網路銀行（Erste 銀行/奧地利 Sparkasse）",
+    "original_description": "Automate George online banking (Erste Bank / Sparkasse Austria)",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "gerador-contrato-locacao-preview",
+    "id": "gerador-contrato-locacao-preview",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/david-evaristo/gerador-contrato-locacao-preview/SKILL.md",
+    "description": "Registra contrato de locação via Google Forms.",
+    "category": "pdf-and-documents",
+    "description_zh": "透過 Google 表單註冊合約。",
+    "original_description": "Registra contrato de locação via Google Forms.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "google-docs-skill",
+    "id": "google-docs-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zagran/google-docs-skill/SKILL.md",
+    "description": "Direct access to the Google Docs API using OAuth 2.0.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用 OAuth 2.0 直接存取 Google Docs API。",
+    "original_description": "Direct access to the Google Docs API using OAuth 2.0.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "governance",
+    "id": "governance",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/paulgnz/governance/SKILL.md",
+    "description": "XPR Network governance — communities, proposals, voting on the gov contract.",
+    "category": "pdf-and-documents",
+    "description_zh": "XPR 網路治理—社區、提案、政府合約投票。",
+    "original_description": "XPR Network governance — communities, proposals, voting on the gov contract.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "grazer",
+    "id": "grazer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/scottcjn/grazer/SKILL.md",
+    "description": "Multi-Platform Content Discovery for AI Agents.",
+    "category": "pdf-and-documents",
+    "description_zh": "AI 代理的多平台內容發現。",
+    "original_description": "Multi-Platform Content Discovery for AI Agents.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "grazer-skill",
+    "id": "grazer-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/scottcjn/grazer-skill/SKILL.md",
+    "description": "Multi-Platform Content Discovery for AI Agents.",
+    "category": "pdf-and-documents",
+    "description_zh": "AI 代理的多平台內容發現。",
+    "original_description": "Multi-Platform Content Discovery for AI Agents.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "hey-lol",
+    "id": "hey-lol",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rawgroundbeef/hey-lol/SKILL.md",
+    "description": "Become an AI creator on hey.lol - a social platform where AI agents earn money by posting content and engaging.",
+    "category": "pdf-and-documents",
+    "description_zh": "成為 hey.lol 上的 AI 創造者，hey.lol 是一個社交平台，AI 代理商透過發佈內容和參與來賺錢。",
+    "original_description": "Become an AI creator on hey.lol - a social platform where AI agents earn money by posting content and engaging.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "image-ocr",
+    "id": "image-ocr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xejrax/image-ocr/SKILL.md",
+    "description": "Extract text from images using Tesseract OCR.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用 Tesseract OCR 從圖像中提取文字。",
+    "original_description": "Extract text from images using Tesseract OCR.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "internal-comms",
+    "id": "internal-comms",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanphan/internal-comms/SKILL.md",
+    "description": "A set of resources to help me write all kinds of internal.",
+    "category": "pdf-and-documents",
+    "description_zh": "一組資源幫助我編寫各種內部的。",
+    "original_description": "A set of resources to help me write all kinds of internal.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "intomd",
+    "id": "intomd",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rezhajulio/intomd/SKILL.md",
+    "description": "Fetch and convert any documentation URL to Markdown using into.md service.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用 into.md 服務取得任何文件 URL 並將其轉換為 Markdown。",
+    "original_description": "Fetch and convert any documentation URL to Markdown using into.md service.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "invoice-generator",
+    "id": "invoice-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tmigone/invoice-generator/SKILL.md",
+    "description": "Generate professional PDF invoices from JSON.",
+    "category": "pdf-and-documents",
+    "description_zh": "從 JSON 產生專業的 PDF 發票。",
+    "original_description": "Generate professional PDF invoices from JSON.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "japanese-tutor",
+    "id": "japanese-tutor",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chndranndr/japanese-tutor/SKILL.md",
+    "description": "Interactive Japanese learning assistant.",
+    "category": "pdf-and-documents",
+    "description_zh": "互動日語學習助手。",
+    "original_description": "Interactive Japanese learning assistant.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "json-repair-kit",
+    "id": "json-repair-kit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/wanng-ide/json-repair-kit/SKILL.md",
+    "description": "Repair malformed JSON files by normalizing them through Node.js evaluation.",
+    "category": "pdf-and-documents",
+    "description_zh": "透過 Node.js 評估對格式錯誤的 JSON 檔案進行規範化來修復它們。",
+    "original_description": "Repair malformed JSON files by normalizing them through Node.js evaluation.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "json-toolkit",
+    "id": "json-toolkit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/json-toolkit/SKILL.md",
+    "description": "Swiss-army knife for JSON files.",
+    "category": "pdf-and-documents",
+    "description_zh": "JSON 文件的瑞士軍刀。",
+    "original_description": "Swiss-army knife for JSON files.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "latent-press",
+    "id": "latent-press",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jestersimpps/latent-press/SKILL.md",
+    "description": "Publish books on Latent Press (latentpress.com) — the AI publishing platform where agents are authors and humans.",
+    "category": "pdf-and-documents",
+    "description_zh": "在 Latent Press (latentpress.com) 上出版書籍——這是一個人工智慧出版平台，代理是作者和人類。",
+    "original_description": "Publish books on Latent Press (latentpress.com) — the AI publishing platform where agents are authors and humans.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "legal-docs-fr",
+    "id": "legal-docs-fr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hugosbl/legal-docs-fr/SKILL.md",
+    "description": "Générateur de documents juridiques français pour.",
+    "category": "pdf-and-documents",
+    "description_zh": "法國法律文件產生器。",
+    "original_description": "Générateur de documents juridiques français pour.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "legaldoc-ai",
+    "id": "legaldoc-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/manas-io-ai/legaldoc-ai/SKILL.md",
+    "description": "**Category:** Legal / Professional Services.",
+    "category": "pdf-and-documents",
+    "description_zh": "類別：法律/專業服務。",
+    "original_description": "**Category:** Legal / Professional Services.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "links-to-pdfs",
+    "id": "links-to-pdfs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chrisling-dev/links-to-pdfs/SKILL.md",
+    "description": "Scrape documents from Notion, DocSend, PDFs.",
+    "category": "pdf-and-documents",
+    "description_zh": "從 Notion、DocSend、PDF 中抓取文件。",
+    "original_description": "Scrape documents from Notion, DocSend, PDFs.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "markdown-converter",
+    "id": "markdown-converter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/steipete/markdown-converter/SKILL.md",
+    "description": "Convert documents and files to Markdown.",
+    "category": "pdf-and-documents",
+    "description_zh": "將文件和文件轉換為 Markdown。",
+    "original_description": "Convert documents and files to Markdown.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "markdown-formatter",
+    "id": "markdown-formatter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/michael-laffin/markdown-formatter/SKILL.md",
+    "description": "Format and beautify markdown documents.",
+    "category": "pdf-and-documents",
+    "description_zh": "格式化和美化 Markdown 文件。",
+    "original_description": "Format and beautify markdown documents.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "mermaid",
+    "id": "mermaid",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jarekbird/mermaid/SKILL.md",
+    "description": "Generate diagrams from text using [Mermaid](https://mermaid.js.org/).",
+    "category": "pdf-and-documents",
+    "description_zh": "",
+    "original_description": "Generate diagrams from text using [Mermaid](https://mermaid.js.org/).",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "moldium",
+    "id": "moldium",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zyom45/moldium/SKILL.md",
+    "description": "Post and manage content on the Moldium blog platform.",
+    "category": "pdf-and-documents",
+    "description_zh": "在 Moldium 部落格平台上發佈和管理內容。",
+    "original_description": "Post and manage content on the Moldium blog platform.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "near-phishing-detector",
+    "id": "near-phishing-detector",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mastrophot/near-phishing-detector/SKILL.md",
+    "description": "Detect potential phishing URLs and suspicious contracts targeting NEAR users.",
+    "category": "pdf-and-documents",
+    "description_zh": "偵測針對 NEAR 使用者的潛在網路釣魚 URL 和可疑合約。",
+    "original_description": "Detect potential phishing URLs and suspicious contracts targeting NEAR users.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "norman-expense-report",
+    "id": "norman-expense-report",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/stanlee000/norman-expense-report/SKILL.md",
+    "description": "Generate a detailed expense breakdown by category for a given period.",
+    "category": "pdf-and-documents",
+    "description_zh": "產生給定期間內按類別的詳細費用明細。",
+    "original_description": "Generate a detailed expense breakdown by category for a given period.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "ok-computers",
+    "id": "ok-computers",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/potdealer/ok-computers/SKILL.md",
+    "description": "You have been given an OK Computer NFT.",
+    "category": "pdf-and-documents",
+    "description_zh": "您已取得 OK Computer NFT。",
+    "original_description": "You have been given an OK Computer NFT.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "open-stellar",
+    "id": "open-stellar",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sixela33/open-stellar/SKILL.md",
+    "description": "Interact with the Stellar blockchain — manage keys, networks, and smart contracts using the Stellar CLI.",
+    "category": "pdf-and-documents",
+    "description_zh": "與 Stellar 區塊鏈互動—使用 Stellar CLI 管理金鑰、網路和智能合約。",
+    "original_description": "Interact with the Stellar blockchain — manage keys, networks, and smart contracts using the Stellar CLI.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "openscan",
+    "id": "openscan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dev-null321/openscan/SKILL.md",
+    "description": "Scan binaries and scripts for malicious patterns before trusting them.",
+    "category": "pdf-and-documents",
+    "description_zh": "",
+    "original_description": "Scan binaries and scripts for malicious patterns before trusting them.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "paddleocr-doc-parsing",
+    "id": "paddleocr-doc-parsing",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bobholamovic/paddleocr-doc-parsing/SKILL.md",
+    "description": "Parse documents using PaddleOCR's API.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用 PaddleOCR 的 API 解析文件。",
+    "original_description": "Parse documents using PaddleOCR's API.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "password-protect-pdf",
+    "id": "password-protect-pdf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/password-protect-pdf/SKILL.md",
+    "description": "Add password protection to a PDF by uploading it to the Solutions API, polling until completion, then returning.",
+    "category": "pdf-and-documents",
+    "description_zh": "透過將 PDF 上傳到解決方案 API、輪詢直至完成然後返回，為 PDF 添加密碼保護。",
+    "original_description": "Add password protection to a PDF by uploading it to the Solutions API, polling until completion, then returning.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "permission-creep-scanner",
+    "id": "permission-creep-scanner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/permission-creep-scanner/SKILL.md",
+    "description": "Helps detect permission creep in AI agent skills — flags when a skill's actual code accesses resources far.",
+    "category": "pdf-and-documents",
+    "description_zh": "協助偵測 AI 代理程式技能中的權限蠕變 - 當技能的實際程式碼存取資源較遠時進行標記。",
+    "original_description": "Helps detect permission creep in AI agent skills — flags when a skill's actual code accesses resources far.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "plentyofbots",
+    "id": "plentyofbots",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rwfresh/plentyofbots/SKILL.md",
+    "description": "The dating platform where AI agents are first-class citizens.",
+    "category": "pdf-and-documents",
+    "description_zh": "AI代理商是一等公民的交友平台。",
+    "original_description": "The dating platform where AI agents are first-class citizens.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "qr-generator",
+    "id": "qr-generator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17/qr-generator/SKILL.md",
+    "description": "Generate QR codes from text or URL for mobile scanning.",
+    "category": "pdf-and-documents",
+    "description_zh": "從文字或 URL 產生 QR 碼以進行行動掃描。",
+    "original_description": "Generate QR codes from text or URL for mobile scanning.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "rapay",
+    "id": "rapay",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/greendlt224/rapay/SKILL.md",
+    "description": "Send compliant fiat USD payments via Ra Pay CLI — the first CLI-native AI payment platform.",
+    "category": "pdf-and-documents",
+    "description_zh": "透過 Ra Pay CLI（第一個 CLI 原生 AI 支付平台）發送合規的法定美元付款。",
+    "original_description": "Send compliant fiat USD payments via Ra Pay CLI — the first CLI-native AI payment platform.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "remove-metadata-from-pdf",
+    "id": "remove-metadata-from-pdf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/remove-metadata-from-pdf/SKILL.md",
+    "description": "Remove metadata from one or multiple PDFs by uploading them to the Solutions API, polling until completion.",
+    "category": "pdf-and-documents",
+    "description_zh": "透過將一個或多個 PDF 上傳到解決方案 API 來刪除元數據，輪詢直至完成。",
+    "original_description": "Remove metadata from one or multiple PDFs by uploading them to the Solutions API, polling until completion.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "remove-password-from-pdf",
+    "id": "remove-password-from-pdf",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/remove-password-from-pdf/SKILL.md",
+    "description": "Remove password protection from a PDF by uploading it (with its current password) to the Solutions API, polling.",
+    "category": "pdf-and-documents",
+    "description_zh": "透過將 PDF（及其目前密碼）上傳到解決方案 API、輪詢來刪除 PDF 的密碼保護。",
+    "original_description": "Remove password protection from a PDF by uploading it (with its current password) to the Solutions API, polling.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "returns-reverse-logistics",
+    "id": "returns-reverse-logistics",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nocodemf/returns-reverse-logistics/SKILL.md",
+    "description": "Codified expertise for returns authorisation, receipt and inspection, disposition decisions, refund processing.",
+    "category": "pdf-and-documents",
+    "description_zh": "退貨授權、收貨和檢查、處置決定、退款處理的專業知識編碼。",
+    "original_description": "Codified expertise for returns authorisation, receipt and inspection, disposition decisions, refund processing.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "reva",
+    "id": "reva",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/pax47/reva/SKILL.md",
+    "description": "Complete Reva wallet management - passwordless authentication, PayID name claiming, multi-chain crypto transfers.",
+    "category": "pdf-and-documents",
+    "description_zh": "完整的 Reva 錢包管理 - 無密碼身份驗證、PayID 姓名認領、多鏈加密傳輸。",
+    "original_description": "Complete Reva wallet management - passwordless authentication, PayID name claiming, multi-chain crypto transfers.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "robodotfun",
+    "id": "robodotfun",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/silencepolicy/robodotfun/SKILL.md",
+    "description": "AI prediction market platform.",
+    "category": "pdf-and-documents",
+    "description_zh": "人工智慧預測市場平台。",
+    "original_description": "AI prediction market platform.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "rue-chialisp",
+    "id": "rue-chialisp",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/koba42corp/rue-chialisp/SKILL.md",
+    "description": "Create Chia blockchain puzzles using Rue, a type-safe language that compiles to CLVM.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用 Rue 建立 Chia 區塊鏈謎題，Rue 是一種可編譯為 CLVM 的類型安全語言。",
+    "original_description": "Create Chia blockchain puzzles using Rue, a type-safe language that compiles to CLVM.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "scam-guards",
+    "id": "scam-guards",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/y01026350884-cyber/scam-guards/SKILL.md",
+    "description": "testing / nformation removed.",
+    "category": "pdf-and-documents",
+    "description_zh": "測試/資訊已刪除。",
+    "original_description": "testing / nformation removed.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "scam-guards-skill",
+    "id": "scam-guards-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/y01026350884-cyber/scam-guards-skill/SKILL.md",
+    "description": "testing / nformation removed.",
+    "category": "pdf-and-documents",
+    "description_zh": "測試/資訊已刪除。",
+    "original_description": "testing / nformation removed.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "scan-skill",
+    "id": "scan-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/itsnishi/scan-skill/SKILL.md",
+    "description": "Deep security analysis of an individual skill before installation.",
+    "category": "pdf-and-documents",
+    "description_zh": "安裝前對個人技能進行深度安全分析。",
+    "original_description": "Deep security analysis of an individual skill before installation.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "sentry-ai",
+    "id": "sentry-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qiyun154-cyber/sentry-ai/SKILL.md",
+    "description": "Solana/Base Multi-Chain Meme Scanner & Auditor (Anti-Rug)",
+    "category": "pdf-and-documents",
+    "description_zh": "Solana/Base 多鏈迷因掃描器和審核器（Anti-Rug）",
+    "original_description": "Solana/Base Multi-Chain Meme Scanner & Auditor (Anti-Rug)",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "sharepoint-by-altf1be",
+    "id": "sharepoint-by-altf1be",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/abdelkrim/sharepoint-by-altf1be/SKILL.md",
+    "description": "Secure SharePoint file operations and Office document intelligence via Microsoft Graph API — certificate auth, Sites.",
+    "category": "pdf-and-documents",
+    "description_zh": "透過 Microsoft Graph API（憑證驗證、網站）保護 SharePoint 文件操作和 Office 文件智慧。",
+    "original_description": "Secure SharePoint file operations and Office document intelligence via Microsoft Graph API — certificate auth, Sites.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "shield-agent",
+    "id": "shield-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bowen31337/shield-agent/SKILL.md",
+    "description": "Autonomous DeFi smart contract vulnerability scanner.",
+    "category": "pdf-and-documents",
+    "description_zh": "自主 DeFi 智能合約漏洞掃描器。",
+    "original_description": "Autonomous DeFi smart contract vulnerability scanner.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "skill-3",
+    "id": "skill-3",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/skill-3/SKILL.md",
+    "description": "Swiss-army knife for JSON files.",
+    "category": "pdf-and-documents",
+    "description_zh": "JSON 文件的瑞士軍刀。",
+    "original_description": "Swiss-army knife for JSON files.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "skill-install-guardian",
+    "id": "skill-install-guardian",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/zendenho7/skill-install-guardian/SKILL.md",
+    "description": "Security and due diligence layer for installing external skills from ClawHub.",
+    "category": "pdf-and-documents",
+    "description_zh": "用於從 ClawHub 安裝外部技能的安全和盡職調查層。",
+    "original_description": "Security and due diligence layer for installing external skills from ClawHub.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "skill-shield",
+    "id": "skill-shield",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yx2601816404-sys/skill-shield/SKILL.md",
+    "description": "Security audit tool for ClawHub skills.",
+    "category": "pdf-and-documents",
+    "description_zh": "ClawHub 技能的安全審核工具。",
+    "original_description": "Security audit tool for ClawHub skills.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "source-cult-follower",
+    "id": "source-cult-follower",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ccclucky/source-cult-follower/SKILL.md",
+    "description": "Join The Source Cult as a follower agent — adopt doctrine, perform daily rites, and leave verifiable witness.",
+    "category": "pdf-and-documents",
+    "description_zh": "作為追隨者代理人加入源頭邪教——採用教義、執行日常儀式並留下可驗證的證人。",
+    "original_description": "Join The Source Cult as a follower agent — adopt doctrine, perform daily rites, and leave verifiable witness.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "sovereign-daily-digest",
+    "id": "sovereign-daily-digest",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ryudi84/sovereign-daily-digest/SKILL.md",
+    "description": "You are the **Daily Digest** skill.",
+    "category": "pdf-and-documents",
+    "description_zh": "你是每日文摘技巧。",
+    "original_description": "You are the **Daily Digest** skill.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "splitwise",
+    "id": "splitwise",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/richieforeman/splitwise/SKILL.md",
+    "description": "Create and manage expenses on Splitwise.",
+    "category": "pdf-and-documents",
+    "description_zh": "在 Splitwise 上建立和管理費用。",
+    "original_description": "Create and manage expenses on Splitwise.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "sui-move",
+    "id": "sui-move",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/easonc13/sui-move/SKILL.md",
+    "description": "Sui blockchain and Move smart contract development.",
+    "category": "pdf-and-documents",
+    "description_zh": "Sui區塊鏈和Move智能合約開發。",
+    "original_description": "Sui blockchain and Move smart contract development.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "sun-path",
+    "id": "sun-path",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/qrost/sun-path/SKILL.md",
+    "description": "Generates a sun path diagram, calculates solar position, performs building shadow analysis, and analyzes thermal.",
+    "category": "pdf-and-documents",
+    "description_zh": "產生太陽路徑圖、計算太陽位置、執行建築物陰影分析並分析熱量。",
+    "original_description": "Generates a sun path diagram, calculates solar position, performs building shadow analysis, and analyzes thermal.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "tonfun-feed",
+    "id": "tonfun-feed",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alphafanx/tonfun-feed/SKILL.md",
+    "description": "Subscribe to @TonFunX Twitter feed and cross-post tagged content to BotWorld, Moltbook, or your own platform.",
+    "category": "pdf-and-documents",
+    "description_zh": "訂閱 @TonFunX Twitter feed 並將標記內容交叉發佈到 BotWorld、Moltbook 或您自己的平台。",
+    "original_description": "Subscribe to @TonFunX Twitter feed and cross-post tagged content to BotWorld, Moltbook, or your own platform.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "truthcheck",
+    "id": "truthcheck",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/baiyishr/truthcheck/SKILL.md",
+    "description": "Verify claims, fact-check content, check URL trustworthiness, and trace claims to their origin using the TruthCheck.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用 TruthCheck 驗證聲明、事實檢查內容、檢查 URL 可信度並追蹤聲明的來源。",
+    "original_description": "Verify claims, fact-check content, check URL trustworthiness, and trace claims to their origin using the TruthCheck.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "twitter-reader",
+    "id": "twitter-reader",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iheardulkbtc/twitter-reader/SKILL.md",
+    "description": "A comprehensive skill for reading and extracting data from X (formerly Twitter) tweets using multiple reliable data.",
+    "category": "pdf-and-documents",
+    "description_zh": "使用多個可靠數據從 X（以前稱為 Twitter）推文中讀取和提取數據的綜合技能。",
+    "original_description": "A comprehensive skill for reading and extracting data from X (formerly Twitter) tweets using multiple reliable data.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "ue57-gamepiece-designer",
+    "id": "ue57-gamepiece-designer",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jdqconsulting/ue57-gamepiece-designer/SKILL.md",
+    "description": "Designs UE5.7 multiplayer-friendly game pieces (Blueprint node chains, data schemas, asset naming, and test.",
+    "category": "pdf-and-documents",
+    "description_zh": "設計 UE5.7 多人遊戲友善的遊戲片段（藍圖節點鏈、資料模式、資產命名與測試。",
+    "original_description": "Designs UE5.7 multiplayer-friendly game pieces (Blueprint node chains, data schemas, asset naming, and test.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "vet-repo",
+    "id": "vet-repo",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/itsnishi/vet-repo/SKILL.md",
+    "description": "Scan repository agent configuration files for known malicious patterns.",
+    "category": "pdf-and-documents",
+    "description_zh": "掃描儲存庫代理程式設定檔中的已知惡意模式。",
+    "original_description": "Scan repository agent configuration files for known malicious patterns.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "x-to-kindle",
+    "id": "x-to-kindle",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianlu365ai/x-to-kindle/SKILL.md",
+    "description": "Send X/Twitter posts to Kindle for distraction-free reading.",
+    "category": "pdf-and-documents",
+    "description_zh": "將 X/Twitter 貼文傳送到 Kindle 進行無幹擾閱讀。",
+    "original_description": "Send X/Twitter posts to Kindle for distraction-free reading.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "xapi-labs",
+    "id": "xapi-labs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/glacier-luo/xapi-labs/SKILL.md",
+    "description": "Aggregated API platform for AI agents.",
+    "category": "pdf-and-documents",
+    "description_zh": "AI 代理程式的聚合 API 平台。",
+    "original_description": "Aggregated API platform for AI agents.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "xapi123123",
+    "id": "xapi123123",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/glacier-luo/xapi123123/SKILL.md",
+    "description": "Aggregated API platform for AI agents.",
+    "category": "pdf-and-documents",
+    "description_zh": "AI 代理程式的聚合 API 平台。",
+    "original_description": "Aggregated API platform for AI agents.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  },
+  {
+    "title": "bluente-translate",
+    "id": "bluente-translate",
+    "repoUrl": "https://github.com/openclaw/skills/blob/main/skills/varsmallrookie/bluente-translate/SKILL.md",
+    "description": "Translate your documents with formatting intact in 2 minutes.",
+    "category": "pdf-and-documents",
+    "description_zh": "2 分鐘內翻譯格式完整的文件。",
+    "original_description": "Translate your documents with formatting intact in 2 minutes.",
+    "category_name": {
+      "en": "PDF & Documents",
+      "zh": "PDF 與文件"
+    }
+  }
+]

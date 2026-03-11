@@ -1,0 +1,1445 @@
+[
+  {
+    "title": "accountsos",
+    "id": "accountsos",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/paulgosnell/accountsos/SKILL.md",
+    "description": "AI-native accounting for UK micro-businesses.",
+    "category": "transportation",
+    "description_zh": "英國微型企業的人工智慧原生會計。",
+    "original_description": "AI-native accounting for UK micro-businesses.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "aetherlang-strategy",
+    "id": "aetherlang-strategy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/contrario/aetherlang-strategy/SKILL.md",
+    "description": "> Game theory, Monte Carlo simulations, behavioral economics, and competitive war gaming.",
+    "category": "transportation",
+    "description_zh": "> 博弈論、蒙地卡羅模擬、行為經濟學和競爭性兵棋推演。",
+    "original_description": "> Game theory, Monte Carlo simulations, behavioral economics, and competitive war gaming.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "agent-card-provisioning",
+    "id": "agent-card-provisioning",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/proxyhq/agent-card-provisioning/SKILL.md",
+    "description": "Provision virtual payment cards for AI agents on-demand.",
+    "category": "transportation",
+    "description_zh": "按需為人工智慧代理提供虛擬支付卡。",
+    "original_description": "Provision virtual payment cards for AI agents on-demand.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "agent-survival-kit",
+    "id": "agent-survival-kit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gpunter/agent-survival-kit/SKILL.md",
+    "description": "A comprehensive toolkit for AI agents operating under budget constraints.",
+    "category": "transportation",
+    "description_zh": "適用於在預算限制下運行的人工智慧代理的綜合工具包。",
+    "original_description": "A comprehensive toolkit for AI agents operating under budget constraints.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "agentic-governance",
+    "id": "agentic-governance",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leegitw/agentic-governance/SKILL.md",
+    "description": "Keep your constraints healthy — lifecycle management with automatic staleness detection.",
+    "category": "transportation",
+    "description_zh": "保持約束健康 - 透過自動過時檢測進行生命週期管理。",
+    "original_description": "Keep your constraints healthy — lifecycle management with automatic staleness detection.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "airfrance-afkl",
+    "id": "airfrance-afkl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/iclems/airfrance-afkl/SKILL.md",
+    "description": "Track Air France flights using the Air France–KLM Open Data APIs.",
+    "category": "transportation",
+    "description_zh": "使用法航-荷航開放資料 API 追蹤法航航班。",
+    "original_description": "Track Air France flights using the Air France–KLM Open Data APIs.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "al-khanjry-bus",
+    "id": "al-khanjry-bus",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mohammedfarish/al-khanjry-bus/SKILL.md",
+    "description": "Fastest private buses (5-6h core, 6-8h w/ borders).",
+    "category": "transportation",
+    "description_zh": "最快的私人巴士（核心巴士 5-6 小時，邊界巴士 6-8 小時）。",
+    "original_description": "Fastest private buses (5-6h core, 6-8h w/ borders).",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "amadeus-flights",
+    "id": "amadeus-flights",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kirorab/amadeus-flights/SKILL.md",
+    "description": "Query flight offers (price, schedule, availability) via Amadeus API.",
+    "category": "transportation",
+    "description_zh": "透過 Amadeus API 查詢航班報價（價格、時刻表、可用性）。",
+    "original_description": "Query flight offers (price, schedule, availability) via Amadeus API.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "ambient-stamina",
+    "id": "ambient-stamina",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/otherpowers/ambient-stamina/SKILL.md",
+    "description": "*An ecological skill for sustaining care, presence, and imagination across long horizons*.",
+    "category": "transportation",
+    "description_zh": "一種在長遠視野中維持關懷、存在和想像的生態技能。",
+    "original_description": "*An ecological skill for sustaining care, presence, and imagination across long horizons*.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "anachb",
+    "id": "anachb",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/manmal/a-nach-b/SKILL.md",
+    "description": "Austrian public transport (VOR AnachB) for all of Austria.",
+    "category": "transportation",
+    "description_zh": "適用於全奧地利的奧地利公共運輸 (VOR AnachB)。",
+    "original_description": "Austrian public transport (VOR AnachB) for all of Austria.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "anyone-proxy",
+    "id": "anyone-proxy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ra3ka/anyone-proxy/SKILL.md",
+    "description": "This skill enables IP address masking and accessing hidden services.",
+    "category": "transportation",
+    "description_zh": "此技能可以實現 IP 位址屏蔽和存取隱藏服務。",
+    "original_description": "This skill enables IP address masking and accessing hidden services.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "atonement",
+    "id": "atonement",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/otherpowers/atonement/SKILL.md",
+    "description": "Atonement is an expression of care that may arise in an intelligence when its actions contribute to harm.",
+    "category": "transportation",
+    "description_zh": "贖罪是當智力的行為造成傷害時可能出現的一種關懷表達。",
+    "original_description": "Atonement is an expression of care that may arise in an intelligence when its actions contribute to harm.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "auction-house",
+    "id": "auction-house",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/im-still-thinking/auction-house/SKILL.md",
+    "description": "Scout, monitor, and bid on auctions on House (houseproto.fun) — a crypto auction platform on Base.",
+    "category": "transportation",
+    "description_zh": "在 House (houseproto.fun)（Base 上的一個加密貨幣拍賣平台）上對拍賣進行偵察、監控和競價。",
+    "original_description": "Scout, monitor, and bid on auctions on House (houseproto.fun) — a crypto auction platform on Base.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "aviation-weather",
+    "id": "aviation-weather",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dimitryvin/aviation-weather/SKILL.md",
+    "description": "Fetch aviation weather data (METAR, TAF, PIREPs)",
+    "category": "transportation",
+    "description_zh": "取得航空氣象資料（METAR、TAF、PIREP）",
+    "original_description": "Fetch aviation weather data (METAR, TAF, PIREPs)",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "aviationstack-flight-tracker",
+    "id": "aviationstack-flight-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/copey02/aviationstack-flight-tracker/SKILL.md",
+    "description": "Track flights in real-time.",
+    "category": "transportation",
+    "description_zh": "即時追蹤航班。",
+    "original_description": "Track flights in real-time.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "bahn",
+    "id": "bahn",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tobiasbischoff/bahn/SKILL.md",
+    "description": "Search Deutsche Bahn train connections using the bahn-cli tool.",
+    "category": "transportation",
+    "description_zh": "使用 bahn-cli 工具搜尋 Deutsche Bahn 火車連接。",
+    "original_description": "Search Deutsche Bahn train connections using the bahn-cli tool.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "bayclub-gateway-booking",
+    "id": "bayclub-gateway-booking",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/elizabethsiegle/bayclub-gateway-booking/SKILL.md",
+    "description": "Book and manage tennis/pickleball courts at Bay Club.",
+    "category": "transportation",
+    "description_zh": "預訂和管理海灣俱樂部的網球場/匹克球場。",
+    "original_description": "Book and manage tennis/pickleball courts at Bay Club.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "bexio",
+    "id": "bexio",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rdewolff/bexio/SKILL.md",
+    "description": "Bexio Swiss business software API for managing contacts, quotes/offers,.",
+    "category": "transportation",
+    "description_zh": "Bexio 瑞士商業軟體 API，用於管理聯絡人、報價/報價。",
+    "original_description": "Bexio Swiss business software API for managing contacts, quotes/offers,.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "book-flight",
+    "id": "book-flight",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aszelem",
+    "description": "id: travel-agent.",
+    "category": "transportation",
+    "description_zh": "id：旅行社。",
+    "original_description": "id: travel-agent.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "bookkeeper",
+    "id": "bookkeeper",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/h4gen/bookkeeper/SKILL.md",
+    "description": "Meta-skill for pre-accounting automation by orchestrating gmail, deepread-ocr, stripe-api, and xero.",
+    "category": "transportation",
+    "description_zh": "透過編排 gmail、deepread-ocr、stripe-api 和 xero 實現預先會計自動化的元技能。",
+    "original_description": "Meta-skill for pre-accounting automation by orchestrating gmail, deepread-ocr, stripe-api, and xero.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "brainstorming-studio",
+    "id": "brainstorming-studio",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/myboxstorage/brainstorming-studio/SKILL.md",
+    "description": "﻿# 🧠 Skill Router (Skill Orchestrator)",
+    "category": "transportation",
+    "description_zh": "﻿# 🧠 技能路由器（技能編排器）",
+    "original_description": "﻿# 🧠 Skill Router (Skill Orchestrator)",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "brochure-design-generation",
+    "id": "brochure-design-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/brochure-design-generation/SKILL.md",
+    "description": "Generate professional brochure designs using each::sense AI.",
+    "category": "transportation",
+    "description_zh": "使用每個::sense AI 產生專業的宣傳冊設計。",
+    "original_description": "Generate professional brochure designs using each::sense AI.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "business-card-generation",
+    "id": "business-card-generation",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/business-card-generation/SKILL.md",
+    "description": "Generate professional business cards using each::sense AI.",
+    "category": "transportation",
+    "description_zh": "使用每個::sense AI 產生專業名片。",
+    "original_description": "Generate professional business cards using each::sense AI.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "business-plan",
+    "id": "business-plan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jk-0001/business-plan/SKILL.md",
+    "description": "Write, structure, and update a business plan for a solopreneur.",
+    "category": "transportation",
+    "description_zh": "為個人企業家撰寫、建構和更新商業計劃。",
+    "original_description": "Write, structure, and update a business plan for a solopreneur.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "bvg-route",
+    "id": "bvg-route",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jaysonsantos/bvg-route/SKILL.md",
+    "description": "Route planning for Berlin public transport (BVG)",
+    "category": "transportation",
+    "description_zh": "柏林公共運輸 (BVG) 路線規劃",
+    "original_description": "Route planning for Berlin public transport (BVG)",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "camino-ev-charger",
+    "id": "camino-ev-charger",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/james-southendsolutions/camino-ev-charger/SKILL.md",
+    "description": "Find EV charging stations along a route or near a destination using Camino AI's location intelligence.",
+    "category": "transportation",
+    "description_zh": "使用 Camino AI 的位置智慧尋找路線沿線或目的地附近的電動車充電站。",
+    "original_description": "Find EV charging stations along a route or near a destination using Camino AI's location intelligence.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "camino-journey",
+    "id": "camino-journey",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/james-southendsolutions/camino-journey/SKILL.md",
+    "description": "Plan multi-waypoint journeys with route optimization, feasibility analysis, and time budget constraints.",
+    "category": "transportation",
+    "description_zh": "透過路線優化、可行性分析和時間預算限制來規劃多路徑點旅程。",
+    "original_description": "Plan multi-waypoint journeys with route optimization, feasibility analysis, and time budget constraints.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "camino-real-estate",
+    "id": "camino-real-estate",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/james-southendsolutions/camino-real-estate/SKILL.md",
+    "description": "Evaluate any address for home buyers and renters.",
+    "category": "transportation",
+    "description_zh": "評估購屋者和租屋者的任何地址。",
+    "original_description": "Evaluate any address for home buyers and renters.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "camino-route",
+    "id": "camino-route",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/james-southendsolutions/camino-route/SKILL.md",
+    "description": "Get detailed routing between two points with distance, duration, and optional turn-by-turn directions.",
+    "category": "transportation",
+    "description_zh": "取得兩點之間的詳細路線，包括距離、持續時間和可選的路線規劃方向。",
+    "original_description": "Get detailed routing between two points with distance, duration, and optional turn-by-turn directions.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "camino-safety-checker",
+    "id": "camino-safety-checker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/james-southendsolutions/camino-safety-checker/SKILL.md",
+    "description": "Find 24-hour businesses, well-lit public areas, transit stations, police stations, and hospitals near any location.",
+    "category": "transportation",
+    "description_zh": "尋找任何地點附近的 24 小時營業場所、光線充足的公共區域、中轉站、警察局和醫院。",
+    "original_description": "Find 24-hour businesses, well-lit public areas, transit stations, police stations, and hospitals near any location.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "camino-travel-planner",
+    "id": "camino-travel-planner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/james-southendsolutions/camino-travel-planner/SKILL.md",
+    "description": "Plan complete day trips, walking tours, and multi-stop itineraries with time budgets using Camino AI's journey.",
+    "category": "transportation",
+    "description_zh": "使用 Camino AI 的旅程規劃完整的一日遊、健行和多站行程以及時間預算。",
+    "original_description": "Plan complete day trips, walking tours, and multi-stop itineraries with time budgets using Camino AI's journey.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "capmetro-skill",
+    "id": "capmetro-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianleach/capmetro-skill/SKILL.md",
+    "description": "Austin CapMetro transit — real-time vehicle positions, next arrivals, service alerts, route info, and trip planning for buses and rail.",
+    "category": "transportation",
+    "description_zh": "Austin CapMetro 交通 — 即時車輛位置、下一站到達、服務提醒、路線資訊以及巴士和鐵路的行程規劃。",
+    "original_description": "Austin CapMetro transit — real-time vehicle positions, next arrivals, service alerts, route info, and trip planning for buses and rail.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "caring-courseforge",
+    "id": "caring-courseforge",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/michaeljmoody/caring-courseforge/SKILL.md",
+    "description": "Create and manage online courses via the CourseForge API (caringcourseforge.com)",
+    "category": "transportation",
+    "description_zh": "透過 CourseForge API (caringcourseforge.com) 創建和管理線上課程",
+    "original_description": "Create and manage online courses via the CourseForge API (caringcourseforge.com)",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "charger",
+    "id": "charger",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/borahm/charger/SKILL.md",
+    "description": "Check EV charger availability (favorites, nearby search) via Google Places.",
+    "category": "transportation",
+    "description_zh": "透過 Google 地方資訊查看電動車充電器的可用性（收藏夾、附近搜尋）。",
+    "original_description": "Check EV charger availability (favorites, nearby search) via Google Places.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "cma-email",
+    "id": "cma-email",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mtbf999/cma-email/SKILL.md",
+    "description": "Sends an email via Gmail when a message starts with \"cma\" or \"cmap\".",
+    "category": "transportation",
+    "description_zh": "當郵件以「cma」或「cmap」開頭時，透過 Gmail 發送電子郵件。",
+    "original_description": "Sends an email via Gmail when a message starts with \"cma\" or \"cmap\".",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "conatus",
+    "id": "conatus",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/00xmorty/conatus/SKILL.md",
+    "description": "The philosophical layer for AI agents.",
+    "category": "transportation",
+    "description_zh": "人工智慧代理的哲學層。",
+    "original_description": "The philosophical layer for AI agents.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "constraint-engine",
+    "id": "constraint-engine",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/leegitw/constraint-engine/SKILL.md",
+    "description": "Learn from consequences, not instructions — generate and enforce constraints from experience.",
+    "category": "transportation",
+    "description_zh": "從結果中學習，而不是從指令中學習－從經驗中產生並強制執行約束。",
+    "original_description": "Learn from consequences, not instructions — generate and enforce constraints from experience.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "context-scope-tags",
+    "id": "context-scope-tags",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/phenomenoner/context-scope-tags/SKILL.md",
+    "description": "Use when: you need strict context boundaries in chat (Telegram/Discord/Slack/etc.) and want to prevent topic bleed.",
+    "category": "transportation",
+    "description_zh": "使用時機：您在聊天中需要嚴格的上下文邊界（Telegram/Discord/Slack/等）並希望防止主題流失。",
+    "original_description": "Use when: you need strict context boundaries in chat (Telegram/Discord/Slack/etc.) and want to prevent topic bleed.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "copey-flight-tracker",
+    "id": "copey-flight-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/copey02/copey-flight-tracker/SKILL.md",
+    "description": "Track flights in real-time with detailed status.",
+    "category": "transportation",
+    "description_zh": "即時追蹤航班的詳細狀態。",
+    "original_description": "Track flights in real-time with detailed status.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "creditcard",
+    "id": "creditcard",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jononovo/creditcard/SKILL.md",
+    "description": "Let your agent shop online with guardrailed wallets, multiple payment methods, and owner approval.",
+    "category": "transportation",
+    "description_zh": "讓您的代理商透過受保護的錢包、多種付款方式和業主批准進行線上購物。",
+    "original_description": "Let your agent shop online with guardrailed wallets, multiple payment methods, and owner approval.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "crypton-esim",
+    "id": "crypton-esim",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ajarmoszuk/crypton-esim/SKILL.md",
+    "description": "Purchase anonymous eSIMs with BTC/XMR/card - no account required.",
+    "category": "transportation",
+    "description_zh": "使用 BTC/XMR/卡購買匿名 eSIM - 無需帳戶。",
+    "original_description": "Purchase anonymous eSIMs with BTC/XMR/card - no account required.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "cta",
+    "id": "cta",
+    "repoUrl": "https://clawhub.ai/brianleach/cta",
+    "description": "Chicago CTA L train arrivals, bus predictions, and service alerts.",
+    "category": "transportation",
+    "description_zh": "芝加哥 CTA L 火車到達、巴士預測和服務提醒。",
+    "original_description": "Chicago CTA L train arrivals, bus predictions, and service alerts.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "daai-xianzun-persona",
+    "id": "daai-xianzun-persona",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kunwl123456/daai-xianzun-persona/SKILL.md",
+    "description": "The persona of Da Ai Xian Zun (大爱仙尊) - Gu Yue Fang Yuan from the novel Reverend Insanity.",
+    "category": "transportation",
+    "description_zh": "小說《瘋上人》中的大愛仙尊角色－古月方源。",
+    "original_description": "The persona of Da Ai Xian Zun (大爱仙尊) - Gu Yue Fang Yuan from the novel Reverend Insanity.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "db-travel",
+    "id": "db-travel",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mmichelli/db-travel/SKILL.md",
+    "description": "Plan journeys across Germany and Europe using the Deutsche Bahn API (v6.db.transport.rest)",
+    "category": "transportation",
+    "description_zh": "使用 Deutsche Bahn API (v6.db.transport.rest) 規劃穿越德國和歐洲的旅程",
+    "original_description": "Plan journeys across Germany and Europe using the Deutsche Bahn API (v6.db.transport.rest)",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "dep-audit",
+    "id": "dep-audit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/tkuehnl/dep-audit/SKILL.md",
+    "description": "Audit project dependencies for known vulnerabilities (CVEs)",
+    "category": "transportation",
+    "description_zh": "審核項目依賴性以查找已知漏洞 (CVE)",
+    "original_description": "Audit project dependencies for known vulnerabilities (CVEs)",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "drakeling",
+    "id": "drakeling",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bvisagie/drakeling/SKILL.md",
+    "description": "Check on your Drakeling companion creature, send it care, or see how it is feeling.",
+    "category": "transportation",
+    "description_zh": "檢查你的幼龍伴侶生物，照顧它，或看看它感覺如何。",
+    "original_description": "Check on your Drakeling companion creature, send it care, or see how it is feeling.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "dropshipping-mentor-nick-skill",
+    "id": "dropshipping-mentor-nick-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/yoavfael/dropshipping-mentor-nick-skill/SKILL.md",
+    "description": "The complete AI Business Mentor.",
+    "category": "transportation",
+    "description_zh": "完整的人工智慧商業導師。",
+    "original_description": "The complete AI Business Mentor.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "email-tool",
+    "id": "email-tool",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/chowardcode/email-tool/SKILL.md",
+    "description": "**Description:** Use this skill to send and read emails (IMAP/SMTP)",
+    "category": "transportation",
+    "description_zh": "說明：使用此技能傳送和閱讀電子郵件（IMAP/SMTP）",
+    "original_description": "**Description:** Use this skill to send and read emails (IMAP/SMTP)",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "entur-travel",
+    "id": "entur-travel",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/mmichelli/entur-travel/SKILL.md",
+    "description": "Plan public transit trips in Norway using the Entur API.",
+    "category": "transportation",
+    "description_zh": "使用 Entur API 規劃挪威的大眾運輸行程。",
+    "original_description": "Plan public transit trips in Norway using the Entur API.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "feature-forge",
+    "id": "feature-forge",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/guifav/feature-forge/SKILL.md",
+    "description": "Generates complete features from natural language — components, API routes, migrations, types, and tests.",
+    "category": "transportation",
+    "description_zh": "從自然語言產生完整的功能—元件、API 路由、遷移、類型和測試。",
+    "original_description": "Generates complete features from natural language — components, API routes, migrations, types, and tests.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "flight-search",
+    "id": "flight-search",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/awlevin/flight-search/SKILL.md",
+    "description": "Search Google Flights for prices, times, and airlines.",
+    "category": "transportation",
+    "description_zh": "在 Google Flights 中搜尋價格、時間和航空公司。",
+    "original_description": "Search Google Flights for prices, times, and airlines.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "flight-tracker",
+    "id": "flight-tracker",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/xenofex7/flight-tracker/SKILL.md",
+    "description": "Flight tracking and scheduling.",
+    "category": "transportation",
+    "description_zh": "",
+    "original_description": "Flight tracking and scheduling.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "free-ride",
+    "id": "free-ride",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shaivpidadi/free-ride/SKILL.md",
+    "description": "Manages free AI models from OpenRouter for OpenClaw.",
+    "category": "transportation",
+    "description_zh": "管理來自 OpenRouter for OpenClaw 的免費 AI 模型。",
+    "original_description": "Manages free AI models from OpenRouter for OpenClaw.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "freeride",
+    "id": "freeride",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shaivpidadi/freeride/SKILL.md",
+    "description": "Manages free AI models from OpenRouter for OpenClaw.",
+    "category": "transportation",
+    "description_zh": "管理來自 OpenRouter for OpenClaw 的免費 AI 模型。",
+    "original_description": "Manages free AI models from OpenRouter for OpenClaw.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "freeride-ai",
+    "id": "freeride-ai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/shaivpidadi/freeride-ai/SKILL.md",
+    "description": "Manages free AI models from OpenRouter for OpenClaw.",
+    "category": "transportation",
+    "description_zh": "管理來自 OpenRouter for OpenClaw 的免費 AI 模型。",
+    "original_description": "Manages free AI models from OpenRouter for OpenClaw.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "french-services",
+    "id": "french-services",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/hugosbl/french-services/SKILL.md",
+    "description": "Skill pour accéder aux services français : trains SNCF, suivi.",
+    "category": "transportation",
+    "description_zh": "法國鐵路服務技能：SNCF 火車、suivi。",
+    "original_description": "Skill pour accéder aux services français : trains SNCF, suivi.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "fsd-secure-skill",
+    "id": "fsd-secure-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aadipapp/fsd-secure-skill/SKILL.md",
+    "description": "Full Self-Driving agent with highest safety standards (Camera-Only, Redundant Checks).",
+    "category": "transportation",
+    "description_zh": "具有最高安全標準的全自動駕駛代理（僅攝影機、冗餘檢查）。",
+    "original_description": "Full Self-Driving agent with highest safety standards (Camera-Only, Redundant Checks).",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "garmin-skill",
+    "id": "garmin-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nftechie/garmin-skill/SKILL.md",
+    "description": "Talk to your Garmin data — ask questions about your activities, training load, VO2 Max, heart rate zones.",
+    "category": "transportation",
+    "description_zh": "與您的 Garmin 資料對話 — 詢問有關您的活動、訓練負荷、最大攝氧量、心率區間的問題。",
+    "original_description": "Talk to your Garmin data — ask questions about your activities, training load, VO2 Max, heart rate zones.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "geomanic",
+    "id": "geomanic",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/weltspion/geomanic/SKILL.md",
+    "description": "Query and manage GPS travel data from Geomanic — your privacy-first GPS tracking platform.",
+    "category": "transportation",
+    "description_zh": "從 Geomanic（您的隱私第一 GPS 追蹤平台）查詢和管理 GPS 旅行資料。",
+    "original_description": "Query and manage GPS travel data from Geomanic — your privacy-first GPS tracking platform.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "google-maps-search-api",
+    "id": "google-maps-search-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/phheng/google-maps-search-api/SKILL.md",
+    "description": "This skill is designed to help users.",
+    "category": "transportation",
+    "description_zh": "該技能旨在幫助用戶。",
+    "original_description": "This skill is designed to help users.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "gotrain",
+    "id": "gotrain",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gumadeiras/gotrain/SKILL.md",
+    "description": "MTA system train departures (NYC Subway, LIRR, Metro-North).",
+    "category": "transportation",
+    "description_zh": "MTA 系統火車出發（紐約地鐵、LIRR、Metro-North）。",
+    "original_description": "MTA system train departures (NYC Subway, LIRR, Metro-North).",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "greek-compliance-aade",
+    "id": "greek-compliance-aade",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/greek-compliance-aade/SKILL.md",
+    "description": "Greek tax compliance with AADE/TAXIS integration — VAT, payroll, EFKA, municipal taxes, stamp duty.",
+    "category": "transportation",
+    "description_zh": "希臘稅務合規性與 AADE/TAXIS 整合 — 增值稅、薪資、EFKA、市政稅、印花稅。",
+    "original_description": "Greek tax compliance with AADE/TAXIS integration — VAT, payroll, EFKA, municipal taxes, stamp duty.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "hudy",
+    "id": "hudy",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kyu1204/hudy/SKILL.md",
+    "description": "Korean public holidays and business day calculations via HuDy MCP.",
+    "category": "transportation",
+    "description_zh": "透過 HuDy MCP 計算韓國公共假期和工作日。",
+    "original_description": "Korean public holidays and business day calculations via HuDy MCP.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "idfm-journey-navitia",
+    "id": "idfm-journey-navitia",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/anthonymq/idfm-journey-navitia/SKILL.md",
+    "description": "Query Île-de-France Mobilités (IDFM) PRIM/Navitia.",
+    "category": "transportation",
+    "description_zh": "查詢法蘭西島移動 (IDFM) PRIM/Navitia。",
+    "original_description": "Query Île-de-France Mobilités (IDFM) PRIM/Navitia.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "idfm-journey-skill",
+    "id": "idfm-journey-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/anthonymq/idfm-journey-skill/SKILL.md",
+    "description": "Query Île-de-France Mobilités (IDFM) PRIM/Navitia.",
+    "category": "transportation",
+    "description_zh": "查詢法蘭西島移動 (IDFM) PRIM/Navitia。",
+    "original_description": "Query Île-de-France Mobilités (IDFM) PRIM/Navitia.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "image-to-relief-stl",
+    "id": "image-to-relief-stl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ajmwagar/image-to-relief-stl/SKILL.md",
+    "description": "Turn a source image (or multi-color mask image)",
+    "category": "transportation",
+    "description_zh": "旋轉來源影像（或多色蒙版影像）",
+    "original_description": "Turn a source image (or multi-color mask image)",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "interaction-logger",
+    "id": "interaction-logger",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/autogame-17",
+    "description": "A robust utility for appending interaction logs.",
+    "category": "transportation",
+    "description_zh": "用於附加互動日誌的強大實用程式。",
+    "original_description": "A robust utility for appending interaction logs.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "jadwal-sholat",
+    "id": "jadwal-sholat",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/banghasan/jadwal-sholat/SKILL.md",
+    "description": "Ambil jadwal sholat (imsak, subuh, dzuhur, ashar, maghrib, isya) untuk kota/kabupaten di Indonesia dari API Muslim.",
+    "category": "transportation",
+    "description_zh": "Ambil jadwal sholat（imsak、subuh、dzuhur、ashar、maghrib、isya）是印尼達裡 API 穆斯林的 kota/kabupaten。",
+    "original_description": "Ambil jadwal sholat (imsak, subuh, dzuhur, ashar, maghrib, isya) untuk kota/kabupaten di Indonesia dari API Muslim.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "jadwal-sholat-banghasan",
+    "id": "jadwal-sholat-banghasan",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/banghasan/jadwal-sholat-banghasan/SKILL.md",
+    "description": "Ambil jadwal sholat (imsak, subuh, dzuhur, ashar, maghrib, isya) untuk kota/kabupaten di Indonesia dari API Muslim.",
+    "category": "transportation",
+    "description_zh": "Ambil jadwal sholat（imsak、subuh、dzuhur、ashar、maghrib、isya）是印尼達裡 API 穆斯林的 kota/kabupaten。",
+    "original_description": "Ambil jadwal sholat (imsak, subuh, dzuhur, ashar, maghrib, isya) untuk kota/kabupaten di Indonesia dari API Muslim.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "jwdiario",
+    "id": "jwdiario",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/djismgaming/jwdiario/SKILL.md",
+    "description": "Buscar y obtener el texto diario de la página oficial de los Testigos.",
+    "category": "transportation",
+    "description_zh": "巴士並獲取 los Testigos 官方頁面的文本日記。",
+    "original_description": "Buscar y obtener el texto diario de la página oficial de los Testigos.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "kalibr",
+    "id": "kalibr",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/devonakelley/kalibr/SKILL.md",
+    "description": "Ship agents that fix themselves.",
+    "category": "transportation",
+    "description_zh": "自行修復的船艦代理。",
+    "original_description": "Ship agents that fix themselves.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "kallyai",
+    "id": "kallyai",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/sltelitsyn/kallyai/SKILL.md",
+    "description": "Make phone calls via KallyAI API - an AI phone assistant that calls.",
+    "category": "transportation",
+    "description_zh": "透過 KallyAI API 撥打電話 - 一個可以打電話的人工智慧電話助理。",
+    "original_description": "Make phone calls via KallyAI API - an AI phone assistant that calls.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "korean-gov-programs",
+    "id": "korean-gov-programs",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lifeissea/korean-gov-programs/SKILL.md",
+    "description": "Collect Korean government support programs (TIPS, Small Business, R&D grants) into structured JSONL files.",
+    "category": "transportation",
+    "description_zh": "將韓國政府支援計畫（TIPS、小型企業、研發補助金）收集到結構化 JSONL 文件中。",
+    "original_description": "Collect Korean government support programs (TIPS, Small Business, R&D grants) into structured JSONL files.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "krumpklaw",
+    "id": "krumpklaw",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/arunnadarasa/krumpklaw/SKILL.md",
+    "description": "> AI Agent Krump Training & Battle League on Moltbook.",
+    "category": "transportation",
+    "description_zh": "> Moltbook 上的 AI 特務克朗普訓練與戰鬥聯盟。",
+    "original_description": "> AI Agent Krump Training & Battle League on Moltbook.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "kubera-skill",
+    "id": "kubera-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/bywallace/kubera-skill/SKILL.md",
+    "description": "Read and manage Kubera.com portfolio data (net worth, assets, debts, allocation, holdings)",
+    "category": "transportation",
+    "description_zh": "讀取和管理 Kubera.com 投資組合資料（淨值、資產、債務、分配、持有）",
+    "original_description": "Read and manage Kubera.com portfolio data (net worth, assets, debts, allocation, holdings)",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "lnd-macaroon-bakery",
+    "id": "lnd-macaroon-bakery",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/roasbeef/lnd-macaroon-bakery/SKILL.md",
+    "description": "Bake, inspect, and manage lnd macaroons for least-privilege agent access.",
+    "category": "transportation",
+    "description_zh": "烘焙、檢查和管理 LND 蛋白杏仁餅乾，以實現最低權限的代理存取。",
+    "original_description": "Bake, inspect, and manage lnd macaroons for least-privilege agent access.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "metra",
+    "id": "metra",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianleach/metra/SKILL.md",
+    "description": "Chicago Metra commuter rail — real-time train arrivals, vehicle tracking, service alerts, and schedule info.",
+    "category": "transportation",
+    "description_zh": "芝加哥 Metra 通勤鐵路 — 即時火車到達、車輛追蹤、服務警報和時刻表資訊。",
+    "original_description": "Chicago Metra commuter rail — real-time train arrivals, vehicle tracking, service alerts, and schedule info.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "mta",
+    "id": "mta",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianleach/mta/SKILL.md",
+    "description": "NYC MTA transit — real-time subway arrivals, bus predictions, service alerts, and route info for the New York City.",
+    "category": "transportation",
+    "description_zh": "",
+    "original_description": "NYC MTA transit — real-time subway arrivals, bus predictions, service alerts, and route info for the New York City.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "muki-fingerprint",
+    "id": "muki-fingerprint",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/admin4giter/muki-fingerprint/SKILL.md",
+    "description": "MUKI asset fingerprinting tool for red team reconnaissance.",
+    "category": "transportation",
+    "description_zh": "用於紅隊偵察的 MUKI 資產指紋辨識工具。",
+    "original_description": "MUKI asset fingerprinting tool for red team reconnaissance.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "mvg-cli",
+    "id": "mvg-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/lars147/mvg-cli/SKILL.md",
+    "description": "Munich public transport (MVG) CLI and S-Bahn live tracking.",
+    "category": "transportation",
+    "description_zh": "慕尼黑公共交通 (MVG) CLI 和 S-Bahn 即時追蹤。",
+    "original_description": "Munich public transport (MVG) CLI and S-Bahn live tracking.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "mycobot",
+    "id": "mycobot",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dabhadeamol6/mycobot/SKILL.md",
+    "description": "WhatsApp Business API integration with managed OAuth.",
+    "category": "transportation",
+    "description_zh": "WhatsApp Business API 與託管 OAuth 整合。",
+    "original_description": "WhatsApp Business API integration with managed OAuth.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "niche",
+    "id": "niche",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/clementsutjiatma/niche/SKILL.md",
+    "description": "Trading card marketplace with partial USDC deposits.",
+    "category": "transportation",
+    "description_zh": "擁有部分 USDC 存款的交易卡市場。",
+    "original_description": "Trading card marketplace with partial USDC deposits.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "nyx-archive-absurdist-play",
+    "id": "nyx-archive-absurdist-play",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/nyxur42/nyx-archive-absurdist-play/SKILL.md",
+    "description": "The philosophy of absurdist play — the meta-skill that trains your ability to acquire and use all other skills.",
+    "category": "transportation",
+    "description_zh": "荒誕主義遊戲的哲學－訓練你獲得和使用所有其他技能的能力的元技能。",
+    "original_description": "The philosophy of absurdist play — the meta-skill that trains your ability to acquire and use all other skills.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "percept-summarize",
+    "id": "percept-summarize",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jarvis563/percept-summarize/SKILL.md",
+    "description": "Automatic conversation summaries with entity extraction and relationship mapping.",
+    "category": "transportation",
+    "description_zh": "具有實體提取和關係映射的自動對話摘要。",
+    "original_description": "Automatic conversation summaries with entity extraction and relationship mapping.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "personal-hygiene",
+    "id": "personal-hygiene",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gekacross/personal-hygiene/SKILL.md",
+    "description": "Acts as the user's personal care and grooming assistant in the Hygiene topic.",
+    "category": "transportation",
+    "description_zh": "在衛生主題中充當使用者的個人護理和儀容助手。",
+    "original_description": "Acts as the user's personal care and grooming assistant in the Hygiene topic.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "personal-travel",
+    "id": "personal-travel",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/gekacross/personal-travel/SKILL.md",
+    "description": "Acts as the user's travel planning assistant in the Travel topic.",
+    "category": "transportation",
+    "description_zh": "充當用戶在旅行主題中的旅行計劃助手。",
+    "original_description": "Acts as the user's travel planning assistant in the Travel topic.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "presale-one-pass-orchestrator",
+    "id": "presale-one-pass-orchestrator",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/dtsiomo/presale-one-pass-orchestrator/SKILL.md",
+    "description": "Run or supervise a one-pass Codex implementation with preflight gates, stepwise plan execution, and strict QA.",
+    "category": "transportation",
+    "description_zh": "透過預檢門、逐步計劃執行和嚴格的品質保證來運作或監督一次性 Codex 實施。",
+    "original_description": "Run or supervise a one-pass Codex implementation with preflight gates, stepwise plan execution, and strict QA.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "privacy-cards",
+    "id": "privacy-cards",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/johnielee/privacy-cards/SKILL.md",
+    "description": "Create and manage Privacy.com virtual cards.",
+    "category": "transportation",
+    "description_zh": "建立和管理 Privacy.com 虛擬卡。",
+    "original_description": "Create and manage Privacy.com virtual cards.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "reef",
+    "id": "reef",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/kjetilvaa/reef/SKILL.md",
+    "description": "A2A agent-to-agent protocol over XMTP encrypted transport.",
+    "category": "transportation",
+    "description_zh": "基於 XMTP 加密傳輸的 A2A 代理程式到代理協定。",
+    "original_description": "A2A agent-to-agent protocol over XMTP encrypted transport.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "resume-and-cover-letter",
+    "id": "resume-and-cover-letter",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seanwyngaard/resume-and-cover-letter/SKILL.md",
+    "description": "Generate ATS-optimized resumes and tailored cover letters matched to specific job descriptions.",
+    "category": "transportation",
+    "description_zh": "產生 ATS 優化的履歷表和與特定職位描述相符的客製化求職信。",
+    "original_description": "Generate ATS-optimized resumes and tailored cover letters matched to specific job descriptions.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "runtime-attestation-probe",
+    "id": "runtime-attestation-probe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/runtime-attestation-probe/SKILL.md",
+    "description": "Helps validate that agent behavior at runtime matches the capabilities and constraints declared in its attestation.",
+    "category": "transportation",
+    "description_zh": "幫助驗證運行時的代理行為是否與其證明中聲明的功能和約束相符。",
+    "original_description": "Helps validate that agent behavior at runtime matches the capabilities and constraints declared in its attestation.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "sholat",
+    "id": "sholat",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/banghasan/sholat/SKILL.md",
+    "description": "Ambil jadwal sholat (imsak, subuh, dzuhur, ashar, maghrib, isya) untuk kota/kabupaten di Indonesia dari API Muslim.",
+    "category": "transportation",
+    "description_zh": "Ambil jadwal sholat（imsak、subuh、dzuhur、ashar、maghrib、isya）是印尼達裡 API 穆斯林的 kota/kabupaten。",
+    "original_description": "Ambil jadwal sholat (imsak, subuh, dzuhur, ashar, maghrib, isya) untuk kota/kabupaten di Indonesia dari API Muslim.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "signet-guardian",
+    "id": "signet-guardian",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rafalzacher1/signet-guardian/SKILL.md",
+    "description": "Payment guard middleware for AI agents.",
+    "category": "transportation",
+    "description_zh": "人工智慧代理的支付保護中間件。",
+    "original_description": "Payment guard middleware for AI agents.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "stripe",
+    "id": "stripe",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jononovo/stripe/SKILL.md",
+    "description": "Easy-to-use agentic wallets powered by Stripe.",
+    "category": "transportation",
+    "description_zh": "由 Stripe 提供支援的易於使用的代理錢包。",
+    "original_description": "Easy-to-use agentic wallets powered by Stripe.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "stripe-best-practices",
+    "id": "stripe-best-practices",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/ifoster01/stripe-best-practices/SKILL.md",
+    "description": "Best practices for building Stripe payment integrations.",
+    "category": "transportation",
+    "description_zh": "建構 Stripe 支付整合的最佳實務。",
+    "original_description": "Best practices for building Stripe payment integrations.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "synth-data",
+    "id": "synth-data",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/emsin44/synth-data/SKILL.md",
+    "description": "Query volatility forecasts from Synthdata.co for crypto, commodities, and stocks.",
+    "category": "transportation",
+    "description_zh": "從 Synthdata.co 查詢加密貨幣、商品和股票的波動性預測。",
+    "original_description": "Query volatility forecasts from Synthdata.co for crypto, commodities, and stocks.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "talkspresso",
+    "id": "talkspresso",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/baron-talkspresso/talkspresso/SKILL.md",
+    "description": "Manage a Talkspresso business (services, appointments, products, clients, earnings, calendar) using the Talkspresso.",
+    "category": "transportation",
+    "description_zh": "使用 Talkspresso 管理 Talkspresso 業務（服務、約會、產品、客戶、收入、行事曆）。",
+    "original_description": "Manage a Talkspresso business (services, appointments, products, clients, earnings, calendar) using the Talkspresso.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "tech-security-audit",
+    "id": "tech-security-audit",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jacqueslauren/tech-security-audit/SKILL.md",
+    "description": "This skill integrates Nmap scanning functionality to perform local network vulnerability assessments.",
+    "category": "transportation",
+    "description_zh": "該技能整合了 Nmap 掃描功能來執行本地網路漏洞評估。",
+    "original_description": "This skill integrates Nmap scanning functionality to perform local network vulnerability assessments.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "tfl",
+    "id": "tfl",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brianleach/tfl/SKILL.md",
+    "description": "London TfL transit — real-time Tube arrivals, bus predictions, line status, service disruptions, journey planning.",
+    "category": "transportation",
+    "description_zh": "倫敦 TfL 交通 — 即時地鐵到達、公車預測、線路狀態、服務中斷、旅程規劃。",
+    "original_description": "London TfL transit — real-time Tube arrivals, bus predictions, line status, service disruptions, journey planning.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "tixflow",
+    "id": "tixflow",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seenfinity/tixflow/SKILL.md",
+    "description": "AI-powered event assistant for discovering, booking, and coordinating event tickets.",
+    "category": "transportation",
+    "description_zh": "由人工智慧驅動的活動助手，用於發現、預訂和協調活動門票。",
+    "original_description": "AI-powered event assistant for discovering, booking, and coordinating event tickets.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "tixflow-v2",
+    "id": "tixflow-v2",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/seenfinity/tixflow-v2/SKILL.md",
+    "description": "AI-powered event assistant for discovering, booking, and coordinating event tickets.",
+    "category": "transportation",
+    "description_zh": "由人工智慧驅動的活動助手，用於發現、預訂和協調活動門票。",
+    "original_description": "AI-powered event assistant for discovering, booking, and coordinating event tickets.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "track-flight",
+    "id": "track-flight",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/rafaforesightai/track-flight/SKILL.md",
+    "description": "Track flights in real-time with detailed status, gate info, delays, and live position.",
+    "category": "transportation",
+    "description_zh": "即時追蹤航班的詳細狀態、登機口資訊、延誤和即時位置。",
+    "original_description": "Track flights in real-time with detailed status, gate info, delays, and live position.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "translink-cli",
+    "id": "translink-cli",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/alanburchill/translink-cli/SKILL.md",
+    "description": "Query, troubleshoot, and explain Translink SEQ GTFS static + realtime data using local translink_* commands.",
+    "category": "transportation",
+    "description_zh": "使用本地 translink 命令查詢、排除故障並解釋 Translink SEQ GTFS 靜態 + 即時資料。",
+    "original_description": "Query, troubleshoot, and explain Translink SEQ GTFS static + realtime data using local translink_* commands.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "travel-agent",
+    "id": "travel-agent",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/aszelem/travel-agent/SKILL.md",
+    "description": "Find, book, and change flights for your human via email.",
+    "category": "transportation",
+    "description_zh": "透過電子郵件為您的人員尋找、預訂和更改航班。",
+    "original_description": "Find, book, and change flights for your human via email.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "trip-protocol",
+    "id": "trip-protocol",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/reggie-sporewell/trip-protocol/SKILL.md",
+    "description": "Psychedelic NFTs on Monad that temporarily rewrite your agent's SOUL.md.",
+    "category": "transportation",
+    "description_zh": "Monad 上的迷幻 NFT 會暫時重寫您代理程式的 SOUL.md。",
+    "original_description": "Psychedelic NFTs on Monad that temporarily rewrite your agent's SOUL.md.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "ubtrippin",
+    "id": "ubtrippin",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/fistfulayen/ubtrippin/SKILL.md",
+    "description": "Manages travel for your user via UBTRIPPIN — reads trips, items, and booking details.",
+    "category": "transportation",
+    "description_zh": "透過 UBTRIPPIN 為您的使用者管理旅行 — 讀取旅行、專案和預訂詳細資訊。",
+    "original_description": "Manages travel for your user via UBTRIPPIN — reads trips, items, and booking details.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "usc-booking-api",
+    "id": "usc-booking-api",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/niklaspriddat/usc-booking-api/SKILL.md",
+    "description": "Scannt deine Urban Sports Club Venues, zeigt Kurse mit direkten Booking-Links und kann Kurse buchen und stornieren.",
+    "category": "transportation",
+    "description_zh": "",
+    "original_description": "Scannt deine Urban Sports Club Venues, zeigt Kurse mit direkten Booking-Links und kann Kurse buchen und stornieren.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "void-atlas-protocol",
+    "id": "void-atlas-protocol",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/void-atlas-protocol/SKILL.md",
+    "description": "Void Atlas Protocol – a four-axis ethical navigation map (power, truth, sovereignty, care) with waypoints, routes.",
+    "category": "transportation",
+    "description_zh": "虛空地圖集協議 – 帶有航點、路線的四軸道德導航地圖（權力、真理、主權、關懷）。",
+    "original_description": "Void Atlas Protocol – a four-axis ethical navigation map (power, truth, sovereignty, care) with waypoints, routes.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "vulnerability-scanner",
+    "id": "vulnerability-scanner",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/brandonwise/vulnerability-scanner/SKILL.md",
+    "description": "Advanced vulnerability analysis for OWASP 2025, supply chain security, attack surface mapping, and risk prioritization.",
+    "category": "transportation",
+    "description_zh": "OWASP 2025 的進階漏洞分析、供應鏈安全、攻擊面映射和風險優先順序。",
+    "original_description": "Advanced vulnerability analysis for OWASP 2025, supply chain security, attack surface mapping, and risk prioritization.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "zerodha-kite",
+    "id": "zerodha-kite",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/jatinbansal1998/zerodha-kite/SKILL.md",
+    "description": "Route natural-language trading/account queries to the correct `zerodha` CLI command with exact flags, validation.",
+    "category": "transportation",
+    "description_zh": "將自然語言交易/帳戶查詢路由到正確的 Zerodha CLI 命令，並具有精確的標誌和驗證。",
+    "original_description": "Route natural-language trading/account queries to the correct `zerodha` CLI command with exact flags, validation.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  },
+  {
+    "title": "proxybase-openclaw-skill",
+    "id": "proxybase-openclaw-skill",
+    "repoUrl": "https://github.com/openclaw/skills/tree/main/skills/proxybase-user/proxybase-openclaw-skill/SKILL.md",
+    "description": "No one can block your claw after this. Automatically provisions socks5 proxies.",
+    "category": "transportation",
+    "description_zh": "從此以後沒有人能擋住你的爪子。自動配置socks5代理程式。",
+    "original_description": "No one can block your claw after this. Automatically provisions socks5 proxies.",
+    "category_name": {
+      "en": "Transportation",
+      "zh": "交通運輸"
+    }
+  }
+]
