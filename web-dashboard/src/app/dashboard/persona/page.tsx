@@ -35,14 +35,19 @@ import { cn } from "@/lib/utils";
 interface Preset {
     id: string;
     name: string;
+    name_zh?: string;
     description: string;
+    description_zh?: string;
     icon: string;
     aiName: string;
     userName: string;
     role: string;
+    role_zh?: string;
     tone: string;
     tags: string[];
     skills: string[];
+    category?: string;
+    category_name?: { en: string, zh: string };
 }
 
 interface PersonaData {
@@ -316,6 +321,15 @@ export default function PersonaPage() {
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [activePresetId, setActivePresetId] = useState("");
 
+    // Market / Tab states
+    const [activeTab, setActiveTab] = useState<"local" | "market">("local");
+    const [marketPersonas, setMarketPersonas] = useState<Preset[]>([]);
+    const [marketTotal, setMarketTotal] = useState(0);
+    const [marketPage, setMarketPage] = useState(1);
+    const [searchMarketTerm, setSearchMarketTerm] = useState("");
+    const [marketCategory, setMarketCategory] = useState("all");
+    const [isMarketLoading, setIsMarketLoading] = useState(false);
+
     const [statusMsg, setStatusMsg] = useState<{ type: "error" | "info"; text: string } | null>(null);
 
     const applyToForm = (data: PersonaData) => {
@@ -346,6 +360,25 @@ export default function PersonaPage() {
     }, []);
 
     useEffect(() => { loadTemplates(); }, [loadTemplates]);
+
+    useEffect(() => {
+        if (activeTab === "market") {
+            setIsMarketLoading(true);
+            const delayDebounceFn = setTimeout(() => {
+                fetch(`/api/persona/market?search=${encodeURIComponent(searchMarketTerm)}&category=${encodeURIComponent(marketCategory)}&page=${marketPage}&limit=20`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data && !data.error) {
+                            setMarketPersonas(data.personas || []);
+                            setMarketTotal(data.total || 0);
+                        }
+                    })
+                    .catch(e => console.error("Error fetching market personas", e))
+                    .finally(() => setIsMarketLoading(false));
+            }, 300); // debounce search
+            return () => clearTimeout(delayDebounceFn);
+        }
+    }, [activeTab, searchMarketTerm, marketCategory, marketPage]);
 
     // Detect dirty state
     useEffect(() => {
@@ -540,106 +573,275 @@ export default function PersonaPage() {
                     </div>
 
                     {/* ── Templates Section ────────────────────────────── */}
-                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200 space-y-4">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-base font-semibold text-gray-300 flex items-center gap-2">
-                                <Sparkles className="w-4 h-4 text-purple-400" />
-                                人格樣板庫
-                            </h2>
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+                        <div className="flex items-center gap-6 border-b border-gray-800 mb-6">
                             <button
-                                onClick={() => setShowCreate(true)}
-                                className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-900/30 border border-purple-700/40 text-purple-300 hover:bg-purple-900/50 text-xs font-medium rounded-lg transition-all"
+                                onClick={() => { setActiveTab("local"); setSearchTerm(""); setSelectedTag(null); }}
+                                className={cn("pb-3 text-sm font-medium transition-all relative",
+                                    activeTab === "local" ? "text-purple-400" : "text-gray-500 hover:text-gray-300")}
                             >
-                                <Plus className="w-3.5 h-3.5" />新增人格
+                                <div className="flex items-center gap-2">
+                                    <User className="w-4 h-4" /> 나의樣板 (Local)
+                                </div>
+                                {activeTab === "local" && (
+                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-500 rounded-t-full" />
+                                )}
+                            </button>
+                            <button
+                                onClick={() => { setActiveTab("market"); setSearchTerm(""); }}
+                                className={cn("pb-3 text-sm font-medium transition-all relative",
+                                    activeTab === "market" ? "text-blue-400" : "text-gray-500 hover:text-gray-300")}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Sparkles className="w-4 h-4" /> 人格市集 (Market)
+                                </div>
+                                {activeTab === "market" && (
+                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 rounded-t-full" />
+                                )}
                             </button>
                         </div>
 
-                        {/* Search + Tags */}
-                        <div className="bg-gray-900/40 border border-gray-800 rounded-2xl p-4">
-                            <div className="flex gap-3 mb-4">
-                                <div className="relative flex-1">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
-                                    <input
-                                        type="text"
-                                        placeholder="搜尋樣板..."
-                                        value={searchTerm}
-                                        onChange={e => setSearchTerm(e.target.value)}
-                                        className="w-full bg-gray-950 border border-gray-800 rounded-xl pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500/30 transition-all placeholder:text-gray-600"
-                                    />
-                                    {searchTerm && (
-                                        <button onClick={() => setSearchTerm("")} className="absolute right-3 top-1/2 -translate-y-1/2">
-                                            <X className="w-3 h-3 text-gray-500" />
-                                        </button>
-                                    )}
-                                </div>
-                                <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                                    <Filter className="w-3.5 h-3.5" />
-                                </div>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                                <button onClick={() => setSelectedTag(null)}
-                                    className={cn("px-3 py-1 rounded-lg text-xs font-medium transition-all",
-                                        selectedTag === null ? "bg-purple-500 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white")}>
-                                    全部
-                                </button>
-                                {allTags.map(tag => (
-                                    <button key={tag} onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-                                        className={cn("px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1",
-                                            selectedTag === tag ? "bg-blue-500 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white")}>
-                                        <Tag className="w-3 h-3" />{tag}
+                        {activeTab === "local" && (
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-sm font-medium text-gray-400">本地自訂與預設樣板</h2>
+                                    <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-900/30 border border-purple-700/40 text-purple-300 hover:bg-purple-900/50 text-xs font-medium rounded-lg transition-all">
+                                        <Plus className="w-3.5 h-3.5" />新增人格
                                     </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {filteredTemplates.length > 0 ? filteredTemplates.map(preset => (
-                                <button
-                                    key={preset.id}
-                                    onClick={() => applyPreset(preset)}
-                                    className={cn(
-                                        "text-left p-4 rounded-2xl border transition-all duration-300 group relative overflow-hidden flex flex-col",
-                                        activePresetId === preset.id
-                                            ? "bg-purple-950/25 border-purple-500/50 ring-1 ring-purple-500/30"
-                                            : "bg-gray-900 border-gray-800 hover:border-gray-700 hover:bg-gray-800/70"
-                                    )}
-                                >
-                                    <div className="flex items-start justify-between mb-3">
-                                        <div className={cn("p-2.5 rounded-xl transition-colors",
-                                            activePresetId === preset.id
-                                                ? "bg-purple-500 text-white"
-                                                : "bg-gray-800 text-gray-400 group-hover:text-purple-400")}>
-                                            {(() => { const I = ICON_MAP[preset.icon] || ICON_MAP.BrainCircuit; return <I className="w-5 h-5" />; })()}
+                                </div>
+                                {/* Search + Tags */}
+                                <div className="bg-gray-900/40 border border-gray-800 rounded-2xl p-4">
+                                    <div className="flex gap-3 mb-4">
+                                        <div className="relative flex-1">
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+                                            <input
+                                                type="text"
+                                                placeholder="搜尋樣板..."
+                                                value={searchTerm}
+                                                onChange={e => setSearchTerm(e.target.value)}
+                                                className="w-full bg-gray-950 border border-gray-800 rounded-xl pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500/30 transition-all placeholder:text-gray-600"
+                                            />
+                                            {searchTerm && (
+                                                <button onClick={() => setSearchTerm("")} className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                    <X className="w-3 h-3 text-gray-500" />
+                                                </button>
+                                            )}
                                         </div>
-                                        {activePresetId === preset.id && (
-                                            <div className="flex items-center gap-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[9px] font-bold px-2 py-0.5 rounded-full">
-                                                <Check className="w-2.5 h-2.5" />套用中
-                                            </div>
-                                        )}
                                     </div>
-                                    <h4 className={cn("font-bold mb-1 text-sm transition-colors",
-                                        activePresetId === preset.id ? "text-white" : "text-gray-200 group-hover:text-white")}>
-                                        {preset.name}
-                                    </h4>
-                                    <p className="text-xs text-gray-500 leading-relaxed flex-1">{preset.description}</p>
-                                    <div className="flex flex-wrap gap-1 mt-3">
-                                        {preset.tags?.map(t => (
-                                            <span key={t} className="px-1.5 py-0.5 bg-gray-950/50 border border-gray-800 text-[9px] text-gray-600 rounded">
-                                                #{t}
-                                            </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        <button onClick={() => setSelectedTag(null)}
+                                            className={cn("px-3 py-1 rounded-lg text-xs font-medium transition-all",
+                                                selectedTag === null ? "bg-purple-500 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white")}>
+                                            全部
+                                        </button>
+                                        {allTags.map(tag => (
+                                            <button key={tag} onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
+                                                className={cn("px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1",
+                                                    selectedTag === tag ? "bg-blue-500 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white")}>
+                                                <Tag className="w-3 h-3" />{tag}
+                                            </button>
                                         ))}
                                     </div>
-                                </button>
-                            )) : (
-                                <div className="col-span-full py-16 text-center bg-gray-900/20 border border-dashed border-gray-800 rounded-2xl flex flex-col items-center">
-                                    <Search className="w-8 h-8 text-gray-700 mb-2" />
-                                    <p className="text-gray-500 text-sm">找不到符合條件的樣板</p>
-                                    <button onClick={() => { setSearchTerm(""); setSelectedTag(null); }}
-                                        className="text-purple-500 text-xs mt-2 hover:underline">清除過濾條件</button>
                                 </div>
-                            )}
-                        </div>
+
+                                {/* Local Grid */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {filteredTemplates.length > 0 ? filteredTemplates.map(preset => (
+                                        <button
+                                            key={preset.id}
+                                            onClick={() => applyPreset(preset)}
+                                            className={cn(
+                                                "text-left p-4 rounded-2xl border transition-all duration-300 group relative overflow-hidden flex flex-col",
+                                                activePresetId === preset.id
+                                                    ? "bg-purple-950/25 border-purple-500/50 ring-1 ring-purple-500/30"
+                                                    : "bg-gray-900 border-gray-800 hover:border-gray-700 hover:bg-gray-800/70"
+                                            )}
+                                        >
+                                            <div className="flex items-start justify-between mb-3">
+                                                <div className={cn("p-2.5 rounded-xl transition-colors",
+                                                    activePresetId === preset.id
+                                                        ? "bg-purple-500 text-white"
+                                                        : "bg-gray-800 text-gray-400 group-hover:text-purple-400")}>
+                                                    {(() => { const I = ICON_MAP[preset.icon] || ICON_MAP.BrainCircuit; return <I className="w-5 h-5" />; })()}
+                                                </div>
+                                                {activePresetId === preset.id && (
+                                                    <div className="flex items-center gap-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                                                        <Check className="w-2.5 h-2.5" />套用中
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <h4 className={cn("font-bold mb-1 text-sm transition-colors",
+                                                activePresetId === preset.id ? "text-white" : "text-gray-200 group-hover:text-white")}>
+                                                {preset.name}
+                                            </h4>
+                                            <p className="text-xs text-gray-500 leading-relaxed flex-1">{preset.description}</p>
+                                        </button>
+                                    )) : (
+                                        <div className="col-span-full py-16 text-center bg-gray-900/20 border border-dashed border-gray-800 rounded-2xl flex flex-col items-center">
+                                            <Search className="w-8 h-8 text-gray-700 mb-2" />
+                                            <p className="text-gray-500 text-sm">找不到符合條件的樣板</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === "market" && (
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-sm font-medium text-gray-400">來自 Awesome ChatGPT Prompts 的海量人格</h2>
+                                </div>
+                                <div className="bg-gray-900/40 border border-gray-800 rounded-2xl p-4">
+                                    <div className="flex gap-3 mb-4">
+                                        <div className="relative flex-1">
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+                                            <input
+                                                type="text"
+                                                placeholder="搜尋市集人格..."
+                                                value={searchMarketTerm}
+                                                onChange={e => { setSearchMarketTerm(e.target.value); setMarketPage(1); }}
+                                                className="w-full bg-gray-950 border border-gray-800 rounded-xl pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all placeholder:text-gray-600"
+                                            />
+                                            {searchMarketTerm && (
+                                                <button onClick={() => { setSearchMarketTerm(""); setMarketPage(1); }} className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                    <X className="w-3 h-3 text-gray-500" />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {[
+                                            { id: 'all', label: '全部' },
+                                            { id: 'coding-and-dev', label: '寫程式與開發' },
+                                            { id: 'writing-and-language', label: '寫作與語言' },
+                                            { id: 'business-and-marketing', label: '商業與行銷' },
+                                            { id: 'education', label: '教育與學習' },
+                                            { id: 'health-and-fitness', label: '健康與塑身' },
+                                            { id: 'gaming-and-rpg', label: '遊戲與角色扮演' },
+                                            { id: 'data-and-research', label: '數據與研究' },
+                                            { id: 'creative-arts', label: '創意與藝術' },
+                                            { id: 'other', label: '其他角色' }
+                                        ].map(cat => (
+                                            <button key={cat.id} onClick={() => { setMarketCategory(cat.id); setMarketPage(1); }}
+                                                className={cn("px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1",
+                                                    marketCategory === cat.id ? "bg-blue-500 text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white")}>
+                                                <Filter className="w-3 h-3" />{cat.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {isMarketLoading ? (
+                                    <div className="py-20 flex justify-center items-center">
+                                        <RefreshCcw className="w-8 h-8 text-blue-500 animate-spin" />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            {marketPersonas.length > 0 ? marketPersonas.map(preset => (
+                                                <button
+                                                    key={preset.id}
+                                                    onClick={() => applyPreset({ ...preset, icon: "Sparkles", aiName: preset.name, userName: "User", tone: "Professional", skills: [] })}
+                                                    className={cn(
+                                                        "text-left p-4 rounded-2xl border transition-all duration-300 group relative overflow-hidden flex flex-col",
+                                                        activePresetId === preset.id
+                                                            ? "bg-blue-950/25 border-blue-500/50 ring-1 ring-blue-500/30"
+                                                            : "bg-gray-900 border-gray-800 hover:border-gray-700 hover:bg-gray-800/70"
+                                                    )}
+                                                >
+                                                    <div className="flex items-start justify-between mb-3">
+                                                        <div className={cn("p-2.5 rounded-xl transition-colors",
+                                                            activePresetId === preset.id
+                                                                ? "bg-blue-500 text-white"
+                                                                : "bg-gray-800 text-gray-400 group-hover:text-blue-400")}>
+                                                            <Sparkles className="w-5 h-5" />
+                                                        </div>
+                                                        {activePresetId === preset.id && (
+                                                            <div className="flex items-center gap-1 bg-blue-500/20 border border-blue-500/30 text-blue-300 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                                                                <Check className="w-2.5 h-2.5" />套用中
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <h4 className={cn("font-bold mb-1 text-sm transition-colors",
+                                                        activePresetId === preset.id ? "text-white" : "text-gray-200 group-hover:text-white")}>
+                                                        {preset.name_zh && preset.name_zh !== preset.name ? `${preset.name} / ${preset.name_zh}` : preset.name}
+                                                    </h4>
+                                                    <p className="text-xs text-gray-500 leading-relaxed flex-1 line-clamp-3">
+                                                        {preset.description_zh && preset.tags.includes('zh') ? preset.description_zh : preset.description}
+                                                    </p>
+                                                    {preset.category_name && (
+                                                        <div className="mt-3 pt-3 border-t border-gray-800/50 flex justify-between items-center w-full">
+                                                            <span className="text-[10px] text-gray-500 flex items-center gap-1">
+                                                                <Tag className="w-3 h-3" /> {preset.category_name.zh || preset.category_name.en}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                    <div className="flex flex-wrap gap-1 mt-3">
+                                                        <span className="px-1.5 py-0.5 bg-gray-950/50 border border-gray-800 text-[9px] text-gray-600 rounded">
+                                                            #market
+                                                        </span>
+                                                    </div>
+                                                </button>
+                                            )) : (
+                                                <div className="col-span-full py-16 text-center bg-gray-900/20 border border-dashed border-gray-800 rounded-2xl flex flex-col items-center">
+                                                    <Search className="w-8 h-8 text-gray-700 mb-2" />
+                                                    <p className="text-gray-500 text-sm">找不到符合條件的人格</p>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Pagination Controls */}
+                                        {marketTotal > 0 && (
+                                            <div className="flex items-center justify-between mt-6 bg-gray-900/40 p-3 rounded-xl border border-gray-800">
+                                                <p className="text-xs text-gray-500">
+                                                    Showing {(marketPage - 1) * 20 + 1} to {Math.min(marketPage * 20, marketTotal)} of {marketTotal}
+                                                </p>
+                                                <div className="flex items-center gap-2">
+                                                    <Button
+                                                        variant="outline" size="sm"
+                                                        className="bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:text-white h-8"
+                                                        onClick={() => setMarketPage(p => Math.max(1, p - 1))}
+                                                        disabled={marketPage === 1}
+                                                    >
+                                                        Prev
+                                                    </Button>
+                                                    <div className="flex items-center gap-1">
+                                                        {Array.from({ length: Math.min(5, Math.ceil(marketTotal / 20)) }, (_, i) => {
+                                                            let pageNum = marketPage;
+                                                            if (marketPage < 3) pageNum = i + 1;
+                                                            else if (marketPage > Math.ceil(marketTotal / 20) - 2) pageNum = Math.ceil(marketTotal / 20) - 4 + i;
+                                                            else pageNum = marketPage - 2 + i;
+                                                            
+                                                            if (pageNum > 0 && pageNum <= Math.ceil(marketTotal / 20)) {
+                                                                return (
+                                                                    <button
+                                                                        key={pageNum}
+                                                                        onClick={() => setMarketPage(pageNum)}
+                                                                        className={cn("w-8 h-8 rounded-lg text-xs font-medium transition-all",
+                                                                            marketPage === pageNum ? "bg-blue-600 text-white" : "text-gray-400 hover:bg-gray-700 hover:text-white")}
+                                                                    >
+                                                                        {pageNum}
+                                                                    </button>
+                                                                );
+                                                            }
+                                                            return null;
+                                                        })}
+                                                    </div>
+                                                    <Button
+                                                        variant="outline" size="sm"
+                                                        className="bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:text-white h-8"
+                                                        onClick={() => setMarketPage(p => Math.min(Math.ceil(marketTotal / 20), p + 1))}
+                                                        disabled={marketPage === Math.ceil(marketTotal / 20)}
+                                                    >
+                                                        Next
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

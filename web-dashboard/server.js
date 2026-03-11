@@ -956,6 +956,46 @@ class WebServer {
             }
         });
 
+        this.app.get('/api/persona/market', (req, res) => {
+            try {
+                const { search, category, page = 1, limit = 20 } = req.query;
+                const personasFile = path.resolve(process.cwd(), 'data', 'marketplace', 'personas.json');
+                
+                if (!fs.existsSync(personasFile)) {
+                    return res.json({ personas: [], total: 0 });
+                }
+
+                const data = fs.readFileSync(personasFile, 'utf8');
+                let allPersonas = JSON.parse(data);
+
+                if (category && category !== 'all') {
+                    allPersonas = allPersonas.filter(p => p.category === category);
+                }
+
+                if (search) {
+                    const term = search.toLowerCase();
+                    allPersonas = allPersonas.filter(p => 
+                        (p.name && p.name.toLowerCase().includes(term)) || 
+                        (p.name_zh && p.name_zh.toLowerCase().includes(term)) ||
+                        (p.description && p.description.toLowerCase().includes(term)) ||
+                        (p.description_zh && p.description_zh.toLowerCase().includes(term)) ||
+                        (p.role && p.role.toLowerCase().includes(term)) ||
+                        (p.role_zh && p.role_zh.toLowerCase().includes(term))
+                    );
+                }
+
+                const total = allPersonas.length;
+                const startIndex = (Number(page) - 1) * Number(limit);
+                const endIndex = startIndex + Number(limit);
+                const personas = allPersonas.slice(startIndex, endIndex);
+
+                return res.json({ personas, total });
+            } catch (e) {
+                console.error("Failed to load market personas:", e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
         this.app.get('/api/golems', (req, res) => {
             try {
                 const EnvManager = require('../src/utils/EnvManager');
