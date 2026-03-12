@@ -162,20 +162,11 @@ class SdkBrain {
 
     async recall(queryText) {
         if (!queryText) return [];
-        try {
-            return await this.memoryDriver.recall(queryText);
-        } catch (e) {
-            console.warn(`[SdkBrain] Memory recall failed: ${e.message}`);
-            return [];
-        }
+        try { return await this.memoryDriver.recall(queryText); } catch (e) { return []; }
     }
 
     async memorize(text, metadata = {}) {
-        try {
-            await this.memoryDriver.memorize(text, metadata);
-        } catch (e) {
-            console.warn(`[SdkBrain] Memory store failed: ${e.message}`);
-        }
+        try { await this.memoryDriver.memorize(text, metadata); } catch (e) { }
     }
 
     _appendChatLog(entry) {

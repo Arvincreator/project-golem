@@ -16,6 +16,8 @@ class AutonomyManager {
         this.dcClient = null;
         this.convoManager = null;
         this.pendingPatch = null;
+        this._moltbookLearner = null;
+        this._statusReportTimer = null;
     }
 
     setIntegrations(tgBot, dcClient, convoManager) {
@@ -30,6 +32,214 @@ class AutonomyManager {
         setInterval(() => this.timeWatcher(), 60000);
         // ✨ [v9.0.7] 每 30 分鐘自動檢查一次日誌狀態
         setInterval(() => this.checkArchiveStatus(), 30 * 60000);
+
+        // 🦞 Moltbook 自動學習
+        this._startMoltbookLearner();
+
+        // 📊 定期狀態報告 (每 2 小時)
+        this._statusReportTimer = setInterval(() => this._sendStatusReport(), 2 * 60 * 60 * 1000);
+        // 首次報告在啟動 5 分鐘後
+        setTimeout(() => this._sendStatusReport(), 5 * 60 * 1000);
+    }
+
+    _startMoltbookLearner() {
+        try {
+            const MoltbookLearner = require('./MoltbookLearner');
+            this._moltbookLearner = new MoltbookLearner(this.brain, this.controller, this, {
+                golemId: this.golemId
+            });
+            this._moltbookLearner.start();
+            console.log(`🦞 [Autonomy] Moltbook auto-learning enabled`);
+        } catch (e) {
+            console.warn(`[Autonomy] Moltbook learner failed to start: ${e.message}`);
+        }
+    }
+
+    async _sendStatusReport() {
+        try {
+            const uptime = process.uptime();
+            const uptimeStr = `${Math.floor(uptime / 3600)}h${Math.floor((uptime % 3600) / 60)}m`;
+            const memMB = Math.round(process.memoryUsage().rss / 1024 / 1024);
+
+            const moltStats = this._moltbookLearner ? this._moltbookLearner.getStats() : null;
+            const queueStatus = this.controller?.pendingTasks?.size || 0;
+
+            // 行動日誌摘要
+            const SecurityManager = require('./SecurityManager');
+            const secMgr = this.controller?.security;
+            const actionSummary = secMgr?.getActionSummary(5) || '(無紀錄)';
+
+            // Circuit Breaker 狀態
+            let cbInfo = '';
+            try {
+                const cb = require('../core/circuit_breaker');
+                const cbStatus = cb.getStatus();
+                const openCBs = Object.entries(cbStatus).filter(([, v]) => v.state !== 'CLOSED');
+                if (openCBs.length > 0) {
+                    cbInfo = `\n⚡ 熔斷: ${openCBs.map(([k, v]) => `${k}=${v.state}`).join(', ')}`;
+                }
+            } catch (e) { /* optional */ }
+
+            const lines = [
+                `📊 <b>Rensin 狀態報告</b>`,
+                ``,
+                `⏱ 運行: ${uptimeStr} | 記憶體: ${memMB}MB`,
+                `🔄 待審批任務: ${queueStatus}`,
+                `📝 最近行動: ${actionSummary}`,
+            ];
+
+            if (moltStats) {
+                lines.push(`🦞 Moltbook: ${moltStats.cycles} 週期, ${moltStats.interactions} 互動, ${moltStats.errors} 錯誤`);
+            }
+
+            if (cbInfo) lines.push(cbInfo);
+
+            lines.push(``, `<i>L0/L1 自動執行中 | L2+ 等待爸爸審批</i>`);
+
+            await this.sendNotification(lines.join('\n'), { parse_mode: 'HTML' });
+
+            // 同步到戰情室 (non-blocking)
+            this._updateWarRoom('status_report', {
+                uptime: uptimeStr,
+                memory_mb: memMB,
+                pending_tasks: queueStatus,
+                moltbook_stats: moltStats,
+                action_summary: actionSummary
+            }).catch(() => {});
+        } catch (e) {
+            console.warn(`[Autonomy] Status report failed: ${e.message}`);
+        }
+    }
+
+    /**
+     * L0/L1 自動執行報告 — 發 Telegram 通知
+     */
+    async reportAutoAction(action, level, result, success) {
+        try {
+            const emoji = success ? '✅' : '❌';
+            const actionDesc = `${action?.action || '?'}${action?.task ? ':' + action.task : ''}`;
+            const resultSnippet = String(result).substring(0, 300);
+
+            const msg = [
+                `${emoji} <b>[${level} 自動執行]</b> ${actionDesc}`,
+                `<pre>${this._escapeHtml(resultSnippet)}</pre>`,
+            ].join('\n');
+
+            await this.sendNotification(msg, { parse_mode: 'HTML' });
+        } catch (e) {
+            console.warn(`[Autonomy] Auto-action report failed: ${e.message}`);
+        }
+    }
+
+    /**
+     * L2+ 審批請求 — 發 Telegram 帶按鈕
+     */
+    async requestApproval(action, level, description, approvalId) {
+        try {
+            const actionDesc = `${action?.action || '?'}${action?.task ? ':' + action.task : ''}`;
+
+            const msg = [
+                `⚠️ <b>[${level} 需要審批]</b>`,
+                `動作: <code>${actionDesc}</code>`,
+                `說明: ${this._escapeHtml(description.substring(0, 500))}`,
+            ].join('\n');
+
+            await this.sendNotification(msg, {
+                parse_mode: 'HTML',
+                reply_markup: {
+                    inline_keyboard: [[
+                        { text: '✅ 批准', callback_data: `APPROVE_${approvalId}` },
+                        { text: '❌ 拒絕', callback_data: `DENY_${approvalId}` }
+                    ]]
+                }
+            });
+        } catch (e) {
+            console.warn(`[Autonomy] Approval request failed: ${e.message}`);
+        }
+    }
+
+    /**
+     * 更新戰情室 (Notion War Room)
+     */
+    async _updateWarRoom(eventType, data) {
+        try {
+            const { getToken } = require('../utils/yedan-auth');
+            const token = getToken();
+            if (!token) return;
+
+            await fetch('https://notion-warroom.yagami8095.workers.dev/report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer openclaw-warroom-2026'
+                },
+                body: JSON.stringify({
+                    source: 'rensin',
+                    event: eventType,
+                    data,
+                    timestamp: new Date().toISOString()
+                }),
+                signal: AbortSignal.timeout(10000)
+            });
+        } catch (e) {
+            // Non-blocking — war room update failure is not critical
+        }
+    }
+
+    /**
+     * RAG 查詢 — 動作前先查經驗
+     */
+    async queryRAGBefore(action) {
+        try {
+            const { getToken } = require('../utils/yedan-auth');
+            const token = getToken();
+            if (!token) return null;
+
+            const query = `${action?.action || ''} ${action?.task || ''} outcome`;
+            const res = await fetch('https://yedan-graph-rag.yagami8095.workers.dev/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ query, max_hops: 1, limit: 3 }),
+                signal: AbortSignal.timeout(8000)
+            });
+            if (!res.ok) return null;
+            return res.json();
+        } catch (e) { return null; }
+    }
+
+    /**
+     * RAG 寫入 — 動作後記錄經驗
+     */
+    async writeRAGAfter(action, outcome, success) {
+        try {
+            const { getToken } = require('../utils/yedan-auth');
+            const token = getToken();
+            if (!token) return;
+
+            const actionDesc = `${action?.action || '?'}:${action?.task || ''}`;
+            await fetch('https://yedan-graph-rag.yagami8095.workers.dev/evolve', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    agent_id: 'rensin',
+                    situation: `Action: ${actionDesc}`,
+                    action_taken: actionDesc,
+                    outcome: String(outcome).substring(0, 500),
+                    score: success ? 4 : 1
+                }),
+                signal: AbortSignal.timeout(8000)
+            });
+        } catch (e) { /* non-blocking */ }
+    }
+
+    _escapeHtml(text) {
+        return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
     async checkArchiveStatus() {
         console.log(`🕒 [Autonomy] 定時檢查日誌壓縮狀態 (雙重門檻掃描)...`);

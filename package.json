@@ -29,6 +29,7 @@
   "author": "Arvin Chen",
   "license": "MIT",
   "dependencies": {
+    "@google/genai": "^1.44.0",
     "@google/generative-ai": "0.21.0",
     "@grammyjs/auto-retry": "^2.0.2",
     "@grammyjs/transformer-throttler": "^1.2.1",

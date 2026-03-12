@@ -53,7 +53,7 @@ class OpossumBridge {
     // Try to get per-service config from XML
     let opts = { ...FALLBACK_OPTS };
     if (this._xmlConfig) {
-      // Extract base service name (e.g., 'gemini:primary' → 'gemini')
+      // Extract base service name (e.g., 'rag:yedan' → 'rag')
       const baseName = serviceId.split(':')[0];
       const xmlCfg = this._xmlConfig.getCircuitBreakerConfig(baseName);
       if (xmlCfg) {

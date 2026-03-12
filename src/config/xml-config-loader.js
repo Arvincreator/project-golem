@@ -85,10 +85,10 @@ class GolemConfigLoader {
   getRagConfig() {
     if (!this.config) this.load();
     const rag = this.config?.rag;
-    if (!rag) return { url: 'http://localhost:8000', timeout: 15000 };
+    if (!rag) return { url: 'https://yedan-graph-rag.yagami8095.workers.dev', timeout: 15000 };
     return {
-      url: rag?.remote?.['@_url'] || 'http://localhost:8000',
-      authEnv: rag?.remote?.['@_auth-env'] || 'RAG_AUTH_TOKEN',
+      url: rag?.remote?.['@_url'] || 'https://yedan-graph-rag.yagami8095.workers.dev',
+      authEnv: rag?.remote?.['@_auth-env'] || 'FLEET_AUTH_TOKEN',
       timeout: rag?.remote?.['@_timeout-ms'] || 15000,
       localDriver: rag?.local?.['@_driver'] || 'magma',
       localDataFile: rag?.local?.['@_data-file'] || 'src/memory/graph/nodes.json',
@@ -171,7 +171,7 @@ class GolemConfigLoader {
   _defaults() {
     return {
       node: { '@_id': 'unknown', '@_role': 'standalone' },
-      rag: { remote: { '@_url': 'http://localhost:8000' } },
+      rag: { remote: { '@_url': 'https://yedan-graph-rag.yagami8095.workers.dev' } },
       telegram: { polling: { '@_timeout-sec': 30, '@_max-consecutive-errors': 10 } },
       'circuit-breakers': { breaker: [] },
     };
