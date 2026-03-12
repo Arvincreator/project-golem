@@ -1,6 +1,6 @@
 {
   "name": "project-golem",
-  "version": "9.0.7",
+  "version": "9.0.8",
   "description": "Project Golem v9.0 (Ultimate Chronos + MultiAgent Edition) - Collaborative AI System",
   "main": "index.js",
   "scripts": {

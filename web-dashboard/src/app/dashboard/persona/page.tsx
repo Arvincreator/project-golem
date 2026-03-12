@@ -427,13 +427,19 @@ export default function PersonaPage() {
     };
 
     const applyPreset = (preset: Preset) => {
+        const isZh = preset.tags?.includes('zh') || !!preset.name_zh;
+
         setActivePresetId(preset.id);
-        setAiName(preset.aiName);
-        setUserName(preset.userName);
-        setRole(preset.role);
-        setTone(preset.tone);
+        setAiName(preset.name_zh || preset.aiName || preset.name);
+        setUserName(isZh && (preset.userName === "User" || !preset.userName) ? "使用者" : (preset.userName || "User"));
+        setRole(preset.role_zh || preset.role || preset.description_zh || preset.description);
+        setTone(isZh && (preset.tone === "Professional" || !preset.tone) ? "專業" : (preset.tone || "Professional"));
+        
         setIsEditing(true);
-        setStatusMsg({ type: "info", text: `已套用樣板「${preset.name}」，確認後請點擊「儲存並重啟」。` });
+        setStatusMsg({ 
+            type: "info", 
+            text: `已套用樣板「${preset.name_zh || preset.name}」，確認後請點擊「儲存並重啟」。` 
+        });
     };
 
     const allTags = Array.from(new Set(templates.flatMap(t => t.tags || [])));
@@ -581,7 +587,7 @@ export default function PersonaPage() {
                                     activeTab === "local" ? "text-purple-400" : "text-gray-500 hover:text-gray-300")}
                             >
                                 <div className="flex items-center gap-2">
-                                    <User className="w-4 h-4" /> 나의樣板 (Local)
+                                    <User className="w-4 h-4" /> 我的樣板 (Local)
                                 </div>
                                 {activeTab === "local" && (
                                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-500 rounded-t-full" />
