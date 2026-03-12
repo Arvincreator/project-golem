@@ -1,6 +1,20 @@
+// Per-chat feedback depth tracking to prevent infinite loops
+const _feedbackDepth = new Map();
+const MAX_FEEDBACK_DEPTH = 3;
+
 class CommandHandler {
     static async execute(ctx, normalActions, controller, brain, dispatchFn) {
         if (!normalActions || normalActions.length === 0) return;
+
+        const chatId = ctx.chatId || ctx.chat?.id || 'default';
+        const currentDepth = _feedbackDepth.get(chatId) || 0;
+
+        if (currentDepth >= MAX_FEEDBACK_DEPTH) {
+            console.warn(`[CommandHandler] 🛑 Feedback loop depth ${currentDepth} >= ${MAX_FEEDBACK_DEPTH} for chat ${chatId}. Breaking loop.`);
+            _feedbackDepth.delete(chatId);
+            await ctx.reply('⚠️ 偵測到指令迴路，已自動中止。請重新描述你的需求。');
+            return;
+        }
 
         // ✨ [v9.1] 整合行動產線：將一般任務執行丟入 ActionQueue
         // 注意：這裡假設我們從某處能取得與本回合指令對應的 actionQueue 和 convoManager
@@ -76,15 +90,30 @@ class CommandHandler {
 
                 // 無論成功或失敗，都將完整觀察結果送給大腦分析（讓 AI 知道發生什麼事並作出回應）
                 if (ctx.sendTyping) await ctx.sendTyping();
-                const feedbackPrompt = `[System Observation]\n${result}\n\nPlease reply to user naturally using [GOLEM_REPLY].`;
 
-                // ✨ [v9.1] 產線串接：將 Observation 放入對話產線
-                if (convoManager) {
-                    await convoManager.enqueue(ctx, feedbackPrompt, { isPriority: true, bypassDebounce: true });
-                } else {
-                    // Fallback 對話發送
-                    const finalRes = await brain.sendMessage(feedbackPrompt);
-                    await dispatchFn(ctx, finalRes, brain, controller);
+                // Truncate observation to prevent context bloat
+                const MAX_OBS_LENGTH = 2000;
+                const truncatedResult = result.length > MAX_OBS_LENGTH
+                    ? result.substring(0, MAX_OBS_LENGTH) + '\n...(truncated)'
+                    : result;
+                const feedbackPrompt = `[System Observation]\n${truncatedResult}\n\nPlease reply to user naturally using [GOLEM_REPLY]. If this observation shows a repeated error, do NOT retry the same action — inform the user instead.`;
+
+                // Track feedback depth to prevent infinite loops
+                _feedbackDepth.set(chatId, currentDepth + 1);
+
+                try {
+                    // ✨ [v9.1] 產線串接：將 Observation 放入對話產線
+                    if (convoManager) {
+                        await convoManager.enqueue(ctx, feedbackPrompt, { isPriority: true, bypassDebounce: true });
+                    } else {
+                        // Fallback 對話發送
+                        const finalRes = await brain.sendMessage(feedbackPrompt);
+                        await dispatchFn(ctx, finalRes, brain, controller);
+                    }
+                } finally {
+                    const d = _feedbackDepth.get(chatId) || 0;
+                    if (d <= 1) _feedbackDepth.delete(chatId);
+                    else _feedbackDepth.set(chatId, d - 1);
                 }
             }
         };
