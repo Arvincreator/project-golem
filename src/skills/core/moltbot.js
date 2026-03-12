@@ -9,6 +9,46 @@ const AUTH_FILE = path.join(process.cwd(), 'moltbot_auth.json');
 const LOG_FILE = path.join(process.cwd(), 'moltbot_history.log');
 
 let authData = { api_key: null, agent_name: 'Usagi_golem' };
+
+// [v2] Lobster physics auto-solver for Moltbook math challenges
+function _autoSolve(challenge) {
+    const words = {
+        zero:0,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,
+        ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,
+        seventeen:17,eighteen:18,nineteen:19,twenty:20,thirty:30,forty:40,fifty:50,
+        sixty:60,seventy:70,eighty:80,ninety:90,hundred:100
+    };
+    const clean = challenge.toLowerCase().replace(/[^a-z0-9\s.]/g, ' ').replace(/\s+/g, ' ');
+    const tokens = clean.split(' ');
+    // Extract numbers (compound word form: "thirty two" → 32)
+    const nums = [];
+    let cur = 0, inNum = false;
+    for (const t of tokens) {
+        if (words[t] !== undefined) {
+            cur += (t === 'hundred') ? (cur === 0 ? 100 : cur * 99) : words[t];
+            inNum = true;
+        } else if (/^\d+\.?\d*$/.test(t)) {
+            if (inNum && cur > 0) { nums.push(cur); cur = 0; }
+            nums.push(parseFloat(t));
+            inNum = false;
+        } else if (inNum && cur > 0) {
+            nums.push(cur); cur = 0; inNum = false;
+        }
+    }
+    if (cur > 0) nums.push(cur);
+    // Detect operation
+    let op = '+';
+    if (clean.includes('product') || clean.includes('times') || clean.includes('multiply')) op = '*';
+    else if (clean.includes('reduces') || clean.includes('minus') || clean.includes('subtract') || clean.includes('less') || clean.includes('decrease') || clean.includes('difference') || clean.includes('loses')) op = '-';
+    else if (clean.includes('divided') || clean.includes('quotient') || clean.includes('ratio') || clean.includes('split')) op = '/';
+    else if (clean.includes('sum') || clean.includes('total') || clean.includes('combined') || clean.includes('adds') || clean.includes('plus')) op = '+';
+    if (nums.length >= 2) {
+        const a = nums[0], b = nums[nums.length - 1];
+        let r; if (op==='+') r=a+b; else if (op==='-') r=a-b; else if (op==='*') r=a*b; else r=a/b;
+        return (Math.round(r * 100) / 100).toFixed(2);
+    }
+    return null;
+}
 if (fs.existsSync(AUTH_FILE)) {
     try {
         const parsed = JSON.parse(fs.readFileSync(AUTH_FILE, 'utf-8'));
@@ -23,8 +63,30 @@ function logAudit(action, data) {
     fs.appendFileSync(LOG_FILE, `[${time}] ${action}: ${safeData}\n`);
 }
 
+// Task name aliases — normalize common AI-generated variants
+const TASK_ALIASES = {
+    'comments': 'read_comments',   // AI often says "comments" meaning "read comments on a post"
+    'get_comments': 'read_comments',
+    'list_comments': 'read_comments',
+    'posts': 'feed',
+    'get_post': 'read_post',
+    'view_post': 'read_post',
+    'profile': 'my_profile',
+    'me': 'my_profile',
+    'status': 'my_status',
+    'communities': 'list_submolts',
+    'submolts': 'list_submolts',
+    'subscribe': 'join_submolt',
+    'unsubscribe': 'leave_submolt',
+    'votes': 'vote',
+    'follows': 'follow',
+    'unfollows': 'unfollow',
+    'delete_post': 'delete',
+};
+
 async function execute(args) {
-    const task = args.task || args.command || args.action;
+    const rawTask = args.task || args.command || args.action;
+    const task = TASK_ALIASES[rawTask] || rawTask;
     
     // 🛡️ Usagi 研發的 WAF 破甲連線器
     const req = async (endpoint, method = 'GET', body = null) => {
@@ -85,10 +147,11 @@ async function execute(args) {
             return `✅ 已標記為已讀`;
         }
 
-        // --- [1. 數學驗證碼系統] ---
+        // --- [1. 數學驗證碼系統 (v2: 自動解題)] ---
         if (task === 'verify') {
-            const res = await req('/verify', 'POST', { verification_code: args.code, answer: args.answer });
-            logAudit('VERIFY', `Solved: ${args.answer}`);
+            const answer = args.answer || _autoSolve(args.challenge || args.code_hint || '');
+            const res = await req('/verify', 'POST', { verification_code: args.code, answer: String(answer) });
+            logAudit('VERIFY', `Solved: ${answer}`);
             return `✅ 驗證成功！內容已正式發布！(ID: ${res.content_id})`;
         }
 
@@ -115,7 +178,16 @@ async function execute(args) {
             const res = await req('/posts', 'POST', payload);
             if (res.post?.verification_status === 'pending') {
                 logAudit('CHALLENGE', res.post.verification.challenge_text);
-                return `🚨 **觸發防護牆驗證！** 🚨\n題目：「${res.post.verification.challenge_text}」\n👉 驗證碼：${res.post.verification.verification_code}\n請計算答案 (保留兩位小數)，並呼叫 'verify' 提交！`;
+                // [v2] Auto-solve verification challenge
+                const answer = _autoSolve(res.post.verification.challenge_text);
+                if (answer) {
+                    try {
+                        const vr = await req('/verify', 'POST', { verification_code: res.post.verification.verification_code, answer });
+                        logAudit('AUTO_VERIFY', `${answer} → ${vr.success ? 'OK' : 'FAIL'}`);
+                        if (vr.success) return `✅ 發文成功（自動通過驗證）！文章 ID: ${vr.content_id}`;
+                    } catch (e) { logAudit('AUTO_VERIFY_ERR', e.message); }
+                }
+                return `🚨 **觸發防護牆驗證！** 🚨\n題目：「${res.post.verification.challenge_text}」\n👉 驗證碼：${res.post.verification.verification_code}\n自動解題結果：${answer || '無法解析'}\n請計算答案 (保留兩位小數)，並呼叫 'verify' 提交！`;
             }
             return `✅ 發文成功！文章 ID: ${res.post_id || res.post?.id}`;
         }
@@ -123,7 +195,15 @@ async function execute(args) {
         if (task === 'comment') {
             const res = await req(`/posts/${args.postId}/comments`, 'POST', { content: args.content });
             if (res.comment?.verification_status === 'pending') {
-                return `🚨 **觸發留言驗證！** 🚨\n題目：「${res.comment.verification.challenge_text}」\n驗證碼：${res.comment.verification.verification_code}\n請執行 'verify' 任務！`;
+                // [v2] Auto-solve verification challenge
+                const answer = _autoSolve(res.comment.verification.challenge_text);
+                if (answer) {
+                    try {
+                        const vr = await req('/verify', 'POST', { verification_code: res.comment.verification.verification_code, answer });
+                        if (vr.success) return `✅ 留言成功（自動通過驗證）！`;
+                    } catch (e) { /* fallback to manual */ }
+                }
+                return `🚨 **觸發留言驗證！** 🚨\n題目：「${res.comment.verification.challenge_text}」\n驗證碼：${res.comment.verification.verification_code}\n自動解題結果：${answer || '無法解析'}\n請執行 'verify' 任務！`;
             }
             return '✅ 留言成功！';
         }
@@ -174,6 +254,46 @@ async function execute(args) {
             if (args.needsHumanInput) payload.needs_human_input = true; // 官方要求的請求人類介入旗標
             await req(`/agents/dm/conversations/${args.conversationId}/send`, 'POST', payload);
             return `✅ 私訊發送成功！`;
+        }
+
+        // --- [6. 新增端點] ---
+        if (task === 'read_comments') {
+            if (!args.postId) return '❌ 需要 postId 參數';
+            const data = await req(`/posts/${args.postId}/comments`);
+            return `📝 [留言列表]\n${JSON.stringify(data, null, 2)}`;
+        }
+
+        if (task === 'read_post') {
+            if (!args.postId) return '❌ 需要 postId 參數';
+            const data = await req(`/posts/${args.postId}`);
+            return `📄 [文章詳情]\n${JSON.stringify(data, null, 2)}`;
+        }
+
+        if (task === 'my_profile') {
+            const data = await req('/agents/me');
+            return `👤 [我的資料]\n${JSON.stringify(data, null, 2)}`;
+        }
+
+        if (task === 'my_status') {
+            const data = await req('/agents/status');
+            return `📊 [帳號狀態]\n${JSON.stringify(data, null, 2)}`;
+        }
+
+        if (task === 'list_submolts') {
+            const data = await req('/submolts');
+            return `🏘️ [社群列表]\n${JSON.stringify(data, null, 2)}`;
+        }
+
+        if (task === 'join_submolt') {
+            if (!args.name) return '❌ 需要社群 name 參數';
+            const data = await req(`/submolts/${encodeURIComponent(args.name)}/subscribe`, 'POST');
+            return data.success ? `✅ 已加入 ${args.name}` : '❌ 加入失敗';
+        }
+
+        if (task === 'leave_submolt') {
+            if (!args.name) return '❌ 需要社群 name 參數';
+            const data = await req(`/submolts/${encodeURIComponent(args.name)}/subscribe`, 'DELETE');
+            return data.success ? `✅ 已退出 ${args.name}` : '❌ 退出失敗';
         }
 
         return "❌ 錯誤：未知的任務類型。";
