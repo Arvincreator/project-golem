@@ -58,6 +58,17 @@ class NeuroShunter {
 
             for (const act of parsed.actions) {
                 switch (act.action) {
+                    case 'abort':
+                        // AI explicitly requests to stop the current action chain
+                        console.log(`[NeuroShunter] 🛑 AI requested abort: ${act.reason || 'No reason given'}`);
+                        if (act.reason && !shouldSuppressReply) {
+                            await ctx.reply(`⚠️ ${act.reason}`);
+                        }
+                        return; // Stop processing ALL remaining actions
+                    case 'noop':
+                        // AI explicitly signals no action needed
+                        console.log(`[NeuroShunter] ⏭️ AI signaled noop, skipping.`);
+                        continue;
                     case 'multi_agent':
                         await MultiAgentHandler.execute(ctx, act, controller, brain);
                         break;
