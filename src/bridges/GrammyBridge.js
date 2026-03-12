@@ -5,6 +5,8 @@
 
 const { Bot } = require('grammy');
 const EventEmitter = require('events');
+const { apiThrottler } = require('@grammyjs/transformer-throttler');
+const { autoRetry } = require('@grammyjs/auto-retry');
 
 class GrammyBridge extends EventEmitter {
   /**
@@ -18,6 +20,36 @@ class GrammyBridge extends EventEmitter {
     this._bot = new Bot(token);
     this._polling = false;
     this._stopped = false;
+
+    // === Phase 1A: API Throttler (3-layer rate limiting) ===
+    const throttler = apiThrottler({
+      global: {
+        reservoir: 25,
+        reservoirRefreshAmount: 25,
+        reservoirRefreshInterval: 1000,
+        maxConcurrent: 10,
+      },
+      group: {
+        maxConcurrent: 1,
+        minTime: 1500,
+        reservoir: 15,
+        reservoirRefreshAmount: 15,
+        reservoirRefreshInterval: 60000,
+      },
+      out: {
+        maxConcurrent: 1,
+        minTime: 100,
+      },
+    });
+    this._bot.api.config.use(throttler);
+
+    // === Phase 1B: Auto-Retry (rate limit + 5xx resilience) ===
+    this._bot.api.config.use(autoRetry({
+      maxDelaySeconds: 10,
+      maxRetryAttempts: 2,
+      rethrowInternalServerErrors: false,
+      rethrowHttpErrors: false,
+    }));
 
     // Register with graceful shutdown
     try {

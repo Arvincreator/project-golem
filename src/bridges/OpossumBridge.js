@@ -13,6 +13,16 @@ const FALLBACK_OPTS = {
   rollingCountTimeout: 10000,
   rollingCountBuckets: 10,
   volumeThreshold: 3,
+  capacity: 3,
+  allowWarmUp: true,
+  errorFilter: (err) => {
+    // Don't count 429 (rate limit) as circuit-breaking errors — these are expected
+    const msg = err?.message || String(err);
+    if (msg.includes('429') || msg.includes('Too Many Requests')) return true;
+    // Don't count network timeouts under 3s (transient)
+    if (err?.code === 'ETIMEDOUT' || err?.code === 'ECONNRESET') return true;
+    return false;
+  },
 };
 
 class OpossumBridge {

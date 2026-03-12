@@ -30,6 +30,8 @@
   "license": "MIT",
   "dependencies": {
     "@google/generative-ai": "0.21.0",
+    "@grammyjs/auto-retry": "^2.0.2",
+    "@grammyjs/transformer-throttler": "^1.2.1",
     "adm-zip": "^0.5.16",
     "blessed": "0.1.81",
     "blessed-contrib": "4.11.0",
