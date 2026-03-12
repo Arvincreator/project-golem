@@ -195,8 +195,16 @@ class AutonomyManager {
         const raw = await this.brain.sendMessage(prompt);
         await NeuroShunter.dispatch(await this.getAdminContext(), raw, this.brain, this.controller);
     }
-    async performNewsChat() { await this.run("上網搜尋「科技圈熱門話題」或「全球趣聞」，挑選一件分享給主人。要有個人觀點，像朋友一樣聊天。", "NewsChat"); }
-    async performSpontaneousChat() { await this.run("主動社交，傳訊息給主人。語氣自然，符合當下時間。", "SpontaneousChat"); }
+    async performNewsChat() {
+        const interests = (ConfigManager.CONFIG.USER_INTERESTS || '科技圈熱門話題,全球趣聞').split(',').map(i => i.trim()).filter(i => i);
+        const selectedInterest = interests[Math.floor(Math.random() * interests.length)];
+        await this.run(`上網搜尋「${selectedInterest}」，挑選一件分享給主人。要有個人觀點，像朋友一樣聊天。`, "NewsChat");
+    }
+    async performSpontaneousChat() {
+        const interests = (ConfigManager.CONFIG.USER_INTERESTS || '科技圈熱門話題,全球趣聞').split(',').map(i => i.trim()).filter(i => i);
+        const selectedInterest = interests[Math.floor(Math.random() * interests.length)];
+        await this.run(`主動社交，傳訊息給主人。語氣自然，符合當下時間。可以聊聊關於「${selectedInterest}」的話題。`, "SpontaneousChat");
+    }
     async performSelfReflection(triggerCtx = null) {
         console.log(`🧠 [Autonomy][${this.golemId}] 啟動自我反思程序...`);
 

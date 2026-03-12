@@ -936,6 +936,16 @@ export default function SettingsPage() {
                                     onChange={(val) => handleChangeEnv("GOLEM_SLEEP_END", val)}
                                 />
                             </div>
+                            <div className="mt-4">
+                                <SettingField
+                                    label="興趣標籤 (User Interests)"
+                                    keyName="USER_INTERESTS"
+                                    placeholder="科技圈熱門話題,全球趣聞"
+                                    desc="用於自主搜尋與聊天，請使用半形逗號「,」分隔多個興趣項目。"
+                                    value={config.env.USER_INTERESTS || ""}
+                                    onChange={(val) => handleChangeEnv("USER_INTERESTS", val)}
+                                />
+                            </div>
                         </div>
 
                     </div>
@@ -956,7 +966,7 @@ export default function SettingsPage() {
                                     'GOLEM_MODE', 'GOLEM_MEMORY_MODE', 'GITHUB_REPO',
                                     'MOLTBOOK_API_KEY', 'MOLTBOOK_AGENT_NAME',
                                     'GOLEM_AWAKE_INTERVAL_MIN', 'GOLEM_AWAKE_INTERVAL_MAX',
-                                    'GOLEM_SLEEP_START', 'GOLEM_SLEEP_END', 'COMMAND_WHITELIST', 'CUSTOM_COMMANDS'
+                                    'GOLEM_SLEEP_START', 'GOLEM_SLEEP_END', 'USER_INTERESTS', 'COMMAND_WHITELIST', 'CUSTOM_COMMANDS'
                                 ].includes(k))
                                 .map(key => (
                                     <div key={key}>
