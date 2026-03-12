@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<golem-config version="1.0" updated="2026-03-12">
+
+  <!-- Node identity — change id/role per deployment -->
+  <node id="default" role="primary">
+    <platform>auto</platform>
+    <mode>puppeteer</mode>
+    <telegram enabled="true" token-env="TG_TOKEN"/>
+    <dashboard port="4000"/>
+  </node>
+
+  <!-- Optional: RAG backend (comment out if not using) -->
+  <!--
+  <rag>
+    <remote url="${RAG_BACKEND_URL}"
+            auth-env="RAG_AUTH_TOKEN"
+            timeout-ms="15000"/>
+    <local driver="magma" data-file="src/memory/graph/nodes.json"/>
+    <sync interval-minutes="60"/>
+  </rag>
+  -->
+
+  <!-- Gemini AI configuration -->
+  <!-- Set engine="sdk" to use @google/generative-ai SDK instead of Puppeteer -->
+  <gemini engine="puppeteer">
+    <model primary="gemini-2.5-flash" fallback="gemini-2.0-flash"/>
+    <keys rotation="round-robin">
+      <key env="GEMINI_API_KEY_1"/>
+      <key env="GEMINI_API_KEY_2"/>
+      <key env="GEMINI_API_KEY_3"/>
+      <key env="GEMINI_API_KEY_4"/>
+    </keys>
+    <limits rpm="60" daily="1500"/>
+  </gemini>
+
+  <!-- Telegram engine: "grammy" (recommended) or "legacy" (node-telegram-bot-api) -->
+  <telegram engine="grammy">
+    <polling timeout-sec="30"
+             max-consecutive-errors="10"
+             backoff-max-sec="60"
+             jitter="true"/>
+    <startup>
+      <delete-webhook drop-pending="false"/>
+      <wait-sec>3</wait-sec>
+    </startup>
+    <health>
+      <check-interval-sec>300</check-interval-sec>
+      <alert-threshold polling-success-rate-min="95"
+                       response-latency-max-ms="5000"
+                       uptime-min-sec="300"/>
+    </health>
+  </telegram>
+
+  <circuit-breakers>
+    <breaker name="gemini" timeout-ms="30000" reset-ms="60000" error-pct="50"/>
+    <breaker name="telegram" timeout-ms="10000" reset-ms="15000" error-pct="30"/>
+  </circuit-breakers>
+
+  <failover>
+    <heartbeat interval-sec="30" storage="local"/>
+    <timeout detect-sec="90" confirm-sec="180"/>
+    <takeover notify="telegram" auto="false"/>
+  </failover>
+
+  <dependencies>
+    <dep name="grammy" version="^1" for="telegram"/>
+    <dep name="@google/generative-ai" version="^0.21" for="sdk-brain"/>
+    <dep name="opossum" version="^9" for="circuit-breakers"/>
+    <dep name="fast-xml-parser" version="^4" for="config"/>
+  </dependencies>
+
+  <protection>
+    <immutable-files>golem-config.xml,.env</immutable-files>
+    <self-coder require-approval="true">
+      <forbidden-targets>*.service,*.xml,.env</forbidden-targets>
+    </self-coder>
+  </protection>
+
+</golem-config>
