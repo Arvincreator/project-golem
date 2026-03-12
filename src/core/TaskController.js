@@ -62,6 +62,34 @@ class TaskController {
                 cmdToRun = `node src/skills/core/${actionName}.js "${payload}"`;
                 console.log(`🔧 [TaskController] 自動組裝技能指令: ${cmdToRun}`);
             }
+
+            // L0-L3 分級: 先用 classifyAction 判定技能等級
+            const actionLevel = this.security.classifyAction(step);
+
+            // 重複錯誤檢查 — 同樣錯誤不犯第二次
+            if (this.security.isRepeatedError(step)) {
+                console.warn(`🛑 [TaskController] 重複錯誤偵測! 跳過: ${step.action}:${step.task}`);
+                reportBuffer.push(`[Step ${i + 1} Skipped] 重複錯誤已跳過: ${step.action}:${step.task || ''}`);
+                continue;
+            }
+
+            if (actionLevel === 'L0' || actionLevel === 'L1') {
+                const actionDesc = `${step.action || 'cmd'}${step.task ? ':' + step.task : ''}`;
+                console.log(`🟢 [TaskController] ${actionLevel} 自動放行: ${actionDesc}`);
+                try {
+                    if (!this.internalExecutor) this.internalExecutor = new Executor();
+                    const output = await this.internalExecutor.run(cmdToRun);
+                    const resultStr = (output || "").trim() || "(No stdout)";
+                    reportBuffer.push(`[Step ${i + 1} Success] cmd: ${cmdToRun}\nResult:\n${resultStr}`);
+                    this.security.logAction(step, actionLevel, resultStr, true);
+                } catch (err) {
+                    reportBuffer.push(`[Step ${i + 1} Failed] cmd: ${cmdToRun}\nError:\n${err.message}`);
+                    this.security.logAction(step, actionLevel, err.message, false);
+                }
+                continue;
+            }
+
+            // L2+ 走原有的安全審核流程
             const risk = this.security.assess(cmdToRun);
             if (cmdToRun.startsWith('golem-check')) {
                 const toolName = cmdToRun.split(' ')[1];
