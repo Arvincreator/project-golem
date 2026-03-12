@@ -101,6 +101,7 @@ class GolemConfigLoader {
     const g = this.config?.gemini;
     if (!g) return { model: 'gemini-2.5-flash', rpm: 60 };
     return {
+      engine: g?.['@_engine'] || 'puppeteer',
       model: g?.model?.['@_primary'] || 'gemini-2.5-flash',
       fallbackModel: g?.model?.['@_fallback'] || 'gemini-3-flash-preview',
       rpm: g?.limits?.['@_rpm'] || 60,
