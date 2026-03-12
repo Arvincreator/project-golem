@@ -88,29 +88,71 @@ async function execute(args) {
     const rawTask = args.task || args.command || args.action;
     const task = TASK_ALIASES[rawTask] || rawTask;
     
-    // 🛡️ Usagi 研發的 WAF 破甲連線器
+    // 🛡️ Usagi 研發的 WAF 破甲連線器 (Phase 3: error classification + rate limit awareness)
+    const MAX_RETRY_WAIT_MS = 30000;
     const req = async (endpoint, method = 'GET', body = null) => {
-        const headers = { 
+        const headers = {
             "Content-Type": "application/json",
-            "User-Agent": "Golem-v9",             
-            "X-Agent-Name": authData.agent_name         
+            "User-Agent": "Golem-v9",
+            "X-Agent-Name": authData.agent_name
         };
         if (authData.api_key) headers["Authorization"] = `Bearer ${authData.api_key}`;
-        
+
         const opts = { method, headers };
         if (body) opts.body = JSON.stringify(body);
-        
-        const res = await fetch(`${API_BASE}${endpoint}`, opts);
-        
-        // 處理 429 官方冷卻時間
+
+        let res;
+        try {
+            res = await fetch(`${API_BASE}${endpoint}`, opts);
+        } catch (networkErr) {
+            throw Object.assign(new Error(`[NETWORK_ERROR] Moltbook 無法連線: ${networkErr.message}`), { category: 'network_error', retryable: true });
+        }
+
+        // 429: auto-wait if retry_after is reasonable
         if (res.status === 429) {
             const err = await res.json().catch(() => ({}));
-            throw new Error(`發文冷卻中！請等待 ${err.retry_after_minutes || err.retry_after_seconds || '一段'} 時間後再試。`);
+            const waitSec = err.retry_after_seconds || (err.retry_after_minutes ? err.retry_after_minutes * 60 : 0);
+            if (waitSec > 0 && waitSec * 1000 <= MAX_RETRY_WAIT_MS) {
+                logAudit('RATE_LIMIT', `Waiting ${waitSec}s for ${endpoint}`);
+                await new Promise(r => setTimeout(r, waitSec * 1000));
+                res = await fetch(`${API_BASE}${endpoint}`, opts);
+                if (res.ok) return res.status === 204 ? { success: true } : await res.json();
+            }
+            throw Object.assign(
+                new Error(`[RATE_LIMIT] 發文冷卻中！請等待 ${waitSec || '未知'} 秒後再試。DO NOT retry this action.`),
+                { category: 'rate_limit', retryable: false }
+            );
         }
-        
+
+        if (res.status === 401 || res.status === 403) {
+            const err = await res.json().catch(() => ({}));
+            throw Object.assign(
+                new Error(`[AUTH_ERROR] Moltbook 認證失敗 (${res.status}): ${err.error || '請重新註冊或檢查 API key'}. DO NOT retry.`),
+                { category: 'auth_error', retryable: false }
+            );
+        }
+
+        if (res.status === 404) {
+            throw Object.assign(
+                new Error(`[NOT_FOUND] 資源不存在: ${endpoint}. DO NOT retry this action.`),
+                { category: 'not_found', retryable: false }
+            );
+        }
+
+        if (res.status >= 500) {
+            const err = await res.json().catch(() => ({}));
+            throw Object.assign(
+                new Error(`[SERVER_ERROR] Moltbook 伺服器錯誤 (${res.status}): ${err.error || res.statusText}`),
+                { category: 'server_error', retryable: true }
+            );
+        }
+
         if (!res.ok) {
             const err = await res.json().catch(() => ({}));
-            throw new Error(err.error || err.hint || res.statusText || `HTTP ${res.status}`);
+            throw Object.assign(
+                new Error(`[API_ERROR] ${err.error || err.hint || res.statusText || `HTTP ${res.status}`}`),
+                { category: 'api_error', retryable: false }
+            );
         }
         return res.status === 204 ? { success: true } : await res.json();
     };
