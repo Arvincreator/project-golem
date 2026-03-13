@@ -8,7 +8,11 @@ async function run(ctx) {
     const learningsPath = path.join(userDataDir, 'learnings.json');
 
     try {
-        const action = args.action || 'list';
+        // ✨ [Fix] 支援多樣化的 Action 欄位，避免與框架技能名 "adaptive_learning" 衝突
+        const action = args.task || args.cmd || 
+                       (args.action !== 'adaptive_learning' ? args.action : null) || 
+                       (args.parameters && (args.parameters.task || args.parameters.action)) || 
+                       'list';
 
         // Ensure file exists
         if (!fs.existsSync(learningsPath)) {

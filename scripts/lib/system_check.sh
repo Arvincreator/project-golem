@@ -24,6 +24,12 @@ check_status() {
         NODE_OK=false
     fi
 
+    # NVM Detection
+    NVM_OK=false
+    if [ -s "$HOME/.nvm/nvm.sh" ] || command -v nvm &>/dev/null; then
+        NVM_OK=true
+    fi
+
     # .env
     if [ -f "$DOT_ENV_PATH" ]; then
         STATUS_ENV="${GREEN}✅ 已設定${NC}"
@@ -291,6 +297,28 @@ run_health_check() {
         for suggestion in "${fix_suggestions[@]}"; do
             box_line_colored "  💡 $suggestion"
         done
+
+        # 互動式修復建議：如果 Node.js 版本不對且有 NVM
+        if [ "$NODE_OK" = false ] && [ "$NVM_OK" = true ]; then
+            box_sep
+            box_line_colored "  ${YELLOW}💡 偵測到您已安裝 NVM，是否要現在切換至 Node.js 20？${NC}"
+            box_bottom
+            echo ""
+            if confirm_action "切換至 Node.js 20？"; then
+                if switch_node_version; then
+                    echo -e "\n${GREEN}成功切換版本！${NC}"
+                    echo -e "${DIM}正在重新整理診斷結果...${NC}\n"
+                    sleep 1
+                    check_status # 重新偵測環境
+                    run_health_check # 遞迴呼叫以顯示新結果並繼續
+                    return 0
+                fi
+            fi
+            # 如果不切換或切換失敗，重新開啟一個盒子顯示手動指令
+            echo ""
+            box_top
+            box_line_colored "  ${DIM}提示: 您也可以手動執行: nvm use 20${NC}"
+        fi
     fi
     box_bottom
     echo ""
