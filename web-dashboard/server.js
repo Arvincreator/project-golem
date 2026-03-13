@@ -1230,6 +1230,35 @@ class WebServer {
             }
         });
 
+        this.app.get('/api/system/backups', async (req, res) => {
+            try {
+                const SystemUpdater = require('../src/utils/SystemUpdater');
+                const backups = await SystemUpdater.listBackups();
+                return res.json({ backups });
+            } catch (e) {
+                console.error('[WebServer] Failed to list backups:', e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
+        this.app.post('/api/system/rollback', async (req, res) => {
+            try {
+                const { backupName } = req.body;
+                if (!backupName) return res.status(400).json({ error: "Missing backupName" });
+
+                const SystemUpdater = require('../src/utils/SystemUpdater');
+                // Run in background via socket.io
+                SystemUpdater.rollback(backupName, this.io).catch(err => {
+                    console.error('[WebServer] Background rollback failed:', err);
+                });
+
+                return res.json({ success: true, message: "Rollback process started" });
+            } catch (e) {
+                console.error('[WebServer] Rollback execution failed:', e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
         this.app.post('/api/system/restart', (req, res) => {
             try {
                 console.log("🔄 [System] Restart requested by user. Terminating process...");

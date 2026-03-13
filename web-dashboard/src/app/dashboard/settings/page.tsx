@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import {
     Settings, Save, RefreshCw, AlertTriangle, CheckCircle2,
     Eye, EyeOff, Lock, Users, Server, Activity, Cpu, HardDrive,
-    DownloadCloud, Loader2
+    DownloadCloud, Loader2, History
 } from "lucide-react";
 import { io } from "socket.io-client";
 
@@ -483,6 +483,203 @@ const SystemUpdateSection = () => {
     );
 };
 
+const BackupSection = () => {
+    const [backups, setBackups] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedBackup, setSelectedBackup] = useState<any>(null);
+    const [isRollingBack, setIsRollingBack] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [statusMsg, setStatusMsg] = useState('');
+
+    const fetchBackups = async () => {
+        setIsLoading(true);
+        try {
+            const res = await fetch('/api/system/backups');
+            const data = await res.json();
+            setBackups(data.backups || []);
+        } catch (e) {
+            console.error('Failed to fetch backups:', e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchBackups();
+    }, []);
+
+    useEffect(() => {
+        if (!isRollingBack) return;
+        
+        const socket = (window as any).io();
+        socket.on('system:update_progress', (data: any) => {
+            setProgress(data.progress || 0);
+            setStatusMsg(data.message);
+            if (data.status === 'success' || data.status === 'error') {
+                setTimeout(() => setIsRollingBack(false), 2000);
+            }
+        });
+
+        return () => {
+            socket.off('system:update_progress');
+        };
+    }, [isRollingBack]);
+
+    const handleRollback = async () => {
+        if (!selectedBackup) return;
+        setIsRollingBack(true);
+        setProgress(0);
+        setStatusMsg('正在初始化回退程序...');
+        setShowModal(false);
+
+        try {
+            const res = await fetch('/api/system/rollback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ backupName: selectedBackup.name })
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || '回退請求失敗');
+            }
+        } catch (e: any) {
+            console.error('Rollback failed:', e);
+            setStatusMsg(`錯誤: ${e.message}`);
+            setIsRollingBack(false);
+        }
+    };
+
+    return (
+        <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-amber-500/10 rounded-lg">
+                        <History className="w-5 h-5 text-amber-500" />
+                    </div>
+                    <div>
+                        <h2 className="text-lg font-semibold text-white">版本備份與回退</h2>
+                        <p className="text-sm text-gray-500">檢視系統自動備份的歷史版本並執行還原</p>
+                    </div>
+                </div>
+                <button 
+                    onClick={fetchBackups}
+                    className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                >
+                    <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                </button>
+            </div>
+
+            <div className="space-y-3">
+                {backups.length === 0 ? (
+                    <div className="text-center py-10 bg-gray-950/30 rounded-lg border border-dashed border-gray-800">
+                        <p className="text-gray-600 italic">尚未有任何備份紀錄</p>
+                    </div>
+                ) : (
+                    backups.map((backup) => (
+                        <div 
+                            key={backup.name}
+                            className="flex items-center justify-between p-4 bg-gray-950/30 rounded-lg border border-gray-800 hover:border-gray-700 transition-all group"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="text-left">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-white font-medium">{backup.date}</span>
+                                        <span className="px-2 py-0.5 bg-gray-800 text-gray-400 text-[10px] rounded uppercase tracking-wider">
+                                            v{backup.version}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-1 font-mono">{backup.name}</p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => {
+                                    setSelectedBackup(backup);
+                                    setShowModal(true);
+                                }}
+                                className="px-3 py-1.5 bg-amber-500/10 text-amber-500 text-xs rounded-lg border border-amber-500/20 hover:bg-amber-500 hover:text-white transition-all opacity-0 group-hover:opacity-100"
+                            >
+                                還原此版本
+                            </button>
+                        </div>
+                    ))
+                )}
+            </div>
+
+            {/* Rollback Confirmation Modal */}
+            {showModal && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[100] p-4">
+                    <div className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in duration-300">
+                        <div className="p-6">
+                            <div className="flex items-center gap-4 text-amber-500 mb-4">
+                                <div className="p-3 bg-amber-500/10 rounded-full">
+                                    <AlertTriangle className="w-6 h-6" />
+                                </div>
+                                <h3 className="text-xl font-bold">確認還原此版本？</h3>
+                            </div>
+                            
+                            <p className="text-gray-400 mb-6 text-sm leading-relaxed">
+                                您即將將系統回退至 <span className="text-white font-medium">{selectedBackup?.date} (v{selectedBackup?.version})</span> 的備份狀態。
+                                <br /><br />
+                                <span className="text-amber-500/80">⚠️ 注意：</span>
+                                系統將會取代目前的程式碼並自動重新啟動。此過程可能需要幾分鐘，且建議您在操作前確認目前狀態已妥善保存。
+                            </p>
+
+                            <div className="flex gap-3">
+                                <button 
+                                    onClick={() => setShowModal(false)}
+                                    className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-medium transition-all"
+                                >
+                                    取消
+                                </button>
+                                <button 
+                                    onClick={handleRollback}
+                                    className="flex-1 py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-medium shadow-lg shadow-amber-900/20 transition-all"
+                                >
+                                    開始回退
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Rollback Progress Modal */}
+            {isRollingBack && (
+                <div className="fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center z-[110] p-4 text-center">
+                    <div className="max-w-md w-full animate-in zoom-in duration-300">
+                        <div className="mb-8 flex justify-center">
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-amber-500/20 blur-3xl rounded-full"></div>
+                                <RefreshCw className="w-16 h-16 text-amber-500 animate-spin relative z-10" />
+                            </div>
+                        </div>
+                        
+                        <h2 className="text-2xl font-bold text-white mb-2">正在執行系統回退</h2>
+                        <p className="text-amber-500 mb-8 font-medium animate-pulse">{statusMsg}</p>
+                        
+                        <div className="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden mb-4">
+                            <div 
+                                className="h-full bg-amber-500 transition-all duration-500 ease-out shadow-[0_0_15px_rgba(245,158,11,0.5)]"
+                                style={{ width: `${progress}%` }}
+                            ></div>
+                        </div>
+                        <div className="text-right text-gray-500 text-xs font-mono">{progress}%</div>
+                        
+                        <div className="mt-12 p-4 bg-amber-500/5 rounded-xl border border-amber-500/10">
+                            <p className="text-amber-500/60 text-xs leading-relaxed italic">
+                                請勿關閉瀏覽器或中斷網路連線。回退完成後，系統將自動關閉並清除暫存，
+                                您需要手動重新啟動 Golem 以套用變更。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
 export default function SettingsPage() {
     const [config, setConfig] = useState<ConfigData>({ env: {}, golems: [] });
     const [originalConfig, setOriginalConfig] = useState<ConfigData>({ env: {}, golems: [] });
@@ -693,6 +890,7 @@ export default function SettingsPage() {
 
                 {/* System Update Region */}
                 <SystemUpdateSection />
+                <BackupSection />
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* 左側：AI 大腦與控制權限 */}
