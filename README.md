@@ -178,11 +178,12 @@ cd project-golem
 # Mac / Linux:
 chmod +x setup.sh && ./setup.sh --install
 
-# Windows (兩種方式均可):
-# A. 最簡單：直接雙擊專案目錄下的 `Start-Golem.bat`，系統會自動尋找 Git Bash 並完成安裝與啟動。
-# B. 進階：使用 Git Bash (不要使用 PowerShell)
-#    1. 在專案目錄按右鍵「Open Git Bash here」
-#    2. 執行：./setup.sh --install
+# Windows (推薦方式):
+# 1. 直接雙擊專案目錄下的 `Start-Golem.bat`
+# 2. 系統會自動透過 PowerShell 完成安裝與啟動，並修正所有顯示問題。
+
+# (進階) Mac / Linux:
+# chmod +x setup.sh && ./setup.sh --install
 
 # 3. 配置環境變數
 ./setup.sh --config

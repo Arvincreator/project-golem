@@ -241,12 +241,9 @@ cd project-golem
    | `--status` | 快速顯示目前系統健康與環境狀態 |
    | `--docker` | 使用 Docker Compose 啟動容器化環境 |
 
-#### 🪟 Windows 環境
-推薦使用以下兩種方式之一：
-- **方案 A (最簡單)**：直接雙擊執行 `Start-Golem.bat`，腳本會自動尋找 Git Bash 並啟動部署。
-- **方案 B (進階)**：使用 Windows 內建的 **Git Bash** (不要使用 PowerShell 或 CMD)：
-  1. 在專案目錄按右鍵選擇「Open Git Bash here」。
-  2. 執行指令：`./setup.sh --install`
+#### 🪟 Windows 環境 (推薦方式)
+直接雙擊執行 **`Start-Golem.bat`** 即可。
+腳本會自動呼叫 PowerShell 原生環境完成安裝與啟動，並修正了在 Git Bash 下可能出現的資源顯示異常（CPU/記憶體長條亂碼）。
 
 > [!IMPORTANT]
 > 若腳本偵測到未安裝 Node.js，會自動嘗試為您下載。安裝完成後請**重新開啟終端機**再次執行腳本。
