@@ -242,7 +242,11 @@ cd project-golem
    | `--docker` | 使用 Docker Compose 啟動容器化環境 |
 
 #### 🪟 Windows 環境
-直接雙擊運行 `setup.bat` 即可進入自動化安裝流程。
+推薦使用以下兩種方式之一：
+- **方案 A (最簡單)**：直接雙擊執行 `Start-Golem.bat`，腳本會自動尋找 Git Bash 並啟動部署。
+- **方案 B (進階)**：使用 Windows 內建的 **Git Bash** (不要使用 PowerShell 或 CMD)：
+  1. 在專案目錄按右鍵選擇「Open Git Bash here」。
+  2. 執行指令：`./setup.sh --install`
 
 > [!IMPORTANT]
 > 若腳本偵測到未安裝 Node.js，會自動嘗試為您下載。安裝完成後請**重新開啟終端機**再次執行腳本。

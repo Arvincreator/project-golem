@@ -174,14 +174,22 @@ graph LR
 git clone https://github.com/Arvincreator/project-golem.git
 cd project-golem
 
-# 2. 一鍵安裝（Mac / Linux）
+# 2. 一鍵安裝
+# Mac / Linux:
 chmod +x setup.sh && ./setup.sh --install
+
+# Windows (兩種方式均可):
+# A. 最簡單：直接雙擊專案目錄下的 `Start-Golem.bat`，系統會自動尋找 Git Bash 並完成安裝與啟動。
+# B. 進階：使用 Git Bash (不要使用 PowerShell)
+#    1. 在專案目錄按右鍵「Open Git Bash here」
+#    2. 執行：./setup.sh --install
 
 # 3. 配置環境變數
 ./setup.sh --config
 
 # 4. 啟動 (最推薦)
-雙擊專案目錄下的 `Start-Golem.command` (Mac/Linux) 或 `Start-Golem.bat` (Windows)，系統將會**自動判斷**是否為初次安裝並執行所有部署，安裝完成後會直接啟動 Golem。
+雙擊專案目錄下的 `Start-Golem.command` (Mac/Linux) 或 `Start-Golem.bat` (Windows)。
+系統將會**自動判斷**是否為初次安裝並執行所有部署，安裝完成後會直接啟動 Golem。
 
 若您偏好終端機操作，也可手動執行：
 ./setup.sh --start

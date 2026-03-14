@@ -243,7 +243,11 @@ Then, use our **modular installation script** for automated deployment:
    | `--docker` | Start containerized environment via Docker Compose |
 
 #### 🪟 Windows Environment
-Double-click `setup.bat` to enter the automated installation process.
+Two recommended ways:
+- **Method A (Easiest)**: Double-click `Start-Golem.bat`. It will automatically find Git Bash and start deployment.
+- **Method B (Manual)**: Use the built-in **Git Bash** in Windows (do not use PowerShell or CMD):
+  1. Right-click in the project directory and select "Open Git Bash here".
+  2. Run the command: `./setup.sh --install`
 
 > [!IMPORTANT]
 > If the script detects Node.js is not installed, it will attempt to download it for you. After installation, please **restart your terminal** and run the script again.
