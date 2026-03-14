@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 :: Project Golem v9.0 - 一鍵啟動 (Windows Bridge)
 :: 此腳本統一由 setup.bat 處理啟動邏輯，確保穩定性
 
