@@ -81,6 +81,20 @@ function Run-Full-Install {
     Write-Host ("  " + $back) -NoNewline; Read-Host
 }
 
+function Run-Config-Wizard {
+    $wizTitle = [char]0x914d + [char]0x7f6e + [char]0x7cbe + [char]0x9748 + " (Config Wizard)"
+    Write-Host ("`n  " + [char]::ConvertFromUtf32(0x1f4dd) + " " + $wizTitle) -ForegroundColor Cyan
+    if (-not (Test-Path $DOT_ENV_PATH)) {
+        if (Test-Path ".env.example") { Copy-Item ".env.example" ".env" }
+        else { New-Item -ItemType File -Path $DOT_ENV_PATH | Out-Null }
+    }
+    $keyPrompt = [char]0x8acb + [char]0x8f38 + [char]0x5165 + " Gemini API Key: "
+    $key = Read-Host "  $keyPrompt"
+    if ($key) { Update-Env "GEMINI_API_KEY" $key }
+    UI-Success ([char]0x8a2d + [char]0x5b9a + [char]0x5df2 + [char]0x5132 + [char]0x5b58 + [char]0x3002)
+    Write-Host ("  " + [char]0x6309 + " Enter " + [char]0x8fd4 + [char]0x56de + [char]0x4e3b + [char]0x9078 + [char]0x55ae + "...") -NoNewline; Read-Host
+}
+
 function Show-Menu {
     while ($true) {
         Clear-Host; Show-Header
@@ -93,6 +107,7 @@ function Show-Menu {
             ("Start|" + [char]::ConvertFromUtf32(0x1f680) + " " + [char]0x555f + [char]0x52d5 + [char]0x7cfb + [char]0x7d71 + [char]0x8207 + [char]0x63a7 + [char]0x5236 + [char]0x53f0 + " (Power On)"),
             ("Stop|" + [char]::ConvertFromUtf32(0x1f6d1) + " " + [char]0x95dc + [char]0x9589 + [char]0x6240 + [char]0x6709 + " Golem " + [char]0x7a0b + [char]0x5e8f + " (Shutdown)"),
             ("Install|" + [char]::ConvertFromUtf32(0x1f4e6) + " " + [char]0x66f4 + [char]0x65b0 + [char]0x4f9d + [char]0x8cf4 + [char]0x8207 + [char]0x7cfb + [char]0x7d71 + [char]0x5efa + [char]0x7f6e + " (Update / Build)"),
+            ("Config|" + [char]::ConvertFromUtf32(0x1f4dd) + " " + [char]0x914d + [char]0x7f6e + [char]0x7cbe + [char]0x9748 + " (Configuration Wizard)"),
             ("Doctor|" + [char]::ConvertFromUtf32(0x1f3e5) + " " + [char]0x6df1 + [char]0x5ea6 + [char]0x7cfb + [char]0x7d71 + [char]0x8a3a + [char]0x65b7 + " (Run Diagnostics)"),
             ("Clean|" + [char]::ConvertFromUtf32(0x1f9f9) + " " + [char]0x6e05 + [char]0x9664 + [char]0x4f9d + [char]0x8cf4 + " (Clean node_modules)"),
             ("Init|" + [char]::ConvertFromUtf32(0x1f9e8) + " " + [char]0x5b8c + [char]0x5168 + [char]0x521d + [char]0x59cb + [char]0x5316 + [char]0x7cfb + [char]0x7d71 + " (Factory Reset - DANGER)"),
@@ -114,6 +129,7 @@ function Show-Menu {
             "Start"   { Launch-System; break }
             "Stop"    { Stop-System; break }
             "Install" { Run-Full-Install; break }
+            "Config"  { Run-Config-Wizard; break }
             "Doctor"  { Run-Health-Check; $back = [char]0x6309 + " Enter " + [char]0x8fd4 + [char]0x56de + [char]0x4e3b + [char]0x9078 + [char]0x55ae + "..."; Write-Host ("  " + $back) -NoNewline; Read-Host; break }
             "Clean"   { if (Confirm-Action "DELETE node_modules?") { Remove-Item -Recurse -Force "node_modules" -ErrorAction SilentlyContinue; UI-Success "CLEANED." }; break }
             "Init"    { if (Confirm-Action "FACTORY RESET?") { Remove-Item -Recurse -Force "node_modules" -ErrorAction SilentlyContinue; UI-Success "RESET COMPLETE." }; break }

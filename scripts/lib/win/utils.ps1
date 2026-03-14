@@ -52,7 +52,7 @@ function Prompt-SingleSelect {
                 Write-Host "$S_LBRAC" -NoNewline -ForegroundColor Green
                 Write-Host "X" -NoNewline -ForegroundColor Green
                 Write-Host "$S_RBRAC " -NoNewline -ForegroundColor Green
-                Write-Host "$key " -NoNewline -ForegroundColor White -Bold
+                Write-Host "$key " -NoNewline -ForegroundColor White
                 Write-Host "$desc" -ForegroundColor Cyan
             } else {
                 Write-Host "    " -NoNewline -ForegroundColor Gray

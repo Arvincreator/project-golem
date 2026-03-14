@@ -51,11 +51,23 @@ if ($args.Count -gt 0) {
         exit 0
     }
     if ($args -contains "--doctor") { Run-Health-Check; exit 0 }
+    if ($args -contains "--config") { Run-Config-Wizard; exit 0 }
     if ($args -contains "--status") { Show-Status; exit 0 }
     if ($args -contains "--version") { Write-Host "Project Golem v$GOLEM_VERSION"; exit 0 }
     if ($args -contains "--help" -or $args -contains "-h") { 
         Write-Host "`nProject Golem v$GOLEM_VERSION Setup Script (Windows)" -ForegroundColor Cyan
         Write-Host "Usage: .\setup.ps1 [OPTIONS]"
+        Write-Host "`nOPTIONS:"
+        Write-Host "  (none)        Launch interactive main menu"
+        Write-Host "  --start       Directly launch system (skip menu)"
+        Write-Host "  --install     Perform full installation"
+        Write-Host "  --config      Launch configuration wizard"
+        Write-Host "  --doctor      Run deep system diagnostics"
+        Write-Host "  --status      Show system status report"
+        Write-Host "  --stop        Stop all running Golem processes"
+        Write-Host "  --init        Factory reset (DANGER)"
+        Write-Host "  --version     Show version info"
+        Write-Host "  --help, -h    Show this help"
         exit 0 
     }
     
