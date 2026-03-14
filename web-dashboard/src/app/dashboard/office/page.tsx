@@ -3,6 +3,16 @@
 import { useEffect, useState, useRef } from "react";
 import { socket } from "@/lib/socket";
 import { ChatBubble } from "@/components/ChatBubble";
+import { PixelSprite } from "@/components/PixelSprite";
+import {
+    GolemStateProvider,
+    useGolemState,
+    type GolemBehaviorState,
+} from "@/components/GolemStateContext";
+
+// ─────────────────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────────────────
 
 interface ChatMessage {
     id: string;
@@ -11,128 +21,423 @@ interface ChatMessage {
     timestamp: number;
 }
 
-type TeamType = "default" | "tech";
+type Message = ChatMessage;
 
-interface OfficeItem {
-    id: string;
-    type: "character" | "prop";
-    name: string;
-    src: string;
-    x: number; // percentage
-    y: number; // percentage
-    zIndex: number;
-    team: TeamType | "all";
-    width: number; // px or string class? let's stick to standard w/h or classes
-    height: number;
-    label?: string;
-    labelColor?: string;
-    labelBorder?: string;
+// ─────────────────────────────────────────────────────────
+// Sprite Config — derived from actual spritesheet analysis:
+//   star-working-spritesheet-grid.webp: 2400×1500 → 10×10cols = 100 frames @ 240×150
+//   Note: game.js declares frameWidth=230, frameHeight=144 (source rect)
+//         actual measured: 2400/10=240, 1500/10=150. We use true pixel values.
+// ─────────────────────────────────────────────────────────
+const SPRITES = {
+    idle: {
+        src: "/star-office/star-idle-v5.png",
+        frameWidth: 256,
+        frameHeight: 256,
+        frameCount: 48,
+        cols: 8,
+        fps: 12,
+    },
+    working: {
+        src: "/star-office/star-working-spritesheet-grid.webp",
+        frameWidth: 240,
+        frameHeight: 150,
+        frameCount: 100,
+        cols: 10,
+        fps: 12,
+    },
+    sync: {
+        src: "/star-office/sync-animation-v3-grid.webp",
+        frameWidth: 256,
+        frameHeight: 256,
+        frameCount: 49,
+        cols: 7,
+        fps: 12,
+    },
+    errorBug: {
+        src: "/star-office/error-bug-spritesheet-grid.webp",
+        frameWidth: 180,
+        frameHeight: 180,
+        frameCount: 99,
+        cols: 9,
+        fps: 12,
+    },
+    cats: {
+        src: "/star-office/cats-spritesheet.webp",
+        frameWidth: 160,
+        frameHeight: 160,
+        frameCount: 16,
+        cols: 4,
+        fps: 6,
+    },
+    coffee: {
+        src: "/star-office/coffee-machine-v3-grid.webp",
+        frameWidth: 230,
+        frameHeight: 230,
+        frameCount: 96,
+        cols: 12,
+        fps: 12,
+    },
+    plants: {
+        src: "/star-office/plants-spritesheet.webp",
+        frameWidth: 160,
+        frameHeight: 160,
+        frameCount: 16,
+        cols: 4,
+        fps: 4,
+    },
+} as const;
+
+// ─────────────────────────────────────────────────────────
+// State display labels and colours
+// ─────────────────────────────────────────────────────────
+
+const STATE_META: Record<GolemBehaviorState, { label: string; colour: string }> = {
+    idle:        { label: "IDLE",        colour: "#94a3b8" },
+    writing:     { label: "WRITING",     colour: "#facc15" },
+    researching: { label: "RESEARCHING", colour: "#a78bfa" },
+    executing:   { label: "EXECUTING",   colour: "#f97316" },
+    syncing:     { label: "SYNCING",     colour: "#38bdf8" },
+    error:       { label: "ERROR",       colour: "#ef4444" },
+};
+
+// ─────────────────────────────────────────────────────────
+// GolemSprite — animated character block driven by state
+// ─────────────────────────────────────────────────────────
+
+function GolemSprite({ activeMessage }: { activeMessage: Message | null }) {
+    const { state } = useGolemState();
+    const prevStateRef = useRef(state);
+    const [visible, setVisible] = useState(true);
+
+    // Fade-transition between states
+    useEffect(() => {
+        if (prevStateRef.current === state) return;
+        prevStateRef.current = state;
+        setVisible(false);
+        const t = setTimeout(() => setVisible(true), 180);
+        return () => clearTimeout(t);
+    }, [state]);
+
+    const isWorking = state === "writing" || state === "researching" || state === "executing";
+
+    return (
+        <div
+            className="relative flex flex-col items-center"
+            style={{
+                opacity: visible ? 1 : 0,
+                transition: "opacity 0.18s ease",
+                // pixel-art: disable anti-aliasing globally for this subtree
+                imageRendering: "pixelated",
+            }}
+        >
+            {/* Working animation (writing / researching / executing) */}
+            {isWorking && (
+                <div className="absolute" style={{ top: 0, left: "50%", transform: "translate(-50%, -50%)" }}>
+                    <PixelSprite
+                        {...SPRITES.working}
+                        scale={1.32} // restored to layout.js original exact scale
+                        isPlaying={true}
+                    />
+                </div>
+            )}
+
+            {/* Idle — show static star image sitting on sofa */}
+            {state === "idle" && (
+                <div className="absolute" style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.5))", transform: "translate(-50%, -50%)" }}>
+                    <PixelSprite
+                        {...SPRITES.idle}
+                        scale={1}
+                        isPlaying={true}
+                    />
+                </div>
+            )}
+
+            {/* Syncing animation */}
+            {state === "syncing" && (
+                <div className="absolute" style={{ transform: "translate(-50%, -50%)" }}>
+                    <PixelSprite
+                        {...SPRITES.sync}
+                        scale={1}
+                        isPlaying={true}
+                    />
+                </div>
+            )}
+
+            {/* Error bug */}
+            {state === "error" && (
+                <div className="absolute" style={{ transform: "translate(-50%, -50%)" }}>
+                    <PixelSprite
+                        {...SPRITES.errorBug}
+                        scale={0.9}
+                        isPlaying={true}
+                    />
+                    <span
+                        className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-400 text-[12px] font-bold animate-bounce whitespace-nowrap"
+                        style={{ fontFamily: "var(--font-press-start)" }}
+                    >
+                        !! ERROR !!
+                    </span>
+                </div>
+            )}
+        </div>
+    );
 }
 
-type Message = ChatMessage; // Alias for clarity with the snippet
+// ─────────────────────────────────────────────────────────
+// Status HUD badge
+// ─────────────────────────────────────────────────────────
 
-const DEFAULT_LAYOUT: OfficeItem[] = [
-    // Characters
-    { id: 'user', type: 'character', name: 'user', src: '/characters/user.png', x: 8, y: 75, zIndex: 40, team: 'all', width: 192, height: 192 },
-    { id: 'alex', type: 'character', name: 'alex', src: '/characters/alex.png', x: 28, y: 65, zIndex: 30, team: 'tech', width: 176, height: 176, label: 'ALEX (FE)', labelColor: 'text-cyan-400', labelBorder: 'border-cyan-800' },
-    { id: 'bob', type: 'character', name: 'bob', src: '/characters/bob.png', x: 50, y: 75, zIndex: 20, team: 'tech', width: 128, height: 128, label: 'BOB (BE)', labelColor: 'text-orange-400', labelBorder: 'border-orange-800' },
-    { id: 'carol', type: 'character', name: 'carol', src: '/characters/carol.png', x: 72, y: 75, zIndex: 20, team: 'tech', width: 128, height: 128, label: 'CAROL (PM)', labelColor: 'text-pink-400', labelBorder: 'border-pink-800' },
+function StatusBadge() {
+    const { state, detail } = useGolemState();
+    const meta = STATE_META[state];
 
-    // Props
-    { id: 'bookshelf', type: 'prop', name: 'bookshelf', src: '/props/bookshelf.png', x: 85, y: 25, zIndex: 0, team: 'default', width: 96, height: 128 },
-    { id: 'bean_bag', type: 'prop', name: 'bean_bag', src: '/props/bean_bag.png', x: 60, y: 60, zIndex: 20, team: 'default', width: 96, height: 96 },
-    { id: 'meeting_group', type: 'prop', name: 'meeting_group', src: '/props/meeting_group.png', x: 55, y: 35, zIndex: 20, team: 'default', width: 400, height: 300 },
+    return (
+        <div className="flex items-center gap-2">
+            <span
+                className="px-2 py-0.5 text-[8px] font-bold border-2 border-black"
+                style={{
+                    color: meta.colour,
+                    borderColor: meta.colour,
+                    backgroundColor: "rgba(0,0,0,0.6)",
+                    fontFamily: "var(--font-press-start)",
+                    textShadow: `0 0 6px ${meta.colour}`,
+                    letterSpacing: 1,
+                }}
+            >
+                ◉ {meta.label}
+            </span>
+            <span
+                className="text-[8px] text-gray-400 hidden md:inline truncate max-w-[200px]"
+                style={{ fontFamily: "Courier New, monospace" }}
+            >
+                {detail}
+            </span>
+        </div>
+    );
+}
 
-    { id: 'tech_rack_l', type: 'prop', name: 'server_rack', src: '/props/server_rack.png', x: 8, y: 42, zIndex: 10, team: 'tech', width: 96, height: 192 },
-    { id: 'tech_rack_r', type: 'prop', name: 'server_rack', src: '/props/server_rack.png', x: 84, y: 34, zIndex: 10, team: 'tech', width: 96, height: 192 },
-    { id: 'drone_dock', type: 'prop', name: 'drone_dock', src: '/office-assets/tech/drone_dock.png', x: 65, y: 27, zIndex: 20, team: 'tech', width: 150, height: 150 },
-    { id: 'arcade', type: 'prop', name: 'arcade', src: '/office-assets/tech/arcade.png', x: 84, y: 58, zIndex: 20, team: 'tech', width: 128, height: 128 },
+// ─────────────────────────────────────────────────────────
+// Decoration sprites (Interactive ambient)
+// ─────────────────────────────────────────────────────────
 
-    // New Decorations
-];
+function InteractiveDecoration({ sprite, className, style, scale = 1, isAnim = false }: { sprite: any, className?: string, style?: React.CSSProperties, scale?: number, isAnim?: boolean }) {
+    // Generate initial random frame
+    const [frame, setFrame] = useState(() => Math.floor(Math.random() * sprite.frameCount));
+    const [isPlaying, setIsPlaying] = useState(isAnim);
 
-export default function OfficePage() {
+    const handleClick = () => {
+        if (!isAnim) {
+            // For static objects, randomise frame
+            setFrame(Math.floor(Math.random() * sprite.frameCount));
+        } else {
+            // For animated objects, just restart animation or toggle it
+            setIsPlaying(!isPlaying);
+        }
+    };
+
+    return (
+        <div
+            className={`cursor-pointer transition-transform hover:scale-105 active:scale-95 ${className || ""}`}
+            style={style}
+            onClick={handleClick}
+        >
+            <PixelSprite
+                {...sprite}
+                scale={scale}
+                isPlaying={isPlaying}
+                startFrame={frame}
+                key={isAnim ? isPlaying.toString() : frame} // Force re-render of static frame component
+            />
+        </div>
+    );
+}
+
+function DecorationSprites() {
+    return (
+        <>
+            {/* Coffee machine — bottom-right-ish. Animated by default in game.js, but let's make it animated and togglable. */}
+            <InteractiveDecoration
+                sprite={SPRITES.coffee}
+                scale={1}
+                isAnim={true}
+                className="absolute"
+                style={{ left: 659, top: 397, transform: "translate(-50%, -50%)", zIndex: 99, opacity: 0.88 }}
+            />
+
+            {/* Plants */}
+            {/* Plant 1 */}
+            <InteractiveDecoration
+                sprite={SPRITES.plants}
+                scale={1}
+                className="absolute"
+                style={{ left: 565, top: 178, transform: "translate(-50%, -50%)", zIndex: 5 }}
+            />
+            {/* Plant 2 */}
+            <InteractiveDecoration
+                sprite={SPRITES.plants}
+                scale={1}
+                className="absolute"
+                style={{ left: 230, top: 185, transform: "translate(-50%, -50%)", zIndex: 5 }}
+            />
+            {/* Plant 3 */}
+            <InteractiveDecoration
+                sprite={SPRITES.plants}
+                scale={1}
+                className="absolute"
+                style={{ left: 977, top: 496, transform: "translate(-50%, -50%)", zIndex: 5 }}
+            />
+
+            {/* Cat — bottom-left corner. */}
+            <InteractiveDecoration
+                sprite={SPRITES.cats}
+                scale={1}
+                className="absolute"
+                style={{ left: 94, top: 557, transform: "translate(-50%, -50%)", zIndex: 2000 }}
+            />
+
+            {/* Desk image */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+                src="/star-office/desk-v3.webp"
+                alt="desk"
+                className="absolute"
+                style={{
+                    left: 218,
+                    top: 417,
+                    transform: "translate(-50%, -50%)",
+                    zIndex: 1000,
+                    imageRendering: "pixelated",
+                    filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.5))",
+                }}
+            />
+        </>
+    );
+}
+
+// ─────────────────────────────────────────────────────────
+// Scene layout — maps GolemBehaviorState to character position
+// Use exact center coordinates from layout.js
+// ─────────────────────────────────────────────────────────
+
+const SCENE_POSITIONS: Record<GolemBehaviorState, { left: number; top: number }> = {
+    idle:        { left: 670 + 128, top: 144 + 128 }, // sofa origin is 0,0 (width 256), so center is +128
+    writing:     { left: 217, top: 333 }, // desk area (masked by desk z-1000)
+    researching: { left: 217, top: 333 }, // desk area (masked by desk z-1000)
+    executing:   { left: 217, top: 333 }, // desk area (masked by desk z-1000)
+    syncing:     { left: 1157, top: 592 }, // sync corner
+    error:       { left: 1007, top: 221 }, // error area
+};
+
+// ─────────────────────────────────────────────────────────
+// Scene Scale Container - keeps 1280x720 aspect ratio
+// ─────────────────────────────────────────────────────────
+
+function SceneContainer({ children }: { children: React.ReactNode }) {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [scale, setScale] = useState(1);
+
+    useEffect(() => {
+        const resize = () => {
+            if (!containerRef.current) return;
+            const w = containerRef.current.clientWidth;
+            const h = containerRef.current.clientHeight;
+            const scaleX = w / 1280;
+            const scaleY = h / 720;
+            setScale(Math.min(scaleX, scaleY));
+        };
+        resize();
+        window.addEventListener("resize", resize);
+        return () => window.removeEventListener("resize", resize);
+    }, []);
+
+    return (
+        <div ref={containerRef} className="flex-1 relative border-4 border-[#25395A] overflow-hidden z-0 bg-black flex items-center justify-center">
+            <div 
+                style={{ 
+                    width: 1280, 
+                    height: 720, 
+                    transform: `scale(${scale})`, 
+                    transformOrigin: "center center",
+                    backgroundImage: "url('/star-office/office_bg_small.webp')",
+                    backgroundSize: "cover",
+                    imageRendering: "pixelated",
+                }} 
+                className="relative overflow-hidden shadow-[inset_0_20px_50px_rgba(0,0,0,0.5)]"
+            >
+                {children}
+            </div>
+        </div>
+    );
+}
+
+// ─────────────────────────────────────────────────────────
+// Inner office (uses GolemState context)
+// ─────────────────────────────────────────────────────────
+
+function OfficeInner() {
+    const { state } = useGolemState();
     const [messageHistory, setMessageHistory] = useState<ChatMessage[]>([]);
-    const [selectedTeam, setSelectedTeam] = useState<TeamType>('default');
-    const [isLogExpanded, setIsLogExpanded] = useState(true);
     const [activeMessages, setActiveMessages] = useState<Record<string, Message | null>>({
         user: null, brain: null, memory: null, action: null,
-        alex: null, bob: null, carol: null
     });
-    const [isTeamDropdownOpen, setIsTeamDropdownOpen] = useState(false);
-
-    const containerRef = useRef<HTMLDivElement>(null);
-    const dropdownRef = useRef<HTMLDivElement>(null);
+    const [isLogExpanded, setIsLogExpanded] = useState(true);
     const logConsoleRef = useRef<HTMLDivElement>(null);
     const timersRef = useRef<Record<string, NodeJS.Timeout | null>>({});
 
-    // Handle outside clicks for the dropdown
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setIsTeamDropdownOpen(false);
-            }
-        };
+    // Position transition
+    const pos = SCENE_POSITIONS[state];
 
-        if (isTeamDropdownOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        } else {
-            document.removeEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isTeamDropdownOpen]);
-
-    // Auto-scroll the log console to bottom when messageHistory changes
+    // ── Auto-scroll log ──────────────────────────────────
     useEffect(() => {
         if (logConsoleRef.current) {
             logConsoleRef.current.scrollTop = logConsoleRef.current.scrollHeight;
         }
     }, [messageHistory]);
 
+    // ── Socket log handler ───────────────────────────────
     useEffect(() => {
-        const handleLog = (logData: any) => {
-            if (!logData || (!logData.msg && !logData.raw)) return;
-            const text = logData.cleanMsg || logData.msg || logData.raw;
-            if (!text) return;
+        const handleLog = (logData: Record<string, unknown>) => {
+            const rawText = (logData.cleanMsg || logData.msg || logData.raw) as string | undefined;
+            if (!rawText) return;
 
-            let role: string = "system";
-            const lowerText = text.toLowerCase();
+            let role = "system";
+            const lowerText = rawText.toLowerCase();
 
-            const multiAgentMatch = text.match(/\[MultiAgent\]\s*\[(.*?)\]/i);
+            const multiAgentMatch = rawText.match(/\[MultiAgent\]\s*\[(.*?)\]/i);
             if (multiAgentMatch) {
-                const name = multiAgentMatch[1].trim().toLowerCase();
-                role = name;
-                if (['alex', 'bob', 'carol'].includes(name)) setSelectedTeam('tech');
-            } else if (text.includes('[GOLEM_MEMORY]')) {
+                role = multiAgentMatch[1].trim().toLowerCase();
+            } else if (rawText.includes("[GOLEM_MEMORY]")) {
                 role = "memory";
-            } else if (text.includes('[GOLEM_ACTION]')) {
+            } else if (rawText.includes("[GOLEM_ACTION]")) {
                 role = "action";
-            } else if (text.includes('🤖 [Golem] 說:') || text.includes('[GOLEM_REPLY]')) {
+            } else if (rawText.includes("🤖 [Golem] 說:") || rawText.includes("[GOLEM_REPLY]")) {
                 role = "brain";
-            } else if (text.includes('🗣️ [User] 說:') || lowerText.includes('[user]') || lowerText.includes('you:') || lowerText.includes('使用者:')) {
+            } else if (
+                rawText.includes("🗣️ [User] 說:") ||
+                lowerText.includes("[user]") ||
+                lowerText.includes("you:") ||
+                lowerText.includes("使用者:")
+            ) {
                 role = "user";
             }
 
-            if (role === 'system') return;
+            if (role === "system") return;
 
-            let displayText = text;
-            if (multiAgentMatch) {
-                displayText = text.replace(/\[MultiAgent\]\s*\[.*?\]\s*/i, '').trim();
-            } else {
-                if (role === "memory") displayText = text.replace(/\[GOLEM_MEMORY\]\n?/i, '').trim();
-                if (role === "action") displayText = text.replace(/\[GOLEM_ACTION\]\n?/i, '').trim();
-                if (role === "brain") displayText = text.replace(/🤖 \[Golem\] 說:\s*/i, '').replace(/\[GOLEM_REPLY\]\n?/i, '').trim();
-                if (role === "user") displayText = text.replace(/🗣️ \[User\] 說:\s*/i, '').trim();
+            let displayText = rawText;
+            if (multiAgentMatch) displayText = rawText.replace(/\[MultiAgent\]\s*\[.*?\]\s*/i, "").trim();
+            else {
+                if (role === "memory") displayText = rawText.replace(/\[GOLEM_MEMORY\]\n?/i, "").trim();
+                if (role === "action") displayText = rawText.replace(/\[GOLEM_ACTION\]\n?/i, "").trim();
+                if (role === "brain") displayText = rawText.replace(/🤖 \[Golem\] 說:\s*/i, "").replace(/\[GOLEM_REPLY\]\n?/i, "").trim();
+                if (role === "user") displayText = rawText.replace(/🗣️ \[User\] 說:\s*/i, "").trim();
             }
 
             const newMsg: ChatMessage = {
                 id: Math.random().toString(36).substring(7),
                 role,
                 text: displayText,
-                timestamp: Date.now()
+                timestamp: Date.now(),
             };
 
             setActiveMessages(prev => ({ ...prev, [role]: newMsg }));
@@ -151,129 +456,170 @@ export default function OfficePage() {
         };
     }, []);
 
+    // Determine which active message should show on the Golem sprite
+    const golemMessage =
+        activeMessages.brain ??
+        activeMessages.action ??
+        activeMessages.memory ??
+        null;
+
+    const userMessage = activeMessages.user ?? null;
+
+    // Manual action triggers
+    const triggerReply = () => {
+        socket.emit("chat message", "分析目前對話狀態並主動給予回覆。");
+    };
+
+    const triggerMemoryCompress = () => {
+        socket.emit("chat message", "請執行記憶壓縮與整理。");
+    };
+
     return (
-        <div className="h-full w-full bg-[#1A1A1A] p-0 flex flex-col items-center justify-center font-[family-name:var(--font-press-start)] antialiased">
-            <div className="relative w-full h-full bg-[#3A3C45] border-8 border-[#2B2D31] p-1 shadow-2xl overflow-hidden flex flex-col">
-                {/* Top HUD Bar */}
-                <div className="w-full bg-[#3B5B8C] border-4 border-[#25395A] rounded-sm p-2 mb-1 flex justify-between items-center text-white text-[10px] md:text-[10px] z-30">
-                    <div className="flex items-center gap-2">
-                        <span className="text-[#FFD700] drop-shadow-[2px_2px_0_rgba(0,0,0,1)] whitespace-nowrap hidden md:inline">GOLEM DEV STORY</span>
+        <div className="relative w-full h-full bg-[#3A3C45] border-8 border-[#2B2D31] shadow-2xl overflow-hidden flex flex-col">
 
-                        <div className="relative ml-2" ref={dropdownRef}>
-                            <button
-                                onClick={() => setIsTeamDropdownOpen(!isTeamDropdownOpen)}
-                                className="px-3 py-1 border-2 border-black bg-[#1D2B44] text-[8px] font-bold text-white hover:bg-[#25395A] transition-all flex items-center gap-2"
-                            >
-                                👥 {selectedTeam === 'default' ? 'MAIN OFFICE' : selectedTeam.toUpperCase() + ' SESSION'} <span className="text-[6px]">▼</span>
-                            </button>
-                            {isTeamDropdownOpen && (
-                                <div className="absolute top-full left-0 mt-1 w-48 bg-[#25395A] border-4 border-black flex flex-col z-[60] shadow-xl">
-                                    <button onClick={() => { setSelectedTeam("default"); setIsTeamDropdownOpen(false); }} className="p-2 text-[8px] text-left hover:bg-white hover:text-black border-b-2 border-black/20">🏠 MAIN OFFICE</button>
-                                    <button onClick={() => { setSelectedTeam("tech"); setIsTeamDropdownOpen(false); }} className="p-2 text-[8px] text-left hover:bg-cyan-500 hover:text-black">💻 TECH TEAM</button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="flex gap-1 md:gap-2 ml-auto">
-                        {/* No filters */}
-                    </div>
+            {/* ── TOP HUD ─────────────────────────────── */}
+            <div className="w-full bg-[#3B5B8C] border-4 border-[#25395A] p-2 flex justify-between items-center text-white z-30 shrink-0">
+                <div className="flex items-center gap-3">
+                    <span
+                        className="text-[#FFD700] text-[10px] font-bold hidden md:inline whitespace-nowrap"
+                        style={{ fontFamily: "var(--font-press-start)", textShadow: "2px 2px 0 rgba(0,0,0,1)" }}
+                    >
+                        GOLEM DEV STORY
+                    </span>
+                    <StatusBadge />
                 </div>
-
-                {/* Inner Room Area */}
-                <div
-                    ref={containerRef}
-                    className="flex-1 relative bg-center bg-no-repeat border-4 border-[#25395A] rounded-sm overflow-hidden z-0 shadow-[inset_0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-700"
-                    style={{
-                        backgroundImage: selectedTeam === 'tech' ? "url('/pixel_bg_tech.png')" : "url('/office_bg.png')",
-                        backgroundColor: selectedTeam === 'tech' ? '#0a0a2a' : '#3B5B8C',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        imageRendering: 'pixelated'
-                    }}
-                >
-                    {DEFAULT_LAYOUT.filter(item => item.team === 'all' || item.team === selectedTeam).map((item) => (
-                        <div
-                            key={item.id}
-                            className="absolute flex flex-col items-center group transition-all duration-300"
-                            style={{
-                                left: `${item.x}%`,
-                                top: `${item.y}%`,
-                                transform: 'translate(-50%, -50%)',
-                                zIndex: item.zIndex,
-                                width: item.width,
-                                height: item.height,
-                            }}
-                        >
-                            <img
-                                src={item.src}
-                                alt={item.name}
-                                className={`w-full h-full object-contain ${item.name === 'user' ? 'drop-shadow-[-5px_5px_8px_rgba(0,0,0,0.6)]' : 'drop-shadow-[0px_10px_15px_rgba(0,0,0,0.5)]'} transition-transform`}
-                            />
-
-                            {item.label && (
-                                <span className={`absolute bottom-[-10px] text-[7px] font-bold p-1 bg-black/80 rounded uppercase border whitespace-nowrap ${item.labelColor} ${item.labelBorder}`}>
-                                    {item.label}
-                                </span>
-                            )}
-
-                            {activeMessages[item.name] && (
-                                <div className={`absolute z-50 ${item.name === 'user' ? 'top-[-115px] left-[60px] min-w-[200px]' : 'top-[-115px] w-[240px]'}`}>
-                                    <ChatBubble role={item.name} text={activeMessages[item.name]!.text} />
-                                </div>
-                            )}
-
-                            {item.id === 'meeting_group' && selectedTeam === 'default' && (
-                                <>
-                                    {activeMessages.action && <div className="absolute top-[10px] left-[-170px] min-w-[200px] z-50"><ChatBubble role="action" text={activeMessages.action.text} /></div>}
-                                    {activeMessages.brain && <div className="absolute top-[-135px] left-[-50px] min-w-[240px] z-50"><ChatBubble role="brain" text={activeMessages.brain.text} /></div>}
-                                    {activeMessages.memory && <div className="absolute top-[-65px] left-[320px] min-w-[200px] z-50"><ChatBubble role="memory" text={activeMessages.memory.text} /></div>}
-                                </>
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                {/* Bottom HUD bar */}
-                <div className="w-full bg-[#3B5B8C] border-4 border-[#25395A] border-t-0 p-2 flex justify-between items-center text-[8px] md:text-[10px] text-white z-40">
-                    <div className="flex items-center gap-4">
-                        <span className="text-[#FFD700]">PROJECT: <span className="text-white ml-2">Multi-Agent System v2.0</span></span>
-                        <span className="text-gray-400">|</span>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <span className="text-[#FFD700]">CURRENT SCENE: <span className="text-cyan-400 ml-2 uppercase">{selectedTeam} {selectedTeam !== 'default' ? 'STUDIO' : 'OFFICE'}</span></span>
-                        <button
-                            onClick={() => setIsLogExpanded(!isLogExpanded)}
-                            className="bg-black/60 border-2 border-[#FFD700] px-2 py-0.5 text-[#FFD700] hover:bg-black transition-colors transform active:scale-95 flex items-center gap-1"
-                        >
-                            {isLogExpanded ? 'CLOSE LOG ▲' : 'OPEN LOG ▼'}
-                        </button>
-                    </div>
-                </div>
-
-                <div
-                    ref={logConsoleRef}
-                    className={`w-full bg-black/80 border-4 border-[#25395A] border-t-0 p-2 overflow-y-auto font-[family-name:Courier_New] text-[10px] text-green-400 custom-scrollbar flex flex-col gap-1 z-40 shrink-0 shadow-[inset_0_2px_10px_rgba(0,0,0,0.8)] transition-all duration-500 origin-bottom ${isLogExpanded ? 'h-32 opacity-100' : 'h-0 opacity-0 py-0 border-b-0'}`}
-                >
-                    {messageHistory.length === 0 ? (
-                        <div className="text-gray-500 italic">Waiting for system logs...</div>
-                    ) : (
-                        messageHistory.map((msg) => (
-                            <div key={msg.id} className="border-b border-green-900/40 pb-1 mb-1">
-                                <span className={
-                                    msg.role === 'user' ? 'text-cyan-400 font-bold' :
-                                        msg.role === 'brain' ? 'text-yellow-400 font-bold' :
-                                            msg.role === 'memory' ? 'text-purple-400 font-bold' :
-                                                'text-red-400 font-bold'
-                                }>[{msg.role.toUpperCase()}]</span>
-                                <span className="text-gray-500 ml-1">{(new Date(msg.timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
-                                <div className="mt-1 text-white/90 whitespace-pre-wrap pl-2 border-l-2 border-gray-700 ml-1">{msg.text}</div>
-                            </div>
-                        ))
-                    )}
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={triggerReply}
+                        className="bg-[#2B2D31] hover:bg-[#1A1A1A] border-2 border-[#FFD700] text-[#FFD700] px-3 py-1 text-[8px] md:text-[10px] font-bold transition-transform active:scale-95 shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
+                        style={{ fontFamily: "var(--font-press-start)" }}
+                    >
+                        [主動回覆]
+                    </button>
+                    <button
+                        onClick={triggerMemoryCompress}
+                        className="bg-[#2B2D31] hover:bg-[#1A1A1A] border-2 border-[#38bdf8] text-[#38bdf8] px-3 py-1 text-[8px] md:text-[10px] font-bold transition-transform active:scale-95 shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
+                        style={{ fontFamily: "var(--font-press-start)" }}
+                    >
+                        [壓縮記憶]
+                    </button>
                 </div>
             </div>
+
+            {/* ── SCENE ───────────────────────────────── */}
+            <SceneContainer>
+                {/* Ambient decorations */}
+                <DecorationSprites />
+
+                {/* User bubble — top-left */}
+                {userMessage && (
+                    <div className="absolute top-[80px] left-[80px] z-[2000] text-[18px]" style={{ width: 360 }}>
+                        <ChatBubble role="user" text={userMessage.text} />
+                    </div>
+                )}
+
+                {/* Golem character — position shifts by state. z-[900] sits BEHIND the desk (z-[1000]) */}
+                <div
+                    className="absolute z-[900]"
+                    style={{
+                        left: pos.left,
+                        top: pos.top,
+                        transition: "left 0.6s cubic-bezier(0.4,0,0.2,1), top 0.6s cubic-bezier(0.4,0,0.2,1)",
+                    }}
+                >
+                    <GolemSprite activeMessage={golemMessage} />
+                </div>
+
+                {/* Golem Chat Bubble — stays IN FRONT of everything (z-[2000]) */}
+                {golemMessage && (
+                    <div
+                        className="absolute z-[2000] flex items-center justify-center min-w-[280px]"
+                        style={{
+                            left: pos.left,
+                            top: pos.top - 180, // Offset buble higher
+                            transform: "translateX(-50%)",
+                            transition: "left 0.6s cubic-bezier(0.4,0,0.2,1), top 0.6s cubic-bezier(0.4,0,0.2,1)",
+                        }}
+                    >
+                        <ChatBubble role={golemMessage.role} text={golemMessage.text} />
+                    </div>
+                )}
+
+                {/* State label overlay (subtle, bottom-right of scene) */}
+                <div
+                    className="absolute bottom-6 right-8 text-[14px] opacity-60 z-[3000]"
+                    style={{
+                        fontFamily: "var(--font-press-start)",
+                        color: STATE_META[state].colour,
+                        textShadow: `0 0 6px ${STATE_META[state].colour}`,
+                    }}
+                >
+                    {STATE_META[state].label}
+                </div>
+            </SceneContainer>
+
+            {/* ── BOTTOM HUD ──────────────────────────── */}
+            <div className="w-full bg-[#3B5B8C] border-4 border-[#25395A] border-t-0 p-2 flex justify-between items-center text-[8px] md:text-[10px] text-white z-40 shrink-0">
+                <div className="flex items-center gap-4">
+                    <span
+                        className="text-[#FFD700]"
+                        style={{ fontFamily: "var(--font-press-start)" }}
+                    >
+                        PROJECT: <span className="text-white ml-2">Multi-Agent System v2.0</span>
+                    </span>
+                </div>
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => setIsLogExpanded(!isLogExpanded)}
+                        className="bg-black/60 border-2 border-[#FFD700] px-2 py-0.5 text-[#FFD700] hover:bg-black transition-colors transform active:scale-95 flex items-center gap-1"
+                        style={{ fontFamily: "var(--font-press-start)" }}
+                    >
+                        {isLogExpanded ? "CLOSE LOG ▲" : "OPEN LOG ▼"}
+                    </button>
+                </div>
+            </div>
+
+            {/* ── LOG CONSOLE ─────────────────────────── */}
+            <div
+                ref={logConsoleRef}
+                className={`w-full bg-black/80 border-4 border-[#25395A] border-t-0 p-2 overflow-y-auto font-mono text-[10px] text-green-400 custom-scrollbar flex flex-col gap-1 z-40 shrink-0 shadow-[inset_0_2px_10px_rgba(0,0,0,0.8)] transition-all duration-500 origin-bottom ${isLogExpanded ? "h-32 opacity-100" : "h-0 opacity-0 py-0 border-b-0"}`}
+            >
+                {messageHistory.length === 0 ? (
+                    <div className="text-gray-500 italic">Waiting for system logs…</div>
+                ) : (
+                    messageHistory.map(msg => (
+                        <div key={msg.id} className="border-b border-green-900/40 pb-1 mb-1">
+                            <span className={
+                                msg.role === "user" ? "text-cyan-400 font-bold" :
+                                    msg.role === "brain" ? "text-yellow-400 font-bold" :
+                                        msg.role === "memory" ? "text-purple-400 font-bold" :
+                                            "text-red-400 font-bold"
+                            }>[{msg.role.toUpperCase()}]</span>
+                            <span className="text-gray-500 ml-1">
+                                {new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                            </span>
+                            <div className="mt-1 text-white/90 whitespace-pre-wrap pl-2 border-l-2 border-gray-700 ml-1">
+                                {msg.text}
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+        </div>
+    );
+}
+
+// ─────────────────────────────────────────────────────────
+// Page export — wraps everything in the state provider
+// ─────────────────────────────────────────────────────────
+
+export default function OfficePage() {
+    return (
+        <div className="h-full w-full bg-[#1A1A1A] p-0 flex flex-col items-center justify-center font-[family-name:var(--font-press-start)] antialiased">
+            <GolemStateProvider>
+                <OfficeInner />
+            </GolemStateProvider>
         </div>
     );
 }
