@@ -20,4 +20,10 @@ if !errorlevel! equ 0 (
     exit /b 1
 )
 
-exit /b %errorlevel%
+set "EXIT_CODE=%errorlevel%"
+if %EXIT_CODE% neq 0 (
+    echo.
+    echo [ERROR] 腳本執行中斷，錯誤代碼: %EXIT_CODE%
+    pause
+)
+exit /b %EXIT_CODE%
