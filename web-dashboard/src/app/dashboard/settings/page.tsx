@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import {
     Settings, Save, RefreshCw, AlertTriangle, CheckCircle2,
     Eye, EyeOff, Lock, Users, Server, Activity, Cpu, HardDrive,
-    DownloadCloud, Loader2
+    DownloadCloud, Loader2, X, ShieldCheck, ShieldAlert
 } from "lucide-react";
 import { io } from "socket.io-client";
 
@@ -928,7 +928,8 @@ export default function SettingsPage() {
                                     'GOLEM_MODE', 'GOLEM_MEMORY_MODE', 'GITHUB_REPO',
                                     'MOLTBOOK_API_KEY', 'MOLTBOOK_AGENT_NAME',
                                     'GOLEM_AWAKE_INTERVAL_MIN', 'GOLEM_AWAKE_INTERVAL_MAX',
-                                    'GOLEM_SLEEP_START', 'GOLEM_SLEEP_END', 'USER_INTERESTS', 'COMMAND_WHITELIST', 'CUSTOM_COMMANDS'
+                                    'GOLEM_SLEEP_START', 'GOLEM_SLEEP_END', 'USER_INTERESTS', 'COMMAND_WHITELIST', 'CUSTOM_COMMANDS', 'COMMAND_EXEMPT_KEYWORDS',
+                                    'AUTHORIZED_DANGEROUS_COMMANDS', 'CUSTOM_DANGEROUS_COMMANDS', 'AUTHORIZED_SENSITIVE_KEYWORDS', 'CUSTOM_SENSITIVE_KEYWORDS'
                                 ].includes(k))
                                 .map(key => (
                                     <div key={key}>
@@ -947,240 +948,375 @@ export default function SettingsPage() {
                             <p className="text-sm text-gray-500 italic text-center py-4">無其他參數</p>
                         )}
 
-                        {/* Drag and Drop Command Configuration */}
-                        <div className="mt-8 border-t border-gray-800/80 pt-6">
-                            <h3 className="text-lg font-bold text-gray-200 mb-4 flex items-center gap-2">
-                                🛡️ 指令安全與白名單設定 (Drag & Drop)
-                            </h3>
-                            <p className="text-sm text-gray-400 mb-6">
-                                預設的安全指令不可移除。您可以新增自訂指令，並在「備選池」與「允許清單」之間拖曳以啟用/停用免審批功能。
-                            </p>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-                                {/* 🔴 危險指令 */}
-                                <div className="bg-red-950/20 border border-red-900/40 rounded-xl p-4 flex flex-col h-full">
-                                    <h4 className="text-sm font-semibold text-red-500 flex items-center gap-2 mb-3">
-                                        <AlertTriangle className="w-4 h-4" /> 系統阻擋 (危險)
-                                    </h4>
-                                    <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar h-[22rem]">
-                                        {['rm -rf /', 'rd /s /q', '> /dev/sd', ':(){:|:&};:', 'mkfs', 'Format-Volume', 'dd if=', 'chmod -x'].map((cmd, idx) => (
-                                            <div key={`danger-${idx}`} className="px-3 py-2 bg-red-950/50 border border-red-900/60 text-red-300 text-xs font-mono rounded cursor-not-allowed opacity-80">
-                                                {cmd}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* 🛡️ 系統安全庫 (預設) */}
-                                <div
-                                    className="bg-gray-950/20 border border-gray-800/80 rounded-xl p-4 flex flex-col h-full transition-colors relative"
-                                >
-                                    <h4 className="text-sm font-semibold text-gray-400 flex items-center gap-2 mb-3">
-                                        🛡️ 系統安全庫 (預設)
-                                    </h4>
-                                    <p className="text-[10px] text-gray-500 mb-3">系統內建的安全指令，必須拖出至允許清單才會免審批。</p>
-                                    <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar h-[22rem]">
-                                        {['dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check']
-                                            .filter(cmd => !(config.env.COMMAND_WHITELIST || "").split(',').map(s => s.trim()).includes(cmd))
-                                            .map((cmd, idx) => (
-                                                <div
-                                                    key={`safe-drv-${idx}`}
-                                                    draggable
-                                                    onDragStart={(e) => {
-                                                        e.dataTransfer.setData("text/plain", cmd);
-                                                        e.dataTransfer.effectAllowed = "move";
-                                                    }}
-                                                    className="px-3 py-2 bg-gray-800 border border-gray-700 text-gray-400 text-xs font-mono rounded cursor-grab active:cursor-grabbing hover:border-emerald-500 shadow-sm relative group flex items-center justify-between"
-                                                >
-                                                    <span>{cmd}</span>
-                                                    <span className="text-[10px] text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">拖曳啟用</span>
-                                                </div>
-                                            ))}
-                                    </div>
-                                </div>
-
-                                {/* 🟢 允許清單 (Whitelist) */}
-                                <div
-                                    className="bg-emerald-950/10 border border-emerald-900/30 rounded-xl p-4 flex flex-col h-full transition-colors relative"
-                                    onDragOver={(e) => {
-                                        e.preventDefault();
-                                        e.currentTarget.classList.add('border-emerald-500', 'bg-emerald-950/30');
-                                    }}
-                                    onDragLeave={(e) => {
-                                        e.currentTarget.classList.remove('border-emerald-500', 'bg-emerald-950/30');
-                                    }}
-                                    onDrop={(e) => {
-                                        e.preventDefault();
-                                        e.currentTarget.classList.remove('border-emerald-500', 'bg-emerald-950/30');
-                                        const item = e.dataTransfer.getData("text/plain");
-                                        if (!item) return;
-
-                                        const currentWhitelistStr = config.env.COMMAND_WHITELIST || "";
-                                        const currentWhitelist = currentWhitelistStr.split(',').map(s => s.trim()).filter(Boolean);
-                                        const poolStr = config.env.CUSTOM_COMMANDS || "";
-                                        let poolList = poolStr.split(',').map(s => s.trim()).filter(Boolean);
-
-                                        if (!currentWhitelist.includes(item)) {
-                                            const newWhitelist = [...currentWhitelist, item];
-                                            handleChangeEnv("COMMAND_WHITELIST", newWhitelist.join(','));
-                                            // Remove from pool if it was there
-                                            poolList = poolList.filter(cmd => cmd !== item);
-                                            handleChangeEnv("CUSTOM_COMMANDS", poolList.join(','));
-                                        }
-                                    }}
-                                >
-                                    <h4 className="text-sm font-semibold text-emerald-400 flex items-center gap-2 mb-3">
-                                        <CheckCircle2 className="w-4 h-4" /> 允許清單 (免審批)
-                                    </h4>
-                                    <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar h-[22rem]">
-                                        {/* User Whitelist */}
-                                        <div className="text-xs text-emerald-600/80 mb-2 mt-2 font-medium">免審批生效中</div>
-                                        {(config.env.COMMAND_WHITELIST || "")
-                                            .split(',')
-                                            .map(s => s.trim())
-                                            .filter(Boolean)
-                                            .map((cmd, idx) => (
-                                                <div
-                                                    key={`whitelist-${idx}`}
-                                                    draggable
-                                                    onDragStart={(e) => {
-                                                        e.dataTransfer.setData("text/plain", cmd);
-                                                        e.dataTransfer.effectAllowed = "move";
-                                                    }}
-                                                    className="px-3 py-2 bg-emerald-950/20 border border-emerald-600/50 text-emerald-300 text-xs font-mono rounded cursor-grab active:cursor-grabbing hover:border-red-400 shadow-sm relative group flex items-center justify-between"
-                                                >
-                                                    <span>{cmd}</span>
-                                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <span className="text-[10px] text-gray-500 mr-1">拖出停用</span>
-                                                        <button
-                                                            onClick={() => {
-                                                                const poolStr = config.env.COMMAND_WHITELIST || "";
-                                                                const currentPool = poolStr.split(',').map(s => s.trim()).filter(Boolean);
-                                                                const newWhitelist = currentPool.filter(c => c !== cmd);
-                                                                handleChangeEnv("COMMAND_WHITELIST", newWhitelist.join(','));
-
-                                                                // 如果不是系統預設的指令，就丟回自訂備選池
-                                                                const defaultSafe = ['dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check'];
-                                                                if (!defaultSafe.includes(cmd)) {
-                                                                    const customPoolStr = config.env.CUSTOM_COMMANDS || "";
-                                                                    const currentCustomPool = customPoolStr.split(',').map(s => s.trim()).filter(Boolean);
-                                                                    if (!currentCustomPool.includes(cmd)) {
-                                                                        handleChangeEnv("CUSTOM_COMMANDS", [...currentCustomPool, cmd].join(','));
-                                                                    }
-                                                                }
-                                                            }}
-                                                            className="text-gray-500 hover:text-red-400 p-0.5"
-                                                            title="移除"
-                                                        >
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        }
-                                        {!(config.env.COMMAND_WHITELIST || "").trim() && (
-                                            <div className="text-center py-4 border border-dashed border-emerald-900/30 rounded text-emerald-800/60 text-xs mt-2">
-                                                拖拉至此處以啟用
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* 🔵 自訂指令池 (Pool) */}
-                                <div
-                                    className="bg-blue-950/10 border border-blue-900/30 rounded-xl p-4 flex flex-col h-full transition-colors relative"
-                                    onDragOver={(e) => {
-                                        e.preventDefault();
-                                        e.currentTarget.classList.add('border-blue-500', 'bg-blue-950/30');
-                                    }}
-                                    onDragLeave={(e) => {
-                                        e.currentTarget.classList.remove('border-blue-500', 'bg-blue-950/30');
-                                    }}
-                                    onDrop={(e) => {
-                                        e.preventDefault();
-                                        e.currentTarget.classList.remove('border-blue-500', 'bg-blue-950/30');
-                                        const item = e.dataTransfer.getData("text/plain");
-                                        if (!item) return;
-
-                                        const poolStr = config.env.CUSTOM_COMMANDS || "";
-                                        const currentPool = poolStr.split(',').map(s => s.trim()).filter(Boolean);
-                                        const currentWhitelistStr = config.env.COMMAND_WHITELIST || "";
-                                        let currentWhitelist = currentWhitelistStr.split(',').map(s => s.trim()).filter(Boolean);
-
-                                        if (!currentPool.includes(item)) {
-                                            const newPool = [...currentPool, item];
-                                            handleChangeEnv("CUSTOM_COMMANDS", newPool.join(','));
-                                            // Remove from whitelist if it came from there
-                                            currentWhitelist = currentWhitelist.filter(cmd => cmd !== item);
-                                            handleChangeEnv("COMMAND_WHITELIST", currentWhitelist.join(','));
-                                        }
-                                    }}
-                                >
-                                    <h4 className="text-sm font-semibold text-blue-400 flex items-center justify-between gap-2 mb-3">
-                                        <div className="flex items-center gap-2">
-                                            <HardDrive className="w-4 h-4" /> 自訂備選池
+                        {/* 🛡️ 三橫列安全管理架構 (v9.6 Refined) */}
+                        <div className="mt-8 border-t border-gray-800/80 pt-6 space-y-12">
+                            {/* Row 1: 指令精確白名單 (Exact Match Whitelist) */}
+                            <div className="group/row transition-all">
+                                <h3 className="text-lg font-bold text-emerald-400 mb-2 flex items-center gap-2 group-hover/row:translate-x-1 transition-transform">
+                                    <ShieldCheck className="w-6 h-6" /> 1. 指令精確白名單 (Exact Match)
+                                </h3>
+                                <p className="text-sm text-gray-500 mb-6 font-light">
+                                    此處管理的指令必須「完全相同」才會放行。適用於一般的系統查詢或安全腳本。
+                                </p>
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    {/* 系統預設庫 */}
+                                    <div className="bg-gray-950/20 border border-gray-800/50 rounded-2xl p-5">
+                                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                            📦 系統安全庫 (預設)
+                                        </h4>
+                                        <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto custom-scrollbar">
+                                            {['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'golem-check']
+                                                .filter(cmd => !(config.env.COMMAND_WHITELIST || "").split(',').includes(cmd))
+                                                .map(cmd => (
+                                                    <button
+                                                        key={cmd}
+                                                        onClick={() => {
+                                                            const current = (config.env.COMMAND_WHITELIST || "").split(',').filter(Boolean);
+                                                            handleChangeEnv("COMMAND_WHITELIST", [...current, cmd].join(','));
+                                                        }}
+                                                        className="px-3 py-1.5 bg-gray-900 border border-gray-800 text-gray-400 text-xs font-mono rounded-lg hover:border-emerald-500/50 hover:text-gray-200 transition-all"
+                                                        title="點擊加入允許清單"
+                                                    >
+                                                        + {cmd}
+                                                    </button>
+                                                ))}
                                         </div>
-                                    </h4>
-
-                                    <div className="flex gap-2 mb-4">
-                                        <input
-                                            type="text"
-                                            id="newCommandInput"
-                                            placeholder="新增指令 (如 docker)"
-                                            className="flex-1 min-w-0 bg-gray-900 border border-gray-700 focus:border-blue-500 rounded px-2 py-1.5 text-xs text-gray-200 font-mono"
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter') {
-                                                    const val = e.currentTarget.value.trim();
-                                                    if (val) {
-                                                        const poolStr = config.env.CUSTOM_COMMANDS || "";
-                                                        const currentPool = poolStr.split(',').map(s => s.trim()).filter(Boolean);
-                                                        if (!currentPool.includes(val)) {
-                                                            handleChangeEnv("CUSTOM_COMMANDS", [...currentPool, val].join(','));
+                                    </div>
+                                    {/* 自訂備選池 */}
+                                    <div className="bg-gray-950/20 border border-gray-800/50 rounded-2xl p-5">
+                                        <h4 className="text-xs font-bold text-blue-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                            💾 自訂指令池
+                                        </h4>
+                                        <div className="flex gap-2 mb-4">
+                                            <input
+                                                type="text"
+                                                placeholder="新增常用指令..."
+                                                className="flex-1 bg-gray-900 border border-gray-800 rounded-lg px-3 py-1.5 text-xs text-gray-200 font-mono focus:border-blue-500 transition-colors"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        const val = e.currentTarget.value.trim();
+                                                        if (val) {
+                                                            const current = (config.env.CUSTOM_COMMANDS || "").split(',').filter(Boolean);
+                                                            if (!current.includes(val)) handleChangeEnv("CUSTOM_COMMANDS", [...current, val].join(','));
                                                             e.currentTarget.value = "";
                                                         }
                                                     }
-                                                }
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar h-[19rem]">
-                                        {(config.env.CUSTOM_COMMANDS || "")
-                                            .split(',')
-                                            .map(s => s.trim())
-                                            .filter(Boolean)
-                                            .map((cmd, idx) => (
-                                                <div
-                                                    key={`pool-${idx}`}
-                                                    draggable
-                                                    onDragStart={(e) => {
-                                                        e.dataTransfer.setData("text/plain", cmd);
-                                                        e.dataTransfer.effectAllowed = "move";
-                                                    }}
-                                                    className="px-3 py-2 bg-gray-800 border border-gray-700 text-gray-300 text-xs font-mono rounded cursor-grab active:cursor-grabbing hover:border-blue-500 shadow-sm relative group flex items-center justify-between"
-                                                >
-                                                    <span>{cmd}</span>
-                                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <span className="text-[10px] text-blue-400 mr-2">拖曳啟用</span>
-                                                        <button
-                                                            onClick={async () => {
-                                                                const poolStr = config.env.CUSTOM_COMMANDS || "";
-                                                                const currentPool = poolStr.split(',').map(s => s.trim()).filter(Boolean);
-                                                                handleChangeEnv("CUSTOM_COMMANDS", currentPool.filter(c => c !== cmd).join(','));
-                                                            }}
-                                                            className="text-gray-500 hover:text-red-400 p-0.5"
-                                                            title="刪除"
-                                                        >
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                                                        </button>
-                                                    </div>
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto custom-scrollbar">
+                                            {(config.env.CUSTOM_COMMANDS || "").split(',').filter(Boolean).map(cmd => (
+                                                <div key={cmd} className="group flex items-center bg-blue-950/10 border border-blue-900/30 rounded-lg pr-1">
+                                                    <button
+                                                        onClick={() => {
+                                                            const currentWh = (config.env.COMMAND_WHITELIST || "").split(',').filter(Boolean);
+                                                            handleChangeEnv("COMMAND_WHITELIST", [...currentWh, cmd].join(','));
+                                                            const currentCu = (config.env.CUSTOM_COMMANDS || "").split(',').filter(Boolean);
+                                                            handleChangeEnv("CUSTOM_COMMANDS", currentCu.filter(c => c !== cmd).join(','));
+                                                        }}
+                                                        className="px-3 py-1.5 text-blue-400 text-xs font-mono hover:text-blue-300 transition-colors"
+                                                        title="點擊啟用免審批"
+                                                    >
+                                                        + {cmd}
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            const current = (config.env.CUSTOM_COMMANDS || "").split(',').filter(Boolean);
+                                                            handleChangeEnv("CUSTOM_COMMANDS", current.filter(c => c !== cmd).join(','));
+                                                        }}
+                                                        className="p-1 text-blue-900 hover:text-red-500 transition-colors"
+                                                    >
+                                                        <X className="w-3 h-3" />
+                                                    </button>
                                                 </div>
-                                            ))
-                                        }
-                                        {!(config.env.CUSTOM_COMMANDS || "").trim() && (
-                                            <div className="text-center py-4 border border-dashed border-gray-800 rounded text-gray-600 text-xs mt-2">
-                                                庫存為空，請從上方新增
-                                            </div>
-                                        )}
+                                            ))}
+                                        </div>
+                                    </div>
+                                    {/* 允許清單 */}
+                                    <div className="bg-emerald-950/10 border border-emerald-900/30 rounded-2xl p-5 outline outline-2 outline-emerald-500/20">
+                                        <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                            ✅ 允許清單 (免審批)
+                                        </h4>
+                                        <div className="flex flex-wrap gap-2 max-h-72 overflow-y-auto custom-scrollbar">
+                                            {(config.env.COMMAND_WHITELIST || "").split(',').filter(Boolean).map(cmd => (
+                                                <div key={cmd} className="flex items-center bg-gray-900 border border-emerald-500/50 rounded-lg px-3 py-1.5 group select-none">
+                                                    <span className="text-emerald-400 text-xs font-mono">{cmd}</span>
+                                                    <button
+                                                        onClick={() => {
+                                                            const currentWh = (config.env.COMMAND_WHITELIST || "").split(',').filter(Boolean);
+                                                            handleChangeEnv("COMMAND_WHITELIST", currentWh.filter(c => c !== cmd).join(','));
+                                                            // 如果不是系統預設的，放回備選池
+                                                            const system = ['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'golem-check'];
+                                                            if (!system.includes(cmd)) {
+                                                                const currentCu = (config.env.CUSTOM_COMMANDS || "").split(',').filter(Boolean);
+                                                                if (!currentCu.includes(cmd)) handleChangeEnv("CUSTOM_COMMANDS", [...currentCu, cmd].join(','));
+                                                            }
+                                                        }}
+                                                        className="ml-2 opacity-0 group-hover:opacity-100 p-0.5 text-gray-500 hover:text-red-400 transition-all"
+                                                    >
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                            {!(config.env.COMMAND_WHITELIST || "").trim() && (
+                                                <div className="w-full text-center py-6 text-gray-600 text-xs italic border border-dashed border-gray-800 rounded-lg">
+                                                    未啟用任何免審批指令
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Row 2: 危險指令管理 (Dangerous Commands) */}
+                            <div className="group/row transition-all">
+                                <h3 className="text-lg font-bold text-red-500 mb-2 flex items-center gap-2 group-hover/row:translate-x-1 transition-transform">
+                                    <ShieldAlert className="w-6 h-6" /> 2. 危險指令管理 (Dangerous Patterns)
+                                </h3>
+                                <p className="text-sm text-gray-500 mb-6 font-light">
+                                    針對毀滅性操作，系統預設嚴格阻擋。您可將特定完整指令加入「豁免欄」以容許執行（執行前仍會提醒）。
+                                </p>
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    {/* 系統阻擋清單 (可點擊加入豁免) */}
+                                    <div className="bg-red-950/10 border border-red-900/30 rounded-2xl p-5">
+                                        <h4 className="text-xs font-bold text-red-600 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                            💀 系統預設阻擋 (點擊快速豁免)
+                                        </h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {['rm -rf /', 'rd /s /q', '> /dev/sd', ':(){:|:&};:', 'mkfs', 'Format-Volume', 'dd if=', 'chmod -x', 'rm', 'mv', 'chmod', 'chown', 'sudo', 'su', 'reboot', 'shutdown', 'npm uninstall', 'Remove-Item', 'Stop-Computer']
+                                                .filter(cmd => !(config.env.AUTHORIZED_DANGEROUS_COMMANDS || "").split(',').includes(cmd))
+                                                .map(cmd => (
+                                                    <button
+                                                        key={cmd}
+                                                        onClick={() => {
+                                                            const current = (config.env.AUTHORIZED_DANGEROUS_COMMANDS || "").split(',').filter(Boolean);
+                                                            if (!current.includes(cmd)) handleChangeEnv("AUTHORIZED_DANGEROUS_COMMANDS", [...current, cmd].join(','));
+                                                        }}
+                                                        className="px-2 py-1 bg-red-950/30 border border-red-900/50 text-red-400 text-[10px] font-mono rounded hover:bg-red-500 hover:text-white transition-all"
+                                                        title="點擊將此指令模式加入豁免名單"
+                                                    >
+                                                        {cmd}
+                                                    </button>
+                                                ))}
+                                            {['rm -rf /', 'rd /s /q', '> /dev/sd', ':(){:|:&};:', 'mkfs', 'Format-Volume', 'dd if=', 'chmod -x']
+                                                .every(cmd => (config.env.AUTHORIZED_DANGEROUS_COMMANDS || "").split(',').includes(cmd)) && (
+                                                <div className="text-[10px] text-gray-600 italic">所有系統預設危險指令皆已豁免</div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {/* 自訂風險模式 (Contains) */}
+                                    <div className="bg-gray-950/20 border border-gray-800/50 rounded-2xl p-5">
+                                        <h4 className="text-xs font-bold text-amber-500 uppercase tracking-wider mb-4">
+                                            ⚠️ 擴充危險模式 (包含比對)
+                                        </h4>
+                                        <div className="flex gap-2 mb-4">
+                                            <input
+                                                type="text"
+                                                placeholder="輸入自訂風險關鍵字..."
+                                                className="flex-1 bg-gray-900 border border-gray-800 rounded-lg px-3 py-1.5 text-xs text-gray-200 font-mono focus:border-amber-500 transition-colors"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        const val = e.currentTarget.value.trim();
+                                                        if (val) {
+                                                            const current = (config.env.CUSTOM_DANGEROUS_COMMANDS || "").split(',').filter(Boolean);
+                                                            if (!current.includes(val)) handleChangeEnv("CUSTOM_DANGEROUS_COMMANDS", [...current, val].join(','));
+                                                            e.currentTarget.value = "";
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto custom-scrollbar">
+                                            {(config.env.CUSTOM_DANGEROUS_COMMANDS || "").split(',').filter(Boolean).map(cmd => (
+                                                <div key={cmd} className="flex items-center bg-gray-900 border border-amber-900/50 rounded-lg px-2 py-1 group">
+                                                    <span className="text-amber-500 text-[10px] font-mono">{cmd}</span>
+                                                    <button
+                                                        onClick={() => {
+                                                            const current = (config.env.CUSTOM_DANGEROUS_COMMANDS || "").split(',').filter(Boolean);
+                                                            handleChangeEnv("CUSTOM_DANGEROUS_COMMANDS", current.filter(c => c !== cmd).join(','));
+                                                        }}
+                                                        className="ml-2 opacity-0 group-hover:opacity-100 text-gray-600 hover:text-red-500 transition-all"
+                                                    >
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    {/* 豁免清單 */}
+                                    <div className="bg-red-950/10 border border-red-900/30 rounded-2xl p-5 outline outline-2 outline-red-500/20">
+                                        <h4 className="text-xs font-bold text-red-500 uppercase tracking-wider mb-4">
+                                            🔓 豁免清單 (Waiver List)
+                                        </h4>
+                                        <div className="flex gap-2 mb-4">
+                                            <input
+                                                type="text"
+                                                placeholder="輸入完整指令給予豁免..."
+                                                className="flex-1 bg-gray-900 border border-red-900/50 rounded-lg px-3 py-1.5 text-xs text-gray-200 font-mono focus:border-red-500 transition-colors"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        const val = e.currentTarget.value.trim();
+                                                        if (val) {
+                                                            const current = (config.env.AUTHORIZED_DANGEROUS_COMMANDS || "").split(',').filter(Boolean);
+                                                            if (!current.includes(val)) handleChangeEnv("AUTHORIZED_DANGEROUS_COMMANDS", [...current, val].join(','));
+                                                            e.currentTarget.value = "";
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="flex flex-wrap gap-2 max-h-60 overflow-y-auto custom-scrollbar">
+                                            {(config.env.AUTHORIZED_DANGEROUS_COMMANDS || "").split(',').filter(Boolean).map(cmd => (
+                                                <div key={cmd} className="flex items-center bg-red-900/10 border border-red-900/30 rounded-lg px-2 py-1 group">
+                                                    <span className="text-red-300 text-[10px] font-mono line-clamp-1">{cmd}</span>
+                                                    <button
+                                                        onClick={() => {
+                                                            const current = (config.env.AUTHORIZED_DANGEROUS_COMMANDS || "").split(',').filter(Boolean);
+                                                            handleChangeEnv("AUTHORIZED_DANGEROUS_COMMANDS", current.filter(c => c !== cmd).join(','));
+                                                        }}
+                                                        className="ml-2 opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-400 transition-all"
+                                                    >
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                            {!(config.env.AUTHORIZED_DANGEROUS_COMMANDS || "").trim() && (
+                                                <div className="w-full text-center py-4 text-gray-600 text-[10px] italic border border-dashed border-gray-800 rounded-lg">
+                                                    尚未豁免任何指令
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Row 3: 關鍵字放行與敏感符號管理 (Keyword/Symbol Management) */}
+                            <div className="group/row transition-all">
+                                <h3 className="text-lg font-bold text-cyan-400 mb-2 flex items-center gap-2 group-hover/row:translate-x-1 transition-transform">
+                                    <Lock className="w-6 h-6" /> 3. 關鍵字放行與敏感符號 (Contains Match)
+                                </h3>
+                                <p className="text-sm text-gray-500 mb-6 font-light">
+                                    此處管理的條目只要指令「包含」其中內容即生效。適用於授權特定符號（如 `&&`）或工具（如 `git`）。
+                                </p>
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    {/* Column 1: 系統敏感符號 (Templates) */}
+                                    <div className="bg-gray-950/20 border border-gray-800/50 rounded-2xl p-5">
+                                        <h4 className="text-xs font-bold text-cyan-500 uppercase tracking-wider mb-2">
+                                            📍 敏感符號模板
+                                        </h4>
+                                        <p className="text-[10px] text-gray-500 mb-4">點擊將符號加入授權以消除警告。</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {['>', '<', '`', '$(', ';', '&&', '||', '|']
+                                                .filter(s => !(config.env.AUTHORIZED_SENSITIVE_KEYWORDS || "").split(',').includes(s))
+                                                .map(s => (
+                                                    <button
+                                                        key={s}
+                                                        onClick={() => {
+                                                            const current = (config.env.AUTHORIZED_SENSITIVE_KEYWORDS || "").split(',').filter(Boolean);
+                                                            if (!current.includes(s)) handleChangeEnv("AUTHORIZED_SENSITIVE_KEYWORDS", [...current, s].join(','));
+                                                        }}
+                                                        className="px-3 py-1.5 bg-gray-900 border border-gray-800 text-cyan-800 font-mono rounded-lg text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-all"
+                                                        title="點擊授權此符號"
+                                                    >
+                                                        {s}
+                                                    </button>
+                                                ))}
+                                            {['>', '<', '`', '$(', ';', '&&', '||', '|']
+                                                .every(s => (config.env.AUTHORIZED_SENSITIVE_KEYWORDS || "").split(',').includes(s)) && (
+                                                <div className="text-[10px] text-gray-600 italic">所有預設符號皆已授權</div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Column 2: 授權符號管理 (Authorized Symbols) */}
+                                    <div className="bg-cyan-950/10 border border-cyan-900/30 rounded-2xl p-5">
+                                        <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                            🛡️ 已授權符號 (Authorized)
+                                        </h4>
+                                        <div className="flex gap-2 mb-4">
+                                            <input
+                                                type="text"
+                                                placeholder="新增其他敏感關鍵字..."
+                                                className="flex-1 bg-gray-900 border border-gray-800 rounded-lg px-3 py-1.5 text-xs text-gray-200 font-mono focus:border-cyan-500 transition-colors"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        const val = e.currentTarget.value.trim();
+                                                        if (val) {
+                                                            const current = (config.env.AUTHORIZED_SENSITIVE_KEYWORDS || "").split(',').filter(Boolean);
+                                                            if (!current.includes(val)) handleChangeEnv("AUTHORIZED_SENSITIVE_KEYWORDS", [...current, val].join(','));
+                                                            e.currentTarget.value = "";
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto custom-scrollbar">
+                                            {(config.env.AUTHORIZED_SENSITIVE_KEYWORDS || "").split(',').filter(Boolean).map(s => (
+                                                <div key={s} className="flex items-center bg-gray-900 border border-cyan-500/30 rounded-lg px-2 py-1 group">
+                                                    <span className="text-cyan-400 text-xs font-mono">{s}</span>
+                                                    <button
+                                                        onClick={() => {
+                                                            const current = (config.env.AUTHORIZED_SENSITIVE_KEYWORDS || "").split(',').filter(Boolean);
+                                                            handleChangeEnv("AUTHORIZED_SENSITIVE_KEYWORDS", current.filter(c => c !== s).join(','));
+                                                        }}
+                                                        className="ml-2 opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-500 transition-all"
+                                                    >
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                            {!(config.env.AUTHORIZED_SENSITIVE_KEYWORDS || "").trim() && (
+                                                <div className="w-full text-center py-4 text-gray-600 text-[10px] italic border border-dashed border-gray-800 rounded-lg">
+                                                    尚未授權任何符號
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Column 3: 全局免審批關鍵字 (Exempt Keywords) */}
+                                    <div className="bg-cyan-950/5 border border-cyan-900/20 rounded-2xl p-5 outline outline-2 outline-cyan-500/10">
+                                        <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-2">
+                                            ✨ 免審批工具 (Keyword Bypass)
+                                        </h4>
+                                        <p className="text-[10px] text-gray-500 mb-4">包含這些詞即「自動放行」（且不受符號限制）。</p>
+                                        <div className="flex gap-2 mb-4">
+                                            <input
+                                                type="text"
+                                                placeholder="例如: git, npm, docker..."
+                                                className="flex-1 bg-gray-900 border border-gray-800 rounded-lg px-3 py-1.5 text-xs text-gray-200 font-mono focus:border-cyan-400 transition-colors"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        const val = e.currentTarget.value.trim();
+                                                        if (val) {
+                                                            const current = (config.env.COMMAND_EXEMPT_KEYWORDS || "").split(',').filter(Boolean);
+                                                            if (!current.includes(val)) handleChangeEnv("COMMAND_EXEMPT_KEYWORDS", [...current, val].join(','));
+                                                            e.currentTarget.value = "";
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto custom-scrollbar">
+                                            {(config.env.COMMAND_EXEMPT_KEYWORDS || "").split(',').filter(Boolean).map(s => (
+                                                <div key={s} className="flex items-center bg-cyan-500/10 border border-cyan-500/30 rounded-lg px-3 py-1.5 group">
+                                                    <span className="text-cyan-300 text-xs font-mono">{s}</span>
+                                                    <button
+                                                        onClick={() => {
+                                                            const current = (config.env.COMMAND_EXEMPT_KEYWORDS || "").split(',').filter(Boolean);
+                                                            handleChangeEnv("COMMAND_EXEMPT_KEYWORDS", current.filter(c => c !== s).join(','));
+                                                        }}
+                                                        className="ml-2 opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 transition-all"
+                                                    >
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                            {!(config.env.COMMAND_EXEMPT_KEYWORDS || "").trim() && (
+                                                <div className="w-full text-center py-4 text-gray-600 text-[10px] italic border border-dashed border-gray-800 rounded-lg">
+                                                    尚未設定關鍵字放行
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

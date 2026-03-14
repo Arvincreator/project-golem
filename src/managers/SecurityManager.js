@@ -1,63 +1,144 @@
-// ============================================================
-// 🛡️ Security Manager (安全審計)
-// ============================================================
-// ==================== [KERNEL PROTECTED START] ====================
+const path = require('path');
+
+/**
+ * SecurityManager - 管理指令執行的安全性
+ * ---------------------------------------------------------
+ * 職責：評估指令風險等級：SAFE, WARNING, DANGER, BLOCKED
+ */
 class SecurityManager {
     constructor() {
-        this.SAFE_COMMANDS = ['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check'];
-        this.BLOCK_PATTERNS = [/rm\s+-rf\s+\//, /rd\s+\/s\s+\/q\s+[c-zC-Z]:\\$/, />\s*\/dev\/sd/, /:(){:|:&};:/, /mkfs/, /Format-Volume/, /dd\s+if=/, /chmod\s+[-]x\s+/];
-    }
-    assess(cmd) {
-        const safeCmd = (cmd || "").trim();
-        if (this.BLOCK_PATTERNS.some(regex => regex.test(safeCmd))) return { level: 'BLOCKED', reason: '毀滅性指令' };
+        // ✨ [v9.5] 分類定義：危險指令 vs 敏感符號
+        this.DEFAULT_DANGER_PATTERNS = [
+            /rm\s+-rf\s+\/($|\s)/,      // 遞迴刪除根目錄
+            /rd\s+\/s\s+\/q\s+[a-zA-Z]:\\/, // Windows 靜默刪除磁碟
+            />\s*\/dev\/sd/,           // 磁碟覆寫
+            /:\(\)\{\s*:\|\:&\s*\};:/, // Fork bomb
+            /\bmkfs\b/,                // 格式化
+            /\bFormat-Volume\b/,       // PowerShell 格式化
+            /\bdd\s+if=/,              // 底層寫入
+            /chmod\s+-x/,              // 移除執行權限
+            // ✨ [v10.1] 使用者新增敏感指令
+            /\brm\b/, /\bmv\b/, /\bchmod\b/, /\bchown\b/,
+            /\bsudo\b/, /\bsu\b/, /\breboot\b/, /\bshutdown\b/,
+            /\bnpm\s+uninstall\b/,
+            /\bRemove-Item\b/i,        // PowerShell (不區分大小寫)
+            /\bStop-Computer\b/i       // PowerShell
+        ];
 
-        // 依然阻擋重導向 (> <) 與子殼層 ($() ``) 因為過於複雜且具破壞性
-        if (/([><`])|\$\(/.test(safeCmd)) {
-            return { level: 'WARNING', reason: '包含重導向或子系統呼叫等複雜操作，需確認' };
+        this.DEFAULT_SENSITIVE_SYMBOLS = [
+            /[><`]/,                   // 重新導向與反引號
+            /\$\(/,                    // 子殼層呼叫
+            /[;&|]/                    // 指令連接符
+        ];
+
+        // 系統預設安全指令 (如果不含危險模式且在白名單中，則為 SAFE)
+        this.DEFAULT_SAFE_COMMANDS = ['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check'];
+    }
+
+    /**
+     * 評估指令風險
+     * @param {string} cmd 
+     * @returns {{level: string, reason?: string}}
+     */
+    assess(cmd, isRecursive = false) {
+        const safeCmd = (cmd || "").trim();
+        if (!safeCmd) return { level: 'SAFE' };
+
+        // 1. ✨ [v9.2] 檢查關鍵字免審批 (Keyword Exemption) - 最高優先權 (除了毀滅性指令)
+        const exemptKeywords = (process.env.COMMAND_EXEMPT_KEYWORDS || "")
+            .split(',')
+            .map(k => k.trim())
+            .filter(k => k.length > 0);
+
+        const hasExemptKeyword = exemptKeywords.some(keyword => safeCmd.includes(keyword));
+
+        // 2. ✨ [v9.5] 檢查毀滅性指令 (Dangerous Commands)
+        const customDangerStr = (process.env.CUSTOM_DANGEROUS_COMMANDS || "");
+        const customDanger = customDangerStr.split(',').map(s => s.trim()).filter(Boolean);
+        const authorizedDangerStr = (process.env.AUTHORIZED_DANGEROUS_COMMANDS || "");
+        const authorizedDanger = authorizedDangerStr.split(',').map(s => s.trim()).filter(Boolean);
+
+        const isDangerPattern = this.DEFAULT_DANGER_PATTERNS.some(regex => regex.test(safeCmd)) || 
+                                customDanger.some(pattern => safeCmd.includes(pattern));
+        
+        if (isDangerPattern) {
+            const isWaived = authorizedDanger.some(auth => safeCmd === auth);
+            if (!isWaived) {
+                return { level: 'BLOCKED', reason: '偵測到毀滅性指令模式，系統已強制阻擋' };
+            }
+            return { level: 'WARNING', reason: '此指令匹配已豁免的危險模式，仍建議謹謹執行' };
         }
 
-        // ✨ [v9.1] 讀取使用者設定的白名單 (環境變數)
-        const userWhitelist = (process.env.COMMAND_WHITELIST || "")
-            .split(',')
-            .map(cmd => cmd.trim())
-            .filter(cmd => cmd.length > 0);
+        // 3. 檢查關鍵字免審批 (如果不是危險指令且有免審批關鍵字，直接放行)
+        if (hasExemptKeyword) {
+            return { level: 'SAFE' };
+        }
 
-        const dangerousOps = ['rm', 'mv', 'chmod', 'chown', 'sudo', 'su', 'reboot', 'shutdown', 'npm uninstall', 'Remove-Item', 'Stop-Computer'];
+        // ✨ [v9.9] 遞迴驗證 (Recursive Assessment)
+        // 只有非遞迴調用時才進行拆解，避免無限循環
+        if (!isRecursive) {
+            const authorizedSensitive = (process.env.AUTHORIZED_SENSITIVE_KEYWORDS || "").split(',').map(s => s.trim()).filter(Boolean);
+            
+            // 找出出現在指令中的已授權「連接符」 (;, &&, ||, |)
+            const connectors = [';', '&&', '||', '|'].filter(conn => authorizedSensitive.includes(conn));
+            
+            if (connectors.length > 0) {
+                // 建立正則表達式來拆分指令
+                // 需要特別處理特殊字元，並確保不會被引號內的字串干擾 (簡化處理：直接 split)
+                const regexPattern = connectors.map(c => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+                const parts = safeCmd.split(new RegExp(`\\s*(?:${regexPattern})\\s*`)).filter(Boolean);
 
-        // 處理解析複合指令 (&&, ||, ;, |)
-        if (/([;&|])/.test(safeCmd)) {
-            // 用正規表達式將指令以 &&, ||, ;, | 切割
-            const subCmds = safeCmd.split(/[;&|]+/).map(c => c.trim()).filter(c => c.length > 0);
+                if (parts.length > 1) {
+                    const results = parts.map(part => this.assess(part, true));
+                    
+                    // 彙總結果優先級：BLOCKED > WARNING > SAFE
+                    const blocked = results.find(r => r.level === 'BLOCKED');
+                    if (blocked) return blocked;
 
-            let allSafe = true;
-            for (const sub of subCmds) {
-                const subBaseCmd = sub.split(/\s+/)[0];
+                    const warning = results.find(r => r.level === 'WARNING');
+                    if (warning) return warning;
 
-                // 在毀滅清單/高危險操作
-                if (dangerousOps.includes(subBaseCmd)) return { level: 'DANGER', reason: '高風險操作' };
-
-                // 檢查是否所有小指令都在白名單中
-                if (!userWhitelist.includes(subBaseCmd)) {
-                    allSafe = false;
-                    break;
+                    return { level: 'SAFE' };
                 }
             }
-
-            if (allSafe) return { level: 'SAFE' };
-            return { level: 'WARNING', reason: '複合指令中包含非信任授權的指令，需確認' };
         }
 
-        const baseCmd = safeCmd.split(/\s+/)[0];
+        // 4. ✨ [v9.5] 檢查敏感符號與關鍵字 (Sensitive Keywords)
+        const customSensitive = (process.env.CUSTOM_SENSITIVE_KEYWORDS || "").split(',').map(s => s.trim()).filter(Boolean);
+        const authorizedSensitive = (process.env.AUTHORIZED_SENSITIVE_KEYWORDS || "").split(',').map(s => s.trim()).filter(Boolean);
 
-        // 原本的 SAFE_COMMANDS 不再預設放行，只看 userWhitelist
-        if (userWhitelist.includes(baseCmd)) return { level: 'SAFE' };
+        const isSensitive = this.DEFAULT_SENSITIVE_SYMBOLS.some(regex => regex.test(safeCmd)) ||
+                           customSensitive.some(pattern => safeCmd.includes(pattern));
 
-        // 這些危險指令會直接進 DANGER
-        if (dangerousOps.includes(baseCmd)) return { level: 'DANGER', reason: '高風險操作' };
+        if (isSensitive) {
+            const isAuthorized = authorizedSensitive.some(auth => {
+                const target = auth.trim();
+                return target && safeCmd.includes(target);
+            });
+            if (!isAuthorized) {
+                return { level: 'WARNING', reason: '包含敏感符號或關鍵字 (如連接符或重導向)，需審批' };
+            }
+        }
 
-        return { level: 'WARNING', reason: '需確認' };
+        // 5. 最後檢查白名單 (Legacy Support)
+        const whitelist = (process.env.COMMAND_WHITELIST || "").split(',').map(s => s.trim()).filter(Boolean);
+        const fullWhitelist = [...this.DEFAULT_SAFE_COMMANDS, ...whitelist];
+        
+        if (fullWhitelist.includes(safeCmd)) {
+            return { level: 'SAFE' };
+        }
+
+        // 只有在非遞迴模式下，或者指令不包含空格時，才允許基礎指令比對
+        // 這能防止 "grep a" 因為 "grep" 在白名單就被誤判為 SAFE
+        if (!isRecursive || !safeCmd.includes(' ')) {
+            const baseCmd = safeCmd.split(/\s+/)[0];
+            if (fullWhitelist.includes(baseCmd)) {
+                return { level: 'SAFE' };
+            }
+        }
+
+        return { level: 'WARNING', reason: '非預設安全指令，需手動審批' };
     }
 }
-// ==================== [KERNEL PROTECTED END] ====================
 
 module.exports = SecurityManager;
