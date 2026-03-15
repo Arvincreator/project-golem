@@ -1,4 +1,5 @@
 const express = require('express');
+const os = require('os');
 const http = require('http');
 const { Server } = require("socket.io");
 const path = require('path');
@@ -39,6 +40,22 @@ function maskValue(val) {
     if (!val || val.length < 8) return val ? '****' : '';
     return val.slice(0, 4) + '****' + val.slice(-4);
 }
+
+// CPU delta tracking for accurate % calculation
+let _lastCpuUsage = process.cpuUsage();
+let _lastCpuTime = Date.now();
+let _cpuPercent = 0;
+setInterval(() => {
+    const now = process.cpuUsage();
+    const elapsed = Date.now() - _lastCpuTime;
+    if (elapsed > 0) {
+        const userDelta = (now.user - _lastCpuUsage.user) / 1000; // microsec to ms
+        const sysDelta = (now.system - _lastCpuUsage.system) / 1000;
+        _cpuPercent = Math.min(100, parseFloat(((userDelta + sysDelta) / elapsed * 100).toFixed(1)));
+    }
+    _lastCpuUsage = now;
+    _lastCpuTime = Date.now();
+}, 5000);
 
 class WebServer {
     constructor(dashboard) {
@@ -1109,23 +1126,71 @@ class WebServer {
         });
 
         // ─── Stats Endpoint ─────────────────────────────────────────────────────────────────
+        
+        this.app.get('/api/metrics-history', (req, res) => {
+            res.json({ history: this._metricsHistory || [] });
+        });
+
         this.app.get('/api/stats', (req, res) => {
             try {
                 const ctx = this.contexts.values().next().value;
                 const brain = ctx ? ctx.brain : null;
-                res.json({
-                    uptime: Math.floor(process.uptime()),
-                    memory: {
-                        rss: Math.round(process.memoryUsage().rss / 1024 / 1024),
-                        heap: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
-                    },
-                    brain: brain ? {
-                        engine: brain.engineMode,
-                        model: brain.apiClient ? brain.apiClient.getModel() : null,
-                        provider: brain.apiClient ? brain.apiClient.providerName : null,
-                    } : null,
-                    golems: this.contexts.size,
-                });
+                (() => {
+                                                const memUsage = process.memoryUsage();
+                        const ctx = this.contexts.values().next().value;
+                        const brain = ctx ? ctx.brain : null;
+                        const ctrl = ctx ? ctx.controller : null;
+                        const health = brain ? brain.getHealthStatus() : {};
+
+                        res.json({
+                            uptime: Math.round(process.uptime()),
+                            memory: {
+                                rss: Math.round(memUsage.rss / 1024 / 1024),
+                                heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
+                                heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
+                                external: Math.round((memUsage.external || 0) / 1024 / 1024),
+                            },
+                            cpu: _cpuPercent,
+                            system: {
+                                totalMem: Math.round(os.totalmem() / 1024 / 1024),
+                                freeMem: Math.round(os.freemem() / 1024 / 1024),
+                                loadAvg: os.loadavg(),
+                                platform: process.platform,
+                                arch: process.arch,
+                                nodeVersion: process.version,
+                            },
+                            brain: {
+                                engine: health.engine || 'unknown',
+                                model: health.apiModel || 'unknown',
+                                provider: health.apiProvider || 'unknown',
+                                apiAvailable: health.apiAvailable || false,
+                                memoryReady: health.memoryReady || false,
+                                ragAvailable: health.ragAvailable || false,
+                            },
+                            skills: health.skills || { loaded: 0 },
+                            memory3layer: health.memory || {},
+                            autonomy: {
+                                level: process.env.TELEGRAM_MIN_NOTIFY_LEVEL || 'L1',
+                                sleepStart: parseInt(process.env.GOLEM_SLEEP_START) || 1,
+                                sleepEnd: parseInt(process.env.GOLEM_SLEEP_END) || 7,
+                                awakeMin: parseInt(process.env.GOLEM_AWAKE_INTERVAL_MIN) || 2,
+                                awakeMax: parseInt(process.env.GOLEM_AWAKE_INTERVAL_MAX) || 5,
+                                telegramMode: process.env.TELEGRAM_MODE || 'default',
+                            },
+                            queue: {
+                                pending: ctrl ? ctrl.pendingTasks.size : 0,
+                                l1Buffer: ctrl ? (ctrl.l1Buffer || []).length : 0,
+                            },
+                            rag: {
+                                url: process.env.GRAPH_RAG_URL || '',
+                                available: health.ragAvailable || false,
+                            },
+                            golems: {
+                                active: this.contexts.size,
+                                total: this.contexts.size,
+                            },
+                        });
+                    })()
             } catch (e) {
                 res.status(500).json({ error: e.message });
             }
@@ -1211,6 +1276,18 @@ class WebServer {
         });
 
                 // ─── System Status ────────────────────────────────────────────────────────────────────
+        
+        // v10.0: Action log for dashboard
+        this.app.get('/api/action-log', (req, res) => {
+            const ctx = this.contexts.values().next().value;
+            const ctrl = ctx ? ctx.controller : null;
+            const limit = parseInt(req.query.limit) || 50;
+            res.json({
+                actions: ctrl && ctrl.getActionLog ? ctrl.getActionLog(limit) : [],
+                l1Buffer: ctrl ? (ctrl.l1Buffer || []) : [],
+            });
+        });
+
         this.app.get('/api/system/status', (req, res) => {
             try {
                 const liveCount = this.contexts.size;
@@ -1232,8 +1309,7 @@ class WebServer {
                 const isSingleNode = ConfigManager.GOLEM_MODE === 'SINGLE';
 
                 // --- 額外獲取環境資訊 ---
-                const os = require('os');
-                const { execSync } = require('child_process');
+                                const { execSync } = require('child_process');
 
                 // Node.js 與平台資訊
                 const runtime = {
@@ -1922,6 +1998,24 @@ class WebServer {
         });
 
         // Socket.io connection handler
+        
+        // v10.0: Metrics history for dashboard charts
+        this._metricsHistory = [];
+        setInterval(() => {
+            const memUsage = process.memoryUsage();
+            const point = {
+                ts: Date.now(),
+                rss: Math.round(memUsage.rss / 1024 / 1024),
+                heap: Math.round(memUsage.heapUsed / 1024 / 1024),
+                cpu: _cpuPercent,
+                queue: 0,
+            };
+            const ctx = this.contexts.values().next().value;
+            if (ctx && ctx.controller) point.queue = ctx.controller.pendingTasks.size;
+            this._metricsHistory.push(point);
+            if (this._metricsHistory.length > 60) this._metricsHistory.shift();
+        }, 10000);
+
         this.io.on('connection', (socket) => {
             const getGolemsData = () => {
                 return Array.from(this.contexts.entries()).map(([id, context]) => {
@@ -2032,7 +2126,24 @@ class WebServer {
 
     broadcastHeartbeat(data) {
         if (this.io) {
-            this.io.emit('heartbeat', data);
+            (() => {
+                    const memUsage = process.memoryUsage();
+                    const ctx = this.contexts.values().next().value;
+                    const ctrl = ctx ? ctx.controller : null;
+                    const brain = ctx ? ctx.brain : null;
+                    this.io.emit('heartbeat', {
+                        uptime: this._formatUptime(process.uptime()),
+                        memUsage: Math.round(memUsage.rss / 1024 / 1024),
+                        heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
+                        cpuPercent: _cpuPercent,
+                        queueCount: ctrl ? ctrl.pendingTasks.size : 0,
+                        l1BufferCount: ctrl ? (ctrl.l1Buffer || []).length : 0,
+                        skillsLoaded: brain && brain._skillCount ? brain._skillCount : 0,
+                        ragAvailable: brain && brain.aragClient ? true : false,
+                        autonomyLevel: process.env.TELEGRAM_MIN_NOTIFY_LEVEL || 'L1',
+                        engineMode: brain ? (brain.engineMode || 'unknown') : 'unknown',
+                    });
+                })()
         }
     }
 
