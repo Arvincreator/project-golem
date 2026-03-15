@@ -126,3 +126,17 @@ function UI-Info    { param($msg) Write-Host "  $S_DOT $msg" -ForegroundColor Gr
 function UI-Success { param($msg) Write-Host "  $S_CHECK $msg" -ForegroundColor Green }
 function UI-Warn    { param($msg) Write-Host "  $S_WARN $msg" -ForegroundColor Yellow }
 function UI-Error   { param($msg) Write-Host "  $S_CROSS $msg" -ForegroundColor Red }
+
+# Terminal Compatibility Check
+$SCRIPT:IS_LEGACY_CMD = $false
+if ($IsWindows) {
+    if (-not $env:WT_SESSION -and -not $env:ConEmuPID -and -not $env:TERM) {
+        $SCRIPT:IS_LEGACY_CMD = $true
+    }
+}
+
+if ($SCRIPT:IS_LEGACY_CMD) {
+    Write-Host "`n  [!] Terminal Compatibility Warning" -ForegroundColor Yellow
+    Write-Host "  Detected legacy Windows Console. Some styles and emojis may not display correctly." -ForegroundColor Gray
+    Write-Host "  👉 Recommendation: Use **Windows Terminal** for the best experience.`n" -ForegroundColor Gray
+}
