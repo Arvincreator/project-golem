@@ -44,11 +44,6 @@ class WebServer {
     constructor(dashboard) {
         this.dashboard = dashboard; // Reference to main dashboard if needed for initial state
         this.app = express();
-        const cors = require('cors');
-        this.app.use(cors({
-            origin: ["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001", "http://127.0.0.1:3001"],
-            methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-        }));
         this.app.use(express.json()); // Enable JSON body parsing
         this.server = http.createServer(this.app);
 
@@ -64,35 +59,45 @@ class WebServer {
             res.json({});
         });
 
-        // Health check for debugging
-        this.app.get('/api/health', (req, res) => {
-            res.json({ status: 'ok', time: new Date().toISOString() });
-        });
-
         this.io = new Server(this.server, {
             cors: {
-                origin: ["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001", "http://127.0.0.1:3001"], // Allow Next.js dev server and alternative ports
+                origin: "*", // Allow Next.js dev server
                 methods: ["GET", "POST"]
             }
         });
-
         this.port = process.env.DASHBOARD_PORT || 3000;
-        console.log(`📡 [WebServer] Initial port: ${this.port}, Dev Mode: ${process.env.DASHBOARD_DEV_MODE}`);
-
-        // If in Dev Mode and port is still 3000 (default), shift backend to 3001 
-        // to avoid conflict with Next.js Dev Server (which also defaults to 3000).
-        const isDev = (process.env.DASHBOARD_DEV_MODE || "").trim() === 'true';
-        if (isDev && this.port == 3000) {
-            console.log('🚧 [WebServer] Dev Mode detected + Port 3000: Automatically shifting backend to 3001.');
-            this.port = 3001;
-        }
-        console.log(`📡 [WebServer] Final bound port: ${this.port}`);
 
         this.contexts = new Map();
         this.golemFactory = null; // Injected from index.js for dynamic Golem creation
 
+        
+        // Health check endpoint
+        this.app.get('/health', (req, res) => {
+            const uptime = process.uptime();
+            const health = {
+                status: 'ok',
+                uptime: Math.round(uptime),
+                uptimeHuman: `${Math.floor(uptime/3600)}h ${Math.floor((uptime%3600)/60)}m`,
+                timestamp: new Date().toISOString(),
+                brain: null,
+                skills: null,
+            };
+
+            // Get brain health if available
+            const ctx = this.contexts.values().next().value;
+            if (ctx && ctx.brain && typeof ctx.brain.getHealthStatus === 'function') {
+                health.brain = ctx.brain.getHealthStatus();
+            }
+
+            // Pull skills from brain health
+            if (health.brain && health.brain.skills) {
+                health.skills = health.brain.skills;
+            }
+
+            res.json(health);
+        });
+
         this.init();
-        this.isBooting = true;
         this.logBuffer = []; // Store last 200 logs
         this.chatHistory = new Map(); // Store chat history per golem
     }
@@ -105,152 +110,154 @@ class WebServer {
         this.golemFactory = fn;
         console.log('🔗 [WebServer] Golem factory injected — dynamic Golem creation enabled.');
 
-        // 🎯 V9.0.7: Auto-start fully-configured Golem on backend boot.
+        // 🎯 V9.0.7: Auto-start fully-configured Golems on backend boot.
+        // We defer this by 2 seconds to let the server fully stabilize.
         setTimeout(async () => {
+            const EnvManager = require('../src/utils/EnvManager');
+            const envVars = EnvManager.readEnv();
             const ConfigManager = require('../src/config/index');
             const fs = require('fs');
             const path = require('path');
 
+            const isSingleNode = ConfigManager.GOLEM_MODE === 'SINGLE';
             const { MEMORY_BASE_DIR } = ConfigManager;
-            const personaPath = path.resolve(MEMORY_BASE_DIR, 'persona.json');
 
-            console.log('🔄 [WebServer] Scanning for persona.json to auto-start Golem...');
+            console.log('🔄 [WebServer] Scanning for fully-configured Golems to auto-start...');
 
-            if (fs.existsSync(personaPath)) {
-                console.log(`🚀 [WebServer] Auto-starting Golem from saved state...`);
-                try {
-                    // 單機模式配置
-                    const EnvManager = require('../src/utils/EnvManager');
-                    const envVars = EnvManager.readEnv();
-                    const config = {
+            let allConfigs = [];
+
+            // 1. Gather configs
+            if (isSingleNode) {
+                const hasToken = envVars.TELEGRAM_TOKEN || envVars.DISCORD_TOKEN;
+                if (hasToken) {
+                    allConfigs.push({
                         id: 'golem_A',
                         tgToken: envVars.TELEGRAM_TOKEN,
                         dcToken: envVars.DISCORD_TOKEN,
                         tgAuthMode: envVars.TG_AUTH_MODE,
                         adminId: envVars.ADMIN_ID,
                         chatId: envVars.TG_CHAT_ID
-                    };
-                    const instance = await this.golemFactory(config);
-                    if (instance.brain.init) {
-                        await instance.brain.init(false);
-                        console.log(`✅ [WebServer] Golem auto-started successfully.`);
-                    }
-                } catch (e) {
-                    console.error(`❌ [WebServer] Failed to auto-start Golem:`, e);
-                } finally {
-                    this.isBooting = false;
+                    });
                 }
             } else {
-                console.log(`⏸️ [WebServer] Golem skipped auto-start (Missing persona.json).`);
-                this.isBooting = false;
+                const golemsPath = path.resolve(process.cwd(), 'golems.json');
+                if (fs.existsSync(golemsPath)) {
+                    allConfigs = JSON.parse(fs.readFileSync(golemsPath, 'utf8'));
+                }
             }
-        }, 500);
+
+            // 2. Iterate and check persona
+            for (const config of allConfigs) {
+                // Determine persona.json path
+                let personaPath;
+                if (isSingleNode) {
+                    personaPath = path.resolve(MEMORY_BASE_DIR, 'persona.json');
+                } else {
+                    personaPath = path.resolve(MEMORY_BASE_DIR, config.id, 'persona.json');
+                }
+
+                if (fs.existsSync(personaPath)) {
+                    // Ready to start!
+                    console.log(`🚀 [WebServer] Auto-starting Golem [${config.id}] from saved state...`);
+                    try {
+                        const instance = await this.golemFactory(config);
+                        if (instance.brain.init) {
+                            await instance.brain.init(false);
+                            // Link brain to web server contexts for /health endpoint
+                            this.setContext(config.id, instance.brain, instance.brain.memoryDriver);
+                            console.log(`✅ [WebServer] Golem [${config.id}] auto-started successfully.`);
+                        }
+                    } catch (e) {
+                        console.error(`❌ [WebServer] Failed to auto-start Golem [${config.id}]:`, e);
+                    }
+                } else {
+                    console.log(`⏸️ [WebServer] Golem [${config.id}] skipped auto-start (Missing persona.json).`);
+                }
+            }
+        }, 2000);
     }
 
-    setContext(golemId, brain, memory, autonomy) {
-        this.contexts.set(golemId, { brain, memory, autonomy });
-        console.log(`🔗 [WebServer] Context linked: Brain, Memory & Autonomy for Golem [${golemId}]`);
+    setContext(golemId, brain, memory) {
+        this.contexts.set(golemId, { brain, memory });
+        console.log(`🔗 [WebServer] Context linked: Brain & Memory for Golem [${golemId}]`);
     }
 
     init() {
-        // Serve static files with .html extension support - ONLY IN NON-DEV MODE
-        const isDevMode = process.env.DASHBOARD_DEV_MODE === 'true';
+        // Serve static files with .html extension support
         const publicPath = path.join(__dirname, 'out');
+        this.app.use(express.static(publicPath, {
+            extensions: ['html'],
+            setHeaders: (res, path) => {
+                res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+                res.setHeader('Pragma', 'no-cache');
+                res.setHeader('Expires', '0');
+            }
+        }));
 
-        if (!isDevMode) {
-            this.app.use(express.static(publicPath, {
-                extensions: ['html'],
-                setHeaders: (res, path) => {
-                    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-                    res.setHeader('Pragma', 'no-cache');
-                    res.setHeader('Expires', '0');
+        // Fix Next.js static export routing
+        this.app.get('/', (req, res) => {
+            res.redirect('/dashboard');
+        });
+
+        // Ensure /dashboard and sub-routes are handled for SPA
+        const dashboardRoutes = [
+            '/dashboard',
+            '/dashboard/terminal',
+            '/dashboard/agents',
+            '/dashboard/office',
+            '/dashboard/system-setup'
+        ];
+
+        // 🎯 V9.0.7 解耦：自動導引系統設定 (Auto-Setup)
+        // 在進入 Dashboard 核心頁面之前，檢查系統配置狀態
+        this.app.get(/\/dashboard.*/, (req, res, next) => {
+            const normalizedPath = req.path.replace(/\/$/, "");
+            // 排除設定頁面本身與 API 請求，避免無限重定向
+            if (normalizedPath === '/dashboard/system-setup' || req.path.startsWith('/api/')) {
+                return next();
+            }
+
+            try {
+                const ConfigManager = require('../src/config/index');
+                // V9.0.9 修正：強制檢查初始化標記
+                // 只有在 SYSTEM_CONFIGURED 為 'true' 時才允許通行
+                const isConfigured = process.env.SYSTEM_CONFIGURED === 'true';
+
+                if (!isConfigured) {
+                    console.log(`🚩 [WebServer] System NOT initialized. Redirecting ${req.path} to /dashboard/system-setup`);
+                    return res.redirect('/dashboard/system-setup');
                 }
-            }));
-        } else {
-            console.log('🚧 [WebServer] Dashboard Dev Mode active — skipping static file serving.');
+            } catch (e) {
+                console.error('Failed to check config during redirect:', e.message);
+            }
+            next();
+        });
 
-            // In Dev Mode, show a helpful message if user hits the backend port directly
-            this.app.get('/', (req, res) => {
-                res.status(200).send(`
-                    <body style="background:#0a0a0a; color:#eee; font-family:sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; margin:0;">
-                        <h1 style="color:#0096ff;">🚧 Golem Backend is Running (Dev Mode)</h1>
-                        <p>This is the <b>Backend API</b> port (${this.port}).</p>
-                        <div style="background:#1a1a1a; padding:20px; border-radius:12px; border:1px solid #333; text-align:center;">
-                            <p>To access the Dashboard UI with Hot Reloading, please go to:</p>
-                            <a href="http://localhost:3000" style="color:#00ff9d; font-size:24px; text-decoration:none; font-weight:bold;">http://localhost:3000</a>
-                            <p style="font-size:12px; color:#666; margin-top:20px;">Make sure you have run: <code>cd web-dashboard && npm run dev</code></p>
-                        </div>
-                    </body>
-                `);
-            });
-        }
-
-        if (!isDevMode) {
-            // Fix Next.js static export routing
-            this.app.get('/', (req, res) => {
-                res.redirect('/dashboard');
-            });
-
-            // Ensure /dashboard and sub-routes are handled for SPA
-            const dashboardRoutes = [
-                '/dashboard',
-                '/dashboard/terminal',
-                '/dashboard/agents',
-                '/dashboard/office',
-                '/dashboard/system-setup'
-            ];
-
-            // 🎯 V9.0.7 解耦：自動導引系統設定 (Auto-Setup)
-            // 在進入 Dashboard 核心頁面之前，檢查系統配置狀態
-            this.app.get(/\/dashboard.*/, (req, res, next) => {
-                const normalizedPath = req.path.replace(/\/$/, "");
-                // 排除設定頁面本身與 API 請求，避免無限重定向
-                if (normalizedPath === '/dashboard/system-setup' || req.path.startsWith('/api/')) {
-                    return next();
-                }
-
-                try {
-                    const ConfigManager = require('../src/config/index');
-                    // V9.0.9 修正：強制檢查初始化標記
-                    // 只有在 SYSTEM_CONFIGURED 為 'true' 時才允許通行
-                    const isConfigured = process.env.SYSTEM_CONFIGURED === 'true';
-
-                    if (!isConfigured) {
-                        console.log(`🚩 [WebServer] System NOT initialized. Redirecting ${req.path} to /dashboard/system-setup`);
-                        return res.redirect('/dashboard/system-setup');
-                    }
-                } catch (e) {
-                    console.error('Failed to check config during redirect:', e.message);
-                }
-                next();
-            });
-
-            dashboardRoutes.forEach(route => {
-                this.app.get(route, (req, res) => {
-                    const fileName = route === '/dashboard' ? 'dashboard.html' : `${route.replace(/^\//, '')}.html`;
-                    const fullPath = path.join(publicPath, fileName);
-                    if (fs.existsSync(fullPath)) {
-                        res.sendFile(fullPath);
-                    } else {
-                        res.sendFile(path.join(publicPath, 'dashboard.html'));
-                    }
-                });
-            });
-
-            // Catch-all fallback for any other /dashboard/* routes
-            this.app.get(/\/dashboard\/.*/, (req, res) => {
-                const normalizedPath = req.path.replace(/\/$/, "");
-                const htmlFileName = `${normalizedPath.replace(/^\//, '')}.html`;
-                const fullPath = path.join(publicPath, htmlFileName);
-
+        dashboardRoutes.forEach(route => {
+            this.app.get(route, (req, res) => {
+                const fileName = route === '/dashboard' ? 'dashboard.html' : `${route.replace(/^\//, '')}.html`;
+                const fullPath = path.join(publicPath, fileName);
                 if (fs.existsSync(fullPath)) {
                     res.sendFile(fullPath);
                 } else {
-                    // If the exact html file isn't found, try to resolve as a generic SPA fallback
                     res.sendFile(path.join(publicPath, 'dashboard.html'));
                 }
             });
-        }
+        });
+
+        // Catch-all fallback for any other /dashboard/* routes
+        this.app.get(/\/dashboard\/.*/, (req, res) => {
+            const normalizedPath = req.path.replace(/\/$/, "");
+            const htmlFileName = `${normalizedPath.replace(/^\//, '')}.html`;
+            const fullPath = path.join(publicPath, htmlFileName);
+
+            if (fs.existsSync(fullPath)) {
+                res.sendFile(fullPath);
+            } else {
+                // If the exact html file isn't found, try to resolve as a generic SPA fallback
+                res.sendFile(path.join(publicPath, 'dashboard.html'));
+            }
+        });
 
 
         // --- API Routes ---
@@ -267,7 +274,7 @@ class WebServer {
                     return res.status(503).json({ error: 'Dashboard message handler not ready' });
                 }
 
-                // 建立了 UniversalContext 替代品
+                // 建立 UniversalContext 替代品
                 const mockContext = {
                     platform: 'web',
                     isAdmin: true,
@@ -286,7 +293,7 @@ class WebServer {
                         }
 
                         this.broadcastLog({
-                            time: new Date().toLocaleTimeString('zh-TW', { hour12: false }),
+                            time: new Date().toLocaleTimeString(),
                             msg: `[${golemId}] ${text}`,
                             type: payloadType,
                             raw: text,
@@ -351,22 +358,12 @@ class WebServer {
                     senderName: 'User',
                     replyToName: '',
                     chatId: 'web-dashboard',
-                    reply: async (text, options) => {
-                        let payloadType = 'agent';
-                        let actionData = null;
-
-                        if (options && options.reply_markup && options.reply_markup.inline_keyboard) {
-                            payloadType = 'approval';
-                            actionData = options.reply_markup.inline_keyboard[0];
-                        }
-
+                    reply: async (text) => {
                         this.broadcastLog({
-                            time: new Date().toLocaleTimeString('zh-TW', { hour12: false }),
+                            time: new Date().toLocaleTimeString(),
                             msg: `[${golemId}] ${text}`,
-                            type: payloadType,
-                            raw: text,
-                            actionData,
-                            golemId
+                            type: 'agent',
+                            raw: text
                         });
                     },
                     answerCallbackQuery: async () => { },
@@ -463,9 +460,10 @@ class WebServer {
             try {
                 const EnvManager = require('../src/utils/EnvManager');
                 const envData = EnvManager.readEnv();
+                const golemsData = EnvManager.readGolemsJson();
 
                 // We return all properties so the frontend can display them.
-                return res.json({ env: envData, golems: [] });
+                return res.json({ env: envData, golems: golemsData });
             } catch (e) {
                 console.error("Failed to read config:", e);
                 return res.status(500).json({ error: e.message });
@@ -474,19 +472,25 @@ class WebServer {
 
         this.app.post('/api/config', (req, res) => {
             try {
-                const { env: envPayload } = req.body;
+                const { env: envPayload, golems: golemsPayload } = req.body;
 
                 if (!envPayload || typeof envPayload !== 'object') {
                     return res.status(400).json({ error: "Invalid env payload" });
                 }
 
                 const EnvManager = require('../src/utils/EnvManager');
+                const ConfigManager = require('../src/config/index');
 
-                // 1. 寫入 .env 檔案
+                // 1. 寫入 .env 檔案 與 golems.json
                 const envUpdated = EnvManager.updateEnv(envPayload);
+                let golemsUpdated = false;
 
-                if (envUpdated) {
-                    console.log(`📝 [System] Saved new config. env updated: ${envUpdated}`);
+                if (golemsPayload && Array.isArray(golemsPayload)) {
+                    golemsUpdated = EnvManager.updateGolemsJson(golemsPayload);
+                }
+
+                if (envUpdated || golemsUpdated) {
+                    console.log(`📝 [System] Saved new config. env updated: ${envUpdated}, golems updated: ${golemsUpdated}`);
 
                     return res.json({ success: true, message: "Settings saved successfully. A system restart is required for changes to take effect." });
                 }
@@ -501,7 +505,7 @@ class WebServer {
 
         this.app.get('/api/skills/marketplace', (req, res) => {
             try {
-                const marketplaceDir = path.join(process.cwd(), 'data', 'marketplace', 'skills');
+                const marketplaceDir = path.join(process.cwd(), 'data', 'marketplace');
                 let allSkills = [];
 
                 const { search, category, page = 1, limit = 20 } = req.query;
@@ -627,9 +631,15 @@ class WebServer {
                 console.log(`✨ [WebServer] Marketplace skill installed: ${safeId}.md`);
 
                 const SkillIndexManager = require('../src/managers/SkillIndexManager');
-                const { MEMORY_BASE_DIR } = require('../src/config');
-                const idx = new SkillIndexManager(MEMORY_BASE_DIR);
-                idx.addSkill(safeId).catch(e => console.error(`[SkillIndex] MarketplaceInstall-Add Error for ${safeId}:`, e.message));
+                const { GOLEMS_CONFIG, MEMORY_BASE_DIR, GOLEM_MODE } = require('../src/config');
+                const targetDirs = GOLEM_MODE === 'SINGLE'
+                    ? [MEMORY_BASE_DIR]
+                    : GOLEMS_CONFIG.map(g => path.join(MEMORY_BASE_DIR, g.id));
+
+                for (const dir of targetDirs) {
+                    const idx = new SkillIndexManager(dir);
+                    idx.addSkill(safeId).catch(e => console.error(`[SkillIndex][${path.basename(dir)}] MarketplaceInstall-Add Error for ${safeId}:`, e.message));
+                }
 
                 return res.json({ success: true, id: safeId });
             } catch (e) {
@@ -734,12 +744,18 @@ class WebServer {
 
                 // 4. Update SQLite Index
                 const SkillIndexManager = require('../src/managers/SkillIndexManager');
-                const { MEMORY_BASE_DIR } = require('../src/config');
-                const idx = new SkillIndexManager(MEMORY_BASE_DIR);
-                if (enabled) {
-                    idx.addSkill(id).catch(e => console.error(`[SkillIndex] Toggle-Add Error for ${id}:`, e.message));
-                } else {
-                    idx.removeSkill(id).catch(e => console.error(`[SkillIndex] Toggle-Remove Error for ${id}:`, e.message));
+                const { GOLEMS_CONFIG, MEMORY_BASE_DIR, GOLEM_MODE } = require('../src/config');
+                const targetDirs = GOLEM_MODE === 'SINGLE'
+                    ? [MEMORY_BASE_DIR]
+                    : GOLEMS_CONFIG.map(g => path.join(MEMORY_BASE_DIR, g.id));
+
+                for (const dir of targetDirs) {
+                    const idx = new SkillIndexManager(dir);
+                    if (enabled) {
+                        idx.addSkill(id).catch(e => console.error(`[SkillIndex][${path.basename(dir)}] Toggle-Add Error for ${id}:`, e.message));
+                    } else {
+                        idx.removeSkill(id).catch(e => console.error(`[SkillIndex][${path.basename(dir)}] Toggle-Remove Error for ${id}:`, e.message));
+                    }
                 }
 
                 return res.json({ success: true, enabled, skillsStr: newSkillsStr });
@@ -771,12 +787,19 @@ class WebServer {
                 console.log(`✨ [WebServer] Custom skill created: ${safeId}.md`);
 
                 // 2. Index to SQLite if it would be enabled (mandatory or in OPTIONAL_SKILLS)
+                const { MANDATORY_SKILLS, resolveEnabledSkills } = require('../src/skills/skillsConfig');
                 const enabledSkills = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', []);
                 if (MANDATORY_SKILLS.includes(safeId) || enabledSkills.has(safeId)) {
                     const SkillIndexManager = require('../src/managers/SkillIndexManager');
-                    const { MEMORY_BASE_DIR } = require('../src/config');
-                    const idx = new SkillIndexManager(MEMORY_BASE_DIR);
-                    idx.addSkill(safeId).catch(e => console.error(`[SkillIndex] Create-Add Error for ${safeId}:`, e.message));
+                    const { GOLEMS_CONFIG, MEMORY_BASE_DIR, GOLEM_MODE } = require('../src/config');
+                    const targetDirs = GOLEM_MODE === 'SINGLE'
+                        ? [MEMORY_BASE_DIR]
+                        : GOLEMS_CONFIG.map(g => path.join(MEMORY_BASE_DIR, g.id));
+
+                    for (const dir of targetDirs) {
+                        const idx = new SkillIndexManager(dir);
+                        idx.addSkill(safeId).catch(e => console.error(`[SkillIndex][${path.basename(dir)}] Create-Add Error for ${safeId}:`, e.message));
+                    }
                 }
 
                 return res.json({ success: true, id: safeId });
@@ -808,59 +831,24 @@ class WebServer {
                 console.log(`📝 [WebServer] Custom skill updated: ${safeId}.md`);
 
                 // 2. Update SQLite Index if active
+                const { MANDATORY_SKILLS, resolveEnabledSkills } = require('../src/skills/skillsConfig');
                 const enabledSkills = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', []);
                 if (MANDATORY_SKILLS.includes(safeId) || enabledSkills.has(safeId)) {
                     const SkillIndexManager = require('../src/managers/SkillIndexManager');
-                    const { MEMORY_BASE_DIR } = require('../src/config');
+                    const { GOLEMS_CONFIG, MEMORY_BASE_DIR, GOLEM_MODE } = require('../src/config');
+                    const targetDirs = GOLEM_MODE === 'SINGLE'
+                        ? [MEMORY_BASE_DIR]
+                        : GOLEMS_CONFIG.map(g => path.join(MEMORY_BASE_DIR, g.id));
 
-                    const idx = new SkillIndexManager(MEMORY_BASE_DIR);
-                    idx.addSkill(safeId).catch(e => console.error(`[SkillIndex] Update-Add Error for ${safeId}:`, e.message));
+                    for (const dir of targetDirs) {
+                        const idx = new SkillIndexManager(dir);
+                        idx.addSkill(safeId).catch(e => console.error(`[SkillIndex][${path.basename(dir)}] Update-Add Error for ${safeId}:`, e.message));
+                    }
                 }
 
                 return res.json({ success: true, id: safeId });
             } catch (e) {
                 console.error('Failed to update skill:', e);
-                return res.status(500).json({ error: e.message });
-            }
-        });
-
-        // 🗑️ 刪除技能 API
-        this.app.post('/api/skills/delete', async (req, res) => {
-            try {
-                const { id } = req.body;
-                if (!id) return res.status(400).json({ error: 'Missing skill ID' });
-
-                const safeId = id.replace(/[^a-z0-9_-]/gi, '_').toLowerCase();
-
-                // 1. 安全檢查：禁止刪除強制性技能
-                if (MANDATORY_SKILLS.includes(safeId)) {
-                    return res.status(403).json({ error: `Cannot delete mandatory skill '${safeId}'` });
-                }
-
-                const libPath = path.join(process.cwd(), 'src', 'skills', 'lib');
-                const filePath = path.join(libPath, `${safeId}.md`);
-
-                if (!fs.existsSync(filePath)) {
-                    return res.status(404).json({ error: `Skill '${safeId}' not found` });
-                }
-
-                // 2. 執行檔案刪除
-                fs.unlinkSync(filePath);
-                console.log(`🗑️ [WebServer] Custom skill deleted: ${safeId}.md`);
-
-                // 3. 從 SQLite 索引移除
-                const SkillIndexManager = require('../src/managers/SkillIndexManager');
-                const { MEMORY_BASE_DIR } = require('../src/config');
-                const idx = new SkillIndexManager(MEMORY_BASE_DIR);
-                await idx.removeSkill(safeId).catch(e => console.error(`[SkillIndex] Delete-Remove Error for ${safeId}:`, e.message));
-
-                // 4. 清除技能快取 (ProtocolFormatter)
-                const ProtocolFormatter = require('../src/services/ProtocolFormatter');
-                ProtocolFormatter._lastScanTime = 0;
-
-                return res.json({ success: true, id: safeId });
-            } catch (e) {
-                console.error('Failed to delete skill:', e);
                 return res.status(500).json({ error: e.message });
             }
         });
@@ -889,16 +877,17 @@ class WebServer {
                 for (const [id, context] of this.contexts.entries()) {
                     if (context.brain && typeof context.brain.reloadSkills === 'function') {
                         try {
-                            console.log(`🚀 [WebServer] 啟動 [${id}] 完整重啟程序...`);
+                            console.log(`⚡ [WebServer] Injecting skills into Golem [${id}]...`);
                             await context.brain.reloadSkills();
                             results.push({ id, status: 'success' });
 
                             // 📣 TG 通知
                             const tgBot = context.brain.tgBot;
                             if (tgBot) {
+                                const { MANDATORY_SKILLS, OPTIONAL_SKILLS: OPT_LIST, resolveEnabledSkills } = require('../src/skills/skillsConfig');
                                 const enabledSkills = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', []);
-                                const enabledOptional = OPTIONAL_SKILL_LIST.filter(s => enabledSkills.has(s));
-                                const disabledOptional = OPTIONAL_SKILL_LIST.filter(s => !enabledSkills.has(s));
+                                const enabledOptional = OPT_LIST.filter(s => enabledSkills.has(s));
+                                const disabledOptional = OPT_LIST.filter(s => !enabledSkills.has(s));
 
                                 const mandatoryList = MANDATORY_SKILLS.map(s => `• ${s}`).join('\n');
                                 const optionalList = enabledOptional.length > 0 ? enabledOptional.map(s => `• ${s}`).join('\n') : '（無）';
@@ -1000,7 +989,7 @@ class WebServer {
             try {
                 const { search, category, page = 1, limit = 20 } = req.query;
                 const personasDir = path.resolve(process.cwd(), 'data', 'marketplace', 'personas');
-
+                
                 if (!fs.existsSync(personasDir)) {
                     return res.json({ personas: [], total: 0 });
                 }
@@ -1024,8 +1013,8 @@ class WebServer {
 
                 if (search) {
                     const term = search.toLowerCase();
-                    allPersonas = allPersonas.filter(p =>
-                        (p.name && p.name.toLowerCase().includes(term)) ||
+                    allPersonas = allPersonas.filter(p => 
+                        (p.name && p.name.toLowerCase().includes(term)) || 
                         (p.name_zh && p.name_zh.toLowerCase().includes(term)) ||
                         (p.description && p.description.toLowerCase().includes(term)) ||
                         (p.description_zh && p.description_zh.toLowerCase().includes(term)) ||
@@ -1050,28 +1039,62 @@ class WebServer {
             try {
                 const EnvManager = require('../src/utils/EnvManager');
                 const envVars = EnvManager.readEnv();
+                const ConfigManager = require('../src/config/index');
+                const isSingleNode = ConfigManager.GOLEM_MODE === 'SINGLE';
 
-                let golemsData = [];
-                const hasToken = envVars.TELEGRAM_TOKEN || envVars.DISCORD_TOKEN;
+                // 1. 獲取現有的 golems.json 配置 (僅在非單機模式下)
+                const golemsPath = path.resolve(process.cwd(), 'golems.json');
+                let allConfigs = [];
+                if (!isSingleNode && fs.existsSync(golemsPath)) {
+                    allConfigs = JSON.parse(fs.readFileSync(golemsPath, 'utf8'));
+                }
 
-                if (hasToken) {
-                    const id = 'golem_A';
+                // 2. 獲取當前記憶體中的 contexts
+                const activeIds = Array.from(this.contexts.keys());
+
+                // 3. 合併狀態
+                let golemsData = allConfigs.map(config => {
+                    const id = config.id;
                     const context = this.contexts.get(id);
                     let status = 'not_started';
 
                     if (context && context.brain) {
                         status = context.brain.status || 'running';
-                    } else {
-                        const projectRoot = path.resolve(__dirname, '..');
-                        const personaPath = envVars.USER_DATA_DIR
-                            ? path.resolve(envVars.USER_DATA_DIR, 'persona.json')
-                            : path.resolve(projectRoot, 'golem_memory', 'persona.json');
-                        status = fs.existsSync(personaPath) ? 'running' : 'pending_setup';
                     }
-                    golemsData.push({ id, status });
+
+                    return { id, status };
+                });
+
+                // 3.5 單機模式特化處理：如果沒在清單中但環境變數有 Token，強制加入 golem_A
+                if (isSingleNode) {
+                    const hasToken = envVars.TELEGRAM_TOKEN || envVars.DISCORD_TOKEN;
+                    if (hasToken && !golemsData.find(g => g.id === 'golem_A')) {
+                        const id = 'golem_A';
+                        const context = this.contexts.get(id);
+                        let status = 'not_started';
+
+                        if (context && context.brain) {
+                            status = context.brain.status || 'running';
+                        } else {
+                            // ✅ [Bug #4 修復] server.js 的 CWD 是 web-dashboard/，
+                            // 必須使用 __dirname 往上一層找到真正的 golem_memory 目錄
+                            const projectRoot = path.resolve(__dirname, '..');
+                            const envVarsForPath = EnvManager.readEnv();
+                            const userDataDirFromEnv = envVarsForPath.USER_DATA_DIR;
+                            const personaPath = userDataDirFromEnv
+                                ? path.resolve(userDataDirFromEnv, 'persona.json')
+                                : path.resolve(projectRoot, 'golem_memory', 'persona.json');
+                            if (!fs.existsSync(personaPath)) {
+                                status = 'pending_setup';
+                            } else {
+                                status = 'running'; // ✅ [Bug #4 修復] 加上 if exists = running
+                            }
+                        }
+                        golemsData.push({ id, status });
+                    }
                 }
 
-                // 補上其他在記憶體中的實體 (雖然單機模式通常只有 golem_A)
+                // 4. 對於不在 golems.json 但在 contexts 中的 (可能是動態建立未存檔的)，也補上去
                 this.contexts.forEach((ctx, id) => {
                     if (!golemsData.find(g => g.id === id)) {
                         golemsData.push({ id, status: ctx.brain.status || 'running' });
@@ -1085,15 +1108,128 @@ class WebServer {
             }
         });
 
-        // ─── System Status ────────────────────────────────────────────────────────────────────
+        // ─── Stats Endpoint ─────────────────────────────────────────────────────────────────
+        this.app.get('/api/stats', (req, res) => {
+            try {
+                const ctx = this.contexts.values().next().value;
+                const brain = ctx ? ctx.brain : null;
+                res.json({
+                    uptime: Math.floor(process.uptime()),
+                    memory: {
+                        rss: Math.round(process.memoryUsage().rss / 1024 / 1024),
+                        heap: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+                    },
+                    brain: brain ? {
+                        engine: brain.engineMode,
+                        model: brain.apiClient ? brain.apiClient.getModel() : null,
+                        provider: brain.apiClient ? brain.apiClient.providerName : null,
+                    } : null,
+                    golems: this.contexts.size,
+                });
+            } catch (e) {
+                res.status(500).json({ error: e.message });
+            }
+        });
+
+        // ─── Logs Endpoint ──────────────────────────────────────────────────────────────────
+        this.app.get('/api/logs', (req, res) => {
+            try {
+                const ctx = this.contexts.values().next().value;
+                const brain = ctx ? ctx.brain : null;
+                const logDir = process.env.LOG_BASE_DIR || './logs';
+                const singleDir = require('path').join(logDir, 'single');
+                let logs = [];
+
+                // Strategy 1: Read ChatLogManager's current hourly log file
+                if (brain && brain.chatLogManager && typeof brain.chatLogManager._getLogPath === 'function') {
+                    try {
+                        const logPath = brain.chatLogManager._getLogPath();
+                        if (fs.existsSync(logPath)) {
+                            const content = fs.readFileSync(logPath, 'utf8');
+                            logs = JSON.parse(content);
+                            if (Array.isArray(logs) && logs.length > 0) {
+                                return res.json({ logs: logs.slice(-50) });
+                            }
+                        }
+                    } catch (parseErr) { /* fall through */ }
+                }
+
+                // Strategy 2: Read system.log (main system log)
+                const systemLog = require('path').join(singleDir, 'system.log');
+                if (fs.existsSync(systemLog)) {
+                    const content = fs.readFileSync(systemLog, 'utf8');
+                    const lines = content.split('\n').filter(Boolean).slice(-50);
+                    if (lines.length > 0) {
+                        return res.json({ logs: lines });
+                    }
+                }
+
+                // Strategy 3: Find most recent .log file in single dir
+                if (fs.existsSync(singleDir)) {
+                    const logFiles = fs.readdirSync(singleDir)
+                        .filter(f => f.endsWith('.log') && !f.startsWith('system'))
+                        .sort()
+                        .reverse();
+                    if (logFiles.length > 0) {
+                        const latestPath = require('path').join(singleDir, logFiles[0]);
+                        const content = fs.readFileSync(latestPath, 'utf8');
+                        try {
+                            logs = JSON.parse(content);
+                            return res.json({ logs: Array.isArray(logs) ? logs.slice(-50) : [] });
+                        } catch (e2) {
+                            const lines = content.split('\n').filter(Boolean).slice(-50);
+                            return res.json({ logs: lines });
+                        }
+                    }
+                }
+
+                res.json({ logs: [], message: 'No log files found' });
+            } catch (e) {
+                res.status(500).json({ error: e.message });
+            }
+        });
+
+        // ─── Models Endpoint ────────────────────────────────────────────────────────────────
+        this.app.get('/api/models', (req, res) => {
+            try {
+                const constants = require('../src/core/monica-constants');
+                res.json({
+                    api: constants.API_MODELS || {},
+                    web: constants.WEB_MODELS || {},
+                    routing: {
+                        api: constants.API_ROUTING_RULES || {},
+                        web: constants.WEB_ROUTING_RULES || {},
+                    },
+                    defaults: {
+                        api: constants.API_DEFAULT_MODEL || null,
+                        web: constants.WEB_DEFAULT_MODEL || null,
+                    },
+                });
+            } catch (e) {
+                res.status(500).json({ error: e.message });
+            }
+        });
+
+                // ─── System Status ────────────────────────────────────────────────────────────────────
         this.app.get('/api/system/status', (req, res) => {
             try {
                 const liveCount = this.contexts.size;
+                let configuredCount = 0;
+                const golemsPath = path.resolve(process.cwd(), 'golems.json');
+                if (fs.existsSync(golemsPath)) {
+                    const content = fs.readFileSync(golemsPath, 'utf8');
+                    if (content.trim()) {
+                        const stored = JSON.parse(content);
+                        if (Array.isArray(stored)) configuredCount = stored.length;
+                    }
+                }
+
                 const EnvManager = require('../src/utils/EnvManager');
                 const envVars = EnvManager.readEnv();
-                const configuredCount = (envVars.TELEGRAM_TOKEN || envVars.DISCORD_TOKEN) ? 1 : 0;
 
                 const isSystemConfigured = envVars.SYSTEM_CONFIGURED === 'true';
+                const ConfigManager = require('../src/config/index');
+                const isSingleNode = ConfigManager.GOLEM_MODE === 'SINGLE';
 
                 // --- 額外獲取環境資訊 ---
                 const os = require('os');
@@ -1161,7 +1297,7 @@ class WebServer {
                     liveCount,
                     configuredCount,
                     isSystemConfigured,
-                    isBooting: this.isBooting,
+                    isSingleNode,
                     runtime,
                     health,
                     system
@@ -1178,21 +1314,10 @@ class WebServer {
             try {
                 const EnvManager = require('../src/utils/EnvManager');
                 const envVars = EnvManager.readEnv();
-
-                // Read version from package.json
-                let version = 'v9.0';
-                try {
-                    const pkg = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf8'));
-                    version = pkg.version;
-                } catch (e) {
-                    console.warn('[WebServer] Failed to read version from package.json:', e.message);
-                }
-
                 return res.json({
-                    version,
                     userDataDir: envVars.USER_DATA_DIR || './golem_memory',
                     golemMemoryMode: envVars.GOLEM_MEMORY_MODE || 'browser',
-                    golemMode: 'SINGLE'
+                    golemMode: envVars.GOLEM_MODE || 'MULTI'
                 });
             } catch (e) {
                 console.error('[WebServer] Failed to get system config:', e);
@@ -1211,7 +1336,7 @@ class WebServer {
                 if (geminiApiKeys !== undefined) updates.GEMINI_API_KEYS = geminiApiKeys;
                 if (userDataDir) updates.USER_DATA_DIR = userDataDir;
                 if (golemMemoryMode) updates.GOLEM_MEMORY_MODE = golemMemoryMode;
-                updates.GOLEM_MODE = 'SINGLE';
+                if (golemMode) updates.GOLEM_MODE = golemMode;
 
                 if (Object.keys(updates).length > 0) {
                     // 標記系統已完成初始化
@@ -1222,13 +1347,6 @@ class WebServer {
 
                     // 觸發熱重載
                     ConfigManager.reloadConfig();
-
-                    // ✨ [v10.10] 通知 AutonomyManager 即時更新檢查排程
-                    for (const ctx of this.contexts.values()) {
-                        if (ctx.autonomy && typeof ctx.autonomy.scheduleNextArchive === 'function') {
-                            ctx.autonomy.scheduleNextArchive();
-                        }
-                    }
 
                     return res.json({ success: true, message: 'Configuration saved and reloaded.' });
                 }
@@ -1292,20 +1410,11 @@ class WebServer {
 
         this.app.post('/api/system/restart', (req, res) => {
             try {
-                console.log("🔄 [System] Restart requested by user. Triggering hard restart...");
-                res.json({ success: true, message: "Restarting system... Full re-initialization in progress." });
-                
-                if (typeof global.gracefulRestart === 'function') {
-                    setTimeout(() => {
-                        global.gracefulRestart().catch(err => {
-                            console.error("❌ [System] Restart error:", err);
-                            process.exit(1);
-                        });
-                    }, 1000);
-                } else {
-                    console.warn("⚠️ [System] global.gracefulRestart not found, falling back to process.exit()");
-                    setTimeout(() => process.exit(0), 1000);
-                }
+                console.log("🔄 [System] Restart requested by user. Terminating process...");
+                res.json({ success: true, message: "Restarting system..." });
+                setTimeout(() => {
+                    process.exit(0);
+                }, 1000);
             } catch (e) {
                 return res.status(500).json({ error: e.message });
             }
@@ -1319,11 +1428,9 @@ class WebServer {
                     tgToken, tgAuthMode, tgAdminId, tgChatId,
                     dcToken, dcAuthMode, dcAdminId, dcChatId
                 } = req.body;
-                const EnvManager = require('../src/utils/EnvManager');
-                const ConfigManager = require('../src/config/index');
 
-                if (!id) {
-                    return res.status(400).json({ error: 'Missing required fields: id' });
+                if (!id || (!tgToken && !dcToken)) {
+                    return res.status(400).json({ error: 'Missing required fields: id, and at least one Bot Token (Telegram or Discord)' });
                 }
 
                 // Validate ID format
@@ -1332,44 +1439,102 @@ class WebServer {
                 }
 
                 // --- Mode-aware Logic ---
-                // --- Start Golem Logic (Simplified to Single Mode) ---
-                console.log('📝 [API] System in SINGLE mode. Writing Golem config to .env');
-                const updates = {};
+                const EnvManager = require('../src/utils/EnvManager');
+                const ConfigManager = require('../src/config/index');
+                const isSingleNode = ConfigManager.GOLEM_MODE === 'SINGLE';
+
+                if (isSingleNode) {
+                    console.log('📝 [API] System in SINGLE mode. Writing Golem config to .env');
+                    const updates = {};
+                    if (tgToken) {
+                        updates.TELEGRAM_TOKEN = tgToken;
+                        updates.TG_AUTH_MODE = tgAuthMode || 'ADMIN';
+                        if (tgAuthMode === 'CHAT' && tgChatId) updates.TG_CHAT_ID = tgChatId;
+                        if ((!tgAuthMode || tgAuthMode === 'ADMIN') && tgAdminId) updates.ADMIN_ID = tgAdminId;
+                    }
+                    if (dcToken) {
+                        updates.DISCORD_TOKEN = dcToken;
+                        updates.DISCORD_ADMIN_ID = dcAdminId;
+                    }
+
+                    EnvManager.updateEnv(updates);
+                    console.log(`✅ [WebServer] Single Mode config updated in .env. Triggering reload...`);
+
+                    // 關鍵修正：寫入 .env 後必須熱重載，否則後續 Setup API 會找不到設定
+                    const ConfigManager = require('../src/config/index');
+                    ConfigManager.reloadConfig();
+
+                    // ✅ [Bug #2 修復] Single Mode 也需呼叫 golemFactory 以建立帶有 tgBot 的實體
+                    // 讓後續 Setup API 能找到 context 並正確啟動 polling
+                    if (typeof this.golemFactory === 'function') {
+                        const { CONFIG: freshConfig, GOLEMS_CONFIG: freshGolemsConfig } = require('../src/config/index');
+                        const singleGolemConfig = freshGolemsConfig.find(g => g.id === 'golem_A') || {
+                            id: 'golem_A',
+                            tgToken: tgToken,
+                            tgAuthMode: tgAuthMode || 'ADMIN',
+                            adminId: tgAdminId,
+                            chatId: tgChatId,
+                            dcToken: dcToken,
+                            dcAdminId: dcAdminId,
+                        };
+                        try {
+                            await this.golemFactory(singleGolemConfig);
+                            console.log(`✅ [WebServer] Single Mode golem_A instance created via factory.`);
+                        } catch (factoryErr) {
+                            console.error(`❌ [WebServer] Single Mode golem_A factory failed:`, factoryErr.message);
+                        }
+                    }
+
+                    return res.json({ success: true, mode: 'SINGLE', id: 'golem_A', message: 'Single Mode configuration updated successfully.' });
+                }
+
+                // --- Multi Mode (Default) ---
+                const golemsPath = path.resolve(process.cwd(), 'golems.json');
+                let existingGolems = [];
+                if (fs.existsSync(golemsPath)) {
+                    existingGolems = JSON.parse(fs.readFileSync(golemsPath, 'utf8'));
+                    if (!Array.isArray(existingGolems)) existingGolems = [];
+                }
+
+                if (existingGolems.find(g => g.id === id)) {
+                    return res.status(409).json({ error: `Golem ID '${id}' already exists` });
+                }
+
+                // Build new golem config entry
+                const newGolemConfig = { id, role: role || '' };
+
+                // Telegram
                 if (tgToken) {
-                    updates.TELEGRAM_TOKEN = tgToken;
-                    updates.TG_AUTH_MODE = tgAuthMode || 'ADMIN';
-                    if (tgAuthMode === 'CHAT' && tgChatId) updates.TG_CHAT_ID = tgChatId;
-                    if ((!tgAuthMode || tgAuthMode === 'ADMIN') && tgAdminId) updates.ADMIN_ID = tgAdminId;
+                    newGolemConfig.tgToken = tgToken;
+                    if (tgAuthMode) newGolemConfig.tgAuthMode = tgAuthMode;
+                    if (tgAuthMode === 'CHAT' && tgChatId) newGolemConfig.chatId = tgChatId;
+                    if ((!tgAuthMode || tgAuthMode === 'ADMIN') && tgAdminId) newGolemConfig.adminId = tgAdminId;
                 }
+
+                // Discord
                 if (dcToken) {
-                    updates.DISCORD_TOKEN = dcToken;
-                    updates.DISCORD_ADMIN_ID = dcAdminId;
+                    newGolemConfig.dcToken = dcToken;
+                    if (dcAuthMode) newGolemConfig.dcAuthMode = dcAuthMode;
+                    if (dcAuthMode === 'CHAT' && dcChatId) newGolemConfig.dcChatId = dcChatId;
+                    if ((!dcAuthMode || dcAuthMode === 'ADMIN') && dcAdminId) newGolemConfig.dcAdminId = dcAdminId;
                 }
 
-                EnvManager.updateEnv(updates);
-                console.log(`✅ [WebServer] Single Mode config updated in .env. Triggering reload...`);
+                // Persist to golems.json
+                existingGolems.push(newGolemConfig);
+                fs.writeFileSync(golemsPath, JSON.stringify(existingGolems, null, 4), 'utf8');
+                console.log(`📝 [WebServer] New Golem config saved: ${id}`);
 
-                ConfigManager.reloadConfig();
-
+                // Dynamically start the Golem instance (deferred init)
                 if (typeof this.golemFactory === 'function') {
-                    const { GOLEMS_CONFIG: freshGolemsConfig } = ConfigManager;
-                    const singleGolemConfig = freshGolemsConfig.find(g => g.id === 'golem_A') || {
-                        id: 'golem_A',
-                        tgToken: tgToken,
-                        tgAuthMode: tgAuthMode || 'ADMIN',
-                        adminId: tgAdminId,
-                        chatId: tgChatId,
-                        dcToken: dcToken,
-                        dcAdminId: dcAdminId,
-                    };
                     try {
-                        await this.golemFactory(singleGolemConfig);
+                        const instance = await this.golemFactory(newGolemConfig);
+                        console.log(`🚀 [WebServer] Golem [${id}] instance created (Ready for setup).`);
                     } catch (factoryErr) {
-                        console.error(`❌ [WebServer] Single Mode golem_A factory failed:`, factoryErr.message);
+                        console.error(`❌ [WebServer] Golem factory failed for [${id}]:`, factoryErr.message);
                     }
                 }
 
-                return res.json({ success: true, mode: 'SINGLE', id: 'golem_A', message: 'Single Mode configuration updated successfully.' });
+                return res.json({ success: true, id, message: `Golem '${id}' created. Please complete persona setup to start.` });
             } catch (e) {
                 console.error('[WebServer] Failed to create Golem:', e);
                 return res.status(500).json({ error: e.message });
@@ -1387,11 +1552,12 @@ class WebServer {
                 // 🎯 V9.0.7 解耦：若實體尚未「孕育」，則先執行懶加載
                 if (!instance) {
                     if (typeof this.golemFactory === 'function') {
-                        console.log(`🧬 [WebServer] Golem '${id}' not in memory. Triggering lazy gestation (Single Mode)...`);
-                        const ConfigManager = require('../src/config/index');
-                        const targetConfig = ConfigManager.GOLEMS_CONFIG.find(g => g.id === id);
+                        console.log(`🧬 [WebServer] Golem '${id}' not in memory. Triggering lazy gestation...`);
+                        const golemsPath = path.resolve(process.cwd(), 'golems.json');
+                        const configs = JSON.parse(fs.readFileSync(golemsPath, 'utf8'));
+                        const targetConfig = configs.find(g => g.id === id);
 
-                        if (!targetConfig) return res.status(404).json({ error: `Config for '${id}' not found in internal config.` });
+                        if (!targetConfig) return res.status(404).json({ error: `Config for '${id}' not found in golems.json` });
 
                         await this.golemFactory(targetConfig);
                         instance = this.contexts.get(id);
@@ -1629,8 +1795,10 @@ class WebServer {
                 let userDataDir;
                 if (context && context.brain && context.brain.userDataDir) {
                     userDataDir = context.brain.userDataDir;
-                } else {
+                } else if (ConfigManager.GOLEM_MODE === 'SINGLE') {
                     userDataDir = ConfigManager.MEMORY_BASE_DIR;
+                } else {
+                    userDataDir = golemId ? require('path').join(ConfigManager.MEMORY_BASE_DIR, golemId) : ConfigManager.MEMORY_BASE_DIR;
                 }
 
                 const persona = personaManager.get(userDataDir);
@@ -1655,8 +1823,10 @@ class WebServer {
                 let userDataDir;
                 if (context && context.brain && context.brain.userDataDir) {
                     userDataDir = context.brain.userDataDir;
-                } else {
+                } else if (ConfigManager.GOLEM_MODE === 'SINGLE') {
                     userDataDir = ConfigManager.MEMORY_BASE_DIR;
+                } else {
+                    userDataDir = golemId ? require('path').join(ConfigManager.MEMORY_BASE_DIR, golemId) : ConfigManager.MEMORY_BASE_DIR;
                 }
 
                 personaManager.save(userDataDir, {
@@ -1729,71 +1899,26 @@ class WebServer {
             }
         });
 
-        // 🗑️ 刪除人格 API
-        this.app.post('/api/persona/delete', async (req, res) => {
-            try {
-                const { id } = req.body;
-                if (!id) return res.status(400).json({ success: false, error: 'Missing persona ID' });
-
-                const safeId = id.replace(/[^a-z0-9_-]/gi, '_').toLowerCase();
-
-                // 1. 安全檢查：禁止刪除內建人格
-                const BUILTIN_PERSONAS = ['standard', 'expert', 'analyst', 'coach', 'creative', 'storyteller', 'translator'];
-                if (BUILTIN_PERSONAS.includes(safeId)) {
-                    return res.status(403).json({ success: false, error: `無法刪除內建人格樣板 '${safeId}'` });
-                }
-
-                const personasDir = path.resolve(process.cwd(), 'personas');
-                const filePath = path.join(personasDir, `${safeId}.md`);
-
-                if (!fs.existsSync(filePath)) {
-                    return res.status(404).json({ success: false, error: `樣板檔案 '${safeId}.md' 不存在` });
-                }
-
-                // 2. 執行檔案刪除
-                fs.unlinkSync(filePath);
-                console.log(`🗑️ [WebServer] Persona template deleted: ${safeId}.md`);
-
-                return res.json({ success: true, id: safeId });
-            } catch (e) {
-                console.error('Failed to delete persona:', e);
-                return res.status(500).json({ success: false, error: e.message });
-            }
-        });
-
         this.app.post('/api/system/reload', (req, res) => {
             console.log("🔄 [WebServer] Received reload request. Restarting system...");
-            res.json({ success: true, message: "System is restarting with full re-initialization..." });
+            res.json({ success: true, message: "System is restarting..." });
 
-            if (typeof global.gracefulRestart === 'function') {
-                setTimeout(() => {
-                    global.gracefulRestart().catch(err => {
-                        console.error("❌ [System] Reload error:", err);
-                        process.exit(1);
-                    });
-                }, 1000);
-            } else {
-                console.warn("⚠️ [System] global.gracefulRestart not found, falling back to process.exit()");
-                setTimeout(() => process.exit(0), 1000);
-            }
+            // Inform the user that a manual restart is required
+            setTimeout(() => {
+                console.log("📢 [WebServer] Update applied. Manual restart requested via UI.");
+            }, 500);
         });
 
         this.app.post('/api/system/shutdown', (req, res) => {
             console.log("⛔ [WebServer] Received shutdown request. Stopping system...");
             res.json({ success: true, message: "System is shutting down... Please restart manually if needed." });
 
-            // 呼叫全域關閉函式，執行完整的資源清理
-            if (typeof global.fullShutdown === 'function') {
-                setTimeout(() => {
-                    global.fullShutdown().catch(err => {
-                        console.error("❌ [System] Shutdown error:", err);
-                        process.exit(1);
-                    });
-                }, 1000);
-            } else {
-                console.warn("⚠️ [System] global.fullShutdown not found, falling back to process.exit()");
-                setTimeout(() => process.exit(0), 1000);
-            }
+            // 直接終止進程，不 spawn 新子進程
+            // 與 reload 的差異：reload 會生出新進程再死去（熱重啟），shutdown 則完全停止
+            // Single mode / Multi mode 皆適用（都是同一個 Node.js 進程）
+            setTimeout(() => {
+                process.exit(0);
+            }, 1000);
         });
 
         // Socket.io connection handler
@@ -1831,9 +1956,8 @@ class WebServer {
         });
 
         // Start Server
-        this.server.listen(this.port, '0.0.0.0', () => {
-            const displayPort = process.env.DASHBOARD_DEV_MODE === 'true' ? 3000 : this.port;
-            const url = `http://localhost:${displayPort}/dashboard`;
+        this.server.listen(this.port, () => {
+            const url = `http://localhost:${this.port}/dashboard`;
             console.log(`🚀 [WebServer] Dashboard running at ${url}`);
 
             if (!process.env.SKIP_BROWSER) {

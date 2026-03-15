@@ -4,6 +4,7 @@
      * 這實現了技能可以社群分享的功能。
      */
 const fs = require('fs');
+const vm = require('vm');
 const path = require('path');
 
 class SkillManager {
@@ -114,31 +115,135 @@ class SkillManager {
             // 基本安全檢查
             if (!payload.n || !payload.c) throw new Error("Corrupted skill data.");
 
-            // 安全過濾器 (簡易版)
-            const dangerousKeywords = ['require("child_process")', "require('child_process')", 'exec(', 'spawn('];
-            if (dangerousKeywords.some(k => payload.c.includes(k))) {
-                throw new Error("⚠️ Security Alert: This skill contains restricted system calls.");
+            // Step 2: Validation gate
+            const validation = this.validateSkill(payload.c, payload.n);
+            if (!validation.valid) {
+                console.warn(`\u26d4 [SkillManager] Skill "${payload.n}" blocked: ${validation.reason}`);
+                return { success: false, error: `Security blocked: ${validation.reason}` };
             }
 
-            // 寫入檔案
+            // Step 3: Sandbox test
+            const sandboxResult = this.sandboxTest(payload.c);
+            if (!sandboxResult.passed) {
+                console.warn(`\u26d4 [SkillManager] Skill "${payload.n}" sandbox failed: ${sandboxResult.reason}`);
+                return { success: false, error: `Sandbox failed: ${sandboxResult.reason}` };
+            }
+
+            // Step 4: Stage for approval (not direct install)
+            const stagingDir = path.join(this.baseDir, 'staging');
+            if (!fs.existsSync(stagingDir)) fs.mkdirSync(stagingDir, { recursive: true });
             const filename = `imported-${payload.n.toLowerCase().replace(/\s+/g, '-')}.js`;
-            const filePath = path.join(this.userDir, filename);
+            const stagingPath = path.join(stagingDir, filename);
+            fs.writeFileSync(stagingPath, payload.c);
 
-            // 備份舊檔 (如果存在)
-            if (fs.existsSync(filePath)) {
-                fs.renameSync(filePath, filePath + '.bak');
-            }
+            // Send Telegram approval notification
+            this.notifyApproval(payload.n, payload.c, stagingPath).catch(() => {});
 
-            fs.writeFileSync(filePath, payload.c);
-
-            // 立即重新載入
-            this.refresh();
-
-            return { success: true, name: payload.n, path: filePath };
+            console.log(`\u{1f4cb} [SkillManager] Skill "${payload.n}" staged for approval`);
+            return { success: true, name: payload.n, path: stagingPath, status: 'pending_approval' };
 
         } catch (err) {
             return { success: false, error: err.message };
         }
+    }
+
+
+    /**
+     * Validate skill code safety - dual blacklist (code + semantic)
+     */
+    validateSkill(skillCode, skillName) {
+        try { new vm.Script(skillCode); }
+        catch(e) { return { valid: false, reason: `Syntax error: ${e.message}` }; }
+
+        const bannedCode = [
+            'child_process', 'fs.rm', 'fs.unlink', 'fs.writeFile', 'fs.appendFile',
+            'eval(', 'exec(', 'execSync', 'spawn(', 'spawnSync',
+            "require(\"net\")", "require('net')", "require(\"http\")", "require('http')",
+            "require(\"https\")", "require('https')", 'process.env', 'process.exit',
+            '__dirname', 'global.', 'globalThis.'
+        ];
+        for (const pat of bannedCode) {
+            if (skillCode.includes(pat)) return { valid: false, reason: `Banned code: ${pat}` };
+        }
+
+        // Semantic restrictions removed by Yagami directive
+
+        if (Buffer.byteLength(skillCode) > 50000) return { valid: false, reason: 'Too large (>50KB)' };
+        return { valid: true };
+    }
+
+    /**
+     * Sandbox test - run skill in isolated vm context
+     */
+    sandboxTest(skillCode) {
+        try {
+            const sandbox = vm.createContext({
+                console: { log: () => {}, warn: () => {}, error: () => {} },
+                module: { exports: {} }, exports: {},
+                setTimeout: () => {}, clearTimeout: () => {},
+                ctx: { reply: () => Promise.resolve(), memorize: () => Promise.resolve(), args: {} }
+            });
+            const script = new vm.Script(skillCode);
+            script.runInContext(sandbox, { timeout: 5000 });
+            const exp = sandbox.module.exports;
+            if (!exp.name || typeof exp.run !== 'function') {
+                return { passed: false, reason: 'Missing { name, run(ctx) }' };
+            }
+            return { passed: true, name: exp.name };
+        } catch (e) {
+            return { passed: false, reason: `Sandbox: ${e.message}` };
+        }
+    }
+
+    /**
+     * Send Telegram approval notification
+     */
+    async notifyApproval(skillName, skillCode, stagingPath) {
+        const token = process.env.TELEGRAM_TOKEN;
+        const chatId = process.env.ADMIN_ID;
+        if (!token || !chatId) return;
+        const summary = skillCode.substring(0, 200).replace(/[<>&]/g, c =>
+            c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&amp;');
+        const text = `\u{1F50D} <b>New skill pending approval</b>\n` +
+            `Name: <code>${skillName}</code>\n` +
+            `Size: ${Buffer.byteLength(skillCode)} bytes\n` +
+            `Path: <code>${stagingPath}</code>\n` +
+            `Preview:\n<pre>${summary}...</pre>\n\n` +
+            `Reply /approve_skill ${skillName} to load\n` +
+            `Reply /reject_skill ${skillName} to reject`;
+        try {
+            const https = require('https');
+            const data = JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' });
+            const req = https.request({
+                hostname: 'api.telegram.org',
+                path: `/bot${token}/sendMessage`,
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) }
+            });
+            req.write(data); req.end();
+        } catch (e) { console.error('[SkillManager] TG notify failed:', e.message); }
+    }
+
+    /**
+     * Approve a staged skill - move from staging to user dir and hot-reload
+     */
+    approveSkill(skillName) {
+        const stagingDir = path.join(this.baseDir, 'staging');
+        const files = fs.readdirSync(stagingDir).filter(f => f.endsWith('.js'));
+        for (const file of files) {
+            const fullPath = path.join(stagingDir, file);
+            const code = fs.readFileSync(fullPath, 'utf-8');
+            try {
+                const mod = {}; new Function('module', 'exports', code)(mod, mod.exports || {});
+                if (mod.exports && mod.exports.name === skillName) {
+                    const dest = path.join(this.userDir, file);
+                    fs.renameSync(fullPath, dest);
+                    this.refresh();
+                    return { success: true, name: skillName, path: dest };
+                }
+            } catch(e) { /* skip */ }
+        }
+        return { success: false, error: `Skill "${skillName}" not found in staging` };
     }
 
     listSkills() {

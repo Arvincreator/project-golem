@@ -65,11 +65,18 @@ class KeyChain {
         return null;
     }
 
-    recordError(key, error) {
+recordError(key, error) {
         const stat = this._stats.get(key);
         if (stat) stat.errors++;
-        if (error?.message?.includes('429') || error?.message?.includes('RESOURCE_EXHAUSTED')) {
-            const isDaily = error.message.includes('per day');
+        const msg = error?.message || "";
+        // Handle CONSUMER_SUSPENDED - permanently disable key
+        if (msg.includes("403") || msg.includes("CONSUMER_SUSPENDED") || msg.includes("suspended")) {
+            console.error("\u26d4 [KeyChain] Key SUSPENDED - permanently disabled:", key.substring(0, 12) + "...");
+            this.markCooldown(key, 365 * 24 * 60 * 60 * 1000); // 1 year = permanent
+            return;
+        }
+        if (msg.includes("429") || msg.includes("RESOURCE_EXHAUSTED")) {
+            const isDaily = msg.includes("per day");
             this.markCooldown(key, isDaily ? 15 * 60 * 1000 : 90 * 1000);
         }
     }

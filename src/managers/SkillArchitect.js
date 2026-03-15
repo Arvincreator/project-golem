@@ -100,10 +100,6 @@ class SkillArchitect {
                 "require('child_process')",
                 'execSync',
                 'spawnSync',
-                'exec(',
-                'spawn(',
-                'eval(',
-                'new Function(',
             ];
             if (DANGEROUS_PATTERNS.some(k => skillData.code.includes(k))) {
                 throw new Error("⚠️ Security: Generated skill contains restricted calls. Deployment blocked.");

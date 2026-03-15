@@ -1,21 +1,19 @@
 const fs = require('fs');
 const path = require('path');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-const KeyChain = require('./KeyChain');
+const https = require('https');
+const http = require('http');
 
-// ============================================================
-// 🚑 DOM Doctor (已修復 AI 廢話導致崩潰問題)
-// ============================================================
+// DOM Doctor v2 (Monica API / Ollama fallback)
 class DOMDoctor {
     constructor() {
-        this.keyChain = new KeyChain();
         this.cacheFile = path.join(process.cwd(), 'golem_selectors.json');
         this.defaults = {
-            input: 'div[contenteditable="true"], rich-textarea > div, p[data-placeholder]',
-            send: 'button[aria-label*="Send"], button[aria-label*="傳送"], span[data-icon="send"]',
-            response: '.model-response-text, .message-content, .markdown, div[data-test-id="message-content"]'
+            input: 'textarea, div[contenteditable="true"], rich-textarea > div, p[data-placeholder]',
+            send: 'div[class*="rounded-[100px]"][class*="clickable"], div.clickable, button[aria-label*="Send"], button[aria-label*="\u50b3\u9001"]',
+            response: '[class*="markdown"], [class*="message-content"], [class*="response"], .markdown-body, div[class*="content"]'
         };
     }
+
     loadSelectors() {
         try {
             if (fs.existsSync(this.cacheFile)) {
@@ -25,79 +23,178 @@ class DOMDoctor {
         } catch (e) { }
         return { ...this.defaults };
     }
+
     saveSelectors(newSelectors) {
         try {
             const current = this.loadSelectors();
             const updated = { ...current, ...newSelectors };
             fs.writeFileSync(this.cacheFile, JSON.stringify(updated, null, 2));
-            console.log("💾 [Doctor] Selector 已更新並存檔！");
+            console.log('[Doctor] Selector updated and saved');
         } catch (e) { }
     }
+
+    async _callLLM(prompt) {
+        const monicaKey = process.env.MONICA_API_KEY;
+        if (monicaKey) {
+            try { return await this._callMonicaAPI(prompt, monicaKey); }
+            catch (e) { console.warn(`[Doctor] Monica API failed: ${e.message}`); }
+        }
+        // Try Groq (free, fast)
+        const groqKey = process.env.GROQ_API_KEY;
+        if (groqKey) {
+            try { return await this._callGroq(prompt, groqKey); }
+            catch (e) { console.warn(`[Doctor] Groq failed: ${e.message}`); }
+        }
+        const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
+        const ollamaModel = process.env.OLLAMA_MODEL || 'ri:8b';
+        try { return await this._callOllama(prompt, ollamaUrl, ollamaModel); }
+        catch (e) { console.warn(`[Doctor] Ollama failed: ${e.message}`); }
+        return null;
+    }
+
+    async _callMonicaAPI(prompt, apiKey) {
+        return new Promise((resolve, reject) => {
+            const data = JSON.stringify({
+                model: 'gpt-4o',
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 200,
+            });
+            const req = https.request({
+                hostname: 'openapi.monica.im',
+                path: '/v1/chat/completions',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Length': Buffer.byteLength(data),
+                },
+                timeout: 30000,
+            }, (res) => {
+                let body = '';
+                res.on('data', chunk => body += chunk);
+                res.on('end', () => {
+                    try {
+                        const json = JSON.parse(body);
+                        resolve(json.choices?.[0]?.message?.content || '');
+                    } catch (e) { reject(new Error('JSON parse failed')); }
+                });
+            });
+            req.on('error', reject);
+            req.on('timeout', () => { req.destroy(); reject(new Error('timeout')); });
+            req.write(data);
+            req.end();
+        });
+    }
+
+
+    async _callGroq(prompt, apiKey) {
+        return new Promise((resolve, reject) => {
+            const data = JSON.stringify({
+                model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 200,
+            });
+            const req = https.request({
+                hostname: 'api.groq.com',
+                path: '/openai/v1/chat/completions',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + apiKey,
+                    'Content-Length': Buffer.byteLength(data),
+                },
+                timeout: 30000,
+            }, (res) => {
+                let body = '';
+                res.on('data', chunk => body += chunk);
+                res.on('end', () => {
+                    try {
+                        const json = JSON.parse(body);
+                        if (json.error) { reject(new Error(json.error.message)); return; }
+                        resolve(json.choices && json.choices[0] && json.choices[0].message ? json.choices[0].message.content : '');
+                    } catch (e) { reject(new Error('JSON parse failed')); }
+                });
+            });
+            req.on('error', reject);
+            req.on('timeout', () => { req.destroy(); reject(new Error('timeout')); });
+            req.write(data);
+            req.end();
+        });
+    }
+
+    async _callOllama(prompt, baseUrl, model) {
+        return new Promise((resolve, reject) => {
+            const url = new URL(baseUrl + '/api/generate');
+            const data = JSON.stringify({ model, prompt, stream: false });
+            const transport = url.protocol === 'https:' ? https : http;
+            const req = transport.request({
+                hostname: url.hostname,
+                port: url.port,
+                path: url.pathname,
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) },
+                timeout: 30000,
+            }, (res) => {
+                let body = '';
+                res.on('data', chunk => body += chunk);
+                res.on('end', () => {
+                    try {
+                        const json = JSON.parse(body);
+                        resolve(json.response || '');
+                    } catch (e) { reject(new Error('JSON parse failed')); }
+                });
+            });
+            req.on('error', reject);
+            req.on('timeout', () => { req.destroy(); reject(new Error('timeout')); });
+            req.write(data);
+            req.end();
+        });
+    }
+
     async diagnose(htmlSnippet, targetType) {
-        if (this.keyChain.keys.length === 0) return null;
         const hints = {
-            'input': '目標是輸入框。⚠️ 注意：請忽略內層的 <p>, <span> 或 text node。請往上尋找最近的一個「容器 div」，它通常具備 contenteditable="true"、role="textbox" 或 class="ql-editor" 屬性。',
-            'send': '目標是發送按鈕。⚠️ 注意：請找出外層的 <button> 或具備互動功能的 <mat-icon>，不要只選取裡面的 <svg> 或 <path>。特徵：aria-label="Send" 或 data-mat-icon-name="send"。',
-            'response': '找尋 AI 回覆的文字氣泡。'
+            'input': 'Find the input container div with contenteditable or role=textbox.',
+            'send': 'Find the send button with aria-label=Send.',
+            'response': 'Find the AI response text bubble.'
         };
         const targetDescription = hints[targetType] || targetType;
-        console.log(`🚑 [Doctor] 啟動深層診斷: 目標 [${targetType}]...`);
+        console.log(`[Doctor] Diagnosing: target [${targetType}]...`);
 
         let safeHtml = htmlSnippet;
         if (htmlSnippet.length > 60000) {
-            const head = htmlSnippet.substring(0, 5000);
-            const tail = htmlSnippet.substring(htmlSnippet.length - 55000);
-            safeHtml = `${head}\n\n\n\n${tail}`;
+            safeHtml = htmlSnippet.substring(0, 5000) + '\n\n' + htmlSnippet.substring(htmlSnippet.length - 55000);
         }
 
-        const prompt = `你是 Puppeteer 自動化專家。目前的 CSS Selector 失效。
-請分析 HTML，找出目標: "${targetType}" (${targetDescription}) 的最佳 CSS Selector。
+        const prompt = `You are a Puppeteer automation expert. The current CSS Selector is broken.\n` +
+            `Analyze this HTML and find the best CSS Selector for: "${targetType}" (${targetDescription}).\n\n` +
+            `HTML snippet:\n\`\`\`html\n${safeHtml}\n\`\`\`\n\n` +
+            `Rules:\n1. Return ONLY JSON: {"selector": "your_css_selector"}\n` +
+            `2. High specificity but no random IDs.\n` +
+            `3. Prefer id, name, role, aria-label, data-attributes.`;
 
-HTML 片段:
-\`\`\`html
-${safeHtml}
-\`\`\`
+        try {
+            const rawText = await this._callLLM(prompt);
+            if (!rawText) { console.warn('[Doctor] No LLM available, skipping.'); return null; }
 
-規則：
-1. 只回傳 JSON: {"selector": "your_css_selector"}
-2. 選擇器必須具備高特異性 (Specificity)，但不要依賴隨機生成的 ID (如 #xc-123)。
-3. 優先使用 id, name, role, aria-label, data-attribute。`;
-
-        let attempts = 0;
-        while (attempts < this.keyChain.keys.length) {
+            let selector = '';
             try {
-                const apiKey = await this.keyChain.getKey();
-                if (!apiKey) {
-                    console.warn("⚠️ [Doctor] 無可用 API Key，跳過診斷。");
-                    return null;
-                }
-                const genAI = new GoogleGenerativeAI(apiKey);
-                const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-                const result = await model.generateContent(prompt);
-                const rawText = result.response.text().trim();
-
-                let selector = "";
-                try {
-                    const jsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-                    const parsed = JSON.parse(jsonStr);
-                    selector = parsed.selector;
-                } catch (jsonErr) {
-                    console.warn(`⚠️ [Doctor] JSON 解析失敗，嘗試暴力提取 (Raw: ${rawText.substring(0, 50)}...)`);
-                    const lines = rawText.split('\n').filter(l => l.trim().length > 0);
-                    const lastLine = lines[lines.length - 1].trim();
-                    if (!lastLine.includes(' ')) selector = lastLine;
-                }
-
-                if (selector && selector.length > 0 && selector.length < 150 && !selector.includes('問題')) {
-                    console.log(`✅ [Doctor] 診斷成功，新 Selector: ${selector}`);
-                    return selector;
-                } else {
-                    console.warn(`⚠️ [Doctor] AI 提供的 Selector 無效或包含雜訊: ${selector}`);
-                }
-            } catch (e) {
-                console.error(`❌ [Doctor] 診斷 API 錯誤: ${e.message}`);
-                attempts++;
+                const jsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                const parsed = JSON.parse(jsonStr);
+                selector = parsed.selector;
+            } catch (jsonErr) {
+                const lines = rawText.split('\n').filter(l => l.trim().length > 0);
+                const lastLine = lines[lines.length - 1].trim();
+                if (!lastLine.includes(' ')) selector = lastLine;
             }
+
+            if (selector && selector.length > 0 && selector.length < 150) {
+                console.log(`[Doctor] Diagnosis success, new Selector: ${selector}`);
+                return selector;
+            } else {
+                console.warn(`[Doctor] Invalid selector from AI: ${selector}`);
+            }
+        } catch (e) {
+            console.error(`[Doctor] Diagnosis error: ${e.message}`);
         }
         return null;
     }

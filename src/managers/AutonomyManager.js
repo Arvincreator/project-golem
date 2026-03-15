@@ -25,50 +25,31 @@ class AutonomyManager {
     }
 
     start() {
-        console.log(`🚀 [Autonomy][${this.golemId}] Starting autonomy services...`);
+        if (!ConfigManager.CONFIG.TG_TOKEN && !ConfigManager.CONFIG.DC_TOKEN) return;
         this.scheduleNextAwakening();
         setInterval(() => this.timeWatcher(), 60000);
-        // ✨ [v9.0.7] 定時自動檢查一次日誌狀態 (改為動態排程，支援熱重載)
-        this.archiveTimer = null;
-        this.scheduleNextArchive();
+        // ✨ [v9.0.7] 每 30 分鐘自動檢查一次日誌狀態
+        setInterval(() => this.checkArchiveStatus(), 30 * 60000);
     }
-
-    /**
-     * 動態排程下一次日誌檢查，確保 ConfigManager.CONFIG 的變更能即時生效
-     */
-    scheduleNextArchive() {
-        if (this.archiveTimer) clearTimeout(this.archiveTimer);
-        const intervalMin = ConfigManager.CONFIG.ARCHIVE_CHECK_INTERVAL || 30;
-        console.log(`📡 [Autonomy] 已排定下一次日誌檢查：${intervalMin} 分鐘後...`);
-        this.archiveTimer = setTimeout(async () => {
-            await this.checkArchiveStatus();
-            this.scheduleNextArchive(); // 遞迴排定下一次
-        }, intervalMin * 60000);
-    }
-
     async checkArchiveStatus() {
-        console.log(`🕒 [Autonomy] 定時檢查日誌壓縮狀態 (雙重門檻掃描: ${ConfigManager.CONFIG.ARCHIVE_CHECK_INTERVAL}min)...`);
+        console.log(`🕒 [Autonomy] 定時檢查日誌壓縮狀態 (雙重門檻掃描)...`);
         try {
             const ChatLogManager = require('../managers/ChatLogManager');
-            // ✅ [H-1 Fix] 傳入正確 golemId/logDir，確保掃描正確目錄
+            // ✅ [H-1 Fix] 傳入正確 golemId/logDir/isSingleMode，確保掃描正確目錄
             const logManager = new ChatLogManager({
                 golemId: this.golemId,
-                logDir: ConfigManager.LOG_BASE_DIR
+                logDir: ConfigManager.LOG_BASE_DIR,
+                isSingleMode: ConfigManager.GOLEM_MODE === 'SINGLE'
             });
             const logDir = logManager.dirs.hourly;
 
             const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
             const yesterday = logManager._getYesterdayDateString();
 
-            // 門檻設定：從 Config 讀取
-            const thresholdYesterday = ConfigManager.CONFIG.ARCHIVE_THRESHOLD_YESTERDAY;
-            const thresholdToday = ConfigManager.CONFIG.ARCHIVE_THRESHOLD_TODAY;
-
-            console.log(`📊 [Autonomy] 目前門檻設定 -> 昨日: ${thresholdYesterday}, 本日: ${thresholdToday}`);
-
+            // 門檻設定：本日需累積 12 小時 (半天) 以上，昨日只需 3 小時 (確保最終歸檔)
             const checkConfigs = [
-                { date: yesterday, threshold: thresholdYesterday, label: "昨日" },
-                { date: today, threshold: thresholdToday, label: "本日" }
+                { date: yesterday, threshold: 3, label: "昨日" },
+                { date: today, threshold: 12, label: "本日" }
             ];
 
             for (const config of checkConfigs) {
@@ -81,9 +62,7 @@ class AutonomyManager {
                 if (files.length >= threshold) {
                     console.log(`📦 [Autonomy] 門檻達成：${date} (${label}) 已累積 ${files.length} 個時段日誌，啟動自動歸檔程序...`);
 
-                    if (ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS) {
-                        await this.sendNotification(`📦 **【自動化日誌維護】**\n偵測到${label} (${date}) 已累積達 ${files.length} 小時對話，目前將進行記憶彙整，請稍等...`);
-                    }
+                    await this.sendNotification(`📦 **【自動化日誌維護】**\n偵測到${label} (${date}) 已累積達 ${files.length} 小時對話，目前將進行記憶彙整，請稍等...`);
 
                     const logArchiveSkill = require('../skills/core/log-archive');
                     const result = await logArchiveSkill.run({
@@ -91,9 +70,7 @@ class AutonomyManager {
                         args: { date: date }
                     });
 
-                    if (ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS) {
-                        await this.sendNotification(`✅ **【自動化日誌維護】**\n${date} (${label}) 歸檔完成！\n${result}`);
-                    }
+                    await this.sendNotification(`✅ **【自動化日誌維護】**\n${date} (${label}) 歸檔完成！\n${result}`);
                 } else {
                     console.log(`ℹ️ [Autonomy] ${date} (${label}) 目前累積 ${files.length}/${threshold} 份日誌，未達壓縮門檻。`);
                 }
@@ -109,7 +86,9 @@ class AutonomyManager {
         const updatedSchedules = [];
 
         // --- ✨ 路徑隔離 (Path Isolation) ---
-        const logDir = ConfigManager.LOG_BASE_DIR;
+        const logDir = ConfigManager.GOLEM_MODE === 'SINGLE'
+            ? ConfigManager.LOG_BASE_DIR
+            : path.join(ConfigManager.LOG_BASE_DIR, this.golemId);
 
         const scheduleFile = path.join(logDir, 'schedules.json');
 
@@ -216,16 +195,8 @@ class AutonomyManager {
         const raw = await this.brain.sendMessage(prompt);
         await NeuroShunter.dispatch(await this.getAdminContext(), raw, this.brain, this.controller);
     }
-    async performNewsChat() {
-        const interests = (ConfigManager.CONFIG.USER_INTERESTS || '科技圈熱門話題,全球趣聞').split(',').map(i => i.trim()).filter(i => i);
-        const selectedInterest = interests[Math.floor(Math.random() * interests.length)];
-        await this.run(`上網搜尋「${selectedInterest}」，挑選一件分享給主人。要有個人觀點，像朋友一樣聊天。`, "NewsChat");
-    }
-    async performSpontaneousChat() {
-        const interests = (ConfigManager.CONFIG.USER_INTERESTS || '科技圈熱門話題,全球趣聞').split(',').map(i => i.trim()).filter(i => i);
-        const selectedInterest = interests[Math.floor(Math.random() * interests.length)];
-        await this.run(`主動社交，傳訊息給主人。語氣自然，符合當下時間。可以聊聊關於「${selectedInterest}」的話題。`, "SpontaneousChat");
-    }
+    async performNewsChat() { await this.run("上網搜尋「科技圈熱門話題」或「全球趣聞」，挑選一件分享給主人。要有個人觀點，像朋友一樣聊天。", "NewsChat"); }
+    async performSpontaneousChat() { await this.run("主動社交，傳訊息給主人。語氣自然，符合當下時間。", "SpontaneousChat"); }
     async performSelfReflection(triggerCtx = null) {
         console.log(`🧠 [Autonomy][${this.golemId}] 啟動自我反思程序...`);
 
@@ -233,7 +204,8 @@ class AutonomyManager {
         const ChatLogManager = require('../managers/ChatLogManager');
         const logManager = new ChatLogManager({
             golemId: this.golemId,
-            logDir: ConfigManager.LOG_BASE_DIR
+            logDir: ConfigManager.LOG_BASE_DIR,
+            isSingleMode: ConfigManager.GOLEM_MODE === 'SINGLE'
         });
 
         const recentSummaries = logManager.readTier('daily', 3);
@@ -294,33 +266,6 @@ ${summaryContext || "（目前尚無對話摘要）"}
 
         // --- Dispatch ---
         let sent = false;
-
-        // ✅ [Fix] 同步廣播到 Web Dashboard
-        try {
-            const dashboard = require('../../dashboard');
-            if (dashboard && dashboard.webServer) {
-                const notifyText = msgText; // Use msgText as notifyText
-                let payloadType = 'general';
-                let actionData = null;
-
-                if (opts.reply_markup && opts.reply_markup.inline_keyboard) {
-                    payloadType = 'approval';
-                    actionData = opts.reply_markup.inline_keyboard[0];
-                }
-
-                dashboard.webServer.broadcastLog({
-                    time: new Date().toLocaleTimeString('zh-TW', { hour12: false }),
-                    msg: `[${this.golemId}] ${notifyText}`,
-                    type: payloadType,
-                    raw: notifyText,
-                    actionData,
-                    golemId: this.golemId
-                });
-            }
-        } catch (e) {
-            // 忽略 Dashboard 未載入的錯誤
-        }
-
         if (this.tgBot && tgTargetId) {
             await this.tgBot.sendMessage(tgTargetId, msgText, opts).then(() => sent = true).catch(e => console.error("❌ [Autonomy] TG 通知發送失敗:", e.message));
         }
@@ -337,6 +282,38 @@ ${summaryContext || "（目前尚無對話摘要）"}
             } catch (e) {
                 console.error("❌ [Autonomy] DC 通知發送失敗:", e.message);
             }
+        }
+    }
+
+    // Sleep-Time Memory Consolidation (Letta-inspired)
+    // Runs during sleep cycle to organize recent memories into archival storage
+    async memoryConsolidation() {
+        if (!this.brain || !this.brain.archivalMemory) return;
+        try {
+            const clm = this.brain.chatLogManager;
+            const recent = clm && clm.getRecentEntries
+                ? clm.getRecentEntries(20) : [];
+            if (recent.length < 5) return;
+
+            const facts = recent
+                .filter(e => e && (e.content || e.text))
+                .map(e => (e.content || e.text).substring(0, 200))
+                .join(' | ');
+            if (facts.length < 50) return;
+
+            await this.brain.archivalMemory.ingest({
+                type: 'memory_consolidation',
+                source: 'rendan_sleep',
+                content: '[Sleep Consolidation] ' + facts.substring(0, 1000),
+                metadata: {
+                    golemId: this.brain.golemId,
+                    entriesConsolidated: recent.length,
+                    timestamp: Date.now(),
+                }
+            });
+            console.log('[AutonomyManager] Sleep consolidation: ' + recent.length + ' entries -> archival');
+        } catch (e) {
+            // Non-fatal — don't crash on consolidation failure
         }
     }
 }

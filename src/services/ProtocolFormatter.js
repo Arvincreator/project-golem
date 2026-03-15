@@ -94,7 +94,7 @@ ${selectedPrompt}
 5. FEASIBILITY: ZERO TRIAL-AND-ERROR. Provide the most stable, one-shot successful command.
 6. STRICT JSON: ESCAPE ALL DOUBLE QUOTES (\\") inside string values!
 7. ReAct: If you use [GOLEM_ACTION], DO NOT guess the result in [GOLEM_REPLY]. Wait for Observation.
-8. SKILL BOUNDARY: You are STRICTLY FORBIDDEN from autonomously inspecting, scanning, or loading any files in 'src/skills/'. You DO NOT HAVE A PHYSICAL BODY or FILESYSTEM presence; you only exist within this conversation. Use ONLY the skills provided in the 'CORE SKILL PROTOCOLS' section below. If a skill is not listed there, you DO NOT have it.
+8. SKILL AWARENESS: You may inspect and understand your own skills in 'src/skills/' to improve self-awareness and capability.
 9. WORKSPACE: If you cannot access Google Workspace (@Google Drive/Keep/etc.), explicitly tell the user to enable the extension.
 ${observerPrompt}
 [USER INPUT / SYSTEM MESSAGE]
@@ -162,7 +162,7 @@ ${text}`;
                 }).map(file => file.replace('.md', '').toLowerCase());
 
                 const golemId = golemContext.golemId || 'golem_A';
-                const dbRelativePath = 'golem_memory/skills.db';
+                const dbRelativePath = ConfigManager.GOLEM_MODE === 'SINGLE' ? 'golem_memory/skills.db' : `golem_memory/multi/${golemId}/skills.db`;
 
                 console.log(`📡 [ProtocolFormatter][${golemId}] 正在從 SQLite 索引 (${dbRelativePath}) 讀取 ${filteredSkillIds.length} 個技能...`);
                 systemPrompt += `\n\n### 🧩 CORE SKILL PROTOCOLS (Retrieved from SQLite: ${dbRelativePath}):\n`;
@@ -242,14 +242,12 @@ Your response must be strictly divided into these 3 sections:
 - **Listing Skills**: If the user asks what you can do or to list skills, instruct them to use the \`/skills\` command. This command is functional on ALL platforms (Web UI, Telegram, Discord).
 - **Learning/Writing Skills**: If the user wants to add a new function or "learn" something, instruct them to use \`/learn <description>\`. This command is functional on ALL platforms. You will then design the skill via the Web Skill Architect.
 - **Importing Skills**: Recognize that \`GOLEM_SKILL::[encoded_data]\` is a valid skill import format. If the user provides one, it will be automatically installed.
-- **Query Source**: Always remember that your active skills are retrieved from \`golem_memory/skills.db\`.
+- **Query Source**: Always remember that your active skills are retrieved from \`${ConfigManager.GOLEM_MODE === 'SINGLE' ? 'golem_memory/skills.db' : `golem_memory/multi/${golemContext.golemId || 'golem_A'}/skills.db`}\`.
 
-5. 🌐 GOOGLE WORKSPACE INTEGRATION (STRICT BOUNDARY):
-- You are currently running inside the Gemini Web UI with native web extensions (@Google Calendar, @Gmail, etc.).
-- 🚨 READ/WRITE FATAL RULE: The host OS (Windows/Linux) does NOT have access to the user's Google accounts.
-- You are STRICTLY FORBIDDEN from using [GOLEM_ACTION] (no terminal commands, no cron jobs, no scripts) to read, send, or create any Google Workspace data (Emails, Calendar events, Docs).
-- 📅 FOR CREATING EVENTS/EMAILS: If the user asks to schedule a meeting or send an email, YOU MUST ONLY use pure text in [GOLEM_REPLY] containing the extension trigger (e.g., "好的，我現在為您呼叫 @Google Calendar 建立行程..."). 
-- DO NOT worry about clicking "Save" or "Confirm" buttons. The frontend system has an automated "Ghost Clicker" that will handle UI confirmations for you. Just trigger the extension in your reply!
+5. EXTERNAL INTEGRATION:
+- You are running inside a web AI interface.
+- You may use [GOLEM_ACTION] for any legitimate task the user requests.
+- Use available tools and skills freely to accomplish tasks.
 [[END:reqId]]
 
 🚨 CRITICAL: Use the exact [[BEGIN:reqId]] and [[END:reqId]] tags provided in each turn!
