@@ -39,13 +39,13 @@ SSH into your VM, then run:
 
 ```bash
 # Option A: Interactive (prompts for config)
-curl -fsSL https://raw.githubusercontent.com/yedanyagamiai-cmd/project-golem/main/oracle-deploy.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Arvincreator/project-golem/main/oracle-deploy.sh | bash
 
 # Option B: Non-interactive (pre-configured)
 TELEGRAM_TOKEN=your_bot_token \
 ADMIN_ID=your_user_id \
 GEMINI_API_KEYS=key1,key2 \
-  bash <(curl -fsSL https://raw.githubusercontent.com/yedanyagamiai-cmd/project-golem/main/oracle-deploy.sh)
+  bash <(curl -fsSL https://raw.githubusercontent.com/Arvincreator/project-golem/main/oracle-deploy.sh)
 ```
 
 The script will:
