@@ -2,10 +2,14 @@
  * CommandSafeguard - Project Golem 安全防線
  * ---------------------------------------------------------
  * 職責：過濾、驗證並轉義所有即將執行的 Shell 指令，防止指令注入。
+ *
+ * 狀態說明：
+ * - allow   => 白名單通過，可直接執行
+ * - confirm => 命中黑名單或未列於白名單，需人工再次確認
+ * - deny    => 指令格式無效，直接拒絕
  */
 class CommandSafeguard {
     constructor() {
-        // 基礎白名單指令格式 (Regex)
         this.whitelist = [
             /^node src\/skills\/core\/[a-zA-Z0-9_-]+\.js\s+".*"$/,
             /^node src\/skills\/lib\/[a-zA-Z0-9_-]+\.js\s+".*"$/,
@@ -14,7 +18,7 @@ class CommandSafeguard {
             /^cat\s+.*$/
         ];
 
-        // 敏感關鍵字黑名單 (即便符合白名單格式也會攔截)
+        // 敏感關鍵字黑名單（改為高風險警告，不再直接攔截）
         this.blacklistedKeywords = [
             ';', '&&', '||', '>', '`', '$(', '|',
             'rm -rf', 'sudo', 'chmod', 'chown',
@@ -22,35 +26,57 @@ class CommandSafeguard {
         ];
     }
 
-    /**
-     * 驗證指令是否安全
-     * @param {string} cmd 原始指令字串
-     * @returns {Object} { safe: boolean, reason?: string, sanitizedCmd?: string }
-     */
     validate(cmd) {
         if (!cmd || typeof cmd !== 'string') {
-            return { safe: false, reason: '指令格式無效' };
+            return {
+                status: 'deny',
+                severity: 'danger',
+                reason: '指令格式無效',
+                reasonCode: 'INVALID_COMMAND'
+            };
         }
 
         const trimmedCmd = cmd.trim();
 
-        // 1. 檢查黑名單關鍵字 (基本防禦)
-        // 排除掉 legitimate 的引號內字串，這裡簡易處理
+        if (!trimmedCmd) {
+            return {
+                status: 'deny',
+                severity: 'danger',
+                reason: '指令內容為空',
+                reasonCode: 'EMPTY_COMMAND'
+            };
+        }
+
         for (const keyword of this.blacklistedKeywords) {
             if (trimmedCmd.includes(keyword)) {
-                // 如果是 node skills.js "xxx" 格式，允許引號內出現某些字元，但這裡先採保守策略
-                return { safe: false, reason: `偵測到敏感關鍵字: ${keyword}` };
+                return {
+                    status: 'confirm',
+                    severity: 'danger',
+                    reasonCode: 'BLACKLIST_WARNING',
+                    matchedKeyword: keyword,
+                    reason: `偵測到高風險關鍵字「${keyword}」，該指令可能影響系統穩定度或檔案安全，請再次確認是否執行。`,
+                    sanitizedCmd: trimmedCmd
+                };
             }
         }
 
-        // 2. 檢查白名單模式
         const isMatched = this.whitelist.some(regex => regex.test(trimmedCmd));
-
         if (!isMatched) {
-            return { safe: false, reason: '指令未列於白名單中' };
+            return {
+                status: 'confirm',
+                severity: 'warning',
+                reasonCode: 'NOT_WHITELISTED',
+                reason: '指令未列於白名單中，請確認內容與目的後再決定是否執行。',
+                sanitizedCmd: trimmedCmd
+            };
         }
 
-        return { safe: true, sanitizedCmd: trimmedCmd };
+        return {
+            status: 'allow',
+            severity: 'info',
+            reasonCode: 'WHITELIST_OK',
+            sanitizedCmd: trimmedCmd
+        };
     }
 }
 
