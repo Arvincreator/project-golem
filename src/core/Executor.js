@@ -19,13 +19,29 @@ class Executor {
             const cwd = options.cwd || process.cwd();
             const timeout = options.timeout !== undefined ? options.timeout : this.defaultTimeout;
 
-            console.log(`⚡ [Executor] Running: "${command}" in ${cwd}`);
+            console.log(`[Executor] Running: "${command}" in ${cwd}`);
+
+            // 安全: 過濾環境變數，移除敏感 token
+            const SENSITIVE_KEYS = [
+                'TELEGRAM_TOKEN', 'DISCORD_TOKEN', 'GEMINI_API_KEYS',
+                'MOLTBOOK_API_KEY', 'GITHUB_TOKEN', 'STRIPE_SECRET',
+                'OPENAI_API_KEY', 'ANTHROPIC_API_KEY'
+            ];
+            const safeEnv = Object.fromEntries(
+                Object.entries(process.env).filter(([k]) =>
+                    !SENSITIVE_KEYS.some(sk => k.toUpperCase().includes(sk.toUpperCase()))
+                )
+            );
+            // 保留 PATH/Node 必要變數
+            safeEnv.PATH = process.env.PATH;
+            safeEnv.NODE_ENV = process.env.NODE_ENV || 'production';
 
             // 使用 spawn 啟動子進程
             const child = spawn(command, [], {
                 shell: true,     // 允許使用 pipe (|) 和重導向 (>)
                 cwd: cwd,        // 設定工作目錄
-                env: process.env // 繼承原本的環境變數
+                env: safeEnv,    // 安全: 僅傳遞過濾後的環境變數
+                maxBuffer: 10 * 1024 * 1024  // 10MB 上限
             });
 
             let stdout = '';

@@ -18,22 +18,36 @@ class MessageManager {
         }
 
         for (const chunk of chunks) {
-            try {
-                if (ctx.platform === 'telegram') {
-                    await ctx.instance.sendMessage(ctx.chatId, chunk, options);
-                } else {
-                    const channel = await ctx.instance.channels.fetch(ctx.chatId);
-                    const dcOptions = { content: chunk };
-                    if (options.reply_markup && options.reply_markup.inline_keyboard) {
-                        const row = new ActionRowBuilder();
-                        options.reply_markup.inline_keyboard[0].forEach(btn => {
-                            row.addComponents(new ButtonBuilder().setCustomId(btn.callback_data).setLabel(btn.text).setStyle(ButtonStyle.Primary));
-                        });
-                        dcOptions.components = [row];
+            let retries = 3;
+            while (retries > 0) {
+                try {
+                    if (ctx.platform === 'telegram') {
+                        await ctx.instance.sendMessage(ctx.chatId, chunk, options);
+                    } else {
+                        const channel = await ctx.instance.channels.fetch(ctx.chatId);
+                        const dcOptions = { content: chunk };
+                        if (options.reply_markup && options.reply_markup.inline_keyboard) {
+                            const row = new ActionRowBuilder();
+                            options.reply_markup.inline_keyboard[0].forEach(btn => {
+                                row.addComponents(new ButtonBuilder().setCustomId(btn.callback_data).setLabel(btn.text).setStyle(ButtonStyle.Primary));
+                            });
+                            dcOptions.components = [row];
+                        }
+                        await channel.send(dcOptions);
                     }
-                    await channel.send(dcOptions);
+                    break; // 成功就跳出
+                } catch (e) {
+                    retries--;
+                    if (retries > 0 && (e.code === 'ETELEGRAM' || e.code === 'ECONNRESET' || e.message.includes('429'))) {
+                        const delay = e.message.includes('429') ? 3000 : 1000;
+                        console.warn(`[MessageManager] Retry in ${delay}ms (${retries} left): ${e.message}`);
+                        await new Promise(r => setTimeout(r, delay));
+                    } else {
+                        console.error(`[MessageManager] Send failed: ${e.message}`);
+                        break;
+                    }
                 }
-            } catch (e) { console.error(`[MessageManager] 發送失敗:`, e.message); }
+            }
         }
     }
 }

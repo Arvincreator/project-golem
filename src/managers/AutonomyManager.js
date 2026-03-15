@@ -25,12 +25,19 @@ class AutonomyManager {
     }
 
     start() {
-        console.log(`🚀 [Autonomy][${this.golemId}] Starting autonomy services...`);
+        console.log(`[Autonomy][${this.golemId}] Starting autonomy services...`);
+        this._isRunning = true;
         this.scheduleNextAwakening();
         setInterval(() => this.timeWatcher(), 60000);
-        // ✨ [v9.0.7] 定時自動檢查一次日誌狀態 (改為動態排程，支援熱重載)
+        // 定時自動檢查一次日誌狀態 (動態排程，支援熱重載)
         this.archiveTimer = null;
         this.scheduleNextArchive();
+        // v9.2 夜蓮: 自動健康檢查 (每 15 分鐘)
+        this._healthTimer = setInterval(() => this._autoHealthCheck(), 15 * 60 * 1000);
+        // v9.2 夜蓮: 自動備份 (每 6 小時)
+        this._backupTimer = setInterval(() => this._autoBackup(), 6 * 60 * 60 * 1000);
+        // 設定全域通知函數供 uncaughtException 使用
+        global._yerenNotify = (msg) => this.sendNotification(msg).catch(() => {});
     }
 
     /**
@@ -310,6 +317,91 @@ ${summaryContext || "（目前尚無對話摘要）"}
             } catch (e) {
                 console.error("❌ [Autonomy] DC 通知發送失敗:", e.message);
             }
+        }
+    }
+    // v9.2 夜蓮: 自動健康檢查
+    async _autoHealthCheck() {
+        try {
+            const mem = process.memoryUsage();
+            const heapMB = mem.heapUsed / 1024 / 1024;
+
+            // 記憶體警告 (> 500MB)
+            if (heapMB > 500) {
+                await this.sendNotification(
+                    `[Health Warning] Heap: ${heapMB.toFixed(0)}MB — approaching limit. Consider restarting.`
+                );
+            }
+
+            // 瀏覽器健康檢查
+            if (this.brain && this.brain.page) {
+                try {
+                    await Promise.race([
+                        this.brain.page.evaluate(() => document.title),
+                        new Promise((_, r) => setTimeout(() => r(new Error('page timeout')), 10000))
+                    ]);
+                } catch (pageErr) {
+                    console.error(`[Health] Browser page unresponsive: ${pageErr.message}`);
+                    await this.sendNotification(`[Health Alert] Browser page unresponsive. Auto-recovery attempting...`);
+                    // 嘗試自動恢復
+                    try {
+                        await this.brain.page.goto('https://gemini.google.com/app', { waitUntil: 'networkidle2', timeout: 30000 });
+                        await this.sendNotification(`[Health] Browser page recovered.`);
+                    } catch (recoverErr) {
+                        await this.sendNotification(`[Health] Recovery failed: ${recoverErr.message}. Manual restart needed.`);
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('[AutoHealthCheck] Error:', e.message);
+        }
+    }
+
+    // v9.2 夜蓮: 自動備份 (記憶 + 設定)
+    async _autoBackup() {
+        try {
+            const backupDir = path.join(process.cwd(), 'backups', 'auto');
+            if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
+
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16);
+            const files = [
+                { src: path.join(process.cwd(), '.env'), name: `.env.${timestamp}` },
+                { src: path.join(process.cwd(), 'golem_selectors.json'), name: `selectors.${timestamp}.json` },
+            ];
+
+            // 備份記憶目錄
+            const memDir = ConfigManager.MEMORY_BASE_DIR;
+            if (fs.existsSync(memDir)) {
+                const memBackup = path.join(backupDir, `memory-${timestamp}`);
+                if (!fs.existsSync(memBackup)) fs.mkdirSync(memBackup, { recursive: true });
+                const memFiles = fs.readdirSync(memDir).filter(f => f.endsWith('.json') || f.endsWith('.db'));
+                for (const mf of memFiles.slice(0, 20)) { // 最多 20 個檔案
+                    try {
+                        fs.copyFileSync(path.join(memDir, mf), path.join(memBackup, mf));
+                    } catch (e) { /* skip locked files */ }
+                }
+            }
+
+            for (const f of files) {
+                if (fs.existsSync(f.src)) {
+                    fs.copyFileSync(f.src, path.join(backupDir, f.name));
+                }
+            }
+
+            // 清理 7 天以上的備份
+            const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+            for (const item of fs.readdirSync(backupDir)) {
+                const itemPath = path.join(backupDir, item);
+                try {
+                    const stat = fs.statSync(itemPath);
+                    if (stat.mtimeMs < cutoff) {
+                        fs.rmSync(itemPath, { recursive: true, force: true });
+                    }
+                } catch (e) { /* ignore */ }
+            }
+
+            console.log(`[AutoBackup] Completed at ${timestamp}`);
+        } catch (e) {
+            console.error('[AutoBackup] Error:', e.message);
         }
     }
 }

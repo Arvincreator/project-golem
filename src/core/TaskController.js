@@ -56,11 +56,25 @@ class TaskController {
 
             // ✨ [v9.0 Hybrid Object Fix] 如果 cmd 為空但 action 存在，則自動組裝
             if (!cmdToRun && step.action && step.action !== 'command') {
-                const actionName = String(step.action).toLowerCase().replace(/_/g, '-');
+                // 安全: 嚴格限制 actionName 為英數字和連字號，防止 path traversal
+                const actionName = String(step.action).toLowerCase().replace(/_/g, '-').replace(/[^a-z0-9-]/g, '');
+                if (!actionName || actionName.includes('..')) {
+                    console.warn(`[TaskController] 非法技能名稱: ${step.action}`);
+                    reportBuffer.push(`[Step ${i + 1} Blocked] Invalid skill name: ${step.action}`);
+                    continue;
+                }
+                // 安全: 驗證技能檔案確實存在
+                const skillPath = require('path').join(process.cwd(), 'src', 'skills', 'core', `${actionName}.js`);
+                if (!require('fs').existsSync(skillPath)) {
+                    console.warn(`[TaskController] 技能不存在: ${actionName}`);
+                    reportBuffer.push(`[Step ${i + 1} Blocked] Skill not found: ${actionName}`);
+                    continue;
+                }
+                // 安全: 使用 Base64 編碼 payload，避免 shell injection
                 const { action, ...params } = step;
-                const payload = JSON.stringify(params).replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
-                cmdToRun = `node src/skills/core/${actionName}.js "${payload}"`;
-                console.log(`🔧 [TaskController] 自動組裝技能指令: ${cmdToRun}`);
+                const payloadB64 = Buffer.from(JSON.stringify(params)).toString('base64');
+                cmdToRun = `node src/skills/core/${actionName}.js --base64 ${payloadB64}`;
+                console.log(`[TaskController] 自動組裝技能指令: node src/skills/core/${actionName}.js --base64 <payload>`);
             }
             const risk = this.security.assess(cmdToRun);
             if (cmdToRun.startsWith('golem-check')) {

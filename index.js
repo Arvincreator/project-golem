@@ -22,12 +22,17 @@ try {
 }
 
 process.on('uncaughtException', (err) => {
-    console.error('🔥 [CRITICAL] Uncaught Exception:', err);
+    console.error('[CRITICAL] Uncaught Exception:', err);
+    // 通知 Telegram (best effort)
+    try {
+        if (global._yerenNotify) global._yerenNotify(`[CRITICAL] Uncaught Exception: ${err.message}`);
+    } catch (e) { /* ignore */ }
+    // 給予 3 秒完成日誌寫入後退出
+    setTimeout(() => process.exit(1), 3000);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-    console.error('⚠️ [WARNING] Unhandled Rejection at:', promise);
-    console.error('Reason:', reason);
+    console.error('[WARNING] Unhandled Rejection:', reason);
 });
 
 const ConfigManager = require('./src/config');
@@ -382,6 +387,125 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
         return;
     }
 
+    // ✨ [v9.2 夜蓮] /status 系統狀態總覽
+    if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase() === '/status') {
+        const uptime = process.uptime();
+        const hrs = Math.floor(uptime / 3600);
+        const mins = Math.floor((uptime % 3600) / 60);
+        const mem = process.memoryUsage();
+        const heapMB = (mem.heapUsed / 1024 / 1024).toFixed(1);
+        const rssMB = (mem.rss / 1024 / 1024).toFixed(1);
+        const skillCount = brain.skillManager ? brain.skillManager.skills.size : 'N/A';
+        const brainStatus = brain.status || 'unknown';
+        const queueLen = convoManager.queue ? convoManager.queue.length : 0;
+
+        const statusMsg = [
+            `**System Status**`,
+            `Brain: ${brainStatus}`,
+            `Uptime: ${hrs}h ${mins}m`,
+            `Memory: ${heapMB}MB heap / ${rssMB}MB RSS`,
+            `Queue: ${queueLen} pending`,
+            `Skills: ${skillCount}`,
+            `Platform: ${os.platform()} ${os.arch()}`,
+            `Node: ${process.version}`,
+        ].join('\n');
+        await ctx.reply(statusMsg);
+        return;
+    }
+
+    // ✨ [v9.2 夜蓮] /health 健康檢查
+    if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase() === '/health') {
+        const checks = [];
+        checks.push(`Brain: ${brain.page ? 'OK' : 'NO PAGE'}`);
+        checks.push(`Memory: ${brain.memoryDriver && brain.memoryDriver.isReady ? 'OK' : 'DEGRADED'}`);
+        checks.push(`Telegram: ${activeTgBot ? 'CONNECTED' : 'OFFLINE'}`);
+        checks.push(`Autonomy: ${autonomy._isRunning ? 'ACTIVE' : 'STOPPED'}`);
+
+        const heapMB = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(0);
+        const heapStatus = heapMB > 500 ? 'WARNING (>500MB)' : 'OK';
+        checks.push(`Heap: ${heapMB}MB [${heapStatus}]`);
+
+        await ctx.reply(`**Health Check**\n${checks.join('\n')}`);
+        return;
+    }
+
+    // ✨ [v9.2 夜蓮] /logs 最近日誌
+    if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase().startsWith('/logs')) {
+        try {
+            const fsSync = require('fs');
+            const logPath = require('path').join(ConfigManager.LOG_BASE_DIR, 'system.log');
+            if (fsSync.existsSync(logPath)) {
+                const content = fsSync.readFileSync(logPath, 'utf8');
+                const lines = content.trim().split('\n');
+                const last20 = lines.slice(-20).join('\n');
+                await ctx.reply(`**Recent Logs (last 20)**\n\`\`\`\n${last20.slice(0, 3500)}\n\`\`\``, { parse_mode: 'Markdown' });
+            } else {
+                await ctx.reply('No log file found.');
+            }
+        } catch (e) {
+            await ctx.reply(`Log read error: ${e.message}`);
+        }
+        return;
+    }
+
+    // ✨ [v9.2 夜蓮] /restart 優雅重啟 (需二次確認)
+    if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase() === '/restart') {
+        const confirmId = require('uuid').v4();
+        controller.pendingTasks.set(confirmId, {
+            type: 'RESTART_CONFIRM', ctx, timestamp: Date.now()
+        });
+        await ctx.reply('**Confirm Restart?**\nThis will gracefully restart the bot.', {
+            parse_mode: 'Markdown',
+            reply_markup: {
+                inline_keyboard: [[
+                    { text: 'Yes, Restart', callback_data: `RESTART_${confirmId}` },
+                    { text: 'Cancel', callback_data: `DENY_${confirmId}` }
+                ]]
+            }
+        });
+        return;
+    }
+
+    // ✨ [v9.2 夜蓮] /security 安全狀態
+    if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase() === '/security') {
+        const sm = new (require('./src/managers/SecurityManager'))();
+        const whitelist = (process.env.COMMAND_WHITELIST || '').split(',').filter(c => c.trim());
+        const secMsg = [
+            `**Security Status**`,
+            `Auth Mode: ${ConfigManager.CONFIG.TG_AUTH_MODE}`,
+            `Admin ID: ${ConfigManager.CONFIG.ADMIN_IDS[0] || 'NOT SET'}`,
+            `Whitelist: ${whitelist.length} commands`,
+            `Block Patterns: ${sm.BLOCK_PATTERNS.length}`,
+            `Dangerous Ops: ${sm.DANGEROUS_OPS.length}`,
+            `Injection Patterns: ${sm.INJECTION_PATTERNS.length}`,
+            `Env Filtered: TELEGRAM_TOKEN, GEMINI_API_KEYS (hidden from subprocesses)`,
+        ].join('\n');
+        await ctx.reply(secMsg);
+        return;
+    }
+
+    // ✨ [v9.2 夜蓮] /help 命令清單
+    if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase() === '/help') {
+        const helpMsg = [
+            `**Yeren Command Reference**`,
+            `/status — System status overview`,
+            `/health — Health check`,
+            `/logs — Recent 20 log lines`,
+            `/model [fast|thinking|pro] — Switch model`,
+            `/skills — List enabled skills`,
+            `/learn <desc> — Learn new skill`,
+            `/export <name> — Export skill capsule`,
+            `/security — Security status`,
+            `/restart — Graceful restart`,
+            `/new — Reset brain conversation`,
+            `/new_memory — Full memory wipe`,
+            `/sos — Emergency selector cache delete`,
+            `/patch — Self-reflection + code optimization`,
+        ].join('\n');
+        await ctx.reply(helpMsg);
+        return;
+    }
+
     if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase() === '/new') {
         await ctx.reply("🔄 收到 /new 指令！正在為您開啟全新的大腦對話神經元...");
         try {
@@ -577,6 +701,31 @@ async function handleUnifiedCallback(ctx, actionData) {
 
     if (!ctx.isAdmin) return;
 
+    // 安全: callback_data 長度限制 + 格式驗證
+    if (!actionData || typeof actionData !== 'string' || actionData.length > 200) {
+        console.warn(`[Security] Invalid callback_data: length=${actionData?.length}`);
+        return;
+    }
+    if (!/^[A-Za-z0-9_-]+$/.test(actionData)) {
+        console.warn(`[Security] Suspicious callback_data rejected: ${actionData.slice(0, 50)}`);
+        return;
+    }
+
+    // ✨ [v9.2 夜蓮] 處理 RESTART 確認
+    if (actionData.startsWith('RESTART_')) {
+        const confirmId = actionData.replace('RESTART_', '');
+        const { brain, controller } = getOrCreateGolem();
+        const task = controller.pendingTasks.get(confirmId);
+        if (!task || task.type !== 'RESTART_CONFIRM') {
+            await ctx.reply('Restart request expired.');
+            return;
+        }
+        controller.pendingTasks.delete(confirmId);
+        await ctx.reply('Restarting...');
+        if (global.gracefulRestart) await global.gracefulRestart();
+        return;
+    }
+
     // 解析 GolemId (如果是 PATCH 相關)
     if (actionData.startsWith('PATCH_DEPLOY_')) {
         return executeDeploy(ctx);
@@ -638,19 +787,32 @@ async function handleUnifiedCallback(ctx, actionData) {
                 cmd = approvedStep.cmd || approvedStep.parameter || approvedStep.command || "";
             }
             else if (approvedStep.action && approvedStep.action !== 'command') {
-                const actionName = String(approvedStep.action).toLowerCase().replace(/_/g, '-');
-                let payload = "";
-                if (approvedStep.summary) payload = String(approvedStep.summary);
-                else if (approvedStep.args) payload = typeof approvedStep.args === 'string' ? approvedStep.args : JSON.stringify(approvedStep.args);
-                else {
-                    // 防呆：如果沒有 args 也沒有 summary，則將扣除 action 以外的所有欄位封裝為 JSON
-                    const { action, ...params } = approvedStep;
-                    payload = JSON.stringify(params);
+                // 安全: 嚴格限制 actionName
+                const actionName = String(approvedStep.action).toLowerCase().replace(/_/g, '-').replace(/[^a-z0-9-]/g, '');
+                if (!actionName || actionName.includes('..')) {
+                    await ctx.reply('Invalid skill name.');
+                    return;
+                }
+                // 安全: 驗證技能檔案存在
+                const skillPath = path.join(process.cwd(), 'src', 'skills', 'core', `${actionName}.js`);
+                const fsCheck = require('fs');
+                if (!fsCheck.existsSync(skillPath)) {
+                    await ctx.reply(`Skill not found: ${actionName}`);
+                    return;
                 }
 
-                const safePayload = payload.replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
-                cmd = `node src/skills/core/${actionName}.js "${safePayload}"`;
-                console.log(`🔧 [Command Builder] 成功將結構化技能 [${actionName}] 組裝為安全指令`);
+                let payload = {};
+                if (approvedStep.summary) payload = { summary: String(approvedStep.summary) };
+                else if (approvedStep.args) payload = typeof approvedStep.args === 'string' ? { args: approvedStep.args } : approvedStep.args;
+                else {
+                    const { action, ...params } = approvedStep;
+                    payload = params;
+                }
+
+                // 安全: 使用 Base64 編碼，避免 shell injection
+                const payloadB64 = Buffer.from(JSON.stringify(payload)).toString('base64');
+                cmd = `node src/skills/core/${actionName}.js --base64 ${payloadB64}`;
+                console.log(`[Command Builder] Skill [${actionName}] assembled with base64 payload`);
             }
 
             if (!cmd && task.rawText) {
@@ -679,9 +841,12 @@ async function handleUnifiedCallback(ctx, actionData) {
             cmd = validation.sanitizedCmd;
 
             if (cmd.includes('reincarnate.js')) {
-                await ctx.reply("🔄 收到轉生指令！正在將記憶注入核心並準備重啟大腦...");
-                const { exec } = require('child_process');
-                exec(cmd);
+                await ctx.reply("Reincarnation initiated...");
+                // 安全: 使用 execFile 而非 exec，避免 shell injection
+                const { execFile } = require('child_process');
+                execFile('node', ['src/skills/core/reincarnate.js'], { timeout: 30000 }, (err) => {
+                    if (err) console.error('[Reincarnate] Error:', err.message);
+                });
                 return;
             }
 

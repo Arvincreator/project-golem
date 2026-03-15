@@ -94,19 +94,27 @@ class SkillArchitect {
                 throw new Error("Invalid generation: Missing filename or code.");
             }
 
-            // ✅ [H-4 Fix] 寫入磁碟前進行安全掃描，防止惡意 AI 注入危險册編
-            const DANGEROUS_PATTERNS = [
-                "require(\"child_process\")",
-                "require('child_process')",
-                'execSync',
-                'spawnSync',
-                'exec(',
-                'spawn(',
-                'eval(',
-                'new Function(',
-            ];
-            if (DANGEROUS_PATTERNS.some(k => skillData.code.includes(k))) {
-                throw new Error("⚠️ Security: Generated skill contains restricted calls. Deployment blocked.");
+            // 安全掃描 (v9.2 擴充版) — 使用 SkillManager 的 AST 掃描
+            const skillManager = require('./SkillManager');
+            if (typeof skillManager._securityScan === 'function') {
+                const scanResult = skillManager._securityScan(skillData.code);
+                if (!scanResult.safe) {
+                    throw new Error(`Security: ${scanResult.reason}`);
+                }
+            } else {
+                // Fallback: 擴充的模式匹配
+                const DANGEROUS_PATTERNS = [
+                    /child_process/i, /execSync/, /spawnSync/, /exec\s*\(/, /spawn\s*\(/,
+                    /eval\s*\(/, /new\s+Function\s*\(/, /fork\s*\(/, /execFile/,
+                    /process\s*\.\s*env/, /process\s*\.\s*exit/, /process\s*\.\s*kill/,
+                    /require\s*\(\s*[^'"]/,  // 動態 require
+                    /fs\s*\.\s*(?:unlink|rmdir|rm|chmod|chown|writeFile)/,
+                    /__proto__/, /prototype\s*\.\s*constructor/,
+                    /cluster/, /worker_threads/
+                ];
+                if (DANGEROUS_PATTERNS.some(p => p.test(skillData.code))) {
+                    throw new Error("Security: Generated skill contains restricted calls.");
+                }
             }
 
             // 修正檔名 (強制 .js)

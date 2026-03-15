@@ -31,20 +31,26 @@ class BrowserMemoryDriver {
             if (fs.existsSync(sourceHtmlPath)) {
                 let htmlContent = fs.readFileSync(sourceHtmlPath, 'utf8');
 
-                // 替換標題與主標題，加入 Golem ID 識別
+                // 安全: HTML escape golemId 防止 XSS
+                const safeId = String(this.brain.golemId)
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
                 htmlContent = htmlContent.replace(
                     /<title>(.*?)<\/title>/,
-                    `<title>$1 (${this.brain.golemId})</title>`
+                    `<title>$1 (${safeId})</title>`
                 );
                 htmlContent = htmlContent.replace(
                     /<h1>([\s\S]*?)<\/h1>/,
-                    `<h1>$1 <span style="font-size:0.5em; color:var(--accent-pink); border:2px solid black; padding:0 10px; margin-left:10px;">ID: ${this.brain.golemId}</span></h1>`
+                    `<h1>$1 <span style="font-size:0.5em; color:var(--accent-pink); border:2px solid black; padding:0 10px; margin-left:10px;">ID: ${safeId}</span></h1>`
                 );
 
                 fs.writeFileSync(targetHtmlPath, htmlContent);
             }
 
-            const memoryPath = 'file:///' + targetHtmlPath.replace(/\\/g, '/');
+            // 跨平台: 使用 url.pathToFileURL 處理 Windows 路徑 + 空格
+            const { pathToFileURL } = require('url');
+            const memoryPath = pathToFileURL(targetHtmlPath).href;
             console.log(`🧠 [Memory:Browser] 正在掛載神經海馬迴: ${memoryPath} (Golem: ${this.brain.golemId})`);
 
             // Forward console logs from Puppeteer to the Node backend

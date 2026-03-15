@@ -8,7 +8,7 @@ describe('CommandSafeguard', () => {
     test('should block dangerous operations even with skipWhitelist', () => {
         const result = safeguard.validate('ls ; rm -rf /', true);
         expect(result.safe).toBe(false);
-        expect(result.reason).toContain('偵測到高度危險操作');
+        expect(result.reason).toContain('禁止操作');
     });
 
     test('should allow hard-coded whitelist commands', () => {
@@ -38,6 +38,6 @@ describe('CommandSafeguard', () => {
     test('should still block dangerous keywords even if skipWhitelist is true', () => {
         const result = safeguard.validate('date ; rm -rf /', true);
         expect(result.safe).toBe(false);
-        expect(result.reason).toContain('偵測到高度危險操作');
+        expect(result.reason).toContain('禁止操作');
     });
 });

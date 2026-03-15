@@ -88,7 +88,7 @@ class ResponseParser {
                                     .replace(/\\"/g, '"') // 先還原已被轉義的
                                     .replace(/"/g, '\\"'); // 再全部重新安全轉義
                                 // 處理換行
-                                cleanParam = cleanParam.replace(/\n/g, '\\n').replace(/\r/g, '');
+                                cleanParam = cleanParam.replace(/\r\n/g, '\\n').replace(/\r/g, '').replace(/\n/g, '\\n');
 
                                 const reconstructedJson = `[{"action": "${actionTypeMatch[1]}", "parameter": "${cleanParam}"}]`;
                                 const fixed = JSON.parse(reconstructedJson);

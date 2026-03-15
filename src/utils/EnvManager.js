@@ -63,24 +63,30 @@ class EnvManager {
         let modifications = 0;
 
         for (const [key, value] of Object.entries(payload)) {
+            // 安全: key 只允許英數字和底線
+            if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) {
+                console.warn(`[EnvManager] Invalid key skipped: ${key}`);
+                continue;
+            }
             // 安全過濾 value，防止換行注入攻擊
             const safeValue = String(value).replace(/[\r\n]/g, '');
 
-            // 建立 Regular Expression 尋找目標 KEY
-            // ^\s*KEY=.*$  (m flag for multiline)
-            const regex = new RegExp(`^\\s*${key}=.*$`, 'm');
+            // 安全: 用 escapeRegExp 處理 key 中可能的特殊字元
+            const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`^\\s*${escapedKey}=.*$`, 'm');
+
+            // 值含空格或特殊字元時自動加引號
+            const needsQuote = /[\s"'#;]/.test(safeValue);
+            const quotedValue = needsQuote ? `"${safeValue.replace(/"/g, '\\"')}"` : safeValue;
 
             if (regex.test(content)) {
-                // 如果存在，取代該行
-                content = content.replace(regex, `${key}=${safeValue}`);
+                content = content.replace(regex, `${key}=${quotedValue}`);
                 modifications++;
             } else {
-                // 如果不存在，附加在最後面
-                // 確保結尾有換行符號
                 if (content && !content.endsWith('\n')) {
                     content += '\n';
                 }
-                content += `${key}=${safeValue}\n`;
+                content += `${key}=${quotedValue}\n`;
                 modifications++;
             }
 

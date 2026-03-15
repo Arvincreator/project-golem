@@ -363,7 +363,15 @@ ${userMessage}
         if (conv.status === 'interrupted') {
             if (!global.pausedConversations) global.pausedConversations = new Map();
             global.pausedConversations.set(conv.chatId, conv);
-            console.log(`[InteractiveMultiAgent] 會議已暫停並保存: ${conv.chatId}`);
+            console.log(`[InteractiveMultiAgent] Session paused: ${conv.chatId}`);
+
+            // 防止記憶體洩漏: 30 分鐘後自動清理暫停的會話
+            setTimeout(() => {
+                if (global.pausedConversations && global.pausedConversations.has(conv.chatId)) {
+                    global.pausedConversations.delete(conv.chatId);
+                    console.log(`[InteractiveMultiAgent] Expired paused session: ${conv.chatId}`);
+                }
+            }, 30 * 60 * 1000);
         }
         this._removeInputListener(conv.chatId);
         this.activeConversation = null;

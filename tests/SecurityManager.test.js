@@ -81,13 +81,13 @@ describe('SecurityManager', () => {
         expect(result.level).toBe('WARNING');
     });
 
-    test('assess empty string returns WARNING', () => {
+    test('assess empty string returns BLOCKED', () => {
         const result = sm.assess('');
-        expect(result.level).toBe('WARNING');
+        expect(result.level).toBe('BLOCKED');
     });
 
-    test('assess null returns WARNING', () => {
+    test('assess null returns BLOCKED', () => {
         const result = sm.assess(null);
-        expect(result.level).toBe('WARNING');
+        expect(result.level).toBe('BLOCKED');
     });
 });

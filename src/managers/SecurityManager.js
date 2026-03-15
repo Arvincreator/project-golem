@@ -1,61 +1,97 @@
 // ============================================================
-// 🛡️ Security Manager (安全審計)
+// Security Manager (安全審計) — Hardened v9.2
 // ============================================================
 // ==================== [KERNEL PROTECTED START] ====================
 class SecurityManager {
     constructor() {
         this.SAFE_COMMANDS = ['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check'];
-        this.BLOCK_PATTERNS = [/rm\s+-rf\s+\//, /rd\s+\/s\s+\/q\s+[c-zC-Z]:\\$/, />\s*\/dev\/sd/, /:(){:|:&};:/, /mkfs/, /Format-Volume/, /dd\s+if=/, /chmod\s+[-]x\s+/];
+
+        // 毀滅性指令 — 無條件攔截
+        this.BLOCK_PATTERNS = [
+            /rm\s+-rf\s+\//, /rm\s+-rf\s+~/, /rm\s+-rf\s+\./,
+            /rd\s+\/s\s+\/q\s+[a-zA-Z]:\\/,
+            />\s*\/dev\/sd/, /:\(\)\{.*\};:/, /mkfs/, /Format-Volume/,
+            /dd\s+if=/, /chmod\s+[-]x\s+/,
+            /del\s+\/[fqs]\s+/i, /format\s+[a-zA-Z]:/i
+        ];
+
+        // 高危操作清單 (擴充版)
+        this.DANGEROUS_OPS = [
+            'rm', 'mv', 'chmod', 'chown', 'sudo', 'su',
+            'reboot', 'shutdown', 'poweroff', 'halt',
+            'npm uninstall', 'Remove-Item', 'Stop-Computer',
+            'dd', 'wget', 'curl', 'nc', 'ncat', 'netcat',
+            'kill', 'killall', 'pkill', 'taskkill',
+            'reg', 'regedit', 'net', 'sc', 'wmic',
+            'npm install', 'pip install', 'git clone'
+        ];
+
+        // 注入偵測模式 (subshell, 反引號, 重導向, 換行)
+        this.INJECTION_PATTERNS = [
+            /\$\(/, /`/, /[><]/, /\n/, /\r/,
+            /\$\{/, /\0/
+        ];
     }
+
     assess(cmd) {
         const safeCmd = (cmd || "").trim();
-        if (this.BLOCK_PATTERNS.some(regex => regex.test(safeCmd))) return { level: 'BLOCKED', reason: '毀滅性指令' };
+        if (!safeCmd) return { level: 'BLOCKED', reason: '空指令' };
 
-        // 依然阻擋重導向 (> <) 與子殼層 ($() ``) 因為過於複雜且具破壞性
-        if (/([><`])|\$\(/.test(safeCmd)) {
-            return { level: 'WARNING', reason: '包含重導向或子系統呼叫等複雜操作，需確認' };
+        // 0. 換行符 = 多指令注入，無條件攔截
+        if (/[\n\r\0]/.test(safeCmd)) {
+            return { level: 'BLOCKED', reason: '偵測到換行符注入' };
         }
 
-        // ✨ [v9.1] 讀取使用者設定的白名單 (環境變數)
+        // 1. 毀滅性指令模式
+        if (this.BLOCK_PATTERNS.some(regex => regex.test(safeCmd))) {
+            return { level: 'BLOCKED', reason: '毀滅性指令' };
+        }
+
+        // 2. subshell / 反引號 / 重導向偵測 — 一律需審批
+        if (this.INJECTION_PATTERNS.some(regex => regex.test(safeCmd))) {
+            return { level: 'WARNING', reason: '包含子殼層、重導向或特殊符號，需確認' };
+        }
+
+        // 3. 讀取使用者白名單
         const userWhitelist = (process.env.COMMAND_WHITELIST || "")
             .split(',')
-            .map(cmd => cmd.trim())
-            .filter(cmd => cmd.length > 0);
+            .map(c => c.trim())
+            .filter(c => c.length > 0);
 
-        const dangerousOps = ['rm', 'mv', 'chmod', 'chown', 'sudo', 'su', 'reboot', 'shutdown', 'npm uninstall', 'Remove-Item', 'Stop-Computer'];
+        // 4. 複合指令 (&&, ||, ;, |) — 每段都需通過檢查
+        if (/[;&|]/.test(safeCmd)) {
+            const subCmds = safeCmd.split(/\s*(?:&&|\|\||[;&|])\s*/).map(c => c.trim()).filter(c => c.length > 0);
 
-        // 處理解析複合指令 (&&, ||, ;, |)
-        if (/([;&|])/.test(safeCmd)) {
-            // 用正規表達式將指令以 &&, ||, ;, | 切割
-            const subCmds = safeCmd.split(/[;&|]+/).map(c => c.trim()).filter(c => c.length > 0);
-
-            let allSafe = true;
             for (const sub of subCmds) {
                 const subBaseCmd = sub.split(/\s+/)[0];
-
-                // 在毀滅清單/高危險操作
-                if (dangerousOps.includes(subBaseCmd)) return { level: 'DANGER', reason: '高風險操作' };
-
-                // 檢查是否所有小指令都在白名單中
+                if (this._isDangerousOp(sub, subBaseCmd)) {
+                    return { level: 'DANGER', reason: `高風險操作: ${subBaseCmd}` };
+                }
                 if (!userWhitelist.includes(subBaseCmd)) {
-                    allSafe = false;
-                    break;
+                    return { level: 'WARNING', reason: `複合指令中 "${subBaseCmd}" 未在白名單` };
                 }
             }
-
-            if (allSafe) return { level: 'SAFE' };
-            return { level: 'WARNING', reason: '複合指令中包含非信任授權的指令，需確認' };
+            return { level: 'SAFE' };
         }
 
+        // 5. 單一指令
         const baseCmd = safeCmd.split(/\s+/)[0];
-
-        // 原本的 SAFE_COMMANDS 不再預設放行，只看 userWhitelist
         if (userWhitelist.includes(baseCmd)) return { level: 'SAFE' };
+        if (this._isDangerousOp(safeCmd, baseCmd)) return { level: 'DANGER', reason: `高風險操作: ${baseCmd}` };
 
-        // 這些危險指令會直接進 DANGER
-        if (dangerousOps.includes(baseCmd)) return { level: 'DANGER', reason: '高風險操作' };
+        return { level: 'WARNING', reason: '指令未在白名單中，需確認' };
+    }
 
-        return { level: 'WARNING', reason: '需確認' };
+    // 檢查是否為高危操作 — 單詞匹配 baseCmd，多詞匹配 startsWith
+    _isDangerousOp(fullCmd, baseCmd) {
+        for (const op of this.DANGEROUS_OPS) {
+            if (op.includes(' ')) {
+                if (fullCmd.startsWith(op)) return true;
+            } else {
+                if (baseCmd === op) return true;
+            }
+        }
+        return false;
     }
 }
 // ==================== [KERNEL PROTECTED END] ====================

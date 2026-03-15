@@ -19,11 +19,15 @@ class BrowserLauncher {
      * @returns {Promise<import('puppeteer').Browser>}
      */
     static async launch({ userDataDir, headless }) {
-        const isDocker = fs.existsSync('/.dockerenv');
+        // 跨平台 Docker 偵測: 環境變數優先, 檔案偵測作為備用
+        const isDocker = !!process.env.DOCKER_HOST ||
+            !!process.env.container ||
+            (process.platform !== 'win32' && fs.existsSync('/.dockerenv'));
         const remoteDebugPort = process.env.PUPPETEER_REMOTE_DEBUGGING_PORT;
 
         if (isDocker && remoteDebugPort) {
-            return BrowserLauncher.connectRemote('host.docker.internal', remoteDebugPort);
+            const remoteHost = process.env.CHROME_REMOTE_HOST || 'host.docker.internal';
+            return BrowserLauncher.connectRemote(remoteHost, remoteDebugPort);
         }
         return BrowserLauncher.launchLocal(userDataDir, headless);
     }

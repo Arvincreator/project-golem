@@ -8,13 +8,36 @@ class OpticNerve {
     static async analyze(fileUrl, mimeType, apiKey) {
         console.log(`👁️ [OpticNerve] 正在透過 Gemini 2.5 Flash 分析檔案 (${mimeType})...`);
         try {
+            const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB 上限
             const buffer = await new Promise((resolve, reject) => {
-                https.get(fileUrl, (res) => {
+                const req = https.get(fileUrl, (res) => {
+                    // 檢查 Content-Length
+                    const contentLength = parseInt(res.headers['content-length'] || '0', 10);
+                    if (contentLength > MAX_FILE_SIZE) {
+                        req.destroy();
+                        reject(new Error(`File too large: ${(contentLength / 1024 / 1024).toFixed(1)}MB (max 20MB)`));
+                        return;
+                    }
                     const data = [];
-                    res.on('data', (chunk) => data.push(chunk));
+                    let totalSize = 0;
+                    res.on('data', (chunk) => {
+                        totalSize += chunk.length;
+                        if (totalSize > MAX_FILE_SIZE) {
+                            req.destroy();
+                            reject(new Error('File exceeded 20MB during download'));
+                            return;
+                        }
+                        data.push(chunk);
+                    });
                     res.on('end', () => resolve(Buffer.concat(data)));
                     res.on('error', reject);
                 });
+                // 下載 timeout: 30 秒
+                req.setTimeout(30000, () => {
+                    req.destroy();
+                    reject(new Error('Download timeout (30s)'));
+                });
+                req.on('error', reject);
             });
             const genAI = new GoogleGenerativeAI(apiKey);
             const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });

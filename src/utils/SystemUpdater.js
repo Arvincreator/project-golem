@@ -225,7 +225,7 @@ class SystemUpdater {
         try {
             // 1. Download
             this.broadcast(io, 'running', '從 GitHub 下載最新版本...', 10);
-            const repoUrl = 'https://github.com/sz9751210/project-golem/archive/refs/heads/main.zip';
+            const repoUrl = 'https://github.com/Arvincreator/project-golem/archive/refs/heads/main.zip';
             const response = await fetch(repoUrl);
             if (!response.ok) throw new Error(`下載 ZIP 失敗: HTTP ${response.status}`);
 
@@ -294,12 +294,20 @@ class SystemUpdater {
                 }
 
                 try {
-                    // if moving a directory that already exists, cp -r is better, but rename is atomic if on same drive.
-                    // If dest exists and wasn't skipped above, we should delete it first
                     if (fs.existsSync(destPath)) {
                         fs.rmSync(destPath, { recursive: true, force: true });
                     }
-                    fs.renameSync(srcPath, destPath);
+                    try {
+                        fs.renameSync(srcPath, destPath);
+                    } catch (renameErr) {
+                        // Windows cross-drive fallback: copy + delete
+                        if (renameErr.code === 'EXDEV') {
+                            fs.cpSync(srcPath, destPath, { recursive: true });
+                            fs.rmSync(srcPath, { recursive: true, force: true });
+                        } else {
+                            throw renameErr;
+                        }
+                    }
                 } catch (e) {
                     console.error(`Failed to move ${file}: ${e.message}`);
                 }

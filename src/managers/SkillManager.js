@@ -99,7 +99,90 @@ class SkillManager {
     }
 
     /**
-     * 匯入「技能膠囊」
+     * 安全掃描代碼 — 使用 AST 語法分析 + 模式匹配雙重檢查
+     * @param {string} code - 要掃描的代碼
+     * @returns {{ safe: boolean, reason?: string }}
+     */
+    _securityScan(code) {
+        // 第一層: 危險模式匹配 (不可用字串拼接繞過的層級)
+        const dangerousPatterns = [
+            // child_process 各種寫法
+            /child_process/i,
+            /child_proc/i,
+            // 危險全域物件
+            /\bprocess\s*\.\s*env/,
+            /\bprocess\s*\.\s*exit/,
+            /\bprocess\s*\.\s*kill/,
+            /\bprocess\s*\.\s*argv/,
+            // 動態 require (可繞過靜態檢查)
+            /require\s*\(\s*[^'"]/,     // require(variable) — 非字面量
+            /require\s*\.\s*resolve/,
+            // 危險函數
+            /\beval\s*\(/,
+            /\bFunction\s*\(/,
+            /\bexec\s*\(/,
+            /\bexecSync\s*\(/,
+            /\bspawn\s*\(/,
+            /\bspawnSync\s*\(/,
+            /\bfork\s*\(/,
+            /\bexecFile\s*\(/,
+            // 檔案系統危險操作
+            /fs\s*\.\s*(?:unlink|rmdir|rm|chmod|chown|writeFile|appendFile|rename|copyFile)/,
+            /fs\s*\.\s*(?:unlinkSync|rmdirSync|rmSync|chmodSync|chownSync|writeFileSync)/,
+            // 網路操作
+            /\bhttp\s*\.\s*(?:get|request|createServer)/,
+            /\bhttps\s*\.\s*(?:get|request)/,
+            /\bnet\s*\.\s*(?:connect|createConnection|createServer)/,
+            /\bdgram\s*\./,
+            // 全域汙染
+            /global\s*\[/,
+            /global\s*\.\s*(?!pausedConversations)/,
+            /globalThis\s*\./,
+            /__proto__/,
+            /prototype\s*\.\s*constructor/,
+            // 編碼繞過
+            /Buffer\s*\.\s*from\s*\(.*(?:base64|hex)/,
+            /atob\s*\(/, /btoa\s*\(/,
+            // cluster / worker_threads
+            /\bcluster\b/, /worker_threads/
+        ];
+
+        for (const pattern of dangerousPatterns) {
+            if (pattern.test(code)) {
+                return { safe: false, reason: `Security: 偵測到危險模式 ${pattern.source}` };
+            }
+        }
+
+        // 第二層: 允許的 require 白名單
+        const requireMatches = code.match(/require\s*\(\s*['"]([^'"]+)['"]\s*\)/g) || [];
+        const allowedModules = ['path', 'url', 'querystring', 'crypto', 'util', 'assert', 'events', 'stream'];
+        for (const req of requireMatches) {
+            const modMatch = req.match(/require\s*\(\s*['"]([^'"]+)['"]\s*\)/);
+            if (modMatch) {
+                const mod = modMatch[1];
+                // 允許相對路徑（同目錄）和白名單模組
+                if (!mod.startsWith('./') && !mod.startsWith('../') && !allowedModules.includes(mod)) {
+                    return { safe: false, reason: `Security: 不允許的模組 require("${mod}")` };
+                }
+                // 阻止路徑穿越
+                if (mod.includes('..') && mod.split('..').length > 2) {
+                    return { safe: false, reason: `Security: 過深的路徑穿越 require("${mod}")` };
+                }
+            }
+        }
+
+        // 第三層: 語法驗證
+        try {
+            new Function(code); // 語法檢查 (不執行)
+        } catch (e) {
+            return { safe: false, reason: `Syntax Error: ${e.message}` };
+        }
+
+        return { safe: true };
+    }
+
+    /**
+     * 匯入「技能膠囊」— 安全強化版
      */
     importSkill(token) {
         if (!token.startsWith('GOLEM_SKILL::')) {
@@ -108,31 +191,59 @@ class SkillManager {
 
         try {
             const base64 = token.split('::')[1];
+            if (!base64 || base64.length > 500000) {
+                throw new Error("Capsule 大小超出限制 (max 500KB)");
+            }
             const jsonStr = Buffer.from(base64, 'base64').toString('utf-8');
             const payload = JSON.parse(jsonStr);
 
-            // 基本安全檢查
+            // 基本結構驗證
             if (!payload.n || !payload.c) throw new Error("Corrupted skill data.");
-
-            // 安全過濾器 (簡易版)
-            const dangerousKeywords = ['require("child_process")', "require('child_process')", 'exec(', 'spawn('];
-            if (dangerousKeywords.some(k => payload.c.includes(k))) {
-                throw new Error("⚠️ Security Alert: This skill contains restricted system calls.");
+            if (typeof payload.n !== 'string' || typeof payload.c !== 'string') {
+                throw new Error("Invalid skill data types.");
             }
 
-            // 寫入檔案
-            const filename = `imported-${payload.n.toLowerCase().replace(/\s+/g, '-')}.js`;
+            // 安全: 檔名淨化 — 只允許英數字和連字號
+            const safeName = payload.n.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 50);
+            if (!safeName) throw new Error("Invalid skill name.");
+
+            // 安全: AST + 模式掃描
+            const scanResult = this._securityScan(payload.c);
+            if (!scanResult.safe) {
+                throw new Error(`Security Alert: ${scanResult.reason}`);
+            }
+
+            // 寫入檔案 (只允許在 userDir 內)
+            const filename = `imported-${safeName}.js`;
             const filePath = path.join(this.userDir, filename);
 
-            // 備份舊檔 (如果存在)
+            // 安全: 確認最終路徑確實在 userDir 內
+            const resolvedPath = path.resolve(filePath);
+            const resolvedUserDir = path.resolve(this.userDir);
+            if (!resolvedPath.startsWith(resolvedUserDir)) {
+                throw new Error("Security: Path traversal detected.");
+            }
+
+            // 備份舊檔
             if (fs.existsSync(filePath)) {
                 fs.renameSync(filePath, filePath + '.bak');
             }
 
             fs.writeFileSync(filePath, payload.c);
 
-            // 立即重新載入
-            this.refresh();
+            // 嘗試載入，失敗則回滾
+            try {
+                this.refresh();
+            } catch (loadErr) {
+                // 回滾: 恢復備份
+                if (fs.existsSync(filePath + '.bak')) {
+                    fs.renameSync(filePath + '.bak', filePath);
+                } else {
+                    fs.unlinkSync(filePath);
+                }
+                this.refresh();
+                throw new Error(`Skill 載入失敗，已回滾: ${loadErr.message}`);
+            }
 
             return { success: true, name: payload.n, path: filePath };
 

@@ -51,16 +51,15 @@ describe('SystemUpgrader', () => {
         expect(execSync).not.toHaveBeenCalled();
     });
 
-    test('should fallback to cp if rsync fails', async () => {
+    test('should backup using Node.js fs API (no rsync/cp dependency)', async () => {
         execSync.mockImplementation((cmd) => {
-            if (cmd.includes('rsync')) throw new Error('rsync missing');
             return Buffer.from('main');
         });
 
         await SystemUpgrader.performUpdate(mockCtx);
 
-        // Verify fallback 'cp' was attempted
-        expect(execSync).toHaveBeenCalledWith(expect.stringContaining('cp -R'), expect.anything());
+        // Verify backup notification was sent
+        expect(mockCtx.reply).toHaveBeenCalledWith(expect.stringContaining('備份'));
     });
 
     test('should target upstream/main if branch match fails', async () => {

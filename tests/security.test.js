@@ -27,6 +27,6 @@ describe('SecurityManager', () => {
     test('should detect dangerous high-level operations', () => {
         const result = sm.assess('sudo reboot');
         expect(result.level).toBe('DANGER');
-        expect(result.reason).toBe('高風險操作');
+        expect(result.reason).toContain('高風險操作');
     });
 });

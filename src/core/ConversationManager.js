@@ -137,10 +137,23 @@ class ConversationManager {
             });
 
             await task.ctx.sendTyping();
-            const memories = await this.brain.recall(task.text);
+
+            // 安全: recall 加 timeout，防止無限等待
+            let memories = [];
+            try {
+                memories = await Promise.race([
+                    this.brain.recall(task.text),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('recall timeout')), 10000))
+                ]);
+            } catch (recallErr) {
+                console.warn(`[ConversationManager] Memory recall failed: ${recallErr.message}`);
+            }
+
             let finalInput = task.text;
             if (memories.length > 0) {
-                finalInput = `【相關記憶】\n${memories.map(m => `• ${m.text}`).join('\n')}\n---\n${finalInput}`;
+                // 安全: 記憶內容截斷，防止過長
+                const memText = memories.map(m => `• ${String(m.text).slice(0, 500)}`).join('\n');
+                finalInput = `【相關記憶】\n${memText}\n---\n${finalInput}`;
             }
             const isMentioned = task.ctx.isMentioned ? task.ctx.isMentioned(task.text) : false;
 
@@ -159,10 +172,14 @@ class ConversationManager {
                 console.log(`📢 [Dialogue Queue:${this.golemId}] 模式中偵測到標記，強制恢復回應。`);
             }
 
-            const raw = await this.brain.sendMessage(finalInput, false, {
-                isObserver: this.observerMode,
-                interventionLevel: this.interventionLevel
-            });
+            // 安全: sendMessage 加 5 分鐘 timeout
+            const raw = await Promise.race([
+                this.brain.sendMessage(finalInput, false, {
+                    isObserver: this.observerMode,
+                    interventionLevel: this.interventionLevel
+                }),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Brain response timeout (5min)')), 300000))
+            ]);
             await this.NeuroShunter.dispatch(task.ctx, raw, this.brain, this.controller, { suppressReply: shouldSuppressReply });
         } catch (e) {
             console.error(`❌ [Dialogue Queue:${this.golemId}] 處理失敗:`, e);
