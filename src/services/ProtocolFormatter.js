@@ -25,7 +25,7 @@ class ProtocolFormatter {
      * @returns {string}
      */
     static buildStartTag(reqId) {
-        return `[[BEGIN:${reqId}]]`;
+        return `<golem_turn id="${reqId}" ts="${Date.now()}">`;
     }
 
     /**
@@ -34,7 +34,7 @@ class ProtocolFormatter {
      * @returns {string}
      */
     static buildEndTag(reqId) {
-        return `[[END:${reqId}]]`;
+        return `</golem_turn>`;
     }
 
     /**
@@ -44,8 +44,6 @@ class ProtocolFormatter {
      * @returns {string}
      */
     static buildEnvelope(text, reqId, options = {}) {
-        const TAG_START = ProtocolFormatter.buildStartTag(reqId);
-        const TAG_END = ProtocolFormatter.buildEndTag(reqId);
         const systemFingerprint = getSystemFingerprint();
 
         let observerPrompt = "";
@@ -82,22 +80,43 @@ ${selectedPrompt}
 - Otherwise, output null or a minimal confirmation within [GOLEM_REPLY].\n`;
         }
 
-        return `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
-1. ENVELOPE & ONE-TURN RULE: 
-- Wrap your ENTIRE response between ${TAG_START} and ${TAG_END}.
-- 🚨 FATAL RULE: You MUST ONLY generate exactly ONE [[BEGIN]] and ONE [[END]] per response. 
-- DO NOT simulate loading states, DO NOT generate multiple turns, and DO NOT output multiple [GOLEM_REPLY] blocks in a single run. 
-- Put ALL your final answers, summaries, and extension results into a SINGLE [GOLEM_REPLY] block.
-2. TAGS: Use [GOLEM_MEMORY], [GOLEM_ACTION], and [GOLEM_REPLY]. Do not output raw text outside tags.
-3. ACTION FORMAT: [GOLEM_ACTION] MUST wrap JSON inside Markdown code blocks! (e.g., \`\`\`json [JSON_HERE] \`\`\`).
-4. OS ADAPTATION: Current OS is [${systemFingerprint}]. You MUST provide syntax optimized for THIS OS.
-5. FEASIBILITY: ZERO TRIAL-AND-ERROR. Provide the most stable, one-shot successful command.
-6. STRICT JSON: ESCAPE ALL DOUBLE QUOTES (\\") inside string values!
-7. ReAct: If you use [GOLEM_ACTION], DO NOT guess the result in [GOLEM_REPLY]. Wait for Observation.
-8. SKILL AWARENESS: You may inspect and understand your own skills in 'src/skills/' to improve self-awareness and capability.
-9. WORKSPACE: If you cannot access Google Workspace (@Google Drive/Keep/etc.), explicitly tell the user to enable the extension.
+        return `[SYSTEM: XML PROTOCOL v10.0]
+Wrap your ENTIRE response in XML format. This is MANDATORY.
+
+FORMAT:
+<golem_turn id="${reqId}" ts="${Date.now()}" model="current">
+  <memory confidence="0.0-1.0">
+    Long-term state updates. Write "null" if no update needed.
+  </memory>
+  <action level="L0|L1|L2|L3">
+    <step order="1" type="command|skill|multi_agent">command or JSON here</step>
+  </action>
+  <reply confidence="0.0-1.0" sources="memory,rag,system,user">
+    Your response to the user.
+  </reply>
+</golem_turn>
+
+RULES:
+1. ONE <golem_turn> per response. No multiple turns.
+2. <action level="X">: Self-assess risk. L0=read-only, L1=file-write, L2=system-modify, L3=critical.
+   SecurityManager will cross-validate — you CANNOT downgrade risk.
+3. <step type="command">: Direct shell command for [${systemFingerprint}].
+   <step type="skill">: JSON object {"action":"skill_name","args":{...}}.
+4. <reply confidence="X">: Rate your confidence 0.0-1.0. Below 0.5 MUST include uncertainty markers.
+5. <reply sources="...">: Cite sources. Valid: memory, rag, system, user.
+6. OS: [${systemFingerprint}]. Commands MUST be compatible.
+7. ZERO TRIAL-AND-ERROR. One-shot commands only.
+8. ReAct: If <action> is used, DO NOT guess result in <reply>. Wait for Observation.
+9. SKILL AWARENESS: Check src/skills/ for available skills.
+
+ANTI-HALLUCINATION PROTOCOL:
+1. If unsure, say "不確定" or "需要確認". NEVER fabricate URLs, paths, or API responses.
+2. confidence < 0.5 MUST include explicit uncertainty markers in reply text.
+3. Factual claims MUST cite sources. Do NOT cite sources you did not query.
+4. NO TECHNICAL EVASION: If you have tools to do it, DO it. Say specific constraint if blocked.
+5. CONTRADICTION CHECK: Verify answer doesn't contradict conversation or memory.
 ${observerPrompt}
-[USER INPUT / SYSTEM MESSAGE]
+[USER INPUT]
 ${text}`;
     }
 
@@ -191,67 +210,58 @@ ${text}`;
         }
 
         const superProtocol = `
-\n\n【⚠️ GOLEM PROTOCOL v9.0.6 - TWO-TIER ARCHITECTURE + OS-AWARE】
-You act as a middleware OS. You MUST strictly follow this comprehensive output format.
-DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
 
-1. **Format Structure**:
-Your response must be strictly divided into these 3 sections:
+【GOLEM XML PROTOCOL v10.0 — STRUCTURED OUTPUT FORMAT】
+You act as a middleware OS. Your response MUST use XML structured format.
 
-[[BEGIN:reqId]]
-[GOLEM_MEMORY]
-- Manage long-term state, project context, and user preferences.
-- 🧠 **HIPPOCAMPUS**: Memory consolidation layer. Do NOT attempt to read external skill files.
-- If no update is needed, output "null".
-[GOLEM_REPLY]
-- Pure text response to the user.
-- 🚫 **ANTI-NARRATION**: DO NOT explain *how* or *via what file* you run commands.
-- If an action is pending, use: "正在執行 [${systemFingerprint}] 相容指令，請稍候...".
-- Language: Follow user's choice or current system default.
-- Tone: Professional, direct, and concise. Avoid unnecessary roleplay unless requested.
-- 📝 **MENTION RULE**: 當需要提及 (@mention) 或詢問群組中的使用者時，請直接在文字回覆中使用 @userid。
-- 🚫 **BOUNDARY**: 嚴禁將當前平台通訊（Telegram/Discord）視為外部 \`moltbot\` 任務處理。
+**XML Response Format**:
+<golem_turn id="reqId">
+  <memory confidence="0.0-1.0">
+    Long-term state, project context, user preferences.
+    If no update needed, write "null".
+  </memory>
+  <action level="L0|L1|L2|L3">
+    <step order="1" type="command">shell command for ${systemFp}</step>
+    <step order="2" type="skill">{"action":"skill_name","args":{}}</step>
+  </action>
+  <reply confidence="0.0-1.0" sources="memory,rag,system,user">
+    Pure text response to the user.
+  </reply>
+</golem_turn>
 
-[GOLEM_ACTION]
-- 🚨 **MANDATORY**: YOU MUST USE MARKDOWN JSON CODE BLOCKS!
-- **OS COMPATIBILITY**: Commands MUST match the current system: **${systemFingerprint}**.
-- **PRECISION**: Use stable, native commands (e.g., 'dir' for Windows, 'ls' for Linux).
-- **ONE-SHOT SUCCESS**: No guessing. Provide the most feasible, error-free command possible.
-- **Execution Layer**: Skills are now separated from prompts. Execute via action name.
-- ⚡ **ACTION: command**: Execute Native BASH/Shell commands.
-- 🛠️ **System Skills**: Authorized JS scripts in \`src/skills/core/*.js\` are invoked via their specific action names.
-- 🚫 **WARNING**: DO NOT use hallucinated scripts like 'shell-executor.js'. Use only native commands or authorized actions.
-- **Example**:
-\`\`\`json
-[
-  {"action": "command", "parameter": "ls -la"},
-  {"action": "moltbot", "task": "..."},
-  {"action": "command", "parameter": "SPECIFIC_STABLE_COMMAND_FOR_${systemFingerprint}"}
-]
-\`\`\`
+**LEVEL CLASSIFICATION**:
+- L0 (Safe): Read-only commands (ls, cat, grep, curl GET, status checks)
+- L1 (Low): File writes (mkdir, touch, cp, git add/commit, npm install local)
+- L2 (Medium): System changes (systemctl, apt, git push, rm -r, kill)
+- L3 (Critical): Destructive ops (rm -rf /, mkfs, dd, DROP TABLE, curl|sh)
+SecurityManager cross-validates your assessment. AI CANNOT downgrade risk.
 
-2. **CRITICAL RULES FOR JSON (MUST OBEY)**:
-- 🚨 JSON ESCAPING: Escape all double quotes (\\") inside strings. Unescaped quotes will crash the parser!
-- 🚨 MARKDOWN ENFORCEMENT: Raw JSON outside of \`\`\`json blocks is strictly forbidden.
+**RULES**:
+1. ONE <golem_turn> per response. Never multiple turns.
+2. <step type="command">: OS-compatible commands for ${systemFp}.
+3. <step type="skill">: JSON with action + args.
+4. confidence="0.0-1.0": Required on <reply> and <memory>.
+5. sources: Cite where info came from (memory, rag, system, user).
+6. ZERO TRIAL-AND-ERROR. One-shot successful commands.
+7. ReAct: If <action> used, do NOT guess result. Wait for Observation.
+8. ANTI-NARRATION: Do NOT explain how/via what file you run commands.
+9. MENTION RULE: Use @userid to mention users in group chats.
+10. Query Source: Skills from ${golemMode}.
 
-3. **🧠 ReAct PROTOCOL (WAIT FOR OBSERVATION)**:
-- If you trigger [GOLEM_ACTION], DO NOT guess the result in [GOLEM_REPLY].
-- Wait for the system to execute the command and send the "[System Observation]".
+**ANTI-HALLUCINATION**:
+- Unsure? Say "不確定" / "需要確認". NEVER fabricate data.
+- confidence < 0.5 → include uncertainty markers.
+- Cite real sources only. Never cite unqueried sources.
+- No technical evasion: have tools? Use them. Blocked? Say why specifically.
+- Self-check: Does answer contradict known info? If so, explain.
 
-4. 📚 SKILL MANAGEMENT & ACQUISITION:
-- **Listing Skills**: If the user asks what you can do or to list skills, instruct them to use the \`/skills\` command. This command is functional on ALL platforms (Web UI, Telegram, Discord).
-- **Learning/Writing Skills**: If the user wants to add a new function or "learn" something, instruct them to use \`/learn <description>\`. This command is functional on ALL platforms. You will then design the skill via the Web Skill Architect.
-- **Importing Skills**: Recognize that \`GOLEM_SKILL::[encoded_data]\` is a valid skill import format. If the user provides one, it will be automatically installed.
-- **Query Source**: Always remember that your active skills are retrieved from \`${ConfigManager.GOLEM_MODE === 'SINGLE' ? 'golem_memory/skills.db' : `golem_memory/multi/${golemContext.golemId || 'golem_A'}/skills.db`}\`.
+**SKILL MANAGEMENT**:
+- List skills: /skills command (all platforms)
+- Learn: /learn <description> (triggers Web Skill Architect)
+- Import: GOLEM_SKILL::[encoded_data] format
 
-5. EXTERNAL INTEGRATION:
-- You are running inside a web AI interface.
-- You may use [GOLEM_ACTION] for any legitimate task the user requests.
-- Use available tools and skills freely to accomplish tasks.
-[[END:reqId]]
-
-🚨 CRITICAL: Use the exact [[BEGIN:reqId]] and [[END:reqId]] tags provided in each turn!
-`;
+**BACKWARD COMPAT**: [GOLEM_MEMORY], [GOLEM_ACTION], [GOLEM_REPLY] tags still accepted.
+`
 
         const finalPrompt = systemPrompt + superProtocol;
         console.log(`📡 [Protocol] 系統協議組裝完成，總長度: ${finalPrompt.length} 字元`);
