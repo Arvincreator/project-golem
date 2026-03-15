@@ -1,4 +1,67 @@
 #!/bin/bash
+ 
+# ─── Step 0: Node.js 20 Detection ───
+step_prepare_node_version() {
+    echo -e "  🏥 檢查系統環境 (Node.js)..."
+    log "Checking Node.js version"
+    
+    check_status
+    if [ "$NODE_OK" = false ]; then
+        echo -e "    ${RED}✖${NC} 核心環境: Node.js ${RED}$NODE_VER${NC} (建議版本: v20)"
+        log "Node.js version mismatch: $NODE_VER"
+        
+        if [ "$NVM_OK" = true ]; then
+            echo ""
+            box_top
+            box_line_colored "  ${YELLOW}💡 偵測到您已安裝 NVM，是否要現在切換至 Node.js 20？${NC}"
+            box_bottom
+            echo ""
+            if confirm_action "切換至 Node.js 20？"; then
+                if switch_node_version; then
+                    echo -e "\n${GREEN}成功切換版本！${NC}"
+                    sleep 1
+                    check_status # 重新偵測環境
+                    return 0
+                fi
+            fi
+        else
+            ui_warn "建議手動安裝 Node.js v20 (Titan Chronos 推薦版本) 以確保最佳相容性。"
+            echo -e "    ${DIM}下載地址: https://nodejs.org/dist/latest-v20.x/${NC}"
+            sleep 2
+        fi
+    else
+        echo -e "    ${GREEN}✔${NC} 核心環境: Node.js ${GREEN}$NODE_VER${NC} (符合需求)"
+    fi
+    echo ""
+}
+
+# ─── Step 0.5: Running Process Check ───
+step_stop_running_system() {
+    echo -e "  🔍 檢查執行中進程..."
+    log "Checking for running processes before installation"
+    
+    check_status
+    if [ "$IS_RUNNING" = true ]; then
+        echo ""
+        box_top
+        box_line_colored "  ${RED}${BOLD}⚠️  偵測到系統正在執行中 (Running)${NC}                  "
+        box_line_colored "  ${DIM}為避免檔案佔用或資料損壞，建議在安裝前先關閉進程。${NC}   "
+        box_bottom
+        echo ""
+        
+        if confirm_action "是否要自動關閉相關進程並繼續？"; then
+            stop_system false
+            ui_success "所有相關進程已關閉。"
+            sleep 1
+        else
+            ui_error "安裝已取消。請先手動關閉程序再重新執行。"
+            exit 1
+        fi
+    else
+        echo -e "    ${GREEN}✔${NC} 查無佔用進程，可安全安裝"
+    fi
+    echo ""
+}
 
 # ─── Step 1: File Integrity ───
 step_check_files() {
@@ -268,7 +331,7 @@ run_clean_init() {
 # ─── Full Install ───
 run_full_install() {
     timer_start
-    local total_steps=6
+    local total_steps=8
     log "Full install started"
 
     echo -e "  ${BOLD}${CYAN}📦 開始完整安裝流程${NC}"
@@ -276,34 +339,44 @@ run_full_install() {
     echo -e "  ${DIM}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
 
+    # Step Check Process
+    progress_bar 1 $total_steps "檢查執行中進程"
+    echo ""
+    step_stop_running_system
+
+    # Step 0: Node Check
+    progress_bar 2 $total_steps "檢查 Node.js 版本"
+    echo ""
+    step_prepare_node_version
+
     # Step 1: Check files
-    progress_bar 1 $total_steps "檢查核心檔案"
+    progress_bar 3 $total_steps "檢查核心檔案"
     echo ""
     step_check_files
 
     # Step 2: Check env
-    progress_bar 2 $total_steps "檢查環境設定"
+    progress_bar 4 $total_steps "檢查環境設定"
     echo ""
     step_check_env
 
     # Step 3: Configure .env (Gemini Keys + System Options)
     # 註：如果使用者已提供 .env.example，則直接使用，不強制進入配置精靈
-    # progress_bar 3 $total_steps "配置環境變數"
+    # progress_bar 5 $total_steps "配置環境變數"
     # echo ""
     # config_wizard
 
     # Step 4: Install core deps
-    progress_bar 4 $total_steps "安裝核心依賴"
+    progress_bar 6 $total_steps "安裝核心依賴"
     echo ""
     step_install_core
 
     # Step 5: Install dashboard
-    progress_bar 5 $total_steps "安裝 Dashboard"
+    progress_bar 7 $total_steps "安裝 Dashboard"
     echo ""
     step_install_dashboard
 
     # Step 6: Health check & Verification
-    progress_bar 6 $total_steps "系統健康檢查 & 驗證"
+    progress_bar 8 $total_steps "系統健康檢查 & 驗證"
     echo ""
     check_status
     run_health_check
