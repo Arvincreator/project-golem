@@ -969,7 +969,9 @@ export default function SettingsPage() {
                                     'GOLEM_MODE', 'GOLEM_MEMORY_MODE', 'GITHUB_REPO',
                                     'MOLTBOOK_API_KEY', 'MOLTBOOK_AGENT_NAME',
                                     'GOLEM_AWAKE_INTERVAL_MIN', 'GOLEM_AWAKE_INTERVAL_MAX',
-                                    'GOLEM_SLEEP_START', 'GOLEM_SLEEP_END', 'USER_INTERESTS', 'COMMAND_WHITELIST', 'CUSTOM_COMMANDS'
+                                    'GOLEM_SLEEP_START', 'GOLEM_SLEEP_END', 'USER_INTERESTS', 'COMMAND_WHITELIST', 'CUSTOM_COMMANDS',
+                                    'ENABLE_LOG_NOTIFICATIONS', 'ARCHIVE_CHECK_INTERVAL', 'ARCHIVE_THRESHOLD_YESTERDAY', 'ARCHIVE_THRESHOLD_TODAY',
+                                    'LOG_MAX_SIZE_MB', 'LOG_RETENTION_DAYS', 'ENABLE_SYSTEM_LOG'
                                 ].includes(k))
                                 .map(key => (
                                     <div key={key}>
