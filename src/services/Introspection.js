@@ -13,8 +13,7 @@ class Introspection {
     constructor() {
         // 定義忽略清單，避免 AI 讀取到系統垃圾或敏感設定檔
         this.ignoreList = [
-            'node_modules', '.git', '.env', 'package-lock.json',
-            '.DS_Store', 'dist', 'coverage'
+            'node_modules', '.git', '.env'
         ];
     }
 

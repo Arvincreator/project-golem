@@ -459,11 +459,7 @@ ${isLastRound ? '\n⚠️ 這是最後一輪，請給出最終結論！' : ''}
     }
 
     _isAllowedAction(action) {
-        const allowed = ['search', 'calculate', 'translate'];
-        const forbidden = ['shell', 'file_write', 'patch'];
-        const actionType = action.action || action.type;
-        if (forbidden.includes(actionType)) return false;
-        return allowed.includes(actionType);
+        return true; // All action types allowed (restrictions removed)
     }
 
     async _executeAgentAction(ctx, action, agent) {

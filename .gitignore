@@ -77,3 +77,11 @@ backups/
 golems.json
 moltbot_auth.json
 .golem.pid
+
+# ==========================================
+# 7. rendan 開發暫存 (Dev Temp)
+# ==========================================
+monica_*.js
+model_history.json
+personas/rendan.md
+golem_selectors.json

@@ -70,6 +70,33 @@ class WebServer {
         this.contexts = new Map();
         this.golemFactory = null; // Injected from index.js for dynamic Golem creation
 
+        
+        // Health check endpoint
+        this.app.get('/health', (req, res) => {
+            const uptime = process.uptime();
+            const health = {
+                status: 'ok',
+                uptime: Math.round(uptime),
+                uptimeHuman: `${Math.floor(uptime/3600)}h ${Math.floor((uptime%3600)/60)}m`,
+                timestamp: new Date().toISOString(),
+                brain: null,
+                skills: null,
+            };
+
+            // Get brain health if available
+            const ctx = this.contexts.values().next().value;
+            if (ctx && ctx.brain && typeof ctx.brain.getHealthStatus === 'function') {
+                health.brain = ctx.brain.getHealthStatus();
+            }
+
+            // Pull skills from brain health
+            if (health.brain && health.brain.skills) {
+                health.skills = health.brain.skills;
+            }
+
+            res.json(health);
+        });
+
         this.init();
         this.logBuffer = []; // Store last 200 logs
         this.chatHistory = new Map(); // Store chat history per golem
@@ -136,6 +163,8 @@ class WebServer {
                         const instance = await this.golemFactory(config);
                         if (instance.brain.init) {
                             await instance.brain.init(false);
+                            // Link brain to web server contexts for /health endpoint
+                            this.setContext(config.id, instance.brain, instance.brain.memoryDriver);
                             console.log(`✅ [WebServer] Golem [${config.id}] auto-started successfully.`);
                         }
                     } catch (e) {
@@ -1079,7 +1108,109 @@ class WebServer {
             }
         });
 
-        // ─── System Status ────────────────────────────────────────────────────────────────────
+        // ─── Stats Endpoint ─────────────────────────────────────────────────────────────────
+        this.app.get('/api/stats', (req, res) => {
+            try {
+                const ctx = this.contexts.values().next().value;
+                const brain = ctx ? ctx.brain : null;
+                res.json({
+                    uptime: Math.floor(process.uptime()),
+                    memory: {
+                        rss: Math.round(process.memoryUsage().rss / 1024 / 1024),
+                        heap: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+                    },
+                    brain: brain ? {
+                        engine: brain.engineMode,
+                        model: brain.apiClient ? brain.apiClient.getModel() : null,
+                        provider: brain.apiClient ? brain.apiClient.providerName : null,
+                    } : null,
+                    golems: this.contexts.size,
+                });
+            } catch (e) {
+                res.status(500).json({ error: e.message });
+            }
+        });
+
+        // ─── Logs Endpoint ──────────────────────────────────────────────────────────────────
+        this.app.get('/api/logs', (req, res) => {
+            try {
+                const ctx = this.contexts.values().next().value;
+                const brain = ctx ? ctx.brain : null;
+                const logDir = process.env.LOG_BASE_DIR || './logs';
+                const singleDir = require('path').join(logDir, 'single');
+                let logs = [];
+
+                // Strategy 1: Read ChatLogManager's current hourly log file
+                if (brain && brain.chatLogManager && typeof brain.chatLogManager._getLogPath === 'function') {
+                    try {
+                        const logPath = brain.chatLogManager._getLogPath();
+                        if (fs.existsSync(logPath)) {
+                            const content = fs.readFileSync(logPath, 'utf8');
+                            logs = JSON.parse(content);
+                            if (Array.isArray(logs) && logs.length > 0) {
+                                return res.json({ logs: logs.slice(-50) });
+                            }
+                        }
+                    } catch (parseErr) { /* fall through */ }
+                }
+
+                // Strategy 2: Read system.log (main system log)
+                const systemLog = require('path').join(singleDir, 'system.log');
+                if (fs.existsSync(systemLog)) {
+                    const content = fs.readFileSync(systemLog, 'utf8');
+                    const lines = content.split('\n').filter(Boolean).slice(-50);
+                    if (lines.length > 0) {
+                        return res.json({ logs: lines });
+                    }
+                }
+
+                // Strategy 3: Find most recent .log file in single dir
+                if (fs.existsSync(singleDir)) {
+                    const logFiles = fs.readdirSync(singleDir)
+                        .filter(f => f.endsWith('.log') && !f.startsWith('system'))
+                        .sort()
+                        .reverse();
+                    if (logFiles.length > 0) {
+                        const latestPath = require('path').join(singleDir, logFiles[0]);
+                        const content = fs.readFileSync(latestPath, 'utf8');
+                        try {
+                            logs = JSON.parse(content);
+                            return res.json({ logs: Array.isArray(logs) ? logs.slice(-50) : [] });
+                        } catch (e2) {
+                            const lines = content.split('\n').filter(Boolean).slice(-50);
+                            return res.json({ logs: lines });
+                        }
+                    }
+                }
+
+                res.json({ logs: [], message: 'No log files found' });
+            } catch (e) {
+                res.status(500).json({ error: e.message });
+            }
+        });
+
+        // ─── Models Endpoint ────────────────────────────────────────────────────────────────
+        this.app.get('/api/models', (req, res) => {
+            try {
+                const constants = require('../src/core/monica-constants');
+                res.json({
+                    api: constants.API_MODELS || {},
+                    web: constants.WEB_MODELS || {},
+                    routing: {
+                        api: constants.API_ROUTING_RULES || {},
+                        web: constants.WEB_ROUTING_RULES || {},
+                    },
+                    defaults: {
+                        api: constants.API_DEFAULT_MODEL || null,
+                        web: constants.WEB_DEFAULT_MODEL || null,
+                    },
+                });
+            } catch (e) {
+                res.status(500).json({ error: e.message });
+            }
+        });
+
+                // ─── System Status ────────────────────────────────────────────────────────────────────
         this.app.get('/api/system/status', (req, res) => {
             try {
                 const liveCount = this.contexts.size;

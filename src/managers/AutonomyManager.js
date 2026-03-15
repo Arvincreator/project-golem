@@ -284,6 +284,38 @@ ${summaryContext || "（目前尚無對話摘要）"}
             }
         }
     }
+
+    // Sleep-Time Memory Consolidation (Letta-inspired)
+    // Runs during sleep cycle to organize recent memories into archival storage
+    async memoryConsolidation() {
+        if (!this.brain || !this.brain.archivalMemory) return;
+        try {
+            const clm = this.brain.chatLogManager;
+            const recent = clm && clm.getRecentEntries
+                ? clm.getRecentEntries(20) : [];
+            if (recent.length < 5) return;
+
+            const facts = recent
+                .filter(e => e && (e.content || e.text))
+                .map(e => (e.content || e.text).substring(0, 200))
+                .join(' | ');
+            if (facts.length < 50) return;
+
+            await this.brain.archivalMemory.ingest({
+                type: 'memory_consolidation',
+                source: 'rendan_sleep',
+                content: '[Sleep Consolidation] ' + facts.substring(0, 1000),
+                metadata: {
+                    golemId: this.brain.golemId,
+                    entriesConsolidated: recent.length,
+                    timestamp: Date.now(),
+                }
+            });
+            console.log('[AutonomyManager] Sleep consolidation: ' + recent.length + ' entries -> archival');
+        } catch (e) {
+            // Non-fatal — don't crash on consolidation failure
+        }
+    }
 }
 
 module.exports = AutonomyManager;

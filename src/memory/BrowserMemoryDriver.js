@@ -1,9 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 
-// ============================================================
-// 🧠 Memory Drivers (雙模記憶驅動 + 排程擴充 + 物理清空)
-// ============================================================
 class BrowserMemoryDriver {
     constructor(brain) {
         this.brain = brain;
@@ -14,7 +11,6 @@ class BrowserMemoryDriver {
         try {
             this.brain.memoryPage = await this.brain.browser.newPage();
 
-            // ─── 記憶頁面實體隔離 ───
             const baseDir = process.env.HOST_PROJECT_DIR || process.cwd();
             const sourceHtmlPath = path.join(baseDir, 'memory.html');
             const targetDir = this.brain.chatLogManager
@@ -22,16 +18,12 @@ class BrowserMemoryDriver {
                 : path.join(baseDir, 'logs', this.brain.golemId);
             const targetHtmlPath = path.join(targetDir, 'memory.html');
 
-            // 確保目標資料夾存在
             if (!fs.existsSync(targetDir)) {
                 fs.mkdirSync(targetDir, { recursive: true });
             }
 
-            // 複製並自定義 HTML (標註 Golem ID)
             if (fs.existsSync(sourceHtmlPath)) {
                 let htmlContent = fs.readFileSync(sourceHtmlPath, 'utf8');
-
-                // 替換標題與主標題，加入 Golem ID 識別
                 htmlContent = htmlContent.replace(
                     /<title>(.*?)<\/title>/,
                     `<title>$1 (${this.brain.golemId})</title>`
@@ -40,23 +32,22 @@ class BrowserMemoryDriver {
                     /<h1>([\s\S]*?)<\/h1>/,
                     `<h1>$1 <span style="font-size:0.5em; color:var(--accent-pink); border:2px solid black; padding:0 10px; margin-left:10px;">ID: ${this.brain.golemId}</span></h1>`
                 );
-
                 fs.writeFileSync(targetHtmlPath, htmlContent);
             }
 
-            const memoryPath = 'file:///' + targetHtmlPath.replace(/\\/g, '/');
-            console.log(`🧠 [Memory:Browser] 正在掛載神經海馬迴: ${memoryPath} (Golem: ${this.brain.golemId})`);
+            // Fix: use 'file://' not 'file:///' — Linux absolute paths already start with /
+            const memoryPath = 'file://' + targetHtmlPath.replace(/\\/g, '/');
+            console.log(`[Memory:Browser] Mounting: ${memoryPath} (Golem: ${this.brain.golemId})`);
 
-            // Forward console logs from Puppeteer to the Node backend
             this.brain.memoryPage.on('console', msg => {
-                console.log(`🧠 [Memory:Browser] ${msg.text()}`);
+                console.log(`[Memory:Browser] ${msg.text()}`);
             });
 
             await this.brain.memoryPage.goto(memoryPath);
             await new Promise(r => setTimeout(r, 5000));
             this.isReady = true;
         } catch (e) {
-            console.error("❌ [Memory:Browser] 啟動失敗:", e.message);
+            console.error("[Memory:Browser] Init failed:", e.message);
             this.isReady = false;
         }
     }
@@ -70,7 +61,7 @@ class BrowserMemoryDriver {
                 return window.queryMemory ? await window.queryMemory(txt) : [];
             }, query);
         } catch (e) {
-            console.warn("⚠️ [Memory:Browser] recall error:", e.message);
+            console.warn("[Memory:Browser] recall error:", e.message);
             return [];
         }
     }
@@ -81,7 +72,7 @@ class BrowserMemoryDriver {
                 if (window.addMemory) await window.addMemory(t, m);
             }, text, metadata);
         } catch (e) {
-            console.warn("⚠️ [Memory:Browser] memorize error:", e.message);
+            console.warn("[Memory:Browser] memorize error:", e.message);
         }
     }
     async addSchedule(task, time) {
@@ -91,7 +82,7 @@ class BrowserMemoryDriver {
                 if (window.addSchedule) await window.addSchedule(t, time);
             }, task, time);
         } catch (e) {
-            console.warn("⚠️ [Memory:Browser] addSchedule error:", e.message);
+            console.warn("[Memory:Browser] addSchedule error:", e.message);
         }
     }
     async checkDueTasks() {
@@ -101,24 +92,21 @@ class BrowserMemoryDriver {
                 return window.checkSchedule ? await window.checkSchedule() : [];
             });
         } catch (e) {
-            console.warn("⚠️ [Memory:Browser] checkDueTasks error:", e.message);
+            console.warn("[Memory:Browser] checkDueTasks error:", e.message);
             return [];
         }
     }
-
-    // ✨ [新增] 物理清空整個 Memory DB
     async clearMemory() {
         if (!this.brain.memoryPage || !this.isReady) return;
         try {
             await this.brain.memoryPage.evaluate(async () => {
                 if (window.clearAllMemory) await window.clearAllMemory();
             });
-            console.log("🗑️ [Memory:Browser] IndexedDB 已被物理清空。");
+            console.log("[Memory:Browser] IndexedDB cleared.");
         } catch (e) {
-            console.warn("❌ [Memory:Browser] 清空 DB 失敗:", e.message);
+            console.warn("[Memory:Browser] clearMemory error:", e.message);
         }
     }
-
     async exportMemory() {
         if (!this.brain.memoryPage || !this.isReady) return "[]";
         try {
@@ -126,19 +114,18 @@ class BrowserMemoryDriver {
                 return window.exportMemories ? await window.exportMemories() : "[]";
             });
         } catch (e) {
-            console.warn("⚠️ [Memory:Browser] exportMemory error:", e.message);
+            console.warn("[Memory:Browser] exportMemory error:", e.message);
             return "[]";
         }
     }
-
     async importMemory(jsonData) {
-        if (!this.brain.memoryPage || !this.isReady) return { success: false, error: "Memory engine not ready" };
+        if (!this.brain.memoryPage || !this.isReady) return { success: false, error: "Not ready" };
         try {
             return await this.brain.memoryPage.evaluate(async (data) => {
                 return window.importMemories ? await window.importMemories(data) : { success: false, error: "Not supported" };
             }, jsonData);
         } catch (e) {
-            console.warn("⚠️ [Memory:Browser] importMemory error:", e.message);
+            console.warn("[Memory:Browser] importMemory error:", e.message);
             return { success: false, error: e.message };
         }
     }

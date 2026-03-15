@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 
 // ============================================================
-// 🚦 Conversation Manager (隊列與防抖系統 - 多用戶隔離版)
+// Conversation Manager (Queue + Adaptive Debounce)
 // ============================================================
 class ConversationManager {
     constructor(brain, neuroShunterClass, controller, options = {}) {
@@ -15,15 +15,25 @@ class ConversationManager {
         this.silentMode = false;
         this.observerMode = false;
         this.interventionLevel = options.interventionLevel || 'CONSERVATIVE';
-        this.DEBOUNCE_MS = 1500;
+        // Adaptive debounce: first message fast, subsequent messages slower
+        this.DEBOUNCE_FIRST_MS = 100;
+        this.DEBOUNCE_SUBSEQUENT_MS = 1500;
+        this._lastMessageTime = new Map(); // chatId → timestamp
+    }
+
+    _getDebounceMs(chatId) {
+        const now = Date.now();
+        const last = this._lastMessageTime.get(chatId) || 0;
+        this._lastMessageTime.set(chatId, now);
+        // If >5s since last message, treat as first message (fast debounce)
+        return (now - last > 5000) ? this.DEBOUNCE_FIRST_MS : this.DEBOUNCE_SUBSEQUENT_MS;
     }
 
     async enqueue(ctx, text, options = { isPriority: false, bypassDebounce: false }) {
         const chatId = ctx.chatId;
 
-        // 🚨 Highest Privilege: priority tasks bypass user buffers completely and inject straight into queue
         if (options.bypassDebounce) {
-            console.log(`⚡ [Dialogue Queue] 高優先級請求繞過防抖機制 (${chatId}): "${text.substring(0, 15)}..."`);
+            console.log(`[Queue] Priority bypass (${chatId}): "${text.substring(0, 15)}..."`);
             this._commitDirectly(ctx, text, options.isPriority);
             return;
         }
@@ -31,31 +41,24 @@ class ConversationManager {
         let userState = this.userBuffers.get(chatId) || { text: "", timer: null, ctx: ctx };
         userState.text = userState.text ? `${userState.text}\n${text}` : text;
         userState.ctx = ctx;
-        console.log(`⏳ [Dialogue Queue] 收到對話 (${chatId}): "${text.substring(0, 15)}..."`);
+        console.log(`[Queue] Received (${chatId}): "${text.substring(0, 15)}..."`);
         if (userState.timer) clearTimeout(userState.timer);
+        const debounceMs = this._getDebounceMs(chatId);
         userState.timer = setTimeout(() => {
             this._commitToQueue(chatId);
-        }, this.DEBOUNCE_MS);
+        }, debounceMs);
         this.userBuffers.set(chatId, userState);
     }
 
     _commitDirectly(ctx, text, isPriority) {
-        // ✨ [v9.1 插隊系統：大腦層擴充]
-        // 如果不是特急件 (isPriority=false)，且隊列中已有任務 (長度 >= 1)，則觸發詢問
         if (!isPriority && this.queue.length >= 1) {
             const approvalId = uuidv4();
-
-            // 將對話任務暫存在 Controller 的 pendingTasks
             this.controller.pendingTasks.set(approvalId, {
                 type: 'DIALOGUE_QUEUE_APPROVAL',
-                ctx,
-                text,
-                timestamp: Date.now()
+                ctx, text, timestamp: Date.now()
             });
-
-            // 回傳 Telegram 行內鍵盤選項
             ctx.reply(
-                `🚨 **大腦思考中**\n目前有 \`${this.queue.length}\` 則訊息正在等待處理，且 Golem 正在專心做其他事。\n\n請問這則新訊息是否要 **急件插隊**？`,
+                `🚨 **大腦思考中**\n目前有 \`${this.queue.length}\` 則訊息正在等待處理。\n\n請問這則新訊息是否要 **急件插隊**？`,
                 {
                     parse_mode: 'Markdown',
                     reply_markup: {
@@ -66,46 +69,32 @@ class ConversationManager {
                     }
                 }
             ).then(msg => {
-                // 30 秒自動 Timeout 防呆 (預設為 Append)
                 setTimeout(async () => {
                     const task = this.controller.pendingTasks.get(approvalId);
                     if (task && task.type === 'DIALOGUE_QUEUE_APPROVAL') {
                         this.controller.pendingTasks.delete(approvalId);
-                        console.log(`⏳ [Dialogue Queue] 互動超時，任務 ${approvalId} 自動排入隊尾。`);
-
+                        console.log(`[Queue] Timeout, auto-append ${approvalId}`);
                         try {
                             if (ctx.platform === 'telegram' && msg && msg.message_id) {
                                 await ctx.instance.editMessageText(
-                                    `🚨 **大腦思考中**\n目前對話佇列繁忙。\n\n*(預設) 已將此訊息自動排入對話隊尾。*`,
-                                    {
-                                        chat_id: ctx.chatId,
-                                        message_id: msg.message_id,
-                                        parse_mode: 'Markdown',
-                                        reply_markup: { inline_keyboard: [] }
-                                    }
+                                    `🚨 **大腦思考中**\n*(預設) 已將此訊息自動排入隊尾。*`,
+                                    { chat_id: ctx.chatId, message_id: msg.message_id, parse_mode: 'Markdown', reply_markup: { inline_keyboard: [] } }
                                 ).catch(() => { });
                             }
-                        } catch (e) { console.warn("無法更新 Dialogue Timeout 訊息:", e.message); }
-
-                        // 超時後強制以一般優先級入隊
+                        } catch (e) { }
                         this._actualCommit(ctx, text, false);
                     }
                 }, 30000);
             });
             return;
         }
-
-        // 正常入隊
         this._actualCommit(ctx, text, isPriority);
     }
 
     _actualCommit(ctx, text, isPriority) {
-        console.log(`📦 [Dialogue Queue] 加入隊列 (Direct) ${isPriority ? '[💥VIP 插隊中]' : ''} - 準備交由大腦處理`);
-        if (isPriority) {
-            this.queue.unshift({ ctx, text }); // Priority goes to the front of the line
-        } else {
-            this.queue.push({ ctx, text });
-        }
+        console.log(`[Queue] Commit ${isPriority ? '[VIP]' : ''}`);
+        if (isPriority) { this.queue.unshift({ ctx, text }); }
+        else { this.queue.push({ ctx, text }); }
         this._processQueue();
     }
 
@@ -123,13 +112,12 @@ class ConversationManager {
         this.isProcessing = true;
         const task = this.queue.shift();
         try {
-            console.log(`🚀 [Dialogue Queue:${this.golemId}] 從隊列取出，開始處理對話...`);
-            console.log(`🗣️ [User->${this.golemId}] 說: ${task.text}`);
+            console.log(`[Queue:${this.golemId}] Processing...`);
+            console.log(`[User->${this.golemId}] ${task.text}`);
 
-            // ✨ [Log] 記錄用戶輸入 (Fix missing user logs)
             this.brain._appendChatLog({
                 timestamp: Date.now(),
-                sender: 'User', // 統一顯示為 User，也可由 ctx.userId 區分
+                sender: 'User',
                 content: task.text,
                 type: 'user',
                 role: 'User',
@@ -145,18 +133,13 @@ class ConversationManager {
             const isMentioned = task.ctx.isMentioned ? task.ctx.isMentioned(task.text) : false;
 
             if (this.silentMode && !isMentioned) {
-                console.log(`🤫 [Dialogue Queue:${this.golemId}] 完全靜默模式啟動中，且未被標記，跳過大腦處理。`);
+                console.log(`[Queue:${this.golemId}] Silent mode, skipping.`);
                 return;
             }
 
             const shouldSuppressReply = this.observerMode && !isMentioned;
-
             if (shouldSuppressReply) {
-                console.log(`👁️ [Dialogue Queue:${this.golemId}] 觀察者模式監聽中 (背景同步上下文)...`);
-            }
-
-            if (isMentioned && (this.silentMode || this.observerMode)) {
-                console.log(`📢 [Dialogue Queue:${this.golemId}] 模式中偵測到標記，強制恢復回應。`);
+                console.log(`[Queue:${this.golemId}] Observer mode, listening...`);
             }
 
             const raw = await this.brain.sendMessage(finalInput, false, {
@@ -165,8 +148,7 @@ class ConversationManager {
             });
             await this.NeuroShunter.dispatch(task.ctx, raw, this.brain, this.controller, { suppressReply: shouldSuppressReply });
         } catch (e) {
-            console.error(`❌ [Dialogue Queue:${this.golemId}] 處理失敗:`, e);
-            // ✅ [M-4 Fix] 對外只顯示友善錯誤，避免洩露路徑/Selector 等內部資訊
+            console.error(`[Queue:${this.golemId}] Error:`, e);
             await task.ctx.reply(`⚠️ 系統暫時無法回應，請稍後再試。`);
         } finally {
             this.isProcessing = false;

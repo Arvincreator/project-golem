@@ -109,9 +109,11 @@ class PageInteractor {
             const bubbles = document.querySelectorAll(s);
             if (bubbles.length === 0) return "";
             let target = bubbles[bubbles.length - 1];
-            let container = target.closest('model-response') ||
-                target.closest('.markdown') ||
-                target.closest('.model-response-text') ||
+            // Generic container detection (works for Monica.im, Gemini, etc.)
+            let container = target.closest('[class*="markdown"]') ||
+                target.closest('[class*="message"]') ||
+                target.closest('[class*="content"]') ||
+                target.closest('[class*="response"]') ||
                 target.parentElement || target;
             return container.innerText || "";
         }, responseSelector).catch(() => "");
@@ -123,11 +125,11 @@ class PageInteractor {
     async _typeInput(inputSelector, text) {
         // 🚀 定義網頁原生文字編輯器的通用特徵 (無視 class 改變)
         const fallbackSelectors = [
+            'textarea',
             '.ProseMirror',
             'rich-textarea',
             'div[role="textbox"][contenteditable="true"]',
-            'div[contenteditable="true"]',
-            'textarea'
+            'div[contenteditable="true"]'
         ];
 
         let targetSelector = inputSelector;
@@ -209,19 +211,44 @@ class PageInteractor {
     }
 
     async _clickSend(sendSelector) {
-        console.log("🚀 [PageInteractor] 發送訊號中 (Enter 爆破 + 實體按鈕補送)...");
+        console.log("🚀 [PageInteractor] 發送訊號中 (Monica.im 適配)...");
 
-        // 1. Enter 爆破
-        await this.page.keyboard.press('Enter');
+        // Strategy 1: Try clicking the Monica.im circular send button (div.clickable)
+        const clicked = await this.page.evaluate((s) => {
+            // Try provided selector first
+            let btn = document.querySelector(s);
+            if (btn && btn.offsetHeight > 0) { btn.click(); return 'selector'; }
 
-        // 2. 實體按鈕補強 (有些 UI 只有點擊按鈕才能觸發正確的 state)
-        await this.page.evaluate((s) => {
-            const btn = document.querySelector(s) ||
-                document.querySelector('button[aria-label*="發送"], button[aria-label*="Send"], button[disabled="false"]');
-            if (btn && btn.offsetHeight > 0) btn.click();
+            // Monica.im specific: circular send button
+            btn = document.querySelector('div[class*="rounded-[100px]"][class*="clickable"]');
+            if (btn && btn.offsetHeight > 0) { btn.click(); return 'monica-div'; }
+
+            // Fallback: any clickable div near textarea that looks like a send button
+            const sendCandidates = document.querySelectorAll('div.clickable, [class*="send"], [class*="Send"]');
+            for (const el of sendCandidates) {
+                const rect = el.getBoundingClientRect();
+                if (rect.width > 15 && rect.width < 60 && rect.height > 15 && rect.height < 60 && el.offsetHeight > 0) {
+                    // Check if it has an SVG icon (arrow) inside
+                    if (el.querySelector('svg')) { el.click(); return 'svg-btn'; }
+                }
+            }
+
+            // Legacy: standard button elements
+            btn = document.querySelector('button[aria-label*="Send"], button[aria-label*="\u50b3\u9001"]');
+            if (btn && btn.offsetHeight > 0) { btn.click(); return 'aria-btn'; }
+
+            return null;
         }, sendSelector);
 
-        await new Promise(r => setTimeout(r, 200));
+        if (clicked) {
+            console.log(`✅ [PageInteractor] Send clicked via: ${clicked}`);
+        } else {
+            // Strategy 2: Enter key as last resort
+            console.log("⚠️ [PageInteractor] No send button found, using Enter key");
+            await this.page.keyboard.press('Enter');
+        }
+
+        await new Promise(r => setTimeout(r, 300));
     }
 
     /**
@@ -286,7 +313,7 @@ class PageInteractor {
                 const stopButtons = Array.from(document.querySelectorAll('button, [role="button"]'))
                     .filter(b => {
                         const txt = (b.innerText || b.textContent || "").trim();
-                        return ['停止', 'Stop', '中斷'].includes(txt);
+                        return ['停止', 'Stop', '中斷', 'stop generating', 'Stop generating'].includes(txt);
                     });
 
                 // 如果有停止按鈕，代表還在跑

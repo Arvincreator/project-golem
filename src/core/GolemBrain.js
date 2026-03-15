@@ -1,5 +1,5 @@
 // ============================================================
-// 🧠 Golem Brain (Web Gemini) - Clean Architecture Facade
+// Golem Brain - Dual-Engine Architecture (API / Browser)
 // ============================================================
 const path = require('path');
 const ConfigManager = require('../config');
@@ -14,36 +14,55 @@ const PageInteractor = require('./PageInteractor');
 const ChatLogManager = require('../managers/ChatLogManager');
 const SkillIndexManager = require('../managers/SkillIndexManager');
 const NodeRouter = require('./NodeRouter');
-const { URLS } = require('./constants');
+const { URLS, AI_PROVIDERS, ACTIVE_PROVIDER } = require('./constants');
+const ApiLLMClient = require('../services/ApiLLMClient');
 
-// ============================================================
-// 🧠 Golem Brain (Web Gemini) - Dual-Engine + Titan Protocol
-// ============================================================
+// RAG client (optional)
+let aragClient = null;
+try {
+    const AragClient = require('../services/AragClient');
+    aragClient = new AragClient();
+} catch (e) { }
+
 class GolemBrain {
     constructor(options = {}) {
-        // ── 實體識別與設定 ──
         this.golemId = options.golemId || 'default';
         this.userDataDir = options.userDataDir || path.resolve(ConfigManager.CONFIG.USER_DATA_DIR || './golem_memory');
         this.skillIndex = new SkillIndexManager(this.userDataDir);
 
-        // ── 瀏覽器狀態 ──
+        // Engine mode: 'api' = no Puppeteer, 'browser' = Puppeteer
+        this.engineMode = (process.env.GOLEM_BRAIN_ENGINE || 'browser').toLowerCase();
+        console.log(`[GolemBrain] Engine: ${this.engineMode.toUpperCase()}`);
+
+        // Browser state
         this.browser = null;
         this.page = null;
         this.memoryPage = null;
         this.cdpSession = null;
 
-        // ── DOM 修復服務 ──
+        // DOM repair
         this.doctor = new DOMDoctor();
         this.selectors = this.doctor.loadSelectors();
 
-        // ── 記憶引擎 ──
+        // Memory engine
         const mode = ConfigManager.cleanEnv(process.env.GOLEM_MEMORY_MODE || 'browser').toLowerCase();
-        console.log(`⚙️ [System] 記憶引擎模式: ${mode.toUpperCase()} (Golem: ${this.golemId})`);
+        console.log(`[GolemBrain] Memory: ${mode.toUpperCase()} (Golem: ${this.golemId})`);
         if (mode === 'qmd') this.memoryDriver = new SystemQmdDriver();
         else if (mode === 'native' || mode === 'system') this.memoryDriver = new SystemNativeDriver();
         else this.memoryDriver = new BrowserMemoryDriver(this);
 
-        // ── 對話日誌 ──
+        // Browser health
+        this.browserHealthy = true;
+        this.browserFailCount = 0;
+        this.browserFailed = false;
+
+        // API LLM Client
+        this.apiClient = new ApiLLMClient();
+        if (this.apiClient.available) {
+            console.log(`[GolemBrain] API available: ${this.apiClient.providerName}`);
+        }
+
+        // Chat log
         this.chatLogManager = new ChatLogManager({
             golemId: this.golemId,
             logDir: options.logDir || ConfigManager.LOG_BASE_DIR,
@@ -51,204 +70,232 @@ class GolemBrain {
         });
     }
 
-    // ─── Public API (向後相容) ─────────────────────────────
-
-    /**
-     * 初始化瀏覽器、記憶引擎、注入系統 Prompt
-     * @param {boolean} [forceReload=false] - 是否強制重新載入
-     */
     async init(forceReload = false) {
         if (this.browser && !forceReload) return;
 
         let isNewSession = false;
 
-        // 1. 啟動 / 連線瀏覽器
-        if (!this.browser) {
-            console.log(`📂 [System] Browser User Data Dir: ${this.userDataDir} (Golem: ${this.golemId})`);
+        // API mode: skip browser entirely
+        if (this.engineMode === 'api') {
+            console.log(`[GolemBrain] API-only mode — skipping Puppeteer`);
+            this.browserFailed = true;
+            this.browserHealthy = false;
 
-            this.browser = await BrowserLauncher.launch({
-                userDataDir: this.userDataDir,
-                headless: process.env.PUPPETEER_HEADLESS,
-            });
+            // Parallel init: chatLog + skillIndex
+            await Promise.all([
+                this.chatLogManager.init(),
+                this._syncSkillIndex(),
+            ]);
+
+            // Memory driver init — force native in API mode if still Browser
+            if (this.memoryDriver instanceof BrowserMemoryDriver) {
+                console.log('[GolemBrain] API mode: switching memory to SystemNativeDriver');
+                this.memoryDriver = new SystemNativeDriver();
+            }
+            await this._initMemoryDriver();
+
+            // 3-Layer Memory Architecture (inspired by Letta/MemGPT)
+            // Core: SystemNativeDriver (fast, local, always in-context)
+            // Recall: ChatLogManager (5-tier pyramid, searchable history)
+            // Archival: AragClient (Edge A-RAG, semantic+graph+causal)
+            this.recallMemory = this.chatLogManager;
+            this.archivalMemory = aragClient;
+            console.log(`[GolemBrain] 3-Layer Memory: Core=${this.memoryDriver.constructor.name}, Recall=ChatLog, Archival=${aragClient ? 'A-RAG' : 'none'}`);
+
+            this._linkDashboard();
+            return;
         }
 
-        // 2. 取得或建立頁面
-        if (!this.page) {
+        // Browser mode
+        if (!this.browser) {
+            console.log(`[GolemBrain] Browser Data Dir: ${this.userDataDir} (Golem: ${this.golemId})`);
+            try {
+                this.browser = await BrowserLauncher.launch({
+                    userDataDir: this.userDataDir,
+                    headless: process.env.PUPPETEER_HEADLESS,
+                });
+            } catch (browserErr) {
+                console.warn(`[GolemBrain] Browser launch failed: ${browserErr.message}`);
+                if (this.apiClient && this.apiClient.available) {
+                    console.log(`[GolemBrain] Falling back to API-only mode`);
+                    this.browserFailed = true;
+                    this.browserHealthy = false;
+                } else {
+                    throw browserErr;
+                }
+            }
+        }
+
+        if (!this.browserFailed && !this.page) {
             const pages = await this.browser.pages();
             this.page = pages.length > 0 ? pages[0] : await this.browser.newPage();
-            console.log(`🚀 [System] Browser Session Started (Golem: ${this.golemId})`);
-            await this.page.goto(URLS.GEMINI_APP, { waitUntil: 'networkidle2' });
+            console.log(`[GolemBrain] Browser Session Started (Golem: ${this.golemId})`);
+            const provider = AI_PROVIDERS[ACTIVE_PROVIDER];
+            console.log(`[GolemBrain] AI Provider: ${provider.name} (${ACTIVE_PROVIDER})`);
+            console.log(`[GolemBrain] Navigating to: ${provider.url}`);
+            await this.page.goto(provider.url, { waitUntil: 'networkidle2', timeout: 60000 });
             isNewSession = true;
-        }
 
-        // 2.5 初始化日誌管理員 (建立目錄)
-        await this.chatLogManager.init();
-
-        // 2.6 同步技能索引到 SQLite (僅在完成建立/設定後才啟動)
-        try {
-            const personaManager = require('../skills/core/persona');
-            if (personaManager.exists(this.userDataDir)) {
-                // 獲取目前啟用的技能清單
-                const personaData = personaManager.get(this.userDataDir);
-                const personaSkills = personaData.skills || [];
-                const { resolveEnabledSkills } = require('../skills/skillsConfig');
-
-                const enabledSet = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', personaSkills);
-                await this.skillIndex.sync(Array.from(enabledSet));
-            } else {
-                console.log(`⏸️ [Brain][${this.golemId}] 尚未完成設定 (Missing persona.json)，跳過技能索引同步。`);
+            // Quick auth check: verify textarea exists within 3s
+            const authOk = await this._checkBrowserAuth();
+            if (!authOk) {
+                console.warn(`[GolemBrain] Browser auth failed — textarea not found. Switching to API mode.`);
+                this.browserHealthy = false;
+                this.browserFailed = true;
             }
-        } catch (e) {
-            console.warn('⚠️ [Brain] 技能索引同步失敗:', e.message);
         }
 
-        // 3. 初始化記憶引擎 (含降級策略)
-        await this._initMemoryDriver();
+        // Parallel init
+        await Promise.all([
+            this.chatLogManager.init(),
+            this._syncSkillIndex(),
+        ]);
 
-        // 4. Dashboard 整合 (可選)
+        await this._initMemoryDriver();
         this._linkDashboard();
 
-        // 5. 新會話: 注入系統 Prompt
-        if (forceReload || isNewSession) {
+        if (!this.browserFailed && (forceReload || isNewSession)) {
             await this._injectSystemPrompt(forceReload);
         }
     }
 
     /**
-     * 建立 Chrome DevTools Protocol 連線
+     * Quick auth check: verify the AI textarea is accessible within 3 seconds
      */
+    async _checkBrowserAuth() {
+        if (!this.page) return false;
+        try {
+            const textarea = await this.page.waitForSelector(
+                'textarea, [contenteditable="true"], div[role="textbox"]',
+                { timeout: 3000 }
+            );
+            return !!textarea;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    async _syncSkillIndex() {
+        try {
+            const personaManager = require('../skills/core/persona');
+            if (personaManager.exists(this.userDataDir)) {
+                const personaData = personaManager.get(this.userDataDir);
+                const personaSkills = personaData.skills || [];
+                const { resolveEnabledSkills } = require('../skills/skillsConfig');
+                const enabledSet = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', personaSkills);
+                await this.skillIndex.sync(Array.from(enabledSet));
+                this._skillCount = enabledSet.size;
+            } else {
+                console.log(`[Brain][${this.golemId}] No persona.json, skipping skill sync.`);
+            }
+        } catch (e) {
+            console.warn('[Brain] Skill index sync failed:', e.message);
+        }
+    }
+
     async setupCDP() {
         if (this.cdpSession) return;
         try {
             this.cdpSession = await this.page.target().createCDPSession();
             await this.cdpSession.send('Network.enable');
-            console.log("🔌 [CDP] 網路神經連結已建立 (Neuro-Link Active)");
+            console.log("[CDP] Neuro-Link Active");
         } catch (e) {
-            console.error("❌ [CDP] 連線失敗:", e.message);
+            console.error("[CDP] Connection failed:", e.message);
         }
     }
 
-    // ✨ [新增] 動態視覺腳本：針對新版 UI 切換模型 (支援中英文介面與防呆)
     async switchModel(targetMode) {
-        if (!this.page) throw new Error("大腦尚未啟動。");
+        if (!this.page) throw new Error("Brain not initialized.");
         try {
             const result = await this.page.evaluate(async (mode) => {
                 const delay = (ms) => new Promise(r => setTimeout(r, ms));
-
-                // 定義支援的模式及其可能的中英文關鍵字
                 const modeKeywords = {
                     'fast': ['fast', '快捷'],
-                    'thinking': ['thinking', '思考型', '思考'], // 增加容錯率
-                    'pro': ['pro'] // Pro 通常中英文都叫 Pro
+                    'thinking': ['thinking', '思考型', '思考'],
+                    'pro': ['pro']
                 };
-
-                // 取得目標模式的所有關鍵字
                 const targetKeywords = modeKeywords[mode] || [mode];
-
-                // 1. 尋找畫面底部含有目標關鍵字的按鈕 (這可能是展開選單的按鈕)
                 const allKnownKeywords = [...modeKeywords.fast, ...modeKeywords.thinking, ...modeKeywords.pro];
                 const buttons = Array.from(document.querySelectorAll('div[role="button"], button'));
                 let pickerBtn = null;
-
                 for (const btn of buttons) {
                     const txt = (btn.innerText || "").toLowerCase().trim();
                     if (allKnownKeywords.some(k => txt.includes(k.toLowerCase())) && btn.offsetHeight > 10 && btn.offsetHeight < 60) {
                         const rect = btn.getBoundingClientRect();
-                        // 根據截圖，該按鈕位於畫面下半部
-                        if (rect.top > window.innerHeight / 2) {
-                            pickerBtn = btn;
-                            break;
-                        }
+                        if (rect.top > window.innerHeight / 2) { pickerBtn = btn; break; }
                     }
                 }
-
-                if (!pickerBtn) return "⚠️ 找不到畫面底部的模型切換按鈕。UI 可能已變更，或您停留在登入畫面。";
-
-                // ✨ [核心防呆] 檢查按鈕是否為「灰色不可點擊」狀態
-                const isDisabled = pickerBtn.disabled ||
-                    pickerBtn.getAttribute('aria-disabled') === 'true' ||
-                    pickerBtn.classList.contains('disabled');
-
-                if (isDisabled) {
-                    return "⚠️ 模型切換按鈕目前呈現「灰色不可點擊」狀態！這通常是因為您尚未登入 Google 帳號，或該帳號目前沒有權限切換模型。";
+                if (!pickerBtn) return "Model switch button not found.";
+                if (pickerBtn.disabled || pickerBtn.getAttribute('aria-disabled') === 'true') {
+                    return "Model switch button is disabled.";
                 }
-
-                // 點擊展開選單
                 pickerBtn.click();
-                await delay(1000); // 等待選單彈出動畫
-
-                // 2. 尋找選單中對應的目標模式 (比對中英文關鍵字)
+                await delay(1000);
                 const items = Array.from(document.querySelectorAll('*'));
-                let targetElement = null;
-                let bestMatch = null;
-
+                let targetElement = null, bestMatch = null;
                 for (const el of items) {
-                    // 排除觸發按鈕本身，避免點到自己導致選單關閉
                     if (pickerBtn === el || pickerBtn.contains(el)) continue;
-
-                    // 排除不可見的元素
                     const rect = el.getBoundingClientRect();
                     if (rect.width === 0 || rect.height === 0) continue;
-
                     const txt = (el.innerText || "").trim().toLowerCase();
-
-                    // 【防呆關鍵】如果文字太長，代表它是大容器 (例如整個網頁 background)，絕對不能點擊
                     if (txt.length === 0 || txt.length > 50) continue;
-
-                    // 檢查是否包含目標關鍵字
                     if (targetKeywords.some(keyword => txt.includes(keyword.toLowerCase()))) {
-                        // 優先尋找帶有標準選單屬性的元素
                         const role = el.getAttribute('role');
-                        if (role === 'menuitem' || role === 'menuitemradio' || role === 'option') {
-                            targetElement = el;
-                            break; // 找到最標準的選項，直接選定中斷
-                        }
-
-                        // 否則，尋找最深層的元素 (querySelectorAll 由外而內，最後的通常最深)
+                        if (role === 'menuitem' || role === 'menuitemradio' || role === 'option') { targetElement = el; break; }
                         bestMatch = el;
                     }
                 }
-
-                // 如果找不到標準 role，使用最深層的比對結果
-                if (!targetElement) {
-                    targetElement = bestMatch;
-                }
-
-                if (!targetElement) {
-                    // 若真的找不到，點擊背景關閉選單避免畫面卡死
-                    document.body.click();
-                    return `⚠️ 選單已展開，但找不到對應「${mode}」的選項 (已搜尋關鍵字: ${targetKeywords.join(', ')})。您可能目前無法使用該模型。`;
-                }
-
-                // 點擊目標選項
+                if (!targetElement) targetElement = bestMatch;
+                if (!targetElement) { document.body.click(); return `Option "${mode}" not found.`; }
                 targetElement.click();
                 await delay(800);
-                return `✅ 成功為您點擊並切換至 [${mode}] 模式！`;
+                return `Switched to [${mode}]`;
             }, targetMode.toLowerCase());
-
             return result;
         } catch (error) {
-            return `❌ 視覺腳本執行失敗: ${error.message}`;
+            return `Switch failed: ${error.message}`;
         }
     }
 
-    /**
-     * 發送訊息到 Gemini 並等待結構化回應
-     * @param {string} text - 訊息內容
-     * @param {boolean} [isSystem=false] - 是否為系統訊息
-     * @returns {Promise<string>} 清理後的 AI 回應
-     */
     async sendMessage(text, isSystem = false, options = {}) {
-        if (!this.browser) await this.init();
+        if (!this.browser && this.engineMode !== 'api') await this.init();
+
+        // API-only mode or browser unhealthy: use API directly
+        if (this.browserFailed || (!this.browserHealthy && this.apiClient && this.apiClient.available)) {
+            // Route model selection before sending
+            try {
+                const router = require('../skills/core/model-router');
+                const route = router.selectBestModel(text, {
+                    engine: this.engineMode || 'api',
+                    userDataDir: this.userDataDir,
+                    conversationId: this.golemId,
+                });
+                this.apiClient.setModel(route.model);
+                if (route.reason !== 'sticky') {
+                    console.log(`[GolemBrain] API → ${route.model} (${route.taskType})`);
+                }
+            } catch (routeErr) {
+                // Routing failure is non-fatal, use default model
+            }
+            try {
+                return await this.apiClient.sendMessage(text);
+            } catch (apiErr) {
+                console.error(`[GolemBrain] API failed: ${apiErr.message}`);
+                if (this.engineMode === 'api') throw apiErr;
+                // Reset browser to try again
+                this.browserHealthy = true;
+                this.browserFailCount = 0;
+            }
+        }
+
         try { await this.page.bringToFront(); } catch (e) { }
         await this.setupCDP();
 
-        // ── [v9.1] Slash Command Interception ──
+        // Slash command interception
         if (text.startsWith('/') || text.startsWith('GOLEM_SKILL::')) {
             const commandResult = await NodeRouter.handle({ text, isAdmin: true }, this);
             if (commandResult) {
-                console.log(`⚡ [Brain] 指令攔截器已處理: ${text}`);
-                // 模擬 AI 回應格式返回 (若有需要可以包裝成更複雜的格式)
+                console.log(`[Brain] Command intercepted: ${text}`);
                 return commandResult;
             }
         }
@@ -258,72 +305,89 @@ class GolemBrain {
         const endTag = ProtocolFormatter.buildEndTag(reqId);
         const payload = ProtocolFormatter.buildEnvelope(text, reqId, options);
 
-        console.log(`📡 [Brain] 發送訊號: ${reqId} (含每回合強制洗腦引擎)`);
-
+        console.log(`[Brain] Signal: ${reqId}`);
         const interactor = new PageInteractor(this.page, this.doctor);
 
         try {
-            return await interactor.interact(
-                payload, this.selectors, isSystem, startTag, endTag
-            );
+            return await interactor.interact(payload, this.selectors, isSystem, startTag, endTag);
         } catch (e) {
-            // 處理 selector 修復觸發的重試
             if (e.message && e.message.startsWith('SELECTOR_HEALED:')) {
                 const [, type, newSelector] = e.message.split(':');
                 this.selectors[type] = newSelector;
                 this.doctor.saveSelectors(this.selectors);
-                return interactor.interact(
-                    payload, this.selectors, isSystem, startTag, endTag, 1
-                );
+                return interactor.interact(payload, this.selectors, isSystem, startTag, endTag, 1);
+            }
+            this.browserFailCount = (this.browserFailCount || 0) + 1;
+            if (this.browserFailCount >= 1) {
+                this.browserHealthy = false;
+                console.log(`[GolemBrain] Browser unhealthy (${this.browserFailCount} failures). Using API next.`);
+            }
+            if (this.apiClient && this.apiClient.available) {
+                console.log(`[GolemBrain] Falling back to API (${this.apiClient.providerName})...`);
+                try {
+                    const apiResponse = await this.apiClient.sendMessage(text);
+                    console.log(`[GolemBrain] API fallback OK (${apiResponse.length} chars)`);
+                    return apiResponse;
+                } catch (apiErr) {
+                    console.error(`[GolemBrain] API fallback failed: ${apiErr.message}`);
+                }
             }
             throw e;
         }
     }
 
     /**
-     * 從記憶中回憶相關內容
-     * @param {string} queryText - 查詢文字
-     * @returns {Promise<Array>}
+     * Recall from local memory + RAG (merged, top 5)
      */
     async recall(queryText) {
         if (!queryText) return [];
-        try { return await this.memoryDriver.recall(queryText); } catch (e) { return []; }
+        const results = [];
+
+        // Local memory
+        try {
+            const local = await this.memoryDriver.recall(queryText);
+            if (local && local.length > 0) results.push(...local);
+        } catch (e) { }
+
+        // Graph RAG (if available)
+        if (aragClient) {
+            try {
+                const ragResults = await aragClient.query(queryText, 5);
+                if (ragResults && ragResults.length > 0) {
+                    for (const r of ragResults) {
+                        results.push({ text: r.name || r.content || JSON.stringify(r), source: 'graph-rag', score: r.score || 0 });
+                    }
+                }
+            } catch (e) {
+                console.warn('[GolemBrain] RAG query failed:', e.message);
+            }
+        }
+
+        // Sort by score descending, take top 5
+        results.sort((a, b) => (b.score || 0) - (a.score || 0));
+        return results.slice(0, 5);
     }
 
-    /**
-     * 將內容存入長期記憶
-     * @param {string} text - 要記憶的文字
-     * @param {Object} [metadata={}] - 附加 metadata
-     */
     async memorize(text, metadata = {}) {
         try { await this.memoryDriver.memorize(text, metadata); } catch (e) { }
     }
 
-    /**
-     * 附加對話日誌
-     * @param {Object} entry - 日誌紀錄
-     */
     _appendChatLog(entry) {
-        // 確保在寫入前已初始化 (防呆)
         this.chatLogManager.init().then(() => {
             this.chatLogManager.append(entry);
         });
     }
 
-    // ─── Private Methods ─────────────────────────────────────
-
-    /** 初始化記憶引擎，失敗時降級 */
     async _initMemoryDriver() {
         try {
             await this.memoryDriver.init();
         } catch (e) {
-            console.warn("🔄 [System] 記憶引擎降級為 Browser/Native...");
+            console.warn("[GolemBrain] Memory driver fallback to Browser/Native...");
             this.memoryDriver = new BrowserMemoryDriver(this);
             await this.memoryDriver.init();
         }
     }
 
-    /** 連結 Dashboard (若以 dashboard 模式啟動) */
     _linkDashboard() {
         if (!process.argv.includes('dashboard')) return;
         try {
@@ -333,43 +397,30 @@ class GolemBrain {
             try {
                 const dashboard = require('../../dashboard.js');
                 dashboard.setContext(this.golemId, this, this.memoryDriver);
-            } catch (err) {
-                console.error("Failed to link dashboard context:", err);
-            }
+            } catch (err) { }
         }
     }
 
-    /**
-     * 🔄 對外公開：重新組裝技能書並注入 Gemini（開啟全新的聊天視窗）
-     * 供 Dashboard 的「注入技能書」按鈕使用
-     * ✅ [需求變更] 依據使用者要求，禁止即時熱注入，改為「重新開啟 Gemini 對話視窗」後再注入
-     */
     async reloadSkills() {
-        // 1. 清除 ProtocolFormatter 快取，讓下次 build 時重新掃描
         ProtocolFormatter._lastScanTime = 0;
-        console.log(`🔄 [Brain][${this.golemId}] 技能快取已清除，開始重新開啟對話視窗並注入...`);
-
-        // 2. 若瀏覽器還沒準備好，直接返回（表示本次注入會在下次 init 時生效）
+        console.log(`[Brain][${this.golemId}] Skill cache cleared, reloading...`);
         if (!this.page) {
-            console.log(`⚠️ [Brain][${this.golemId}] 瀏覽器尚未初始化，技能將在下次啟動時自動載入。`);
+            console.log(`[Brain][${this.golemId}] Browser not ready, skills load on next init.`);
+            return;
+        }
+        const { AI_PROVIDERS, ACTIVE_PROVIDER } = require('./constants');
+        await this.page.goto(AI_PROVIDERS[ACTIVE_PROVIDER].url, { waitUntil: 'networkidle2' });
+        await this._injectSystemPrompt(true);
+        console.log(`[Brain][${this.golemId}] Skills reloaded.`);
+    }
+
+    async _injectSystemPrompt(forceRefresh = false) {
+        // In API mode, skip browser-based injection
+        if (this.engineMode === 'api') {
+            console.log(`[Brain] API mode — skipping browser prompt injection`);
             return;
         }
 
-        // 3. 重新開啟 Gemini 視窗 (New Chat) 後再注入
-        console.log(`🔄 [Brain][${this.golemId}] 正在開啟新的 Gemini 對話視窗...`);
-        const { URLS } = require('./constants');
-        console.log(`🚀 [System] Browser Session Started (Golem: ${this.golemId})`);
-        await this.page.goto(URLS.GEMINI_APP, { waitUntil: 'networkidle2' });
-
-        await this._injectSystemPrompt(true);
-        console.log(`✅ [Brain][${this.golemId}] 技能書已成功注入至全新的 Gemini 會話。`);
-    }
-
-    /**
-     * 組裝並發送系統 Prompt
-     * @param {boolean} [forceRefresh=false]
-     */
-    async _injectSystemPrompt(forceRefresh = false) {
         let { systemPrompt, skillMemoryText } = await ProtocolFormatter.buildSystemPrompt(forceRefresh, {
             userDataDir: this.userDataDir,
             golemId: this.golemId
@@ -377,93 +428,79 @@ class GolemBrain {
 
         if (skillMemoryText) {
             await this.memorize(skillMemoryText, { type: 'system_skills', source: 'boot_init' });
-            console.log(`🧠 [Memory] 已成功將技能載入長期記憶中！`);
+            console.log(`[Memory] Skills loaded to long-term memory`);
         }
 
-        // 🚀 [第一階段] 發送底層系統協議 (不含歷史摘要)
         const compressedPrompt = ProtocolFormatter.compress(systemPrompt);
-        await this.sendMessage(compressedPrompt, false); // ⚡ 改為 false：等待完整回應
-        console.log(`📡 [Brain] 階段一：底層協議注入完成。`);
+        await this.sendMessage(compressedPrompt, false);
+        console.log(`[Brain] Phase 1: Protocol injected.`);
 
-        // 🧠 [第二階段] 金字塔式多層記憶注入
+        // Phase 2: Multi-tier memory injection
         if (this.chatLogManager) {
             try {
                 let historicalMemory = "";
 
-                // 🏛️ Tier 4: 紀元里程碑 (最近 1 個)
                 const eraSummaries = this.chatLogManager.readTier('era', 1);
-                if (eraSummaries.length > 0) {
-                    eraSummaries.forEach(s => {
-                        historicalMemory += `\n=== [紀元回憶: ${s.date}] ===\n${s.content}\n`;
-                    });
-                }
+                eraSummaries.forEach(s => { historicalMemory += `\n=== [Era: ${s.date}] ===\n${s.content}\n`; });
 
-                // 🏛️ Tier 3: 年度回顧 (最近 1 個)
                 const yearlySummaries = this.chatLogManager.readTier('yearly', 1);
-                if (yearlySummaries.length > 0) {
-                    yearlySummaries.forEach(s => {
-                        historicalMemory += `\n=== [年度回顧: ${s.date}] ===\n${s.content}\n`;
-                    });
-                }
+                yearlySummaries.forEach(s => { historicalMemory += `\n=== [Yearly: ${s.date}] ===\n${s.content}\n`; });
 
-                // 🏛️ Tier 2: 月度精華 (最近 3 個)
                 const monthlySummaries = this.chatLogManager.readTier('monthly', 3);
-                if (monthlySummaries.length > 0) {
-                    monthlySummaries.forEach(s => {
-                        historicalMemory += `\n--- [月度精華: ${s.date}] ---\n${s.content}\n`;
-                    });
-                }
+                monthlySummaries.forEach(s => { historicalMemory += `\n--- [Monthly: ${s.date}] ---\n${s.content}\n`; });
 
-                // 🏛️ Tier 1: 每日摘要 (最近 7 天)
                 const dailySummaries = this.chatLogManager.readTier('daily', 7);
-                if (dailySummaries.length > 0) {
-                    dailySummaries.forEach(s => {
-                        historicalMemory += `\n--- [${s.date} 摘要] ---\n${s.content}\n`;
-                    });
-                }
+                dailySummaries.forEach(s => { historicalMemory += `\n--- [${s.date}] ---\n${s.content}\n`; });
 
                 if (historicalMemory) {
-                    const tierCounts = [
-                        eraSummaries.length > 0 ? `紀元×${eraSummaries.length}` : null,
-                        yearlySummaries.length > 0 ? `年度×${yearlySummaries.length}` : null,
-                        monthlySummaries.length > 0 ? `月度×${monthlySummaries.length}` : null,
-                        dailySummaries.length > 0 ? `每日×${dailySummaries.length}` : null,
-                    ].filter(Boolean);
-
-                    // ⚡ [Fix] Token 預算保護：超過 200K 字元時，從最舊 Tier 開始截斷
-                    const MAX_MEMORY_CHARS = 200000;
-                    if (historicalMemory.length > MAX_MEMORY_CHARS) {
-                        console.warn(`⚠️ [Brain] 歷史記憶超過 Token 預算 (${historicalMemory.length} chars > ${MAX_MEMORY_CHARS})，截斷較舊 Tier...`);
-                        historicalMemory = historicalMemory.slice(-MAX_MEMORY_CHARS);
+                    // Token budget: API mode 10K, browser mode 200K
+                    const MAX_CHARS = this.engineMode === 'api' ? 10000 : 200000;
+                    if (historicalMemory.length > MAX_CHARS) {
+                        console.warn(`[Brain] Memory exceeds budget (${historicalMemory.length} > ${MAX_CHARS}), truncating...`);
+                        historicalMemory = historicalMemory.slice(-MAX_CHARS);
                     }
 
-                    // ⚡ [Fix] 動態生成注入說明，只列出實際有資料的層
-                    const tierDesc = tierCounts.length > 0
-                        ? `（涵蓋：${tierCounts.join(' → ')}）`
-                        : '';
-
-                    const memoryPulse = `【指令：載入長期記憶與背景壓縮】\n以下是你過去對話的多層次彙總精華${tierDesc}。請完整閱讀並內化這些背景，將其視為你目前已知的所有先驗知識與決策紀錄：\n${historicalMemory}`;
+                    const memoryPulse = `【Load long-term memory】\n${historicalMemory}`;
                     await this.sendMessage(memoryPulse, false);
-                    console.log(`🧠 [Brain] 階段二：已注入多層記憶 (${tierCounts.join(', ')})。`);
+                    console.log(`[Brain] Phase 2: Memory injected (${historicalMemory.length} chars)`);
                 } else {
-                    // 🕐 Tier 0 Fallback：無任何壓縮摘要時，直接載入全部 hourly 原始對話
                     const rawMemory = this.chatLogManager.readRecentHourly();
                     if (rawMemory) {
-                        const MAX_RAW_CHARS = 200000;
-                        const safeRaw = rawMemory.length > MAX_RAW_CHARS
-                            ? rawMemory.slice(-MAX_RAW_CHARS)
-                            : rawMemory;
-                        const rawPulse = `【指令：載入近期原始對話紀錄】\n目前尚無任何壓縮摘要，以下是你最近的完整對話原文。請完整閱讀並視為你已知的先驗背景：\n${safeRaw}`;
-                        await this.sendMessage(rawPulse, false);
-                        console.log(`🕐 [Brain] 階段二(Fallback)：已注入 Tier 0 原始 hourly 對話 (${safeRaw.length} chars)。`);
-                    } else {
-                        console.log(`ℹ️ [Brain] 階段二：無任何歷史記憶可注入 (全新會話)。`);
+                        const MAX_RAW = this.engineMode === 'api' ? 10000 : 200000;
+                        const safeRaw = rawMemory.length > MAX_RAW ? rawMemory.slice(-MAX_RAW) : rawMemory;
+                        await this.sendMessage(`【Load recent raw logs】\n${safeRaw}`, false);
+                        console.log(`[Brain] Phase 2 (fallback): Raw hourly injected (${safeRaw.length} chars)`);
                     }
                 }
             } catch (e) {
-                console.warn(`⚠️ [Brain] 歷史記憶掃描或注入失敗: ${e.message}`);
+                console.warn(`[Brain] Memory injection failed: ${e.message}`);
             }
         }
+    }
+
+    /**
+     * Health status for /health endpoint
+     */
+    getHealthStatus() {
+        return {
+            golemId: this.golemId,
+            engine: this.engineMode,
+            browserHealthy: this.engineMode === 'api' ? null : this.browserHealthy,
+            browserFailed: this.engineMode === 'api' ? null : this.browserFailed,
+            apiAvailable: this.apiClient ? this.apiClient.available : false,
+            apiProvider: this.apiClient ? this.apiClient.providerName : 'none',
+            apiModel: this.apiClient ? this.apiClient.getModel() : null,
+            memoryReady: this.memoryDriver ? (this.memoryDriver.isReady !== undefined ? this.memoryDriver.isReady : true) : false,
+            ragAvailable: !!aragClient,
+            memory: {
+                core: this.memoryDriver ? this.memoryDriver.constructor.name : 'none',
+                recall: this.chatLogManager ? 'ChatLogManager' : 'none',
+                archival: aragClient ? 'A-RAG' : 'none',
+            },
+            skills: this.skillIndex ? {
+                loaded: this._skillCount || 0,
+            } : null,
+        };
     }
 }
 

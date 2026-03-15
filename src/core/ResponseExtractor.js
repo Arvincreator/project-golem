@@ -33,9 +33,11 @@ class ResponseExtractor {
                         if (bubbles.length === 0) { setTimeout(check, _pollInterval); return; }
 
                         let currentLastBubble = bubbles[bubbles.length - 1];
-                        let container = currentLastBubble.closest('model-response') ||
-                            currentLastBubble.closest('.markdown') ||
-                            currentLastBubble.closest('.model-response-text') ||
+                        // Generic container: works for Monica.im, Gemini, and others
+                        let container = currentLastBubble.closest('[class*="markdown"]') ||
+                            currentLastBubble.closest('[class*="message"]') ||
+                            currentLastBubble.closest('[class*="content"]') ||
+                            currentLastBubble.closest('[class*="response"]') ||
                             currentLastBubble.parentElement ||
                             currentLastBubble;
 

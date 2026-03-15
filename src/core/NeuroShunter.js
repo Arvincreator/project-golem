@@ -1,4 +1,11 @@
 const ResponseParser = require('../utils/ResponseParser');
+
+// Graph RAG client for knowledge building
+let aragClient = null;
+try {
+    const AragClient = require('../services/AragClient');
+    aragClient = new AragClient();
+} catch (e) { }
 const MultiAgentHandler = require('./action_handlers/MultiAgentHandler');
 const SkillHandler = require('./action_handlers/SkillHandler');
 const CommandHandler = require('./action_handlers/CommandHandler');
@@ -47,6 +54,20 @@ class NeuroShunter {
             }
 
             await ctx.reply(finalReply);
+
+            // Auto-push to Graph RAG for knowledge building (fire-and-forget)
+            if (aragClient && finalReply.length > 20) {
+                aragClient.ingest({
+                    type: 'conversation',
+                    source: 'rendan',
+                    content: finalReply.substring(0, 500),
+                    metadata: {
+                        golemId: brain ? brain.golemId : 'unknown',
+                        model: brain && brain.apiClient ? brain.apiClient.getModel() : 'unknown',
+                        timestamp: Date.now(),
+                    }
+                }).catch(() => {}); // non-blocking
+            }
         } else if (parsed.reply && shouldSuppressReply) {
             console.log(`🤫 [NeuroShunter] 檢測到靜默模式，已攔截回覆內容。`);
         }

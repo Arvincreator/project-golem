@@ -89,6 +89,7 @@ class BrowserLauncher {
                 headless: headless === 'true' ? true : (headless === 'new' ? 'new' : false),
                 userDataDir,
                 args: [...BROWSER_ARGS],
+                protocolTimeout: 600000,  // 10 min - prevents Runtime.callFunctionOn timeout
             });
         } catch (err) {
             if (retries > 0 && err.message.includes('profile appears to be in use')) {

@@ -4,7 +4,7 @@
   "description": "Project Golem v9.0 (Ultimate Chronos + MultiAgent Edition) - Collaborative AI System",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "// --- 核心啟動 ---": "",
     "start": "node index.js",
     "dashboard": "node index.js dashboard",
@@ -35,16 +35,20 @@
     "blessed-contrib": "4.11.0",
     "discord.js": "14.14.1",
     "dotenv": "16.4.5",
+    "express": "^5.2.1",
     "node-telegram-bot-api": "0.65.1",
     "puppeteer": "22.6.0",
     "puppeteer-extra": "3.3.6",
     "puppeteer-extra-plugin-stealth": "2.11.2",
+    "socket.io": "^4.8.3",
     "socket.io-client": "4.8.3",
     "sqlite3": "^5.1.7",
-    "uuid": "9.0.1"
+    "uuid": "9.0.1",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
-    "nodemon": "3.0.2"
+    "nodemon": "3.0.2",
+    "vitest": "^4.1.0"
   },
   "engines": {
     "node": "^20.0.0"
