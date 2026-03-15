@@ -590,7 +590,9 @@ async function handleUnifiedCallback(ctx, actionData) {
     if (actionData === 'SYSTEM_UPDATE_CANCEL') return await ctx.reply("已取消更新操作。");
 
     if (actionData.includes('_')) {
-        const [action, taskId] = actionData.split('_');
+        const separatorIndex = actionData.indexOf('_');
+        const action = actionData.slice(0, separatorIndex);
+        const taskId = actionData.slice(separatorIndex + 1);
         const task = pendingTasks.get(taskId);
         if (!task) return await ctx.reply('⚠️ 任務已失效');
 
@@ -625,38 +627,45 @@ async function handleUnifiedCallback(ctx, actionData) {
             pendingTasks.delete(taskId);
             await ctx.reply('🛡️ 操作駁回');
         } else if (action === 'APPROVE') {
+            const isSafeguardReapproval = task.type === 'SAFEGUARD_REAPPROVAL';
             const { steps, nextIndex } = task;
             pendingTasks.delete(taskId);
 
-            await ctx.reply("✅ 授權通過，執行中 (這可能需要幾秒鐘)...");
-            const approvedStep = steps[nextIndex];
+            await ctx.reply(isSafeguardReapproval
+                ? "✅ 已確認風險，開始執行指令 (這可能需要幾秒鐘)..."
+                : "✅ 授權通過，執行中 (這可能需要幾秒鐘)...");
 
-            let cmd = "";
+            let cmd = isSafeguardReapproval ? (task.cmd || "") : "";
+            let approvedStep = null;
 
-            if (approvedStep.action === 'command' || approvedStep.cmd || approvedStep.parameter || approvedStep.command) {
-                cmd = approvedStep.cmd || approvedStep.parameter || approvedStep.command || "";
-            }
-            else if (approvedStep.action && approvedStep.action !== 'command') {
-                const actionName = String(approvedStep.action).toLowerCase().replace(/_/g, '-');
-                let payload = "";
-                if (approvedStep.summary) payload = String(approvedStep.summary);
-                else if (approvedStep.args) payload = typeof approvedStep.args === 'string' ? approvedStep.args : JSON.stringify(approvedStep.args);
-                else {
-                    // 防呆：如果沒有 args 也沒有 summary，則將扣除 action 以外的所有欄位封裝為 JSON
-                    const { action, ...params } = approvedStep;
-                    payload = JSON.stringify(params);
+            if (!isSafeguardReapproval) {
+                approvedStep = steps[nextIndex];
+
+                if (approvedStep.action === 'command' || approvedStep.cmd || approvedStep.parameter || approvedStep.command) {
+                    cmd = approvedStep.cmd || approvedStep.parameter || approvedStep.command || "";
+                }
+                else if (approvedStep.action && approvedStep.action !== 'command') {
+                    const actionName = String(approvedStep.action).toLowerCase().replace(/_/g, '-');
+                    let payload = "";
+                    if (approvedStep.summary) payload = String(approvedStep.summary);
+                    else if (approvedStep.args) payload = typeof approvedStep.args === 'string' ? approvedStep.args : JSON.stringify(approvedStep.args);
+                    else {
+                        // 防呆：如果沒有 args 也沒有 summary，則將扣除 action 以外的所有欄位封裝為 JSON
+                        const { action, ...params } = approvedStep;
+                        payload = JSON.stringify(params);
+                    }
+
+                    const safePayload = payload.replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
+                    cmd = `node src/skills/core/${actionName}.js "${safePayload}"`;
+                    console.log(`🔧 [Command Builder] 成功將結構化技能 [${actionName}] 組裝為安全指令`);
                 }
 
-                const safePayload = payload.replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
-                cmd = `node src/skills/core/${actionName}.js "${safePayload}"`;
-                console.log(`🔧 [Command Builder] 成功將結構化技能 [${actionName}] 組裝為安全指令`);
-            }
-
-            if (!cmd && task.rawText) {
-                const match = task.rawText.match(/node\s+src\/skills\/lib\/[a-zA-Z0-9_-]+\.js\s+.*?(?="|\n|$)/);
-                if (match) {
-                    cmd = match[0];
-                    console.log(`🔧 [Auto-Fix] 已從破裂的 JSON 原始內容中硬挖出指令`);
+                if (!cmd && task.rawText) {
+                    const match = task.rawText.match(/node\s+src\/skills\/lib\/[a-zA-Z0-9_-]+\.js\s+.*?(?="|\n|$)/);
+                    if (match) {
+                        cmd = match[0];
+                        console.log(`🔧 [Auto-Fix] 已從破裂的 JSON 原始內容中硬挖出指令`);
+                    }
                 }
             }
 
@@ -666,14 +675,64 @@ async function handleUnifiedCallback(ctx, actionData) {
             }
 
             // 🛡️ [Security Safeguard] 指令安全檢查
-            const safeguard = require('./src/utils/CommandSafeguard');
-            const validation = safeguard.validate(cmd);
-            if (!validation.safe) {
-                console.error(`🛡️ [Safeguard] 攔截危險指令: ${cmd} | 原因: ${validation.reason}`);
-                await ctx.reply(`🛡️ **安全警告**：偵測到潛在危險指令！\n執行權限已自動攔截。\n原因：${validation.reason}`);
-                return;
+            if (!isSafeguardReapproval) {
+                const safeguard = require('./src/utils/CommandSafeguard');
+                const validation = safeguard.validate(cmd);
+
+                if (validation.status === 'deny') {
+                    console.error(`🛡️ [Safeguard] 攔截無效指令: ${cmd} | 原因: ${validation.reason}`);
+                    await ctx.reply(`🛡️ **安全警告**：指令格式異常，已停止執行。
+原因：${validation.reason}`);
+                    return;
+                }
+
+                if (validation.status === 'confirm') {
+                    const approvalId = `SAFEGUARD_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+                    pendingTasks.set(approvalId, {
+                        type: 'SAFEGUARD_REAPPROVAL',
+                        steps,
+                        nextIndex,
+                        ctx,
+                        cmd: validation.sanitizedCmd || cmd,
+                        timestamp: Date.now(),
+                        validation
+                    });
+
+                    const icon = validation.severity === 'danger' ? '🟥' : '🟨';
+                    const title = validation.severity === 'danger' ? '高風險指令警告' : '白名單外指令提醒';
+                    const riskLine = validation.severity === 'danger'
+                        ? '此指令可能影響系統穩定度、檔案內容或執行環境。'
+                        : '此指令未列於白名單，請再次確認內容與用途。';
+
+                    console.warn(`🛡️ [Safeguard] 要求二次確認: ${cmd} | 原因: ${validation.reason}`);
+                    await ctx.reply(
+                        `${icon} **${title}**
+` +
+                        `${riskLine}
+` +
+                        `是否仍要執行下列指令？
+
+` +
+                        `\`\`\`shell
+${validation.sanitizedCmd || cmd}
+\`\`\`
+` +
+                        `原因：${validation.reason}`,
+                        {
+                            parse_mode: 'Markdown',
+                            reply_markup: {
+                                inline_keyboard: [[
+                                    { text: '⚠️ 仍要執行', callback_data: `APPROVE_${approvalId}` },
+                                    { text: '🛑 取消', callback_data: `DENY_${approvalId}` }
+                                ]]
+                            }
+                        }
+                    );
+                    return;
+                }
+
+                cmd = validation.sanitizedCmd;
             }
-            cmd = validation.sanitizedCmd;
 
             if (cmd.includes('reincarnate.js')) {
                 await ctx.reply("🔄 收到轉生指令！正在將記憶注入核心並準備重啟大腦...");
