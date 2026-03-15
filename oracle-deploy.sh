@@ -5,7 +5,7 @@
 #  VM Shape:  VM.Standard.A1.Flex (1-4 OCPU, 6-24GB RAM)
 #
 #  Usage:
-#    curl -fsSL https://raw.githubusercontent.com/yedanyagamiai-cmd/project-golem/main/oracle-deploy.sh | bash
+#    curl -fsSL https://raw.githubusercontent.com/Arvincreator/project-golem/main/oracle-deploy.sh | bash
 #
 #  Or with environment variables:
 #    TELEGRAM_TOKEN=xxx ADMIN_ID=123 GEMINI_API_KEYS=key1,key2 bash oracle-deploy.sh
