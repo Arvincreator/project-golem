@@ -66,6 +66,19 @@ const testPort = (port) => {
     });
 };
 
+// 5. Check Terminal Compatibility (Windows Special)
+if (process.platform === 'win32') {
+    const isWindowsTerminal = !!process.env.WT_SESSION;
+    const isConEmu = !!process.env.ConEmuPID;
+    const isLegacyCmd = !isWindowsTerminal && !isConEmu && !process.env.TERM;
+    
+    check('Terminal Environment', !isLegacyCmd, 
+        isWindowsTerminal ? 'Windows Terminal (Recommended)' : (isConEmu ? 'ConEmu' : 'Compatible'),
+        'Legacy Windows CMD detected.', 
+        'Legacy CMD has limited support for colors and symbols. Please use **Windows Terminal** (available in Microsoft Store) or **PowerShell 7** for the best experience.', 
+        true);
+}
+
 testPort(3000).then((isFree) => {
     check('Port 3000 (Dashboard)', isFree, 'Available', 'In Use', 'Port 3000 is occupied. Stop processes using this port (e.g. `lsof -i :3000` then `kill <PID>`), or change DASHBOARD_PORT in .env.', true);
 

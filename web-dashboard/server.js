@@ -211,9 +211,10 @@ class WebServer {
 
                 try {
                     const ConfigManager = require('../src/config/index');
-                    // V9.0.9 修正：強制檢查初始化標記
-                    // 只有在 SYSTEM_CONFIGURED 為 'true' 時才允許通行
-                    const isConfigured = process.env.SYSTEM_CONFIGURED === 'true';
+                    // V9.0.9 修正：動態檢查初始化標記，避免 process.env 快取
+                    const EnvManager = require('../src/utils/EnvManager');
+                    const envVars = EnvManager.readEnv();
+                    const isConfigured = envVars.SYSTEM_CONFIGURED === 'true';
 
                     if (!isConfigured) {
                         console.log(`🚩 [WebServer] System NOT initialized. Redirecting ${req.path} to /dashboard/system-setup`);

@@ -242,8 +242,9 @@ Then, use our **modular installation script** for automated deployment:
    | `--status` | Quickly display current system health and environment status |
    | `--docker` | Start containerized environment via Docker Compose |
 
-#### 🪟 Windows Environment
-Double-click `setup.bat` to enter the automated installation process.
+#### 🪟 Windows Environment (Recommended)
+Simply double-click **`Start-Golem.bat`**.
+The script will now use a native PowerShell environment to handle installation and startup, resolving UI rendering issues (CPU/MEM garbled bars) previously seen in Git Bash.
 
 > [!IMPORTANT]
 > If the script detects Node.js is not installed, it will attempt to download it for you. After installation, please **restart your terminal** and run the script again.
