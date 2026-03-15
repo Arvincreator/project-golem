@@ -130,6 +130,12 @@ function Run-Health-Check {
     if ($port3000) { Box-Line-Colored ("  " + $S_CROSS + " " + $portLab + " 3000: BUSY") "Red" }
     else { Box-Line-Colored ("  " + $S_CHECK + " " + $portLab + " 3000: FREE") "Green" }
     
+    # 7. Dashboard Build Check
+    $dbPath = Join-Path $SCRIPT_DIR "web-dashboard\out"
+    $dbLab = "Dashboard Build"
+    if (Test-Path $dbPath) { Box-Line-Colored ("  " + $S_CHECK + " " + $dbLab + ": READY") "Green" }
+    else { Box-Line-Colored ("  " + $S_CROSS + " " + $dbLab + ": MISSING (Build Required)") "Red" }
+    
     Box-Sep
     if ($SCRIPT:NODE_OK -and $SCRIPT:ENV_OK -and -not $port3000 -and $SCRIPT:NET_OK) {
         Box-Line-Colored ("  " + [char]0x2714 + " HEALTH NOMINAL") "Green"

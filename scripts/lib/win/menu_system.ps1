@@ -62,6 +62,29 @@ function Launch-System {
     Write-Host ("  " + $back) -NoNewline; Read-Host
 }
 
+function Run-Build-Dashboard {
+    $dbMsg = [char]0x6b63 + [char]0x5728 + [char]0x5efa + [char]0x7d50 + " Web Dashboard (Next.js Build)..."
+    UI-Info $dbMsg
+    $dbDir = Join-Path $SCRIPT_DIR "web-dashboard"
+    if (Test-Path $dbDir) {
+        $oldLocation = Get-Location
+        Set-Location $dbDir
+        # Install UI deps if missing
+        if (-not (Test-Path "node_modules")) {
+            UI-Info "Installing Dashboard dependencies..."
+            npm install --no-fund --no-audit
+        }
+        # Build
+        $env:NODE_ENV = "production"
+        npm run build
+        Set-Location $oldLocation
+        Update-Env "DASHBOARD_DEV_MODE" "false"
+        UI-Success "Dashboard build completed."
+    } else {
+        UI-Error "web-dashboard directory not found!"
+    }
+}
+
 function Run-Full-Install {
     $instMsg = [char]0x6b63 + [char]0x5728 + [char]0x958b + [char]0x59cb + [char]0x5b8c + [char]0x6574 + [char]0x5b89 + [char]0x88dd + [char]0x6d41 + [char]0x7a0b + "..."
     $box = [char]::ConvertFromUtf32(0x1F4E6)
@@ -72,10 +95,14 @@ function Run-Full-Install {
         if (Test-Path ".env.example") { Copy-Item ".env.example" ".env" }
         else { New-Item -ItemType File -Path $DOT_ENV_PATH | Out-Null }
     }
-    $npmMsg = [char]0x6b63 + [char]0x5728 + [char]0x900f + [char]0x904e + " npm " + [char]0x5b89 + [char]0x88dd + [char]0x4f9d + [char]0x8cf4 + [char]0x5957 + [char]0x4ef6 + "..."
+    $npmMsg = [char]0x6b63 + [char]0x5728 + [char]0x900f + [char]0x904e + " npm " + [char]0x5b88 + [char]0x88dd + [char]0x4f9d + [char]0x8cf4 + [char]0x5957 + [char]0x4ef6 + "..."
     UI-Info $npmMsg
     npm install
-    $doneMsg = [char]0x5b89 + [char]0x88dd + [char]0x8207 + [char]0x74b0 + [char]0x5883 + [char]0x5efa + [char]0x7f6e + [char]0x5b8c + [char]0x6210 + [char]0x3002
+    
+    # Dashboard Install & Build
+    Run-Build-Dashboard
+    
+    $doneMsg = [char]0x5b89 + [char]0x88dd + [char]0x8207 + [char]0x74b0 + [char]0x5883 + [char]0x5efa + [char]0x7acb + [char]0x5b8c + [char]0x6210 + [char]0x3002
     UI-Success $doneMsg
     $back = [char]0x6309 + " Enter " + [char]0x8fd4 + [char]0x56de + [char]0x4e3b + [char]0x9078 + [char]0x55ae + "..."
     Write-Host ("  " + $back) -NoNewline; Read-Host
@@ -106,7 +133,7 @@ function Show-Menu {
         $options = @(
             ("Start|" + [char]::ConvertFromUtf32(0x1f680) + " " + [char]0x555f + [char]0x52d5 + [char]0x7cfb + [char]0x7d71 + [char]0x8207 + [char]0x63a7 + [char]0x5236 + [char]0x53f0 + " (Power On)"),
             ("Stop|" + [char]::ConvertFromUtf32(0x1f6d1) + " " + [char]0x95dc + [char]0x9589 + [char]0x6240 + [char]0x6709 + " Golem " + [char]0x7a0b + [char]0x5e8f + " (Shutdown)"),
-            ("Install|" + [char]::ConvertFromUtf32(0x1f4e6) + " " + [char]0x66f4 + [char]0x65b0 + [char]0x4f9d + [char]0x8cf4 + [char]0x8207 + [char]0x7cfb + [char]0x7d71 + [char]0x5efa + [char]0x7f6e + " (Update / Build)"),
+            ("Install|" + [char]::ConvertFromUtf32(0x1f4e6) + " " + [char]0x5b8c + [char]0x6574 + [char]0x5b89 + [char]0x88dd + [char]0x0020 + [char]0x0028 + [char]0x542b + [char]0x63a7 + [char]0x5236 + [char]0x53f0 + [char]0x5efa + [char]0x7d50 + [char]0x0029 + " (Full Install)"),
             ("Config|" + [char]::ConvertFromUtf32(0x1f4dd) + " " + [char]0x914d + [char]0x7f6e + [char]0x7cbe + [char]0x9748 + " (Configuration Wizard)"),
             ("Doctor|" + [char]::ConvertFromUtf32(0x1f3e5) + " " + [char]0x6df1 + [char]0x5ea6 + [char]0x7cfb + [char]0x7d71 + [char]0x8a3a + [char]0x65b7 + " (Run Diagnostics)"),
             ("Clean|" + [char]::ConvertFromUtf32(0x1f9f9) + " " + [char]0x6e05 + [char]0x9664 + [char]0x4f9d + [char]0x8cf4 + " (Clean node_modules)"),
