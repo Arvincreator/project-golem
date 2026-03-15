@@ -66,6 +66,55 @@ class AragClient {
     }
   }
 
+  async queryWithConfidence(text, limit = 5) {
+    try {
+      const results = await this._request('POST', '/query', { query: text, limit });
+      if (!results || !Array.isArray(results)) return { results: [], avgConfidence: 0, isLowConfidence: true, resultCount: 0 };
+
+      const scored = results.map(r => ({
+        content: r.name || r.content || r.description || '',
+        score: r.score || r.confidence || 0,
+        source: r.source || 'graph-rag',
+        type: r.type || 'entity',
+      }));
+
+      const avgConfidence = scored.length > 0
+        ? Math.round((scored.reduce((sum, r) => sum + r.score, 0) / scored.length) * 100) / 100
+        : 0;
+
+      return {
+        results: scored,
+        avgConfidence,
+        isLowConfidence: avgConfidence < 0.3,
+        resultCount: scored.length,
+      };
+    } catch (err) {
+      console.warn('[AragClient] queryWithConfidence failed:', err.message);
+      return { results: [], avgConfidence: 0, isLowConfidence: true, resultCount: 0 };
+    }
+  }
+
+  async crossValidate(text, limit = 5) {
+    const [semantic, keyword] = await Promise.allSettled([
+      this._request('POST', '/query', { query: text, limit, mode: 'semantic' }),
+      this._request('POST', '/query', { query: text, limit, mode: 'keyword' }),
+    ]);
+
+    const semanticResults = semantic.status === 'fulfilled' ? (Array.isArray(semantic.value) ? semantic.value : []) : [];
+    const keywordResults = keyword.status === 'fulfilled' ? (Array.isArray(keyword.value) ? keyword.value : []) : [];
+
+    const semanticNames = new Set(semanticResults.map(r => r.name || r.content));
+    const crossValidated = keywordResults.filter(r => semanticNames.has(r.name || r.content));
+
+    return {
+      semantic: semanticResults,
+      keyword: keywordResults,
+      crossValidated,
+      crossValidatedCount: crossValidated.length,
+    };
+  }
+
+
   async stats() {
     try {
       return await this._request('GET', '/stats');

@@ -17,6 +17,7 @@ class ConversationManager {
         this.interventionLevel = options.interventionLevel || 'CONSERVATIVE';
         // Adaptive debounce: first message fast, subsequent messages slower
         this.DEBOUNCE_FIRST_MS = 100;
+        this.minNotifyLevel = process.env.TELEGRAM_MIN_NOTIFY_LEVEL || 'L1';
         this.DEBOUNCE_SUBSEQUENT_MS = 1500;
         this._lastMessageTime = new Map(); // chatId → timestamp
     }

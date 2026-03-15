@@ -587,6 +587,122 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
             }
         } else {
             finalInput = senderPrefix + (ctx.text || "");
+
+        // ═══ v10.0 Console Commands ═══
+        if (ctx.isAdmin && ctx.text) {
+            const cmdText = ctx.text.trim();
+            const cmdLower = cmdText.toLowerCase();
+
+            // /status — Health dashboard
+            if (cmdLower === '/status') {
+                try {
+                    const ConsoleFormatter = require('./src/utils/ConsoleFormatter');
+                    const health = await new Promise((resolve) => {
+                        require('http').get('http://localhost:3000/health', (res) => {
+                            let data = '';
+                            res.on('data', chunk => data += chunk);
+                            res.on('end', () => { try { resolve(JSON.parse(data)); } catch { resolve({}); } });
+                        }).on('error', () => resolve({}));
+                    });
+                    await ctx.reply(ConsoleFormatter.healthDashboard(health), { parse_mode: 'HTML' });
+                } catch (e) {
+                    await ctx.reply('<pre>Error: ' + e.message + '</pre>', { parse_mode: 'HTML' });
+                }
+                return;
+            }
+
+            // /metrics — System metrics
+            if (cmdLower === '/metrics') {
+                try {
+                    const ConsoleFormatter = require('./src/utils/ConsoleFormatter');
+                    const os = require('os');
+                    const memUsage = process.memoryUsage();
+                    const stats = {
+                        memory: { rss: Math.round(memUsage.rss / 1024 / 1024), heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024), heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024) },
+                        cpu: 0,
+                        uptime: Math.round(process.uptime()),
+                        system: { totalMem: Math.round(os.totalmem() / 1024 / 1024), freeMem: Math.round(os.freemem() / 1024 / 1024), loadAvg: os.loadavg() },
+                        queue: { pending: controller ? controller.pendingTasks.size : 0, l1Buffer: controller ? controller.l1Buffer.length : 0 },
+                    };
+                    await ctx.reply(ConsoleFormatter.metrics(stats), { parse_mode: 'HTML' });
+                } catch (e) {
+                    await ctx.reply('<pre>Error: ' + e.message + '</pre>', { parse_mode: 'HTML' });
+                }
+                return;
+            }
+
+            // /level [L0-L3] — Set minimum notification level
+            if (cmdLower.startsWith('/level')) {
+                const parts = cmdText.split(/\s+/);
+                if (parts.length >= 2) {
+                    const level = parts[1].toUpperCase();
+                    if (['L0', 'L1', 'L2', 'L3'].includes(level)) {
+                        if (convoManager) convoManager.minNotifyLevel = level;
+                        await ctx.reply(`<pre>Notification level: ${level}</pre>`, { parse_mode: 'HTML' });
+                    } else {
+                        await ctx.reply('<pre>Usage: /level L0|L1|L2|L3</pre>', { parse_mode: 'HTML' });
+                    }
+                } else {
+                    const current = convoManager ? convoManager.minNotifyLevel : 'L1';
+                    await ctx.reply(`<pre>Current: ${current}. Usage: /level L0|L1|L2|L3</pre>`, { parse_mode: 'HTML' });
+                }
+                return;
+            }
+
+            // /q — Queue status
+            if (cmdLower === '/q') {
+                try {
+                    const ConsoleFormatter = require('./src/utils/ConsoleFormatter');
+                    const qLen = convoManager ? convoManager.queue.length : 0;
+                    const pending = controller ? controller.pendingTasks : new Map();
+                    await ctx.reply(ConsoleFormatter.queueStatus(pending, qLen), { parse_mode: 'HTML' });
+                } catch (e) {
+                    await ctx.reply('<pre>Error: ' + e.message + '</pre>', { parse_mode: 'HTML' });
+                }
+                return;
+            }
+
+            // /digest — Flush L1 buffer immediately
+            if (cmdLower === '/digest') {
+                if (controller && controller.l1Buffer && controller.l1Buffer.length > 0) {
+                    await controller._flushL1Digest();
+                    await ctx.reply('<pre>L1 digest flushed.</pre>', { parse_mode: 'HTML' });
+                } else {
+                    await ctx.reply('<pre>L1 buffer empty.</pre>', { parse_mode: 'HTML' });
+                }
+                return;
+            }
+
+            // /exec <cmd> — Direct command execution (still goes through SecurityManager)
+            if (cmdLower.startsWith('/exec ')) {
+                const shellCmd = cmdText.substring(6).trim();
+                if (!shellCmd) {
+                    await ctx.reply('<pre>Usage: /exec <command></pre>', { parse_mode: 'HTML' });
+                    return;
+                }
+                const SecurityManager = require('./src/managers/SecurityManager');
+                const sm = new SecurityManager();
+                const risk = sm.assess(shellCmd);
+
+                if (SecurityManager.requiresApproval(risk.level)) {
+                    // Route through TaskController for approval
+                    await controller.runSequence(ctx, [{ action: 'command', parameter: shellCmd }]);
+                } else {
+                    try {
+                        const Executor = require('./src/core/Executor');
+                        const exec = new Executor();
+                        const result = await exec.run(shellCmd);
+                        const output = (result || '').substring(0, 4000);
+                        await ctx.reply(`<pre>[L${risk.level.slice(1)}] ${shellCmd}\n${output}</pre>`, { parse_mode: 'HTML' });
+                    } catch (e) {
+                        await ctx.reply(`<pre>[FAIL] ${shellCmd}\n${e.message}</pre>`, { parse_mode: 'HTML' });
+                    }
+                }
+                return;
+            }
+        }
+
+
         }
 
         if (!finalInput && !attachment) return;
