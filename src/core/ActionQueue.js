@@ -63,6 +63,26 @@ class ActionQueue {
             setTimeout(() => this._processQueue(), 200);
         }
     }
+
+    // LangGraph-inspired: checkpoint save/restore for resilience
+    saveCheckpoint() {
+        this._checkpoint = {
+            queueLength: this.queue ? this.queue.length : 0,
+            timestamp: Date.now(),
+            processing: this._processing || false,
+        };
+        return this._checkpoint;
+    }
+
+    restoreCheckpoint() {
+        if (this._checkpoint) {
+            console.log(`[ActionQueue] Restoring from checkpoint (t=${this._checkpoint.timestamp})`);
+            this._processing = false; // Reset processing state
+            return this._checkpoint;
+        }
+        return null;
+    }
+
 }
 
 module.exports = ActionQueue;

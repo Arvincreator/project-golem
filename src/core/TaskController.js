@@ -104,6 +104,27 @@ class TaskController {
         }
         return reportBuffer.join('\n\n----------------\n\n');
     }
+
+    // BabyAGI-inspired: auto-generate follow-up tasks
+    // Only when autonomy level >= HYBRID and result includes followUp
+    async processFollowUp(result, ctx) {
+        if (!result || !result.followUp) return;
+        const level = process.env.INTERVENTION_LEVEL || 'MANUAL';
+        if (level === 'MANUAL') return; // Respect HITL
+
+        console.log(`[TaskController] Follow-up task queued: ${result.followUp.substring(0, 80)}`);
+        // Queue as next task (will go through normal approval flow)
+        if (this.queue) {
+            this.queue.push({
+                action: 'skill',
+                skill: 'auto-task',
+                args: { task: result.followUp },
+                source: 'follow-up',
+                timestamp: Date.now(),
+            });
+        }
+    }
+
 }
 
 module.exports = TaskController;
