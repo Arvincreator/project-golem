@@ -20,9 +20,25 @@ const LIMITS = Object.freeze({
     STABLE_THRESHOLD_THINKING: 60,   // 未收到 BEGIN，Thinking Mode 容忍 60 次 (30秒)
 });
 
-/** @enum {string} Gemini 相關 URL */
+/** @enum {string} AI Provider URLs */
+const AI_PROVIDERS = Object.freeze({
+    MONICA: {
+        url: 'https://monica.im/home/chat',
+        name: 'Monica.im',
+        defaultModel: 'gpt-5.4',
+    },
+    GEMINI: {
+        url: 'https://gemini.google.com/app',
+        name: 'Gemini Web',
+        defaultModel: 'gemini',
+    },
+});
+
+const ACTIVE_PROVIDER = process.env.GOLEM_AI_PROVIDER || 'MONICA';
+
+/** Backward-compatible URLS (derived from AI_PROVIDERS) */
 const URLS = Object.freeze({
-    GEMINI_APP: 'https://gemini.google.com/app',
+    GEMINI_APP: AI_PROVIDERS[ACTIVE_PROVIDER].url,
 });
 
 /** 瀏覽器啟動參數 */
@@ -30,8 +46,17 @@ const BROWSER_ARGS = Object.freeze([
     '--no-sandbox',
     '--disable-dev-shm-usage',
     '--disable-setuid-sandbox',
-    '--window-size=50,50',
+    '--window-size=1280,900',
     '--disable-gpu',
+    '--disable-extensions',
+    '--disable-background-networking',
+    '--disable-sync',
+    '--disable-translate',
+    '--disable-component-update',
+    '--disable-default-apps',
+    '--disable-domain-reliability',
+    '--disable-client-side-phishing-detection',
+    '--block-new-web-contents',
 ]);
 
 /** Chrome Lock 檔案名稱 */
@@ -60,6 +85,8 @@ module.exports = {
     TIMINGS,
     LIMITS,
     URLS,
+    AI_PROVIDERS,
+    ACTIVE_PROVIDER,
     BROWSER_ARGS,
     LOCK_FILES,
     LOG_RETENTION_MS,

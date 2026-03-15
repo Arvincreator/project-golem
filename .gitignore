@@ -56,10 +56,7 @@ puppeteer_data/
 logs/
 *.log
 error.txt
-test_output*.txt
 combined.log
-coverage/
-.nyc_output/
 
 # 截圖與錄影 (Agent 執行失敗時的截圖)
 screenshots/
@@ -80,3 +77,11 @@ backups/
 golems.json
 moltbot_auth.json
 .golem.pid
+
+# ==========================================
+# 7. rendan 開發暫存 (Dev Temp)
+# ==========================================
+monica_*.js
+model_history.json
+personas/rendan.md
+golem_selectors.json
