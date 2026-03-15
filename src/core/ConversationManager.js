@@ -15,11 +15,42 @@ class ConversationManager {
         this.silentMode = false;
         this.observerMode = false;
         this.interventionLevel = options.interventionLevel || 'CONSERVATIVE';
+        this.threeLayerMemory = options.threeLayerMemory || null;
         this.DEBOUNCE_MS = 1500;
+
+        // Cleanup stale user buffers (memory leak prevention)
+        this._bufferCleanupTimer = setInterval(() => {
+            const now = Date.now();
+            for (const [chatId, state] of this.userBuffers.entries()) {
+                if (state._lastActivity && now - state._lastActivity > 10 * 60 * 1000) {
+                    if (state.timer) clearTimeout(state.timer);
+                    this.userBuffers.delete(chatId);
+                }
+            }
+        }, 60 * 1000);
     }
 
     async enqueue(ctx, text, options = { isPriority: false, bypassDebounce: false }) {
+        // Input sanitization (sandbox protection)
+        if (text && text.length > 10000) {
+            text = text.substring(0, 10000) + '\n...(truncated — input too long)';
+            console.warn(`[ConvoMgr] Truncated oversized input from ${ctx.chatId}`);
+        }
+
         const chatId = ctx.chatId;
+
+        // Rate limiting: max 10 messages per 30 seconds per chat
+        const now = Date.now();
+        const rateKey = `rate_${chatId}`;
+        if (!this._rateLimits) this._rateLimits = new Map();
+        const rateData = this._rateLimits.get(rateKey) || { count: 0, resetAt: now + 30000 };
+        if (now > rateData.resetAt) { rateData.count = 0; rateData.resetAt = now + 30000; }
+        rateData.count++;
+        this._rateLimits.set(rateKey, rateData);
+        if (rateData.count > 10) {
+            console.warn(`[ConvoMgr] Rate limited chat ${chatId} (${rateData.count} msgs in 30s)`);
+            return;
+        }
 
         // 🚨 Highest Privilege: priority tasks bypass user buffers completely and inject straight into queue
         if (options.bypassDebounce) {
@@ -31,6 +62,7 @@ class ConversationManager {
         let userState = this.userBuffers.get(chatId) || { text: "", timer: null, ctx: ctx };
         userState.text = userState.text ? `${userState.text}\n${text}` : text;
         userState.ctx = ctx;
+        userState._lastActivity = Date.now();
         console.log(`⏳ [Dialogue Queue] 收到對話 (${chatId}): "${text.substring(0, 15)}..."`);
         if (userState.timer) clearTimeout(userState.timer);
         userState.timer = setTimeout(() => {
@@ -83,7 +115,7 @@ class ConversationManager {
                                         parse_mode: 'Markdown',
                                         reply_markup: { inline_keyboard: [] }
                                     }
-                                ).catch(() => { });
+                                ).catch((err) => { console.warn('[ConversationManager] Failed to update timeout message:', err.message); });
                             }
                         } catch (e) { console.warn("無法更新 Dialogue Timeout 訊息:", e.message); }
 
@@ -118,6 +150,16 @@ class ConversationManager {
         this._commitDirectly(currentCtx, fullText, false);
     }
 
+    stop() {
+        if (this._bufferCleanupTimer) { clearInterval(this._bufferCleanupTimer); this._bufferCleanupTimer = null; }
+        // Clear all user buffer timers
+        for (const [, state] of this.userBuffers.entries()) {
+            if (state.timer) clearTimeout(state.timer);
+        }
+        this.userBuffers.clear();
+        console.log(`[ConversationManager:${this.golemId}] All timers stopped.`);
+    }
+
     async _processQueue() {
         if (this.isProcessing || this.queue.length === 0) return;
         this.isProcessing = true;
@@ -127,12 +169,13 @@ class ConversationManager {
             console.log(`🗣️ [User->${this.golemId}] 說: ${task.text}`);
 
             // ✨ [Log] 記錄用戶輸入 (Fix missing user logs)
+            const senderName = task.ctx.senderName || task.ctx.userId || 'User';
             this.brain._appendChatLog({
                 timestamp: Date.now(),
-                sender: 'User', // 統一顯示為 User，也可由 ctx.userId 區分
+                sender: senderName,
                 content: task.text,
                 type: 'user',
-                role: 'User',
+                role: senderName,
                 isSystem: false
             });
 
@@ -159,11 +202,21 @@ class ConversationManager {
                 console.log(`📢 [Dialogue Queue:${this.golemId}] 模式中偵測到標記，強制恢復回應。`);
             }
 
+            // ThreeLayerMemory: record user input
+            if (this.threeLayerMemory) {
+                this.threeLayerMemory.addToWorking({ content: task.text, sender: senderName, type: 'user' });
+            }
+
             const raw = await this.brain.sendMessage(finalInput, false, {
                 isObserver: this.observerMode,
                 interventionLevel: this.interventionLevel
             });
             await this.NeuroShunter.dispatch(task.ctx, raw, this.brain, this.controller, { suppressReply: shouldSuppressReply });
+
+            // ThreeLayerMemory: record AI response
+            if (this.threeLayerMemory) {
+                this.threeLayerMemory.addToWorking({ content: String(raw).substring(0, 500), sender: 'Golem', type: 'ai' });
+            }
         } catch (e) {
             console.error(`❌ [Dialogue Queue:${this.golemId}] 處理失敗:`, e);
             // ✅ [M-4 Fix] 對外只顯示友善錯誤，避免洩露路徑/Selector 等內部資訊

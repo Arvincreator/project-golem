@@ -229,7 +229,7 @@ class ChatLogManager {
                     const time = new Date(l.timestamp).toLocaleTimeString('zh-TW', { hour12: false });
                     combinedContent += `[${time}] ${l.sender}: ${l.content}\n`;
                 });
-            } catch (e) { }
+            } catch (e) { console.warn('[ChatLogManager]', e.message); }
         });
 
         if (!combinedContent) return;
@@ -275,7 +275,7 @@ class ChatLogManager {
                         combinedContent += `\n--- [${dateStr}] ---\n${entry.content}\n`;
                     }
                 });
-            } catch (e) { }
+            } catch (e) { console.warn('[ChatLogManager]', e.message); }
         });
 
         if (!combinedContent) return;
@@ -321,7 +321,7 @@ class ChatLogManager {
                         combinedContent += `\n--- [${monthStr}] ---\n${entry.content}\n`;
                     }
                 });
-            } catch (e) { }
+            } catch (e) { console.warn('[ChatLogManager]', e.message); }
         });
 
         if (!combinedContent) return;
@@ -371,7 +371,7 @@ class ChatLogManager {
                         combinedContent += `\n--- [${yearStr} 年] ---\n${entry.content}\n`;
                     }
                 });
-            } catch (e) { }
+            } catch (e) { console.warn('[ChatLogManager]', e.message); }
         });
 
         if (!combinedContent) return;
@@ -437,7 +437,7 @@ class ChatLogManager {
             // 壓縮成功後，刪除源檔案 (若提供)
             if (sourceFiles && sourceDir) {
                 sourceFiles.forEach(file => {
-                    try { fs.unlinkSync(path.join(sourceDir, file)); } catch (e) { }
+                    try { fs.unlinkSync(path.join(sourceDir, file)); } catch (e) { console.warn('[ChatLogManager]', e.message); }
                 });
                 console.log(`🗑️ [LogManager] 歸檔完成，已從 Tier 0 清理 ${sourceFiles.length} 個源檔案。`);
             }
@@ -489,6 +489,41 @@ class ChatLogManager {
             return result.trim();
         } catch (e) {
             return '';
+        }
+    }
+
+    getRecentEntries(limit = 50) {
+        try {
+            const hourlyDir = this.dirs.hourly;
+            if (!fs.existsSync(hourlyDir)) return [];
+
+            const files = fs.readdirSync(hourlyDir)
+                .filter(f => f.endsWith('.log'))
+                .sort()
+                .reverse()
+                .slice(0, 3); // Last 3 hours
+
+            const entries = [];
+            for (const file of files) {
+                try {
+                    const content = fs.readFileSync(path.join(hourlyDir, file), 'utf-8');
+                    const lines = content.split('\n').filter(l => l.trim());
+                    for (const line of lines) {
+                        try {
+                            const parsed = JSON.parse(line);
+                            entries.push(parsed);
+                        } catch (e) {
+                            // Plain text log line
+                            entries.push({ content: line, type: 'raw', timestamp: null });
+                        }
+                    }
+                } catch (e) { /* skip unreadable files */ }
+            }
+
+            return entries.slice(-limit);
+        } catch (e) {
+            console.warn('[ChatLogManager] getRecentEntries failed:', e.message);
+            return [];
         }
     }
 

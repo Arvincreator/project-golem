@@ -4,6 +4,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
+
+const endpoints = require('../../config/endpoints');
+const warroom = require('../../utils/warroom-client');
 
 const PROJECT_ROOT = process.cwd();
 
@@ -11,7 +15,7 @@ const PROJECT_ROOT = process.cwd();
 let _ragSkill = null;
 function getRag() {
     if (!_ragSkill) {
-        try { _ragSkill = require('./rag'); } catch (e) { _ragSkill = null; }
+        try { _ragSkill = require('./rag'); } catch (e) { console.warn('[auto-optimizer]', e.message); _ragSkill = null; }
     }
     return _ragSkill;
 }
@@ -19,28 +23,18 @@ function getRag() {
 async function ragQuery(query) {
     const rag = getRag();
     if (!rag) return null;
-    try { return await rag.execute({ task: 'query', query, limit: 5 }); } catch (e) { return null; }
+    try { return await rag.execute({ task: 'query', query, limit: 5 }); } catch (e) { console.warn('[auto-optimizer]', e.message); return null; }
 }
 
 async function ragEvolve(situation, action_taken, outcome, score) {
     const rag = getRag();
     if (!rag) return;
-    try { await rag.execute({ task: 'evolve', situation, action_taken, outcome, score }); } catch (e) { /* non-blocking */ }
+    try { await rag.execute({ task: 'evolve', situation, action_taken, outcome, score }); } catch (e) { console.warn('[auto-optimizer]', e.message); }
 }
 
 // 戰情室更新
 async function updateWarRoom(event, data) {
-    try {
-        const { getToken } = require('../../utils/yedan-auth');
-        const token = getToken();
-        if (!token) return;
-        await fetch('https://notion-warroom.yagami8095.workers.dev/report', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer openclaw-warroom-2026' },
-            body: JSON.stringify({ source: 'rensin-optimizer', event, data, timestamp: new Date().toISOString() }),
-            signal: AbortSignal.timeout(10000)
-        });
-    } catch (e) { /* non-blocking */ }
+    return warroom.report(event, data, `${endpoints.AGENT_ID}-optimizer`);
 }
 
 async function execute(args) {
@@ -103,18 +97,34 @@ async function execute(args) {
                         results.push({ dim: '錯誤率', status: '✅', detail: `過去 1h: ${recentErrors.length} 錯誤` });
                     }
                 }
-            } catch (e) { /* optional */ }
+            } catch (e) { console.warn('[auto-optimizer]', e.message); }
 
             // Dim 5: 磁碟空間
             try {
                 const { execSync } = require('child_process');
-                const dfOutput = execSync('df -h / | tail -1', { timeout: 5000, encoding: 'utf-8' });
-                const parts = dfOutput.trim().split(/\s+/);
-                const usePct = parseInt(parts[4]);
-                if (usePct > 85) {
-                    results.push({ dim: '磁碟', status: '⚠️', detail: `${parts[4]} 已使用`, action: 'cleanup' });
+                let usePctStr, usePct;
+                if (os.platform() === 'win32') {
+                    const wmicOut = execSync('wmic logicaldisk get size,freespace', { timeout: 5000, encoding: 'utf-8' });
+                    const lines = wmicOut.trim().split('\n').filter(l => l.trim());
+                    if (lines.length >= 2) {
+                        const vals = lines[1].trim().split(/\s+/);
+                        const free = parseInt(vals[0]);
+                        const total = parseInt(vals[1]);
+                        usePct = Math.round((1 - free / total) * 100);
+                        usePctStr = `${usePct}%`;
+                    } else {
+                        throw new Error('wmic parse failed');
+                    }
                 } else {
-                    results.push({ dim: '磁碟', status: '✅', detail: `${parts[4]} 已使用` });
+                    const dfOutput = execSync('df -h / | tail -1', { timeout: 5000, encoding: 'utf-8' });
+                    const parts = dfOutput.trim().split(/\s+/);
+                    usePctStr = parts[4];
+                    usePct = parseInt(parts[4]);
+                }
+                if (usePct > 85) {
+                    results.push({ dim: '磁碟', status: '⚠️', detail: `${usePctStr} 已使用`, action: 'cleanup' });
+                } else {
+                    results.push({ dim: '磁碟', status: '✅', detail: `${usePctStr} 已使用` });
                 }
             } catch (e) {
                 results.push({ dim: '磁碟', status: '❓', detail: '無法檢查' });
@@ -164,7 +174,7 @@ async function execute(args) {
                         suggestions.push(`🔌 建議重置 ${name} 熔斷器 (已熔斷超過 2 分鐘)`);
                     }
                 }
-            } catch (e) { /* optional */ }
+            } catch (e) { console.warn('[auto-optimizer]', e.message); }
 
             // 檢查 log 檔案大小
             const logFile = path.join(PROJECT_ROOT, 'rensin.log');
@@ -176,16 +186,30 @@ async function execute(args) {
                         suggestions.push(`📝 rensin.log 已達 ${sizeMB.toFixed(1)}MB，建議歸檔`);
                     }
                 }
-            } catch (e) { /* optional */ }
+            } catch (e) { console.warn('[auto-optimizer]', e.message); }
 
             // 檢查備份檔案過多
             try {
-                const { execSync } = require('child_process');
-                const bakCount = parseInt(execSync(`find ${PROJECT_ROOT}/src -name "*.bak.*" 2>/dev/null | wc -l`, { encoding: 'utf-8', timeout: 5000 }));
+                const srcDir = path.join(PROJECT_ROOT, 'src');
+                let bakCount = 0;
+                const countBakFiles = (dir) => {
+                    try {
+                        const entries = fs.readdirSync(dir, { withFileTypes: true });
+                        for (const entry of entries) {
+                            const full = path.join(dir, entry.name);
+                            if (entry.isDirectory() && entry.name !== 'node_modules') {
+                                countBakFiles(full);
+                            } else if (entry.isFile() && entry.name.includes('.bak.')) {
+                                bakCount++;
+                            }
+                        }
+                    } catch (e) { console.warn('[auto-optimizer]', e.message); }
+                };
+                countBakFiles(srcDir);
                 if (bakCount > 20) {
                     suggestions.push(`🗂 ${bakCount} 個 .bak 備份檔案，建議清理`);
                 }
-            } catch (e) { /* optional */ }
+            } catch (e) { console.warn('[auto-optimizer]', e.message); }
 
             if (suggestions.length === 0) {
                 return '✅ 無需額外優化建議，系統運行良好。';
@@ -216,16 +240,18 @@ async function execute(args) {
             const netStart = Date.now();
             let netMs = -1;
             try {
-                const { getToken } = require('../../utils/yedan-auth');
-                const token = getToken();
-                if (token) {
-                    await fetch('https://yedan-graph-rag.yagami8095.workers.dev/health', {
-                        headers: { 'Authorization': `Bearer ${token}` },
-                        signal: AbortSignal.timeout(10000)
-                    });
-                    netMs = Date.now() - netStart;
+                if (endpoints.RAG_URL) {
+                    const { getToken } = require('../../utils/yedan-auth');
+                    const token = getToken();
+                    if (token) {
+                        await fetch(`${endpoints.RAG_URL}/health`, {
+                            headers: { 'Authorization': `Bearer ${token}` },
+                            signal: AbortSignal.timeout(10000)
+                        });
+                        netMs = Date.now() - netStart;
+                    }
                 }
-            } catch (e) { netMs = -1; }
+            } catch (e) { console.warn('[auto-optimizer]', e.message); netMs = -1; }
 
             const output = [
                 `[效能基準測試]`,

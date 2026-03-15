@@ -3,6 +3,7 @@ const Executor = require('./Executor');
 const SecurityManager = require('../managers/SecurityManager');
 const ToolScanner = require('../managers/ToolScanner');
 const InteractiveMultiAgent = require('./InteractiveMultiAgent');
+const TaskDecomposer = require('./TaskDecomposer');
 
 // ============================================================
 // ⚡ Task Controller (閉環回饋版)
@@ -14,9 +15,11 @@ class TaskController {
         this.security = new SecurityManager();
         this.multiAgent = null; // ✨ [v9.0]
         this.pendingTasks = new Map(); // Moved from global to here
+        this.brain = options.brain || null;
+        this.taskDecomposer = null;
 
         // ✨ [v9.1] 防止記憶體流失: 定期清理過期的待審批任務 (5 分鐘)
-        setInterval(() => {
+        this._cleanupTimer = setInterval(() => {
             const now = Date.now();
             for (const [id, task] of this.pendingTasks.entries()) {
                 if (now - task.timestamp > 5 * 60 * 1000) {
@@ -24,6 +27,11 @@ class TaskController {
                 }
             }
         }, 60 * 1000);
+    }
+
+    stop() {
+        if (this._cleanupTimer) { clearInterval(this._cleanupTimer); this._cleanupTimer = null; }
+        console.log(`[TaskController:${this.golemId}] Cleanup timer stopped.`);
     }
 
     // ✨ [v9.0] 處理多 Agent 請求
@@ -48,6 +56,37 @@ class TaskController {
         }
     }
 
+    async runDecomposed(ctx, goal, autonomy) {
+        if (!this.brain) {
+            await ctx.reply('⚠️ Brain not available for task decomposition.');
+            return null;
+        }
+        if (!this.taskDecomposer) {
+            this.taskDecomposer = new TaskDecomposer(this.brain, { golemId: this.golemId });
+        }
+        return this.taskDecomposer.execute(goal, ctx, this, autonomy);
+    }
+
+    async checkFollowUp(result, ctx, brain) {
+        if (!brain || !result) return null;
+        const resultStr = String(result);
+
+        // Check for follow-up indicators
+        const indicators = ['TODO', '下一步', 'recommend', '建議', 'next step', 'follow-up', '待處理'];
+        const hasFollowUp = indicators.some(ind => resultStr.toLowerCase().includes(ind.toLowerCase()));
+
+        if (!hasFollowUp) return null;
+
+        try {
+            const prompt = `根據以下執行結果，判斷是否有 follow-up 任務需要建議（不要自動執行，只建議）：\n${resultStr.substring(0, 1000)}\n\n如有建議，用 [GOLEM_REPLY] 簡述。如無，回覆 [GOLEM_REPLY] 無需跟進。`;
+            const raw = await brain.sendMessage(prompt, true);
+            return raw;
+        } catch (e) {
+            console.warn('[TaskController] Follow-up check failed:', e.message);
+            return null;
+        }
+    }
+
     async runSequence(ctx, steps, startIndex = 0) {
         let reportBuffer = [];
         for (let i = startIndex; i < steps.length; i++) {
@@ -58,8 +97,9 @@ class TaskController {
             if (!cmdToRun && step.action && step.action !== 'command') {
                 const actionName = String(step.action).toLowerCase().replace(/_/g, '-');
                 const { action, ...params } = step;
-                const payload = JSON.stringify(params).replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
-                cmdToRun = `node src/skills/core/${actionName}.js "${payload}"`;
+                const payloadB64 = Buffer.from(JSON.stringify(params)).toString('base64');
+                const skillPath = require('path').resolve(process.cwd(), 'src', 'skills', 'core', `${actionName}.js`);
+                cmdToRun = `node "${skillPath}" --base64 ${payloadB64}`;
                 console.log(`🔧 [TaskController] 自動組裝技能指令: ${cmdToRun}`);
             }
 
@@ -101,14 +141,15 @@ class TaskController {
                 return `⛔ 指令被系統攔截：${cmdToRun}`;
             }
             if (risk.level === 'WARNING' || risk.level === 'DANGER') {
-                console.log(`⚠️ [TaskController] 指令需審批 (${risk.level}): ${cmdToRun} - ${risk.reason}`);
+                console.log(`⚠️ [TaskController] 指令需審批 (${risk.level}, ${actionLevel}): ${cmdToRun} - ${risk.reason}`);
                 const approvalId = uuidv4();
                 this.pendingTasks.set(approvalId, {
                     steps, nextIndex: i, ctx, timestamp: Date.now()
                 });
                 const cmdBlock = cmdToRun ? `\n\`\`\`shell\n${cmdToRun}\n\`\`\`` : "";
+                const levelBadge = actionLevel === 'L3' ? '🔴 L3 高風險' : (risk.level === 'DANGER' ? '🔴 危險指令' : '🟡 警告');
                 await ctx.reply(
-                    `⚠️ ${risk.level === 'DANGER' ? '🔴 危險指令' : '🟡 警告'}\n${cmdBlock}\n\n${risk.reason}`,
+                    `⚠️ ${levelBadge}\n${cmdBlock}\n\n${risk.reason}`,
                     {
                         parse_mode: 'Markdown',
                         disable_web_page_preview: true,

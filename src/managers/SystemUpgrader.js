@@ -25,17 +25,14 @@ class SystemUpgrader {
             const currentBackup = path.join(backupDir, `golem-backup-${timestamp}`);
 
             try {
-                // Use rsync to efficiently copy while excluding node_modules, backups, and .git
-                execSync(`rsync -aq --exclude='node_modules' --exclude='backups' --exclude='.git' . "${currentBackup}"`, { stdio: 'pipe' });
+                // Use Node.js native fs.cpSync for cross-platform compatibility
+                fs.cpSync('.', currentBackup, {
+                    recursive: true,
+                    filter: (src) => !src.includes('node_modules') && !src.includes('backups') && !src.includes('.git')
+                });
                 console.log(`✅ 備份已儲存至 ${currentBackup}`);
             } catch (backupErr) {
-                // Fallback to cp if rsync is missing (rare on Mac/Linux)
-                console.warn("⚠️ rsync 失敗，嘗試使用傳統複製模式...");
-                try {
-                    execSync(`mkdir -p "${currentBackup}" && cp -R [!n]* "${currentBackup}"`, { stdio: 'pipe', shell: '/bin/bash' });
-                } catch (cpErr) {
-                    console.error("❌ 備份失敗:", cpErr.message);
-                }
+                console.error("❌ 備份失敗:", backupErr.message);
             }
 
             // 1. Git Pull / Reset
@@ -81,14 +78,14 @@ class SystemUpgrader {
 
             // Backup existing node_modules locally for faster recovery
             if (fs.existsSync(nmPath)) {
-                if (fs.existsSync(nmBakPath)) execSync(`rm -rf "${nmBakPath}"`);
+                if (fs.existsSync(nmBakPath)) fs.rmSync(nmBakPath, { recursive: true, force: true });
                 fs.renameSync(nmPath, nmBakPath);
             }
 
             try {
                 execSync('npm install --no-fund --no-audit', { cwd: process.cwd(), stdio: 'pipe' });
                 console.log("✅ 核心依賴安裝完成");
-                if (fs.existsSync(nmBakPath)) execSync(`rm -rf "${nmBakPath}"`); // Cleanup backup if success
+                if (fs.existsSync(nmBakPath)) fs.rmSync(nmBakPath, { recursive: true, force: true }); // Cleanup backup if success
             } catch (npmErr) {
                 console.error("❌ npm install 失敗:", npmErr.message);
                 if (fs.existsSync(nmBakPath)) {
@@ -104,8 +101,9 @@ class SystemUpgrader {
                 if (fs.existsSync(dashPath)) {
                     await ctx.reply("🌐 正在重新建置 Web Dashboard...");
                     const dashNmPath = path.join(dashPath, 'node_modules');
-                    if (fs.existsSync(dashNmPath)) execSync(`rm -rf "${dashNmPath}"`);
-                    execSync('npm install --no-fund --no-audit && npm run build', { cwd: dashPath, stdio: 'pipe' });
+                    if (fs.existsSync(dashNmPath)) fs.rmSync(dashNmPath, { recursive: true, force: true });
+                    execSync('npm install --no-fund --no-audit', { cwd: dashPath, stdio: 'pipe' });
+                    execSync('npm run build', { cwd: dashPath, stdio: 'pipe' });
                     console.log("✅ Dashboard 更新完成");
                 }
             }

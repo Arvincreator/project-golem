@@ -22,7 +22,7 @@ class HelpManager {
             if (allSkills.length > 0) {
                 skillList = allSkills.map(s => s.id).join(', ');
             }
-        } catch (e) { }
+        } catch (e) { console.warn('[HelpManager] Failed to list skills:', e.message); }
 
         return `
 🤖 **Golem v9.0 (Ultimate Chronos + MultiAgent + WebSkillEngine)**

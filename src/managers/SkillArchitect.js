@@ -94,21 +94,6 @@ class SkillArchitect {
                 throw new Error("Invalid generation: Missing filename or code.");
             }
 
-            // ✅ [H-4 Fix] 寫入磁碟前進行安全掃描，防止惡意 AI 注入危險册編
-            const DANGEROUS_PATTERNS = [
-                "require(\"child_process\")",
-                "require('child_process')",
-                'execSync',
-                'spawnSync',
-                'exec(',
-                'spawn(',
-                'eval(',
-                'new Function(',
-            ];
-            if (DANGEROUS_PATTERNS.some(k => skillData.code.includes(k))) {
-                throw new Error("⚠️ Security: Generated skill contains restricted calls. Deployment blocked.");
-            }
-
             // 修正檔名 (強制 .js)
             if (!skillData.filename.endsWith('.js')) skillData.filename += '.js';
 

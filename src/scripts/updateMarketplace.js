@@ -94,7 +94,7 @@ async function run() {
                     oldData.forEach(s => {
                         existingMap[s.id] = s;
                     });
-                } catch (e) { }
+                } catch (e) { console.warn('[updateMarketplace] Failed to read existing marketplace data:', e.message); }
             }
 
             const parsedSkills = [];

@@ -10,7 +10,7 @@ class ExperienceMemory {
         this.data = this._load();
     }
     _load() {
-        try { if (fs.existsSync(this.memoryFile)) return JSON.parse(fs.readFileSync(this.memoryFile, 'utf-8')); } catch (e) { }
+        try { if (fs.existsSync(this.memoryFile)) return JSON.parse(fs.readFileSync(this.memoryFile, 'utf-8')); } catch (e) { console.warn('[ExperienceMemory] Failed to load memory file:', e.message); }
         return { lastProposalType: null, rejectedCount: 0, avoidList: [], nextWakeup: 0 };
     }
     save() { fs.writeFileSync(this.memoryFile, JSON.stringify(this.data, null, 2)); }

@@ -23,7 +23,7 @@ class SkillIndexManager {
         const dbDir = path.dirname(this.dbPath);
         try {
             await fs.mkdir(dbDir, { recursive: true });
-        } catch (e) { }
+        } catch (e) { console.warn('[SkillIndexManager] Failed to create DB directory:', e.message); }
 
         return new Promise((resolve, reject) => {
             this.db = new sqlite3.Database(this.dbPath, (err) => {

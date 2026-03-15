@@ -56,6 +56,15 @@ const MEMORY_TIERS = Object.freeze({
 /** 日誌保留時間 (毫秒) - 向下相容 */
 const LOG_RETENTION_MS = MEMORY_TIERS.HOURLY_RETENTION_MS;
 
+/** 🛡️ Anti-Hallucination Rules (injected into brain system prompt) */
+const ANTI_HALLUCINATION_RULES = `## 反幻覺核心規則 (ANTI-HALLUCINATION)
+1. 不知道就說「我目前沒有這個資訊」— 絕不編造
+2. RAG 查無結果時回報「知識庫沒有相關資料」— 不技術性迴避
+3. 引用資料必須標明來源和信心等級 (HIGH/MEDIUM/LOW)
+4. 信心=LOW 的資訊必須加警告「此資訊未經驗證」
+5. 超出能力範圍直接說明，不裝懂
+6. 數字/日期/名稱不確定時用「大約」「可能」修飾`;
+
 module.exports = {
     TIMINGS,
     LIMITS,
@@ -64,4 +73,5 @@ module.exports = {
     LOCK_FILES,
     LOG_RETENTION_MS,
     MEMORY_TIERS,
+    ANTI_HALLUCINATION_RULES,
 };

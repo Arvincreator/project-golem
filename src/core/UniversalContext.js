@@ -270,7 +270,7 @@ class UniversalContext {
             try {
                 const channel = await this.instance.channels.fetch(this.chatId);
                 await channel.sendTyping();
-            } catch (e) { }
+            } catch (e) { console.warn('[UniversalContext] sendTyping failed:', e.message); }
         }
     }
 }

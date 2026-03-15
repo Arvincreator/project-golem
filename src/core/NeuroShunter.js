@@ -30,8 +30,18 @@ class NeuroShunter {
         // 1. 處理直接回覆 (讓 AI 的解說文字在行動之前出現)
         if (parsed.reply && !shouldSuppressReply) {
             let finalReply = parsed.reply;
+
+            // ✨ [v9.0.9] 信心等級顯示 (from XML protocol or RAG confidence)
+            if (parsed.confidence && parsed.confidence !== 'HIGH') {
+                const badge = parsed.confidence === 'MEDIUM' ? '🟡' : '🔴';
+                finalReply += `\n${badge} 信心: ${parsed.confidence}`;
+            }
+            if (parsed.sources && parsed.sources.length > 0) {
+                finalReply += parsed.confidence ? ` (${parsed.sources.join('+')})` : '';
+            }
+
             if (ctx.platform === 'telegram' && ctx.shouldMentionSender) {
-                finalReply = `${ctx.senderMention} ${parsed.reply}`;
+                finalReply = `${ctx.senderMention} ${finalReply}`;
             }
             console.log(`🤖 [Golem] 說: ${finalReply}`);
 
@@ -47,6 +57,30 @@ class NeuroShunter {
             }
 
             await ctx.reply(finalReply);
+
+            // Auto-push AI response to RAG (fire-and-forget)
+            try {
+                const endpoints = require('../config/endpoints');
+                if (endpoints.RAG_URL) {
+                    const { getToken } = require('../utils/yedan-auth');
+                    const token = getToken();
+                    if (token) {
+                        fetch(`${endpoints.RAG_URL}/ingest`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                            body: JSON.stringify({
+                                entities: [{
+                                    id: `reply_${Date.now()}`,
+                                    type: 'golem_reply',
+                                    name: finalReply.substring(0, 50),
+                                    properties: { content: finalReply.substring(0, 300), timestamp: new Date().toISOString() }
+                                }]
+                            }),
+                            signal: AbortSignal.timeout(5000)
+                        }).catch(() => {}); // fire-and-forget
+                    }
+                }
+            } catch (e) { /* non-blocking */ }
         } else if (parsed.reply && shouldSuppressReply) {
             console.log(`🤫 [NeuroShunter] 檢測到靜默模式，已攔截回覆內容。`);
         }

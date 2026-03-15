@@ -5,7 +5,7 @@ import { socket } from "@/lib/socket";
 import { MetricCard } from "@/components/MetricCard";
 import { LogStream } from "@/components/LogStream";
 import { useGolem } from "@/components/GolemContext";
-import { Activity, Cpu, Server, Clock, RefreshCcw, PowerOff, AlertTriangle, TriangleAlert, BrainCircuit, UserPlus, Zap } from "lucide-react";
+import { Activity, Cpu, Server, Clock, RefreshCcw, PowerOff, AlertTriangle, TriangleAlert, BrainCircuit, UserPlus, Zap, Database, ListOrdered, Brain, MemoryStick } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -161,6 +161,10 @@ export default function DashboardPage() {
         queueCount: 0,
         lastSchedule: "無排程",
         memUsage: 0,
+        heapUsage: 0,
+        cpuPct: 0,
+        queueDepth: 0,
+        ragConfidence: 0,
     });
 
     const [memHistory, setMemHistory] = useState<{ time: string; value: number }[]>([]);
@@ -236,6 +240,10 @@ export default function DashboardPage() {
                 ...prev,
                 uptime: data.uptime,
                 memUsage: data.memUsage,
+                heapUsage: data.heapUsage || 0,
+                cpuPct: data.cpuPct || 0,
+                queueDepth: data.queueDepth || 0,
+                ragConfidence: data.ragConfidence || 0,
             }));
 
             setMemHistory((prev) => {
@@ -285,17 +293,24 @@ export default function DashboardPage() {
 
     return (
         <div className="p-6 h-full flex flex-col space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                 <MetricCard
-                    title="Memory Usage"
+                    title="RSS Memory"
                     value={`${metrics.memUsage.toFixed(1)} MB`}
-                    icon={Activity}
+                    icon={MemoryStick}
                     data={memHistory}
                     color="#10b981"
                 />
-                <MetricCard title="Queue Load" value={metrics.queueCount} icon={Server} />
-                <MetricCard title="System Uptime" value={metrics.uptime} icon={Clock} />
-                <MetricCard title="Next Schedule" value={metrics.lastSchedule} icon={Cpu} />
+                <MetricCard title="Heap Usage" value={`${metrics.heapUsage.toFixed(1)} MB`} icon={Database} color="#6366f1" />
+                <MetricCard title="CPU" value={`${metrics.cpuPct}%`} icon={Cpu} color="#f59e0b" />
+                <MetricCard title="Uptime" value={metrics.uptime} icon={Clock} color="#8b5cf6" />
+                <MetricCard title="Queue" value={metrics.queueDepth} icon={ListOrdered} color="#ef4444" />
+                <MetricCard
+                    title="RAG Confidence"
+                    value={metrics.ragConfidence ? metrics.ragConfidence.toFixed(2) : 'N/A'}
+                    icon={Brain}
+                    color={metrics.ragConfidence >= 0.5 ? '#10b981' : '#ef4444'}
+                />
             </div>
 
             <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 min-h-0">

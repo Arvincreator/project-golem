@@ -5,15 +5,10 @@
 
 const { getToken } = require('../../utils/yedan-auth');
 const circuitBreaker = require('../../core/circuit_breaker');
+const endpoints = require('../../config/endpoints');
 
-const WORKERS = {
-    health: 'https://yedan-health-commander.yagami8095.workers.dev',
-    intel: 'https://yedan-intel-ops.yagami8095.workers.dev',
-    orchestrator: 'https://yedan-orchestrator.yagami8095.workers.dev',
-    content: 'https://yedan-content-engine.yagami8095.workers.dev',
-    revenue: 'https://yedan-revenue-sentinel.yagami8095.workers.dev',
-    rag: 'https://yedan-graph-rag.yagami8095.workers.dev'
-};
+const WORKERS = endpoints.WORKERS;
+const AGENT_ID = endpoints.AGENT_ID;
 
 const REQUEST_TIMEOUT = 15000;
 
@@ -35,6 +30,7 @@ async function safeReq(workerName, url, method = 'GET', body = null) {
 
 // RAG 讀取 — 查詢相關經驗再決策
 async function ragQuery(query) {
+    if (!WORKERS.rag) return null;
     try {
         const token = getToken();
         const headers = { "Content-Type": "application/json" };
@@ -46,25 +42,27 @@ async function ragQuery(query) {
         });
         if (!res.ok) return null;
         return res.json();
-    } catch (e) { return null; }
+    } catch (e) { console.warn('[fleet]', e.message); return null; }
 }
 
 // RAG 寫入 — 記錄操作結果
 async function ragEvolve(situation, action_taken, outcome, score) {
+    if (!WORKERS.rag) return;
     try {
         const token = getToken();
         const headers = { "Content-Type": "application/json" };
         if (token) headers["Authorization"] = `Bearer ${token}`;
         await fetch(`${WORKERS.rag}/evolve`, {
             method: 'POST', headers,
-            body: JSON.stringify({ agent_id: 'rensin-fleet', situation, action_taken, outcome, score }),
+            body: JSON.stringify({ agent_id: `${AGENT_ID}-fleet`, situation, action_taken, outcome, score }),
             signal: AbortSignal.timeout(10000)
         });
-    } catch (e) { /* non-blocking */ }
+    } catch (e) { console.warn('[fleet]', e.message); }
 }
 
 // RAG 寫入實體
 async function ragIngest(entities, relationships) {
+    if (!WORKERS.rag) return;
     try {
         const token = getToken();
         const headers = { "Content-Type": "application/json" };
@@ -74,7 +72,7 @@ async function ragIngest(entities, relationships) {
             body: JSON.stringify({ entities, relationships }),
             signal: AbortSignal.timeout(10000)
         });
-    } catch (e) { /* non-blocking */ }
+    } catch (e) { console.warn('[fleet]', e.message); }
 }
 
 async function execute(args) {
@@ -87,14 +85,20 @@ async function execute(args) {
             const ragContext = await ragQuery('fleet health status issues');
             const pastIssues = ragContext?.experience_replays?.filter(r => !r.success).slice(0, 3) || [];
 
-            const results = await Promise.allSettled([
-                safeReq('health', `${WORKERS.health}/health`),
-                safeReq('orchestrator', `${WORKERS.orchestrator}/status`),
-                safeReq('revenue', `${WORKERS.revenue}/health`),
-                safeReq('intel', `${WORKERS.intel}/health`),
-                safeReq('content', `${WORKERS.content}/health`),
-            ]);
-            const names = ['Health Commander', 'Orchestrator', 'Revenue Sentinel', 'Intel Ops', 'Content Engine'];
+            const workerChecks = [
+                { name: 'Health Commander', key: 'health', endpoint: '/health' },
+                { name: 'Orchestrator', key: 'orchestrator', endpoint: '/status' },
+                { name: 'Revenue Sentinel', key: 'revenue', endpoint: '/health' },
+                { name: 'Intel Ops', key: 'intel', endpoint: '/health' },
+                { name: 'Content Engine', key: 'content', endpoint: '/health' },
+            ];
+            const configured = workerChecks.filter(w => WORKERS[w.key]);
+            const notConfigured = workerChecks.filter(w => !WORKERS[w.key]);
+
+            const results = await Promise.allSettled(
+                configured.map(w => safeReq(w.key, `${WORKERS[w.key]}${w.endpoint}`))
+            );
+            const names = configured.map(w => w.name);
             const healthy = results.filter(r => r.status === 'fulfilled').length;
             const total = results.length;
 
@@ -103,6 +107,10 @@ async function execute(args) {
                     if (r.status === 'fulfilled') return `  ✅ ${names[i]}`;
                     return `  ❌ ${names[i]}: ${r.reason?.message?.substring(0, 80) || 'unreachable'}`;
                 }).join('\n');
+
+            if (notConfigured.length > 0) {
+                output += '\n' + notConfigured.map(w => `  ⚪ ${w.name}: not configured`).join('\n');
+            }
 
             // 附加 Circuit Breaker 狀態
             const cbStatus = circuitBreaker.getStatus();
@@ -152,7 +160,7 @@ async function execute(args) {
                     id: `intel_${i.title?.replace(/\s+/g, '_').substring(0, 40) || Date.now()}`,
                     type: 'intel_item',
                     name: i.title || 'unknown',
-                    properties: { source: i.source, score: i.score, fetched_by: 'rensin' }
+                    properties: { source: i.source, score: i.score, fetched_by: AGENT_ID }
                 }));
                 await ragIngest(entities, []);
             }
@@ -215,7 +223,7 @@ async function execute(args) {
                 id: `content_${Date.now()}`,
                 type: 'generated_content',
                 name: contentType,
-                properties: { generated_by: 'rensin', timestamp: new Date().toISOString() }
+                properties: { generated_by: AGENT_ID, timestamp: new Date().toISOString() }
             }], []);
 
             return output;

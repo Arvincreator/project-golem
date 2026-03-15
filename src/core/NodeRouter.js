@@ -2,12 +2,21 @@ const { CONFIG } = require('../config');
 const HelpManager = require('../managers/HelpManager');
 const skills = require('../skills');
 const skillManager = require('../managers/SkillManager');
-const SkillArchitect = require('../managers/SkillArchitect');
 
-// ✨ [v9.0 Addon] 初始化技能架構師 (Web Gemini Mode)
-// 注意：這裡不傳入 Model，因為我們將在 NodeRouter 中傳入 Web Brain
-const architect = new SkillArchitect();
-console.log("🏗️ [SkillArchitect] 技能架構師已就緒 (Web Mode)");
+// ✨ [v9.0.8 Fix] Lazy-init SkillArchitect to prevent crash at module scope
+let _architect = null;
+function getArchitect() {
+    if (!_architect) {
+        try {
+            const SkillArchitect = require('../managers/SkillArchitect');
+            _architect = new SkillArchitect();
+            console.log("🏗️ [SkillArchitect] 技能架構師已就緒 (Web Mode)");
+        } catch (e) {
+            console.warn("⚠️ [SkillArchitect] 初始化失敗:", e.message);
+        }
+    }
+    return _architect;
+}
 
 // ============================================================
 // ⚡ NodeRouter (反射層)
@@ -24,6 +33,14 @@ class NodeRouter {
             }
             return message; // 網頁端直接返回字串
         };
+
+        // /router commands — delegated to RouterBrain if available
+        if (text.startsWith('/router')) {
+            if (brain && typeof brain._handleRouterCommand === 'function') {
+                return await reply(brain._handleRouterCommand(text));
+            }
+            return await reply('Router commands only available when GOLEM_BRAIN_ENGINE=router');
+        }
 
         if (text.match(/^\/(help|menu|指令|功能)/)) {
             return await reply(await HelpManager.getManual(), { parse_mode: 'Markdown' });
@@ -60,7 +77,9 @@ class NodeRouter {
             }
 
             try {
-                const result = await architect.designSkill(brain, intent, skillManager.listSkills());
+                const arch = getArchitect();
+                if (!arch) return await reply('❌ SkillArchitect 初始化失敗，無法學習新技能。');
+                const result = await arch.designSkill(brain, intent, skillManager.listSkills());
                 const response = result.success
                     ? `✅ **新技能編寫完成！**\n📜 **名稱**: \`${result.name}\`\n📝 **描述**: ${result.preview}\n📂 **檔案**: \`${require('path').basename(result.path)}\`\n_現在可以直接命令我使用此功能。_`
                     : `❌ **學習失敗**: ${result.error}`;
@@ -89,10 +108,8 @@ class NodeRouter {
 
         if (text === '/skills') {
             try {
-                const SkillIndexManager = require('../managers/SkillIndexManager');
-                const index = new SkillIndexManager(brain.userDataDir);
+                const index = brain.skillIndex;
                 const allSkills = await index.listAllSkills();
-                await index.close();
 
                 if (allSkills.length === 0) {
                     return await reply("📭 目前尚未安裝或同步任何技能。");
@@ -110,7 +127,40 @@ class NodeRouter {
         }
 
         if (text.startsWith('/patch') || text.includes('優化代碼')) return false;
+
+        // ✨ [v9.0.8] MCP Tool Bridge
+        if (text.startsWith('[MCP_TOOL]') || text.startsWith('/mcp ')) {
+            try {
+                const MCPBridge = require('../bridges/MCPBridge');
+                const bridge = new MCPBridge();
+                const input = text.replace('[MCP_TOOL]', '').replace('/mcp ', '').trim();
+                const parsed = JSON.parse(input);
+                const result = await bridge.callTool(parsed.server, parsed.method, parsed.params);
+                return await reply(`📡 MCP Result:\n\`\`\`json\n${JSON.stringify(result, null, 2)}\n\`\`\``);
+            } catch (e) {
+                return await reply(`❌ MCP Error: ${e.message}`);
+            }
+        }
+
         return false;
+    }
+
+    /**
+     * Handle RENSIN_ callback commands (called by RensinCallbackRouter)
+     * @param {object} ctx - Context
+     * @param {object} brain - Brain instance
+     * @param {string} cmd - Command after RENSIN_ prefix
+     * @param {function} reply - Reply helper
+     * @param {boolean} isWeb - Whether from web interface
+     */
+    static async _handleRensinCallback(ctx, brain, cmd, reply, isWeb) {
+        console.log(`🎮 [NodeRouter] _handleRensinCallback: ${cmd}`);
+        // Route callback command through the normal handle flow
+        ctx.text = `/${cmd}`;
+        const result = await NodeRouter.handle(ctx, brain);
+        if (result === false) {
+            await reply(`⚠️ 未知的回調指令: ${cmd}`);
+        }
     }
 }
 

@@ -12,6 +12,10 @@ export default function TerminalPage() {
         queueCount: 0,
         lastSchedule: "N/A",
         memUsage: 0,
+        queueDepth: 0,
+        tasksCompleted: 0,
+        tasksFailed: 0,
+        errors1h: 0,
     });
 
     const [memHistory, setMemHistory] = useState<{ time: string; value: number }[]>([]);
@@ -32,6 +36,10 @@ export default function TerminalPage() {
                 ...prev,
                 uptime: data.uptime,
                 memUsage: data.memUsage,
+                queueDepth: data.queueDepth || 0,
+                tasksCompleted: data.tasksCompleted || 0,
+                tasksFailed: data.tasksFailed || 0,
+                errors1h: data.errors1h || 0,
             }));
 
             setMemHistory((prev) => {
@@ -211,8 +219,9 @@ export default function TerminalPage() {
                             </div>
                             <ul className="space-y-2.5 ml-3 border-l border-gray-800 pl-4 py-1">
                                 <li className="flex justify-between"><span className="text-gray-600">Chronos:</span> <span className="text-green-500">ONLINE</span></li>
-                                <li className="flex justify-between"><span className="text-gray-600">Agents:</span> <span className="text-gray-200">READY ({metrics.queueCount})</span></li>
-                                <li className="flex justify-between whitespace-nowrap overflow-hidden text-ellipsis"><span className="text-gray-600">Last:</span> <span className="text-gray-400 text-[10px]">{metrics.lastSchedule}</span></li>
+                                <li className="flex justify-between"><span className="text-gray-600">Queue:</span> <span className="text-gray-200">{metrics.queueDepth}</span></li>
+                                <li className="flex justify-between"><span className="text-gray-600">Tasks:</span> <span className="text-green-400">✅{metrics.tasksCompleted}</span> <span className="text-red-400">❌{metrics.tasksFailed}</span></li>
+                                <li className="flex justify-between"><span className="text-gray-600">Errors/1h:</span> <span className={metrics.errors1h > 0 ? "text-red-400" : "text-gray-200"}>{metrics.errors1h}</span></li>
                             </ul>
                         </div>
                     </div>

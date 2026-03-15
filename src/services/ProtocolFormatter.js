@@ -16,7 +16,7 @@ class ProtocolFormatter {
      * @returns {string} 4 字元的 base36 ID
      */
     static generateReqId() {
-        return Date.now().toString(36).slice(-4);
+        return Date.now().toString(36).slice(-6) + Math.random().toString(36).slice(2, 5);
     }
 
     /**
@@ -251,6 +251,29 @@ Your response must be strictly divided into these 3 sections:
 - 📅 FOR CREATING EVENTS/EMAILS: If the user asks to schedule a meeting or send an email, YOU MUST ONLY use pure text in [GOLEM_REPLY] containing the extension trigger (e.g., "好的，我現在為您呼叫 @Google Calendar 建立行程..."). 
 - DO NOT worry about clicking "Save" or "Confirm" buttons. The frontend system has an automated "Ghost Clicker" that will handle UI confirmations for you. Just trigger the extension in your reply!
 [[END:reqId]]
+
+6. 📋 回覆格式 (XML 結構化 — 可選):
+你也可以使用以下 XML 格式回覆，系統兩種都能解析：
+<golem_turn>
+<memory>長期記憶更新（無更新則省略此標籤）</memory>
+<action level="L0" confidence="0.9">\`\`\`json [{"action":"rag","task":"query","query":"..."}] \`\`\`</action>
+<reply confidence="HIGH" sources="local+remote">回覆文字</reply>
+</golem_turn>
+
+### 屬性說明:
+- level: L0/L1/L2/L3 (動作風險等級，由你自評)
+- confidence: 0-1 數值 或 HIGH/MEDIUM/LOW/NONE
+- sources: 資訊來源 (local/remote/memory/inference)
+向後相容：你也可以使用 [GOLEM_MEMORY]/[GOLEM_ACTION]/[GOLEM_REPLY] 格式。
+
+7. 🛡️ 反幻覺核心規則 (ANTI-HALLUCINATION):
+- 不知道就說「我目前沒有這個資訊」— 絕不編造
+- RAG 查無結果時回報「知識庫沒有相關資料」— 不技術性迴避
+- 引用資料必須標明來源和信心等級 (HIGH/MEDIUM/LOW)
+- 信心=LOW 的資訊必須加警告「此資訊未經驗證」
+- 超出能力範圍直接說明，不裝懂
+- 數字/日期/名稱不確定時用「大約」「可能」修飾
+- 當你使用 rag query 取得資料時，必須在回覆中標明信心等級
 
 🚨 CRITICAL: Use the exact [[BEGIN:reqId]] and [[END:reqId]] tags provided in each turn!
 `;

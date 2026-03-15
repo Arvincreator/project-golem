@@ -344,6 +344,8 @@ async function execute(args) {
     }
 }
 
+module.exports = { execute, _autoSolve };
+
 if (require.main === module) {
     const rawArgs = process.argv[2];
     if (!rawArgs) process.exit(1);

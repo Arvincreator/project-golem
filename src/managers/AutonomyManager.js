@@ -3,8 +3,12 @@ const Introspection = require('../services/Introspection');
 const ResponseParser = require('../utils/ResponseParser');
 const PatchManager = require('../managers/PatchManager');
 const NeuroShunter = require('../core/NeuroShunter');
+const SelfEvolution = require('../core/SelfEvolution');
+const OODALoop = require('../core/OODALoop');
 const path = require('path');
 const fs = require('fs');
+const endpoints = require('../config/endpoints');
+const warroom = require('../utils/warroom-client');
 
 class AutonomyManager {
     constructor(brain, controller, memory, options = {}) {
@@ -18,6 +22,9 @@ class AutonomyManager {
         this.pendingPatch = null;
         this._moltbookLearner = null;
         this._statusReportTimer = null;
+        this.selfEvolution = new SelfEvolution({ golemId: this.golemId });
+        this.oodaLoop = null; // initialized after brain is ready
+        this._threeLayerMemory = null;
     }
 
     setIntegrations(tgBot, dcClient, convoManager) {
@@ -29,9 +36,10 @@ class AutonomyManager {
     start() {
         if (!ConfigManager.CONFIG.TG_TOKEN && !ConfigManager.CONFIG.DC_TOKEN) return;
         this.scheduleNextAwakening();
-        setInterval(() => this.timeWatcher(), 60000);
-        // ✨ [v9.0.7] 每 30 分鐘自動檢查一次日誌狀態
-        setInterval(() => this.checkArchiveStatus(), 30 * 60000);
+        this._timeWatcherTimer = setInterval(() => this.timeWatcher(), 60000);
+        // ✨ [v9.0.8] 可配置 Archive 檢查間隔 (分鐘)
+        const archiveInterval = (parseInt(process.env.ARCHIVE_CHECK_INTERVAL) || 30) * 60000;
+        this._archiveTimer = setInterval(() => this.checkArchiveStatus(), archiveInterval);
 
         // 🦞 Moltbook 自動學習
         this._startMoltbookLearner();
@@ -39,7 +47,7 @@ class AutonomyManager {
         // 📊 定期狀態報告 (每 2 小時)
         this._statusReportTimer = setInterval(() => this._sendStatusReport(), 2 * 60 * 60 * 1000);
         // 首次報告在啟動 5 分鐘後
-        setTimeout(() => this._sendStatusReport(), 5 * 60 * 1000);
+        this._statusInitTimer = setTimeout(() => this._sendStatusReport(), 5 * 60 * 1000);
     }
 
     _startMoltbookLearner() {
@@ -81,7 +89,7 @@ class AutonomyManager {
             } catch (e) { /* optional */ }
 
             const lines = [
-                `📊 <b>Rensin 狀態報告</b>`,
+                `📊 <b>${endpoints.AGENT_ID} 狀態報告</b>`,
                 ``,
                 `⏱ 運行: ${uptimeStr} | 記憶體: ${memMB}MB`,
                 `🔄 待審批任務: ${queueStatus}`,
@@ -99,13 +107,13 @@ class AutonomyManager {
             await this.sendNotification(lines.join('\n'), { parse_mode: 'HTML' });
 
             // 同步到戰情室 (non-blocking)
-            this._updateWarRoom('status_report', {
+            warroom.report('status_report', {
                 uptime: uptimeStr,
                 memory_mb: memMB,
                 pending_tasks: queueStatus,
                 moltbook_stats: moltStats,
                 action_summary: actionSummary
-            }).catch(() => {});
+            }).catch((err) => { console.warn('[AutonomyManager] Status report send failed:', err.message); });
         } catch (e) {
             console.warn(`[Autonomy] Status report failed: ${e.message}`);
         }
@@ -129,6 +137,20 @@ class AutonomyManager {
         } catch (e) {
             console.warn(`[Autonomy] Auto-action report failed: ${e.message}`);
         }
+    }
+
+    async recordActionOutcome(action, outcome, success) {
+        // Write to RAG
+        await this.writeRAGAfter(action, outcome, success);
+        // Track in SelfEvolution for strategy learning
+        const suggestion = this.selfEvolution.afterAction(action, outcome, success);
+        if (suggestion && suggestion.suggestSkill) {
+            console.log(`[AutonomyManager] SelfEvolution suggests new skill from pattern: ${suggestion.pattern}`);
+        }
+    }
+
+    setThreeLayerMemory(mem) {
+        this._threeLayerMemory = mem;
     }
 
     /**
@@ -159,44 +181,24 @@ class AutonomyManager {
     }
 
     /**
-     * 更新戰情室 (Notion War Room)
+     * 更新戰情室 (Notion War Room) — delegates to warroom-client
      */
     async _updateWarRoom(eventType, data) {
-        try {
-            const { getToken } = require('../utils/yedan-auth');
-            const token = getToken();
-            if (!token) return;
-
-            await fetch('https://notion-warroom.yagami8095.workers.dev/report', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer openclaw-warroom-2026'
-                },
-                body: JSON.stringify({
-                    source: 'rensin',
-                    event: eventType,
-                    data,
-                    timestamp: new Date().toISOString()
-                }),
-                signal: AbortSignal.timeout(10000)
-            });
-        } catch (e) {
-            // Non-blocking — war room update failure is not critical
-        }
+        return warroom.report(eventType, data, endpoints.AGENT_ID);
     }
 
     /**
      * RAG 查詢 — 動作前先查經驗
      */
     async queryRAGBefore(action) {
+        if (!endpoints.RAG_URL) return null;
         try {
             const { getToken } = require('../utils/yedan-auth');
             const token = getToken();
             if (!token) return null;
 
             const query = `${action?.action || ''} ${action?.task || ''} outcome`;
-            const res = await fetch('https://yedan-graph-rag.yagami8095.workers.dev/query', {
+            const res = await fetch(`${endpoints.RAG_URL}/query`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -214,20 +216,21 @@ class AutonomyManager {
      * RAG 寫入 — 動作後記錄經驗
      */
     async writeRAGAfter(action, outcome, success) {
+        if (!endpoints.RAG_URL) return;
         try {
             const { getToken } = require('../utils/yedan-auth');
             const token = getToken();
             if (!token) return;
 
             const actionDesc = `${action?.action || '?'}:${action?.task || ''}`;
-            await fetch('https://yedan-graph-rag.yagami8095.workers.dev/evolve', {
+            await fetch(`${endpoints.RAG_URL}/evolve`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    agent_id: 'rensin',
+                    agent_id: endpoints.AGENT_ID,
                     situation: `Action: ${actionDesc}`,
                     action_taken: actionDesc,
                     outcome: String(outcome).substring(0, 500),
@@ -236,6 +239,18 @@ class AutonomyManager {
                 signal: AbortSignal.timeout(8000)
             });
         } catch (e) { /* non-blocking */ }
+    }
+
+    stop() {
+        if (this._timeWatcherTimer) { clearInterval(this._timeWatcherTimer); this._timeWatcherTimer = null; }
+        if (this._archiveTimer) { clearInterval(this._archiveTimer); this._archiveTimer = null; }
+        if (this._statusReportTimer) { clearInterval(this._statusReportTimer); this._statusReportTimer = null; }
+        if (this._statusInitTimer) { clearTimeout(this._statusInitTimer); this._statusInitTimer = null; }
+        if (this._awakeningTimer) { clearTimeout(this._awakeningTimer); this._awakeningTimer = null; }
+        if (this._moltbookLearner && typeof this._moltbookLearner.stop === 'function') {
+            this._moltbookLearner.stop();
+        }
+        console.log(`[AutonomyManager:${this.golemId}] All timers stopped.`);
     }
 
     _escapeHtml(text) {
@@ -256,10 +271,12 @@ class AutonomyManager {
             const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
             const yesterday = logManager._getYesterdayDateString();
 
-            // 門檻設定：本日需累積 12 小時 (半天) 以上，昨日只需 3 小時 (確保最終歸檔)
+            // ✨ [v9.0.8] 可配置 Archive 閾值 (環境變數 or 預設)
+            const thresholdYesterday = parseInt(process.env.ARCHIVE_THRESHOLD_YESTERDAY) || 3;
+            const thresholdToday = parseInt(process.env.ARCHIVE_THRESHOLD_TODAY) || 12;
             const checkConfigs = [
-                { date: yesterday, threshold: 3, label: "昨日" },
-                { date: today, threshold: 12, label: "本日" }
+                { date: yesterday, threshold: thresholdYesterday, label: "昨日" },
+                { date: today, threshold: thresholdToday, label: "本日" }
             ];
 
             for (const config of checkConfigs) {
@@ -371,6 +388,8 @@ class AutonomyManager {
         }
 
         if (isSleeping) {
+            // Run sleep consolidation when entering sleep period
+            this._runSleepConsolidation().catch(e => console.warn('[AutonomyManager] Sleep consolidation error:', e.message));
             console.log(`💤 Golem 休息中... (休眠時段: ${sleepStart}:00 ~ ${sleepEnd}:00)`);
             const morning = new Date(nextWakeTime);
             // 設定為稍微延後一點的時間 (例如 07:00 後加 1 小時也就是 08:00)
@@ -379,15 +398,36 @@ class AutonomyManager {
             finalWait = morning.getTime() - Date.now();
         }
         console.log(`♻️ [LifeCycle] 下次醒來: ${(finalWait / 60000).toFixed(1)} 分鐘後`);
-        setTimeout(() => { this.manifestFreeWill(); this.scheduleNextAwakening(); }, finalWait);
+        this._awakeningTimer = setTimeout(() => { this.manifestFreeWill(); this.scheduleNextAwakening(); }, finalWait);
     }
     async manifestFreeWill() {
         try {
+            // Use OODA loop for informed decision-making
+            if (!this.oodaLoop) {
+                this.oodaLoop = new OODALoop(this.brain, { golemId: this.golemId });
+            }
+            const loopResult = await this.oodaLoop.runLoop(this.memory, null, null);
+            const decision = loopResult?.decision;
+
+            if (decision && decision.action !== 'noop') {
+                console.log(`[AutonomyManager] OODA decided: ${decision.action} (${decision.reason})`);
+                if (decision.action === 'gc_hint' && global.gc) global.gc();
+                // For other actions, fall through to random behavior
+            }
+
+            // Default behavioral selection
             const roll = Math.random();
             if (roll < 0.2) await this.performSelfReflection();
             else if (roll < 0.6) await this.performNewsChat();
             else await this.performSpontaneousChat();
-        } catch (e) { console.error("自由意志執行失敗:", e.message); }
+        } catch (e) {
+            console.error("自由意志執行失敗:", e.message);
+            // Fallback to original random behavior
+            const roll = Math.random();
+            if (roll < 0.2) await this.performSelfReflection();
+            else if (roll < 0.6) await this.performNewsChat();
+            else await this.performSpontaneousChat();
+        }
     }
     async getAdminContext() {
         const fakeCtx = {
@@ -443,6 +483,40 @@ ${summaryContext || "（目前尚無對話摘要）"}
             await NeuroShunter.dispatch(adminCtx, raw, this.brain, this.controller);
         }
     }
+    async _runSleepConsolidation() {
+        try {
+            if (!this._threeLayerMemory) return;
+
+            const working = this._threeLayerMemory.getWorkingContext(50);
+            if (working.length < 3) return;
+
+            // Summarize working memory into episodic
+            const summary = working.map(w => String(w.content || '').substring(0, 100)).join(' | ');
+            this._threeLayerMemory.recordEpisode(
+                `Sleep consolidation: ${working.length} items`,
+                ['sleep_consolidation'],
+                summary.substring(0, 500),
+                0.5
+            );
+
+            // Clear old working memory (keep last 5)
+            const toKeep = 5;
+            if (working.length > toKeep) {
+                this._threeLayerMemory.clearWorking();
+                working.slice(-toKeep).forEach(w => this._threeLayerMemory.addToWorking(w));
+            }
+
+            // Auto-deprecate stale episodes
+            if (typeof this._threeLayerMemory.deprecateStaleEpisodes === 'function') {
+                this._threeLayerMemory.deprecateStaleEpisodes(90);
+            }
+
+            console.log(`[AutonomyManager] Sleep consolidation complete: ${working.length} working → episodic`);
+        } catch (e) {
+            console.warn('[AutonomyManager] Sleep consolidation failed:', e.message);
+        }
+    }
+
     async sendNotification(msgText, opts = {}) {
         if (!msgText) return;
 

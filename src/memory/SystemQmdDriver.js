@@ -27,7 +27,8 @@ class SystemQmdDriver {
                 if (fs.existsSync(homeQmd)) this.qmdCmd = `"${homeQmd}"`;
                 else if (os.platform() !== 'win32') {
                     try {
-                        const bashFound = execSync('bash -lc "which qmd"', { encoding: 'utf8', env: process.env }).trim();
+                        const checkCmd = os.platform() === 'win32' ? `where ${this.qmdCmd}` : `which ${this.qmdCmd}`;
+                        const bashFound = execSync(checkCmd, { encoding: 'utf8', stdio: 'pipe', env: process.env }).trim();
                         if (bashFound) this.qmdCmd = `"${bashFound}"`;
                         else throw new Error();
                     } catch (e) { throw new Error("QMD_NOT_FOUND"); }
@@ -36,7 +37,7 @@ class SystemQmdDriver {
             console.log(`🧠 [Memory:Qmd] 引擎連線成功: ${this.qmdCmd}`);
             try {
                 execSync(`${this.qmdCmd} collection add "${path.join(this.baseDir, '*.md')}" --name golem-core`, { stdio: 'ignore', env: process.env, shell: true });
-            } catch (e) { }
+            } catch (e) { console.warn('[SystemQmdDriver] Collection add failed:', e.message); }
         } catch (e) {
             console.error(`❌ [Memory:Qmd] 找不到 qmd。`);
             throw new Error("QMD_MISSING");

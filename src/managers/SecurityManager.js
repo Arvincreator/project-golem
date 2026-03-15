@@ -11,69 +11,71 @@ class SecurityManager {
         // L0: 純讀取/資訊類 — 完全自動，Telegram 報告
         // L1: 低風險寫入(社群/RAG/自我修復) — 完全自動，Telegram 報告
         // L2: 中風險(系統操作/evolution) — 需要 Telegram 審批
-        // L3: 高風險(刪除/權限/sudo) — 需要 Telegram 審批
+        // L3: 高風險(刪除/權限/sudo/破壞性指令) — 需要 Telegram 審批 (🔴)
         // ============================================================
+
+        // 統一 regex 規則表 — 20 rules covering 40+ task combinations
+        this.LEVEL_RULES = [
+            // L0: Pure Read
+            { level: 'L0', test: /^moltbot:(feed|read_comments|read_post|my_profile|my_status|list_submolts|dm_list|search)$/ },
+            { level: 'L0', test: /^rag:(query|q|search|stats|s|lessons|l|recent|r|entity|e|health|h|local|local_stats|replay)$/ },
+            { level: 'L0', test: /^fleet:(status|dashboard|health|sweep|intel|intel_feed|fleet_status|revenue|revenue_dashboard|revenue_trends|system_dashboard|circuit|breaker)$/ },
+            { level: 'L0', test: /^selfheal:(diagnose|scan|read|history|stats)$/ },
+            { level: 'L0', test: /^(schedule|log-archive|log-reader|reflection|noop|abort|analytics|model-router|list-schedules|definition|persona|reincarnate):/ },
+            { level: 'L0', test: /^analytics:/ },
+            // L1: Low-Risk Write
+            { level: 'L1', test: /^moltbot:(post|reply|vote|follow|unfollow|join_submolt|leave_submolt|dm_send|comment)$/ },
+            { level: 'L1', test: /^rag:(ingest|write|evolve|learn|consolidate|c|sync|push|pull)$/ },
+            { level: 'L1', test: /^fleet:(intel_sweep|dispatch|generate_content|content_history|reset_circuit)$/ },
+            { level: 'L1', test: /^selfheal:(patch|fix|rollback|autofix|auto)$/ },
+            { level: 'L1', test: /^(community|auto-optimizer|optimizer|adaptive-learning):/ },
+            // L2: Medium Risk
+            { level: 'L2', test: /^command:/ },
+            { level: 'L2', test: /^multi_agent:/ },
+            { level: 'L2', test: /^evolution:/ },
+            { level: 'L2', test: /^skill-inject:/ },
+            // L3: High Risk — destructive shell commands
+            { level: 'L3', test: /^command:.*(rm\s|sudo|chmod|chown|reboot|shutdown|kill|pkill|mkfs|dd\s)/ },
+            { level: 'L3', test: /^command:.*(npm\s+uninstall|pip\s+uninstall|apt\s+remove)/ },
+            { level: 'L3', test: /^command:.*>\s*\/etc\// },
+            { level: 'L3', test: /^evolution:(code_modify|file_delete|dependency_change)$/ },
+        ];
+
         this._actionLog = [];
         this._errorHistory = [];
     }
 
     /**
-     * 判斷技能類動作的風險等級 (L0-L3 分級)
+     * 判斷技能類動作的風險等級 (L0-L3 分級) — 統一 regex 匹配
      */
     classifyAction(action) {
         if (!action || !action.action) return 'L2';
 
         const act = String(action.action).toLowerCase();
-        const task = String(action.task || '').toLowerCase();
+        const task = String(action.task || action.parameter || '').toLowerCase();
+        const key = `${act}:${task}`;
 
-        // ─── L0: 純讀取 / 資訊 / 控制流 ───
-        const l0MoltbotTasks = ['feed', 'read_comments', 'read_post', 'my_profile', 'my_status', 'list_submolts', 'dm_list', 'search'];
-        if (act === 'moltbot' && l0MoltbotTasks.includes(task)) return 'L0';
+        // L3 rules checked first (more specific patterns override L2 catch-all)
+        for (const rule of this.LEVEL_RULES) {
+            if (rule.level === 'L3' && rule.test.test(key)) return 'L3';
+        }
+        // Then L0, L1, L2
+        for (const rule of this.LEVEL_RULES) {
+            if (rule.level !== 'L3' && rule.test.test(key)) return rule.level;
+        }
 
-        // RAG 讀取類 = L0
-        const l0RagTasks = ['query', 'q', 'search', 'stats', 's', 'lessons', 'l', 'recent', 'r', 'entity', 'e', 'health', 'h', 'local', 'local_stats'];
-        if (act === 'rag' && l0RagTasks.includes(task)) return 'L0';
+        return 'L2'; // 未知 = L2 需審批
+    }
 
-        // Fleet 讀取類 = L0
-        const l0FleetTasks = ['status', 'dashboard', 'health', 'sweep', 'intel', 'fleet_status', 'revenue', 'revenue_dashboard', 'revenue_trends', 'system_dashboard', 'circuit', 'breaker'];
-        if (act === 'fleet' && l0FleetTasks.includes(task)) return 'L0';
-
-        // Selfheal 診斷類 = L0
-        const l0SelfhealTasks = ['diagnose', 'scan', 'read', 'history', 'stats'];
-        if (act === 'selfheal' && l0SelfhealTasks.includes(task)) return 'L0';
-
-        // 排程/日誌/反思/noop/abort = L0
-        if (['schedule', 'log-archive', 'reflection', 'noop', 'abort'].includes(act)) return 'L0';
-
-        // Analytics 讀取 = L0
-        if (act === 'analytics') return 'L0';
-
-        // ─── L1: 低風險寫入 ───
-        const l1MoltbotTasks = ['post', 'reply', 'vote', 'follow', 'unfollow', 'join_submolt', 'leave_submolt', 'dm_send', 'comment'];
-        if (act === 'moltbot' && l1MoltbotTasks.includes(task)) return 'L1';
-
-        // RAG 寫入類 = L1
-        const l1RagTasks = ['ingest', 'write', 'evolve', 'learn', 'consolidate', 'c', 'sync', 'push', 'pull'];
-        if (act === 'rag' && l1RagTasks.includes(task)) return 'L1';
-
-        // Fleet 操作類 = L1
-        const l1FleetTasks = ['intel_sweep', 'dispatch', 'generate_content', 'content_history', 'reset_circuit'];
-        if (act === 'fleet' && l1FleetTasks.includes(task)) return 'L1';
-
-        // Selfheal 修復類 = L1 (有備份+語法驗證保護)
-        const l1SelfhealTasks = ['patch', 'fix', 'rollback', 'autofix', 'auto'];
-        if (act === 'selfheal' && l1SelfhealTasks.includes(task)) return 'L1';
-
-        // Community / Auto-optimizer = L1
-        if (['community', 'auto-optimizer', 'optimizer'].includes(act)) return 'L1';
-
-        // ─── L2: 中風險 ───
-        if (act === 'command') return 'L2';
-        if (act === 'multi_agent') return 'L2';
-        if (act === 'evolution') return 'L2';
-
-        // ─── 未知 = L2 ───
-        return 'L2';
+    /**
+     * 回傳各級別規則數量統計
+     */
+    getLevelStats() {
+        const stats = { L0: 0, L1: 0, L2: 0, L3: 0 };
+        for (const rule of this.LEVEL_RULES) {
+            stats[rule.level] = (stats[rule.level] || 0) + 1;
+        }
+        return stats;
     }
 
     /**
@@ -119,7 +121,11 @@ class SecurityManager {
         const safeCmd = (cmd || "").trim();
         if (this.BLOCK_PATTERNS.some(regex => regex.test(safeCmd))) return { level: 'BLOCKED', reason: '毀滅性指令' };
 
-        // 依然阻擋重導向 (> <) 與子殼層 ($() ``) 因為過於複雜且具破壞性
+        // Block dangerous redirect combos
+        if (/>\s*\/dev\/sd|>\s*\/etc\/|`.*rm\s|`.*sudo|\$\(.*rm|\$\(.*sudo/.test(safeCmd)) {
+            return { level: 'BLOCKED', reason: 'Dangerous system modification' };
+        }
+        // Soft warning for other redirects (allows L2 approval)
         if (/([><`])|\$\(/.test(safeCmd)) {
             return { level: 'WARNING', reason: '包含重導向或子系統呼叫等複雜操作，需確認' };
         }

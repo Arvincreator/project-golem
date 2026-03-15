@@ -25,7 +25,7 @@ class RensinCallbackRouter {
             await NodeRouter._handleRensinCallback(ctx, brain, cmd, reply, false);
         } catch (e) {
             console.error(`❌ [RensinCallback] 錯誤:`, e.message);
-            try { await ctx.reply(`❌ 執行失敗: ${e.message}`); } catch (e2) {}
+            try { await ctx.reply(`❌ 執行失敗: ${e.message}`); } catch (e2) { console.warn('[RensinCallbackRouter] Failed to send error reply:', e2.message); }
         }
         return true;
     }

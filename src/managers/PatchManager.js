@@ -68,11 +68,11 @@ class PatchManager {
             return false;
         } finally {
             if (!isStandardExt && fs.existsSync(verifyPath)) {
-                try { fs.unlinkSync(verifyPath); } catch (e) { }
+                try { fs.unlinkSync(verifyPath); } catch (e) { console.warn('[PatchManager] Failed to clean verify file:', e.message); }
             }
             // Cleanup the original test file if it was a .test.js file created by createTestClone
             if (filePath.includes('.test.')) {
-                try { fs.unlinkSync(filePath); console.log("🧹 已清理測試檔案"); } catch (e) { }
+                try { fs.unlinkSync(filePath); console.log("🧹 已清理測試檔案"); } catch (e) { console.warn('[PatchManager] Failed to clean test file:', e.message); }
             }
         }
     }

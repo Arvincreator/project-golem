@@ -2,12 +2,85 @@
 // ⚡ ResponseParser (JSON 解析器 - 寬鬆版 + 集中化 + 終極矯正 + 穿透思考模式)
 // ============================================================
 class ResponseParser {
+    /**
+     * XML 格式解析 (新協議 — golem_turn/action/reply/memory 標籤)
+     */
+    static _parseXML(raw) {
+        const parsed = { memory: null, actions: [], reply: "", confidence: null, sources: [], level: null };
+
+        // Extract <memory>...</memory>
+        const memMatch = raw.match(/<memory>([\s\S]*?)<\/memory>/i);
+        if (memMatch) {
+            const content = memMatch[1].trim();
+            if (content && content !== 'null' && content !== '(無)') {
+                parsed.memory = content;
+            }
+        }
+
+        // Extract <action level="L0" confidence="0.8">JSON</action>
+        const actionMatches = [...raw.matchAll(/<action(?:\s+[^>]*)?>(\s*[\s\S]*?)<\/action>/gi)];
+        for (const m of actionMatches) {
+            const attrStr = m[0].match(/<action([^>]*)>/)?.[1] || '';
+            const levelMatch = attrStr.match(/level="([^"]+)"/);
+            const confMatch = attrStr.match(/confidence="([^"]+)"/);
+            const jsonStr = m[1].replace(/```[a-zA-Z]*\s*/gi, '').replace(/```/g, '').trim();
+            try {
+                const obj = JSON.parse(jsonStr);
+                const steps = Array.isArray(obj) ? obj : [obj];
+                steps.forEach(s => {
+                    if (levelMatch) s._level = levelMatch[1];
+                    if (confMatch) s._confidence = parseFloat(confMatch[1]);
+                    // Schema hallucination correction
+                    if (s.action === 'run_command' || s.action === 'execute') s.action = 'command';
+                    if (s.action === 'command' && !s.parameter && !s.cmd && !s.command) {
+                        if (s.params && s.params.command) s.parameter = s.params.command;
+                    }
+                });
+                if (steps.length > 20) steps.length = 20;
+                parsed.actions.push(...steps);
+            } catch (e) {
+                // Fallback: try regex extraction for broken JSON
+                const actionTypeMatch = jsonStr.match(/"action"\s*:\s*"([^"]+)"/i);
+                const parameterMatch = jsonStr.match(/"(?:parameter|cmd|command)"\s*:\s*"([\s\S]*?)"(?=\s*\n?\s*\}\s*(?:,|\]|$))/i);
+                if (actionTypeMatch && parameterMatch) {
+                    try {
+                        let cleanParam = parameterMatch[1].replace(/\\"/g, '"').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '');
+                        parsed.actions.push({ action: actionTypeMatch[1], parameter: JSON.parse(`"${cleanParam}"`) });
+                    } catch (err) { /* skip unparseable action */ }
+                }
+            }
+        }
+
+        // Extract <reply confidence="HIGH" sources="local+remote">text</reply>
+        const replyMatch = raw.match(/<reply(?:\s+[^>]*)?>(\s*[\s\S]*?)<\/reply>/i);
+        if (replyMatch) {
+            parsed.reply = replyMatch[1].trim();
+            const replyAttrs = raw.match(/<reply([^>]*)>/)?.[1] || '';
+            const confMatch = replyAttrs.match(/confidence="([^"]+)"/);
+            const srcMatch = replyAttrs.match(/sources="([^"]+)"/);
+            if (confMatch) parsed.confidence = confMatch[1];
+            if (srcMatch) parsed.sources = srcMatch[1].split('+');
+        }
+
+        // Fallback: if no XML tags found, treat as plain reply
+        if (!parsed.memory && parsed.actions.length === 0 && !parsed.reply) {
+            parsed.reply = raw.trim() || "⚠️ 無法解析回應";
+        }
+
+        return parsed;
+    }
+
     static parse(raw) {
         const parsed = { memory: null, actions: [], reply: "" };
 
         if (!raw) return parsed;
 
-        // ✨ [升級：穿透 Thinking Mode] 
+        // ✨ [v9.0.9] Try XML format first (new structured protocol)
+        if (raw.includes('<golem_turn>') || (raw.includes('<reply>') && raw.includes('<action'))) {
+            return ResponseParser._parseXML(raw);
+        }
+
+        // ✨ [升級：穿透 Thinking Mode]
         // 許多時候 AI 的回覆會混雜 "Assessing My Capabilities" 等系統提示音。
         // 我們改用更具彈性的獨立擷取方式，無視前面的廢話。
 
@@ -51,6 +124,11 @@ class ResponseParser {
                         return act;
                     });
 
+                    // Limit max actions to prevent runaway
+                    if (steps.length > 20) {
+                        console.warn(`[Parser] Action count ${steps.length} exceeds limit, truncating to 20`);
+                        steps = steps.slice(0, 20);
+                    }
                     parsed.actions.push(...steps);
                 } catch (e) {
                     // 如果 JSON 嚴重破裂，啟動絕地救援，嘗試用正則硬挖

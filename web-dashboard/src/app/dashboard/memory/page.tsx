@@ -10,11 +10,20 @@ import { cn } from "@/lib/utils";
 export default function MemoryPage() {
     const { activeGolem, golems } = useGolem();
     const [status, setStatus] = useState("initializing");
+    const [memLayers, setMemLayers] = useState({ working: 0, episodic: 0, semantic: { nodes: 0, edges: 0 } });
+    const [ragConfidence, setRagConfidence] = useState<string>('N/A');
 
     useEffect(() => {
         if (activeGolem) {
             setStatus("initializing");
             const timer = setTimeout(() => setStatus("ready"), 1500);
+            // Fetch memory layers data
+            fetch('/api/memory/layers').then(r => r.json()).then(data => {
+                if (data && !data.error) setMemLayers(data);
+            }).catch(() => {});
+            fetch('/api/rag/stats').then(r => r.json()).then(data => {
+                if (data && data.confidence) setRagConfidence(data.confidence);
+            }).catch(() => {});
             return () => clearTimeout(timer);
         }
     }, [activeGolem]);
@@ -59,6 +68,34 @@ export default function MemoryPage() {
                 </div>
             ) : (
                 <div className="flex-1 overflow-y-auto space-y-6 pb-12 pr-2 custom-scrollbar z-10">
+
+                    {/* Three-Layer Memory Status */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                        <StatusCard
+                            icon={Cpu}
+                            title="Working Memory"
+                            value={`${memLayers.working}/50`}
+                            status={status === 'ready' ? 'online' : 'loading'}
+                            description="Short-term context buffer"
+                        />
+                        <StatusCard
+                            icon={Database}
+                            title="Episodic Memory"
+                            value={`${memLayers.episodic}/500`}
+                            status={status === 'ready' ? 'online' : 'loading'}
+                            description="Experience replay storage"
+                        />
+                        <StatusCard
+                            icon={Activity}
+                            title="Semantic (MAGMA)"
+                            value={`${memLayers.semantic?.nodes || 0} nodes`}
+                            status="online"
+                            description={`${memLayers.semantic?.edges || 0} edges | Graph knowledge`}
+                        />
+                    </div>
+                    <div className="text-sm text-gray-400 px-1">
+                        RAG Confidence: <span className={ragConfidence === 'N/A' ? 'text-gray-500' : 'text-cyan-400'}>{ragConfidence}</span>
+                    </div>
 
                     {/* Status Dashboard */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

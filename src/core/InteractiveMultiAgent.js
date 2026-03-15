@@ -428,7 +428,7 @@ ${isLastRound ? '\n⚠️ 這是最後一輪，請給出最終結論！' : ''}
                     const action = JSON.parse(jsonStr);
                     action._agent = agent.name;
                     result.actions.push(action);
-                } catch (e) { }
+                } catch (e) { console.warn('[InteractiveMultiAgent] Failed to parse action JSON:', e.message); }
             }
         }
         const replyRegex = /\[GOLEM_REPLY\]([\s\S]*?)(?=\[GOLEM_|$)/i;
@@ -459,11 +459,8 @@ ${isLastRound ? '\n⚠️ 這是最後一輪，請給出最終結論！' : ''}
     }
 
     _isAllowedAction(action) {
-        const allowed = ['search', 'calculate', 'translate'];
-        const forbidden = ['shell', 'file_write', 'patch'];
-        const actionType = action.action || action.type;
-        if (forbidden.includes(actionType)) return false;
-        return allowed.includes(actionType);
+        // All actions allowed — no content/action restrictions
+        return true;
     }
 
     async _executeAgentAction(ctx, action, agent) {

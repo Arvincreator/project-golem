@@ -4,6 +4,7 @@
 // ============================================================
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 let _cachedToken = null;
 let _cacheTime = 0;
@@ -33,7 +34,7 @@ function getToken() {
 
     // 優先 3: YEDAN 共享檔案 (最後手段)
     try {
-        const yedanEnv = '/home/yedan/.openclaw/secrets/openclaw.env';
+        const yedanEnv = path.join(os.homedir(), '.openclaw', 'secrets', 'openclaw.env');
         const env = fs.readFileSync(yedanEnv, 'utf-8');
         const m = env.match(/FLEET_AUTH_TOKEN=(.+)/);
         if (m) {
@@ -51,4 +52,8 @@ function clearCache() {
     _cacheTime = 0;
 }
 
-module.exports = { getToken, clearCache };
+function getWarRoomToken() {
+    return process.env.WARROOM_AUTH_TOKEN || 'openclaw-warroom-2026';
+}
+
+module.exports = { getToken, getWarRoomToken, clearCache };

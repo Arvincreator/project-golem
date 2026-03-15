@@ -4,6 +4,9 @@
 // 規則: 動作前查 RAG | 動作後寫 RAG + 戰情室 | 重複錯誤不犯第二次
 // ============================================================
 
+const endpoints = require('../config/endpoints');
+const warroom = require('../utils/warroom-client');
+
 const CYCLE_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
 
 class MoltbookLearner {
@@ -19,21 +22,21 @@ class MoltbookLearner {
     }
 
     start() {
-        if (this._timer) return;
+        if (this._initTimer || this._cycleTimer) return;
         console.log(`🦞 [MoltbookLearner:${this.golemId}] Auto-learning started (every ${CYCLE_INTERVAL_MS / 60000}min)`);
         // First cycle after 2 minutes (let bot finish init)
-        this._timer = setTimeout(() => {
+        this._initTimer = setTimeout(() => {
+            this._initTimer = null;
             this._runCycle();
-            this._timer = setInterval(() => this._runCycle(), CYCLE_INTERVAL_MS);
+            this._cycleTimer = setInterval(() => this._runCycle(), CYCLE_INTERVAL_MS);
         }, 2 * 60 * 1000);
     }
 
     stop() {
-        if (this._timer) {
-            clearInterval(this._timer);
-            clearTimeout(this._timer);
-            this._timer = null;
-        }
+        if (this._initTimer) { clearTimeout(this._initTimer); this._initTimer = null; }
+        if (this._cycleTimer) { clearInterval(this._cycleTimer); this._cycleTimer = null; }
+        // Legacy cleanup
+        if (this._timer) { clearInterval(this._timer); clearTimeout(this._timer); this._timer = null; }
     }
 
     async _runCycle() {
@@ -179,11 +182,12 @@ ${this._truncate(submoltsResult, 500)}
     // ─── RAG 整合 ───
 
     async _ragQuery(query) {
+        if (!endpoints.RAG_URL) return null;
         try {
             const { getToken } = require('../utils/yedan-auth');
             const token = getToken();
             if (!token) return null;
-            const res = await fetch('https://yedan-graph-rag.yagami8095.workers.dev/query', {
+            const res = await fetch(`${endpoints.RAG_URL}/query`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ query, max_hops: 1, limit: 3 }),
@@ -196,28 +200,22 @@ ${this._truncate(submoltsResult, 500)}
     }
 
     async _ragEvolve(situation, action, outcome, score) {
+        if (!endpoints.RAG_URL) return;
         try {
             const { getToken } = require('../utils/yedan-auth');
             const token = getToken();
             if (!token) return;
-            await fetch('https://yedan-graph-rag.yagami8095.workers.dev/evolve', {
+            await fetch(`${endpoints.RAG_URL}/evolve`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ agent_id: 'rensin-moltbook', situation, action_taken: action, outcome: String(outcome).substring(0, 500), score }),
+                body: JSON.stringify({ agent_id: `${endpoints.AGENT_ID}-moltbook`, situation, action_taken: action, outcome: String(outcome).substring(0, 500), score }),
                 signal: AbortSignal.timeout(8000)
             });
         } catch (e) { /* non-blocking */ }
     }
 
     async _updateWarRoom(event, data) {
-        try {
-            await fetch('https://notion-warroom.yagami8095.workers.dev/report', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer openclaw-warroom-2026' },
-                body: JSON.stringify({ source: 'rensin-moltbook-learner', event, data, timestamp: new Date().toISOString() }),
-                signal: AbortSignal.timeout(10000)
-            });
-        } catch (e) { /* non-blocking */ }
+        return warroom.report(event, data, `${endpoints.AGENT_ID}-moltbook-learner`);
     }
 
     // ─── 重複錯誤防護 ───

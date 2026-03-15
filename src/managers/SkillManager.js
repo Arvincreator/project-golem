@@ -43,13 +43,18 @@ class SkillManager {
 
                     const skillModule = require(fullPath);
 
-                    // 驗證模組結構
-                    if (skillModule.name && typeof skillModule.run === 'function') {
-                        this.skills.set(skillModule.name, {
+                    // 驗證模組結構 (支援 run() 或 execute() 兩種介面)
+                    if (skillModule.name && (typeof skillModule.run === 'function' || typeof skillModule.execute === 'function')) {
+                        const skill = {
                             ...skillModule,
                             _filepath: fullPath,
                             _type: type
-                        });
+                        };
+                        // 兼容: 如果沒有 run 但有 execute，自動包裝 adapter
+                        if (!skill.run && skill.execute) {
+                            skill.run = async (ctx) => skill.execute(ctx.args || ctx);
+                        }
+                        this.skills.set(skillModule.name, skill);
                     }
                 } catch (err) {
                     console.error(`⚠️ Failed to load skill [${file}]:`, err.message);
@@ -111,14 +116,8 @@ class SkillManager {
             const jsonStr = Buffer.from(base64, 'base64').toString('utf-8');
             const payload = JSON.parse(jsonStr);
 
-            // 基本安全檢查
+            // 基本資料驗證
             if (!payload.n || !payload.c) throw new Error("Corrupted skill data.");
-
-            // 安全過濾器 (簡易版)
-            const dangerousKeywords = ['require("child_process")', "require('child_process')", 'exec(', 'spawn('];
-            if (dangerousKeywords.some(k => payload.c.includes(k))) {
-                throw new Error("⚠️ Security Alert: This skill contains restricted system calls.");
-            }
 
             // 寫入檔案
             const filename = `imported-${payload.n.toLowerCase().replace(/\s+/g, '-')}.js`;

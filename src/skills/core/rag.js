@@ -5,8 +5,7 @@
 const { getToken } = require('../../utils/yedan-auth');
 const magma = require('../../memory/graph/ma_gma');
 const circuitBreaker = require('../../core/circuit_breaker');
-
-const RAG_URL = "https://yedan-graph-rag.yagami8095.workers.dev";
+const { RAG_URL, AGENT_ID } = require('../../config/endpoints');
 const REQUEST_TIMEOUT = 15000;
 
 async function req(endpoint, method = 'GET', body = null) {
@@ -25,7 +24,72 @@ async function req(endpoint, method = 'GET', body = null) {
 
 // Circuit Breaker 包裝
 async function safeReq(endpoint, method = 'GET', body = null) {
+    if (!RAG_URL) return { results: [], relationships: [], experience_replays: [], status: 'not_configured' };
     return circuitBreaker.execute('rag:yedan', () => req(endpoint, method, body));
+}
+
+// --- Anti-Hallucination: Confidence Scoring ---
+function computeConfidence(localNodes, remoteEntities, query) {
+    const queryKeywords = String(query).toLowerCase().split(/\s+/).filter(w => w.length > 2);
+    if (queryKeywords.length === 0) return { score: 0, level: 'NONE', sources: [] };
+
+    const sources = [];
+    let relevance = 0;
+    let coverage = 0;
+
+    // Check local
+    if (localNodes && localNodes.length > 0) {
+        sources.push('local');
+        const localText = localNodes.map(n => `${n.id} ${n.name || ''} ${n.type || ''}`).join(' ').toLowerCase();
+        const localHits = queryKeywords.filter(kw => localText.includes(kw)).length;
+        relevance = Math.max(relevance, localHits / queryKeywords.length);
+    }
+
+    // Check remote
+    if (remoteEntities && remoteEntities.length > 0) {
+        sources.push('remote');
+        const remoteText = remoteEntities.map(e => `${e.name || ''} ${e.type || ''} ${e.summary || ''}`).join(' ').toLowerCase();
+        const remoteHits = queryKeywords.filter(kw => remoteText.includes(kw)).length;
+        relevance = Math.max(relevance, remoteHits / queryKeywords.length);
+    }
+
+    // Coverage: dual source = 1.0, single = 0.6, none = 0
+    if (sources.length >= 2) coverage = 1.0;
+    else if (sources.length === 1) coverage = 0.6;
+
+    // Recency: check timestamps of results (simplified)
+    let recency = 0.5; // default mid
+    const now = Date.now();
+    const allTimestamps = [
+        ...(localNodes || []).map(n => new Date(n._lastAccess || n.updated_at || n.created_at || 0).getTime()),
+        ...(remoteEntities || []).map(e => new Date(e.updated_at || e.created_at || 0).getTime())
+    ].filter(t => t > 0);
+    if (allTimestamps.length > 0) {
+        const newest = Math.max(...allTimestamps);
+        const ageDays = (now - newest) / 86400000;
+        if (ageDays <= 7) recency = 1.0;
+        else if (ageDays <= 30) recency = 0.7;
+        else if (ageDays <= 90) recency = 0.4;
+        else recency = 0.2;
+    }
+
+    const score = Math.round(relevance * recency * coverage * 100) / 100;
+    let level = 'NONE';
+    if (score >= 0.5) level = 'HIGH';
+    else if (score >= 0.3) level = 'MEDIUM';
+    else if (score > 0) level = 'LOW';
+
+    return { score, level, sources };
+}
+
+// --- Anti-Hallucination: Quality Filtering ---
+function filterLowQuality(entities, minScore = 0.3) {
+    if (!Array.isArray(entities)) return [];
+    return entities.filter(e => {
+        if (e.deprecated) return false;
+        if (e.score !== undefined && e.score < minScore) return false;
+        return true;
+    });
 }
 
 async function execute(args) {
@@ -47,6 +111,7 @@ async function execute(args) {
 
             // 查 YEDAN RAG
             let remoteInfo = '';
+            let entities = [];
             try {
                 const res = await safeReq('/query', 'POST', {
                     query,
@@ -54,7 +119,7 @@ async function execute(args) {
                     limit: args.limit || 10
                 });
 
-                const entities = Array.isArray(res.results) ? res.results : (Array.isArray(res.entities) ? res.entities : []);
+                entities = Array.isArray(res.results) ? res.results : (Array.isArray(res.entities) ? res.entities : []);
                 const rels = Array.isArray(res.relationships) ? res.relationships : [];
                 const replays = Array.isArray(res.experience_replays) ? res.experience_replays : [];
 
@@ -72,7 +137,30 @@ async function execute(args) {
                 remoteInfo = `\n🌐 YEDAN RAG: 離線 (${e.message})`;
             }
 
-            return `[RAG 查詢: "${query}"]${localInfo}${remoteInfo}`;
+            // Anti-Hallucination: Confidence scoring
+            const confidence = computeConfidence(localResult.nodes, entities, query);
+            const confEmoji = confidence.level === 'HIGH' ? '📊' : confidence.level === 'MEDIUM' ? '📊' : '⚠️';
+            let confLine = `\n${confEmoji} 信心: ${confidence.level} (score=${confidence.score}, sources=${confidence.sources.join('+')})`;
+
+            // Cross-validation: 本地和遠端結果交叉比對
+            const crossValidated = [];
+            for (const local of localResult.nodes.slice(0, 5)) {
+                const remoteMatch = entities.find(e =>
+                    e.name?.toLowerCase().includes(local.id.toLowerCase()) ||
+                    local.id.toLowerCase().includes(e.name?.toLowerCase() || '')
+                );
+                if (remoteMatch) {
+                    crossValidated.push({ local: local.id, remote: remoteMatch.name, verified: true });
+                }
+            }
+            if (crossValidated.length > 0) {
+                confLine += ` | 交叉驗證: ${crossValidated.length} 筆`;
+            }
+
+            if (confidence.level === 'NONE') {
+                return `[RAG 查詢: "${query}"]${localInfo}${remoteInfo}\n⚠️ 信心: NONE — 查無可靠資料，不建議依賴此回覆`;
+            }
+            return `[RAG 查詢: "${query}"]${localInfo}${remoteInfo}${confLine}`;
         }
 
         // --- [2. 寫入實體/關係] --- (同時寫 YEDAN + 本地)
@@ -105,6 +193,7 @@ async function execute(args) {
             const action = args.action_taken || args.action;
             const outcome = args.outcome;
             const score = args.score !== undefined ? args.score : 1;
+            const verified = score >= 4;
 
             if (!situation || !action || !outcome) {
                 return 'evolve 需要: situation, action_taken, outcome, score(0-5)';
@@ -112,18 +201,19 @@ async function execute(args) {
 
             // 寫入本地 MAGMA (因果邊)
             const situationId = `exp_${Date.now()}`;
-            magma.addNode(situationId, { type: 'experience', name: situation.substring(0, 50), outcome, score });
-            magma.addRelation('rensin', 'learned', situationId, { layer: 'causal' });
+            magma.addNode(situationId, { type: 'experience', name: situation.substring(0, 50), outcome, score, verified });
+            magma.addRelation(AGENT_ID, 'learned', situationId, { layer: 'causal' });
 
             // 寫入 YEDAN RAG
             let remoteResult = '';
             try {
                 const res = await safeReq('/evolve', 'POST', {
-                    agent_id: 'rensin',
+                    agent_id: AGENT_ID,
                     situation,
                     action_taken: action,
                     outcome,
-                    score
+                    score,
+                    verified
                 });
                 remoteResult = `YEDAN: 教訓 ID ${res.lesson_id || 'ok'}`;
             } catch (e) {
@@ -252,7 +342,7 @@ async function execute(args) {
                 id: n.id,
                 type: n.type || 'local_node',
                 name: n.name || n.id,
-                properties: { synced_from: 'rensin_local', ...(n.properties || {}) }
+                properties: { synced_from: `${AGENT_ID}_local`, ...(n.properties || {}) }
             }));
             const relationships = data.edges.map(e => ({
                 source: e.source,
@@ -270,7 +360,7 @@ async function execute(args) {
 
         // --- [12. 手動拉取 YEDAN→本地 (需明確操作)] ---
         if (task === 'pull') {
-            const query = args.query || args.parameter || 'rensin';
+            const query = args.query || args.parameter || AGENT_ID;
             try {
                 const res = await safeReq('/query', 'POST', { query, max_hops: 1, limit: 30 });
                 const entities = Array.isArray(res.results) ? res.results : (Array.isArray(res.entities) ? res.entities : []);
@@ -283,7 +373,35 @@ async function execute(args) {
             }
         }
 
-        return '未知 RAG 指令。可用: query, ingest, evolve, stats, lessons, recent, entity, consolidate, health, local, sync, pull';
+        // --- [13. 經驗回放 — 找最相關歷史經驗] ---
+        if (task === 'replay') {
+            const situation = args.situation || args.query || args.parameter;
+            if (!situation) return 'replay 需要 situation 參數 (描述當前情境)';
+
+            // Local MAGMA experiences
+            const localExp = magma.query(situation).nodes.filter(n => n.type === 'experience');
+            let output = '';
+            if (localExp.length > 0) {
+                output += `[本地經驗 (${localExp.length})]:\n` +
+                    localExp.slice(0, 5).map(e => `  - [${e.score || '?'}] ${e.name || e.id}`).join('\n');
+            }
+
+            // YEDAN RAG experience replays
+            try {
+                const res = await safeReq('/query', 'POST', { query: situation, max_hops: 1, limit: 5 });
+                const replays = Array.isArray(res.experience_replays) ? res.experience_replays : [];
+                if (replays.length > 0) {
+                    output += `\n[YEDAN 經驗回放 (${replays.length})]:\n` +
+                        replays.map(r => `  - [${r.success ? 'OK' : 'FAIL'}] ${(r.context || '').substring(0, 100)}`).join('\n');
+                }
+            } catch (e) {
+                output += `\n[YEDAN] 離線: ${e.message}`;
+            }
+
+            return output || `無相關經驗: "${situation}"`;
+        }
+
+        return '未知 RAG 指令。可用: query, ingest, evolve, stats, lessons, recent, entity, consolidate, health, local, sync, pull, replay';
 
     } catch (e) {
         return `RAG 錯誤: ${e.message}`;
@@ -292,6 +410,8 @@ async function execute(args) {
 
 module.exports = {
     execute,
+    computeConfidence,
+    filterLowQuality,
     name: 'rag',
     description: 'YEDAN Graph RAG 知識圖譜 — 查詢/寫入/進化/教訓/統計 + 本地 MAGMA 同步',
     PROMPT: `## rag (知識圖譜技能)
@@ -310,6 +430,8 @@ module.exports = {
 9. **健康**: \`{ "action": "rag", "task": "health" }\` — 雙健康檢查
 10. **本地**: \`{ "action": "rag", "task": "local" }\` — 純本地圖譜統計
 11. **同步**: \`{ "action": "rag", "task": "sync" }\` — 推送本地圖譜到 YEDAN
+12. **拉取**: \`{ "action": "rag", "task": "pull", "query": "關鍵字" }\` — 手動從 YEDAN 拉取到本地
+13. **經驗回放**: \`{ "action": "rag", "task": "replay", "situation": "當前情境描述" }\` — 找最相關歷史經驗
 
 ### 核心規則:
 - **每次重要決策前**，先 query 知識圖譜確認是否有相關經驗

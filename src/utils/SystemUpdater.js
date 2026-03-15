@@ -155,7 +155,7 @@ class SystemUpdater {
             const rootDir = process.cwd();
             // Git stash, pull, pop
             this.broadcast(io, 'running', '儲存本地暫存變更 (git stash)...', 10);
-            try { await this.execAsync('git stash', { cwd: rootDir }); } catch (e) { }
+            try { await this.execAsync('git stash', { cwd: rootDir }); } catch (e) { console.warn('[SystemUpdater] git stash failed:', e.message); }
 
             this.broadcast(io, 'running', '執行 git fetch --all 同步所有遠端資訊...', 20);
             await this.execAsync('git fetch --all', { cwd: rootDir });
@@ -197,7 +197,7 @@ class SystemUpdater {
             catch (e) { throw new Error(`拉取遠端 ${targetRemote}/${currentBranch} 失敗。`); }
 
             this.broadcast(io, 'running', '回復本地變更 (git stash pop)...', 50);
-            try { await this.execAsync('git stash pop', { cwd: rootDir }); } catch (e) { }
+            try { await this.execAsync('git stash pop', { cwd: rootDir }); } catch (e) { console.warn('[SystemUpdater] git stash pop failed:', e.message); }
 
             this.broadcast(io, 'running', '安裝主專案依賴套件 (npm install)...', 70);
             await this.execAsync('npm install --production=false', { cwd: rootDir });
@@ -205,7 +205,7 @@ class SystemUpdater {
             if (fs.existsSync(path.join(rootDir, 'web-dashboard', 'package.json'))) {
                 this.broadcast(io, 'running', '更新 Dashboard 模組與依賴...', 90);
                 await this.execAsync('npm install', { cwd: path.join(rootDir, 'web-dashboard') });
-                try { await this.execAsync('npm run build', { cwd: path.join(rootDir, 'web-dashboard') }); } catch (e) { }
+                try { await this.execAsync('npm run build', { cwd: path.join(rootDir, 'web-dashboard') }); } catch (e) { console.warn('[SystemUpdater] Dashboard build failed:', e.message); }
             }
 
             this.broadcast(io, 'requires_restart', '✨ 更新完成！請點擊重啟按鈕。', 100);
@@ -273,10 +273,10 @@ class SystemUpdater {
                 if (keepOldData) {
                     const destPath = path.join(backupDir, file);
                     try { fs.renameSync(srcPath, destPath); } catch (e) {
-                        try { fs.rmSync(srcPath, { recursive: true, force: true }); } catch (ignore) { }
+                        try { fs.rmSync(srcPath, { recursive: true, force: true }); } catch (ignore) { console.warn('[SystemUpdater] Failed to remove file during backup fallback:', ignore.message); }
                     }
                 } else {
-                    try { fs.rmSync(srcPath, { recursive: true, force: true }); } catch (e) { }
+                    try { fs.rmSync(srcPath, { recursive: true, force: true }); } catch (e) { console.warn('[SystemUpdater] Failed to remove old file:', e.message); }
                 }
             }
 
@@ -306,7 +306,7 @@ class SystemUpdater {
             }
 
             // Cleanup temp
-            try { fs.rmSync(tempDir, { recursive: true, force: true }); } catch (e) { }
+            try { fs.rmSync(tempDir, { recursive: true, force: true }); } catch (e) { console.warn('[SystemUpdater] Failed to cleanup temp dir:', e.message); }
 
             // 5. Npm install
             this.broadcast(io, 'running', '安裝依賴套件 (npm install)...', 85);

@@ -9,7 +9,7 @@ class KeyChain {
         this.currentIndex = 0;
         // 🔥 [v8.7 保留] API 節流與冷卻機制
         this._lastCallTime = 0;
-        this._minInterval = 2500;
+        this._minInterval = 4000; // ✨ [v9.0.8] 4s 間隔 (符合 15 RPM 限制)
         this._cooldownUntil = new Map();
         this._stats = new Map();
         this.keys.forEach(k => this._stats.set(k, { calls: 0, errors: 0, lastUsed: 0 }));

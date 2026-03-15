@@ -240,7 +240,7 @@ class GolemBrain {
      */
     async sendMessage(text, isSystem = false, options = {}) {
         if (!this.browser) await this.init();
-        try { await this.page.bringToFront(); } catch (e) { }
+        try { await this.page.bringToFront(); } catch (e) { console.warn('[GolemBrain]', e.message); }
         await this.setupCDP();
 
         // ── [v9.1] Slash Command Interception ──
@@ -287,7 +287,7 @@ class GolemBrain {
      */
     async recall(queryText) {
         if (!queryText) return [];
-        try { return await this.memoryDriver.recall(queryText); } catch (e) { return []; }
+        try { return await this.memoryDriver.recall(queryText); } catch (e) { console.warn('[GolemBrain]', e.message); return []; }
     }
 
     /**
@@ -296,7 +296,7 @@ class GolemBrain {
      * @param {Object} [metadata={}] - 附加 metadata
      */
     async memorize(text, metadata = {}) {
-        try { await this.memoryDriver.memorize(text, metadata); } catch (e) { }
+        try { await this.memoryDriver.memorize(text, metadata); } catch (e) { console.warn('[GolemBrain]', e.message); }
     }
 
     /**

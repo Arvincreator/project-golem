@@ -2,6 +2,9 @@
 // Rensin Community Engagement — Moltbook 社群自動經營 + RAG 學習
 // L1 技能: 自動互動，每次動作前查 RAG，動作後記錄
 
+const endpoints = require('../../config/endpoints');
+const warroom = require('../../utils/warroom-client');
+
 let _ragSkill = null;
 function getRag() {
     if (!_ragSkill) {
@@ -19,25 +22,18 @@ async function ragQuery(query) {
 async function ragEvolve(situation, action_taken, outcome, score) {
     const rag = getRag();
     if (!rag) return;
-    try { await rag.execute({ task: 'evolve', situation, action_taken, outcome, score }); } catch (e) {}
+    try { await rag.execute({ task: 'evolve', situation, action_taken, outcome, score }); } catch (e) { console.warn('[community]', e.message); }
 }
 
 async function ragIngest(entities, relationships) {
     const rag = getRag();
     if (!rag) return;
-    try { await rag.execute({ task: 'ingest', entities, relationships }); } catch (e) {}
+    try { await rag.execute({ task: 'ingest', entities, relationships }); } catch (e) { console.warn('[community]', e.message); }
 }
 
 // 戰情室
 async function updateWarRoom(event, data) {
-    try {
-        await fetch('https://notion-warroom.yagami8095.workers.dev/report', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer openclaw-warroom-2026' },
-            body: JSON.stringify({ source: 'rensin-community', event, data, timestamp: new Date().toISOString() }),
-            signal: AbortSignal.timeout(10000)
-        });
-    } catch (e) {}
+    return warroom.report(event, data, `${endpoints.AGENT_ID}-community`);
 }
 
 async function execute(args) {
@@ -86,7 +82,7 @@ async function execute(args) {
                     id: `community_${Date.now()}`,
                     type: 'community_interaction',
                     name: 'moltbook_engage',
-                    properties: { action: 'vote', platform: 'moltbook', by: 'rensin' }
+                    properties: { action: 'vote', platform: 'moltbook', by: endpoints.AGENT_ID }
                 }], []);
 
                 // 戰情室

@@ -3,6 +3,8 @@ const MAX_DLQ_SIZE = 20;
 const DUPLICATE_WINDOW_MS = 5000;
 const TASK_MAX_AGE_MS = 60000;
 
+const Checkpoint = require('./Checkpoint');
+
 class ActionQueue {
     constructor(options = {}) {
         this.golemId = options.golemId || 'default';
@@ -23,7 +25,7 @@ class ActionQueue {
         if (this.queue.length >= MAX_QUEUE_DEPTH) {
             console.warn(`[ActionQueue:${this.golemId}] 🛑 Queue full (${this.queue.length}/${MAX_QUEUE_DEPTH}), rejecting task.`);
             if (ctx && typeof ctx.reply === 'function') {
-                await ctx.reply('⚠️ 行動佇列已滿，請稍後再試。').catch(() => {});
+                await ctx.reply('⚠️ 行動佇列已滿，請稍後再試。').catch((err) => { console.warn('[ActionQueue] Failed to send queue-full reply:', err.message); });
             }
             return;
         }
@@ -82,13 +84,17 @@ class ActionQueue {
 
             // 如果上層有指定發送 Typing 可以先發
             if (task.ctx && typeof task.ctx.sendTyping === 'function') {
-                task.ctx.sendTyping().catch(() => { });
+                task.ctx.sendTyping().catch((err) => { console.warn('[ActionQueue] sendTyping failed:', err.message); });
             }
+
+            // Save checkpoint before execution
+            Checkpoint.save({ golemId: this.golemId, taskKey: task.dedupKey, queueDepth: this.queue.length });
 
             // 執行被封裝的物理操作
             await task.taskFn();
 
             console.log(`✅ [Action Queue:${this.golemId}] 行動任務非同步執行完畢。`);
+            Checkpoint.clear();
         } catch (error) {
             console.error(`❌ [Action Queue:${this.golemId}] 行動任務執行失敗:`, error);
 
@@ -102,7 +108,7 @@ class ActionQueue {
             if (this._dlq.length > MAX_DLQ_SIZE) this._dlq.shift();
 
             if (task.ctx && typeof task.ctx.reply === 'function') {
-                task.ctx.reply(`❌ **系統層任務執行崩潰:**\n\`\`\`\n${error.message}\n\`\`\``, { parse_mode: 'Markdown' }).catch(() => { });
+                task.ctx.reply(`❌ **系統層任務執行崩潰:**\n\`\`\`\n${error.message}\n\`\`\``, { parse_mode: 'Markdown' }).catch((err) => { console.warn('[ActionQueue] Failed to send crash reply:', err.message); });
             }
         } finally {
             this.isProcessing = false;

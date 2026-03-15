@@ -17,7 +17,7 @@ class OpticNerve {
                 });
             });
             const genAI = new GoogleGenerativeAI(apiKey);
-            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+            const model = genAI.getGenerativeModel({ model: process.env.GEMINI_VISION_MODEL || "gemini-2.0-flash-lite" });
             const prompt = mimeType.startsWith('image/')
                 ? "請詳細描述這張圖片的視覺內容。如果包含文字或程式碼，請完整轉錄。如果是介面截圖，請描述UI元件。請忽略無關的背景雜訊。"
                 : "請閱讀這份文件，並提供詳細的摘要、關鍵數據與核心內容。";

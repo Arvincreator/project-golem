@@ -94,6 +94,20 @@ class WebServer {
                     }
                 } catch (e) { /* CB not loaded */ }
 
+                // Enhanced health info
+                try {
+                    const snapshot = global._metricsCollector ? global._metricsCollector.getSnapshot() : {};
+                    health.skills = { loaded: snapshot.skills_loaded || 0 };
+                    health.brainEngine = process.env.GOLEM_BRAIN_ENGINE || 'puppeteer';
+                    health.memoryLayers = {
+                        working: snapshot.memory_working || 0,
+                        episodic: snapshot.memory_episodic || 0,
+                    };
+                    health.ragConfidence = snapshot.rag_confidence_avg || 0;
+                    health.errors1h = snapshot.errors_1h || 0;
+                    health.cpu = snapshot.cpu_pct || 0;
+                } catch (e) { /* optional metrics */ }
+
                 const httpCode = health.status === 'ok' ? 200 : 503;
                 res.status(httpCode).json(health);
             } catch (e) {
@@ -115,6 +129,43 @@ class WebServer {
         this.init();
         this.logBuffer = []; // Store last 200 logs
         this.chatHistory = new Map(); // Store chat history per golem
+
+        // ✅ [Phase 1.5 Bug #5] Persistent chat history
+        this._chatHistoryFile = path.join(path.resolve(__dirname, '..'), 'golem_memory', 'chat_history.json');
+        this._loadChatHistory();
+        this._chatHistorySaveTimer = null;
+    }
+
+    _loadChatHistory() {
+        try {
+            if (fs.existsSync(this._chatHistoryFile)) {
+                const data = JSON.parse(fs.readFileSync(this._chatHistoryFile, 'utf-8'));
+                for (const [golemId, history] of Object.entries(data)) {
+                    this.chatHistory.set(golemId, history);
+                }
+                console.log(`[WebServer] Loaded chat history (${Object.keys(data).length} golems)`);
+            }
+        } catch (e) {
+            console.warn('[WebServer] Failed to load chat history:', e.message);
+        }
+    }
+
+    _saveChatHistory() {
+        if (this._chatHistorySaveTimer) return; // debounce
+        this._chatHistorySaveTimer = setTimeout(() => {
+            try {
+                const dir = path.dirname(this._chatHistoryFile);
+                if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+                const data = {};
+                for (const [golemId, history] of this.chatHistory.entries()) {
+                    data[golemId] = history.slice(-200); // Keep last 200 messages
+                }
+                fs.writeFileSync(this._chatHistoryFile, JSON.stringify(data, null, 2));
+            } catch (e) {
+                console.warn('[WebServer] Failed to save chat history:', e.message);
+            }
+            this._chatHistorySaveTimer = null;
+        }, 5000);
     }
 
     /**
@@ -466,6 +517,112 @@ class WebServer {
                 console.error('Failed to fetch chat history:', e);
                 return res.status(500).json({ error: e.message });
             }
+        });
+
+        // --- Metrics API ---
+        this.app.get('/api/stats', (req, res) => {
+            try {
+                if (global._metricsCollector) {
+                    res.json(global._metricsCollector.getSnapshot());
+                } else {
+                    const mem = process.memoryUsage();
+                    res.json({
+                        rss_mb: Math.round(mem.rss / 1024 / 1024),
+                        heap_mb: Math.round(mem.heapUsed / 1024 / 1024),
+                        uptime_sec: Math.floor(process.uptime()),
+                        queue_depth: 0,
+                        tasks_completed: 0,
+                        tasks_failed: 0,
+                        errors_1h: 0,
+                        skills_loaded: 0,
+                        memory_working: 0,
+                        memory_episodic: 0,
+                        circuit_breakers_open: 0,
+                        rag_confidence_avg: 0,
+                        cpu_pct: 0,
+                    });
+                }
+            } catch (e) { res.status(500).json({ error: e.message }); }
+        });
+
+        this.app.get('/api/stats/history', (req, res) => {
+            try {
+                const minutes = parseInt(req.query.minutes) || 60;
+                if (global._metricsCollector) {
+                    res.json(global._metricsCollector.getHistory(minutes));
+                } else {
+                    res.json([]);
+                }
+            } catch (e) { res.status(500).json({ error: e.message }); }
+        });
+
+        this.app.get('/api/agents', (req, res) => {
+            try {
+                const index = require('../index.js');
+                const agents = [];
+                if (index.activeGolems) {
+                    for (const [id, instance] of index.activeGolems.entries()) {
+                        const agent = {
+                            id,
+                            status: instance.brain?.status || 'unknown',
+                            brainEngine: instance.brain?.engineType || process.env.GOLEM_BRAIN_ENGINE || 'unknown',
+                            lastActivity: instance.brain?._lastActivity || null,
+                            tasks: {
+                                pending: instance.controller?.pendingTasks?.size || 0,
+                            },
+                        };
+                        if (instance.threeLayerMemory) {
+                            try {
+                                agent.memory = instance.threeLayerMemory.getStats();
+                            } catch (e) { agent.memory = null; }
+                        }
+                        agents.push(agent);
+                    }
+                }
+                res.json(agents);
+            } catch (e) { res.json([]); }
+        });
+
+        this.app.get('/api/models', (req, res) => {
+            try {
+                res.json({
+                    current: process.env.GOLEM_BRAIN_ENGINE || 'puppeteer',
+                    available: ['puppeteer', 'sdk', 'monica-web', 'openai-compat', 'ollama'],
+                });
+            } catch (e) { res.status(500).json({ error: e.message }); }
+        });
+
+        this.app.get('/api/memory/layers', (req, res) => {
+            try {
+                const index = require('../index.js');
+                const result = {};
+                if (index.activeGolems) {
+                    for (const [id, instance] of index.activeGolems.entries()) {
+                        if (instance.threeLayerMemory) {
+                            result[id] = instance.threeLayerMemory.getStats();
+                        }
+                    }
+                }
+                res.json(result);
+            } catch (e) { res.status(500).json({ error: e.message }); }
+        });
+
+        this.app.get('/api/rag/stats', (req, res) => {
+            try {
+                const magma = require('../src/memory/graph/ma_gma');
+                const stats = magma.stats();
+                res.json({
+                    local: stats,
+                    confidence: global._metricsCollector?.getSnapshot()?.rag_confidence_avg || 0,
+                });
+            } catch (e) { res.status(500).json({ error: e.message }); }
+        });
+
+        this.app.get('/api/logs', (req, res) => {
+            try {
+                const limit = parseInt(req.query.limit) || 50;
+                res.json(this.logBuffer.slice(-limit));
+            } catch (e) { res.status(500).json({ error: e.message }); }
         });
 
         // Config API (Settings Page)
@@ -866,6 +1023,107 @@ class WebServer {
             }
         });
 
+        // ✨ [v9.0.8] 刪除技能 API
+        this.app.post('/api/skills/delete', (req, res) => {
+            try {
+                const { id } = req.body;
+                if (!id) return res.status(400).json({ error: 'Missing skill ID' });
+
+                const safeId = id.replace(/[^a-z0-9_-]/gi, '_').toLowerCase();
+                if (MANDATORY_SKILLS.includes(safeId)) {
+                    return res.status(403).json({ error: `Cannot delete mandatory skill '${safeId}'` });
+                }
+
+                const libPath = path.join(process.cwd(), 'src', 'skills', 'lib');
+                const filePath = path.join(libPath, `${safeId}.md`);
+
+                if (!fs.existsSync(filePath)) {
+                    return res.status(404).json({ error: `Skill '${safeId}' not found` });
+                }
+
+                fs.unlinkSync(filePath);
+                console.log(`🗑️ [WebServer] Skill deleted: ${safeId}.md`);
+
+                // Remove from OPTIONAL_SKILLS env
+                let currentStr = process.env.OPTIONAL_SKILLS || '';
+                let currentSkills = currentStr.split(',').map(s => s.trim().toLowerCase()).filter(s => s !== '' && s !== safeId);
+                process.env.OPTIONAL_SKILLS = currentSkills.join(',');
+
+                // Remove from SQLite index
+                const SkillIndexManager = require('../src/managers/SkillIndexManager');
+                const { GOLEMS_CONFIG, MEMORY_BASE_DIR, GOLEM_MODE } = require('../src/config');
+                const targetDirs = GOLEM_MODE === 'SINGLE'
+                    ? [MEMORY_BASE_DIR]
+                    : GOLEMS_CONFIG.map(g => path.join(MEMORY_BASE_DIR, g.id));
+                for (const dir of targetDirs) {
+                    const idx = new SkillIndexManager(dir);
+                    idx.removeSkill(safeId).catch(e => console.error(`[SkillIndex] Delete Error for ${safeId}:`, e.message));
+                }
+
+                // Clear cache
+                const ProtocolFormatter = require('../src/services/ProtocolFormatter');
+                ProtocolFormatter._lastScanTime = 0;
+
+                return res.json({ success: true, id: safeId });
+            } catch (e) {
+                console.error('Failed to delete skill:', e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
+        // ✨ [v9.0.8] 刪除 Persona API
+        this.app.post('/api/persona/delete', (req, res) => {
+            try {
+                const { golemId } = req.body;
+                if (!golemId) return res.status(400).json({ error: 'Missing golemId' });
+
+                const ConfigManager = require('../src/config/index');
+                const isSingleMode = ConfigManager.GOLEM_MODE === 'SINGLE';
+                const personaPath = isSingleMode
+                    ? path.resolve(ConfigManager.MEMORY_BASE_DIR, 'persona.json')
+                    : path.resolve(ConfigManager.MEMORY_BASE_DIR, golemId, 'persona.json');
+
+                if (!fs.existsSync(personaPath)) {
+                    return res.status(404).json({ error: `Persona for '${golemId}' not found` });
+                }
+
+                // Backup before delete
+                const backupPath = `${personaPath}.bak-${Date.now()}`;
+                fs.copyFileSync(personaPath, backupPath);
+                fs.unlinkSync(personaPath);
+                console.log(`🗑️ [WebServer] Persona deleted: ${golemId} (backup: ${path.basename(backupPath)})`);
+
+                return res.json({ success: true, golemId, backup: path.basename(backupPath) });
+            } catch (e) {
+                console.error('Failed to delete persona:', e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
+        // ✨ [v9.0.8] 系統狀態 API (含 isBooting)
+        this.app.get('/api/status', (req, res) => {
+            try {
+                const index = require('../index.js');
+                const golems = {};
+                if (index.activeGolems) {
+                    for (const [id, instance] of index.activeGolems.entries()) {
+                        golems[id] = {
+                            status: instance.brain?.status || 'unknown',
+                            isBooting: instance.brain?.isBooting ?? true,
+                            uptime: Math.floor(process.uptime()),
+                        };
+                    }
+                }
+                return res.json({
+                    isBooting: Object.values(golems).some(g => g.isBooting),
+                    golems,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (e) {
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
         this.app.post('/api/skills/reload', (req, res) => {
             try {
                 console.log("🔄 [WebServer] Hot-reloading skills... Clearing ProtocolFormatter cache.");
@@ -946,7 +1204,7 @@ class WebServer {
         });
 
         this.app.get('/api/golems/templates', (req, res) => {
-            const personasDir = path.resolve(process.cwd(), 'personas');
+            const personasDir = path.resolve(__dirname, '..', 'personas');
             if (!fs.existsSync(personasDir)) {
                 return res.json({ templates: [] });
             }
@@ -1001,7 +1259,7 @@ class WebServer {
         this.app.get('/api/persona/market', (req, res) => {
             try {
                 const { search, category, page = 1, limit = 20 } = req.query;
-                const personasDir = path.resolve(process.cwd(), 'data', 'marketplace', 'personas');
+                const personasDir = path.resolve(__dirname, '..', 'data', 'marketplace', 'personas');
                 
                 if (!fs.existsSync(personasDir)) {
                     return res.json({ personas: [], total: 0 });
@@ -1062,13 +1320,22 @@ class WebServer {
                     allConfigs = JSON.parse(fs.readFileSync(golemsPath, 'utf8'));
                 }
 
+                // ✅ [Phase 1.5 Bug #7] Check global.activeGolems first (from index.js), fallback to this.contexts
+                let activeGolemsMap = this.contexts;
+                try {
+                    const index = require('../index.js');
+                    if (index.activeGolems && index.activeGolems.size > 0) {
+                        activeGolemsMap = index.activeGolems;
+                    }
+                } catch (e) { /* index.js not ready yet, use this.contexts */ }
+
                 // 2. 獲取當前記憶體中的 contexts
-                const activeIds = Array.from(this.contexts.keys());
+                const activeIds = Array.from(activeGolemsMap.keys());
 
                 // 3. 合併狀態
                 let golemsData = allConfigs.map(config => {
                     const id = config.id;
-                    const context = this.contexts.get(id);
+                    const context = activeGolemsMap.get(id) || this.contexts.get(id);
                     let status = 'not_started';
 
                     if (context && context.brain) {
@@ -1083,7 +1350,7 @@ class WebServer {
                     const hasToken = envVars.TELEGRAM_TOKEN || envVars.DISCORD_TOKEN;
                     if (hasToken && !golemsData.find(g => g.id === 'golem_A')) {
                         const id = 'golem_A';
-                        const context = this.contexts.get(id);
+                        const context = activeGolemsMap.get(id) || this.contexts.get(id);
                         let status = 'not_started';
 
                         if (context && context.brain) {
@@ -1108,9 +1375,14 @@ class WebServer {
                 }
 
                 // 4. 對於不在 golems.json 但在 contexts 中的 (可能是動態建立未存檔的)，也補上去
-                this.contexts.forEach((ctx, id) => {
+                // ✅ [Phase 1.5 Bug #7] Merge from both activeGolemsMap and this.contexts
+                const mergedContexts = new Map([...this.contexts]);
+                activeGolemsMap.forEach((ctx, id) => {
+                    if (!mergedContexts.has(id)) mergedContexts.set(id, ctx);
+                });
+                mergedContexts.forEach((ctx, id) => {
                     if (!golemsData.find(g => g.id === id)) {
-                        golemsData.push({ id, status: ctx.brain.status || 'running' });
+                        golemsData.push({ id, status: (ctx.brain && ctx.brain.status) || 'running' });
                     }
                 });
 
@@ -1787,7 +2059,7 @@ class WebServer {
                 const { id, name, description, icon, aiName, userName, role, tone, tags } = req.body;
                 if (!id || !name) return res.status(400).json({ success: false, error: 'Missing id or name' });
 
-                const personasDir = path.resolve(process.cwd(), 'personas');
+                const personasDir = path.resolve(__dirname, '..', 'personas');
                 if (!fs.existsSync(personasDir)) fs.mkdirSync(personasDir, { recursive: true });
 
                 const safeId = id.replace(/[^a-z0-9_-]/gi, '_').toLowerCase();
@@ -1814,9 +2086,15 @@ class WebServer {
             console.log("🔄 [WebServer] Received reload request. Restarting system...");
             res.json({ success: true, message: "System is restarting..." });
 
-            // Inform the user that a manual restart is required
+            // ✅ [Phase 1.5 Bug #1] Actually restart the system via gracefulRestart
             setTimeout(() => {
-                console.log("📢 [WebServer] Update applied. Manual restart requested via UI.");
+                if (typeof global.gracefulRestart === 'function') {
+                    console.log("🔄 [WebServer] Calling global.gracefulRestart()...");
+                    global.gracefulRestart();
+                } else {
+                    console.warn("⚠️ [WebServer] global.gracefulRestart not available. Falling back to process.exit for restart.");
+                    process.exit(0);
+                }
             }, 500);
         });
 
@@ -1863,6 +2141,31 @@ class WebServer {
             // Allow client to manually request logs (for page navigation)
             socket.on('request_logs', () => {
                 socket.emit('init', { logs: this.logBuffer });
+            });
+
+            // ✅ [Phase 1.5 Bug #6] Socket.io heartbeat (enhanced with MetricsCollector)
+            const heartbeatInterval = setInterval(() => {
+                const snapshot = global._metricsCollector ? global._metricsCollector.getSnapshot() : {};
+                socket.emit('heartbeat', {
+                    uptime: snapshot.uptime_sec || Math.floor(process.uptime()),
+                    memUsage: snapshot.rss_mb || Math.round(process.memoryUsage().rss / 1024 / 1024),
+                    heapUsage: snapshot.heap_mb || 0,
+                    cpuPct: snapshot.cpu_pct || 0,
+                    queueDepth: snapshot.queue_depth || 0,
+                    tasksCompleted: snapshot.tasks_completed || 0,
+                    tasksFailed: snapshot.tasks_failed || 0,
+                    errors1h: snapshot.errors_1h || 0,
+                    skillsLoaded: snapshot.skills_loaded || 0,
+                    memoryWorking: snapshot.memory_working || 0,
+                    memoryEpisodic: snapshot.memory_episodic || 0,
+                    cbOpen: snapshot.circuit_breakers_open || 0,
+                    ragConfidence: snapshot.rag_confidence_avg || 0,
+                    timestamp: Date.now()
+                });
+            }, 30000);
+
+            socket.on('disconnect', () => {
+                clearInterval(heartbeatInterval);
             });
         });
 
@@ -1926,6 +2229,9 @@ class WebServer {
                     if (this.chatHistory.get(gId).length > 500) {
                         this.chatHistory.get(gId).shift();
                     }
+
+                    // ✅ [Phase 1.5 Bug #5] Persist chat history to disk (debounced)
+                    this._saveChatHistory();
                 }
             }
         }

@@ -22,11 +22,11 @@ class SdkBrain {
         this.browser = null;
         this.page = null;
 
-        // Memory engine (SDK mode defaults to native — no browser available)
-        this.memoryDriver = new SystemNativeDriver();
+        // Memory engine (accept injected or create new)
+        this.memoryDriver = options.memoryDriver || new SystemNativeDriver();
 
-        // Chat log
-        this.chatLogManager = new ChatLogManager({
+        // Chat log (accept injected or create new)
+        this.chatLogManager = options.chatLogManager || new ChatLogManager({
             golemId: this.golemId,
             logDir: options.logDir || ConfigManager.LOG_BASE_DIR,
             isSingleMode: options.isSingleMode !== undefined ? options.isSingleMode : (ConfigManager.GOLEM_MODE === 'SINGLE')
@@ -35,7 +35,7 @@ class SdkBrain {
         // Gemini SDK
         this._apiKeys = (ConfigManager.CONFIG.API_KEYS || []).filter(k => k.length > 10);
         this._keyIndex = 0;
-        this._model = options.model || 'gemini-2.0-flash';
+        this._model = options.model || process.env.GEMINI_SDK_MODEL || 'gemini-2.0-flash-lite';
         this._chat = null;    // ChatSession
         this._genAI = null;   // GoogleGenerativeAI instance
         this._systemPrompt = null;
@@ -94,20 +94,40 @@ class SdkBrain {
     }
 
     _initChat() {
-        const apiKey = this._apiKeys[this._keyIndex % this._apiKeys.length];
-        this._genAI = new GoogleGenerativeAI(apiKey);
+        try {
+            const apiKey = this._apiKeys[this._keyIndex % this._apiKeys.length];
+            this._genAI = new GoogleGenerativeAI(apiKey);
 
-        const model = this._genAI.getGenerativeModel({
-            model: this._model,
-            systemInstruction: this._systemPrompt || undefined,
-        });
+            const model = this._genAI.getGenerativeModel({
+                model: this._model,
+                systemInstruction: this._systemPrompt || undefined,
+            });
 
-        this._chat = model.startChat({
-            generationConfig: {
-                maxOutputTokens: 8192,
-                temperature: 0.7,
-            },
-        });
+            this._chat = model.startChat({
+                generationConfig: {
+                    maxOutputTokens: 8192,
+                    temperature: 0.7,
+                },
+            });
+        } catch (e) {
+            console.error(`[SdkBrain] _initChat failed with key ${this._keyIndex}: ${e.message}`);
+            // Try next key
+            if (this._apiKeys.length > 1) {
+                this._keyIndex = (this._keyIndex + 1) % this._apiKeys.length;
+                const apiKey = this._apiKeys[this._keyIndex];
+                this._genAI = new GoogleGenerativeAI(apiKey);
+                const model = this._genAI.getGenerativeModel({
+                    model: this._model,
+                    systemInstruction: this._systemPrompt || undefined,
+                });
+                this._chat = model.startChat({
+                    generationConfig: { maxOutputTokens: 8192, temperature: 0.7 },
+                });
+                console.log(`[SdkBrain] Rotated to key ${this._keyIndex}`);
+            } else {
+                throw e;
+            }
+        }
     }
 
     async sendMessage(text, isSystem = false, options = {}) {
@@ -166,7 +186,14 @@ class SdkBrain {
     }
 
     async memorize(text, metadata = {}) {
-        try { await this.memoryDriver.memorize(text, metadata); } catch (e) { }
+        try { await this.memoryDriver.memorize(text, metadata); } catch (e) { console.warn('[SdkBrain] memorize failed:', e.message); }
+    }
+
+    async switchModel(model) {
+        if (model) this._model = model;
+        this._chat = null;
+        this._initChat();
+        return `已切換至 ${this._model} (SDK 模式)`;
     }
 
     _appendChatLog(entry) {

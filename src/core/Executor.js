@@ -21,6 +21,8 @@ class Executor {
 
             console.log(`⚡ [Executor] Running: "${command}" in ${cwd}`);
 
+            const maxBuffer = options.maxBuffer || 10 * 1024 * 1024; // 10MB default
+
             // 使用 spawn 啟動子進程
             const child = spawn(command, [], {
                 shell: true,     // 允許使用 pipe (|) 和重導向 (>)
@@ -38,7 +40,20 @@ class Executor {
                 timer = setTimeout(() => {
                     if (!isDone) {
                         isDone = true;
-                        child.kill('SIGKILL'); // 殺死進程
+                        // Graceful shutdown: SIGTERM first, then SIGKILL after 3s
+                        if (process.platform === 'win32') {
+                            console.warn('[Executor] Sending kill signal (Windows)...');
+                            child.kill(); // Windows does not support POSIX signals
+                        } else {
+                            console.warn('[Executor] Sending SIGTERM...');
+                            child.kill('SIGTERM');
+                            setTimeout(() => {
+                                try {
+                                    console.warn('[Executor] Sending SIGKILL...');
+                                    child.kill('SIGKILL');
+                                } catch (e) { /* already dead */ }
+                            }, 3000);
+                        }
                         const msg = `❌ [Executor] Command timed out after ${timeout}ms: "${command}"`;
                         console.warn(msg);
                         reject(new Error(msg));
@@ -49,7 +64,10 @@ class Executor {
             // --- 處理標準輸出 ---
             child.stdout.on('data', (data) => {
                 const text = data.toString();
-                stdout += text;
+                // maxBuffer: truncate accumulated output to prevent memory exhaustion
+                if (stdout.length < maxBuffer) {
+                    stdout += text.substring(0, maxBuffer - stdout.length);
+                }
 
                 // 如果有設定即時回調 (例如送給前端 Socket)，就在這裡呼叫
                 if (options.onData && typeof options.onData === 'function') {
@@ -60,7 +78,10 @@ class Executor {
             // --- 處理錯誤輸出 ---
             child.stderr.on('data', (data) => {
                 const text = data.toString();
-                stderr += text;
+                // maxBuffer: truncate accumulated output to prevent memory exhaustion
+                if (stderr.length < maxBuffer) {
+                    stderr += text.substring(0, maxBuffer - stderr.length);
+                }
 
                 // 錯誤訊息通常也要即時顯示
                 if (options.onData && typeof options.onData === 'function') {

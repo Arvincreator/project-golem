@@ -37,7 +37,7 @@ class SystemLogger {
             try {
                 fs.mkdirSync(dir, { recursive: true });
             } catch (e) {
-                // 如果目錄已存在或權限問題，略過
+                console.warn('[SystemLogger]', e.message);
             }
         }
     }
@@ -74,7 +74,7 @@ class SystemLogger {
                         if (stats.size >= maxBytes) {
                             shouldRotate = true;
                         }
-                    } catch (e) { }
+                    } catch (e) { console.warn('[SystemLogger]', e.message); }
                 }
             }
         }
@@ -102,7 +102,8 @@ class SystemLogger {
         try {
             fs.appendFileSync(this.logFile, logLine);
         } catch (e) {
-            // 防止遞迴報錯
+            // Note: using process.stderr to avoid recursive logging
+            process.stderr.write(`[SystemLogger] ${e.message}\n`);
         }
     }
 
@@ -124,7 +125,7 @@ class SystemLogger {
 
             readStream.pipe(gzip).pipe(writeStream).on('finish', () => {
                 // 壓縮完成後刪除原本尚未壓縮的歷史重命名檔
-                try { fs.unlinkSync(archivePath); } catch (e) { }
+                try { fs.unlinkSync(archivePath); } catch (e) { console.warn('[SystemLogger]', e.message); }
                 this._cleanOldLogs();
             }).on('error', (err) => {
                 console.error(`[SystemLogger] 壓縮日誌失敗: ${err.message}`);
@@ -155,7 +156,7 @@ class SystemLogger {
 
             files.forEach(fileObj => {
                 if (nowTime - fileObj.stats.mtimeMs > maxAgeMs) {
-                    try { fs.unlinkSync(fileObj.path); } catch (e) { }
+                    try { fs.unlinkSync(fileObj.path); } catch (e) { console.warn('[SystemLogger]', e.message); }
                 }
             });
         } catch (error) {

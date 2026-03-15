@@ -1,6 +1,7 @@
 // Per-chat feedback depth tracking to prevent infinite loops
 const _feedbackDepth = new Map();
 const MAX_FEEDBACK_DEPTH = 3;
+const CommandSafeguard = require('../../utils/CommandSafeguard');
 
 class CommandHandler {
     static async execute(ctx, normalActions, controller, brain, dispatchFn) {
