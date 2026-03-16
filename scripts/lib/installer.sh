@@ -93,10 +93,11 @@ step_sanitize_environment() {
     if [ -d "$SCRIPT_DIR/web-dashboard" ]; then
         rm -rf "$SCRIPT_DIR/web-dashboard/node_modules"
         rm -rf "$SCRIPT_DIR/web-dashboard/.next"
+        rm -rf "$SCRIPT_DIR/web-dashboard/.out"
         rm -rf "$SCRIPT_DIR/web-dashboard/out"
         rm -f "$SCRIPT_DIR/web-dashboard/package-lock.json"
     fi
-    echo -e "    ${GREEN}✔${NC} 已清除所有 node_modules, .next, out 與 package-lock.json"
+    echo -e "    ${GREEN}✔${NC} 已清除所有 node_modules, .next, .out, out 與 package-lock.json"
     log "Removed node_modules, build cache, and package-lock.json files"
 
     # 3. Remove Memory
@@ -326,8 +327,8 @@ run_clean_dependencies() {
     
     # 清除 Dashboard 依賴與建置結果
     if [ -d "$SCRIPT_DIR/web-dashboard" ]; then
-        rm -rf "$SCRIPT_DIR/web-dashboard/node_modules" "$SCRIPT_DIR/web-dashboard/package-lock.json" "$SCRIPT_DIR/web-dashboard/.next" "$SCRIPT_DIR/web-dashboard/out"
-        echo -e "    ${GREEN}✔${NC} 已移除 Dashboard node_modules 與 out 目錄"
+        rm -rf "$SCRIPT_DIR/web-dashboard/node_modules" "$SCRIPT_DIR/web-dashboard/package-lock.json" "$SCRIPT_DIR/web-dashboard/.next" "$SCRIPT_DIR/web-dashboard/.out" "$SCRIPT_DIR/web-dashboard/out"
+        echo -e "    ${GREEN}✔${NC} 已移除 Dashboard node_modules 與 .out/out 目錄"
     fi
     
     echo -e "  ${GREEN}✅ 清除完成！${NC}"
@@ -361,7 +362,7 @@ run_clean_init() {
     echo -e "    ${GREEN}✔${NC} 刪除主程式依賴 (node_modules)"
     
     if [ -d "$SCRIPT_DIR/web-dashboard" ]; then
-        rm -rf "$SCRIPT_DIR/web-dashboard/node_modules" "$SCRIPT_DIR/web-dashboard/package-lock.json" "$SCRIPT_DIR/web-dashboard/.next" "$SCRIPT_DIR/web-dashboard/out"
+        rm -rf "$SCRIPT_DIR/web-dashboard/node_modules" "$SCRIPT_DIR/web-dashboard/package-lock.json" "$SCRIPT_DIR/web-dashboard/.next" "$SCRIPT_DIR/web-dashboard/.out" "$SCRIPT_DIR/web-dashboard/out"
         echo -e "    ${GREEN}✔${NC} 刪除 Dashboard 依賴與建置快取"
     fi
     
