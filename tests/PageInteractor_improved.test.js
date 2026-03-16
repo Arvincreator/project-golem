@@ -17,8 +17,8 @@ describe('PageInteractor Improvements', () => {
             evaluate: jest.fn().mockResolvedValue(undefined),
             keyboard: mockKeyboard,
             content: jest.fn().mockResolvedValue('<html></html>'),
-            target: jest.fn().mockReturnValue({
-                createCDPSession: jest.fn().mockResolvedValue({
+            context: jest.fn().mockReturnValue({
+                newCDPSession: jest.fn().mockResolvedValue({
                     send: jest.fn().mockResolvedValue({ windowId: 'test-id' }),
                     detach: jest.fn().mockResolvedValue(undefined),
                 }),
@@ -58,10 +58,10 @@ describe('PageInteractor Improvements', () => {
     test('_moveWindowToBottom should skip in headless mode', async () => {
         process.env.PUPPETEER_HEADLESS = 'true';
         await interactor._moveWindowToBottom();
-        expect(mockPage.target).not.toHaveBeenCalled();
+        expect(mockPage.context).not.toHaveBeenCalled();
 
         delete process.env.PUPPETEER_HEADLESS;
         await interactor._moveWindowToBottom();
-        expect(mockPage.target).toHaveBeenCalled();
+        expect(mockPage.context).toHaveBeenCalled();
     });
 });

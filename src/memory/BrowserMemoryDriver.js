@@ -12,7 +12,7 @@ class BrowserMemoryDriver {
     async init() {
         if (this.brain.memoryPage) return;
         try {
-            this.brain.memoryPage = await this.brain.browser.newPage();
+            this.brain.memoryPage = await this.brain.context.newPage();
 
             // ─── 記憶頁面實體隔離 ───
             const baseDir = process.env.HOST_PROJECT_DIR || process.cwd();
@@ -63,12 +63,12 @@ class BrowserMemoryDriver {
     async recall(query) {
         if (!this.brain.memoryPage || !this.isReady) return [];
         try {
-            return await this.brain.memoryPage.evaluate(async (txt) => {
+            return await this.brain.memoryPage.evaluate(async ({ txt }) => {
                 if (!txt || txt.trim() === "") {
                     return window.getAllMemories ? await window.getAllMemories() : [];
                 }
                 return window.queryMemory ? await window.queryMemory(txt) : [];
-            }, query);
+            }, { txt: query });
         } catch (e) {
             console.warn("⚠️ [Memory:Browser] recall error:", e.message);
             return [];
@@ -77,9 +77,9 @@ class BrowserMemoryDriver {
     async memorize(text, metadata) {
         if (!this.brain.memoryPage || !this.isReady) return;
         try {
-            await this.brain.memoryPage.evaluate(async (t, m) => {
+            await this.brain.memoryPage.evaluate(async ({ t, m }) => {
                 if (window.addMemory) await window.addMemory(t, m);
-            }, text, metadata);
+            }, { t: text, m: metadata });
         } catch (e) {
             console.warn("⚠️ [Memory:Browser] memorize error:", e.message);
         }
@@ -87,9 +87,9 @@ class BrowserMemoryDriver {
     async addSchedule(task, time) {
         if (!this.brain.memoryPage || !this.isReady) return;
         try {
-            await this.brain.memoryPage.evaluate(async (t, time) => {
+            await this.brain.memoryPage.evaluate(async ({ t, time }) => {
                 if (window.addSchedule) await window.addSchedule(t, time);
-            }, task, time);
+            }, { t: task, time });
         } catch (e) {
             console.warn("⚠️ [Memory:Browser] addSchedule error:", e.message);
         }
@@ -134,9 +134,9 @@ class BrowserMemoryDriver {
     async importMemory(jsonData) {
         if (!this.brain.memoryPage || !this.isReady) return { success: false, error: "Memory engine not ready" };
         try {
-            return await this.brain.memoryPage.evaluate(async (data) => {
+            return await this.brain.memoryPage.evaluate(async ({ data }) => {
                 return window.importMemories ? await window.importMemories(data) : { success: false, error: "Not supported" };
-            }, jsonData);
+            }, { data: jsonData });
         } catch (e) {
             console.warn("⚠️ [Memory:Browser] importMemory error:", e.message);
             return { success: false, error: e.message };

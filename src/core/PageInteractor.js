@@ -136,12 +136,20 @@ class PageInteractor {
             targetSelector = fallbackSelectors.join(', ');
         }
 
-        let inputEl = await this.page.$(targetSelector);
-
-        if (!inputEl) {
-            targetSelector = fallbackSelectors.join(', ');
-            inputEl = await this.page.$(targetSelector);
+        // 🚀 [Playwright] 增加 waitForSelector 確保頁面渲染完成
+        try {
+            await this.page.waitForSelector(targetSelector, { state: 'attached', timeout: 5000 });
+        } catch (e) {
+            // 如果超時，嘗試使用通用特徵再次等待
+            if (targetSelector !== fallbackSelectors.join(', ')) {
+                try {
+                    targetSelector = fallbackSelectors.join(', ');
+                    await this.page.waitForSelector(targetSelector, { state: 'attached', timeout: 3000 });
+                } catch (e2) { }
+            }
         }
+
+        let inputEl = await this.page.$(targetSelector);
 
         if (!inputEl) {
             console.log("🚑 連通用特徵都找不到輸入框，呼叫 DOM Doctor...");
@@ -190,7 +198,7 @@ class PageInteractor {
 
         // 2. 模擬真實鍵盤輸入 (對於 ProseMirror 這種複雜編輯器，這比單純塞 value 更好)
         // 為了效能與穩定平衡，我們先用 evaluate 注入大塊內容，再模擬鍵盤觸發事件
-        await this.page.evaluate((s, t) => {
+        await this.page.evaluate(({ s, t }) => {
             const el = document.querySelector(s);
             if (!el) return;
             
@@ -208,13 +216,17 @@ class PageInteractor {
             });
 
             // 確保游標在最後
-            const range = document.createRange();
-            const sel = window.getSelection();
-            range.selectNodeContents(el);
-            range.collapse(false);
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }, targetSelector, textToPaste);
+            try {
+                if (el.tagName !== 'TEXTAREA' && el.tagName !== 'INPUT') {
+                    const range = document.createRange();
+                    const sel = window.getSelection();
+                    range.selectNodeContents(el);
+                    range.collapse(false);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+            } catch (e) { }
+        }, { s: targetSelector, t: textToPaste });
 
         // 3. 額外觸發一個小的鍵盤事件，確保某些框架監聽的 focus/input 狀態被啟動
         await this.page.keyboard.type(' ', { delay: 1 });
@@ -245,7 +257,7 @@ class PageInteractor {
     }
 
     /**
-     * 🚀 自動將 Chrome 視窗移動到螢幕最底部 (不影響使用者日常操作)
+     * 🚀 自動將 Chrome 視窗移動到螢幕最底部 (不影響使用者日常操作) - Playwright 版
      */
     async _moveWindowToBottom() {
         // ✨ [Headless 優化] 若為無頭模式，不需要移動視窗
@@ -253,7 +265,9 @@ class PageInteractor {
 
         try {
             console.log("⚓ [PageInteractor] 正在將 Chrome 視窗自動移動至隱藏位置...");
-            const session = await this.page.target().createCDPSession();
+            const session = await this.page.context().newCDPSession(this.page);
+            
+            // Playwright 中 getWindowForTarget 標籤可能略有不同，但協議本身一致
             const { windowId } = await session.send('Browser.getWindowForTarget');
             
             const screen = await this.page.evaluate(() => ({

@@ -11,18 +11,12 @@ step_prepare_node_version() {
         log "Node.js version mismatch: $NODE_VER"
         
         if [ "$NVM_OK" = true ]; then
-            echo ""
-            box_top
-            box_line_colored "  ${YELLOW}💡 偵測到您已安裝 NVM，是否要現在切換至 Node.js 20？${NC}"
-            box_bottom
-            echo ""
-            if confirm_action "切換至 Node.js 20？"; then
-                if switch_node_version; then
-                    echo -e "\n${GREEN}成功切換版本！${NC}"
-                    sleep 1
-                    check_status # 重新偵測環境
-                    return 0
-                fi
+            echo -e "    ${CYAN}💡 偵測到 NVM，正在自動切換至 Node.js 20...${NC}"
+            if switch_node_version; then
+                echo -e "    ${GREEN}✔${NC} 成功切換版本！"
+                sleep 1
+                check_status # 重新偵測環境
+                return 0
             fi
         else
             ui_warn "建議手動安裝 Node.js v20 (Titan Chronos 推薦版本) 以確保最佳相容性。"
@@ -237,6 +231,13 @@ step_install_core() {
         echo -e "  ${DIM}詳細錯誤記錄於: $LOG_FILE${NC}"
         log "FATAL: npm install failed"
         exit 1
+    fi
+
+    # ─── Playwright 瀏覽器安裝 ───
+    ui_info "正在準備瀏覽器核心 (Playwright Chromium)..."
+    if ! run_quiet_step "安裝 Playwright 瀏覽器" npx playwright install chromium; then
+        ui_warn "Playwright 瀏覽器安裝失敗，但系統可能仍可運作 (若已安裝過)。"
+        log "Playwright browser install failed or was already present"
     fi
 
     # 確保 TUI 套件存在

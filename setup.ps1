@@ -212,6 +212,12 @@ function Step-InstallCore {
         Read-Host '按 Enter 返回主選單'
         return $false
     }
+
+    Write-Host '   [*] 正在安裝 Playwright 瀏覽器核心...' -ForegroundColor DarkGray
+    npx playwright install chromium
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host '   [WARN] Playwright 瀏覽器安裝失敗或已存在。' -ForegroundColor Yellow
+    }
     Write-Host ''
     Write-Host '   [*] 正在驗證 Dashboard TUI 套件...' -ForegroundColor DarkGray
     if (-not (Test-Path 'node_modules\blessed')) { npm install blessed blessed-contrib }
