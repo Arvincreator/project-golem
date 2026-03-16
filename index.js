@@ -590,6 +590,17 @@ async function handleUnifiedCallback(ctx, actionData) {
     if (actionData === 'SYSTEM_FORCE_UPDATE') return SystemUpgrader.performUpdate(ctx);
     if (actionData === 'SYSTEM_UPDATE_CANCEL') return await ctx.reply("已取消更新操作。");
 
+    // ✨ [v9.1] 處理登入流程的 Callback
+    if (actionData === 'LOGIN_MANUAL') {
+        return brain.resolveLogin('manual', ctx);
+    }
+    if (actionData === 'LOGIN_SKIP') {
+        return brain.resolveLogin('skip', ctx);
+    }
+    if (actionData === 'LOGIN_DONE') {
+        return brain.resolveLogin('done', ctx);
+    }
+
     if (actionData.includes('_')) {
         const [action, taskId] = actionData.split('_');
         const task = pendingTasks.get(taskId);
@@ -729,7 +740,7 @@ async function handleUnifiedCallback(ctx, actionData) {
                             await convoManager.enqueue(ctx, feedbackPrompt, { isPriority: true, bypassDebounce: true });
                         } else {
                             // 防呆：如果退化回沒有 convoManager，則走舊路
-                            const finalResponse = await brain.sendMessage(feedbackPrompt);
+                            const finalResponse = await brain.sendMessage(feedbackPrompt, false, {}, ctx);
                             await NeuroShunter.dispatch(ctx, finalResponse, brain, controller);
                         }
                     } catch (err) {

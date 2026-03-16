@@ -26,6 +26,7 @@ class GolemBrain {
         this.golemId = options.golemId || 'default';
         this.userDataDir = options.userDataDir || path.resolve(ConfigManager.CONFIG.USER_DATA_DIR || './golem_memory');
         this.skillIndex = new SkillIndexManager(this.userDataDir);
+        this.loginResolver = null; // 用於非阻塞等待使用者選擇登入
 
         // ── 瀏覽器狀態 ──
         this.context = null; // Playwright BrowserContext
@@ -79,8 +80,8 @@ class GolemBrain {
         if (!this.context) {
             console.log(`📂 [System] Browser User Data Dir: ${this.userDataDir} (Golem: ${this.golemId})`);
 
-            // 支援強制有頭模式
-            const isHeadless = this.forceHeadful ? false : (process.env.PUPPETEER_HEADLESS === 'true' || process.env.PUPPETEER_HEADLESS === 'new');
+            // 支援強制有頭模式，預設為無頭 (Headless)
+            const isHeadless = this.forceHeadful ? false : (process.env.PUPPETEER_HEADLESS !== 'false');
 
             this.context = await BrowserLauncher.launch({
                 userDataDir: this.userDataDir,
@@ -261,13 +262,13 @@ class GolemBrain {
      * @param {boolean} [isSystem=false] - 是否為系統訊息
      * @returns {Promise<string>} 清理後的 AI 回應
      */
-    async sendMessage(text, isSystem = false, options = {}) {
+    async sendMessage(text, isSystem = false, options = {}, ctx = null) {
         await this._ensureBrowserHealth();
         if (!this.context) await this.init();
 
         // ── [v9.1] 首次發送訊息前詢問是否登入 (僅限 TTY 或非生產環境) ──
-        if (!this.loginPromptDone && !isSystem && process.stdout.isTTY) {
-            await this._checkLoginRequirement();
+        if (!this.loginPromptDone && !isSystem) {
+            await this._checkLoginRequirement(ctx);
         }
 
         try { await this.page.bringToFront(); } catch (e) { }
@@ -358,38 +359,88 @@ class GolemBrain {
     /**
      * [v9.1] 詢問使用者是否需要手動登入
      */
-    async _checkLoginRequirement() {
-        this.loginPromptDone = true;
-        
-        const readline = require('readline');
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
-        });
+    async _checkLoginRequirement(ctx) {
+        if (this.loginPromptDone) return;
 
-        return new Promise((resolve) => {
-            console.log('\n=======================================');
-            console.log('🤖 [Golem] 準備發送訊息至 Web Gemini...');
-            rl.question('❓ 您是否需要登入 Google 帳號以使用 Web Gemini？ (y/N): ', async (answer) => {
-                if (answer.toLowerCase() === 'y') {
-                    console.log('🚀 [Golem] 啟動手動登入流程...');
-                    await this._manualLoginFlow(rl);
-                } else {
-                    console.log('⏩ [Golem] 略過登入，執行完整初始化程序...');
-                    // 在原本模式下執行記憶與 Prompt 初始化
-                    await this.init(true, false);
+        // 如果沒有 ctx，則無法進行互動（可能是系統自動任務），預設跳過
+        if (!ctx) {
+            this.loginPromptDone = true;
+            return;
+        }
+
+        return new Promise(async (resolve) => {
+            this.loginResolver = resolve;
+
+            const promptText = "❓ **檢測到尚未進入登入流程**\n您是否希望現在開啟瀏覽器視窗進行 Google 帳號登入？\n\n(登入後將可使用您的個人設定與 Pro/Thinking 模型)";
+            const replyOptions = {
+                reply_markup: {
+                    inline_keyboard: [[
+                        { text: '🌐 開啟視窗並登入', callback_data: 'LOGIN_MANUAL' },
+                        { text: '⏩ 暫不登入 (使用遊客身份)', callback_data: 'LOGIN_SKIP' }
+                    ]]
                 }
-                rl.close();
-                resolve();
-            });
+            };
+
+            await ctx.reply(promptText, replyOptions);
+
+            // 如果是終端機模式 (Telegram/Discord)，使用者也會看到按鈕。
+            // 如果是 Web Dashboard，按鈕會變成互動視窗。
+            console.log('⏳ [Golem] 等待使用者確認登入需求 (透過 Dashboard 或通訊軟體)...');
+            
+            // 此 Promise 將在 handleUnifiedCallback 中被 resolve
         });
     }
 
     /**
-     * [v9.1] 手動登入流程：有頭模式 -> 登入 -> 返回無頭並執行完整初始化
+     * [v9.1] 被外部呼叫以回應登入需求
      */
-    async _manualLoginFlow(rl) {
-        // 1. 關閉現有瀏覽器
+    async resolveLogin(choice, ctx) {
+        if (!this.loginResolver) return;
+        
+        const resolve = this.loginResolver;
+
+        if (choice === 'manual') {
+            await ctx.reply("🚀 **好的，正在為您開啟登入視窗...**\n請在視窗中完成 Google 登入後，點擊下方「我已完成登入」按鈕。");
+            
+            // 更新 resolver 為等待 "完成"
+            this.loginResolver = resolve;
+
+            // 執行開啟有頭模式
+            await this._manualLoginFlowNoWait();
+
+            await ctx.reply("🔑 **請確認登入狀態**", {
+                reply_markup: {
+                    inline_keyboard: [[
+                        { text: '✅ 我已完成登入', callback_data: 'LOGIN_DONE' }
+                    ]]
+                }
+            });
+        } else if (choice === 'skip') {
+            this.loginPromptDone = true;
+            this.loginResolver = null;
+            await ctx.reply("🆗 收到。將使用目前的瀏覽器環境（遊客模式）繼續執行初始化。");
+            await this.init(true, false);
+            resolve();
+        } else if (choice === 'done') {
+            this.loginPromptDone = true;
+            this.loginResolver = null;
+            await ctx.reply("🔄 **收到！正在切換回後台模式並啟動大腦...**");
+            this.forceHeadful = false;
+            if (this.context) {
+                await this.context.close();
+                this.context = null;
+                this.page = null;
+                this.cdpSession = null;
+            }
+            await this.init(true, false);
+            resolve();
+        }
+    }
+
+    /**
+     * [v9.1] 開啟登入視窗（不阻塞）
+     */
+    async _manualLoginFlowNoWait() {
         if (this.context) {
             console.log('🛑 [Golem] 正在關閉目前瀏覽器以切換至有頭模式...');
             await this.context.close();
@@ -397,30 +448,9 @@ class GolemBrain {
             this.page = null;
             this.cdpSession = null;
         }
-
-        // 2. 開啟有頭模式 (跳過初始化，只為了讓使用者登入)
         this.forceHeadful = true;
         await this.init(true, true);
-        console.log('\n=======================================');
-        console.log('🌐 [Golem] 已開啟瀏覽器視窗！');
-        console.log('🔑 請在視窗中完成 Google 登入手續。');
-        console.log('✅ 登入完成後，請回到此處按下 [Enter] 鍵繼續...');
-        console.log('=======================================\n');
-
-        await new Promise(resolve => rl.once('line', resolve));
-
-        // 3. 切換回原本模式，並執行「完整初始化」
-        console.log('🔄 [Golem] 登入完成，正在以登入後身份啟動完整初始化...');
-        this.forceHeadful = false;
-        if (this.context) {
-            await this.context.close();
-            this.context = null;
-            this.page = null;
-            this.cdpSession = null;
-        }
-        // 此處執行完整初始化 (skipFullInit = false)
-        await this.init(true, false);
-        console.log('✅ [Golem] 登入與初始化流程全部完成。');
+        console.log('🌐 [Golem] 登入視窗已開啟。');
     }
 
     /** 連結 Dashboard (若以 dashboard 模式啟動) */
