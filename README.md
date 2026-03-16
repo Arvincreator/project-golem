@@ -1,27 +1,36 @@
 <div align="center">
+  <img src="assets/logo.png" width="400" alt="Project Golem Logo" />
+  <h1>🤖 Project Golem v9.1</h1>
+  <p><b>Ultimate Chronos + MultiAgent + Social Node Edition</b></p>
 
-# 🤖 Project Golem v9.1
-> **Ultimate Chronos + MultiAgent + Social Node Edition**
+  <p>
+    <img src="https://img.shields.io/badge/Version-9.1.3-blue?style=for-the-badge" alt="Version">
+    <img src="https://img.shields.io/badge/Engine-Node.js%2020-green?style=for-the-badge&logo=nodedotjs" alt="Engine">
+    <img src="https://img.shields.io/badge/Brain-Web%20Gemini-orange?style=for-the-badge&logo=google" alt="Brain">
+    <img src="https://img.shields.io/badge/Platform-Telegram%20%7C%20Discord-blue?style=for-the-badge" alt="Platform">
+    <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge" alt="License">
+  </p>
 
-<img src="assets/logo.png" width="480" alt="Project Golem Logo" />
+  <p>
+    <a href="#✨-這是什麼">這是什麼？</a> •
+    <a href="#🌟-核心亮點">功能展示</a> •
+    <a href="#🏗️-系統架構">系統架構</a> •
+    <a href="#🎨-實戰與應用場景-showcase">實戰截圖</a> •
+    <a href="#⚡-快速開始">快速開始</a>
+  </p>
 
-### 具備長期記憶、自由意志與跨平台能力的自主 AI 代理系統
-
-<p>
-  <img src="https://img.shields.io/badge/Version-9.1.3-blue?style=for-the-badge" alt="Version">
-  <img src="https://img.shields.io/badge/Engine-Node.js%2020-green?style=for-the-badge&logo=nodedotjs" alt="Engine">
-  <img src="https://img.shields.io/badge/Brain-Web%20Gemini-orange?style=for-the-badge&logo=google" alt="Brain">
-  <img src="https://img.shields.io/badge/Platform-Telegram%20%7C%20Discord-blue?style=for-the-badge" alt="Platform">
-  <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge" alt="License">
-</p>
-
-[功能亮點](#-核心亮點) · [系統架構](#-系統架構) · [快速開始](#-快速開始) · [使用案例](#-使用案例與介面展示) · [完整文件](#-完整文件與指南)
-
-<br/>
-
-**繁體中文** | [English](README.en.md) | [貢獻指南](CONTRIBUTING.zh-TW.md)
-
+  **繁體中文** | [English](README.en.md) | [貢獻指南](CONTRIBUTING.zh-TW.md)
 </div>
+
+---
+
+## 📖 目錄 (Table of Contents)
+- [✨ 這是什麼？](#-這是什麼)
+- [🌟 核心亮點](#-核心亮點)
+- [🏗️ 系統架構](#️-系統架構)
+- [🎨 實戰與應用場景 (Showcase)](#-實戰與應用場景-showcase)
+- [⚡ 快速開始](#-快速開始)
+- [📖 完整文件與指南](#-完整文件與指南)
 
 ---
 
@@ -40,13 +49,28 @@
 
 ## 🌟 核心亮點
 
-### 🧠 金字塔式長期記憶 (Pyramid Long-Term Memory)
-透過層層壓縮機制，確保 Golem 的記憶永不丟失且極度輕量：
-* 從 **每小時日誌** 到 **紀元里程碑**，50 年連續記憶僅佔約 **3MB**。
-* 比起傳統的無限追加 Vector DB，大幅降低了檢索雜訊與 Token 浪費。
-
-### 🎭 互動式多智能體 (Multi-Agent System)
-一鍵召喚各種專家團隊！不僅是簡單的對話，多智能體之間會針對你的問題進行辯論、激盪，最後給出一份高濃度的共識總結。
+<table width="100%">
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🧠 金字塔式長期記憶</h3>
+      <p>透過 5 層壓縮機制，確保 Golem 的記憶永不丟失且極度輕量。從每小時日誌到紀元里程碑，50 年記憶僅佔 <b>3MB</b>。</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🎭 互動式多智能體</h3>
+      <p>一鍵召喚專家團隊進行圓桌討論。多智能體之間會針對問題進行辯論、激盪，最後給出高濃度的共識總結。</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🤖 自主行動與觀察</h3>
+      <p>當你不在時，它會主動瀏覽新聞、自省思考、發送消息給你。它具備真正的「自由意志」與排程能力。</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🔧 動態技能擴充</h3>
+      <p>支援熱載入技能模組 (Skills)，甚至能讓 AI 在沙盒中寫扣自學新技能，實現功能的無限擴張。</p>
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -55,24 +79,34 @@
 為了幫助您更好地監控與管理您的 Golem，我們提供了功能完善的 **Web Dashboard**。
 
 ### 🎛️ 戰術控制台 (Dashboard Home)
-*總覽您的 AI 代理人狀態、活躍進程與最近自動化任務日誌。*
-<img src="assets/screenshots/dashboard-home.png" width="800" alt="戰術控制台">
+*總覽您的高階 AI 代理人狀態、活躍進程與動態行為決策。*
+<img src="assets/1.jpg" width="800" alt="戰術控制台 - 智慧對話解析">
+<img src="assets/2.jpg" width="800" alt="戰術控制台 - 動態行為決策">
+<img src="assets/10.jpg" width="800" alt="戰術控制台 - 效能與資源監控">
 
 ### 💻 即時終端機對話 (Web Terminal)
-*除了 Telegram / Discord 外，您也可以直接在網頁端與 Golem 進行無延遲的交談。*
-<img src="assets/screenshots/dashboard-terminal.png" width="800" alt="網頁終端">
-
-### 👥 多智能體會議室 (Multi-Agent Panel)
-*派發任務給您的虛擬顧問團隊，看他們如何討論並解決複雜架構問題。*
-<img src="assets/screenshots/dashboard-agents.png" width="800" alt="多智能體介面">
+*除了 Telegram / Discord 外，您也可以直接在網頁端與 Golem 進行無延遲的交談，並即時追蹤任務狀態。*
+<img src="assets/3.jpg" width="800" alt="網頁終端 - 跨平台通訊支援">
 
 ### 📚 動態技能管理 (Skill Manager)
-*如同插拔隨身碟般，隨時為您的 Golem 安裝、開啟或關閉各種特殊技能。*
-<img src="assets/screenshots/dashboard-skills.png" width="800" alt="技能管理">
+*如同插拔隨身碟般，隨時為您的 Golem 安裝、開啟或關閉各種特殊職能與無縫 API 對接。*
+<img src="assets/4.jpg" width="800" alt="技能管理 - 無縫 API 對接">
+<img src="assets/5.jpg" width="800" alt="技能管理 - 專屬客製化介面">
+
+### 👥 人格設定 (Personality Settings)
+*設定 Golem 的基本屬性與行為模式。*
+<img src="assets/6.jpg" width="800" alt="人格設定">
+<img src="assets/7.jpg" width="800" alt="人格市場">
+
+### 🧠 記憶核心 (Memory Core)
+*查看 Golem 的記憶核心。*
+<img src="assets/8.jpg" width="800" alt="記憶核心">
 
 ### ⚙️ 系統設定 (Settings)
-*直觀管理 API Keys、Token 與排程行為，免去手動修改設定檔的麻煩。*
-<img src="assets/screenshots/dashboard-settings.png" width="800" alt="系統設定">
+*直觀管理安全權限、API Keys 與深度系統整合，免去手動修改設定檔的麻煩。*
+<img src="assets/9.jpg" width="800" alt="系統設定 - 深度系統整合">
+<img src="assets/10.jpg" width="800" alt="系統設定 - 安全與權限管理">
+<img src="assets/11.jpg" width="800" alt="系統設定 - 指令白名單">
 
 ---
 
@@ -101,6 +135,13 @@ chmod +x setup.sh
 
 ---
 
+### Windows
+> **建議：** 為了獲得最佳的 Linux 環境模擬體驗，強烈建議 Windows 用戶使用 **[Git Bash](https://git-scm.com/downloads)** 來執行腳本。
+
+1. 打開 Git Bash。
+2. 切換至專案目錄。
+3. 執行 `./setup.sh --magic` 進行自動化安裝與啟動。
+
 ## 🏗️ 系統架構
 
 Golem 採用 **Browser-in-the-Loop** 混合架構：
@@ -127,6 +168,7 @@ graph TD
 
 | 文件 | 說明 |
 |------|------|
+| [🤖 編碼代理指南](AGENTS.md) | **[重要]** 供 AI 助理或開發者參考的程式碼維護與架構規範 |
 | [🧠 記憶系統架構說明](docs/記憶系統架構說明.md) | 金字塔壓縮原理與存放路徑解析 |
 | [🖥️ Web Dashboard 使用說明](docs/Web-Dashboard-使用說明.md) | Web UI 各個分頁的延伸細節 |
 | [🛠️ 開發者實作指南](docs/開發者實作指南.md) | 如何實作新的 Skill 與 Golem Protocol 格式規範 |

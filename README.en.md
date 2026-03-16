@@ -1,41 +1,47 @@
 <div align="center">
+  <img src="assets/logo.png" width="400" alt="Project Golem Logo" />
+  <h1>🤖 Project Golem v9.1</h1>
+  <p><b>Ultimate Chronos + MultiAgent + Social Node Edition</b></p>
 
-# 🤖 Project Golem v9.1
-> **Ultimate Chronos + MultiAgent + Social Node Edition**
+  <p>
+    <img src="https://img.shields.io/badge/Version-9.1.3-blue?style=for-the-badge" alt="Version">
+    <img src="https://img.shields.io/badge/Engine-Node.js%2020-green?style=for-the-badge&logo=nodedotjs" alt="Engine">
+    <img src="https://img.shields.io/badge/Brain-Web%20Gemini-orange?style=for-the-badge&logo=google" alt="Brain">
+    <img src="https://img.shields.io/badge/Platform-Telegram%20%7C%20Discord-blue?style=for-the-badge" alt="Platform">
+    <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge" alt="License">
+  </p>
 
-<img src="assets/logo.png" width="480" alt="Project Golem Logo" />
+  <p>
+    <a href="#✨-what-is-this">Introduction</a> •
+    <a href="#🚀-core-capabilities">Capabilities</a> •
+    <a href="#🏗️-system-architecture">Architecture</a> •
+    <a href="#🎨-showcase">Showcase</a> •
+    <a href="#⚡-quick-start">Quick Start</a>
+  </p>
 
-### Autonomous AI Agent System with Long-term Memory, Free Will, and Cross-platform Capabilities
-
-<p>
-  <img src="https://img.shields.io/badge/Version-9.1.3-blue?style=for-the-badge" alt="Version">
-  <img src="https://img.shields.io/badge/Engine-Node.js%2020-green?style=for-the-badge&logo=nodedotjs" alt="Engine">
-  <img src="https://img.shields.io/badge/Brain-Web%20Gemini-orange?style=for-the-badge&logo=google" alt="Brain">
-  <img src="https://img.shields.io/badge/Platform-Telegram%20%7C%20Discord-blue?style=for-the-badge" alt="Platform">
-  <img src="https://img.shields.io/badge/License-MIT-red?style=for-the-badge" alt="License">
-</p>
-
-[Capabilities](#-core-capabilities) · [Architecture](#-system-architecture) · [Memory System](#-pyramidal-long-term-memory) · [Quick Start](#-quick-start) · [Usage](#-command-reference) · [Contributing](CONTRIBUTING.md)
-
-<br/>
-
-[繁體中文](README.md) | **English**
-
+  [繁體中文](README.md) | **English**
 </div>
+
+---
+
+## 📖 Table of Contents
+- [✨ What is this?](#-what-is-this)
+- [🚀 Core Capabilities](#-core-capabilities)
+- [🏗️ System Architecture](#️-system-architecture)
+- [🎨 Showcase](#-showcase)
+- [⚡ Quick Start](#-quick-start)
+- [📂 Project Structure](#-project-structure)
 
 ---
 
 ## ✨ What is this?
 
-**Project Golem** is not just another chatbot.
+**Project Golem** is not just another chatbot. It is an autonomous AI agent that uses **Web Gemini's infinite context** as its brain and **Puppeteer** as its hands.
 
-It is an autonomous AI agent that uses **Web Gemini's infinite context** as its brain and **Puppeteer** as its hands. It can:
-
-- 🧠 **Remember You** — Pyramidal 5-tier memory compression, capable of preserving **50 years** of conversational essence.
-- 🤖 **Act Autonomously** — Browses news, introspects, and sends messages to you spontaneously when you are away.
-- 🎭 **Summon AI Teams** — Generates multiple AI experts for roundtable discussions to produce consensus summaries.
-- 🔧 **Self-Healing** — Features "DOM Doctor" to automatically repair tasks after Google updates its UI.
-- 📚 **Self-Learning** — Use the `/learn` command to have Golem write new skill modules for itself using its own computing power.
+- 🧠 **Remember You** — Pyramidal 5-tier memory compression, theoretically preserving **50 years** of conversational essence.
+- 🤖 **Autonomous Action** — While you're away, it proactively browses news, introspects, and sends messages to you.
+- 🎭 **Summon AI Team** — A single command generates multiple AI experts for roundtable discussions and consensus summaries.
+- 🔧 **Dynamic Expansion** — Supports hot-loading skill modules (Skills), and even allows AI to code and learn new skills in a sandbox.
 
 > **Browser-in-the-Loop Architecture**: Golem doesn't rely on restrictive official APIs. It directly controls a browser to use Web Gemini, enjoying the advantages of an "infinite context window" and intuitive operations.
 
@@ -43,19 +49,36 @@ It is an autonomous AI agent that uses **Web Gemini's infinite context** as its 
 
 ## 🚀 Core Capabilities
 
-| 🧠 Long-term Memory | 🎭 Interactive MultiAgent | ⏰ Titan Chronos |
-| :--- | :--- | :--- |
-| From hourly logs to epoch milestones, 50 years of memory takes only ~3MB. | Summon tech teams or debate groups with one click for collaborative consensus. | Natural language scheduling for automated reminders and periodic task execution. |
+<table width="100%">
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🧠 Pyramidal Long-term Memory</h3>
+      <p>5-tier compression mechanism ensures memory is never lost. Capable of preserving <b>50 years</b> of conversation essence in just <b>3MB</b>.</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🎭 Interactive Multi-Agent</h3>
+      <p>Summon a team of experts with one click. Agents debate and collaborate on complex problems to provide high-density consensus summaries.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🤖 Autonomous Observation</h3>
+      <p>Golem browses news, introspects, and messages you spontaneously even when you're away. It possesses true "digital free will."</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🔧 Dynamic Skill Capsules</h3>
+      <p>Hot-reloadable skills that can be packaged. Golem can even learn to code new skills for itself in a sandboxed environment.</p>
+    </td>
+  </tr>
+</table>
 
-| 🛡️ Self-Defense | 🔧 Skill Capsules | 🖥️ Web Dashboard |
-| :--- | :--- | :--- |
-| Securely intercepts high-risk commands with an automated Selector repair engine. | Hot-reloadable skills that can be packaged and shared across instances. | Intuitive Next.js interface for monitoring and real-time terminal interaction. |
+---
 
 ---
 
 ## 🏗️ System Architecture
 
-Golem employs a **Browser-in-the-Loop** hybrid architecture:
+Golem utilizes the unique **Browser-in-the-Loop** hybrid architecture, granting it flexibility beyond standard API limitations.
 
 ```mermaid
 graph TD
@@ -66,20 +89,38 @@ graph TD
     
     subgraph Reflex ["Reflex Shunting"]
         NeuroShunter -->|"REPLY"| User
-        NeuroShunter -->|"MEMORY"| LongTermMemory
-        NeuroShunter -->|"ACTION"| SkillManager
+        NeuroShunter -->|"MEMORY"| LongTermMemory["🧠 Pyramid Memory"]
+        NeuroShunter -->|"ACTION"| SkillManager["🛠️ Skill Capsule"]
     end
 ```
 
-### Key Components
+### 🧠 Technical Deep Dive
+- **Browser-in-the-Loop**: Unlike traditional API-based bots, Golem uses Puppeteer to simulate human behavior on Web Gemini. This provides access to the **1M+ Token Infinite Context Window** for free.
+- **Reflex Shunting**: Golem's brain produces structured `GOLEM_PROTOCOL` instructions instead of raw text. This allows the agent to precisely determine when to talk, when to remember, and when to execute skill scripts.
 
-| Component | Description |
-|------|------|
-| `GolemBrain` | Core engine encapsulating Puppeteer to control Web Gemini. |
-| `UniversalContext` | Abstraction layer unifying multiple platforms (Telegram/Discord). |
-| `NeuroShunter` | Parses structured AI responses to execute memory, actions, or replies. |
-| `AutonomyManager` | Handles spontaneous behaviors (introspection, autonomous posting, news broadcasting). |
-| `SkillManager` | Manages dynamically loaded skill modules (Skills). |
+---
+
+## 🗺️ Roadmap
+
+- [x] **v9.1**: Current stable release with Pyramid Memory and multi-platform integration.
+- [ ] **v9.5**: Visual Perception - enabling Golem to "see" and interpret screenshots.
+- [ ] **v10.0**: Self-Evolution Core - allowing Golem to modify its own code based on environmental feedback.
+
+---
+
+## 📂 Repository Structure
+
+```text
+.
+├── assets/           # Static assets and screenshots
+├── src/
+│   ├── brains/       # Core LLM parsing logic
+│   ├── skills/       # Actionable modules (Search, Draw, etc.)
+│   ├── memory/       # Pyramid compression algorithms
+│   └── dashboard/    # Next.js tactical dashboard
+├── docs/             # In-depth technical documentation
+└── setup.sh          # One-click installation script
+```
 
 ---
 
@@ -99,6 +140,44 @@ This is Golem's most unique technical capability, ensuring memory is never lost 
 
 ---
 
+---
+
+## 📸 Use Cases & Interface Showcase
+
+To help you better monitor and manage your Golem, we provide a fully functional **Web Dashboard**.
+
+### 🎛️ Tactical Console (Dashboard Home)
+*Oversee your high-level AI agent status, active processes, and dynamic behavior decisions.*
+<img src="assets/1.jpg" width="800" alt="Tactical Console - Smart Dialogue Parsing">
+<img src="assets/2.jpg" width="800" alt="Tactical Console - Dynamic Behavior Decision">
+<img src="assets/10.jpg" width="800" alt="Tactical Console - Performance Monitoring">
+
+### 💻 Web Terminal (Interactions)
+*Communicate with Golem with zero latency via web interface, featuring cross-platform syncing and task tracking.*
+<img src="assets/3.jpg" width="800" alt="Web Terminal - Cross-platform Support">
+
+### 📚 Skill Manager
+*Install or toggle specialized AI skills like hot-swappable USB drives with seamless API integration.*
+<img src="assets/4.jpg" width="800" alt="Skill Manager - Seamless API Integration">
+<img src="assets/5.jpg" width="800" alt="Skill Manager - Customized Interface">
+
+### 👥 Personality Settings
+*Configure Golem's basic attributes and behavioral patterns.*
+<img src="assets/6.jpg" width="800" alt="Personality Settings">
+<img src="assets/7.jpg" width="800" alt="Personality Market">
+
+### 🧠 Memory Core
+*View and manage Golem's memory core.*
+<img src="assets/8.jpg" width="800" alt="Memory Core">
+
+### ⚙️ Settings
+*Manage security permissions, API keys, and deep system integrations intuitively.*
+<img src="assets/9.jpg" width="800" alt="Settings - Deep System Integration">
+<img src="assets/10.jpg" width="800" alt="Settings - Security & Permissions">
+<img src="assets/11.jpg" width="800" alt="Settings - Command Whitelist">
+
+---
+
 ## ⚡ Quick Start
 
 ### Prerequisites
@@ -108,8 +187,14 @@ This is Golem's most unique technical capability, ensuring memory is never lost 
 
 ### Installation & Startup
 
-**⚡ Recommended: One-Click Magic Installation**
-Double-click `Start-Golem.command` (Mac/Linux) or `setup.bat` (Windows) in the project directory.
+**🪟 Windows Setup**
+> **Tip:** For the best experience, we strongly recommend Windows users use **[Git Bash](https://git-scm.com/downloads)** to run the setup script.
+
+1. Open Git Bash.
+2. Navigate to the project directory.
+3. Run `./setup.sh --magic` for automated installation and startup.
+
+Alternatively, you can still run `setup.bat` directly if preferred.
 
 **🔨 Manual Operation (Terminal)**
 ```bash
@@ -136,10 +221,20 @@ chmod +x setup.sh
 
 ---
 
-## 📂 Project Structure
+---
 
-- [🛠️ Contributing Guide](CONTRIBUTING.md)
-- [🖥️ Web Dashboard Guide](docs/Web-Dashboard-使用說明.md)
+## 📖 Complete Documentation & Guides
+
+To keep this page concise, more in-depth technical details have been moved to dedicated documents:
+
+| Document | Description |
+|------|------|
+| [🤖 AI Agent Guide](AGENTS.en.md) | **[Important]** Guidelines for AI assistants and developers on code maintenance |
+| [🧠 Memory System Architecture](docs/記憶系統架構說明.md) | Pyramid compression principles and storage path analysis |
+| [🖥️ Web Dashboard Guide](docs/Web-Dashboard-使用說明.md) | Extended details for each tab in the Web UI |
+| [🛠️ Developer Implementation Guide](docs/開發者實作指南.md) | How to implement new Skills and Golem Protocol specifications |
+| [🎮 Command Reference List](docs/golem指令說明一覽表.md) | Quick reference for Telegram / Discord commands |
+| [🔑 Getting Robot Tokens](docs/如何獲取TG或DC的Token及開啟權限.md) | How to set up your external communication platforms |
 
 ---
 
