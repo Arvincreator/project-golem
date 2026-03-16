@@ -47,10 +47,10 @@
 - 類別: PascalCase | 檔案: PascalCase for classes | 私有方法: `_` 前綴 | 常數: UPPER_SNAKE_CASE
 
 ## 測試
-- 框架: Jest 30 | 目錄: `tests/` | 執行: `npx jest --no-coverage --detectOpenHandles`
-- Setup: `tests/setup.js` (env vars) + `tests/setup-afterall.js` (DebouncedWriter cleanup)
-- **不使用 --forceExit** (已修復所有 open handles)
-- 基線: 716+ tests, 63+ suites, 0 failures, 0 open handles
+- 框架: Jest 30 | 目錄: `tests/` | 執行: `npx jest --no-coverage`
+- Setup: `tests/setup.js` (env vars + **全域 timer 攔截追蹤**) + `tests/setup-afterall.js` (DebouncedWriter + SystemLogger + **全 timer 清掃**)
+- **不使用 --forceExit** (v10.9.4 已修復所有 open handles — timer 攔截機制)
+- 基線: 805 tests, 67 suites, 0 failures, 0 open handles
 
 ## v10.5 架構決策 (向量 RAG + Claude 雙向整合)
 1. **嵌入模型**: Gemini text-embedding-004 (零新依賴, 複用 @google/genai, 768維, 免費 1500 RPM)
