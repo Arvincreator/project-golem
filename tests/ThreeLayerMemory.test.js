@@ -28,10 +28,10 @@ describe('ThreeLayerMemory', () => {
         expect(ep.reward).toBe(1);
     });
 
-    test('queryEpisodes matches by keyword', () => {
+    test('queryEpisodes matches by keyword', async () => {
         mem.recordEpisode('deploying to production', ['deploy'], 'success', 1);
         mem.recordEpisode('fixing bug in auth', ['debug'], 'fixed', 1);
-        const results = mem.queryEpisodes('production deploy');
+        const results = await mem.queryEpisodes('production deploy');
         expect(results.length).toBeGreaterThan(0);
         expect(results[0].situation).toContain('production');
     });
@@ -49,5 +49,20 @@ describe('ThreeLayerMemory', () => {
         const stats = mem.getStats();
         expect(stats.working).toBe(1);
         expect(stats.episodic).toBe(1);
+    });
+
+    test('queryEpisodesSync returns keyword matches synchronously', () => {
+        mem.recordEpisode('deploying to production server', ['deploy'], 'success', 1);
+        mem.recordEpisode('fixing auth bug', ['debug'], 'fixed', 0.8);
+        const results = mem.queryEpisodesSync('production deploy');
+        expect(results.length).toBeGreaterThan(0);
+        expect(results[0].situation).toContain('production');
+    });
+
+    test('queryEpisodesSync returns recent episodes without situation', () => {
+        mem.recordEpisode('episode one', [], 'out1', 0);
+        mem.recordEpisode('episode two', [], 'out2', 0);
+        const results = mem.queryEpisodesSync(null, 5);
+        expect(results.length).toBe(2);
     });
 });

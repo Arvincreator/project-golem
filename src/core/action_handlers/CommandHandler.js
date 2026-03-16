@@ -1,6 +1,7 @@
 // Per-chat feedback depth tracking to prevent infinite loops
 const _feedbackDepth = new Map();
 const MAX_FEEDBACK_DEPTH = 3;
+const FEEDBACK_MAP_MAX_SIZE = 500;
 const CommandSafeguard = require('../../utils/CommandSafeguard');
 
 class CommandHandler {
@@ -8,6 +9,12 @@ class CommandHandler {
         if (!normalActions || normalActions.length === 0) return;
 
         const chatId = ctx.chatId || ctx.chat?.id || 'default';
+
+        // Evict stale entries to prevent unbounded Map growth
+        if (_feedbackDepth.size > FEEDBACK_MAP_MAX_SIZE) {
+            _feedbackDepth.clear();
+        }
+
         const currentDepth = _feedbackDepth.get(chatId) || 0;
 
         if (currentDepth >= MAX_FEEDBACK_DEPTH) {

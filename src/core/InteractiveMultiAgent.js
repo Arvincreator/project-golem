@@ -20,6 +20,16 @@ class InteractiveMultiAgent {
             maxRounds: options.maxRounds || 3,
             messages: [],
             sharedMemory: [],
+            // Phase 4A: Artifact pool for SOP multi-agent collaboration
+            artifacts: {
+                requirements: [],
+                design: [],
+                code: [],
+                tests: [],
+                analysis: [],
+                decisions: [],
+            },
+            sopMode: options.sopMode || null, // 'DEV_TEAM', 'RESEARCH', 'STRATEGY'
             status: 'active',
             waitingForUser: false,
             interruptRequested: false

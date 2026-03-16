@@ -2,10 +2,30 @@ const ResponseParser = require('../utils/ResponseParser');
 const MultiAgentHandler = require('./action_handlers/MultiAgentHandler');
 const SkillHandler = require('./action_handlers/SkillHandler');
 const CommandHandler = require('./action_handlers/CommandHandler');
+const SelfEvolution = require('./SelfEvolution');
 
 // ============================================================
 // 🧬 NeuroShunter (神經分流中樞 - 核心路由器)
+// v9.4 TITAN: + memory actions, core_memory, read_context_file, SelfEvolution
 // ============================================================
+
+// Per-golemId SelfEvolution + SkillSynthesizer isolation (v9.5 C2)
+const _selfEvolutionMap = new Map();
+const _synthesizerMap = new Map();
+function getSelfEvolution(golemId = 'default') {
+    if (!_selfEvolutionMap.has(golemId)) {
+        _selfEvolutionMap.set(golemId, new SelfEvolution({ golemId }));
+    }
+    return _selfEvolutionMap.get(golemId);
+}
+function getSynthesizer(golemId, brain) {
+    if (!_synthesizerMap.has(golemId)) {
+        const SkillSynthesizer = require('./SkillSynthesizer');
+        _synthesizerMap.set(golemId, new SkillSynthesizer({ brain, golemId }));
+    }
+    return _synthesizerMap.get(golemId);
+}
+
 class NeuroShunter {
     static async dispatch(ctx, rawResponse, brain, controller, options = {}) {
         const parsed = ResponseParser.parse(rawResponse);
@@ -38,6 +58,11 @@ class NeuroShunter {
             }
             if (parsed.sources && parsed.sources.length > 0) {
                 finalReply += parsed.confidence ? ` (${parsed.sources.join('+')})` : '';
+            }
+
+            // Grounding confidence warning for LOW confidence responses
+            if (parsed.confidence === 'LOW' || (options.groundingConfidence !== undefined && options.groundingConfidence !== null && options.groundingConfidence < 0.5)) {
+                finalReply = `\u26a0\ufe0f [Low Confidence] 以下回覆未經知識庫充分驗證，請自行確認。\n\n${finalReply}`;
             }
 
             if (ctx.platform === 'telegram' && ctx.shouldMentionSender) {
@@ -77,7 +102,12 @@ class NeuroShunter {
                                 }]
                             }),
                             signal: AbortSignal.timeout(5000)
-                        }).catch(() => {}); // fire-and-forget
+                        }).catch(e => {
+                            NeuroShunter._ragIngestFailCount = (NeuroShunter._ragIngestFailCount || 0) + 1;
+                            if (NeuroShunter._ragIngestFailCount % 10 === 1) {
+                                console.warn(`[NeuroShunter] RAG ingest failed (${NeuroShunter._ragIngestFailCount}x): ${e.message}`);
+                            }
+                        });
                     }
                 }
             } catch (e) { /* non-blocking */ }
@@ -106,6 +136,47 @@ class NeuroShunter {
                     case 'multi_agent':
                         await MultiAgentHandler.execute(ctx, act, controller, brain);
                         break;
+                    // Phase 3B: Memory management actions (Letta/MemGPT style)
+                    case 'memory_promote':
+                    case 'memory_forget':
+                    case 'memory_rethink':
+                    case 'memory_pageout':
+                        if (options.threeLayerMemory) {
+                            NeuroShunter._handleMemoryAction(act, options.threeLayerMemory);
+                        }
+                        break;
+                    // Phase 3B: CoreMemory edit actions
+                    case 'core_replace':
+                        if (options.coreMemory) {
+                            options.coreMemory.replace(act.label, act.oldText || '', act.newText || '');
+                            console.log(`[NeuroShunter] CoreMemory replace: ${act.label}`);
+                        }
+                        break;
+                    case 'core_append':
+                        if (options.coreMemory) {
+                            options.coreMemory.append(act.label, act.text || '');
+                            console.log(`[NeuroShunter] CoreMemory append: ${act.label}`);
+                        }
+                        break;
+                    // Phase 2B-extra: read_context_file action (v9.5: path restricted to golem_memory/)
+                    case 'read_context_file':
+                        if (act.path) {
+                            try {
+                                const fsp = require('fs').promises;
+                                const pathMod = require('path');
+                                const resolved = pathMod.resolve(act.path);
+                                const allowed = pathMod.resolve(process.cwd(), 'golem_memory');
+                                if (!resolved.startsWith(allowed + pathMod.sep) && resolved !== allowed) {
+                                    console.warn(`[NeuroShunter] read_context_file BLOCKED: ${act.path} (outside golem_memory/)`);
+                                    break;
+                                }
+                                const content = await fsp.readFile(resolved, 'utf-8');
+                                console.log(`[NeuroShunter] Read context file: ${act.path} (${content.length} chars)`);
+                            } catch (e) {
+                                console.warn(`[NeuroShunter] read_context_file failed: ${e.message}`);
+                            }
+                        }
+                        break;
                     default:
                         // 檢查是否為動態擴充技能
                         const isSkillHandled = await SkillHandler.execute(ctx, act, brain);
@@ -121,8 +192,59 @@ class NeuroShunter {
             if (normalActions.length > 0) {
                 await CommandHandler.execute(ctx, normalActions, controller, brain, (c, r, b, ctrl) => this.dispatch(c, r, b, ctrl, options));
             }
+
+            // Phase 3A: SelfEvolution.afterAction + SkillSynthesizer (v9.5: per-golemId isolation)
+            const golemId = options.golemId || 'default';
+            const selfEvo = getSelfEvolution(golemId);
+            for (const act of parsed.actions) {
+                const suggestion = selfEvo.afterAction(act, rawResponse, true);
+                if (suggestion && suggestion.suggestSkill && process.env.ENABLE_SKILL_SYNTHESIS !== 'false') {
+                    try {
+                        const synthesizer = getSynthesizer(golemId, brain);
+                        synthesizer.synthesize(suggestion).catch(e => {
+                            console.warn('[NeuroShunter] Skill synthesis failed:', e.message);
+                        });
+                    } catch (e) { /* SkillSynthesizer not critical */ }
+                }
+            }
         } else if (parsed.actions.length > 0 && shouldSuppressReply) {
             console.log(`🤫 [NeuroShunter] 靜默模式，跳過 ${parsed.actions.length} 個 Action 的執行。`);
+        }
+    }
+
+    /**
+     * Handle memory management actions (Letta-style)
+     */
+    static _handleMemoryAction(act, threeLayerMemory) {
+        try {
+            switch (act.action) {
+                case 'memory_promote':
+                    if (act.key && threeLayerMemory.promoteToEpisodic) {
+                        threeLayerMemory.promoteToEpisodic(act.key);
+                        console.log(`[NeuroShunter] Memory promoted: ${act.key}`);
+                    }
+                    break;
+                case 'memory_forget':
+                    if (act.key && threeLayerMemory.markExpired) {
+                        threeLayerMemory.markExpired(act.key);
+                        console.log(`[NeuroShunter] Memory forgotten: ${act.key}`);
+                    }
+                    break;
+                case 'memory_rethink':
+                    if (act.content && threeLayerMemory.addToWorking) {
+                        threeLayerMemory.addToWorking({ content: act.content, sender: 'system', type: 'rethink' });
+                        console.log(`[NeuroShunter] Memory rethink recorded`);
+                    }
+                    break;
+                case 'memory_pageout':
+                    if (act.key && threeLayerMemory.archiveWorking) {
+                        threeLayerMemory.archiveWorking(act.key);
+                        console.log(`[NeuroShunter] Memory paged out: ${act.key}`);
+                    }
+                    break;
+            }
+        } catch (e) {
+            console.warn(`[NeuroShunter] Memory action failed: ${e.message}`);
         }
     }
 }

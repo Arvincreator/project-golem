@@ -23,6 +23,9 @@ const MODEL_REGISTRY = {
     'gpt-4':             { web: { keywords: ['GPT-4'] },              api: null,                        tier: 'basic' },
     'gemini-3-flash':    { web: { keywords: ['Gemini 3 Flash'] },      api: null,                       tier: 'basic' },
     'gemini-2.5-pro':    { web: { keywords: ['Gemini 2.5 Pro'] },      api: { id: 'gemini-2.5-pro' },  tier: 'basic', context: 1000000, maxOutput: 8192, rpm: 100, costIn: 1.25, costOut: 10.00 },
+
+    // === v10.5: Claude Opus 4.6 (direct API via ClaudeBrain) ===
+    'claude-opus-4.6':   { web: null,                                  api: { id: 'claude-opus-4-6-20250515' }, tier: 'basic', context: 200000, maxOutput: 32000, rpm: 50, costIn: 15.00, costOut: 75.00 },
 };
 
 // Web-only models → API fallback (when Web brain fails)
@@ -99,11 +102,18 @@ function estimateTokens(text) {
     return Math.ceil(cjkCount / 1.5 + latinCount / 4);
 }
 
-// 6-dimension routing rules — shared between RouterBrain and model-router skill
+// 8-dimension routing rules — shared between RouterBrain and model-router skill
+// Three-brain assignment: GPT-5.4 (reasoning+creative), Grok-4 (code+realtime), Claude 4.6 (analysis+refactor)
 const ROUTING_RULES = [
-    { name: 'code',
-      patterns: /code|function|debug|error|bug|implement|refactor|程式|代碼|修復|開發|script|api|class|module|TypeError|npm|git|python|java|javascript|rust|排序|sort|array|list|regex|sql|html|css/i,
+    { name: 'realtime',
+      patterns: /real.?time|即時|live|streaming|websocket|current|news|trending|hotfix|urgent.?fix|最新|時事/i,
+      model: 'grok-4' },
+    { name: 'refactor',
+      patterns: /refactor|重構|redesign|clean.?up|simplify|optimize.?code|DRY|SOLID|架構|code.?review|pull.?request|\bPR\b/i,
       model: 'claude-4.6-sonnet' },
+    { name: 'code',
+      patterns: /code|function|debug|error|bug|implement|程式|代碼|修復|開發|script|api|class|module|TypeError|npm|git|python|java|javascript|rust|排序|sort|array|list|regex|sql|html|css/i,
+      model: 'grok-4' },
     { name: 'reasoning',
       patterns: /math|logic|prove|theorem|calculate|equation|數學|邏輯|推理|計算|證明|solve|algorithm|求解|方程|幾何|x²|²|³|∑|∫|≥|≤|≠|\d+x\s*[+\-=]/i,
       model: 'gpt-5.4' },
@@ -115,7 +125,7 @@ const ROUTING_RULES = [
       model: 'gpt-4.1-mini' },
     { name: 'analysis',
       patterns: /analyze|research|compare|evaluate|分析|研究|比較|評估|報告|audit|review|策略/i,
-      model: 'gemini-3.1-pro' },
+      model: 'claude-4.6-sonnet' },
     { name: 'flexible',
       patterns: /open.?source|自由|flexible|general|通用|聊天|chat|conversation|日常/i,
       model: 'gpt-4o' },
@@ -135,6 +145,7 @@ module.exports = {
         BROWSER_RETRY_DELAY: 1000,
         MIN_SEND_INTERVAL: 3000,
         MODEL_SWITCH_DELAY: 1500,
+        WAIT_FOR_READY: 15000,
     },
     LIMITS: {
         MAX_INTERACT_RETRY: 3,
@@ -142,6 +153,7 @@ module.exports = {
         STABLE_THRESHOLD_COMPLETE: 10,
         STABLE_THRESHOLD_THINKING: 60,
         EST_CHARS_PER_TOKEN: 4,
+        MAX_DAILY_CALLS: 500,
     },
     BROWSER_ARGS: [
         '--no-sandbox',

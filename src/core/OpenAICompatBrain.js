@@ -11,8 +11,13 @@ const NodeRouter = require('./NodeRouter');
 const SystemNativeDriver = require('../memory/SystemNativeDriver');
 const circuitBreaker = require('./circuit_breaker');
 
+const { TimeoutError: GolemTimeoutError } = require('./errors');
+
 const MAX_HISTORY = 50; // Keep last N message pairs in conversation
-const MAX_RETRY = 1;
+const MAX_RETRY = 3;
+const BASE_DELAY = 1000;
+const MAX_DELAY = 30000;
+const RETRYABLE_CODES = [429, 500, 502, 503, 504];
 
 class OpenAICompatBrain {
     constructor(options = {}) {
@@ -22,6 +27,9 @@ class OpenAICompatBrain {
 
         this.browser = null;
         this.page = null;
+
+        // v10.5: RAG provider (optional — null guard everywhere)
+        this._ragProvider = options.ragProvider || null;
 
         this.memoryDriver = options.memoryDriver || new SystemNativeDriver();
         this.chatLogManager = options.chatLogManager || new ChatLogManager({
@@ -97,8 +105,9 @@ class OpenAICompatBrain {
         const reqId = ProtocolFormatter.generateReqId();
         const payload = ProtocolFormatter.buildEnvelope(text, reqId, options);
 
-        // Add to conversation
+        // Add to conversation and record index for precise removal on failure
         this._messages.push({ role: 'user', content: payload });
+        const userMsgIndex = this._messages.length - 1;
         this._trimHistory();
 
         console.log(`[${this._serviceId}] Sending request: ${reqId} (model: ${this._model})`);
@@ -113,9 +122,10 @@ class OpenAICompatBrain {
             console.log(`[${this._serviceId}] Response received (${responseText.length} chars)`);
             return responseText;
         } catch (e) {
-            // Remove failed user message from history
-            if (this._messages.length > 1 && this._messages[this._messages.length - 1].role === 'user') {
-                this._messages.pop();
+            // Remove failed user message by index (not pop — avoids race with concurrent sends)
+            const idx = this._messages.indexOf(this._messages[userMsgIndex]);
+            if (idx > 0 && this._messages[idx]?.role === 'user') {
+                this._messages.splice(idx, 1);
             }
             throw e;
         }
@@ -123,10 +133,21 @@ class OpenAICompatBrain {
 
     async recall(queryText) {
         if (!queryText) return [];
+        // v10.5: Try RAG-augmented recall first
+        if (this._ragProvider) {
+            try {
+                const result = await this._ragProvider.augmentedRecall(queryText);
+                if (result.merged.length > 0) return result.merged;
+            } catch (e) { /* fallback to keyword */ }
+        }
         try { return await this.memoryDriver.recall(queryText); } catch (e) { return []; }
     }
 
     async memorize(text, metadata = {}) {
+        // v10.5: Also ingest into RAG
+        if (this._ragProvider) {
+            try { await this._ragProvider.ingest(text, metadata); } catch (e) { /* non-blocking */ }
+        }
         try { await this.memoryDriver.memorize(text, metadata); } catch (e) {
             console.warn(`[${this._serviceId}] memorize failed:`, e.message);
         }
@@ -169,6 +190,22 @@ class OpenAICompatBrain {
         return this._apiKey;
     }
 
+    /**
+     * Calculate retry delay with decorrelated jitter (AWS recommended)
+     */
+    _getRetryDelay(attempt, retryAfterMs) {
+        if (retryAfterMs) return retryAfterMs;
+        const delay = Math.min(BASE_DELAY * Math.pow(2, attempt), MAX_DELAY);
+        return delay * (0.5 + Math.random() * 0.5); // 50%-100% jitter
+    }
+
+    /**
+     * Check if HTTP status code is retryable
+     */
+    _isRetryable(status) {
+        return RETRYABLE_CODES.includes(status);
+    }
+
     async _callCompletion(retryCount = 0) {
         const serviceId = this._serviceId;
 
@@ -179,13 +216,7 @@ class OpenAICompatBrain {
 
         const apiKey = this._getApiKey();
         const url = `${this._baseURL}/chat/completions`;
-
-        const body = {
-            model: this._model,
-            messages: this._messages,
-            max_tokens: this._maxTokens,
-            temperature: this._temperature,
-        };
+        const body = this._buildRequestBody();
 
         try {
             const res = await fetch(url, {
@@ -200,15 +231,19 @@ class OpenAICompatBrain {
 
             if (!res.ok) {
                 const errBody = await res.text().catch(() => '');
-                const errMsg = `HTTP ${res.status}: ${errBody.substring(0, 200)}`;
+                const errMsg = `HTTP ${res.status}: ${errBody.substring(0, 500)}`;
 
-                // Rate limit — retry once after delay
-                if (res.status === 429 && retryCount < MAX_RETRY) {
-                    console.warn(`[${serviceId}] Rate limited, retrying in 2s...`);
-                    await new Promise(r => setTimeout(r, 2000));
+                // Retryable status codes — exponential backoff + jitter
+                if (this._isRetryable(res.status) && retryCount < MAX_RETRY) {
+                    const retryAfterHeader = res.headers.get('Retry-After');
+                    const retryAfterMs = retryAfterHeader ? parseInt(retryAfterHeader) * 1000 : 0;
+                    const delay = this._getRetryDelay(retryCount, retryAfterMs);
+                    console.warn(`[${serviceId}] HTTP ${res.status}, retrying in ${Math.round(delay)}ms (${retryCount + 1}/${MAX_RETRY})...`);
+                    await new Promise(r => setTimeout(r, delay));
                     return this._callCompletion(retryCount + 1);
                 }
 
+                // Non-retryable or max retries exhausted
                 circuitBreaker.recordFailure(serviceId, errMsg);
                 throw new Error(`[${serviceId}] ${errMsg}`);
             }
@@ -216,7 +251,7 @@ class OpenAICompatBrain {
             const data = await res.json();
 
             if (!data || !data.choices) {
-                const errDetail = data && data.error ? JSON.stringify(data.error).substring(0, 200) : 'no choices field';
+                const errDetail = data && data.error ? JSON.stringify(data.error).substring(0, 500) : 'no choices field';
                 throw new Error(`[${serviceId}] Invalid API response: ${errDetail}`);
             }
 
@@ -231,13 +266,22 @@ class OpenAICompatBrain {
         } catch (e) {
             if (e.name === 'TimeoutError' || e.name === 'AbortError') {
                 circuitBreaker.recordFailure(serviceId, 'Timeout');
-                throw new Error(`[${serviceId}] Request timeout (${this._timeout}ms)`);
+                throw new GolemTimeoutError(serviceId, this._timeout);
             }
             if (!e.message.startsWith(`[${serviceId}]`)) {
                 circuitBreaker.recordFailure(serviceId, e.message);
             }
             throw e;
         }
+    }
+
+    _buildRequestBody() {
+        return {
+            model: this._model,
+            messages: this._messages,
+            max_tokens: this._maxTokens,
+            temperature: this._temperature,
+        };
     }
 
     _trimHistory() {

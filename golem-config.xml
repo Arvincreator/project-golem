@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<golem-config version="1.0" updated="2026-03-12">
+<golem-config version="2.0" updated="2026-03-16">
 
   <node id="rensin" role="primary">
     <platform>wsl2</platform>
@@ -28,6 +28,56 @@
     <limits rpm="60" daily="1500"/>
   </gemini>
 
+  <!-- v10.0: Brain engine configuration -->
+  <brains engine="router">
+    <router total-timeout-ms="90000">
+      <fallback-chain>monica-web,monica,sdk,ollama</fallback-chain>
+      <sticky-routing enabled="true" window-size="20"/>
+    </router>
+    <monica>
+      <api base-url-env="MONICA_API_URL" key-env="MONICA_API_KEY"
+           default-model="gpt-4o" timeout-ms="60000"/>
+      <web default-model="gpt-4o" daily-limit="500"/>
+    </monica>
+    <ollama url="http://localhost:11434/v1" model="deepseek-r1:8b"
+            timeout-ms="90000" fallback-models="qwen2:1.5b">
+      <gpu num-gpu="auto" timeout-ms="30000"
+           adaptive-ctx="true" min-ctx="8192"/>
+    </ollama>
+  </brains>
+
+  <!-- v10.0: Security rules externalized -->
+  <security>
+    <command-whitelist>ls,pwd,date,whoami,cat,grep,find,head,tail,df,free,node,npm,echo,git,curl</command-whitelist>
+    <level-rules>
+      <rule level="L0" pattern="^(ls|pwd|date|whoami|echo|hostname)(\s|$)"/>
+      <rule level="L1" pattern="^(cat|grep|find|head|tail|df|free|node|npm|git)\s"/>
+      <rule level="L2" pattern="^(curl|wget|python3?|pip)\s"/>
+      <rule level="L3" pattern="(rm\s+-rf|mkfs|dd\s|shutdown|reboot|kill\s+-9|>\s*/dev/)"/>
+    </level-rules>
+  </security>
+
+  <!-- v10.0: Memory engine configuration -->
+  <memory mode="browser">
+    <chat-log>
+      <retention hourly-hours="72" daily-days="30" monthly-months="12" yearly-years="5"/>
+      <compression timeout-ms="60000" max-words-daily="500" max-words-monthly="300"/>
+    </chat-log>
+    <three-layer working-cap="50" episodic-cap="500" summary-threshold="0.5"/>
+    <context-engineer token-budget="32768" reserve-pct="15" overflow-cleanup-hours="24"/>
+  </memory>
+
+  <!-- v10.0: Logging configuration -->
+  <logging>
+    <system buffer-size="100" flush-interval-ms="500"
+            rotate-max-mb="10" rotate-keep="3"/>
+    <console timestamp="true" level="info"/>
+  </logging>
+
+  <!-- v10.0: Retry strategy -->
+  <retry max-attempts="3" base-delay-ms="1000" max-delay-ms="30000"
+         jitter="decorrelated" retryable-codes="429,500,502,503,504"/>
+
   <telegram engine="grammy">
     <polling timeout-sec="30"
              max-consecutive-errors="10"
@@ -50,6 +100,8 @@
     <breaker name="rag" timeout-ms="3000" reset-ms="20000" error-pct="40"/>
     <breaker name="gemini" timeout-ms="30000" reset-ms="60000" error-pct="50"/>
     <breaker name="telegram" timeout-ms="10000" reset-ms="15000" error-pct="30"/>
+    <breaker name="monica" timeout-ms="60000" reset-ms="60000" error-pct="50"/>
+    <breaker name="ollama" timeout-ms="90000" reset-ms="30000" error-pct="50"/>
   </circuit-breakers>
 
   <failover>
@@ -57,6 +109,21 @@
     <timeout detect-sec="90" confirm-sec="180"/>
     <takeover notify="telegram" auto="true"/>
   </failover>
+
+  <!-- v10.5: Vector store configuration -->
+  <vector-store db-path="golem_memory/vectors.db" max-vectors="10000">
+    <embeddings provider="gemini" model="text-embedding-004"
+                fallback="ollama:nomic-embed-text"
+                cache-size="100" batch-size="20"/>
+  </vector-store>
+
+  <!-- v10.5: Claude brain configuration -->
+  <claude api-key-env="ANTHROPIC_API_KEY"
+          default-model="claude-opus-4-6-20250515"
+          timeout-ms="120000" max-tokens="8192"/>
+
+  <!-- v10.5: Claude Gateway -->
+  <claude-gateway enabled="true" token-env="CLAUDE_GATEWAY_TOKEN" rate-limit-rpm="60"/>
 
   <dependencies>
     <dep name="grammy" version="^1" for="rensin"/>

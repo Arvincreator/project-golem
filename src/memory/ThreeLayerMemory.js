@@ -14,6 +14,14 @@ class ThreeLayerMemory {
         this._workingMemory = []; // Current conversation context
         this._episodicFile = path.join(process.cwd(), 'golem_episodes.json');
         this._episodes = this._loadEpisodes();
+        this._ragProvider = null; // v10.5: optional RAG provider
+    }
+
+    /**
+     * v10.5: Inject RAG provider for vector-augmented queries
+     */
+    setRAGProvider(provider) {
+        this._ragProvider = provider;
     }
 
     // --- Working Memory (Layer 1) ---
@@ -112,18 +120,19 @@ class ThreeLayerMemory {
         return episode;
     }
 
-    queryEpisodes(situation, limit = 5) {
-        // Filter out expired episodes (Zep-style temporal filtering)
-        const now = new Date().toISOString();
-        const validEpisodes = this._episodes.filter(ep =>
-            !ep.invalid_at || ep.invalid_at > now
-        );
-
+    /**
+     * Synchronous keyword-only episode query (no RAG)
+     * For callers that cannot await (TreePlanner._scoreNode, WorldModel.valueFunction)
+     */
+    /**
+     * Shared keyword matching logic for queryEpisodes and queryEpisodesSync
+     */
+    _matchByKeyword(situation, validEpisodes, limit) {
         if (!situation) return validEpisodes.slice(-limit);
         const keywords = String(situation).toLowerCase().split(/\s+/).filter(w => w.length > 2);
         if (keywords.length === 0) return validEpisodes.slice(-limit);
 
-        const result = validEpisodes
+        return validEpisodes
             .map(ep => {
                 const text = `${ep.situation} ${ep.outcome}`.toLowerCase();
                 const score = keywords.filter(kw => text.includes(kw)).length;
@@ -133,6 +142,37 @@ class ThreeLayerMemory {
             .sort((a, b) => b._score - a._score || b.timestamp - a.timestamp)
             .slice(0, limit)
             .map(({ _score, ...ep }) => ep);
+    }
+
+    _getValidEpisodes() {
+        const now = new Date().toISOString();
+        return this._episodes.filter(ep => !ep.invalid_at || ep.invalid_at > now);
+    }
+
+    queryEpisodesSync(situation, limit = 5) {
+        return this._matchByKeyword(situation, this._getValidEpisodes(), limit);
+    }
+
+    async queryEpisodes(situation, limit = 5) {
+        // v10.5: Try vector-augmented search first
+        if (this._ragProvider && situation) {
+            try {
+                const ragResult = await this._ragProvider.augmentedRecall(situation, { limit });
+                if (ragResult.merged.length > 0) {
+                    return ragResult.merged.map(r => ({
+                        id: r.id,
+                        situation: r.content,
+                        actions: [],
+                        outcome: '',
+                        reward: r.score || 0,
+                        timestamp: Date.now(),
+                        _source: 'rag',
+                    }));
+                }
+            } catch (e) { /* fallback to keyword */ }
+        }
+
+        const result = this._matchByKeyword(situation, this._getValidEpisodes(), limit);
 
         // Mark queried episodes with _lastQueried
         result.forEach(ep => {
@@ -170,6 +210,14 @@ class ThreeLayerMemory {
                 created_at: new Date().toISOString()
             });
         } catch (e) { /* MAGMA optional */ }
+
+        // v10.5: Embed summary into vector store
+        if (this._ragProvider) {
+            try {
+                const summaryText = `Episode summary: ${oldEpisodes.length} episodes, success rate ${(successRate * 100).toFixed(1)}%`;
+                this._ragProvider.ingest(summaryText, { type: 'episode_summary', source: 'three_layer' }).catch(e => console.warn('[ThreeLayerMemory] episode summary ingest failed:', e.message));
+            } catch (e) { /* non-blocking */ }
+        }
     }
 
     // --- Semantic Memory (Layer 3 -- delegates to MAGMA) ---
@@ -192,8 +240,53 @@ class ThreeLayerMemory {
 
     _saveEpisodes() {
         try {
-            fs.writeFileSync(this._episodicFile, JSON.stringify(this._episodes, null, 2));
+            const data = JSON.stringify(this._episodes, null, 2);
+            if (this._writer) {
+                this._writer.markDirty(data);
+            } else {
+                try {
+                    const DebouncedWriter = require('../utils/DebouncedWriter');
+                    this._writer = new DebouncedWriter(this._episodicFile, 2000);
+                    this._writer.markDirty(data);
+                } catch (e) {
+                    fs.writeFileSync(this._episodicFile, data);
+                }
+            }
         } catch (e) { console.warn('[ThreeLayerMemory] Failed to save episodes:', e.message); }
+    }
+
+    /**
+     * Estimate token count for a text string
+     * @param {string} text
+     * @returns {number}
+     */
+    estimateTokens(text) {
+        if (!text) return 0;
+        const cjkCount = (text.match(/[\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af]/g) || []).length;
+        const latinCount = text.length - cjkCount;
+        return Math.ceil(cjkCount / 1.5 + latinCount / 4);
+    }
+
+    /**
+     * Page out items from working memory to episodic (archival)
+     * @param {number[]} indices - Working memory indices to page out
+     * @returns {number} Number of items paged out
+     */
+    pageOut(indices) {
+        if (!Array.isArray(indices) || indices.length === 0) return 0;
+        let paged = 0;
+        // Sort descending to avoid index shifting
+        const sorted = [...indices].sort((a, b) => b - a);
+        for (const idx of sorted) {
+            if (idx >= 0 && idx < this._workingMemory.length) {
+                const item = this._workingMemory.splice(idx, 1)[0];
+                if (item && item.content) {
+                    this.recordEpisode(item.content, [], 'paged_out_from_working', 0.3);
+                    paged++;
+                }
+            }
+        }
+        return paged;
     }
 
     getStats() {

@@ -119,6 +119,17 @@ class SkillManager {
             // 基本資料驗證
             if (!payload.n || !payload.c) throw new Error("Corrupted skill data.");
 
+            // v9.5 VULN-1: AST safety validation before writing to disk
+            try {
+                const CodeSafetyValidator = require('../utils/CodeSafetyValidator');
+                const safetyResult = CodeSafetyValidator.validate(payload.c);
+                if (!safetyResult.safe) {
+                    return { success: false, error: `Safety check failed: ${safetyResult.reason}` };
+                }
+            } catch (e) {
+                console.warn('[SkillManager] CodeSafetyValidator not available, skipping AST check');
+            }
+
             // 寫入檔案
             const filename = `imported-${payload.n.toLowerCase().replace(/\s+/g, '-')}.js`;
             const filePath = path.join(this.userDir, filename);

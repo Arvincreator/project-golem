@@ -2,7 +2,24 @@ const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs').promises;
 const path = require('path');
 
+// v10.0: Singleton instances per userDataDir
+const _instances = new Map();
+
 class SkillIndexManager {
+    /**
+     * v10.0: Factory method — returns shared instance per userDataDir
+     */
+    static getInstance(userDataDir) {
+        if (!userDataDir) {
+            const ConfigManager = require('../config');
+            userDataDir = ConfigManager.MEMORY_BASE_DIR;
+        }
+        if (_instances.has(userDataDir)) return _instances.get(userDataDir);
+        const inst = new SkillIndexManager(userDataDir);
+        _instances.set(userDataDir, inst);
+        return inst;
+    }
+
     constructor(userDataDir) {
         if (!userDataDir) {
             const ConfigManager = require('../config');
@@ -29,19 +46,22 @@ class SkillIndexManager {
             this.db = new sqlite3.Database(this.dbPath, (err) => {
                 if (err) return reject(err);
 
-                this.db.run(`
-                    CREATE TABLE IF NOT EXISTS skills (
-                        id TEXT PRIMARY KEY,
-                        name TEXT,
-                        description TEXT,
-                        content TEXT,
-                        path TEXT,
-                        category TEXT,
-                        last_modified INTEGER
-                    )
-                `, (err) => {
-                    if (err) reject(err);
-                    else resolve();
+                // v10.0: Enable WAL mode for better concurrent read performance
+                this.db.run('PRAGMA journal_mode=WAL', () => {
+                    this.db.run(`
+                        CREATE TABLE IF NOT EXISTS skills (
+                            id TEXT PRIMARY KEY,
+                            name TEXT,
+                            description TEXT,
+                            content TEXT,
+                            path TEXT,
+                            category TEXT,
+                            last_modified INTEGER
+                        )
+                    `, (err) => {
+                        if (err) reject(err);
+                        else resolve();
+                    });
                 });
             });
         });
@@ -185,7 +205,7 @@ class SkillIndexManager {
     }
 
     /**
-     * 關閉連線
+     * v10.0: Close connection but keep instance reusable (lazy reconnect on next init)
      */
     async close() {
         if (this.db) {
@@ -195,6 +215,19 @@ class SkillIndexManager {
                     resolve();
                 });
             });
+        }
+    }
+
+    /**
+     * v10.0: Final cleanup — close and remove singleton instance
+     */
+    async destroy() {
+        await this.close();
+        for (const [key, inst] of _instances) {
+            if (inst === this) {
+                _instances.delete(key);
+                break;
+            }
         }
     }
 

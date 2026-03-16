@@ -18,14 +18,14 @@ class BrowserLauncher {
      * @param {string} [options.headless] - 無頭模式設定 ('true' | 'new' | falsy)
      * @returns {Promise<import('puppeteer').Browser>}
      */
-    static async launch({ userDataDir, headless }) {
+    static async launch({ userDataDir, headless, protocolTimeout, args }) {
         const isDocker = fs.existsSync('/.dockerenv');
         const remoteDebugPort = process.env.PUPPETEER_REMOTE_DEBUGGING_PORT;
 
         if (isDocker && remoteDebugPort) {
             return BrowserLauncher.connectRemote('host.docker.internal', remoteDebugPort);
         }
-        return BrowserLauncher.launchLocal(userDataDir, headless);
+        return BrowserLauncher.launchLocal(userDataDir, headless, undefined, protocolTimeout, args);
     }
 
     /**
@@ -81,21 +81,22 @@ class BrowserLauncher {
      * @param {number} [retries] - 剩餘重試次數
      * @returns {Promise<import('puppeteer').Browser>}
      */
-    static async launchLocal(userDataDir, headless, retries = LIMITS.MAX_BROWSER_RETRY) {
+    static async launchLocal(userDataDir, headless, retries = LIMITS.MAX_BROWSER_RETRY, protocolTimeout, args) {
         BrowserLauncher.cleanLocks(userDataDir);
 
         try {
             return await puppeteer.launch({
                 headless: headless === 'true' ? true : (headless === 'new' ? 'new' : false),
                 userDataDir,
-                args: [...BROWSER_ARGS],
+                args: [...(args || BROWSER_ARGS)],
+                protocolTimeout: protocolTimeout || 180000,
             });
         } catch (err) {
             if (retries > 0 && err.message.includes('profile appears to be in use')) {
                 console.warn(`⚠️ [System] Profile locked. Retrying launch (${retries} left)...`);
                 BrowserLauncher.cleanLocks(userDataDir);
                 await new Promise(r => setTimeout(r, TIMINGS.BROWSER_RETRY_DELAY));
-                return BrowserLauncher.launchLocal(userDataDir, headless, retries - 1);
+                return BrowserLauncher.launchLocal(userDataDir, headless, retries - 1, protocolTimeout, args);
             }
             throw err;
         }

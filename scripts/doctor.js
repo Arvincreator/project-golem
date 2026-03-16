@@ -66,7 +66,64 @@ const testPort = (port) => {
     });
 };
 
-testPort(3000).then((isFree) => {
+// 6. Check golem-config.xml
+const configPath = path.join(__dirname, '..', 'golem-config.xml');
+if (fs.existsSync(configPath)) {
+    try {
+        const { GolemConfigLoader } = require('../src/config/xml-config-loader');
+        const loader = new GolemConfigLoader(configPath);
+        loader.load();
+        const validation = loader.validate();
+        check('Config (golem-config.xml)', validation.valid, 'Parsed OK', `Parse errors: ${validation.errors.join(', ')}`, 'Fix XML syntax in golem-config.xml');
+    } catch (e) {
+        check('Config (golem-config.xml)', false, '', `Load failed: ${e.message}`, 'Ensure fast-xml-parser is installed: npm install fast-xml-parser');
+    }
+} else {
+    check('Config (golem-config.xml)', false, '', 'Not found', 'Create golem-config.xml or copy from template', true);
+}
+
+// 7. Check disk space (>500MB free)
+try {
+    const diskInfo = execSync('df -BM --output=avail . 2>/dev/null || echo "N/A"', { stdio: 'pipe' }).toString().trim();
+    const lines = diskInfo.split('\n');
+    if (lines.length >= 2 && lines[1] !== 'N/A') {
+        const availMB = parseInt(lines[1].replace(/[^0-9]/g, ''), 10);
+        check('Disk Space', availMB > 500, `${availMB}MB free`, `Only ${availMB}MB free`, 'Free up disk space (need >500MB)', availMB > 200);
+    }
+} catch (e) { /* disk check optional on Windows */ }
+
+// 8. Check Node memory usage
+const memUsageMB = Math.round(process.memoryUsage.rss ? process.memoryUsage.rss() / 1024 / 1024 : process.memoryUsage().rss / 1024 / 1024);
+check('Node Memory', memUsageMB < 1024, `${memUsageMB}MB`, `${memUsageMB}MB (high)`, 'Investigate memory leaks or increase --max-old-space-size', true);
+
+// 9. Check TELEGRAM_BOT_TOKEN format
+try {
+    require('dotenv').config({ path: envPath });
+} catch (e) { /* dotenv might not be installed yet */ }
+const botToken = process.env.TELEGRAM_BOT_TOKEN || '';
+const tokenValid = /^\d+:[A-Za-z0-9_-]{35,}$/.test(botToken);
+check('Telegram Bot Token', tokenValid || !botToken, botToken ? 'Format OK' : 'Not set (optional)', `Invalid format: "${botToken.substring(0, 10)}..."`, 'Set TELEGRAM_BOT_TOKEN in .env with format: 123456:ABC...', !botToken);
+
+// 10. Check Cloudflare Workers reachability (v10.8)
+const cfChecks = [];
+const workerRagUrl = process.env.WORKER_RAG_URL || process.env.RAG_URL;
+if (workerRagUrl) {
+    cfChecks.push(
+        fetch(workerRagUrl.replace(/\/query$/, '') + '/health', { signal: AbortSignal.timeout(5000) })
+            .then(res => check('RAG Worker', res.ok, 'Reachable', `HTTP ${res.status}`, 'Check WORKER_RAG_URL in .env', true))
+            .catch(e => check('RAG Worker', false, '', e.message, 'Network issue or worker offline', true))
+    );
+}
+const warRoomUrl = process.env.WARROOM_URL;
+if (warRoomUrl) {
+    cfChecks.push(
+        fetch(warRoomUrl + '/health', { signal: AbortSignal.timeout(5000) })
+            .then(res => check('War Room Worker', res.ok, 'Reachable', `HTTP ${res.status}`, 'Check WARROOM_URL in .env', true))
+            .catch(e => check('War Room Worker', false, '', e.message, 'Network issue or worker offline', true))
+    );
+}
+
+Promise.all(cfChecks).then(() => testPort(3000)).then((isFree) => {
     check('Port 3000 (Dashboard)', isFree, 'Available', 'In Use', 'Port 3000 is occupied. Stop processes using this port (e.g. `lsof -i :3000` then `kill <PID>`), or change DASHBOARD_PORT in .env.', true);
 
     console.log('\n==========================================');

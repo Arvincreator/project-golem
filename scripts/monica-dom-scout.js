@@ -7,7 +7,9 @@
 //   首次: node scripts/monica-dom-scout.js --login   (開 GUI 讓你登入)
 //   之後: node scripts/monica-dom-scout.js            (自動掃描)
 // ============================================================
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
 const fs = require('fs');
 const path = require('path');
 

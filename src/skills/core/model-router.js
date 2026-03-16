@@ -45,13 +45,11 @@ async function execute(args) {
         }
         lines.push('');
 
-        lines.push('路由規則 (Web-first):');
-        lines.push('  code → claude-4.6-sonnet (Web, fallback: gpt-4.1)');
-        lines.push('  reasoning → gpt-5.4 (Web, fallback: gpt-4.1)');
-        lines.push('  creative → gpt-5.4 (Web, fallback: gpt-4.1)');
-        lines.push('  fast → gpt-4.1-mini (Web+API)');
-        lines.push('  analysis → gemini-3.1-pro (Web, fallback: gemini-2.5-pro)');
-        lines.push('  flexible → gpt-4o (Web+API)');
+        lines.push('路由規則 (三腦分工 Web-first):');
+        lines.push('  realtime → grok-4 | code → grok-4');
+        lines.push('  refactor → claude-4.6-sonnet | analysis → claude-4.6-sonnet');
+        lines.push('  reasoning → gpt-5.4 | creative → gpt-5.4');
+        lines.push('  fast → gpt-4.1-mini | flexible → gpt-4o');
         lines.push('  <50字 → gpt-4.1-nano | >1000字 → gpt-4o');
 
         return lines.join('\n');
@@ -121,11 +119,13 @@ async function execute(args) {
     // --- [4. 路由測試] ---
     if (task === 'test' || task === 'route-test') {
         const testCases = [
-            { input: '寫一段 Python 排序', expect: 'claude-4.6-sonnet' },
+            { input: '即時新聞 trending', expect: 'grok-4' },
+            { input: '寫一段 Python 排序', expect: 'grok-4' },
+            { input: 'refactor 重構這段代碼', expect: 'claude-4.6-sonnet' },
             { input: '3x² + 5x - 2 = 0', expect: 'gpt-5.4' },
             { input: '寫一首關於春天的詩', expect: 'gpt-5.4' },
             { input: '翻譯: hello world', expect: 'gpt-4.1-mini' },
-            { input: '分析這份報告的優缺點', expect: 'gemini-3.1-pro' },
+            { input: '分析這份報告的優缺點', expect: 'claude-4.6-sonnet' },
             { input: 'hi', expect: 'gpt-4.1-nano' },
             { input: '日常聊天', expect: 'gpt-4o' },
         ];
@@ -198,7 +198,7 @@ async function execute(args) {
     if (task === 'status') {
         const lines = ['[Model Router 狀態]'];
         lines.push(`模型數: ${Object.keys(MODEL_REGISTRY).length} (${Object.values(MODEL_REGISTRY).filter(e => e.tier === 'advanced').length} advanced + ${Object.values(MODEL_REGISTRY).filter(e => e.tier === 'basic').length} basic)`);
-        lines.push(`路由規則: 6 維度 + 長度分流 + sticky + 熔斷`);
+        lines.push(`路由規則: 8 維度 (三腦分工) + 長度分流 + sticky + 熔斷`);
         lines.push(`引擎: Web-first (monica-web → monica → sdk → ollama)`);
         lines.push('');
         lines.push('可用指令:');
@@ -217,21 +217,23 @@ async function execute(args) {
 module.exports = {
     execute,
     name: 'model-router',
-    description: '模型路由管理 — 16 模型目錄/Web+API 分離/成本/Token/測試',
+    description: '模型路由管理 — 三腦分工/16 模型目錄/Web+API 分離/成本/Token/測試',
     PROMPT: `## model-router (模型路由管理技能)
-管理 16 個指定 AI 模型，Web 和 API 完全分離，自動 fallback。
+管理 16 個指定 AI 模型，三腦智能分工，Web 和 API 完全分離，自動 fallback。
 
 ### 使用方式:
 1. **模型目錄**: \`{ "action": "model-router", "task": "models" }\` — 16 模型規格
 2. **成本估算**: \`{ "action": "model-router", "task": "cost", "model": "gpt-4o", "tokens": 1000 }\`
 3. **Token 計算**: \`{ "action": "model-router", "task": "tokens", "text": "..." }\`
-4. **路由測試**: \`{ "action": "model-router", "task": "test" }\` — 7 測試用例驗證
+4. **路由測試**: \`{ "action": "model-router", "task": "test" }\` — 9 測試用例驗證
 5. **解析測試**: \`{ "action": "model-router", "task": "resolve-test" }\` — 16 模型 Web/API 解析
 6. **平台規則**: \`{ "action": "model-router", "task": "rules" }\` — Monica 限制/價格
 
-### 路由規則 (Web-first):
-- code → claude-4.6-sonnet | reasoning → gpt-5.4 | creative → gpt-5.4
-- fast → gpt-4.1-mini | analysis → gemini-3.1-pro | flexible → gpt-4o
+### 三腦分工路由規則 (Web-first):
+- GPT-5.4: reasoning → 推理 | creative → 創作
+- Grok-4: realtime → 即時 | code → 程式
+- Claude 4.6 Sonnet: refactor → 重構 | analysis → 分析
+- fast → gpt-4.1-mini | flexible → gpt-4o
 - 短訊息(<50字) → gpt-4.1-nano | 長文(>1000字) → gpt-4o | 超大 → gemini-2.5-pro
 - Advanced 模型 Web 失敗 → 自動 fallback 到 API 相容模型
 - Sticky routing + Per-model 熔斷`

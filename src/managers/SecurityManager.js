@@ -34,6 +34,17 @@ class SecurityManager {
             { level: 'L2', test: /^multi_agent:/ },
             { level: 'L2', test: /^evolution:/ },
             { level: 'L2', test: /^skill-inject:/ },
+            // v10.9: PromptForge
+            { level: 'L0', test: /^prompt-forge:(generate|evaluate|detect-pattern|compare|history|stats|export)$/ },
+            { level: 'L1', test: /^prompt-forge:(optimize|evolve|templates|import)$/ },
+            // v10.9.2: Nexus meta-orchestrator
+            { level: 'L0', test: /^nexus:(research|benchmark|validate|report|status)$/ },
+            { level: 'L1', test: /^nexus:(auto|plan)$/ },
+            { level: 'L2', test: /^nexus:(execute_plan)$/ },
+            // v10.9: Agent operations
+            { level: 'L0', test: /^agent:(status|list|health|metrics)$/ },
+            { level: 'L1', test: /^agent:(spawn|stop|pause|resume)$/ },
+            { level: 'L2', test: /^agent:(stop_all|config)$/ },
             // L3: High Risk — destructive shell commands
             { level: 'L3', test: /^command:.*(rm\s|sudo|chmod|chown|reboot|shutdown|kill|pkill|mkfs|dd\s)/ },
             { level: 'L3', test: /^command:.*(npm\s+uninstall|pip\s+uninstall|apt\s+remove)/ },

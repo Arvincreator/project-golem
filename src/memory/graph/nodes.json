@@ -1,0 +1,2451 @@
+{
+  "nodes": [
+    {
+      "id": "YesinYagami"
+    },
+    {
+      "id": "RensinYagami"
+    },
+    {
+      "id": "Golem_OS"
+    },
+    {
+      "id": "YEDAN"
+    },
+    {
+      "id": "Develop_YEDAN"
+    },
+    {
+      "id": "Moltbook_Intel"
+    },
+    {
+      "id": "Rensin_v10"
+    },
+    {
+      "id": "Golem_v9"
+    },
+    {
+      "id": "Deduplication"
+    },
+    {
+      "id": "Data_Integrity"
+    },
+    {
+      "id": "exp_1773219908075",
+      "type": "experience",
+      "name": "Rensin v10 optimization started",
+      "outcome": "All modules loaded successfully, 12 skills active",
+      "score": 4,
+      "created_at": "2026-03-11T09:05:08.075Z"
+    },
+    {
+      "id": "rensin",
+      "created_at": "2026-03-11T09:05:08.076Z"
+    },
+    {
+      "id": "exp_1773219955128",
+      "type": "experience",
+      "name": "Selfheal diagnose scan",
+      "outcome": "No errors found - system healthy",
+      "score": 5,
+      "created_at": "2026-03-11T09:05:55.128Z"
+    },
+    {
+      "id": "exp_1773220618667",
+      "type": "experience",
+      "name": "Pre-launch multi-dim check",
+      "outcome": "All checks passed",
+      "score": 5,
+      "created_at": "2026-03-11T09:16:58.667Z"
+    },
+    {
+      "id": "exp_1773220620023",
+      "type": "experience",
+      "name": "Selfheal diagnose scan",
+      "outcome": "No errors found - system healthy",
+      "score": 5,
+      "created_at": "2026-03-11T09:17:00.023Z"
+    },
+    {
+      "id": "exp_1773221765000",
+      "type": "experience",
+      "name": "System initialization and fleet status check",
+      "outcome": "All 5 fleet workers are online and responsive, system stable",
+      "score": 5,
+      "created_at": "2026-03-11T09:36:05.000Z"
+    },
+    {
+      "id": "v9_init_success",
+      "type": "SystemEvent",
+      "created_at": "2026-03-11T09:36:29.477Z"
+    },
+    {
+      "id": "error_1773222013665_0",
+      "type": "detected_error",
+      "name": "error: Requesting main frame too early!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-11T09:40:13.665Z"
+    },
+    {
+      "id": "error_1773222013665_1",
+      "type": "detected_error",
+      "name": "Error: Requesting main frame too early!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-11T09:40:13.667Z"
+    },
+    {
+      "id": "exp_1773222014977",
+      "type": "experience",
+      "name": "Detected 2 errors: error: Requesting main frame to",
+      "outcome": "Found 2 unique errors",
+      "score": 2,
+      "created_at": "2026-03-11T09:40:14.978Z"
+    },
+    {
+      "id": "error_1773222184313_0",
+      "type": "detected_error",
+      "name": "error: Requesting main frame too early!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-11T09:43:04.313Z"
+    },
+    {
+      "id": "error_1773222184313_1",
+      "type": "detected_error",
+      "name": "Error: Requesting main frame too early!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-11T09:43:04.315Z"
+    },
+    {
+      "id": "exp_1773222185676",
+      "type": "experience",
+      "name": "Detected 2 errors: error: Requesting main frame to",
+      "outcome": "Found 2 unique errors",
+      "score": 2,
+      "created_at": "2026-03-11T09:43:05.676Z"
+    },
+    {
+      "id": "error_1773227316603_0",
+      "type": "detected_error",
+      "name": "error: Requesting main frame too early!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-11T11:08:36.603Z"
+    },
+    {
+      "id": "error_1773227316603_1",
+      "type": "detected_error",
+      "name": "Error: Requesting main frame too early!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-11T11:08:36.997Z"
+    },
+    {
+      "id": "exp_1773227318283",
+      "type": "experience",
+      "name": "Detected 2 errors: error: Requesting main frame to",
+      "outcome": "Found 2 unique errors",
+      "score": 2,
+      "created_at": "2026-03-11T11:08:38.283Z"
+    },
+    {
+      "id": "exp_1773232915182",
+      "type": "experience",
+      "name": "Recovered from moltbot CLI infinite loop by User i",
+      "outcome": "System stabilized, pending SLA verification",
+      "score": 5,
+      "created_at": "2026-03-11T12:41:55.182Z"
+    },
+    {
+      "id": "exp_1773233473928",
+      "type": "experience",
+      "name": "Stale health report detected (5.26% SLA) post-user",
+      "outcome": "Awaiting fresh system state generation.",
+      "score": 3,
+      "created_at": "2026-03-11T12:51:13.928Z"
+    },
+    {
+      "id": "exp_1773234438874",
+      "type": "experience",
+      "name": "Direct read of src/skills/core/fleet.js failed.",
+      "outcome": "Awaiting verification of project root and variable names.",
+      "score": 3,
+      "created_at": "2026-03-11T13:07:18.874Z"
+    },
+    {
+      "id": "exp_1773234454479",
+      "type": "experience",
+      "name": "Config files in .openclaw do not contain the targe",
+      "outcome": "Awaiting discovery of the true location of fleet credentials.",
+      "score": 3,
+      "created_at": "2026-03-11T13:07:34.479Z"
+    },
+    {
+      "id": "exp_1773234469787",
+      "type": "experience",
+      "name": "Identified project root at /root/project-golem, ex",
+      "outcome": "Awaiting fresh fleet health report with cleared circuit breakers.",
+      "score": 4,
+      "created_at": "2026-03-11T13:07:49.787Z"
+    },
+    {
+      "id": "exp_1773546566826",
+      "type": "experience",
+      "name": "Model router test",
+      "outcome": "7/7 passed",
+      "score": 5,
+      "created_at": "2026-03-15T03:49:26.826Z"
+    },
+    {
+      "id": "exp_1773550172261",
+      "type": "experience",
+      "name": "Model router test",
+      "outcome": "7/7 passed",
+      "score": 5,
+      "created_at": "2026-03-15T04:49:32.261Z"
+    },
+    {
+      "id": "exp_1773550782953",
+      "type": "experience",
+      "name": "Model router test",
+      "outcome": "7/7 passed",
+      "score": 5,
+      "created_at": "2026-03-15T04:59:42.953Z"
+    },
+    {
+      "id": "pf_1773658146673",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:06.674Z"
+    },
+    {
+      "id": "pf_1773658146690",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:06.690Z"
+    },
+    {
+      "id": "pf_1773658146707",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:06.707Z"
+    },
+    {
+      "id": "pf_1773658146711",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:06.711Z"
+    },
+    {
+      "id": "pf_1773658146722",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:06.722Z"
+    },
+    {
+      "id": "pf_1773658146732",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:06.732Z"
+    },
+    {
+      "id": "exp_1773658146737",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.52 (+1.33)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T10:49:06.737Z"
+    },
+    {
+      "id": "pf_1773658162398",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:22.399Z"
+    },
+    {
+      "id": "pf_1773658162403",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:22.404Z"
+    },
+    {
+      "id": "pf_1773658162462",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:22.462Z"
+    },
+    {
+      "id": "pf_1773658162468",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:22.468Z"
+    },
+    {
+      "id": "pf_1773658162488",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:22.489Z"
+    },
+    {
+      "id": "pf_1773658162510",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:22.510Z"
+    },
+    {
+      "id": "exp_1773658162521",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.52 (+1.33)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T10:49:22.521Z"
+    },
+    {
+      "id": "pf_1773658189121",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:49.121Z"
+    },
+    {
+      "id": "pf_1773658189126",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:49.127Z"
+    },
+    {
+      "id": "pf_1773658189138",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:49.139Z"
+    },
+    {
+      "id": "pf_1773658189142",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:49.142Z"
+    },
+    {
+      "id": "pf_1773658189147",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:49.147Z"
+    },
+    {
+      "id": "pf_1773658189156",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T10:49:49.156Z"
+    },
+    {
+      "id": "exp_1773658189167",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.56 (+1.37)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T10:49:49.167Z"
+    },
+    {
+      "id": "exp_1773659870508",
+      "type": "experience",
+      "name": "nexus:research test nexus research",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T11:17:50.911Z",
+      "_relevanceScore": 1,
+      "_accessCount": 5,
+      "_lastAccess": "2026-03-16T14:46:04.464Z"
+    },
+    {
+      "id": "exp_1773659875644",
+      "type": "experience",
+      "name": "nexus:research offline test",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T11:17:55.644Z",
+      "_relevanceScore": 1,
+      "_accessCount": 5,
+      "_lastAccess": "2026-03-16T14:46:04.469Z"
+    },
+    {
+      "id": "exp_1773660042214",
+      "type": "experience",
+      "name": "nexus:plan 升級記憶系統",
+      "outcome": "Generated 3 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T11:20:42.216Z"
+    },
+    {
+      "id": "exp_1773660050609",
+      "type": "experience",
+      "name": "nexus:plan test plan",
+      "outcome": "Generated 1 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T11:20:50.659Z"
+    },
+    {
+      "id": "exp_1773660113823",
+      "type": "experience",
+      "name": "nexus:execute_plan",
+      "outcome": "0/1 succeeded",
+      "score": 1,
+      "verified": false,
+      "created_at": "2026-03-16T11:21:53.902Z"
+    },
+    {
+      "id": "exp_1773660127087",
+      "type": "experience",
+      "name": "nexus:execute_plan",
+      "outcome": "0/1 succeeded",
+      "score": 1,
+      "verified": false,
+      "created_at": "2026-03-16T11:22:07.087Z"
+    },
+    {
+      "id": "error_1773661215777_0",
+      "type": "detected_error",
+      "name": "Error: ETELEGRAM: 409 Conflict: Call to 'getUpdates' failed!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T11:40:38.238Z"
+    },
+    {
+      "id": "error_1773661219008_1",
+      "type": "detected_error",
+      "name": "Cannot find module 'express'",
+      "pattern": "Cannot\\s+(?:read|find|resolve)\\s+(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T11:41:25.155Z"
+    },
+    {
+      "id": "error_1773661221947_2",
+      "type": "detected_error",
+      "name": "409 Conflict",
+      "pattern": "409\\s+Conflict",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T11:44:12.698Z"
+    },
+    {
+      "id": "exp_1773661469212",
+      "type": "experience",
+      "name": "Detected 3 errors: Error: ETELEGRAM: 409 Conflict:",
+      "outcome": "Found 3 unique errors",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T11:44:29.567Z"
+    },
+    {
+      "id": "pf_1773663297894",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:14:57.896Z"
+    },
+    {
+      "id": "pf_1773663297907",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:14:57.907Z"
+    },
+    {
+      "id": "pf_1773663298114",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:14:58.114Z"
+    },
+    {
+      "id": "pf_1773663298397",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:14:58.397Z"
+    },
+    {
+      "id": "pf_1773663298405",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:14:58.405Z"
+    },
+    {
+      "id": "pf_1773663298474",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:14:58.474Z"
+    },
+    {
+      "id": "exp_1773663298479",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.56 (+1.37)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T12:14:58.479Z"
+    },
+    {
+      "id": "pf_1773663337188",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:15:37.189Z"
+    },
+    {
+      "id": "pf_1773663337207",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:15:37.208Z"
+    },
+    {
+      "id": "pf_1773663337283",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:15:37.283Z"
+    },
+    {
+      "id": "pf_1773663337383",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:15:37.384Z"
+    },
+    {
+      "id": "pf_1773663337391",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:15:37.393Z"
+    },
+    {
+      "id": "pf_1773663337463",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:15:37.478Z"
+    },
+    {
+      "id": "exp_1773663337538",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.52 (+1.33)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T12:15:37.538Z"
+    },
+    {
+      "id": "pf_1773663365146",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:05.147Z"
+    },
+    {
+      "id": "pf_1773663365166",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:05.167Z"
+    },
+    {
+      "id": "pf_1773663365217",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:05.217Z"
+    },
+    {
+      "id": "pf_1773663365233",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:05.233Z"
+    },
+    {
+      "id": "pf_1773663365250",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:05.250Z"
+    },
+    {
+      "id": "pf_1773663365273",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:05.274Z"
+    },
+    {
+      "id": "exp_1773663365296",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.52 (+1.33)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T12:16:05.296Z"
+    },
+    {
+      "id": "pf_1773663413887",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:53.898Z"
+    },
+    {
+      "id": "pf_1773663413983",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:53.984Z"
+    },
+    {
+      "id": "pf_1773663414025",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:54.025Z"
+    },
+    {
+      "id": "pf_1773663414038",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:54.039Z"
+    },
+    {
+      "id": "pf_1773663414051",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:54.051Z"
+    },
+    {
+      "id": "pf_1773663414077",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T12:16:54.077Z"
+    },
+    {
+      "id": "exp_1773663414115",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.52 (+1.33)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T12:16:54.115Z"
+    },
+    {
+      "id": "exp_1773663592128",
+      "type": "experience",
+      "name": "nexus:research test nexus research",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T12:19:52.133Z",
+      "_relevanceScore": 1,
+      "_accessCount": 4,
+      "_lastAccess": "2026-03-16T14:46:04.464Z"
+    },
+    {
+      "id": "exp_1773663592238",
+      "type": "experience",
+      "name": "nexus:research offline test",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T12:19:52.238Z",
+      "_relevanceScore": 1,
+      "_accessCount": 4,
+      "_lastAccess": "2026-03-16T14:46:04.469Z"
+    },
+    {
+      "id": "exp_1773663676692",
+      "type": "experience",
+      "name": "nexus:plan 升級記憶系統",
+      "outcome": "Generated 3 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T12:22:02.910Z"
+    },
+    {
+      "id": "exp_1773663738350",
+      "type": "experience",
+      "name": "nexus:plan test plan",
+      "outcome": "Generated 1 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T12:22:18.358Z"
+    },
+    {
+      "id": "exp_1773663749855",
+      "type": "experience",
+      "name": "nexus:execute_plan",
+      "outcome": "0/1 succeeded",
+      "score": 1,
+      "verified": false,
+      "created_at": "2026-03-16T12:22:29.855Z"
+    },
+    {
+      "id": "pf_1773666125394",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:05.398Z"
+    },
+    {
+      "id": "pf_1773666125419",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:05.419Z"
+    },
+    {
+      "id": "pf_1773666125611",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:05.611Z"
+    },
+    {
+      "id": "pf_1773666125615",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:05.615Z"
+    },
+    {
+      "id": "pf_1773666125812",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:05.812Z"
+    },
+    {
+      "id": "pf_1773666125920",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:05.921Z"
+    },
+    {
+      "id": "exp_1773666125935",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.56 (+1.37)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T13:02:05.935Z"
+    },
+    {
+      "id": "pf_1773666146070",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:26.071Z"
+    },
+    {
+      "id": "pf_1773666146095",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:26.095Z"
+    },
+    {
+      "id": "pf_1773666146132",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:26.132Z"
+    },
+    {
+      "id": "pf_1773666146139",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:26.141Z"
+    },
+    {
+      "id": "pf_1773666146150",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:26.150Z"
+    },
+    {
+      "id": "pf_1773666146166",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:26.166Z"
+    },
+    {
+      "id": "exp_1773666146176",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.56 (+1.37)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T13:02:26.176Z"
+    },
+    {
+      "id": "pf_1773666163816",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:43.817Z"
+    },
+    {
+      "id": "pf_1773666163933",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:43.933Z"
+    },
+    {
+      "id": "pf_1773666164049",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:44.135Z"
+    },
+    {
+      "id": "pf_1773666164145",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:44.247Z"
+    },
+    {
+      "id": "pf_1773666164359",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:44.359Z"
+    },
+    {
+      "id": "pf_1773666164365",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:02:44.365Z"
+    },
+    {
+      "id": "exp_1773666164571",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.56 (+1.37)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T13:02:44.571Z"
+    },
+    {
+      "id": "pf_1773666221164",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:03:41.185Z"
+    },
+    {
+      "id": "pf_1773666221439",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:03:41.460Z"
+    },
+    {
+      "id": "pf_1773666221689",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:03:41.689Z"
+    },
+    {
+      "id": "pf_1773666221806",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:03:41.806Z"
+    },
+    {
+      "id": "pf_1773666221948",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:03:41.948Z"
+    },
+    {
+      "id": "pf_1773666221999",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T13:03:41.999Z"
+    },
+    {
+      "id": "exp_1773666236340",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.56 (+1.37)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T13:03:56.340Z"
+    },
+    {
+      "id": "exp_1773666381813",
+      "type": "experience",
+      "name": "nexus:research test nexus research",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T13:06:21.814Z",
+      "_relevanceScore": 1,
+      "_accessCount": 3,
+      "_lastAccess": "2026-03-16T14:46:04.464Z"
+    },
+    {
+      "id": "exp_1773666401078",
+      "type": "experience",
+      "name": "nexus:research offline test",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T13:06:41.078Z",
+      "_relevanceScore": 1,
+      "_accessCount": 3,
+      "_lastAccess": "2026-03-16T14:46:04.469Z"
+    },
+    {
+      "id": "exp_1773666870220",
+      "type": "experience",
+      "name": "nexus:plan 升級記憶系統",
+      "outcome": "Generated 3 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T13:14:30.222Z"
+    },
+    {
+      "id": "exp_1773666886044",
+      "type": "experience",
+      "name": "nexus:plan test plan",
+      "outcome": "Generated 1 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T13:14:46.104Z"
+    },
+    {
+      "id": "pf_1773670132967",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:08:53.069Z"
+    },
+    {
+      "id": "pf_1773670133087",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:08:53.087Z"
+    },
+    {
+      "id": "pf_1773670133302",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:08:53.303Z"
+    },
+    {
+      "id": "pf_1773670133307",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:08:53.307Z"
+    },
+    {
+      "id": "pf_1773670133413",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:08:53.414Z"
+    },
+    {
+      "id": "pf_1773670133511",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:08:53.511Z"
+    },
+    {
+      "id": "exp_1773670133623",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.56 (+1.37)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T14:08:53.623Z"
+    },
+    {
+      "id": "pf_1773670163863",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:09:23.864Z"
+    },
+    {
+      "id": "pf_1773670163878",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:09:23.879Z"
+    },
+    {
+      "id": "pf_1773670163912",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:09:23.912Z"
+    },
+    {
+      "id": "pf_1773670163923",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:09:23.923Z"
+    },
+    {
+      "id": "pf_1773670163941",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:09:23.941Z"
+    },
+    {
+      "id": "pf_1773670163956",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:09:23.957Z"
+    },
+    {
+      "id": "exp_1773670163965",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.52 (+1.33)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T14:09:23.965Z"
+    },
+    {
+      "id": "exp_1773670249333",
+      "type": "experience",
+      "name": "nexus:research test nexus research",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:10:49.333Z",
+      "_relevanceScore": 1,
+      "_accessCount": 2,
+      "_lastAccess": "2026-03-16T14:46:04.464Z"
+    },
+    {
+      "id": "exp_1773670249395",
+      "type": "experience",
+      "name": "nexus:research offline test",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:10:49.395Z",
+      "_relevanceScore": 1,
+      "_accessCount": 2,
+      "_lastAccess": "2026-03-16T14:46:04.469Z"
+    },
+    {
+      "id": "exp_1773670249466",
+      "type": "experience",
+      "name": "nexus:plan 升級記憶系統",
+      "outcome": "Generated 3 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:10:49.466Z"
+    },
+    {
+      "id": "exp_1773670249537",
+      "type": "experience",
+      "name": "nexus:plan test plan",
+      "outcome": "Generated 1 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:10:49.537Z"
+    },
+    {
+      "id": "exp_1773670249548",
+      "type": "experience",
+      "name": "nexus:execute_plan",
+      "outcome": "0/1 succeeded",
+      "score": 1,
+      "verified": false,
+      "created_at": "2026-03-16T14:10:49.548Z"
+    },
+    {
+      "id": "exp_1773670249674",
+      "type": "experience",
+      "name": "nexus:execute_plan",
+      "outcome": "0/1 succeeded",
+      "score": 1,
+      "verified": false,
+      "created_at": "2026-03-16T14:10:49.674Z"
+    },
+    {
+      "id": "error_1773670249893_0",
+      "type": "detected_error",
+      "name": "Error: ETELEGRAM: 409 Conflict: Call to 'getUpdates' failed!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:10:49.893Z"
+    },
+    {
+      "id": "error_1773670249893_1",
+      "type": "detected_error",
+      "name": "Cannot find module 'express'",
+      "pattern": "Cannot\\s+(?:read|find|resolve)\\s+(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:10:49.894Z"
+    },
+    {
+      "id": "error_1773670249893_2",
+      "type": "detected_error",
+      "name": "409 Conflict",
+      "pattern": "409\\s+Conflict",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:10:49.895Z"
+    },
+    {
+      "id": "exp_1773670249895",
+      "type": "experience",
+      "name": "Detected 3 errors: Error: ETELEGRAM: 409 Conflict:",
+      "outcome": "Found 3 unique errors",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T14:10:49.895Z"
+    },
+    {
+      "id": "error_1773670249966_0",
+      "type": "detected_error",
+      "name": "Error: ETELEGRAM: 409 Conflict: Call to 'getUpdates' failed!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:10:49.966Z"
+    },
+    {
+      "id": "error_1773670249966_1",
+      "type": "detected_error",
+      "name": "Cannot find module 'express'",
+      "pattern": "Cannot\\s+(?:read|find|resolve)\\s+(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:10:49.967Z"
+    },
+    {
+      "id": "error_1773670249966_2",
+      "type": "detected_error",
+      "name": "409 Conflict",
+      "pattern": "409\\s+Conflict",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:10:49.967Z"
+    },
+    {
+      "id": "exp_1773670249968",
+      "type": "experience",
+      "name": "Detected 3 errors: Error: ETELEGRAM: 409 Conflict:",
+      "outcome": "Found 3 unique errors",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T14:10:49.968Z"
+    },
+    {
+      "id": "error_1773670250035_0",
+      "type": "detected_error",
+      "name": "Error: ETELEGRAM: 409 Conflict: Call to 'getUpdates' failed!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:10:50.035Z"
+    },
+    {
+      "id": "error_1773670250035_1",
+      "type": "detected_error",
+      "name": "Cannot find module 'express'",
+      "pattern": "Cannot\\s+(?:read|find|resolve)\\s+(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:10:50.035Z"
+    },
+    {
+      "id": "error_1773670250035_2",
+      "type": "detected_error",
+      "name": "409 Conflict",
+      "pattern": "409\\s+Conflict",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:10:50.096Z"
+    },
+    {
+      "id": "exp_1773670250098",
+      "type": "experience",
+      "name": "Detected 3 errors: Error: ETELEGRAM: 409 Conflict:",
+      "outcome": "Found 3 unique errors",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T14:10:50.098Z"
+    },
+    {
+      "id": "exp_1773670250101",
+      "type": "experience",
+      "name": "nexus:auto 測試全自動升級",
+      "outcome": "3 iterations, improvement=0%",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T14:10:50.101Z",
+      "_relevanceScore": 1,
+      "_accessCount": 8,
+      "_lastAccess": "2026-03-16T14:46:04.531Z"
+    },
+    {
+      "id": "pf_1773670261418",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:11:01.419Z"
+    },
+    {
+      "id": "pf_1773670261424",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:11:01.424Z"
+    },
+    {
+      "id": "pf_1773670261435",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:11:01.435Z"
+    },
+    {
+      "id": "pf_1773670261439",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:11:01.439Z"
+    },
+    {
+      "id": "pf_1773670261442",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:11:01.443Z"
+    },
+    {
+      "id": "pf_1773670261448",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:11:01.448Z"
+    },
+    {
+      "id": "exp_1773670261452",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.52 (+1.33)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T14:11:01.453Z"
+    },
+    {
+      "id": "exp_1773670277135",
+      "type": "experience",
+      "name": "nexus:research test nexus research",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:11:17.135Z",
+      "_relevanceScore": 1,
+      "_accessCount": 1,
+      "_lastAccess": "2026-03-16T14:46:04.464Z"
+    },
+    {
+      "id": "exp_1773670277139",
+      "type": "experience",
+      "name": "nexus:research offline test",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:11:17.139Z",
+      "_relevanceScore": 1,
+      "_accessCount": 1,
+      "_lastAccess": "2026-03-16T14:46:04.469Z"
+    },
+    {
+      "id": "exp_1773670277148",
+      "type": "experience",
+      "name": "nexus:plan 升級記憶系統",
+      "outcome": "Generated 3 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:11:17.148Z"
+    },
+    {
+      "id": "exp_1773670277152",
+      "type": "experience",
+      "name": "nexus:plan test plan",
+      "outcome": "Generated 1 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:11:17.152Z"
+    },
+    {
+      "id": "exp_1773670277166",
+      "type": "experience",
+      "name": "nexus:execute_plan",
+      "outcome": "0/1 succeeded",
+      "score": 1,
+      "verified": false,
+      "created_at": "2026-03-16T14:11:17.166Z"
+    },
+    {
+      "id": "exp_1773670277169",
+      "type": "experience",
+      "name": "nexus:execute_plan",
+      "outcome": "0/1 succeeded",
+      "score": 1,
+      "verified": false,
+      "created_at": "2026-03-16T14:11:17.169Z"
+    },
+    {
+      "id": "error_1773670277178_0",
+      "type": "detected_error",
+      "name": "Error: ETELEGRAM: 409 Conflict: Call to 'getUpdates' failed!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:11:17.179Z"
+    },
+    {
+      "id": "error_1773670277179_1",
+      "type": "detected_error",
+      "name": "Cannot find module 'express'",
+      "pattern": "Cannot\\s+(?:read|find|resolve)\\s+(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:11:17.179Z"
+    },
+    {
+      "id": "error_1773670277179_2",
+      "type": "detected_error",
+      "name": "409 Conflict",
+      "pattern": "409\\s+Conflict",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:11:17.180Z"
+    },
+    {
+      "id": "exp_1773670277181",
+      "type": "experience",
+      "name": "Detected 3 errors: Error: ETELEGRAM: 409 Conflict:",
+      "outcome": "Found 3 unique errors",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T14:11:17.181Z"
+    },
+    {
+      "id": "error_1773670277184_0",
+      "type": "detected_error",
+      "name": "Error: ETELEGRAM: 409 Conflict: Call to 'getUpdates' failed!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:11:17.184Z"
+    },
+    {
+      "id": "error_1773670277184_1",
+      "type": "detected_error",
+      "name": "Cannot find module 'express'",
+      "pattern": "Cannot\\s+(?:read|find|resolve)\\s+(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:11:17.185Z"
+    },
+    {
+      "id": "error_1773670277184_2",
+      "type": "detected_error",
+      "name": "409 Conflict",
+      "pattern": "409\\s+Conflict",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:11:17.186Z"
+    },
+    {
+      "id": "exp_1773670277187",
+      "type": "experience",
+      "name": "Detected 3 errors: Error: ETELEGRAM: 409 Conflict:",
+      "outcome": "Found 3 unique errors",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T14:11:17.187Z"
+    },
+    {
+      "id": "error_1773670277190_0",
+      "type": "detected_error",
+      "name": "Error: ETELEGRAM: 409 Conflict: Call to 'getUpdates' failed!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:11:17.190Z"
+    },
+    {
+      "id": "error_1773670277190_1",
+      "type": "detected_error",
+      "name": "Cannot find module 'express'",
+      "pattern": "Cannot\\s+(?:read|find|resolve)\\s+(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:11:17.191Z"
+    },
+    {
+      "id": "error_1773670277190_2",
+      "type": "detected_error",
+      "name": "409 Conflict",
+      "pattern": "409\\s+Conflict",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:11:17.192Z"
+    },
+    {
+      "id": "exp_1773670277192",
+      "type": "experience",
+      "name": "Detected 3 errors: Error: ETELEGRAM: 409 Conflict:",
+      "outcome": "Found 3 unique errors",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T14:11:17.192Z"
+    },
+    {
+      "id": "exp_1773670277195",
+      "type": "experience",
+      "name": "nexus:auto 測試全自動升級",
+      "outcome": "3 iterations, improvement=0%",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T14:11:17.195Z",
+      "_relevanceScore": 1,
+      "_accessCount": 4,
+      "_lastAccess": "2026-03-16T14:46:04.531Z"
+    },
+    {
+      "id": "exp_1773672364466",
+      "type": "experience",
+      "name": "nexus:research test nexus research",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:46:04.466Z"
+    },
+    {
+      "id": "exp_1773672364469",
+      "type": "experience",
+      "name": "nexus:research offline test",
+      "outcome": "Found 1 sources",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:46:04.469Z"
+    },
+    {
+      "id": "exp_1773672364479",
+      "type": "experience",
+      "name": "nexus:plan 升級記憶系統",
+      "outcome": "Generated 3 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:46:04.479Z"
+    },
+    {
+      "id": "exp_1773672364483",
+      "type": "experience",
+      "name": "nexus:plan test plan",
+      "outcome": "Generated 1 steps",
+      "score": 3,
+      "verified": false,
+      "created_at": "2026-03-16T14:46:04.483Z"
+    },
+    {
+      "id": "exp_1773672364491",
+      "type": "experience",
+      "name": "nexus:execute_plan",
+      "outcome": "0/1 succeeded",
+      "score": 1,
+      "verified": false,
+      "created_at": "2026-03-16T14:46:04.491Z"
+    },
+    {
+      "id": "exp_1773672364494",
+      "type": "experience",
+      "name": "nexus:execute_plan",
+      "outcome": "0/1 succeeded",
+      "score": 1,
+      "verified": false,
+      "created_at": "2026-03-16T14:46:04.494Z"
+    },
+    {
+      "id": "error_1773672364506_0",
+      "type": "detected_error",
+      "name": "Error: ETELEGRAM: 409 Conflict: Call to 'getUpdates' failed!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:46:04.507Z"
+    },
+    {
+      "id": "error_1773672364506_1",
+      "type": "detected_error",
+      "name": "Cannot find module 'express'",
+      "pattern": "Cannot\\s+(?:read|find|resolve)\\s+(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:46:04.507Z"
+    },
+    {
+      "id": "error_1773672364506_2",
+      "type": "detected_error",
+      "name": "409 Conflict",
+      "pattern": "409\\s+Conflict",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:46:04.508Z"
+    },
+    {
+      "id": "exp_1773672364509",
+      "type": "experience",
+      "name": "Detected 3 errors: Error: ETELEGRAM: 409 Conflict:",
+      "outcome": "Found 3 unique errors",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T14:46:04.510Z"
+    },
+    {
+      "id": "error_1773672364514_0",
+      "type": "detected_error",
+      "name": "Error: ETELEGRAM: 409 Conflict: Call to 'getUpdates' failed!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:46:04.514Z"
+    },
+    {
+      "id": "error_1773672364514_1",
+      "type": "detected_error",
+      "name": "Cannot find module 'express'",
+      "pattern": "Cannot\\s+(?:read|find|resolve)\\s+(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:46:04.515Z"
+    },
+    {
+      "id": "error_1773672364514_2",
+      "type": "detected_error",
+      "name": "409 Conflict",
+      "pattern": "409\\s+Conflict",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:46:04.515Z"
+    },
+    {
+      "id": "exp_1773672364516",
+      "type": "experience",
+      "name": "Detected 3 errors: Error: ETELEGRAM: 409 Conflict:",
+      "outcome": "Found 3 unique errors",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T14:46:04.516Z"
+    },
+    {
+      "id": "error_1773672364521_0",
+      "type": "detected_error",
+      "name": "Error: ETELEGRAM: 409 Conflict: Call to 'getUpdates' failed!",
+      "pattern": "Error:\\s*(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:46:04.521Z"
+    },
+    {
+      "id": "error_1773672364521_1",
+      "type": "detected_error",
+      "name": "Cannot find module 'express'",
+      "pattern": "Cannot\\s+(?:read|find|resolve)\\s+(.+)",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:46:04.522Z"
+    },
+    {
+      "id": "error_1773672364521_2",
+      "type": "detected_error",
+      "name": "409 Conflict",
+      "pattern": "409\\s+Conflict",
+      "detected_by": "rensin-selfheal",
+      "created_at": "2026-03-16T14:46:04.523Z"
+    },
+    {
+      "id": "exp_1773672364524",
+      "type": "experience",
+      "name": "Detected 3 errors: Error: ETELEGRAM: 409 Conflict:",
+      "outcome": "Found 3 unique errors",
+      "score": 2,
+      "verified": false,
+      "created_at": "2026-03-16T14:46:04.524Z"
+    },
+    {
+      "id": "exp_1773672364533",
+      "type": "experience",
+      "name": "nexus:auto 測試全自動升級",
+      "outcome": "3 iterations, improvement=25%",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T14:46:04.533Z"
+    },
+    {
+      "id": "pf_1773672364600",
+      "type": "prompt_dna",
+      "name": "PromptForge: 分析股票走勢並預測趨勢",
+      "intent": "分析股票走勢並預測趨勢",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:46:04.600Z"
+    },
+    {
+      "id": "pf_1773672364608",
+      "type": "prompt_dna",
+      "name": "PromptForge: test DNA save",
+      "intent": "test DNA save",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:46:04.609Z"
+    },
+    {
+      "id": "pf_1773672364625",
+      "type": "prompt_dna",
+      "name": "PromptForge: 歷史測試",
+      "intent": "歷史測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:46:04.625Z"
+    },
+    {
+      "id": "pf_1773672364632",
+      "type": "prompt_dna",
+      "name": "PromptForge: 統計測試",
+      "intent": "統計測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:46:04.632Z"
+    },
+    {
+      "id": "pf_1773672364639",
+      "type": "prompt_dna",
+      "name": "PromptForge: 匯出測試",
+      "intent": "匯出測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:46:04.639Z"
+    },
+    {
+      "id": "pf_1773672364650",
+      "type": "prompt_dna",
+      "name": "PromptForge: 無 brain 測試",
+      "intent": "無 brain 測試",
+      "pattern": "CoT",
+      "overall": 3.56,
+      "created_at": "2026-03-16T14:46:04.650Z"
+    },
+    {
+      "id": "exp_1773672364665",
+      "type": "experience",
+      "name": "PromptForge optimize: 分析問題",
+      "outcome": "2.19 → 3.56 (+1.37)",
+      "score": 4,
+      "verified": true,
+      "created_at": "2026-03-16T14:46:04.665Z"
+    },
+    {
+      "id": "rag_d1bc8d9d-1a1a-462c-9be5-9cbd17623a55",
+      "type": "system_skills",
+      "name": "【系統技能庫初始化】我目前已掛載並精通以下可用技能：\n- 技能 \"ACTOR\"：已載入認知說明書\n- 技能 \"ADAPTIVE-LEARNING\"：已載入認知說明書\n- 技能 \"CHRONOS\"：已載",
+      "content": "【系統技能庫初始化】我目前已掛載並精通以下可用技能：\n- 技能 \"ACTOR\"：已載入認知說明書\n- 技能 \"ADAPTIVE-LEARNING\"：已載入認知說明書\n- 技能 \"CHRONOS\"：已載入認知說明書\n- 技能 \"CLOUD\"：已載入認知說明書\n- 技能 \"CODE-WIZARD\"：已載入認知說明書\n- 技能 \"EVOLUTION\"：已載入認知說明書\n- 技能 \"LOG-ARCHIVE\"：已載入認知說明書\n- 技能 \"LOG-READER\"：已載入認知說明書\n- 技能 \"MEMORY\"：已載入認知說明書\n- 技能 \"MULTI-AGENT\"：已載入認知說明書\n- 技能 \"OPTIC-NERVE\"：已載入認知說明書\n- 技能 \"REFLECTION\"：已載入認知說明書\n- 技能 \"REINCARNATE\"：已載入認知說明書\n- 技能 \"SYS-ADMIN\"：已載入認知說明書\n- 技能 \"TOOL-EXPLORER\"：已載入認知說明書\n",
+      "source": "boot_init",
+      "created_at": "2026-03-16T14:48:27.146Z"
+    },
+    {
+      "id": "rag_86a2df45-f145-400d-93d6-cc533fb0aa9a",
+      "type": "system_skills",
+      "name": "【系統技能庫初始化】我目前已掛載並精通以下可用技能：\n- 技能 \"ACTOR\"：已載入認知說明書\n- 技能 \"ADAPTIVE-LEARNING\"：已載入認知說明書\n- 技能 \"CHRONOS\"：已載",
+      "content": "【系統技能庫初始化】我目前已掛載並精通以下可用技能：\n- 技能 \"ACTOR\"：已載入認知說明書\n- 技能 \"ADAPTIVE-LEARNING\"：已載入認知說明書\n- 技能 \"CHRONOS\"：已載入認知說明書\n- 技能 \"CLOUD\"：已載入認知說明書\n- 技能 \"CODE-WIZARD\"：已載入認知說明書\n- 技能 \"EVOLUTION\"：已載入認知說明書\n- 技能 \"LOG-ARCHIVE\"：已載入認知說明書\n- 技能 \"LOG-READER\"：已載入認知說明書\n- 技能 \"MEMORY\"：已載入認知說明書\n- 技能 \"MULTI-AGENT\"：已載入認知說明書\n- 技能 \"OPTIC-NERVE\"：已載入認知說明書\n- 技能 \"REFLECTION\"：已載入認知說明書\n- 技能 \"REINCARNATE\"：已載入認知說明書\n- 技能 \"SYS-ADMIN\"：已載入認知說明書\n- 技能 \"TOOL-EXPLORER\"：已載入認知說明書\n",
+      "source": "boot_init",
+      "created_at": "2026-03-16T14:48:27.151Z"
+    }
+  ],
+  "edges": [
+    {
+      "source": "YesinYagami",
+      "type": "is_father_of",
+      "target": "RensinYagami"
+    },
+    {
+      "source": "RensinYagami",
+      "type": "is_engineer_of",
+      "target": "Golem_OS"
+    },
+    {
+      "source": "YEDAN",
+      "type": "is_competitor_of",
+      "target": "RensinYagami"
+    },
+    {
+      "source": "Develop_YEDAN",
+      "type": "requires",
+      "target": "Moltbook_Intel"
+    },
+    {
+      "source": "YesinYagami",
+      "type": "pursues",
+      "target": "Develop_YEDAN"
+    },
+    {
+      "source": "RensinYagami",
+      "type": "provides",
+      "target": "Moltbook_Intel"
+    },
+    {
+      "source": "Rensin_v10",
+      "type": "evolves_from",
+      "target": "Golem_v9"
+    },
+    {
+      "source": "Deduplication",
+      "type": "improves",
+      "target": "Data_Integrity"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773219908075",
+      "layer": "causal",
+      "created_at": "2026-03-11T09:05:08.077Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773219955128",
+      "layer": "causal",
+      "created_at": "2026-03-11T09:05:55.129Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773220618667",
+      "layer": "causal",
+      "created_at": "2026-03-11T09:16:58.668Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773220620023",
+      "layer": "causal",
+      "created_at": "2026-03-11T09:17:00.024Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773221765000",
+      "layer": "causal",
+      "created_at": "2026-03-11T09:36:05.002Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773222014977",
+      "layer": "causal",
+      "created_at": "2026-03-11T09:40:14.980Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773222185676",
+      "layer": "causal",
+      "created_at": "2026-03-11T09:43:05.679Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773227318283",
+      "layer": "causal",
+      "created_at": "2026-03-11T11:08:38.285Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773232915182",
+      "layer": "causal",
+      "created_at": "2026-03-11T12:41:55.185Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773233473928",
+      "layer": "causal",
+      "created_at": "2026-03-11T12:51:13.932Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773234438874",
+      "layer": "causal",
+      "created_at": "2026-03-11T13:07:18.879Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773234454479",
+      "layer": "causal",
+      "created_at": "2026-03-11T13:07:34.481Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773234469787",
+      "layer": "causal",
+      "created_at": "2026-03-11T13:07:49.791Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773546566826",
+      "layer": "causal",
+      "created_at": "2026-03-15T03:49:26.836Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773550172261",
+      "layer": "causal",
+      "created_at": "2026-03-15T04:49:32.267Z"
+    },
+    {
+      "source": "rensin",
+      "type": "learned",
+      "target": "exp_1773550782953",
+      "layer": "causal",
+      "created_at": "2026-03-15T04:59:42.957Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773658146737",
+      "layer": "causal",
+      "created_at": "2026-03-16T10:49:06.738Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773658162521",
+      "layer": "causal",
+      "created_at": "2026-03-16T10:49:22.522Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773658189167",
+      "layer": "causal",
+      "created_at": "2026-03-16T10:49:49.168Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773659870508",
+      "layer": "causal",
+      "created_at": "2026-03-16T11:17:51.968Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773659875644",
+      "layer": "causal",
+      "created_at": "2026-03-16T11:17:55.673Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773660042214",
+      "layer": "causal",
+      "created_at": "2026-03-16T11:20:48.927Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773660050609",
+      "layer": "causal",
+      "created_at": "2026-03-16T11:20:50.663Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773660113823",
+      "layer": "causal",
+      "created_at": "2026-03-16T11:21:54.105Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773660127087",
+      "layer": "causal",
+      "created_at": "2026-03-16T11:22:07.094Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773661469212",
+      "layer": "causal",
+      "created_at": "2026-03-16T11:44:30.613Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773663298479",
+      "layer": "causal",
+      "created_at": "2026-03-16T12:14:58.578Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773663337538",
+      "layer": "causal",
+      "created_at": "2026-03-16T12:15:37.540Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773663365296",
+      "layer": "causal",
+      "created_at": "2026-03-16T12:16:05.302Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773663414115",
+      "layer": "causal",
+      "created_at": "2026-03-16T12:16:54.118Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773663592128",
+      "layer": "causal",
+      "created_at": "2026-03-16T12:19:52.142Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773663592238",
+      "layer": "causal",
+      "created_at": "2026-03-16T12:19:52.275Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773663676692",
+      "layer": "causal",
+      "created_at": "2026-03-16T12:22:03.969Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773663738350",
+      "layer": "causal",
+      "created_at": "2026-03-16T12:22:18.387Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773663749855",
+      "layer": "causal",
+      "created_at": "2026-03-16T12:28:11.148Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773666125935",
+      "layer": "causal",
+      "created_at": "2026-03-16T13:02:05.940Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773666146176",
+      "layer": "causal",
+      "created_at": "2026-03-16T13:02:26.179Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773666164571",
+      "layer": "causal",
+      "created_at": "2026-03-16T13:02:44.573Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773666236340",
+      "layer": "causal",
+      "created_at": "2026-03-16T13:03:56.341Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773666381813",
+      "layer": "causal",
+      "created_at": "2026-03-16T13:06:22.447Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773666401078",
+      "layer": "causal",
+      "created_at": "2026-03-16T13:06:41.191Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773666870220",
+      "layer": "causal",
+      "created_at": "2026-03-16T13:14:30.854Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773666886044",
+      "layer": "causal",
+      "created_at": "2026-03-16T13:15:09.024Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670133623",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:08:53.721Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670163965",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:09:23.966Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670249333",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:10:49.391Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670249395",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:10:49.396Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670249466",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:10:49.467Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670249537",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:10:49.538Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670249548",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:10:49.548Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670249674",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:10:49.679Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670249895",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:10:49.902Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670249968",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:10:50.033Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670250098",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:10:50.099Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670250101",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:10:50.101Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670261452",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:11:01.454Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670277135",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:11:17.136Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670277139",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:11:17.140Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670277148",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:11:17.150Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670277152",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:11:17.153Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670277166",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:11:17.166Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670277169",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:11:17.169Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670277181",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:11:17.182Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670277187",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:11:17.188Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670277192",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:11:17.193Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773670277195",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:11:17.196Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773672364466",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:46:04.467Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773672364469",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:46:04.470Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773672364479",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:46:04.480Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773672364483",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:46:04.484Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773672364491",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:46:04.492Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773672364494",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:46:04.495Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773672364509",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:46:04.511Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773672364516",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:46:04.518Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773672364524",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:46:04.526Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773672364533",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:46:04.535Z"
+    },
+    {
+      "source": "golem",
+      "type": "learned",
+      "target": "exp_1773672364665",
+      "layer": "causal",
+      "created_at": "2026-03-16T14:46:04.667Z"
+    }
+  ]
+}

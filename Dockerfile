@@ -59,7 +59,7 @@ COPY web-dashboard/package*.json ./web-dashboard/
 
 # Install web-dashboard dependencies
 WORKDIR /app/web-dashboard
-RUN npm ci
+RUN npm ci --omit=dev
 
 # Copy web-dashboard source code (This depends on what is needed for build)
 # We copy the whole directory, relying on .dockerignore to exclude node_modules
@@ -76,8 +76,16 @@ WORKDIR /app
 # Copy the rest of the application source code
 COPY . .
 
+# Create non-root user
+RUN groupadd -r golem && useradd -r -g golem -m golem && chown -R golem:golem /app
+USER golem
+
 # Expose the dashboard port
 EXPOSE 3000
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget -qO- http://localhost:3000/health || exit 1
 
 # Start the application in dashboard mode
 CMD ["npm", "run", "dashboard"]

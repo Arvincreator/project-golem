@@ -8,10 +8,13 @@ class PageInteractor {
     /**
      * @param {import('puppeteer').Page} page - Puppeteer 頁面實例
      * @param {import('../services/DOMDoctor')} doctor - DOM 修復服務
+     * @param {Object} [options] - Optional config
      */
-    constructor(page, doctor) {
+    constructor(page, doctor, options = {}) {
         this.page = page;
         this.doctor = doctor;
+        // Phase 2B: Optional PageStateTracker integration
+        this.pageStateTracker = options.pageStateTracker || null;
     }
 
     /**
@@ -41,6 +44,11 @@ class PageInteractor {
         }
 
         try {
+            // Phase 2B: Capture pre-interaction page state
+            if (this.pageStateTracker) {
+                await this.pageStateTracker.capture(this.page).catch(e => console.warn('[PageInteractor] pre-capture failed:', e.message));
+            }
+
             // 0. 確保頁面處於空閒狀態 (避免前一則訊息還在發送中)
             await this._waitForReady(selectors.send);
 
@@ -78,6 +86,18 @@ class PageInteractor {
                 await this._autoClickWorkspaceButtons();
             } else {
                 console.log("⏩ [PageInteractor] 此次對話無擴充功能，跳過幽靈掃描，極速返回！");
+            }
+
+            // Phase 2B: Capture post-interaction page state + detect unexpected changes
+            if (this.pageStateTracker) {
+                await this.pageStateTracker.capture(this.page).catch(e => console.warn('[PageInteractor] post-capture failed:', e.message));
+                const diff = this.pageStateTracker.getLatestDiff();
+                if (diff && diff.hasChanges) {
+                    const unexpected = diff.changes.filter(c => c.type === 'modal_change' || c.type === 'navigation');
+                    if (unexpected.length > 0) {
+                        console.warn(`[PageInteractor] Unexpected page changes detected: ${unexpected.map(u => u.type).join(', ')}`);
+                    }
+                }
             }
 
             console.log(`🏁 [Brain] 捕獲: ${finalResponse.status} | 長度: ${finalResponse.text.length}`);
@@ -141,6 +161,19 @@ class PageInteractor {
         if (!inputEl) {
             targetSelector = fallbackSelectors.join(', ');
             inputEl = await this.page.$(targetSelector);
+        }
+
+        if (!inputEl) {
+            // Phase 2B: Try PageStateTracker element finder before DOM Doctor
+            if (this.pageStateTracker) {
+                const found = this.pageStateTracker.findElement('input');
+                if (found && found.id) {
+                    inputEl = await this.page.$(`#${found.id}`);
+                    if (inputEl) {
+                        console.log(`[PageInteractor] Found input via PageStateTracker: #${found.id}`);
+                    }
+                }
+            }
         }
 
         if (!inputEl) {
@@ -276,6 +309,15 @@ class PageInteractor {
      * 🛡️ 頁面空閒檢查術：確保沒有正在生成的訊息或遮罩
      */
     async _waitForReady(sendSelector) {
+        // Phase 2B: Use PageStateTracker.isReady() as primary check
+        if (this.pageStateTracker) {
+            await this.pageStateTracker.capture(this.page).catch(e => console.warn('[PageInteractor] ready-check capture failed:', e.message));
+            if (this.pageStateTracker.isReady()) {
+                console.log("✅ [PageInteractor] PageStateTracker confirms page ready.");
+                return;
+            }
+        }
+
         console.log("🔍 [PageInteractor] 正在檢查頁面空閒狀態...");
         const maxWait = 15000; // 最多等 15 秒
         const startTime = Date.now();

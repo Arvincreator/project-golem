@@ -3,7 +3,7 @@
 // Per-model token limits, rate limiting, cost tracking
 // ============================================================
 const OpenAICompatBrain = require('./OpenAICompatBrain');
-const { MODEL_SPECS, getModelSpec, resolveForBrain } = require('./monica-constants');
+const { MODEL_SPECS, getModelSpec, resolveForBrain, estimateTokens } = require('./monica-constants');
 
 class MonicaBrain extends OpenAICompatBrain {
     constructor(options = {}) {
@@ -23,6 +23,7 @@ class MonicaBrain extends OpenAICompatBrain {
         this._monicaKeyIndex = 0;
         this._requestTimestamps = []; // RPM tracking
         this._totalCost = 0; // Cumulative cost (USD)
+        this._rateLimitLock = null; // v10.0: mutex for RPM check
 
         if (this._monicaKeys.length === 0) {
             console.warn('[MonicaBrain] No MONICA_API_KEY configured — will fail on first request');
@@ -48,25 +49,36 @@ class MonicaBrain extends OpenAICompatBrain {
         return `已切換至 ${resolved.model} → ${resolved.apiId}${fallbackNote} (Monica API)`;
     }
 
-    // Check RPM limit before calling
-    _checkRateLimit(model) {
-        const spec = getModelSpec(model);
-        const now = Date.now();
-        // Clean timestamps older than 60s
-        this._requestTimestamps = this._requestTimestamps.filter(t => now - t < 60000);
-        if (this._requestTimestamps.length >= spec.rpm) {
-            const waitMs = 60000 - (now - this._requestTimestamps[0]);
-            throw new Error(`[MonicaBrain] Rate limit: ${spec.rpm} RPM exceeded for ${model}, wait ${Math.ceil(waitMs / 1000)}s`);
+    // v10.0: Check RPM limit with simple mutex to prevent race conditions
+    async _checkRateLimit(model) {
+        // Wait for any in-flight rate limit check to complete
+        while (this._rateLimitLock) {
+            await this._rateLimitLock;
         }
-        this._requestTimestamps.push(now);
+
+        let resolve;
+        this._rateLimitLock = new Promise(r => { resolve = r; });
+
+        try {
+            const spec = getModelSpec(model);
+            const now = Date.now();
+            this._requestTimestamps = this._requestTimestamps.filter(t => now - t < 60000);
+            if (this._requestTimestamps.length >= spec.rpm) {
+                const waitMs = 60000 - (now - this._requestTimestamps[0]);
+                throw new Error(`[MonicaBrain] Rate limit: ${spec.rpm} RPM exceeded for ${model}, wait ${Math.ceil(waitMs / 1000)}s`);
+            }
+            this._requestTimestamps.push(now);
+        } finally {
+            this._rateLimitLock = null;
+            resolve();
+        }
     }
 
     // Track cost after successful response
-    _trackCost(model, inputChars, outputChars) {
+    _trackCost(model, inputText, outputText) {
         const spec = getModelSpec(model);
-        // Rough token estimate: 4 chars/token
-        const inputTokens = Math.ceil(inputChars / 4);
-        const outputTokens = Math.ceil(outputChars / 4);
+        const inputTokens = estimateTokens(inputText);
+        const outputTokens = estimateTokens(outputText);
         const cost = (inputTokens * spec.costIn + outputTokens * spec.costOut) / 1000000;
         this._totalCost += cost;
         return cost;
@@ -83,7 +95,7 @@ class MonicaBrain extends OpenAICompatBrain {
         // Pre-flight rate check
         const modelName = Object.entries(MODEL_SPECS).find(([, s]) => s.apiId === this._model)?.[0] || this._model;
         try {
-            this._checkRateLimit(modelName);
+            await this._checkRateLimit(modelName);
         } catch (e) {
             // On rate limit, try key rotation first
             if (this._monicaKeys.length > 1 && retryCount < 1) {
@@ -94,9 +106,9 @@ class MonicaBrain extends OpenAICompatBrain {
         }
 
         try {
-            const inputLen = this._messages.reduce((sum, m) => sum + (m.content || '').length, 0);
+            const inputText = this._messages.map(m => m.content || '').join('');
             const result = await super._callCompletion(retryCount);
-            const cost = this._trackCost(modelName, inputLen, result.length);
+            const cost = this._trackCost(modelName, inputText, result);
             if (cost > 0.01) {
                 console.log(`[MonicaBrain] Cost: $${cost.toFixed(4)} (total: $${this._totalCost.toFixed(4)})`);
             }
@@ -104,7 +116,7 @@ class MonicaBrain extends OpenAICompatBrain {
         } catch (e) {
             if ((e.message.includes('429') || e.message.includes('401')) && retryCount < 1) {
                 this._rotateKey();
-                return super._callCompletion(retryCount + 1);
+                return this._callCompletion(retryCount + 1);
             }
             throw e;
         }

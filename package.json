@@ -1,10 +1,10 @@
 {
   "name": "project-golem",
-  "version": "9.0.8",
+  "version": "10.9.3",
   "description": "Project Golem v9.0 (Ultimate Chronos + MultiAgent Edition) - Collaborative AI System",
   "main": "index.js",
   "scripts": {
-    "test": "jest --forceExit --detectOpenHandles",
+    "test": "jest --detectOpenHandles",
     "// --- 核心啟動 ---": "",
     "start": "node index.js",
     "dashboard": "node index.js dashboard",
@@ -31,11 +31,14 @@
   "author": "Arvin Chen",
   "license": "MIT",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
     "@google/genai": "^1.44.0",
     "@google/generative-ai": "0.21.0",
     "@grammyjs/auto-retry": "^2.0.2",
     "@grammyjs/transformer-throttler": "^1.2.1",
+    "acorn": "^8.16.0",
     "adm-zip": "^0.5.16",
+    "better-sqlite3": "^12.8.0",
     "blessed": "0.1.81",
     "blessed-contrib": "4.11.0",
     "discord.js": "14.14.1",
@@ -55,8 +58,7 @@
   },
   "devDependencies": {
     "jest": "^30.3.0",
-    "nodemon": "3.0.2",
-    "vitest": "^4.1.0"
+    "nodemon": "3.0.2"
   },
   "engines": {
     "node": "^20.0.0"

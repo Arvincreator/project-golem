@@ -9,6 +9,8 @@ const ALLOWED_DOMAINS = [
     '.yagami8095.workers.dev',
     'moltbook.io',
     'api.moltbook.io',
+    'moltbook.com',
+    'www.moltbook.com',
     'gemini.google.com',
     'raw.githubusercontent.com',
     'api.github.com',

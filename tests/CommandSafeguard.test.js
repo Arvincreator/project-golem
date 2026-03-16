@@ -58,10 +58,27 @@ describe('CommandSafeguard', () => {
             expect(CommandSafeguard.validate('echo ok; rm -rf ~/').safe).toBe(false);
         });
 
-        test('flags commands with sensitive symbols', () => {
+        test('blocks command substitution $() (v9.5 VULN-8)', () => {
             const result = CommandSafeguard.validate('somecommand $(whoami)');
+            expect(result.safe).toBe(false);
+            expect(result.level).toBe('BLOCKED');
+        });
+
+        test('blocks backtick command substitution (v9.5 VULN-8)', () => {
+            const result = CommandSafeguard.validate('echo `whoami`');
+            expect(result.safe).toBe(false);
+            expect(result.level).toBe('BLOCKED');
+        });
+
+        test('flags other sensitive symbols as WARNING', () => {
+            const result = CommandSafeguard.validate('somecommand {a,b}');
             expect(result.safe).toBe(true);
             expect(result.level).toBe('WARNING');
+        });
+
+        test('curl and wget removed from whitelist (v9.5 VULN-8)', () => {
+            expect(CommandSafeguard.WHITELIST.has('curl')).toBe(false);
+            expect(CommandSafeguard.WHITELIST.has('wget')).toBe(false);
         });
 
         test('blocks mkfs', () => {

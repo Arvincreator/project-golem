@@ -42,8 +42,10 @@ class GolemConfigLoader {
         const parsed = this._parser.parse(raw);
         this.config = parsed['golem-config'] || parsed;
       } catch (e) {
-        console.error(`[Config] XML parse error: ${e.message}`);
+        console.error(`[Config] CRITICAL: XML parse error in ${this.configPath}: ${e.message}`);
+        console.error(`[Config] Using defaults — system may not behave as expected`);
         this.config = this._defaults();
+        this._parseError = e.message;
       }
     } else {
       // Fallback: try JSON config
@@ -124,6 +126,154 @@ class GolemConfigLoader {
     };
   }
 
+  // v10.0: New getters for expanded XML config sections
+
+  getBrainConfig() {
+    if (!this.config) this.load();
+    const b = this.config?.brains;
+    if (!b) return null;
+    return {
+      engine: b['@_engine'] || 'router',
+      router: {
+        totalTimeoutMs: b?.router?.['@_total-timeout-ms'] || 90000,
+        fallbackChain: (b?.router?.['fallback-chain'] || 'monica-web,monica,sdk,ollama').split(',').map(s => s.trim()),
+        stickyRouting: b?.router?.['sticky-routing']?.['@_enabled'] !== false,
+        stickyWindowSize: b?.router?.['sticky-routing']?.['@_window-size'] || 20,
+      },
+      monica: {
+        baseUrlEnv: b?.monica?.api?.['@_base-url-env'] || 'MONICA_API_URL',
+        keyEnv: b?.monica?.api?.['@_key-env'] || 'MONICA_API_KEY',
+        defaultModel: b?.monica?.api?.['@_default-model'] || 'gpt-4o',
+        timeoutMs: b?.monica?.api?.['@_timeout-ms'] || 60000,
+        webDefaultModel: b?.monica?.web?.['@_default-model'] || 'gpt-4o',
+        webDailyLimit: b?.monica?.web?.['@_daily-limit'] || 500,
+      },
+      ollama: {
+        url: b?.ollama?.['@_url'] || 'http://localhost:11434/v1',
+        model: b?.ollama?.['@_model'] || 'deepseek-r1:8b',
+        timeoutMs: b?.ollama?.['@_timeout-ms'] || 90000,
+        fallbackModels: (b?.ollama?.['@_fallback-models'] || 'qwen2:1.5b').split(',').map(s => s.trim()),
+        gpu: {
+          numGpu: b?.ollama?.gpu?.['@_num-gpu'] || 'auto',
+          timeoutMs: b?.ollama?.gpu?.['@_timeout-ms'] || 30000,
+          adaptiveCtx: b?.ollama?.gpu?.['@_adaptive-ctx'] !== false,
+          minCtx: b?.ollama?.gpu?.['@_min-ctx'] || 8192,
+        },
+      },
+    };
+  }
+
+  getSecurityConfig() {
+    if (!this.config) this.load();
+    const s = this.config?.security;
+    if (!s) return null;
+    const whitelist = (s?.['command-whitelist'] || '').split(',').map(c => c.trim()).filter(Boolean);
+    const rules = this._ensureArray(s?.['level-rules']?.rule).map(r => ({
+      level: r['@_level'],
+      pattern: r['@_pattern'],
+    }));
+    return { whitelist, rules };
+  }
+
+  getMemoryConfig() {
+    if (!this.config) this.load();
+    const m = this.config?.memory;
+    if (!m) return null;
+    return {
+      mode: m['@_mode'] || 'browser',
+      chatLog: {
+        retentionHourlyHours: m?.['chat-log']?.retention?.['@_hourly-hours'] || 72,
+        retentionDailyDays: m?.['chat-log']?.retention?.['@_daily-days'] || 30,
+        retentionMonthlyMonths: m?.['chat-log']?.retention?.['@_monthly-months'] || 12,
+        retentionYearlyYears: m?.['chat-log']?.retention?.['@_yearly-years'] || 5,
+        compressionTimeoutMs: m?.['chat-log']?.compression?.['@_timeout-ms'] || 60000,
+        maxWordsDailySummary: m?.['chat-log']?.compression?.['@_max-words-daily'] || 500,
+        maxWordsMonthlySummary: m?.['chat-log']?.compression?.['@_max-words-monthly'] || 300,
+      },
+      threeLayer: {
+        workingCap: m?.['three-layer']?.['@_working-cap'] || 50,
+        episodicCap: m?.['three-layer']?.['@_episodic-cap'] || 500,
+        summaryThreshold: m?.['three-layer']?.['@_summary-threshold'] || 0.5,
+      },
+      contextEngineer: {
+        tokenBudget: m?.['context-engineer']?.['@_token-budget'] || 32768,
+        reservePct: m?.['context-engineer']?.['@_reserve-pct'] || 15,
+        overflowCleanupHours: m?.['context-engineer']?.['@_overflow-cleanup-hours'] || 24,
+      },
+    };
+  }
+
+  getLoggingConfig() {
+    if (!this.config) this.load();
+    const l = this.config?.logging;
+    if (!l) return null;
+    return {
+      system: {
+        bufferSize: l?.system?.['@_buffer-size'] || 100,
+        flushIntervalMs: l?.system?.['@_flush-interval-ms'] || 500,
+        rotateMaxMb: l?.system?.['@_rotate-max-mb'] || 10,
+        rotateKeep: l?.system?.['@_rotate-keep'] || 3,
+      },
+      console: {
+        timestamp: l?.console?.['@_timestamp'] !== false,
+        level: l?.console?.['@_level'] || 'info',
+      },
+    };
+  }
+
+  getRetryConfig() {
+    if (!this.config) this.load();
+    const r = this.config?.retry;
+    if (!r) return null;
+    return {
+      maxAttempts: r['@_max-attempts'] || 3,
+      baseDelayMs: r['@_base-delay-ms'] || 1000,
+      maxDelayMs: r['@_max-delay-ms'] || 30000,
+      jitter: r['@_jitter'] || 'decorrelated',
+      retryableCodes: (r['@_retryable-codes'] || '429,500,502,503,504').split(',').map(Number),
+    };
+  }
+
+  getVectorStoreConfig() {
+    if (!this.config) this.load();
+    const vs = this.config?.['vector-store'];
+    if (!vs) return null;
+    return {
+      dbPath: vs['@_db-path'] || 'golem_memory/vectors.db',
+      maxVectors: vs['@_max-vectors'] || 10000,
+      embeddings: {
+        provider: vs?.embeddings?.['@_provider'] || 'gemini',
+        model: vs?.embeddings?.['@_model'] || 'text-embedding-004',
+        fallback: vs?.embeddings?.['@_fallback'] || 'ollama:nomic-embed-text',
+        cacheSize: vs?.embeddings?.['@_cache-size'] || 100,
+        batchSize: vs?.embeddings?.['@_batch-size'] || 20,
+      },
+    };
+  }
+
+  getClaudeConfig() {
+    if (!this.config) this.load();
+    const c = this.config?.claude;
+    if (!c) return null;
+    return {
+      apiKeyEnv: c['@_api-key-env'] || 'ANTHROPIC_API_KEY',
+      defaultModel: c['@_default-model'] || 'claude-opus-4-6-20250515',
+      timeoutMs: c['@_timeout-ms'] || 120000,
+      maxTokens: c['@_max-tokens'] || 8192,
+    };
+  }
+
+  getClaudeGatewayConfig() {
+    if (!this.config) this.load();
+    const cg = this.config?.['claude-gateway'];
+    if (!cg) return null;
+    return {
+      enabled: cg['@_enabled'] === true || cg['@_enabled'] === 'true',
+      tokenEnv: cg['@_token-env'] || 'CLAUDE_GATEWAY_TOKEN',
+      rateLimitRpm: cg['@_rate-limit-rpm'] || 60,
+    };
+  }
+
   getFailoverConfig() {
     if (!this.config) this.load();
     const fo = this.config?.failover;
@@ -135,6 +285,13 @@ class GolemConfigLoader {
       confirmSec: fo?.timeout?.['@_confirm-sec'] || 180,
       autoTakeover: fo?.takeover?.['@_auto'] === true || fo?.takeover?.['@_auto'] === 'true',
     };
+  }
+
+  validate() {
+    const errors = [];
+    if (this._parseError) errors.push(`Parse error: ${this._parseError}`);
+    if (!this.config) errors.push('Config not loaded');
+    return { valid: errors.length === 0, errors };
   }
 
   watch(callback) {

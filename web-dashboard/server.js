@@ -5,6 +5,16 @@ const path = require('path');
 const fs = require('fs');
 const { MANDATORY_SKILLS, OPTIONAL_SKILLS: OPTIONAL_SKILL_LIST, resolveEnabledSkills } = require('../src/skills/skillsConfig');
 
+// v10.8: Safe exit — run GracefulShutdown handlers before process.exit
+function safeExit(code = 0) {
+    try {
+        const shutdown = require('../src/bridges/GracefulShutdown');
+        shutdown._runAll().then(() => process.exit(code)).catch(() => process.exit(code));
+    } catch (e) {
+        process.exit(code);
+    }
+}
+
 // ─── .env helper ────────────────────────────────────────────────────────────────────
 function readEnvFile(envPath) {
     if (!fs.existsSync(envPath)) return {};
@@ -243,10 +253,23 @@ class WebServer {
 
     setContext(golemId, brain, memory) {
         this.contexts.set(golemId, { brain, memory });
+        // v10.5: Update Claude Gateway context
+        if (this._claudeGateway) {
+            const brains = {};
+            for (const [id, ctx] of this.contexts) brains[id] = ctx.brain;
+            this._claudeGateway.setContext(brain, brains, brain._ragProvider || null);
+        }
         console.log(`🔗 [WebServer] Context linked: Brain & Memory for Golem [${golemId}]`);
     }
 
     init() {
+        // v10.5: Claude Gateway
+        try {
+            const ClaudeGateway = require('../src/bridges/ClaudeGateway');
+            this._claudeGateway = new ClaudeGateway(null);
+            this._claudeGateway.mountRoutes(this.app);
+        } catch (e) { console.warn('[WebServer] Claude Gateway not available:', e.message); }
+
         // Serve static files with .html extension support
         const publicPath = path.join(__dirname, 'out');
         this.app.use(express.static(publicPath, {
@@ -1596,7 +1619,7 @@ class WebServer {
                 console.log("🔄 [System] Restart requested by user. Terminating process...");
                 res.json({ success: true, message: "Restarting system..." });
                 setTimeout(() => {
-                    process.exit(0);
+                    safeExit(0);
                 }, 1000);
             } catch (e) {
                 return res.status(500).json({ error: e.message });
@@ -2092,8 +2115,8 @@ class WebServer {
                     console.log("🔄 [WebServer] Calling global.gracefulRestart()...");
                     global.gracefulRestart();
                 } else {
-                    console.warn("⚠️ [WebServer] global.gracefulRestart not available. Falling back to process.exit for restart.");
-                    process.exit(0);
+                    console.warn("⚠️ [WebServer] global.gracefulRestart not available. Falling back to safeExit for restart.");
+                    safeExit(0);
                 }
             }, 500);
         });
@@ -2106,7 +2129,7 @@ class WebServer {
             // 與 reload 的差異：reload 會生出新進程再死去（熱重啟），shutdown 則完全停止
             // Single mode / Multi mode 皆適用（都是同一個 Node.js 進程）
             setTimeout(() => {
-                process.exit(0);
+                safeExit(0);
             }, 1000);
         });
 

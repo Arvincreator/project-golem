@@ -27,11 +27,12 @@ class SelfEvolution {
         if (rate < 0.5 && s.total >= 5) {
             if (s.level === 'L0') s.level = 'L1';
             else if (s.level === 'L1') s.level = 'L2';
-            console.log(`[SelfEvolution] ${actionType} promoted to ${s.level} (success rate: ${(rate * 100).toFixed(0)}%)`);
+            // v10.0: Fixed log message — low success rate = escalate supervision, not "promote"
+            console.log(`[SelfEvolution] ${actionType} escalated supervision to ${s.level} (success rate: ${(rate * 100).toFixed(0)}%)`);
         } else if (rate > 0.9 && s.total >= 10) {
             if (s.level === 'L2') s.level = 'L1';
             else if (s.level === 'L1') s.level = 'L0';
-            console.log(`[SelfEvolution] ${actionType} demoted to ${s.level} (success rate: ${(rate * 100).toFixed(0)}%)`);
+            console.log(`[SelfEvolution] ${actionType} relaxed to ${s.level} (success rate: ${(rate * 100).toFixed(0)}%)`);
         }
 
         this._save();
@@ -51,7 +52,9 @@ class SelfEvolution {
     // --- Skill Synthesizer ---
     trackSequence(steps) {
         if (!Array.isArray(steps) || steps.length < 2) return;
-        const key = steps.map(s => s.action || s).join('→');
+        // v10.8: Preserve temporal order (sort removed — was breaking pattern detection)
+        const normalizedSteps = [...steps].map(s => s.action || s);
+        const key = normalizedSteps.join('→');
         this._actionSequences.push({ key, steps, time: Date.now() });
 
         // Keep last 100
@@ -100,7 +103,18 @@ class SelfEvolution {
 
     _save() {
         try {
-            fs.writeFileSync(this._strategyFile, JSON.stringify(this._strategies, null, 2));
+            const data = JSON.stringify(this._strategies, null, 2);
+            if (this._writer) {
+                this._writer.markDirty(data);
+            } else {
+                try {
+                    const DebouncedWriter = require('../utils/DebouncedWriter');
+                    this._writer = new DebouncedWriter(this._strategyFile, 5000);
+                    this._writer.markDirty(data);
+                } catch (e) {
+                    fs.writeFileSync(this._strategyFile, data);
+                }
+            }
         } catch (e) { console.warn('[SelfEvolution] Failed to save strategies:', e.message); }
     }
 

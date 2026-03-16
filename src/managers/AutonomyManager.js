@@ -25,6 +25,30 @@ class AutonomyManager {
         this.selfEvolution = new SelfEvolution({ golemId: this.golemId });
         this.oodaLoop = null; // initialized after brain is ready
         this._threeLayerMemory = null;
+        this._ragProvider = null; // v10.5: RAG provider for augmented decisions
+        this._vectorIndexer = null; // v10.5: background vector indexer
+        this._agentRegistry = null; // v10.9: SubAgent registry
+    }
+
+    /**
+     * v10.5: Inject RAG provider for augmented OODA decisions
+     */
+    setRAGProvider(provider) {
+        this._ragProvider = provider;
+    }
+
+    /**
+     * v10.5: Inject vector indexer for sleep consolidation
+     */
+    setVectorIndexer(indexer) {
+        this._vectorIndexer = indexer;
+    }
+
+    /**
+     * v10.9: Inject SubAgent registry
+     */
+    setAgentRegistry(registry) {
+        this._agentRegistry = registry;
     }
 
     setIntegrations(tgBot, dcClient, convoManager) {
@@ -43,6 +67,19 @@ class AutonomyManager {
 
         // 🦞 Moltbook 自動學習
         this._startMoltbookLearner();
+
+        // v10.9: Start SubAgent system (env-gated)
+        if (process.env.ENABLE_SUBAGENTS === 'true' && this._agentRegistry) {
+            try {
+                const SentinelAgent = require('../core/agents/SentinelAgent');
+                this._agentRegistry.spawn(SentinelAgent, {
+                    golemId: this.golemId, brain: this.brain
+                });
+                console.log(`[Autonomy] SubAgent system activated`);
+            } catch (e) {
+                console.warn(`[Autonomy] SubAgent spawn failed: ${e.message}`);
+            }
+        }
 
         // 📊 定期狀態報告 (每 2 小時)
         this._statusReportTimer = setInterval(() => this._sendStatusReport(), 2 * 60 * 60 * 1000);
@@ -142,6 +179,16 @@ class AutonomyManager {
     async recordActionOutcome(action, outcome, success) {
         // Write to RAG
         await this.writeRAGAfter(action, outcome, success);
+        // v10.5: Also write to vector store
+        if (this._ragProvider) {
+            try {
+                const actionDesc = `${action?.action || '?'}:${action?.task || ''}`;
+                await this._ragProvider.ingest(
+                    `Action: ${actionDesc} | Outcome: ${String(outcome).substring(0, 300)} | Success: ${success}`,
+                    { type: 'action_outcome', source: 'autonomy', success }
+                );
+            } catch (e) { /* non-blocking */ }
+        }
         // Track in SelfEvolution for strategy learning
         const suggestion = this.selfEvolution.afterAction(action, outcome, success);
         if (suggestion && suggestion.suggestSkill) {
@@ -241,7 +288,7 @@ class AutonomyManager {
         } catch (e) { /* non-blocking */ }
     }
 
-    stop() {
+    async stop() {
         if (this._timeWatcherTimer) { clearInterval(this._timeWatcherTimer); this._timeWatcherTimer = null; }
         if (this._archiveTimer) { clearInterval(this._archiveTimer); this._archiveTimer = null; }
         if (this._statusReportTimer) { clearInterval(this._statusReportTimer); this._statusReportTimer = null; }
@@ -250,6 +297,8 @@ class AutonomyManager {
         if (this._moltbookLearner && typeof this._moltbookLearner.stop === 'function') {
             this._moltbookLearner.stop();
         }
+        // v10.9: Stop all SubAgents
+        if (this._agentRegistry) await this._agentRegistry.stopAll();
         console.log(`[AutonomyManager:${this.golemId}] All timers stopped.`);
     }
 
@@ -402,12 +451,32 @@ class AutonomyManager {
     }
     async manifestFreeWill() {
         try {
+            // v10.5: RAG-augmented decision making
+            if (this._ragProvider) {
+                try {
+                    const ragContext = await this._ragProvider.augmentedRecall('recent patterns autonomous actions');
+                    if (ragContext.merged.length > 0) {
+                        const shouldSkip = await this._ragAugmentedDecision(ragContext.merged);
+                        if (shouldSkip) {
+                            console.log('[AutonomyManager] RAG-augmented decision: skip this cycle');
+                            return;
+                        }
+                    }
+                } catch (e) { /* non-blocking */ }
+            }
+
             // Use OODA loop for informed decision-making
             if (!this.oodaLoop) {
                 this.oodaLoop = new OODALoop(this.brain, { golemId: this.golemId });
             }
             const loopResult = await this.oodaLoop.runLoop(this.memory, null, null);
             const decision = loopResult?.decision;
+
+            // v10.9: Publish OODA decisions to SubAgent bus
+            if (this._agentRegistry) {
+                const bus = this._agentRegistry.getBus();
+                bus.publish('ooda.decision', { decision, observations: loopResult?.observations }, 'autonomy');
+            }
 
             if (decision && decision.action !== 'noop') {
                 console.log(`[AutonomyManager] OODA decided: ${decision.action} (${decision.reason})`);
@@ -483,6 +552,21 @@ ${summaryContext || "（目前尚無對話摘要）"}
             await NeuroShunter.dispatch(adminCtx, raw, this.brain, this.controller);
         }
     }
+    /**
+     * v10.5: RAG-augmented decision — check if similar past actions had low reward
+     * @returns {boolean} true if action should be skipped
+     */
+    async _ragAugmentedDecision(ragResults) {
+        if (!ragResults || ragResults.length === 0) return false;
+        // Check if recent similar actions had consistently low rewards
+        const lowRewardCount = ragResults.filter(r => {
+            const content = r.content || '';
+            return content.includes('Success: false') || content.includes('reward: 0');
+        }).length;
+        // If >60% of similar past actions failed, skip
+        return lowRewardCount > ragResults.length * 0.6;
+    }
+
     async _runSleepConsolidation() {
         try {
             if (!this._threeLayerMemory) return;
@@ -509,6 +593,11 @@ ${summaryContext || "（目前尚無對話摘要）"}
             // Auto-deprecate stale episodes
             if (typeof this._threeLayerMemory.deprecateStaleEpisodes === 'function') {
                 this._threeLayerMemory.deprecateStaleEpisodes(90);
+            }
+
+            // v10.5: Trigger vector indexer consolidation
+            if (this._vectorIndexer) {
+                try { await this._vectorIndexer.consolidate(); } catch (e) { /* non-blocking */ }
             }
 
             console.log(`[AutonomyManager] Sleep consolidation complete: ${working.length} working → episodic`);

@@ -7,6 +7,10 @@ describe('ActionQueue', () => {
         queue = new ActionQueue({ golemId: 'test' });
     });
 
+    afterEach(() => {
+        queue = null;
+    });
+
     test('creates instance with golemId', () => {
         expect(queue).toBeDefined();
         expect(queue.golemId).toBe('test');
@@ -21,7 +25,7 @@ describe('ActionQueue', () => {
         });
 
         // Wait for async processing
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 100));
         expect(executed).toBe(true);
     });
 
@@ -32,7 +36,7 @@ describe('ActionQueue', () => {
             throw new Error('Test error');
         });
 
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 100));
         const dlq = queue.getDLQ();
         expect(dlq.length).toBe(1);
         expect(dlq[0].error).toBe('Test error');
@@ -45,7 +49,7 @@ describe('ActionQueue', () => {
         await queue.enqueue(mockCtx, async () => { count++; }, { dedupKey: 'same-key' });
         await queue.enqueue(mockCtx, async () => { count++; }, { dedupKey: 'same-key' });
 
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 100));
         expect(count).toBe(1);
     });
 

@@ -43,6 +43,9 @@ class GolemBrain {
         else if (mode === 'native' || mode === 'system') this.memoryDriver = new SystemNativeDriver();
         else this.memoryDriver = new BrowserMemoryDriver(this);
 
+        // ── C1: 頁面狀態追蹤 ──
+        this.pageStateTracker = null; // Lazy init after browser is ready
+
         // ── 對話日誌 ──
         this.chatLogManager = new ChatLogManager({
             golemId: this.golemId,
@@ -100,6 +103,12 @@ class GolemBrain {
             }
         } catch (e) {
             console.warn('⚠️ [Brain] 技能索引同步失敗:', e.message);
+        }
+
+        // 2.7 C1: Initialize PageStateTracker
+        if (!this.pageStateTracker) {
+            const PageStateTracker = require('./PageStateTracker');
+            this.pageStateTracker = new PageStateTracker({ golemId: this.golemId });
         }
 
         // 3. 初始化記憶引擎 (含降級策略)
@@ -260,7 +269,8 @@ class GolemBrain {
 
         console.log(`📡 [Brain] 發送訊號: ${reqId} (含每回合強制洗腦引擎)`);
 
-        const interactor = new PageInteractor(this.page, this.doctor);
+        // C1: Pass pageStateTracker to PageInteractor
+        const interactor = new PageInteractor(this.page, this.doctor, { pageStateTracker: this.pageStateTracker });
 
         try {
             return await interactor.interact(
@@ -307,7 +317,7 @@ class GolemBrain {
         // 確保在寫入前已初始化 (防呆)
         this.chatLogManager.init().then(() => {
             this.chatLogManager.append(entry);
-        });
+        }).catch(e => console.warn('[ChatLog]', e.message));
     }
 
     // ─── Private Methods ─────────────────────────────────────
@@ -380,82 +390,72 @@ class GolemBrain {
             console.log(`🧠 [Memory] 已成功將技能載入長期記憶中！`);
         }
 
-        // 🚀 [第一階段] 發送底層系統協議 (不含歷史摘要)
+        // 🚀 [第一階段] 發送底層系統協議 — FIXED base prompt (提高 KV-cache 命中率)
         const compressedPrompt = ProtocolFormatter.compress(systemPrompt);
         await this.sendMessage(compressedPrompt, false); // ⚡ 改為 false：等待完整回應
-        console.log(`📡 [Brain] 階段一：底層協議注入完成。`);
+        console.log(`📡 [Brain] 階段一：底層協議注入完成 (固定 prompt skeleton)。`);
 
-        // 🧠 [第二階段] 金字塔式多層記憶注入
+        // 🧠 [第二階段] 金字塔式多層記憶注入 — 獨立 message (v9.4 TITAN: 與 system prompt 分離)
         if (this.chatLogManager) {
             try {
-                let historicalMemory = "";
+                const ContextEngineer = require('./ContextEngineer');
+                const ctxEng = new ContextEngineer();
 
                 // 🏛️ Tier 4: 紀元里程碑 (最近 1 個)
                 const eraSummaries = this.chatLogManager.readTier('era', 1);
                 if (eraSummaries.length > 0) {
-                    eraSummaries.forEach(s => {
-                        historicalMemory += `\n=== [紀元回憶: ${s.date}] ===\n${s.content}\n`;
-                    });
+                    const eraText = eraSummaries.map(s => `=== [紀元回憶: ${s.date}] ===\n${s.content}`).join('\n');
+                    ctxEng.addSection('era_memory', eraText, { priority: 8 });
                 }
 
                 // 🏛️ Tier 3: 年度回顧 (最近 1 個)
                 const yearlySummaries = this.chatLogManager.readTier('yearly', 1);
                 if (yearlySummaries.length > 0) {
-                    yearlySummaries.forEach(s => {
-                        historicalMemory += `\n=== [年度回顧: ${s.date}] ===\n${s.content}\n`;
-                    });
+                    const yearlyText = yearlySummaries.map(s => `=== [年度回顧: ${s.date}] ===\n${s.content}`).join('\n');
+                    ctxEng.addSection('yearly_memory', yearlyText, { priority: 7, compressible: true });
                 }
 
                 // 🏛️ Tier 2: 月度精華 (最近 3 個)
                 const monthlySummaries = this.chatLogManager.readTier('monthly', 3);
                 if (monthlySummaries.length > 0) {
-                    monthlySummaries.forEach(s => {
-                        historicalMemory += `\n--- [月度精華: ${s.date}] ---\n${s.content}\n`;
-                    });
+                    const monthlyText = monthlySummaries.map(s => `--- [月度精華: ${s.date}] ---\n${s.content}`).join('\n');
+                    ctxEng.addSection('monthly_memory', monthlyText, { priority: 6, compressible: true });
                 }
 
                 // 🏛️ Tier 1: 每日摘要 (最近 7 天)
                 const dailySummaries = this.chatLogManager.readTier('daily', 7);
                 if (dailySummaries.length > 0) {
-                    dailySummaries.forEach(s => {
-                        historicalMemory += `\n--- [${s.date} 摘要] ---\n${s.content}\n`;
-                    });
+                    const dailyText = dailySummaries.map(s => `--- [${s.date} 摘要] ---\n${s.content}`).join('\n');
+                    ctxEng.addSection('daily_memory', dailyText, { priority: 5, compressible: true });
                 }
 
+                const { context: historicalMemory, stats } = ctxEng.assemble();
+
+                const tierCounts = [
+                    eraSummaries.length > 0 ? `紀元×${eraSummaries.length}` : null,
+                    yearlySummaries.length > 0 ? `年度×${yearlySummaries.length}` : null,
+                    monthlySummaries.length > 0 ? `月度×${monthlySummaries.length}` : null,
+                    dailySummaries.length > 0 ? `每日×${dailySummaries.length}` : null,
+                ].filter(Boolean);
+
                 if (historicalMemory) {
-                    const tierCounts = [
-                        eraSummaries.length > 0 ? `紀元×${eraSummaries.length}` : null,
-                        yearlySummaries.length > 0 ? `年度×${yearlySummaries.length}` : null,
-                        monthlySummaries.length > 0 ? `月度×${monthlySummaries.length}` : null,
-                        dailySummaries.length > 0 ? `每日×${dailySummaries.length}` : null,
-                    ].filter(Boolean);
-
-                    // ⚡ [Fix] Token 預算保護：超過 200K 字元時，從最舊 Tier 開始截斷
-                    const MAX_MEMORY_CHARS = 200000;
-                    if (historicalMemory.length > MAX_MEMORY_CHARS) {
-                        console.warn(`⚠️ [Brain] 歷史記憶超過 Token 預算 (${historicalMemory.length} chars > ${MAX_MEMORY_CHARS})，截斷較舊 Tier...`);
-                        historicalMemory = historicalMemory.slice(-MAX_MEMORY_CHARS);
-                    }
-
-                    // ⚡ [Fix] 動態生成注入說明，只列出實際有資料的層
                     const tierDesc = tierCounts.length > 0
                         ? `（涵蓋：${tierCounts.join(' → ')}）`
                         : '';
 
                     const memoryPulse = `【指令：載入長期記憶與背景壓縮】\n以下是你過去對話的多層次彙總精華${tierDesc}。請完整閱讀並內化這些背景，將其視為你目前已知的所有先驗知識與決策紀錄：\n${historicalMemory}`;
                     await this.sendMessage(memoryPulse, false);
-                    console.log(`🧠 [Brain] 階段二：已注入多層記憶 (${tierCounts.join(', ')})。`);
+                    console.log(`🧠 [Brain] 階段二：已注入多層記憶 (${tierCounts.join(', ')})。ContextEngineer: ${stats.totalTokens}tk, ${stats.compressed} compressed, ${stats.pagedOut} paged out`);
                 } else {
                     // 🕐 Tier 0 Fallback：無任何壓縮摘要時，直接載入全部 hourly 原始對話
                     const rawMemory = this.chatLogManager.readRecentHourly();
                     if (rawMemory) {
-                        const MAX_RAW_CHARS = 200000;
-                        const safeRaw = rawMemory.length > MAX_RAW_CHARS
-                            ? rawMemory.slice(-MAX_RAW_CHARS)
-                            : rawMemory;
+                        const rawCtxEng = new ContextEngineer();
+                        rawCtxEng.addSection('raw_hourly', rawMemory, { priority: 5, compressible: true });
+                        const { context: safeRaw } = rawCtxEng.assemble();
                         const rawPulse = `【指令：載入近期原始對話紀錄】\n目前尚無任何壓縮摘要，以下是你最近的完整對話原文。請完整閱讀並視為你已知的先驗背景：\n${safeRaw}`;
                         await this.sendMessage(rawPulse, false);
-                        console.log(`🕐 [Brain] 階段二(Fallback)：已注入 Tier 0 原始 hourly 對話 (${safeRaw.length} chars)。`);
+                        console.log(`🕐 [Brain] 階段二(Fallback)：已注入 Tier 0 原始 hourly 對話 (${(safeRaw || '').length} chars)。`);
                     } else {
                         console.log(`ℹ️ [Brain] 階段二：無任何歷史記憶可注入 (全新會話)。`);
                     }

@@ -9,7 +9,7 @@ class CommandSafeguard {
         'ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find',
         'whoami', 'tail', 'head', 'df', 'free', 'uptime', 'uname',
         'wc', 'sort', 'uniq', 'which', 'type', 'file', 'stat',
-        'node', 'npm', 'npx', 'git', 'curl', 'wget',
+        'node', 'npm', 'npx', 'git',
         'Get-ChildItem', 'Select-String', 'golem-check',
         'python', 'python3', 'pip', 'pip3'
     ]);
@@ -69,6 +69,11 @@ class CommandSafeguard {
                 const subResult = this.validate(sub);
                 if (!subResult.safe) return subResult;
             }
+        }
+
+        // v9.5 VULN-8: $() and backticks are BLOCKED (command injection vectors)
+        if (/\$\(/.test(trimmed) || /`[^`]+`/.test(trimmed)) {
+            return { safe: false, reason: 'Blocked: command substitution ($() or backticks)', level: 'BLOCKED' };
         }
 
         // Check for sensitive symbols (not blocking, just flag)

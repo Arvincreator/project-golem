@@ -38,11 +38,11 @@ class SystemUpgrader {
             // 1. Git Pull / Reset
             await ctx.reply("📥 正在從 GitHub 同步最新源碼...");
 
-            execSync('git fetch --all', { cwd: process.cwd() });
+            execSync('git fetch --all', { cwd: process.cwd(), timeout: 30000 });
 
-            const currentBranch = execSync('git rev-parse --abbrev-ref HEAD', { cwd: process.cwd() }).toString().trim();
-            const remoteBranches = execSync('git branch -r', { cwd: process.cwd() }).toString().trim().split('\n').map(b => b.trim());
-            const remotes = execSync('git remote', { cwd: process.cwd() }).toString().trim().split('\n');
+            const currentBranch = execSync('git rev-parse --abbrev-ref HEAD', { cwd: process.cwd(), timeout: 10000 }).toString().trim();
+            const remoteBranches = execSync('git branch -r', { cwd: process.cwd(), timeout: 10000 }).toString().trim().split('\n').map(b => b.trim());
+            const remotes = execSync('git remote', { cwd: process.cwd(), timeout: 10000 }).toString().trim().split('\n');
 
             let targetRemote = remotes.includes('upstream') ? 'upstream' : 'origin';
             let targetRef = `${targetRemote}/${currentBranch}`;
@@ -67,7 +67,7 @@ class SystemUpgrader {
             }
 
             console.log(`🎯 [Upgrader] Target Ref: ${targetRef}`);
-            execSync(`git reset --hard ${targetRef}`, { cwd: process.cwd() });
+            execSync(`git reset --hard ${targetRef}`, { cwd: process.cwd(), timeout: 30000 });
             console.log(`✅ Git 動態同步完成 (${targetRef})`);
 
             // 2. Clean Install dependencies
@@ -83,7 +83,7 @@ class SystemUpgrader {
             }
 
             try {
-                execSync('npm install --no-fund --no-audit', { cwd: process.cwd(), stdio: 'pipe' });
+                execSync('npm install --no-fund --no-audit', { cwd: process.cwd(), stdio: 'pipe', timeout: 120000 });
                 console.log("✅ 核心依賴安裝完成");
                 if (fs.existsSync(nmBakPath)) fs.rmSync(nmBakPath, { recursive: true, force: true }); // Cleanup backup if success
             } catch (npmErr) {
@@ -102,8 +102,8 @@ class SystemUpgrader {
                     await ctx.reply("🌐 正在重新建置 Web Dashboard...");
                     const dashNmPath = path.join(dashPath, 'node_modules');
                     if (fs.existsSync(dashNmPath)) fs.rmSync(dashNmPath, { recursive: true, force: true });
-                    execSync('npm install --no-fund --no-audit', { cwd: dashPath, stdio: 'pipe' });
-                    execSync('npm run build', { cwd: dashPath, stdio: 'pipe' });
+                    execSync('npm install --no-fund --no-audit', { cwd: dashPath, stdio: 'pipe', timeout: 120000 });
+                    execSync('npm run build', { cwd: dashPath, stdio: 'pipe', timeout: 120000 });
                     console.log("✅ Dashboard 更新完成");
                 }
             }

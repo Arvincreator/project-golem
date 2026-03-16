@@ -197,17 +197,10 @@ const reloadConfig = () => {
         ? path.join(process.cwd(), 'golem_memory', 'knowledge')
         : path.join(process.cwd(), 'golem_memory', newModeDir, 'knowledge');
 
-    // ✅ [V9 Fix]: Update module exports explicitly for files relying on dynamic imports
-    module.exports.GOLEM_MODE = GOLEM_MODE;
-    module.exports.MODE_DIR = MODE_DIR;
-    module.exports.LOG_BASE_DIR = LOG_BASE_DIR;
-    module.exports.MEMORY_BASE_DIR = MEMORY_BASE_DIR;
-    module.exports.KNOWLEDGE_BASE_DIR = KNOWLEDGE_BASE_DIR;
-
     console.log(`🔄 [Config] 設定已熱重載完成 (Active API Keys: ${CONFIG.API_KEYS.length}, Golems: ${GOLEMS_CONFIG.length}, Mode: ${MODE_DIR})`);
 };
 
-module.exports = {
+const _exports = {
     cleanEnv,
     isPlaceholder,
     CONFIG,
@@ -219,3 +212,12 @@ module.exports = {
     KNOWLEDGE_BASE_DIR,
     reloadConfig
 };
+
+// Use defineProperty for mode-aware paths so they're always current
+Object.defineProperty(_exports, 'GOLEM_MODE', { get: () => GOLEM_MODE, enumerable: true });
+Object.defineProperty(_exports, 'MODE_DIR', { get: () => MODE_DIR, enumerable: true });
+Object.defineProperty(_exports, 'LOG_BASE_DIR', { get: () => LOG_BASE_DIR, enumerable: true });
+Object.defineProperty(_exports, 'MEMORY_BASE_DIR', { get: () => MEMORY_BASE_DIR, enumerable: true });
+Object.defineProperty(_exports, 'KNOWLEDGE_BASE_DIR', { get: () => KNOWLEDGE_BASE_DIR, enumerable: true });
+
+module.exports = _exports;

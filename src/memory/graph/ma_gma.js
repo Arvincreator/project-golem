@@ -176,6 +176,24 @@ class MAGMA {
         return { edges, neighbors };
     }
 
+    /**
+     * Query by claim text — targeted factual overlap search
+     * Extracts key terms and searches for matching nodes
+     * @param {string} claimText - The factual claim to verify
+     * @returns {{ nodes: Array, edges: Array }}
+     */
+    queryByClaim(claimText) {
+        if (!claimText) return { nodes: [], edges: [] };
+        // Extract key terms: nouns, proper nouns, numbers
+        const terms = claimText
+            .replace(/[^\w\u4e00-\u9fff\s]/g, '')
+            .split(/\s+/)
+            .filter(w => w.length > 2)
+            .slice(0, 5);
+        if (terms.length === 0) return { nodes: [], edges: [] };
+        return this.query(terms.join(' '));
+    }
+
     // --- Stats ---
 
     stats() {

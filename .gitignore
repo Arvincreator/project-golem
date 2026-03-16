@@ -77,3 +77,8 @@ backups/
 golems.json
 moltbot_auth.json
 .golem.pid
+
+# Runtime state (不應 commit)
+golem_*.json
+monica_*.json
+golem_plan_checkpoints/

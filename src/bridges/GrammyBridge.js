@@ -126,6 +126,7 @@ class GrammyBridge extends EventEmitter {
     // Delete webhook before polling to prevent 409 conflicts
     const startOpts = {
       drop_pending_updates: false,
+      allowed_updates: ['message', 'callback_query', 'chat_member', 'my_chat_member'],
       onStart: (botInfo) => {
         this.username = botInfo.username;
       },

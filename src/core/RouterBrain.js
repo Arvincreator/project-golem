@@ -14,6 +14,8 @@ const circuitBreaker = require('./circuit_breaker');
 const { MODEL_SPECS, MODEL_REGISTRY, CROSS_BRAIN_FALLBACKS, resolveForBrain, getModelSpec, estimateTokens, ROUTING_RULES } = require('./monica-constants');
 
 const DEFAULT_MODEL = 'gpt-4o';
+const BRAIN_INIT_TIMEOUT = 30000;
+const RAG_INIT_TIMEOUT = 15000;
 
 class RouterBrain {
     constructor(options = {}) {
@@ -39,6 +41,7 @@ class RouterBrain {
         this._lastBrainUsed = null;
         this._lastRoute = null;
         this._modelFailCounts = {};
+        this._ragProvider = null; // v10.5: shared RAG provider
 
         this.status = 'idle';
     }
@@ -51,6 +54,32 @@ class RouterBrain {
         }
         await this.chatLogManager.init();
 
+        // v10.5: Build shared RAGProvider
+        try {
+            const EmbeddingProvider = require('../memory/EmbeddingProvider');
+            const VectorStore = require('../memory/VectorStore');
+            const RAGProvider = require('../memory/RAGProvider');
+            const ep = new EmbeddingProvider();
+            await Promise.race([
+                ep.init(),
+                new Promise((_, r) => setTimeout(() => r(new Error('EmbeddingProvider init timeout')), RAG_INIT_TIMEOUT)),
+            ]);
+            const vsPath = path.resolve(this.userDataDir, 'vectors.db');
+            const vs = new VectorStore(vsPath, ep);
+            await Promise.race([
+                vs.init(),
+                new Promise((_, r) => setTimeout(() => r(new Error('VectorStore init timeout')), RAG_INIT_TIMEOUT)),
+            ]);
+            let magma = null;
+            try { magma = require('../memory/graph/ma_gma'); } catch (e) { /* optional */ }
+            this._ragProvider = new RAGProvider({ vectorStore: vs, magma });
+            await Promise.race([
+                this._ragProvider.init(),
+                new Promise((_, r) => setTimeout(() => r(new Error('RAGProvider init timeout')), RAG_INIT_TIMEOUT)),
+            ]);
+            console.log('[Router] RAG provider initialized');
+        } catch (e) { console.warn('[Router] RAG init failed:', e.message); }
+
         const sharedOpts = {
             ...this._options,
             golemId: this.golemId,
@@ -58,21 +87,27 @@ class RouterBrain {
             memoryDriver: this.memoryDriver,
             chatLogManager: this.chatLogManager,
             skillIndex: this.skillIndex,
+            ragProvider: this._ragProvider, // v10.5
         };
 
-        // Init brains: monica-web, monica, sdk, ollama
+        // Init brains: monica-web, monica, sdk, ollama, claude (optional)
         const brainDefs = [
             { name: 'monica-web', path: './MonicaWebBrain', label: 'Monica Web' },
             { name: 'monica',     path: './MonicaBrain',    label: 'Monica API' },
             { name: 'sdk',        path: './SdkBrain',       label: 'Gemini SDK' },
             { name: 'ollama',     path: './OllamaBrain',    label: 'Ollama' },
+            { name: 'claude',     path: './ClaudeBrain',    label: 'Claude' },
         ];
 
         for (const def of brainDefs) {
             try {
                 const BrainClass = require(def.path);
-                this._brains[def.name] = new BrainClass(sharedOpts);
-                await this._brains[def.name].init(forceReload);
+                const brain = new BrainClass(sharedOpts);
+                await Promise.race([
+                    brain.init(forceReload),
+                    new Promise((_, r) => setTimeout(() => r(new Error(`${def.label} init timeout (${BRAIN_INIT_TIMEOUT}ms)`)), BRAIN_INIT_TIMEOUT)),
+                ]);
+                this._brains[def.name] = brain;
                 console.log(`[Router] ${def.label} initialized`);
             } catch (e) {
                 console.warn(`[Router] ${def.label} init failed:`, e.message);
@@ -92,6 +127,20 @@ class RouterBrain {
             }
         } catch (e) { /* ignore */ }
 
+        // v10.8 T3-3: Load brain config from XML (fallback chain, timeout)
+        try {
+            const { getConfig } = require('../config/xml-config-loader');
+            const brainConfig = getConfig().getBrainConfig();
+            if (brainConfig) {
+                this._fallbackChain = brainConfig.router.fallbackChain;
+                console.log(`[Router] XML brain config loaded: chain=[${this._fallbackChain.join(',')}]`);
+            }
+        } catch (e) { /* XML config optional — keep hardcoded defaults */ }
+
+        if (Object.keys(this._brains).length === 0) {
+            console.error('[Router] CRITICAL: No brains initialized — will retry on next message');
+            return; // status stays 'idle', sendMessage() will retry init
+        }
         this.status = 'running';
         console.log(`[Router:${this.golemId}] Brains: [${Object.keys(this._brains).join(', ')}]`);
     }
@@ -109,9 +158,19 @@ class RouterBrain {
         const route = this._forceOverride || this._classifyAndRoute(text);
         const targetChain = this._buildFallbackChain(route);
 
+        // v10.0: Full-chain timeout (90s default)
+        const chainTimeoutMs = 90000;
+        const chainStart = Date.now();
+
         for (const brainName of targetChain) {
             const brain = this._brains[brainName];
             if (!brain) continue;
+
+            // v10.0: Check chain timeout
+            const elapsed = Date.now() - chainStart;
+            if (elapsed > chainTimeoutMs) {
+                throw new Error(`[Router] Chain timeout (${chainTimeoutMs}ms) exceeded after ${Math.round(elapsed)}ms`);
+            }
 
             if (!circuitBreaker.canExecute(brainName)) {
                 console.warn(`[Router] ${brainName} circuit OPEN, skipping`);
@@ -129,14 +188,16 @@ class RouterBrain {
                 }
 
                 const result = await brain.sendMessage(text, isSystem, options);
+                circuitBreaker.recordSuccess(brainName);
                 this._lastBrainUsed = brainName;
                 this._lastRoute = route;
                 const resLen = typeof result === 'string' ? result.length : 0;
-                this._recordRouting(text, brainName, route.model, true, null, resLen);
+                this._recordRouting(text, brainName, route.model, true, null, resLen, result);
                 if (route.model) this._modelFailCounts[route.model] = 0;
                 return result;
             } catch (e) {
                 console.warn(`[Router] ${brainName} failed: ${e.message}`);
+                circuitBreaker.recordFailure(brainName, e.message);
                 this._recordRouting(text, brainName, route.model || '', false, e.message, 0);
                 if (route.model) this._modelFailCounts[route.model] = (this._modelFailCounts[route.model] || 0) + 1;
             }
@@ -147,10 +208,21 @@ class RouterBrain {
 
     async recall(queryText) {
         if (!queryText) return [];
+        // v10.5: Try RAG-augmented recall first
+        if (this._ragProvider) {
+            try {
+                const result = await this._ragProvider.augmentedRecall(queryText);
+                if (result.merged.length > 0) return result.merged;
+            } catch (e) { /* fallback to keyword */ }
+        }
         try { return await this.memoryDriver.recall(queryText); } catch (e) { return []; }
     }
 
     async memorize(text, metadata = {}) {
+        // v10.5: Also ingest into RAG
+        if (this._ragProvider) {
+            try { await this._ragProvider.ingest(text, metadata); } catch (e) { /* non-blocking */ }
+        }
         try { await this.memoryDriver.memorize(text, metadata); } catch (e) {
             console.warn('[Router] memorize failed:', e.message);
         }
@@ -187,7 +259,8 @@ class RouterBrain {
     }
 
     _appendChatLog(entry) {
-        this.chatLogManager.init().then(() => this.chatLogManager.append(entry));
+        this.chatLogManager.init().then(() => this.chatLogManager.append(entry))
+            .catch(e => console.warn('[ChatLog]', e.message));
     }
 
     _linkDashboard() {
@@ -250,10 +323,11 @@ class RouterBrain {
         return [route.brain, ...this._fallbackChain.filter(b => b !== route.brain)];
     }
 
-    _recordRouting(text, brain, model, success, error = null, responseLen = 0) {
+    _recordRouting(text, brain, model, success, error = null, responseLen = 0, responseText = '') {
         const tokens = estimateTokens(text);
         const spec = getModelSpec(model);
-        const cost = success ? (tokens * spec.costIn + estimateTokens(String(responseLen)) * spec.costOut) / 1000000 : 0;
+        const outputTokens = responseText ? estimateTokens(responseText) : 0;
+        const cost = success ? (tokens * spec.costIn + outputTokens * spec.costOut) / 1000000 : 0;
 
         this._routingHistory.push({
             time: new Date().toISOString(),
@@ -264,13 +338,25 @@ class RouterBrain {
             cost,
             error: error ? error.substring(0, 100) : null,
         });
-        if (this._routingHistory.length > 200) this._routingHistory.shift();
+        if (this._routingHistory.length > 100) this._routingHistory.shift();
 
-        // Quality flag: too short or too long responses
-        if (success && (responseLen < 20 || responseLen > 10000)) {
-            this._modelFailCounts[model] = (this._modelFailCounts[model] || 0) + 1;
-            console.warn(`[Router] Quality: ${model} ${responseLen}ch (${responseLen < 20 ? 'short' : 'long'})`);
+        // v10.0: Quality assessment — only flag truly bad responses
+        if (success) {
+            this._assessQuality(model, responseLen);
         }
+    }
+
+    /**
+     * v10.0: Quality assessment — independent method, only flags truly bad responses
+     * Does NOT increment failCount on successful but short responses (was a bug)
+     */
+    _assessQuality(model, responseLen) {
+        if (responseLen < 5) {
+            // Empty/near-empty response = quality issue
+            this._modelFailCounts[model] = (this._modelFailCounts[model] || 0) + 1;
+            console.warn(`[Router] Quality: ${model} ${responseLen}ch (empty response)`);
+        }
+        // Note: long responses (>50000) are NOT penalized — some tasks legitimately produce long output
     }
 
     // --- /router Command Handler ---
@@ -329,10 +415,11 @@ class RouterBrain {
             lines.push(`  ${icon} ${name}: ${state}`);
         }
 
-        // Routing rules summary
+        // Routing rules summary (three-brain: GPT-5.4 / Grok-4 / Claude 4.6)
         lines.push('');
-        lines.push('Rules: code→claude-4.6-sonnet | reasoning→gpt-5.4 | creative→gpt-5.4');
-        lines.push('       fast→gpt-4.1-mini | analysis→gemini-3.1-pro | flex→gpt-4o');
+        lines.push('Rules: realtime→grok-4 | refactor→claude-4.6-sonnet | code→grok-4');
+        lines.push('       reasoning→gpt-5.4 | creative→gpt-5.4 | fast→gpt-4.1-mini');
+        lines.push('       analysis→claude-4.6-sonnet | flex→gpt-4o');
         lines.push('       <50ch→gpt-4.1-nano | >1000ch→gpt-4o | >ctx→gemini-2.5-pro');
 
         const failModels = Object.entries(this._modelFailCounts).filter(([, c]) => c > 0);
@@ -365,6 +452,16 @@ class RouterBrain {
         }
 
         return lines.join('\n');
+    }
+
+    /**
+     * Get the context window size for the currently active model
+     * Used by ContextEngineer for budget awareness
+     */
+    getModelContextWindow() {
+        const ContextEngineer = require('./ContextEngineer');
+        const model = this._lastRoute ? this._lastRoute.model : 'gpt-4o';
+        return ContextEngineer.MODEL_BUDGETS[model] || ContextEngineer.DEFAULT_BUDGET;
     }
 
     _costReport() {

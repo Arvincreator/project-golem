@@ -34,9 +34,7 @@ try {
             process.kill(Number(lockPid), 0); // check if alive
             console.warn(`⚠️ [Boot] 偵測到舊進程 (PID: ${lockPid})，正在強制終止...`);
             process.kill(Number(lockPid), 'SIGTERM');
-            // Give it a moment to die
-            const { execSync } = require('child_process');
-            try { execSync(`sleep 1`); } catch (e) {}
+            // Lockfile will be cleaned up by old process on exit; new process overwrites below
         } catch (e) {
             // Process already dead, clean up lock
         }
@@ -47,16 +45,10 @@ try {
     console.warn('[Boot] Lockfile handling failed:', e.message);
 }
 
-// ── [v9.0.8] Graceful shutdown on SIGTERM/SIGINT ──
-process.on('SIGTERM', () => {
-    console.log('[System] Received SIGTERM, shutting down...');
+// ── [v10.7] Shutdown 統一由 GracefulShutdown 管理 (避免搶先 process.exit) ──
+const GracefulShutdown = require('./src/bridges/GracefulShutdown');
+GracefulShutdown.register('Lockfile', () => {
     try { fs_sync.unlinkSync(LOCKFILE); } catch (e) {}
-    process.exit(0);
-});
-process.on('SIGINT', () => {
-    console.log('[System] Received SIGINT, shutting down...');
-    try { fs_sync.unlinkSync(LOCKFILE); } catch (e) {}
-    process.exit(0);
 });
 
 // Windows: beforeExit handler (SIGTERM/SIGINT may not work on Windows)
@@ -171,9 +163,20 @@ function getOrCreateGolem(golemId) {
     const config = ConfigManager.GOLEMS_CONFIG.find(g => g.id === golemId) || {};
     const interventionLevel = config.interventionLevel || ConfigManager.CONFIG.INTERVENTION_LEVEL;
 
+    // A5: ENABLE_AGENT_MEMORY controls ThreeLayerMemory creation
+    let threeLayerMemory = null;
+    const enableMemory = process.env.ENABLE_AGENT_MEMORY !== 'false';
+    if (enableMemory) {
+        try {
+            const ThreeLayerMemory = require('./src/memory/ThreeLayerMemory');
+            threeLayerMemory = new ThreeLayerMemory({ golemId });
+        } catch (e) { console.warn('[Orchestrator] ThreeLayerMemory init failed:', e.message); }
+    }
+
     const convoManager = new ConversationManager(brain, NeuroShunter, controller, {
         golemId,
-        interventionLevel
+        interventionLevel,
+        threeLayerMemory, // A1: pass to ConversationManager → NeuroShunter
     });
 
     const actionQueue = new ActionQueue({ golemId }); // ✨ [v9.1] Action Queue 初始化
@@ -184,6 +187,40 @@ function getOrCreateGolem(golemId) {
     autonomy.setIntegrations(boundBot, boundDcBot || dcClient, convoManager);
     brain.tgBot = boundBot; // expose for dashboard notifications
     brain.dcBot = boundDcBot || dcClient;
+
+    // v10.5: Wire RAG provider to autonomy and three-layer memory
+    if (brain._ragProvider) {
+        autonomy.setRAGProvider(brain._ragProvider);
+        if (threeLayerMemory) threeLayerMemory.setRAGProvider(brain._ragProvider);
+    }
+
+    // v10.5: Start background vector indexer + register shutdown
+    try {
+        const VectorIndexer = require('./src/memory/VectorIndexer');
+        const GracefulShutdown = require('./src/bridges/GracefulShutdown');
+        const vectorStore = brain._ragProvider?._vectorStore || null;
+        if (vectorStore) {
+            const indexer = new VectorIndexer(vectorStore, brain._ragProvider);
+            indexer.start();
+            autonomy.setVectorIndexer(indexer);
+            GracefulShutdown.register('VectorIndexer', () => { indexer.stop(); });
+            GracefulShutdown.register('VectorStore', () => { vectorStore.close(); });
+            const DebouncedWriter = require('./src/utils/DebouncedWriter');
+            GracefulShutdown.register('DebouncedWriter', () => DebouncedWriter.flushAll());
+        }
+    } catch (e) { console.warn('[Orchestrator] VectorIndexer not available:', e.message); }
+
+    // v10.9: SubAgent registry (env-gated)
+    if (process.env.ENABLE_SUBAGENTS === 'true') {
+        try {
+            const AgentRegistry = require('./src/core/AgentRegistry');
+            const registry = new AgentRegistry({ golemId });
+            autonomy.setAgentRegistry(registry);
+            const GracefulShutdown = require('./src/bridges/GracefulShutdown');
+            GracefulShutdown.register('SubAgents', () => registry.stopAll());
+            console.log(`[Orchestrator] SubAgent registry initialized`);
+        } catch (e) { console.warn('[Orchestrator] SubAgent init failed:', e.message); }
+    }
 
     const instance = { brain, controller, autonomy, convoManager, actionQueue }; // ✨ [v9.1] 注入 actionQueue
     activeGolems.set(golemId, instance);
@@ -377,9 +414,25 @@ function getOrCreateGolem(golemId) {
 
             if (fsSync.existsSync(personaPath)) {
                 // ✅ [Fix] init() BEFORE setting status, otherwise RouterBrain skips init
-                await instance.brain.init();
-                instance.brain.status = 'running';
-                instance.brain.isBooting = false; // ✨ [v9.0.8] isBooting flag
+                try {
+                    await instance.brain.init();
+                    instance.brain.status = 'running';
+                    instance.brain.isBooting = false;
+                } catch (initErr) {
+                    console.error(`❌ brain.init() failed: ${initErr.message}`);
+                    instance.brain.status = 'init_failed';
+                    instance.brain.isBooting = false;
+                    // 30 秒後重試一次
+                    setTimeout(async () => {
+                        try {
+                            await instance.brain.init(true);
+                            instance.brain.status = 'running';
+                            console.log('✅ brain.init() 重試成功');
+                        } catch (e) {
+                            console.error(`❌ brain.init() 重試也失敗: ${e.message}`);
+                        }
+                    }, 30000);
+                }
                 const tgBot = telegramBots.get(golemConfig.id);
                 if (tgBot) {
                     // ✨ [v9.0.8] 清除 webhook + pending updates，防止 409 衝突
@@ -470,9 +523,24 @@ function getOrCreateGolem(golemId) {
 
             const personaPath = path.resolve(ConfigManager.MEMORY_BASE_DIR, 'persona.json');
             if (fsSync.existsSync(personaPath)) {
-                await instance.brain.init();
-                instance.brain.status = 'running';
-                instance.brain.isBooting = false; // ✨ [v9.0.8] isBooting flag
+                try {
+                    await instance.brain.init();
+                    instance.brain.status = 'running';
+                    instance.brain.isBooting = false;
+                } catch (initErr) {
+                    console.error(`❌ brain.init() failed: ${initErr.message}`);
+                    instance.brain.status = 'init_failed';
+                    instance.brain.isBooting = false;
+                    setTimeout(async () => {
+                        try {
+                            await instance.brain.init(true);
+                            instance.brain.status = 'running';
+                            console.log('✅ brain.init() 重試成功');
+                        } catch (e) {
+                            console.error(`❌ brain.init() 重試也失敗: ${e.message}`);
+                        }
+                    }, 30000);
+                }
                 const tgBot = telegramBots.get(autoGolemConfig.id);
                 if (tgBot) {
                     // ✨ [v9.0.8] 清除 webhook + pending updates，防止 409 衝突

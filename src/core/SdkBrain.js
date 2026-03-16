@@ -22,6 +22,9 @@ class SdkBrain {
         this.browser = null;
         this.page = null;
 
+        // v10.5: RAG provider (optional)
+        this._ragProvider = options.ragProvider || null;
+
         // Memory engine (accept injected or create new)
         this.memoryDriver = options.memoryDriver || new SystemNativeDriver();
 
@@ -182,10 +185,21 @@ class SdkBrain {
 
     async recall(queryText) {
         if (!queryText) return [];
+        // v10.5: Try RAG-augmented recall first
+        if (this._ragProvider) {
+            try {
+                const result = await this._ragProvider.augmentedRecall(queryText);
+                if (result.merged.length > 0) return result.merged;
+            } catch (e) { /* fallback to keyword */ }
+        }
         try { return await this.memoryDriver.recall(queryText); } catch (e) { return []; }
     }
 
     async memorize(text, metadata = {}) {
+        // v10.5: Also ingest into RAG
+        if (this._ragProvider) {
+            try { await this._ragProvider.ingest(text, metadata); } catch (e) { /* non-blocking */ }
+        }
         try { await this.memoryDriver.memorize(text, metadata); } catch (e) { console.warn('[SdkBrain] memorize failed:', e.message); }
     }
 
@@ -199,7 +213,7 @@ class SdkBrain {
     _appendChatLog(entry) {
         this.chatLogManager.init().then(() => {
             this.chatLogManager.append(entry);
-        });
+        }).catch(e => console.warn('[ChatLog]', e.message));
     }
 
     async reloadSkills() {

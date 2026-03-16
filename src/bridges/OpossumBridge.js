@@ -1,9 +1,9 @@
 // src/bridges/OpossumBridge.js
 // Industrial-grade circuit breaker layer using Opossum 9.0
-// Wraps existing circuit_breaker.js API surface — drop-in compatible
-// Reads per-service configs from golem-config.xml <circuit-breakers>
+// v10.0: execute() is the primary API; canExecute/recordSuccess/recordFailure preserved for compat
 
 const CircuitBreaker = require('opossum');
+const { CircuitOpenError } = require('../core/errors');
 
 // Defaults matching existing circuit_breaker.js behavior
 const FALLBACK_OPTS = {
@@ -43,9 +43,8 @@ class OpossumBridge {
 
   /**
    * Get or create an Opossum circuit breaker for a service
-   * @param {string} serviceId - e.g. 'fleet', 'rag', 'gemini', 'telegram'
    */
-  _getBreaker(serviceId, fn) {
+  _getBreaker(serviceId) {
     if (this._breakers.has(serviceId)) {
       return this._breakers.get(serviceId);
     }
@@ -53,7 +52,6 @@ class OpossumBridge {
     // Try to get per-service config from XML
     let opts = { ...FALLBACK_OPTS };
     if (this._xmlConfig) {
-      // Extract base service name (e.g., 'rag:yedan' → 'rag')
       const baseName = serviceId.split(':')[0];
       const xmlCfg = this._xmlConfig.getCircuitBreakerConfig(baseName);
       if (xmlCfg) {
@@ -63,7 +61,9 @@ class OpossumBridge {
       }
     }
 
-    const breaker = new CircuitBreaker(fn, opts);
+    // Generic wrapper — action is passed at fire() time
+    const wrapper = async (action) => await action();
+    const breaker = new CircuitBreaker(wrapper, opts);
 
     // Log state changes
     breaker.on('open', () => {
@@ -75,9 +75,6 @@ class OpossumBridge {
     breaker.on('close', () => {
       console.log(`🟢 [Opossum] ${serviceId}: → CLOSED (recovered)`);
     });
-    breaker.on('fallback', () => {
-      console.log(`🟠 [Opossum] ${serviceId}: Fallback triggered`);
-    });
     breaker.on('timeout', () => {
       console.log(`⏰ [Opossum] ${serviceId}: Request timed out`);
     });
@@ -87,13 +84,35 @@ class OpossumBridge {
   }
 
   // ================================================================
-  // Compatible API — same as existing circuit_breaker.js
+  // Primary API: execute()
+  // ================================================================
+
+  /**
+   * Execute a function with circuit breaker protection
+   * @param {string} serviceId
+   * @param {Function} fn - async function to execute
+   * @returns {Promise<any>}
+   */
+  async execute(serviceId, fn) {
+    const breaker = this._getBreaker(serviceId);
+
+    try {
+      return await breaker.fire(fn);
+    } catch (e) {
+      if (breaker.opened) {
+        const remaining = breaker.options.resetTimeout;
+        throw new CircuitOpenError(serviceId, remaining, e.message);
+      }
+      throw e;
+    }
+  }
+
+  // ================================================================
+  // Compatible API — backward compat with manual canExecute/record pattern
   // ================================================================
 
   /**
    * Check if a service call is allowed
-   * @param {string} serviceId
-   * @returns {boolean}
    */
   canExecute(serviceId) {
     const breaker = this._breakers.get(serviceId);
@@ -102,24 +121,23 @@ class OpossumBridge {
   }
 
   /**
-   * Record a success (for manual tracking compatibility)
-   * Note: Opossum handles this automatically via execute(), but
-   * this is here for backward compatibility with existing code
+   * Record a success (for backward compatibility with manual tracking)
+   * In v10+, prefer using execute() which handles this automatically
    */
   recordSuccess(serviceId) {
-    // Opossum tracks success automatically; this is a no-op for compatibility
+    // Opossum tracks success automatically via fire(); this is a compat no-op
   }
 
   /**
-   * Record a failure (for manual tracking compatibility)
+   * Record a failure (for backward compatibility with manual tracking)
+   * In v10+, prefer using execute() which handles this automatically
    */
   recordFailure(serviceId, error) {
-    // Opossum tracks failures automatically; this is a no-op for compatibility
+    // Opossum tracks failures automatically via fire(); this is a compat no-op
   }
 
   /**
    * Reset a circuit breaker
-   * @param {string} serviceId
    */
   reset(serviceId) {
     const breaker = this._breakers.get(serviceId);
@@ -130,7 +148,6 @@ class OpossumBridge {
 
   /**
    * Get status of all circuit breakers (dashboard/diagnostics)
-   * @returns {object}
    */
   getStatus() {
     const result = {};
@@ -147,37 +164,6 @@ class OpossumBridge {
       };
     }
     return result;
-  }
-
-  /**
-   * Execute a function with circuit breaker protection
-   * EXACT same signature as existing circuit_breaker.js
-   * @param {string} serviceId
-   * @param {Function} fn - async function to execute
-   * @returns {Promise<any>}
-   */
-  async execute(serviceId, fn) {
-    // For Opossum, we need to create the breaker with the function
-    // But since fn changes each call, we wrap it
-    if (!this._breakers.has(serviceId)) {
-      // Create a generic breaker that calls whatever function is passed
-      const wrapper = async (action) => await action();
-      this._getBreaker(serviceId, wrapper);
-    }
-
-    const breaker = this._breakers.get(serviceId);
-
-    try {
-      return await breaker.fire(fn);
-    } catch (e) {
-      // Format error message to match existing circuit_breaker.js format
-      if (breaker.opened) {
-        const remaining = Math.max(0, breaker.options.resetTimeout -
-          (Date.now() - (breaker.stats.latencyTimes?.[0] || Date.now())));
-        throw new Error(`[CircuitBreaker] ${serviceId} 熔斷中 (${Math.ceil(remaining / 1000)}s 後重試). 最後錯誤: ${e.message || '?'}`);
-      }
-      throw e;
-    }
   }
 
   /**

@@ -1,0 +1,122 @@
+# Project Golem v10.9 — 開發指南
+
+## 架構概覽
+- **RouterBrain**: 智能多模型路由器，fallback chain: monica-web → monica → sdk → ollama → claude, 90s 全鏈超時
+- **OpenAICompatBrain**: 所有 /v1/chat/completions 相容 API 的基底類別, 指數退避+抖動重試, **v10.5: RAG 整合**
+- **ClaudeBrain**: v10.5 新增 — Anthropic Claude API (繼承 OpenAICompatBrain, @anthropic-ai/sdk)
+- **MonicaBrain**: Monica.im API 整合，多 API key 輪替、mutex RPM 限速
+- **OllamaBrain**: 本地 Ollama fallback，GPU/CPU 混合推理, 多 GPU 支援
+- **MonicaWebBrain**: Puppeteer 驅動的 Monica Web (不在修改範圍)
+- **SdkBrain**: Gemini SDK 直連, **v10.5: RAG 整合**
+
+## 設定系統
+- **主設定**: `golem-config.xml` v2.0 — XML 設定中心，支援 hot reload
+- **載入器**: `src/config/xml-config-loader.js` — 提供 getBrainConfig/getSecurityConfig/getMemoryConfig/getLoggingConfig/getRetryConfig + **v10.5: getVectorStoreConfig/getClaudeConfig/getClaudeGatewayConfig**
+- **環境變數**: `.env` — 作為 XML 的 fallback
+- **優先順序**: XML → .env → hardcoded defaults
+
+## 記憶系統
+- **ChatLogManager**: 金字塔式分層壓縮, JSONL 格式 (append O(1))
+- **SystemNativeDriver**: 檔案系統記憶持久化, 全非同步 I/O
+- **ContextEngineer**: 優先級 context 組裝 + token budget
+- **v10.5 向量 RAG**:
+  - **EmbeddingProvider**: Gemini text-embedding-004 (768維) + Ollama fallback, LRU cache, circuit breaker
+  - **VectorStore**: SQLite + WAL mode, cosine search, batch upsert
+  - **RAGProvider**: 三路搜尋 (vector + MAGMA graph + remote YEDAN) + RRF 融合 (k=60)
+  - **VectorIndexer**: 背景定期索引 (30s), episodes/MAGMA/logs/memory 四路索引, cosine>0.95 去重
+
+## Claude 整合 (v10.5)
+- **ClaudeBrain** (`src/core/ClaudeBrain.js`): 繼承 OpenAICompatBrain, 只覆寫 _callCompletion
+- **ClaudeGateway** (`src/bridges/ClaudeGateway.js`): REST API at `/api/claude/*`, Bearer auth + rate limit
+  - POST /chat, /recall, /memorize, /brain/:name
+  - GET /brains, /health
+- **依賴**: `@anthropic-ai/sdk` (npm), `ANTHROPIC_API_KEY` env var
+
+## 安全模型
+- **SecurityManager**: L0-L3 風險分級
+- 安全規則可透過 `golem-config.xml` `<security>` section 外部化
+- **ClaudeGateway**: Bearer token + 滑動視窗 60 RPM rate limit
+
+## 關鍵工具
+- **DebouncedWriter**: 原子寫入 (tmp+rename)，tests/setup-afterall.js 負責全域清理
+- **OpossumBridge**: Opossum 9.0 熔斷器, `execute()` 是主要 API
+- **CircuitBreaker**: 入口點 re-exports OpossumBridge
+- **errors.js**: 結構化錯誤型別 (GolemError, CircuitOpenError, RateLimitError, TimeoutError, OOMError, AgentBudgetError, AgentSpawnError)
+
+## 命名慣例
+- 類別: PascalCase | 檔案: PascalCase for classes | 私有方法: `_` 前綴 | 常數: UPPER_SNAKE_CASE
+
+## 測試
+- 框架: Jest 30 | 目錄: `tests/` | 執行: `npx jest --no-coverage --detectOpenHandles`
+- Setup: `tests/setup.js` (env vars) + `tests/setup-afterall.js` (DebouncedWriter cleanup)
+- **不使用 --forceExit** (已修復所有 open handles)
+- 基線: 716+ tests, 63+ suites, 0 failures, 0 open handles
+
+## v10.5 架構決策 (向量 RAG + Claude 雙向整合)
+1. **嵌入模型**: Gemini text-embedding-004 (零新依賴, 複用 @google/genai, 768維, 免費 1500 RPM)
+2. **向量儲存**: better-sqlite3 + JS cosine (避免 WSL2 原生編譯問題, <10K 向量 <10ms)
+3. **搜尋融合**: RRF k=60 (Reciprocal Rank Fusion, 業界標準)
+4. **Claude SDK**: @anthropic-ai/sdk (官方, 自動重試, 型別安全)
+5. **反向調用**: Express REST /api/claude/* (掛載在既有 web-dashboard)
+6. **自主決策**: RAG-augmented OODA (向量搜歷史結果輔助決策, >60%失敗率自動跳過)
+7. **null guard**: 所有 RAG 路徑有 `if (this._ragProvider)`, 沒設定 = graceful 降級
+8. **背景索引**: VectorIndexer 30s interval, sleep consolidation 觸發去重
+
+## v10.0 架構決策
+1. **熔斷器**: Opossum 9.0, 自建 CircuitBreaker 簡化為 re-export, HALF_OPEN 並行 bug 已修
+2. **重試**: 指數退避 + decorrelated jitter (MAX_RETRY=3, BASE_DELAY=1s, MAX_DELAY=30s)
+3. **日誌**: JSONL append O(1), 自動遷移舊 JSON 陣列格式
+4. **系統日誌**: 緩衝非同步寫入 (100 條或 500ms flush), shutdown() 同步 flush
+5. **設定管理**: mode-aware getter (defineProperty), XML 設定中心 v2.0
+6. **SQLite**: SkillIndexManager singleton + WAL mode + lazy reconnect
+7. **XML 設定中心**: brains/security/memory/logging/retry 五大 section
+8. **品質旗標**: 不再誤罰長回應, 只標記 <5 字元的空回應
+9. **RouterBrain**: 90s 全鏈超時, 獨立 _assessQuality()
+10. **MonicaBrain**: async mutex RPM 限速, 防止並行競態
+11. **OllamaBrain**: 多 GPU 解析 (OLLAMA_GPU_INDEX 選擇)
+12. **SelfEvolution**: 修正日誌語意 (escalated/relaxed), 序列正規化排序
+13. **sendMessage**: 用 index 精準移除失敗訊息 (非 pop)
+14. **SmartLLMSwitch**: 修復 exploration_rate=0 被 || 轉為 0.10 的 bug
+
+## SubAgent 系統 (v10.9)
+- **AgentBus** (`src/core/AgentBus.js`): 進程內 pub/sub, topic 路由, DLQ, ring buffer 審計 (max 500)
+- **SubAgent** (`src/core/SubAgent.js`): 基底類別, 微 OODA 迴圈, token budget, timeout 保護, activity log
+- **AgentRegistry** (`src/core/AgentRegistry.js`): singleton 生命週期管理, GracefulShutdown 整合, maxAgents=10
+- **SentinelAgent** (`src/core/agents/SentinelAgent.js`): 系統監控 (60s), 0 token, RSS/CB/WarRoom 偵測
+- **AnalystAgent** (`src/core/agents/AnalystAgent.js`): 深度分析 (120s), 5000 token/cycle, brain 輔助
+- **WorkerAgent** (`src/core/agents/WorkerAgent.js`): 任務執行 (30s), 3000 token/cycle
+- **啟用**: `ENABLE_SUBAGENTS=true` (env var, 預設關閉)
+- **安全**: L0 (status/list/health/metrics), L1 (spawn/stop/pause/resume), L2 (stop_all/config)
+- **OODALoop 整合**: `delegate_to_analyst` action (多 pattern 時委派), agentBus null guard
+- **errors.js**: +AgentBudgetError, +AgentSpawnError
+
+## PromptForge 系統 (v10.9.1)
+- **PromptScorer** (`src/core/PromptScorer.js`): PEEM 9 軸提示詞評分 (clarity/accuracy/coherence/relevance/completeness/conciseness/safety/creativity/actionability), heuristic + LLM hybrid, 方差自校準
+- **PromptEvolver** (`src/core/PromptEvolver.js`): EvoPrompt + PromptBreeder 演化引擎, 5 突變算子 (rephrase/add-detail/remove-detail/restructure/pattern-inject), tournament selection, 差分交叉
+- **prompt-forge** (`src/skills/core/prompt-forge.js`): 主技能 (11 子任務), RAG 持久化, DNA JSON 存儲 (max 200)
+- **推理模式偵測**: CoT/ToT/ReAct/Reflexion/Self-Consistency (關鍵字匹配)
+- **安全**: L0 (generate/evaluate/detect-pattern/compare/history/stats/export), L1 (optimize/evolve/templates/import)
+- **Token 預算**: optimize ~30 brain calls max (5 pop × 3 gen × 2)
+
+## Nexus 系統 (v10.9.2) — 神經中樞元編排引擎
+- **WebResearcher** (`src/core/WebResearcher.js`): @google/genai googleSearch grounding, LRU cache (50), 4 層降級鏈 (Gemini→brain→RAG→空)
+- **BenchmarkEngine** (`src/core/BenchmarkEngine.js`): 系統快照 (RSS/heap/uptime/RAG/tests/brain), 前後 delta 對比, 歷史持久化 (max 100)
+- **nexus** (`src/skills/core/nexus.js`): 主技能 (8 子任務: auto/research/benchmark/plan/execute_plan/validate/report/status)
+- **auto 迴路**: 研究→基準→規劃→執行→驗證→學習→報告, MAX_ITERATIONS=3, IMPROVEMENT_THRESHOLD=5%
+- **Skill Dispatch**: auto 內部 dispatch selfheal/rag/prompt-forge/analytics (L0/L1 only)
+- **安全**: L0 (research/benchmark/validate/report/status), L1 (auto/plan), L2 (execute_plan)
+- **持久化**: nexus_upgrades.json (max 100 records), benchmark_history.json
+
+## v10.8 架構決策 (全維度深度優化)
+1. **ChatLogManager**: appendFileSync → fs.promises.appendFile (非阻塞 event loop)
+2. **GracefulShutdown**: web-dashboard 3 處 process.exit → safeExit (先 _runAll 再 exit)
+3. **神經迴路修復**: 4 個斷路迴路重新連接
+   - WorldModel EMA: ExperienceReplay → WorldModel.setEmaValues() (每次 recordTrace 後同步)
+   - MetapromptAgent: getActivePrompt() → ContextEngineer priority 6 (500 char 上限)
+   - ExperienceReplay: sample(2, success) → ContextEngineer priority 5 (成功案例注入)
+   - OODA: decide() 新增 experience_reflect, act() 處理 investigate_alerts + experience_reflect
+4. **SelfEvolution**: trackSequence() 移除 .sort() (保留時序，修復 pattern 偵測)
+5. **CI/CD**: GitHub Actions ci.yml (push/PR 觸發, Node 20, jest)
+6. **XML Config**: RouterBrain.init() 讀取 getBrainConfig() fallback chain
+7. **可觀察性**: RAGProvider/EmbeddingProvider 空 catch 加 console.warn
+8. **CF Worker 診斷**: doctor.js 加入 RAG/WarRoom Worker 連通性檢查

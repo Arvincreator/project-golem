@@ -2,12 +2,15 @@
 // MonicaPageInteractor — DOM interaction for Monica.im chat
 // Mirrors PageInteractor.js pattern, adapted for Monica's Ant Design UI
 // ============================================================
+const fs = require('fs');
+const path = require('path');
 const { TIMINGS, LIMITS, SELECTOR_HINTS } = require('./monica-constants');
+const ResponseExtractor = require('./ResponseExtractor');
 
 const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
 // ✨ [v9.0.8] Timeout wrapper for page.evaluate — prevents CDP hang
-function withTimeout(promise, ms = 10000) {
+function withTimeout(promise, ms = 30000) {
     let timer;
     return Promise.race([
         promise.then(v => { clearTimeout(timer); return v; }),
@@ -47,7 +50,6 @@ class MonicaPageInteractor {
             }
 
             // 6. Wait for response using ResponseExtractor (shared with GolemBrain)
-            const ResponseExtractor = require('./ResponseExtractor');
             const result = await ResponseExtractor.waitForResponse(
                 this.page, selectors.response, startTag, endTag, baseline
             );
@@ -73,6 +75,14 @@ class MonicaPageInteractor {
                     if (healed) {
                         selectors[targetType] = healed;
                         console.log(`[MonicaInteractor] DOMDoctor healed ${targetType}: ${healed}`);
+                        // 持久化治癒結果
+                        try {
+                            const selFile = path.resolve(__dirname, '../../monica_selectors.json');
+                            const current = fs.existsSync(selFile) ? JSON.parse(fs.readFileSync(selFile, 'utf-8')) : {};
+                            current[targetType] = healed;
+                            current._healed = new Date().toISOString();
+                            fs.writeFileSync(selFile, JSON.stringify(current, null, 2));
+                        } catch (persistErr) { /* non-critical */ }
                         return this.interact(payload, selectors, isSystem, startTag, endTag, retryCount + 1);
                     }
                 } catch (healErr) {
@@ -84,7 +94,7 @@ class MonicaPageInteractor {
     }
 
     async _waitForReady() {
-        const maxWait = 15000;
+        const maxWait = TIMINGS.WAIT_FOR_READY || 15000;
         const start = Date.now();
 
         while (Date.now() - start < maxWait) {
@@ -181,24 +191,24 @@ class MonicaPageInteractor {
     }
 
     async _send() {
-        // Monica uses Enter key to send (no visible send button)
-        await this.page.keyboard.press('Enter');
-        await delay(200);
-
-        // Fallback: try to find and click any send button
-        await withTimeout(this.page.evaluate(() => {
-            const buttons = document.querySelectorAll('button, [role="button"]');
-            for (const btn of buttons) {
-                const text = (btn.innerText || '').toLowerCase();
-                const label = (btn.getAttribute('aria-label') || '').toLowerCase();
-                if ((text.includes('send') || label.includes('send') ||
-                     text.includes('傳送') || label.includes('submit')) &&
-                    btn.offsetHeight > 0) {
+        // 先偵測是否有可見的 send button
+        const sendBtn = await withTimeout(this.page.evaluate(() => {
+            const btns = document.querySelectorAll('button, [role="button"]');
+            for (const btn of btns) {
+                const t = (btn.innerText || btn.getAttribute('aria-label') || '').toLowerCase();
+                if ((t.includes('send') || t.includes('傳送') || t.includes('submit')) && btn.offsetHeight > 0) {
                     btn.click();
-                    return;
+                    return true;
                 }
             }
-        })).catch(() => {});
+            return false;
+        }), 2000).catch(() => false);
+
+        if (!sendBtn) {
+            // 無 button → 用 Enter 送出
+            await this.page.keyboard.press('Enter');
+        }
+        await delay(200);
     }
 }
 
