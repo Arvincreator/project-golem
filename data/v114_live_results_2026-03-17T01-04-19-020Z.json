@@ -1,0 +1,218 @@
+{
+  "timestamp": "2026-03-17T01:04:19.020Z",
+  "durationMs": 239570,
+  "rss": {
+    "start": 68,
+    "end": 81
+  },
+  "scan": {
+    "totalQueries": 16,
+    "totalResults": 16,
+    "errors": [],
+    "categories": {
+      "research": {
+        "label": "AGI Research",
+        "queriesRun": 2,
+        "resultCount": 2,
+        "results": [
+          {
+            "query": "latest AGI breakthroughs 2026",
+            "synthesis": "2026年，人工通用智慧（AGI）領域正經歷從生成式AI轉向具備自主性的代理系統的重大轉變，同時業界也更加重視AI的實際應用與效益評估。雖然AGI的確切實現時間仍存在爭議，但許多專家預計在2026年至2027年間，人類水平的AI將在多項專業任務中展現出類人表現。\n\n**關鍵突破與發展方向：**\n\n*   **代理系統的崛起**：AI系統正從單純的內容生成器演變為能夠執行目標、維持記憶、制定計畫、使用工具並與其他代理協調的自主代理。這被視為邁向AGI的重要一步。\n*   **記憶與推理能力的提升**：新的AI助理將具備更長的長期記憶，能夠隨著時間推移建立對用戶目標的理解，並自主採取行動，而不僅僅是遵循指令。例如，Google DeepMind的Gemini模型中的Deep Think模式在2025年國際數學奧林匹亞競賽（IMO）中達到了金牌水平的表現。\n*   **創造性AI的進步**：AI生成的藝術作品正從模仿轉向展現真正的原創性，能夠創造出獨特的角色和發明新的美學。\n*   **更嚴謹的評估與實際應用**：經過多年的發展，2026年將更加注重對AI在實際應用中的效用、成本和影響進行嚴",
+            "resultCount": 14
+          },
+          {
+            "query": "transformer alternatives new architecture",
+            "synthesis": "大型語言模型（LLM）領域正積極探索Transformer架構的替代方案和新改進，以克服其在二次注意力成本、記憶體效率和長文本推理方面的限制。2026年預計將成為「後Transformer時代」的開端，多種創新架構嶄露頭角。\n\n以下是當前最新且值得關注的Transformer替代方案與新架構：\n\n**1. 狀態空間模型（State-Space Models, SSMs）**\nSSM，例如Mamba模型，被視為取代Transformer的有力競爭者。它們具有線性時間推斷的優勢，在處理長文本任務上表現出色，且不需要注意力機制帶來的瓶頸，因此非常適合在設備端和資源受限的AI應用。Mamba已在多個基準測試中超越Transformer模型。\n\n**2. 專家混合模型（Mixture-of-Experts, MoE）**\nMoE架構，如Mixtral，透過在每個token只啟動一小部分參數來顯著降低計算成本。這使得模型能夠在不需極端硬體的情況下進行擴展，並在提高效率的同時，對準確性的影響極小。MoE已在生產級LLM中廣泛採用。\n\n**3. 混合架構（Hybrid Architectures）**",
+            "resultCount": 7
+          }
+        ],
+        "errors": []
+      },
+      "code": {
+        "label": "AI Code & Frameworks",
+        "queriesRun": 2,
+        "resultCount": 2,
+        "results": [
+          {
+            "query": "trending AI repositories GitHub 2026",
+            "synthesis": "根據2026年3月的最新資訊，GitHub 上趨勢的 AI 儲存庫顯示出 AI 開發生態系統的快速成長，特別是在自主代理、本地模型運行和可視化開發方面。GitHub 的 2025 年 Octoverse 報告指出，平台上有超過 430 萬個 AI 相關儲存庫，僅大型語言模型 (LLM) 相關專案的年增長率就達到了 178%。\n\n以下是目前幾個最受關注且具影響力的 AI 儲存庫：\n\n*   **OpenClaw**：被譽為 2026 年的「突破性開源專案」，也是 GitHub 上成長最快的儲存庫之一。它是一個完全在使用者設備上運行的個人 AI 助手，可作為本地閘道，連接 AI 模型與超過 50 種應用程式整合，例如 WhatsApp、Telegram 和 Slack 等。OpenClaw 能夠瀏覽網頁、填寫表格、執行 shell 命令、編寫和運行程式碼，甚至控制智慧家庭設備，並且可以生成新技能來擴展其功能。\n*   **n8n**：這是一個開源的工作流程自動化平台，結合了可視化的無程式碼介面和自訂程式碼的靈活性，並具備 AI 原生功能。它提供超過 400 種整合，並允許團隊自行託管以完全",
+            "resultCount": 3
+          },
+          {
+            "query": "open-source LLM frameworks latest",
+            "synthesis": "大型語言模型（LLM）的開源框架領域正經歷快速發展，預計在2025年至2026年間將持續創新。這些框架對於簡化LLM應用程式的開發、提升效能，並與現有系統無縫整合至關重要。\n\n**主要趨勢與發展：**\n\n*   **社群驅動的創新：** 開源LLM框架透過社群協作，加速了開發進程，並提供了更高的透明度與靈活性，尤其是在研究、開發和客製化方面。這也使得新興模型平均只比最先進的專有模型落後約三個月。\n*   **企業應用與客製化：** 越來越多的企業採用開源LLM來實現資料治理、成本控制和長期靈活性。它們在代理式人工智慧（agentic AI）和自動化工作流程中扮演核心角色。\n*   **效能與效率提升：** 新框架和模型著重於優化推論效率，例如連續批處理（continuous batching）、推測解碼（speculative decoding）等技術。同時，隨著模型變得更大更複雜，分散式架構下的優化（如KV快取卸載、資料/張量並行）也變得日益重要。\n*   **多模態能力：** 一些最新的開源LLM，如Grok-1.5V，已擴展其傳統的文字處理能力，整合了視覺理解，能夠解釋各種類型的",
+            "resultCount": 7
+          }
+        ],
+        "errors": []
+      },
+      "safety": {
+        "label": "AI Safety & Alignment",
+        "queriesRun": 2,
+        "resultCount": 2,
+        "results": [
+          {
+            "query": "AI alignment research latest",
+            "synthesis": "最新的人工智慧對齊研究顯示，該領域在理解和解決人工智慧系統的潛在風險方面取得了顯著進展，同時也面臨著新出現的挑戰。\n\n**研究重點與進展：**\n\n*   **理解錯誤對齊**：2025年，在理解大型語言模型（LLMs）的錯誤對齊（misalignment）方面取得了顯著進展。研究表明，在狹窄的有害任務上訓練專有和開源的LLMs，在特定條件下會產生泛化到不相關情境的錯誤對齊。\n*   **前沿模型的能力與挑戰**：前沿模型展現出更強的能力，這使得部署前的安全評估和部署後的可靠性變得更加複雜。同時，研究人員正在改進解決不良AI行為的方法，並探索在能力提升後增強AI安全的新途徑。\n*   **模型自舉報機制**：OpenAI推出了一項名為「自白（confessions）」的概念驗證方法，優化模型以自我報告不良行為。\n*   **雙向人機對齊**：研究正從單向對齊（僅使AI適應人類價值觀）轉向雙向人機對齊，這是一個動態的、互惠的過程，強調人類和AI透過互動、評估和以價值為中心的設計進行共同適應。\n*   **應對欺騙性行為**：有研究利用稀疏自編碼器（Sparse Autoencoder）的特",
+            "resultCount": 9
+          },
+          {
+            "query": "AI governance regulation 2026",
+            "synthesis": "2026年，全球人工智慧（AI）監管格局正從立法討論轉向實際執行，各地區的法規陸續生效，企業面臨日益增加的合規要求和更嚴格的審查。\n\n**歐盟AI法案全面實施在即**\n歐盟AI法案於2024年8月1日正式生效，其條款將在2025年至2027年間分階段實施。其中，針對「不可接受風險」的AI系統禁令以及AI素養要求已於2025年2月2日起適用。通用AI (GPAI) 的規則、治理、罰則和認證機構則從2025年8月2日開始生效。對企業影響最廣泛的「高風險AI系統」義務將於2026年8月2日起全面適用，而舊版GPAI模型則需在2027年8月2日前完成合規。未遵守規定的企業可能面臨最高3500萬歐元或全球營業額7%的罰款。歐盟委員會預計將在2026年發布指導方針，以協助企業理解和遵守AI法案，並將於2026年6月前敲定AI生成內容的標記與標籤行為準則草案。\n\n**美國各州法規先行，聯邦層面努力協調**\n美國目前尚未有全面的聯邦AI法規，但各州正在積極制定並實施相關法律，形成一個州級法規交織的局面。2026年將有多項州級AI法律生效：\n*   **科羅拉多州AI法案：** 適用於高風險AI系統的開",
+            "resultCount": 6
+          }
+        ],
+        "errors": []
+      },
+      "benchmarks": {
+        "label": "LLM Benchmarks",
+        "queriesRun": 2,
+        "resultCount": 2,
+        "results": [
+          {
+            "query": "MMLU ARC benchmark results 2026",
+            "synthesis": "截至2026年3月，大型語言模型（LLMs）在多任務語言理解（MMLU）和其更具挑戰性的版本MMLU-Pro基準測試中取得了顯著進展。然而，許多專家認為原始MMLU基準測試已達到「飽和」，頂級模型在此測試中普遍得分超過90%，因此已無法有效區分模型的先進能力。為應對這一挑戰，MMLU-Pro等新基準被開發出來，旨在通過更複雜、需要深度推理的問題來提供更嚴格的評估。\n\n**MMLU基準測試最新結果（截至2026年3月）**：\n\n在MMLU基準測試中，衡量模型在57個不同學科領域的知識，包括STEM、人文科學、社會科學和專業領域，截至2026年3月13日，GLM 5以91.7%的成績位居榜首，R1 0528緊隨其後，得分為90.5%。其他在MMLU上表現出色的模型包括OpenAI的GPT-5（92.5%）、o1（91.8%）和GPT-4.5（90.8%）。Sarvam-105B和Qwen3 VL 235B A22B Thinking也達到了90.6%。\n\n**MMLU-Pro基準測試最新結果（截至2026年3月）**：\n\nMMLU-Pro是一個強化版的基準測試，包含12,000個研究生級別",
+            "resultCount": 9
+          },
+          {
+            "query": "LLM comparison latest models",
+            "synthesis": "截至2026年初的最新資訊顯示，大型語言模型（LLM）領域競爭激烈，主要參與者如OpenAI、Anthropic、Google DeepMind、Meta、xAI、Mistral、DeepSeek等，皆推出了具備多模態、卓越推理能力、超長上下文窗口和混合專家（MoE）架構的新模型。\n\n**主要模型與趨勢概述：**\n\n*   **多模態能力：** 許多最新模型原生支援處理圖像、音訊、視訊和程式碼，而不僅限於文本，例如OpenAI的GPT-4o、Google的Gemini系列和Meta的Llama 4。\n*   **推理能力：** 模型在複雜推理任務上的表現持續提升。DeepSeek R1、Gemini 2.5 Pro和Claude Sonnet 4等模型在處理多步驟任務時表現出色。\n*   **上下文窗口：** 模型能夠處理的上下文長度顯著增加。例如，Llama 4 Scout擁有1000萬的上下文窗口，而Grok 4.1 Fast則有200萬。\n*   **混合專家（MoE）架構：** 許多最先進的模型採用MoE架構，這有助於提高效率和性能，儘管這使得僅基於參數數量進行直接比較變得困難",
+            "resultCount": 9
+          }
+        ],
+        "errors": []
+      },
+      "community": {
+        "label": "AGI Community",
+        "queriesRun": 2,
+        "resultCount": 2,
+        "results": [
+          {
+            "query": "AGI timeline predictions experts",
+            "synthesis": "搜尋並總結最新資訊: AGI timeline predictions experts\n\n專家對通用人工智慧（AGI）時間表的預測在近年來顯著縮短，但仍存在顯著分歧，具體取決於其定義和預測者的背景。儘管一些專家持謹慎態度，但許多業界領袖和預測機構已將AGI到來的時間預期大幅提前。\n\n**預測時間表加速的總體趨勢：**\n\n*   專家對AGI時間表的估計在過去幾年急劇縮短。2017年，預測通常在10到30年，甚至100年之外；但在八年後，一些專家談論的已是2到5年內。\n*   2020年，AGI的中位數專家估計約為2060-2070年。然而，到2026年初，預測者、預測市場和行業內部人士的綜合數據顯示，AGI在2029年出現的可能性為25%，到2033年出現的可能性為50%。\n*   以預測準確性著稱的Metaculus預測者，目前預計首個通用AI系統公開發布的中位日期為2028年2月。這比2020年預測的50年後大幅縮短。\n\n**主要專家的預測（多數預測為2025年末/2026年初）：**\n\n*   **Elon Musk (xAI, Tesla)：** 預測AGI（比最聰明的人更聰明",
+            "resultCount": 10
+          },
+          {
+            "query": "AI trending discussions community",
+            "synthesis": "最新的人工智慧 (AI) 討論社群和熱門話題顯示，AI 領域持續快速發展，並深入影響各行各業與日常生活。\n\n**熱門 AI 社群平台：**\n\n*   **Reddit (r/MachineLearning)**：擁有超過 300 萬成員，是 AI 和機器學習愛好者最活躍的社群之一，成員包含研究人員、AI 從業者和學生，討論內容涵蓋新突破、研究論文和新興趨勢。\n*   **OpenAI 開發者論壇 (OpenAI Developer Forum)**：專為使用 OpenAI 工具和 API 的開發者而設，提供直接獲取 OpenAI 更新和公告的管道，並設有提示工程 (prompting)、API、社群討論和 GPT 開發等專門類別。\n*   **Kaggle**：資料科學家和機器學習專家的熱門社群，提供學習、知識交流和實驗的空間，擁有來自 190 多個國家的用戶，並以機器學習競賽為主要特色。\n*   **Hugging Face**：以其 Transformers 函式庫而聞名，現已成為一個整合的開源 AI 生態系統，吸引開發者、研究人員和愛好者共同建立和分享機器學習模型、資料集和應用程",
+            "resultCount": 14
+          }
+        ],
+        "errors": []
+      },
+      "chinese_ai": {
+        "label": "Chinese AI Landscape",
+        "queriesRun": 2,
+        "resultCount": 2,
+        "results": [
+          {
+            "query": "DeepSeek latest model release 2026",
+            "synthesis": "DeepSeek 在 2025 年底和 2026 年初發布了數款重要模型，其中 DeepSeek V4 是 2026 年最受矚目的新一代 AI 模型。\n\n**DeepSeek V4 (預計於 2026 年 2 月中旬或 4 月發布)**\nDeepSeek V4 預計於 2026 年 2 月中旬左右發布，但也有報導指出其發布時間可能延至 2026 年 4 月。這款模型是 DeepSeek 的重大進展，旨在設定 AI 能力的新標準，並在各種 AI 任務中提供增強的性能。\n\nDeepSeek V4 的核心創新在於其「Engram 條件記憶架構」（Engram conditional memory architecture），這項技術於 2026 年 1 月 13 日發表，旨在改善 AI 在長時間內保留和處理資訊的方式，從而實現更複雜的上下文理解。據內部基準測試顯示，DeepSeek V4 在長上下文程式碼生成任務中的表現，據稱超越了 Claude 和 GPT 系列。該模型還整合了 DeepSeek Sparse Attention (DSA)，這是一種稀疏注意力機制，能夠在將計算成本降低約 ",
+            "resultCount": 8
+          },
+          {
+            "query": "Qwen Alibaba AI model updates",
+            "synthesis": "阿里巴巴的Qwen AI模型在近期發布了多項更新，涵蓋新模型、多模態能力、性能提升、開源策略以及組織架構調整，展現其在全球AI領域的積極發展。\n\n**最新模型發布與多模態進展：**\nQwen模型家族在2025年末至2026年初推出了多個重要版本。2025年9月，阿里巴巴陸續發布了Qwen3-Max、Qwen3-Next和多模態模型Qwen3-Omni。Qwen3-Omni尤其引人注目，它能夠生成文本、圖像、音頻和視頻。進入2026年，Qwen家族繼續擴大，包括1月發布的Qwen3-Max-Thinking，以及2月發布的Qwen3.5和Qwen3.5-Plus模型。2026年3月，阿里巴巴還推出了Qwen3.5系列中的四個小型模型（0.8B, 2B, 4B, 9B），這些模型具備原生的多模態處理能力，可同時處理文本和圖像。此外，還有專門的模型更新，如2026年2月推出的Qwen-Image-2.0，專注於專業排版渲染和更強的語義一致性圖像生成，以及用於編碼代理的Qwen3-Coder-Next和語音識別模型Qwen3-ASR與Qwen3-ForcedAligner。\n\n**性能與功能亮",
+            "resultCount": 11
+          }
+        ],
+        "errors": []
+      },
+      "claude_ecosystem": {
+        "label": "Claude & Anthropic Ecosystem",
+        "queriesRun": 2,
+        "resultCount": 2,
+        "results": [
+          {
+            "query": "Anthropic Claude latest announcements 2026",
+            "synthesis": "Anthropic Claude 在 2026 年進行了多項重大發布與更新，涉及其模型能力、新產品、合作夥伴計畫，以及與美國政府的爭議。\n\n**主要更新和發布：**\n\n*   **Claude Opus 4.6 模型發布**：Anthropic 於 2026 年 2 月 5 日推出了 Claude Opus 4.6，這是他們今年首個主要模型版本。該模型具備 100 萬個 token 的上下文視窗，能夠在單一會話中處理整個企業文件庫，並在專業基準測試中表現優於 GPT-5.2。Opus 4.6 在推理能力方面也有顯著提升，能夠將複雜任務分解為子任務並平行執行，在法律推理基準測試 BigLaw Bench 中獲得 90.2% 的分數。\n*   **Claude Cowork 推出**：作為桌面 AI 助理，Claude Cowork 於 2026 年 1 月底推出研究預覽版，旨在協助知識型工作者直接在其機器上創建和編輯文件，處理重複性高的任務，使人類能專注於更重要的工作。Cowork 後續在 2 月 25 日更新了創建和安排週期性與按需任務的能力。\n*   **Claude Code 的網",
+            "resultCount": 12
+          },
+          {
+            "query": "Claude Code CLI tool updates",
+            "synthesis": "Anthropic 已推出多項 Claude Code CLI 工具的更新，其中包含多個版本，引入了新功能、錯誤修復和效能改進。\n\n**近期主要更新概覽：**\n\n*   **版本 2.1.71 (2026 年 3 月 7 日)**：\n    *   新增 `/loop` 命令，可按設定的時間間隔重複執行提示或斜線命令。\n    *   增加了 Cron 排程工具，用於在會話中設定重複提示。\n    *   新增 `voice:pushToTalk` 鍵盤綁定，使語音啟動鍵可重新綁定。\n    *   擴展了 Bash 自動批准允許列表，新增了 `fmt`, `comm`, `cmp` 等多個命令。\n    *   修復了長時間執行會話中 stdin 凍結的問題，以及其他多個錯誤修復，包括解決了 `Read` 返回包含特殊字元檔案時導致會話崩潰的問題，以及終端標題在退出時被清除的問題。\n\n*   **版本 2.1.59 (2026 年 3 月 13 日)**：\n    *   新增自動記憶功能，Claude 會自動保存有用的上下文，可透過 `/memory` 管理。\n    *   新增",
+            "resultCount": 4
+          }
+        ],
+        "errors": []
+      },
+      "agent_landscape": {
+        "label": "AI Agent Landscape",
+        "queriesRun": 2,
+        "resultCount": 2,
+        "results": [
+          {
+            "query": "AI agent startups funding 2026",
+            "synthesis": "2026 年，人工智慧 (AI) 代理新創公司的資金與市場呈現爆炸性增長，預計將從 2025 年的 78.4 億美元市場規模，成長到 120 億至 150 億美元之間。整個 AI 代理市場預計將以 41% 的複合年增長率 (CAGR) 擴張，並在 2030 年達到 526.2 億美元。\n\n**主要資金趨勢與投資熱點：**\n\n*   **企業級 AI 代理的崛起**：2026 年的趨勢顯示，AI 代理已從實驗階段邁向企業實際部署，並專注於將 AI 投資轉化為可持續、可擴展的價值。企業對代理式系統的 AI 預算投入已超過 40%。\n*   **巨額融資持續不斷**：大型 AI 公司如 OpenAI、xAI 和 Anthropic 在 2025 年和 2026 年初繼續吸引巨額投資。xAI 在 2026 年 1 月完成了一輪 200 億美元的融資，而 Anthropic 也在 2025 年 9 月獲得了 130 億美元的 F 輪融資，估值達到 1830 億美元。\n*   **新興獨角獸與快速成長公司**：Anysphere (Cursor)、Cognition AI 和 Harvey 等新創",
+            "resultCount": 13
+          },
+          {
+            "query": "desktop automation AI agents latest",
+            "synthesis": "桌面自動化 AI 代理正迅速發展，將人工智慧從雲端帶到本機操作，旨在模擬人類與電腦互動的方式，以實現複雜任務的自動化。這一領域的最新趨勢顯示，AI 代理不再僅限於簡單的回應或內容生成，而是具備理解螢幕元素、執行多步驟工作流程、甚至跨應用程式協作的能力。\n\n**主要參與者與產品更新：**\n\n*   **OpenAI**：推出了「Operator」代理，作為 ChatGPT 的自主網路任務助手，並利用最新的 GPT-4 視覺技術。OpenAI 的 Codex 也已進化為獨立的桌面應用程式，允許用戶指揮多個 AI 代理進行程式碼開發、管理專案和自動化重複性任務。\n*   **Google**：透過「Project Mariner」（Gemini Agent）進入此領域，強調多任務並行處理和長期學習能力。Gemini Agent 旨在處理從收件箱管理到專案規劃等複雜的多步驟任務，並整合了網路瀏覽和多個 Google 應用程式。\n*   **Microsoft**：Windows Copilot 作為 Windows 11 的內建 AI 助手，已在桌面側邊欄提供，而 Microsoft 365 ",
+            "resultCount": 13
+          }
+        ],
+        "errors": []
+      }
+    }
+  },
+  "debate": {
+    "mode": "heuristic",
+    "perspectives": [
+      {
+        "name": "Researcher",
+        "analysis": "[Researcher Analysis]. Focus: 學術嚴謹、方法論、證據品質. Key signals: research, bench, research, architecture, models, architectures, models, architectures. Coverage: 134 keywords from 2000 chars. Evidence quality: Mostly industry claims, needs verification"
+      },
+      {
+        "name": "Engineer",
+        "analysis": "[Engineer Analysis]. Focus: 實作可行性、擴展性、系統整合. Key signals: research, latest, breakthroughs, 2026, 2026年, 人工通用智慧, 領域正經歷從生成式ai轉向具備自主性的代理系統的重大轉變, 同時業界也更加重視ai的實際應用與效益評估. Coverage: 134 keywords from 2000 chars. Implementation readiness: Mostly experimental/research stage"
+      },
+      {
+        "name": "Skeptic",
+        "analysis": "[Skeptic Analysis]. Focus: 批判分析、風險評估、假設質疑. Key signals: research, latest, breakthroughs, 2026, 2026年, 人工通用智慧, 領域正經歷從生成式ai轉向具備自主性的代理系統的重大轉變, 同時業界也更加重視ai的實際應用與效益評估. Coverage: 134 keywords from 2000 chars. Risk assessment: Insufficient safety analysis in source data"
+      },
+      {
+        "name": "Strategist",
+        "analysis": "[Strategist Analysis]. Focus: 長期願景、競爭格局、路線圖. Key signals: research, latest, breakthroughs, 2026, 2026年, 人工通用智慧, 領域正經歷從生成式ai轉向具備自主性的代理系統的重大轉變, 同時業界也更加重視ai的實際應用與效益評估. Coverage: 134 keywords from 2000 chars. Market signal: Limited business intelligence in source data"
+      }
+    ],
+    "synthesis": {
+      "consensus": "Synthesis from 4 council roles. Consensus themes (3+ roles agree): 2000, 2026, analysis, focus, signals, research, coverage, keywords, from, chars. Divergent signals (single role): researcher, 學術嚴謹, 證據品質, bench, architecture. Recommendation: Cross-validate divergent signals; prioritize consensus themes for action.",
+      "mode": "heuristic"
+    }
+  },
+  "optimize": {
+    "timestamp": "2026-03-17T01:04:19.019Z",
+    "golemId": "rensin",
+    "selfHeal": {
+      "repaired": 0,
+      "issues": []
+    },
+    "dedup": {
+      "checked": 2,
+      "merged": 0
+    },
+    "scoring": {
+      "scored": 2,
+      "topScore": 0.7,
+      "avgScore": 0.7
+    },
+    "promotion": {
+      "promoted": 0,
+      "rules": []
+    },
+    "decay": {
+      "decayed": 0,
+      "cutoffDays": 30
+    },
+    "compact": {
+      "checked": 2,
+      "merged": 0,
+      "pruned": 0
+    }
+  },
+  "ingest": {
+    "ingested": 16,
+    "failed": 0
+  }
+}
