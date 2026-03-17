@@ -118,9 +118,19 @@ Reply JSON only:
 
         try {
             const raw = await this.brain.sendMessage(prompt, true);
-            const match = raw.match(/\{[^}]*"correctness"[^}]*\}/);
-            if (!match) return null;
-            const parsed = JSON.parse(match[0]);
+            // Extract JSON: find first { ... } block containing "correctness"
+            let parsed;
+            try {
+                const jsonStart = raw.indexOf('{');
+                const jsonEnd = raw.lastIndexOf('}');
+                if (jsonStart === -1 || jsonEnd === -1) return null;
+                parsed = JSON.parse(raw.substring(jsonStart, jsonEnd + 1));
+            } catch (_) {
+                // Fallback: try simple regex for flat objects
+                const match = raw.match(/\{[^{}]*"correctness"[^{}]*\}/);
+                if (!match) return null;
+                parsed = JSON.parse(match[0]);
+            }
 
             // Validate ranges
             const grades = {};
@@ -206,10 +216,15 @@ Reply JSON only:
             }
         }
 
-        // Normalize
+        // Normalize — ensure weights sum to exactly 1.0
         const sum = Object.values(this._weights).reduce((s, w) => s + w, 0);
         for (const dim of DIMENSIONS) {
-            this._weights[dim] = Math.round(this._weights[dim] / sum * 100) / 100;
+            this._weights[dim] = this._weights[dim] / sum;
+        }
+        // Fix rounding: adjust last dimension to guarantee sum === 1.0
+        const roundedSum = DIMENSIONS.reduce((s, d) => s + this._weights[d], 0);
+        if (roundedSum !== 1.0) {
+            this._weights[DIMENSIONS[0]] += 1.0 - roundedSum;
         }
 
         console.log(`[OutputGrader] Calibrated weights: ${JSON.stringify(this._weights)}`);

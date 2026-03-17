@@ -199,11 +199,13 @@ class VectorStore {
             const buf = row.embedding;
             const vec = new Float32Array(buf.buffer, buf.byteOffset, buf.byteLength / 4);
             const score = this._ep.cosineSimilarity(queryVec, vec);
+            let metadata = {};
+            try { metadata = JSON.parse(row.metadata || '{}'); } catch (_) { /* corrupted metadata, use empty */ }
             scored.push({
                 id: row.id,
                 content: row.content,
                 score,
-                metadata: JSON.parse(row.metadata || '{}'),
+                metadata,
                 source: row.source,
                 created_at: row.created_at,
             });

@@ -7,6 +7,7 @@ class AgentBus {
         this._subscriptions = new Map(); // topic → Set<{ handler, subscriberId }>
         this._messageLog = [];           // ring buffer max 500
         this._deadLetterQueue = [];      // max 50
+        this._topicMessageCount = {};    // topic → count (incremental, avoids O(n) scan)
     }
 
     static TOPICS = {
@@ -16,6 +17,11 @@ class AgentBus {
         TASK_REQUEST: 'task.request',
         TASK_RESULT: 'task.result',
         OODA_DECISION: 'ooda.decision',
+        // v11.2: Goal propagation topics
+        GOAL_PUBLISHED: 'goal.published',
+        GOAL_CLAIMED: 'goal.claimed',
+        GOAL_COMPLETED: 'goal.completed',
+        GOAL_LEARNING: 'goal.learning',
     };
 
     /**
@@ -36,6 +42,7 @@ class AgentBus {
         // Log message
         this._messageLog.push(message);
         if (this._messageLog.length > 500) this._messageLog.shift();
+        this._topicMessageCount[topic] = (this._topicMessageCount[topic] || 0) + 1;
 
         const subs = this._subscriptions.get(topic);
         if (!subs || subs.size === 0) {
@@ -126,6 +133,21 @@ class AgentBus {
             count += subs.size;
         }
         return count;
+    }
+
+    /**
+     * v11.2: Get topic-level metrics
+     * @returns {Object} { topic: { subscribers, messages } }
+     */
+    getTopicMetrics() {
+        const metrics = {};
+        for (const [topic, subs] of this._subscriptions) {
+            metrics[topic] = {
+                subscribers: subs.size,
+                messages: this._topicMessageCount[topic] || 0,
+            };
+        }
+        return metrics;
     }
 }
 

@@ -3,9 +3,11 @@
 // Tracks response quality, latency, success rates, model routing
 // ============================================================
 const fs = require('fs');
+const fsp = require('fs').promises;
 const path = require('path');
 
 const MAX_EVENTS = 10000;
+const MAX_HISTOGRAM_ENTRIES = 500;
 const FLUSH_INTERVAL_MS = 60000;
 const METRICS_FILE = 'golem_metrics.json';
 
@@ -47,13 +49,13 @@ class MetricsCollector {
         if (typeof data.value === 'number') {
             if (!this._histograms[name]) this._histograms[name] = [];
             this._histograms[name].push(data.value);
-            if (this._histograms[name].length > 1000) this._histograms[name].shift();
+            if (this._histograms[name].length > MAX_HISTOGRAM_ENTRIES) this._histograms[name].shift();
         }
         if (typeof data.durationMs === 'number') {
             const latencyKey = `${name}_latency`;
             if (!this._histograms[latencyKey]) this._histograms[latencyKey] = [];
             this._histograms[latencyKey].push(data.durationMs);
-            if (this._histograms[latencyKey].length > 1000) this._histograms[latencyKey].shift();
+            if (this._histograms[latencyKey].length > MAX_HISTOGRAM_ENTRIES) this._histograms[latencyKey].shift();
         }
     }
 
@@ -149,10 +151,10 @@ class MetricsCollector {
     /**
      * Flush metrics to disk
      */
-    flush() {
+    async flush() {
         try {
             const report = this.generateReport();
-            fs.writeFileSync(this._file, JSON.stringify(report, null, 2));
+            await fsp.writeFile(this._file, JSON.stringify(report, null, 2));
         } catch (e) {
             console.warn('[MetricsCollector] Flush failed:', e.message);
         }

@@ -18,6 +18,7 @@ class Planner {
         this.worldModel = options.worldModel || null;
         this.metricsCollector = options.metricsCollector || null;
         this.checkpoint = options.checkpoint || new PlanCheckpoint({ golemId: this.golemId });
+        this._templateLibrary = options.templateLibrary || null; // v11.1
         this._activePlan = null;
         this._planHistory = [];
     }
@@ -30,8 +31,28 @@ class Planner {
      */
     async createPlan(goal, context = {}) {
         const planId = `plan_${uuidv4().substring(0, 8)}`;
-        const decomposed = await this.decomposer.decompose(goal);
-        const sorted = this.decomposer.topologicalSort(decomposed.tasks);
+
+        // v11.1: Try template-first planning
+        let sorted;
+        let usedTemplate = null;
+        if (this._templateLibrary) {
+            const templates = this._templateLibrary.matchTemplates(goal, 1);
+            if (templates.length > 0 && this._templateLibrary.isHighConfidence(templates[0])) {
+                usedTemplate = templates[0];
+                sorted = usedTemplate.pattern.map((step, idx) => ({
+                    id: `tmpl_step_${idx}`,
+                    desc: step.description,
+                    level: step.level || 'L1',
+                    deps: idx > 0 ? [`tmpl_step_${idx - 1}`] : [],
+                }));
+                console.log(`[Planner] Using high-confidence template: ${usedTemplate.id} (${usedTemplate.uses} uses, ${Math.round(usedTemplate.successRate * 100)}% success)`);
+            }
+        }
+
+        if (!sorted) {
+            const decomposed = await this.decomposer.decompose(goal);
+            sorted = this.decomposer.topologicalSort(decomposed.tasks);
+        }
 
         // Simulate outcomes if world model available
         let predictions = null;
@@ -171,8 +192,19 @@ class Planner {
         // Determine overall status
         const allCompleted = plan.steps.every(s => s.status === PLAN_STATUS.COMPLETED);
         const anyFailed = plan.steps.some(s => s.status === PLAN_STATUS.FAILED);
-        plan.status = allCompleted ? PLAN_STATUS.COMPLETED : (anyFailed ? PLAN_STATUS.FAILED : PLAN_STATUS.COMPLETED);
+        plan.status = allCompleted ? PLAN_STATUS.COMPLETED : (anyFailed ? PLAN_STATUS.FAILED : PLAN_STATUS.RUNNING);
         plan.updatedAt = Date.now();
+
+        // v11.1: Learn template from successful plans
+        if (allCompleted && this._templateLibrary) {
+            try {
+                this._templateLibrary.learnTemplate({
+                    goal: plan.goal,
+                    steps: plan.steps.map(s => ({ description: s.description, level: s.level })),
+                    success: true,
+                });
+            } catch (e) { /* non-blocking */ }
+        }
 
         return { plan, results };
     }
@@ -229,10 +261,15 @@ ${completedSteps.join('\n') || '(無)'}
 
             // Replace remaining pending steps
             const failedIdx = plan.steps.indexOf(failedStep);
-            plan.steps = [
-                ...plan.steps.slice(0, failedIdx),
-                ...newSteps,
-            ];
+            if (failedIdx === -1) {
+                console.warn('[Planner] Re-plan: failed step not found in plan, appending new steps');
+                plan.steps.push(...newSteps);
+            } else {
+                plan.steps = [
+                    ...plan.steps.slice(0, failedIdx),
+                    ...newSteps,
+                ];
+            }
 
             plan.status = PLAN_STATUS.RUNNING;
 

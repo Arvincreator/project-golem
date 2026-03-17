@@ -10,6 +10,7 @@ class DebouncedWriter {
     this.delayMs = delayMs;
     this._pendingData = null;
     this._timer = null;
+    this._flushing = false;
     DebouncedWriter._instances.add(this);
   }
 
@@ -27,7 +28,8 @@ class DebouncedWriter {
   }
 
   async _flush() {
-    if (this._pendingData === null) return;
+    if (this._flushing || this._pendingData === null) return;
+    this._flushing = true;
     const data = this._pendingData;
     this._pendingData = null;
     const tmpPath = this.filepath + '.tmp';
@@ -41,6 +43,8 @@ class DebouncedWriter {
       await fs.rename(tmpPath, this.filepath);
     } catch (err) {
       console.warn(`[DebouncedWriter] Failed to flush ${this.filepath}: ${err.message}`);
+    } finally {
+      this._flushing = false;
     }
   }
 

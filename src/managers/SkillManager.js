@@ -130,8 +130,10 @@ class SkillManager {
                 console.warn('[SkillManager] CodeSafetyValidator not available, skipping AST check');
             }
 
-            // 寫入檔案
-            const filename = `imported-${payload.n.toLowerCase().replace(/\s+/g, '-')}.js`;
+            // 寫入檔案 — sanitize filename to prevent path traversal
+            const safeName = path.basename(payload.n.toLowerCase().replace(/\s+/g, '-')).replace(/[^a-z0-9-]/g, '');
+            if (!safeName) throw new Error('Invalid skill name after sanitization');
+            const filename = `imported-${safeName}.js`;
             const filePath = path.join(this.userDir, filename);
 
             // 備份舊檔 (如果存在)
