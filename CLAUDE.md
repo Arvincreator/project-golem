@@ -1,4 +1,4 @@
-# Project Golem v10.9 — 開發指南
+# Project Golem v11.2 — 開發指南
 
 ## 架構概覽
 - **RouterBrain**: 智能多模型路由器，fallback chain: monica-web → monica → sdk → ollama → claude, 90s 全鏈超時
@@ -50,7 +50,7 @@
 - 框架: Jest 30 | 目錄: `tests/` | 執行: `npx jest --no-coverage`
 - Setup: `tests/setup.js` (env vars + **全域 timer 攔截追蹤**) + `tests/setup-afterall.js` (DebouncedWriter + SystemLogger + **全 timer 清掃**)
 - **不使用 --forceExit** (v10.9.4 已修復所有 open handles — timer 攔截機制)
-- 基線: 805 tests, 67 suites, 0 failures, 0 open handles
+- 基線: 1009 tests, 74 suites, 0 failures, 0 open handles
 
 ## v10.5 架構決策 (向量 RAG + Claude 雙向整合)
 1. **嵌入模型**: Gemini text-embedding-004 (零新依賴, 複用 @google/genai, 768維, 免費 1500 RPM)
@@ -120,3 +120,63 @@
 6. **XML Config**: RouterBrain.init() 讀取 getBrainConfig() fallback chain
 7. **可觀察性**: RAGProvider/EmbeddingProvider 空 catch 加 console.warn
 8. **CF Worker 診斷**: doctor.js 加入 RAG/WarRoom Worker 連通性檢查
+
+## v11.0 AGI 自進化引擎 — Trajectory-Informed Memory + Enhanced OODA
+- **TrajectoryTipExtractor** (`src/core/TrajectoryTipExtractor.js`): 從 trace 萃取 3 種 tip (strategy/recovery/optimization), heuristic 免費 + LLM 限 5+ steps 混合軌跡
+- **TipMemory** (`src/core/TipMemory.js`): 持久化 tip 儲存 (max 200) + Jaccard 關鍵字檢索, DebouncedWriter, outcome 追蹤
+- **ExperienceReplay 整合**: reflect() 後自動 `_extractAndStoreTips()`, 新增 `getTips(situation)` 委派 TipMemory
+- **OODALoop 強化 (5→8 決策)**: 新增 `apply_recovery_tip`, `apply_optimization_tip`, `plan_ahead`, Thompson Sampling 選 tip, `_recordTipOutcome()` 回饋
+- **WorldModel 強化**: `enrichState()` 結構化 state, `setTipMemory()` + tip-boosted `valueFunction()` (max +0.15)
+- **AutonomyManager**: `setTipSystem(tipMemory, tipExtractor)` 注入, OODA 建構含 tipMemory
+
+## v11.1 Learned Plan Templates + Regression-Aware Evolution
+- **PlanTemplateLibrary** (`src/core/PlanTemplateLibrary.js`): 成功計畫泛化為模板 (max 50), 關鍵字匹配, 高信心(3+次/>70%) 跳過 LLM
+- **RegressionDetector** (`src/core/RegressionDetector.js`): pass→fail flip-centered gating, `analyzeFlips()` + `shouldGate()` + trend 追蹤
+- **SelfEvolution**: `getThompsonScore()` Bayesian 取代硬閾值, `proposeEvolution()` + `afterEvolution()` 回歸感知進化管線
+- **Planner**: 模板優先 (`_templateLibrary`), 高信心模板直接使用跳過 decompose, 成功計畫自動 `learnTemplate()`
+- **Nexus**: auto 迴圈完成後自動 `learnTemplate()` 學習
+
+## v11.2 Full MUSE Loop + Multi-Agent Goal Propagation
+- **MUSELoop** (`src/core/MUSELoop.js`): Plan→Execute→Reflect→Memorize 完整迴圈, 組合 Planner+ExperienceReplay+TipExtractor+TemplateLibrary
+- **GoalPropagator** (`src/core/GoalPropagator.js`): 目標發布/認領/回報/學習共享, `autoAssign()` 能力匹配, 4 AgentBus topics (goal.*)
+- **SubAgent**: `_checkGoals()`, `_shareOutcome()`, `_applyLearning()`, `_getCapability()` (analysis/execution/monitoring)
+- **AnalystAgent**: 自動認領 analysis goals + 完成後 `shareLearning()` + `completeGoal()`
+- **WorkerAgent**: 優先級排序取代 FIFO, goal 成果/失敗回報
+- **SentinelAgent**: critical 警報自動發布為 critical priority goal
+- **AgentBus**: +4 goal topics, `getTopicMetrics()` topic 統計
+
+## v11.4 Full Autonomy — AutonomyScheduler
+- **AutonomyScheduler** (`src/core/AutonomyScheduler.js`): tick 模式排程器，不擁有任何 timer，由 AutonomyManager.timeWatcher() 每 60s 驅動
+- **Tick 優先序**: RSS heal > Episode dedup > Scan (2hr) > Debate (3hr) > Optimize (1hr) > noop
+- **環境變數**: `ENABLE_V114_AUTONOMY=true` (啟用), `V114_SCAN_INTERVAL_MIN` (120), `V114_DEBATE_INTERVAL_MIN` (180), `V114_OPTIMIZE_INTERVAL_MIN` (60), `V114_RSS_HEAL_THRESHOLD` (350), `V114_EPISODE_DEDUP_THRESHOLD` (50)
+- **OODALoop 整合**: orient() 注入 `autonomyContext`, decide() +2 決策 (`act_on_scan_findings`, `trigger_memory_optimize`), act() +2 handler
+- **Scan history 持久化**: `data/v114_scan_history_{golemId}.json` (DebouncedWriter, max 50 records)
+- **AutonomyManager**: `setAutonomyScheduler()` 注入, timeWatcher() 尾部 tick, stop() 清理, status report 含 v11.4 統計
+
+## v11.4 Live Runner (`scripts/run-v114-live.js`)
+- **獨立運行腳本**: 不經 index.js，直接初始化 10 個核心模組
+- **三模式**:
+  - `node scripts/run-v114-live.js test` — 單一 WebResearcher.search() 驗證 Gemini API
+  - `node scripts/run-v114-live.js full` — 完整掃描→辯論→優化→RAG 灌入
+  - `node scripts/run-v114-live.js autonomy` — 60s tick loop + 1hr 監控 + 自動統計
+- **環境變數**: 自動 bridge `GEMINI_API_KEYS` → `GEMINI_API_KEY`, 預設 `GEMINI_SEARCH_MODEL=gemini-2.5-flash`
+- **輸出**: `data/v114_live_results_{timestamp}.json`, `data/v114_autonomy_session_{timestamp}.json`
+
+## AGIScanner 擴充查詢類別 (8 類 ~40 查詢)
+- `research` (6): AGI 突破, Transformer 替代, 推理進展, arXiv, SSM/Mamba, World Models
+- `code` (6): GitHub trending, 開源 LLM, Agent 框架, AutoGen/CrewAI/LangGraph, Swarm, Claude Code MCP
+- `safety` (7): 對齊研究, 治理法規, 紅隊, ARC Evals, MIRI, Anthropic RSP, AISI
+- `benchmarks` (6): MMLU/ARC, 模型比較, 程式碼基準, SWE-bench, GPQA, Chatbot Arena
+- `community` (5): AGI 時間表, 趨勢討論, Reddit, HN, Twitter/X
+- `chinese_ai` (5): DeepSeek, Qwen, ByteDance, 中國 AI 競爭, 中國開源排行
+- `claude_ecosystem` (5): Anthropic 公告, Claude Code, 模型比較, 資金合作, API 新功能
+- `agent_landscape` (5): Agent 新創, 桌面自動化, Coding agent, 自主系統研究, 編排框架
+
+## WebResearcher API Key 輪替
+- 支援多 key: `GEMINI_API_KEY` + `GEMINI_API_KEYS` (逗號分隔)
+- 429/RESOURCE_EXHAUSTED 自動換 key
+- `GEMINI_SEARCH_MODEL` env var 可配置搜尋模型 (預設 gemini-2.0-flash)
+
+## EmbeddingProvider 模型升級
+- `text-embedding-004` → `gemini-embedding-001` (3072 維)
+- `GEMINI_EMBED_MODEL` env var 可覆蓋
