@@ -1,9 +1,9 @@
 /**
  * 檔案名稱: dashboard.js
- * 版本: v9.0 (MultiAgent Monitor)
+ * 版本: v9.1 (MultiAgent Monitor)
  * ---------------------------------------
  * 更新重點：
- * 1. 🟢 適配 v9.0 核心架構。
+ * 1. 🟢 適配 v9.1 核心架構。
  * 2. 👥 新增 MultiAgent 活動監控 (青色顯示)。
  * 3. 🎨 介面標題與狀態更新，保留所有 v8.6 功能。
  */
@@ -29,7 +29,7 @@ class DashboardPlugin {
 
         if (this.useTUI) {
             this.view = new TerminalView({
-                title: '🦞 Golem v9.0 戰術控制台 (MultiAgent Edition)',
+                title: '🦞 Golem v9.1 戰術控制台 (MultiAgent Edition)',
                 onExit: () => this.detach()
             });
         } else {
@@ -107,8 +107,17 @@ class DashboardPlugin {
     }
 
     startMonitoring() {
+        let lastCpuUsage = this._getCPUInfo();
+
         this.timer = setInterval(() => {
             if (this.manager.state.isDetached) return clearInterval(this.timer);
+
+            // CPU Usage Calculation
+            const currentCpuUsage = this._getCPUInfo();
+            const idleDiff = currentCpuUsage.idle - lastCpuUsage.idle;
+            const totalDiff = currentCpuUsage.total - lastCpuUsage.total;
+            const cpuUsagePerc = totalDiff > 0 ? (1 - idleDiff / totalDiff) * 100 : 0;
+            lastCpuUsage = currentCpuUsage;
 
             const memUsage = process.memoryUsage().heapUsed / 1024 / 1024;
             const metricsData = this.manager.updateMetrics(memUsage);
@@ -125,9 +134,26 @@ class DashboardPlugin {
             }
 
             if (this.webServer) {
-                this.webServer.broadcastHeartbeat({ memUsage, uptime: uptimeStr, cpu: 0 });
+                this.webServer.broadcastHeartbeat({
+                    memUsage,
+                    uptime: uptimeStr,
+                    cpu: parseFloat(cpuUsagePerc.toFixed(1))
+                });
             }
         }, 1000);
+    }
+
+    _getCPUInfo() {
+        const cpus = os.cpus();
+        let idle = 0;
+        let total = 0;
+        cpus.forEach(cpu => {
+            for (const type in cpu.times) {
+                total += cpu.times[type];
+            }
+            idle += cpu.times.idle;
+        });
+        return { idle, total };
     }
 
     detach() {
@@ -142,13 +168,19 @@ class DashboardPlugin {
 
         process.stdout.write("\n============================================\n");
         process.stdout.write("📺 Dashboard 已關閉 (Visual Interface Detached)\n");
-        process.stdout.write("🤖 Golem v9.0 仍在背景執行中...\n");
+        process.stdout.write("🤖 Golem v9.1 仍在背景執行中...\n");
         process.stdout.write("============================================\n\n");
     }
 
     setContext(golemId, brain, memory, autonomy) {
         if (this.webServer) {
             this.webServer.setContext(golemId, brain, memory, autonomy);
+        }
+    }
+
+    removeContext(golemId) {
+        if (this.webServer) {
+            this.webServer.removeContext(golemId);
         }
     }
 }

@@ -8,150 +8,7 @@ import { useGolem } from "@/components/GolemContext";
 import { Activity, Cpu, Server, Clock, RefreshCcw, PowerOff, AlertTriangle, TriangleAlert, BrainCircuit, UserPlus, Zap } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogFooter,
-} from "@/components/ui/dialog";
-
-// ── 通用確認彈窗元件 ────────────────────────────────────────────────────────
-interface ConfirmDialogProps {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    variant: "restart" | "shutdown";
-    onConfirm: () => void;
-    isLoading: boolean;
-}
-
-function ConfirmDialog({ open, onOpenChange, variant, onConfirm, isLoading }: ConfirmDialogProps) {
-    const isRestart = variant === "restart";
-
-    const config = isRestart
-        ? {
-            icon: <RefreshCcw className="w-5 h-5 text-primary" />,
-            iconBg: "bg-primary/10 border-primary/20",
-            title: "重新啟動 Golem？",
-            description: "這將終止目前進程並立即重啟。前端會短暫斷線（約 3-5 秒）後自動重新連線。",
-            warning: "進行中的對話將被中斷。",
-            confirmLabel: "確認重啟",
-            loadingLabel: "正在重啟...",
-            confirmClass: "bg-primary hover:bg-primary/90 text-primary-foreground",
-        }
-        : {
-            icon: <PowerOff className="w-5 h-5 text-destructive" />,
-            iconBg: "bg-destructive/10 border-destructive/20",
-            title: "關閉 Golem？",
-            description: "這將完全終止後端進程。關閉後需手動在終端機執行 npm start 重新啟動。",
-            warning: "所有運行中的任務將立即停止。",
-            confirmLabel: "確認關閉",
-            loadingLabel: "正在關閉...",
-            confirmClass: "bg-destructive hover:bg-destructive/90 text-destructive-foreground",
-        };
-
-    return (
-        <Dialog open={open} onOpenChange={isLoading ? undefined : onOpenChange}>
-            <DialogContent
-                showCloseButton={!isLoading}
-                className="bg-card border-border text-foreground max-w-sm"
-            >
-                <DialogHeader>
-                    {/* 圖示卡片 */}
-                    <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-2 ${config.iconBg}`}>
-                        {config.icon}
-                    </div>
-                    <DialogTitle className="text-foreground text-base">
-                        {config.title}
-                    </DialogTitle>
-                    <DialogDescription className="text-muted-foreground text-sm leading-relaxed">
-                        {config.description}
-                    </DialogDescription>
-                </DialogHeader>
-
-                {/* 警示欄 */}
-                <div className="flex items-start gap-2 rounded-lg bg-muted/60 border border-border/50 px-3 py-2.5">
-                    <TriangleAlert className="w-3.5 h-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                    <p className="text-xs text-muted-foreground">{config.warning}</p>
-                </div>
-
-                <DialogFooter className="gap-2 sm:gap-2">
-                    <Button
-                        variant="outline"
-                        className="flex-1 bg-transparent border-border text-muted-foreground hover:bg-accent hover:text-foreground"
-                        onClick={() => onOpenChange(false)}
-                        disabled={isLoading}
-                    >
-                        取消
-                    </Button>
-                    <Button
-                        className={`flex-1 ${config.confirmClass}`}
-                        onClick={onConfirm}
-                        disabled={isLoading}
-                    >
-                        {isLoading ? (
-                            <span className="flex items-center gap-1.5">
-                                <RefreshCcw className="w-3.5 h-3.5 animate-spin" />
-                                {config.loadingLabel}
-                            </span>
-                        ) : config.confirmLabel}
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    );
-}
-
-// ── 完成通知彈窗 ───────────────────────────────────────────────────────────
-interface DoneDialogProps {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    variant: "restarted" | "shutdown";
-}
-
-function DoneDialog({ open, onOpenChange, variant }: DoneDialogProps) {
-    const isRestarted = variant === "restarted";
-    return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="bg-card border-border text-foreground max-w-sm" showCloseButton={false}>
-                <DialogHeader>
-                    <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-2 ${isRestarted ? "bg-green-500/10 border-green-500/20" : "bg-muted border-border"}`}>
-                        {isRestarted
-                            ? <RefreshCcw className="w-5 h-5 text-green-400 animate-spin" />
-                            : <PowerOff className="w-5 h-5 text-gray-400" />
-                        }
-                    </div>
-                    <DialogTitle className="text-foreground text-base">
-                        {isRestarted ? "正在重新啟動..." : "Golem 已關閉"}
-                    </DialogTitle>
-                    <DialogDescription className="text-muted-foreground text-sm">
-                        {isRestarted
-                            ? "系統正在重啟中，頁面將在 3 秒後自動重新整理。"
-                            : "進程已完全停止。若需重新啟動，請在終端機執行："
-                        }
-                    </DialogDescription>
-                </DialogHeader>
-                {!isRestarted && (
-                    <div className="rounded-lg bg-muted border border-border px-3 py-2">
-                        <code className="text-xs text-primary font-mono">npm start</code>
-                    </div>
-                )}
-                {!isRestarted && (
-                    <DialogFooter>
-                        <Button
-                            variant="secondary"
-                            className="w-full border-border"
-                            onClick={() => onOpenChange(false)}
-                        >
-                            關閉
-                        </Button>
-                    </DialogFooter>
-                )}
-            </DialogContent>
-        </Dialog>
-    );
-}
+import { SystemActionDialogs } from "@/components/SystemActionDialogs";
 
 // ── 主頁面 ─────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
@@ -166,10 +23,10 @@ export default function DashboardPage() {
     const [memHistory, setMemHistory] = useState<{ time: string; value: number }[]>([]);
 
     // Dialog states
-    const [confirmDialog, setConfirmDialog] = useState<{ open: boolean; variant: "restart" | "shutdown" }>({
+    const [confirmDialog, setConfirmDialog] = useState<{ open: boolean; variant: "restart" | "shutdown" | "start" }>({
         open: false, variant: "restart"
     });
-    const [doneDialog, setDoneDialog] = useState<{ open: boolean; variant: "restarted" | "shutdown" }>({
+    const [doneDialog, setDoneDialog] = useState<{ open: boolean; variant: "restarted" | "shutdown" | "started" }>({
         open: false, variant: "restarted"
     });
     const [isLoading, setIsLoading] = useState(false);
@@ -373,20 +230,15 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {/* 確認 Dialog */}
-            <ConfirmDialog
-                open={confirmDialog.open}
-                onOpenChange={(open) => !isLoading && setConfirmDialog(prev => ({ ...prev, open }))}
-                variant={confirmDialog.variant}
-                onConfirm={handleConfirm}
+            <SystemActionDialogs
+                confirmDialogOpen={confirmDialog.open}
+                setConfirmDialogOpen={(open) => setConfirmDialog(prev => ({ ...prev, open }))}
+                confirmVariant={confirmDialog.variant}
+                handleConfirm={handleConfirm}
                 isLoading={isLoading}
-            />
-
-            {/* 完成通知 Dialog */}
-            <DoneDialog
-                open={doneDialog.open}
-                onOpenChange={(open) => setDoneDialog(prev => ({ ...prev, open }))}
-                variant={doneDialog.variant}
+                doneDialogOpen={doneDialog.open}
+                setDoneDialogOpen={(open) => setDoneDialog(prev => ({ ...prev, open }))}
+                doneVariant={doneDialog.variant}
             />
         </div>
     );

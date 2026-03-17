@@ -39,7 +39,7 @@
     "blocked_command": "已封鎖: \"{{command}}\" 包含危險操作 \"{{reason}}\""
   },
   "dashboard": {
-    "title": "Golem v9.0",
+    "title": "Golem v9.1",
     "subtitle": "多智能體戰情室",
     "nav": {
       "tactical": "戰術控制台",

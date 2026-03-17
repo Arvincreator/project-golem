@@ -28,7 +28,7 @@ class AutonomyManager {
         console.log(`🚀 [Autonomy][${this.golemId}] Starting autonomy services...`);
         this.scheduleNextAwakening();
         setInterval(() => this.timeWatcher(), 60000);
-        // ✨ [v9.0.7] 定時自動檢查一次日誌狀態 (改為動態排程，支援熱重載)
+        // ✨ [v9.1.5] 定時自動檢查一次日誌狀態 (改為動態排程，支援熱重載)
         this.archiveTimer = null;
         this.scheduleNextArchive();
     }
@@ -156,7 +156,7 @@ class AutonomyManager {
                 const adminCtx = await this.getAdminContext();
                 const prompt = `【⏰ 系統排程觸發】\n時間：${task.time}\n任務內容：${task.task}\n\n請根據任務內容，主動向使用者發送訊息或執行操作。`;
                 if (this.convoManager) {
-                    // 🚀 ✨ [v9.0.8] Priority VIP Bypass: Do not debounce, insert directly at front of queue.
+                    // 🚀 ✨ [v9.1.5] Priority VIP Bypass: Do not debounce, insert directly at front of queue.
                     await this.convoManager.enqueue(adminCtx, prompt, { isPriority: true, bypassDebounce: true });
                 }
             }
@@ -202,7 +202,7 @@ class AutonomyManager {
     }
     async getAdminContext() {
         const fakeCtx = {
-            chatId: 'system_autonomy', // ✨ [v9.0.6] 修正：賦予明確 ID 避免 Queue 阻塞
+            chatId: 'system_autonomy', // ✨ [v9.1.5] 修正：賦予明確 ID 避免 Queue 阻塞
             isAdmin: true,
             platform: 'autonomy',
             reply: async (msg, opts) => await this.sendNotification(msg, opts),

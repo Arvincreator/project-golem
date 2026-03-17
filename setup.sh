@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==========================================
-# Project Golem v9.0 (Titan Chronos)
+# Project Golem v9.1 (Titan Chronos)
 # Architecture: Modular Orchestrator
 # ==========================================
 

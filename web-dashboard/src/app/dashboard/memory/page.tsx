@@ -30,12 +30,12 @@ export default function MemoryPage() {
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-blue-500 tracking-tight">
-                            Neural Core
+                            記憶核心 (Neural Core)
                         </h1>
                         <div className="text-sm text-muted-foreground mt-1 flex items-center flex-wrap">
-                            Vector Memory & Chronos Engine
+                            向量記憶與 Chronos 引擎 (Vector Memory & Chronos Engine)
                             <span className="ml-3 px-2 py-0.5 rounded-full bg-secondary border border-border text-xs font-mono text-muted-foreground">
-                                v9.0.3
+                                v9.1.5
                             </span>
                         </div>
                     </div>
@@ -44,7 +44,7 @@ export default function MemoryPage() {
                 {activeGolem && (
                     <div className="flex items-center bg-card/80 backdrop-blur-sm border border-border rounded-lg p-2 px-4 shadow-sm flex-shrink-0">
                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse mr-3"></div>
-                        <span className="text-muted-foreground text-sm mr-2">Target Node:</span>
+                        <span className="text-muted-foreground text-sm mr-2">目標節點 (Target Node):</span>
                         <span className="text-primary font-mono font-semibold tracking-wide">
                             {activeGolem}
                         </span>
@@ -55,7 +55,7 @@ export default function MemoryPage() {
             {!activeGolem && golems.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-gray-500 space-y-4">
                     <Activity className="w-12 h-12 text-gray-700 animate-pulse" />
-                    <p>System offline or no Golem nodes detected.</p>
+                    <p>系統離線或未偵測到 Golem 節點。</p>
                 </div>
             ) : (
                 <div className="flex-1 overflow-y-auto space-y-6 pb-12 pr-2 custom-scrollbar z-10">
@@ -64,24 +64,24 @@ export default function MemoryPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <StatusCard
                             icon={Cpu}
-                            title="Embedding Model"
+                            title="向量模型 (Embedding)"
                             value="all-MiniLM-L6-v2"
                             status={status === 'ready' ? 'online' : 'loading'}
-                            description="Local Transformers.js Engine"
+                            description="本地 Transformers.js 推論引擎"
                         />
                         <StatusCard
                             icon={Database}
-                            title="Memory Storage"
+                            title="記憶儲存 (Storage)"
                             value="IndexedDB Bank"
                             status={status === 'ready' ? 'online' : 'loading'}
-                            description="Browser-native vector storage"
+                            description="瀏覽器原生向量儲存空間"
                         />
                         <StatusCard
                             icon={Activity}
-                            title="Chronos Engine"
-                            value="TimeWatch Active"
+                            title="Chronos 引擎"
+                            value="TimeWatch 運行中"
                             status="online"
-                            description="Temporal scheduling & triggering"
+                            description="時序調度與自動化觸發系統"
                         />
                     </div>
 
@@ -92,7 +92,7 @@ export default function MemoryPage() {
                                 <div className="flex items-center justify-between mb-4">
                                     <h2 className="text-lg font-semibold text-foreground flex items-center">
                                         <Database className="w-5 h-5 mr-2 text-primary" />
-                                        Memory Records
+                                        記憶紀錄 (Memory Records)
                                     </h2>
                                 </div>
                                 <div className="flex-1">
@@ -106,7 +106,7 @@ export default function MemoryPage() {
                             <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-5 shadow-lg flex-1 flex flex-col h-full min-h-[500px]">
                                 <h2 className="text-lg font-semibold text-foreground flex items-center mb-4 flex-shrink-0">
                                     <Activity className="w-5 h-5 mr-2 text-primary" />
-                                    Neural Telemetry
+                                    核心遙測 (Neural Telemetry)
                                 </h2>
                                 <div className="flex-1 bg-background/60 rounded-lg overflow-hidden border border-border/50 shadow-inner">
                                     <LogStream

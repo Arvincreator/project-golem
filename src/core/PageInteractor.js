@@ -1,5 +1,5 @@
 // ============================================================
-// 🎯 PageInteractor - Gemini 頁面 DOM 互動引擎 (抗 UI 改版強化版 v9.0.5)
+// 🎯 PageInteractor - Gemini 頁面 DOM 互動引擎 (抗 UI 改版強化版 v9.1.5)
 // ============================================================
 const { TIMINGS, LIMITS } = require('./constants');
 const ResponseExtractor = require('./ResponseExtractor');
@@ -201,7 +201,7 @@ class PageInteractor {
         await this.page.evaluate(({ s, t }) => {
             const el = document.querySelector(s);
             if (!el) return;
-            
+
             // 針對 contenteditable 使用更強大的模擬植入
             if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
                 el.value = t;
@@ -242,8 +242,8 @@ class PageInteractor {
         // 2. 實體按鈕補強 (優先使用 ARIA Label 狙擊)
         await this.page.evaluate((s) => {
             const btn = document.querySelector('button[aria-label*="發送"], button[aria-label*="Send"], button[aria-label*="傳送"]') ||
-                        document.querySelector(s) ||
-                        document.querySelector('button[disabled="false"]');
+                document.querySelector(s) ||
+                document.querySelector('button[disabled="false"]');
             if (btn && btn.offsetHeight > 0) {
                 btn.focus();
                 btn.click();
@@ -266,15 +266,15 @@ class PageInteractor {
         try {
             console.log("⚓ [PageInteractor] 正在將 Chrome 視窗自動移動至隱藏位置...");
             const session = await this.page.context().newCDPSession(this.page);
-            
+
             // Playwright 中 getWindowForTarget 標籤可能略有不同，但協議本身一致
             const { windowId } = await session.send('Browser.getWindowForTarget');
-            
+
             const screen = await this.page.evaluate(() => ({
                 width: window.screen.availWidth,
                 height: window.screen.availHeight
             }));
-            
+
             // 將視窗移動到螢幕垂直座標之外 (隱身術)
             await session.send('Browser.setWindowBounds', {
                 windowId,

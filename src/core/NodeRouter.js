@@ -4,7 +4,7 @@ const skills = require('../skills');
 const skillManager = require('../managers/SkillManager');
 const SkillArchitect = require('../managers/SkillArchitect');
 
-// ✨ [v9.0 Addon] 初始化技能架構師 (Web Gemini Mode)
+// ✨ [v9.1 Addon] 初始化技能架構師 (Web Gemini Mode)
 // 注意：這裡不傳入 Model，因為我們將在 NodeRouter 中傳入 Web Brain
 const architect = new SkillArchitect();
 console.log("🏗️ [SkillArchitect] 技能架構師已就緒 (Web Mode)");
@@ -51,7 +51,7 @@ class NodeRouter {
             }
         }
 
-        // ✨ [v9.0 Feature] 學習新技能 (Web Gemini Mode)
+        // ✨ [v9.1 Feature] 學習新技能 (Web Gemini Mode)
         if (text.startsWith('/learn ')) {
             const intent = text.replace('/learn ', '').trim();
             if (!isWeb) {
@@ -72,7 +72,7 @@ class NodeRouter {
             }
         }
 
-        // ✨ [v9.0 Feature] 匯出/匯入/列表
+        // ✨ [v9.1 Feature] 匯出/匯入/列表
         if (text.startsWith('/export ')) {
             try {
                 const token = skillManager.exportSkill(text.replace('/export ', '').trim());

@@ -40,7 +40,7 @@ class DashboardManager {
                 this.state.lastSchedule = (cleanMsg.split('新增排程:')[1] || "更新中...").trim();
             }
         } else if (cleanMsg.includes('[MultiAgent]') || cleanMsg.includes('[InteractiveMultiAgent]')) {
-            // v9.0 新增：捕捉 MultiAgent 會議紀錄
+            // v9.1 新增：捕捉 MultiAgent 會議紀錄
             type = 'agent';
         } else if (cleanMsg.includes('[Queue]') || cleanMsg.includes('隊列')) {
             // 處理隊列流量監控
@@ -62,7 +62,7 @@ class DashboardManager {
 
     getSystemStatus(mode, uptime) {
         return `
-# 核心狀態 (v9.0)
+# 核心狀態 (v9.1)
 - **模式**: ${mode}
 - **架構**: Multi-Agent
 - **運行**: ${uptime}

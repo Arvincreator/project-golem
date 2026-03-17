@@ -20,7 +20,7 @@ package-lock.json
 # ^ 建議保留 package-lock.json 以鎖定依賴版本，若不習慣可註解掉
 
 # ==========================================
-# 3. Golem V9.0 記憶體與資料庫 (Memory & DB)
+# 3. Golem v9.1 記憶體與資料庫 (Memory & DB)
 # ==========================================
 # Titan Chronos 的排程與隊列數據
 queue/

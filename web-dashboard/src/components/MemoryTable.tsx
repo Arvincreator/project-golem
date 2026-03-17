@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Copy, Plus, RefreshCw, Trash2, Search, Filter, Database, Download, Upload } from "lucide-react";
+import { Copy, Plus, RefreshCw, Trash2, Search, Filter, Database, Download, Upload, ChevronDown, ChevronUp } from "lucide-react";
 import { useGolem } from "@/components/GolemContext";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +10,34 @@ interface MemoryItem {
     text: string;
     metadata?: any;
     score?: number;
+}
+
+function ExpandableText({ text, limit = 150 }: { text: string; limit?: number }) {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const shouldTruncate = text.length > limit;
+    
+    if (!shouldTruncate) return <div className="whitespace-pre-wrap">{text}</div>;
+    
+    return (
+        <div className="space-y-2">
+            <div className={cn(
+                "whitespace-pre-wrap transition-all duration-300",
+                !isExpanded && "line-clamp-3 overflow-hidden"
+            )}>
+                {text}
+            </div>
+            <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex items-center gap-1 text-[10px] font-bold text-primary hover:text-primary/80 uppercase tracking-wider bg-primary/5 px-2 py-1 rounded-md border border-primary/20 transition-all hover:scale-105 active:scale-95"
+            >
+                {isExpanded ? (
+                    <><ChevronUp className="w-3 h-3" /> 收起內容 (Collapse)</>
+                ) : (
+                    <><ChevronDown className="w-3 h-3" /> 展開完整內容 (Expand)</>
+                )}
+            </button>
+        </div>
+    );
 }
 
 export function MemoryTable() {
@@ -58,7 +86,7 @@ export function MemoryTable() {
 
     const wipeMemory = async () => {
         if (!activeGolem) return;
-        if (!confirm(`CRITICAL WARNING: Are you sure you want to WIPE all memories for ${activeGolem}? This action cannot be undone.`)) {
+        if (!confirm(`核心警告：您確定要清除 ${activeGolem} 的所有記憶嗎？此動作不可撤銷。`)) {
             return;
         }
         setIsWiping(true);
@@ -70,7 +98,7 @@ export function MemoryTable() {
                 setMemories([]);
             } else {
                 const data = await res.json();
-                alert(`Wipe Failed: ${data.error}`);
+                alert(`清除失敗：${data.error}`);
             }
         } catch (e) {
             console.error("Failed to wipe memory", e);
@@ -100,7 +128,7 @@ export function MemoryTable() {
                 parsed = JSON.parse(text);
                 if (!Array.isArray(parsed)) throw new Error("Must be an array");
             } catch (e) {
-                alert("Invalid JSON file format.");
+                alert("無效的 JSON 檔案格式。");
                 setIsImporting(false);
                 return;
             }
@@ -112,14 +140,14 @@ export function MemoryTable() {
             });
             const data = await res.json();
             if (res.ok) {
-                alert(`Successfully imported ${data.count} memories.`);
+                alert(`成功匯入 ${data.count} 條記憶。`);
                 fetchMemories();
             } else {
-                alert(`Import failed: ${data.error}`);
+                alert(`匯入失敗：${data.error}`);
             }
         } catch (e: any) {
             console.error("Import failed:", e);
-            alert(`Import error: ${e.message}`);
+            alert(`匯入錯誤：${e.message}`);
         } finally {
             setIsImporting(false);
             if (fileInputRef.current) fileInputRef.current.value = "";
@@ -148,55 +176,57 @@ export function MemoryTable() {
     }, [memories, searchQuery, filterType]);
 
     if (!activeGolem) {
-        return <div className="text-muted-foreground italic p-4 text-sm animate-pulse">Awaiting active node target...</div>;
+        return <div className="text-muted-foreground italic p-4 text-sm animate-pulse">正在等待目標節點指令...</div>;
     }
 
     return (
         <div className="space-y-6 flex flex-col h-full">
 
             {/* Top Toolbar */}
-            <div className="flex flex-col xl:flex-row space-y-3 xl:space-y-0 xl:space-x-3">
+            <div className="flex flex-wrap gap-3 items-center">
                 {/* Add Memory Input */}
-                <div className="flex-1 flex bg-secondary/30 rounded-lg p-1 border border-border focus-within:border-primary/50 transition-colors shadow-inner">
+                <div className="flex-1 min-w-[300px] flex bg-secondary/30 rounded-lg p-1 border border-border focus-within:border-primary/50 transition-colors shadow-inner h-10">
                     <input
                         type="text"
                         value={newMemory}
                         onChange={(e) => setNewMemory(e.target.value)}
-                        placeholder="Inject new memory context..."
-                        className="flex-1 bg-transparent border-none px-3 py-1.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
+                        placeholder="在此輸入新的記憶內容並注入核心..."
+                        className="flex-1 bg-transparent border-none px-3 py-1 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
                         onKeyDown={(e) => e.key === 'Enter' && addMemory()}
                     />
                     <Button
                         onClick={addMemory}
                         disabled={!newMemory.trim()}
-                        className="bg-primary/10 text-primary hover:bg-primary/20 shadow-none h-8 px-3 rounded-md transition-colors border border-primary/20"
+                        className="bg-primary/10 text-primary hover:bg-primary/20 shadow-none h-full px-3 rounded-md transition-colors border border-primary/20"
                         size="sm"
                     >
                         <Plus className="w-4 h-4 mr-1" />
-                        Inject
+                        注入核心
                     </Button>
                 </div>
 
-                {/* Search & Filter */}
-                <div className="flex space-x-2">
-                    <div className="relative flex-1 xl:w-48">
+                {/* Operations Group */}
+                <div className="flex items-center gap-2 flex-wrap">
+                    {/* Search */}
+                    <div className="relative w-48 sm:w-64">
                         <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Filter records..."
+                            placeholder="過濾紀錄..."
                             className="w-full bg-secondary/30 border border-border rounded-lg pl-9 pr-3 py-1.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors h-10 shadow-inner"
                         />
                     </div>
 
+                    {/* Filter */}
                     <div className="relative">
                         <select
                             value={filterType}
                             onChange={(e) => setFilterType(e.target.value)}
                             className="appearance-none bg-secondary/30 border border-border rounded-lg pl-9 pr-8 py-1.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors h-10 shadow-inner cursor-pointer"
                         >
-                            <option value="all">All Types</option>
+                            <option value="all">所有類別</option>
                             {uniqueTypes.map(t => (
                                 <option key={t} value={t}>{t}</option>
                             ))}
@@ -204,6 +234,7 @@ export function MemoryTable() {
                         <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
                     </div>
 
+                    {/* Refresh */}
                     <Button
                         variant="outline"
                         onClick={fetchMemories}
@@ -219,54 +250,58 @@ export function MemoryTable() {
             <div className="flex-1 border border-border rounded-xl overflow-hidden bg-card/40 shadow-inner flex flex-col">
                 <div className="overflow-y-auto flex-1 custom-scrollbar">
                     <table className="w-full text-sm text-left text-muted-foreground relative">
-                        <thead className="text-xs text-muted-foreground uppercase bg-secondary/80 sticky top-0 backdrop-blur-md z-10 border-b border-border">
+                        <thead className="text-xs text-muted-foreground uppercase bg-secondary/80 sticky top-0 backdrop-blur-md z-10 border-b border-border font-bold">
                             <tr>
-                                <th scope="col" className="px-5 py-3 font-medium tracking-wider w-8">#</th>
-                                <th scope="col" className="px-4 py-3 font-medium tracking-wider w-32 text-center">Type</th>
-                                <th scope="col" className="px-4 py-3 font-medium tracking-wider">Content</th>
-                                <th scope="col" className="px-4 py-3 font-medium tracking-wider w-16 text-center">Action</th>
+                                <th scope="col" className="px-5 py-3 tracking-wider w-16 text-center">序號</th>
+                                <th scope="col" className="px-4 py-3 tracking-wider w-32 text-center">類型 (Type)</th>
+                                <th scope="col" className="px-4 py-3 tracking-wider">數據核心內容 (Neural Content)</th>
+                                <th scope="col" className="px-4 py-3 tracking-wider w-16 text-center">動作</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border/50">
                             {filteredMemories.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="px-6 py-12 text-center text-muted-foreground/50">
-                                        <Database className="w-8 h-8 mx-auto mb-3 opacity-20" />
-                                        <p>No memory records found.</p>
+                                    <td colSpan={4} className="px-6 py-20 text-center text-muted-foreground/50">
+                                        <Database className="w-10 h-10 mx-auto mb-3 opacity-20" />
+                                        <p className="text-sm">未發現任何記憶紀錄</p>
                                     </td>
                                 </tr>
                             ) : (
-                                filteredMemories.map((mem, index) => (
-                                    <tr key={index} className="hover:bg-accent/50 transition-colors group">
-                                        <td className="px-5 py-4 text-xs text-muted-foreground/60 font-mono">
-                                            {index + 1}
-                                        </td>
-                                        <td className="px-4 py-3 text-center">
-                                            <span className={cn(
-                                                "px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-semibold border",
-                                                (mem.metadata?.type === 'manual' || mem.metadata?.type === 'dashboard')
-                                                    ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
-                                                    : mem.metadata?.type === 'avoid'
-                                                        ? "bg-red-500/10 text-red-400 border-red-500/20"
-                                                        : "bg-blue-500/10 text-blue-400 border-blue-500/20"
-                                            )}>
-                                                {mem.metadata?.type || 'general'}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3 text-foreground break-words max-w-xl text-sm leading-relaxed">
-                                            {mem.text}
-                                        </td>
-                                        <td className="px-4 py-3 text-center">
-                                            <button
-                                                className="text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
-                                                title="Copy to clipboard"
-                                                onClick={() => navigator.clipboard.writeText(mem.text)}
-                                            >
-                                                <Copy className="w-4 h-4 mx-auto" />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
+                                // Show newest first
+                                [...filteredMemories].reverse().map((mem, index) => {
+                                    const displayIndex = filteredMemories.length - index;
+                                    return (
+                                        <tr key={index} className="hover:bg-accent/40 transition-colors group">
+                                            <td className="px-5 py-4 text-xs text-muted-foreground/40 font-mono text-center">
+                                                #{displayIndex}
+                                            </td>
+                                            <td className="px-4 py-3 text-center">
+                                                <span className={cn(
+                                                    "px-2 py-0.5 rounded text-[10px] uppercase font-bold border",
+                                                    (mem.metadata?.type === 'manual' || mem.metadata?.type === 'dashboard')
+                                                        ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
+                                                        : mem.metadata?.type === 'avoid'
+                                                            ? "bg-red-500/10 text-red-400 border-red-500/20"
+                                                            : "bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.1)]"
+                                                )}>
+                                                    {mem.metadata?.type || 'general'}
+                                                </span>
+                                            </td>
+                                            <td className="px-4 py-4 text-foreground/90 text-sm leading-relaxed min-w-[300px]">
+                                                <ExpandableText text={mem.text} />
+                                            </td>
+                                            <td className="px-4 py-4 text-center">
+                                                <button
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all opacity-0 group-hover:opacity-100"
+                                                    title="複製到剪貼簿"
+                                                    onClick={() => navigator.clipboard.writeText(mem.text)}
+                                                >
+                                                    <Copy className="w-4 h-4" />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             )}
                         </tbody>
                     </table>
@@ -276,7 +311,7 @@ export function MemoryTable() {
             {/* Footer Toolbar */}
             <div className="flex justify-between items-center pt-2 border-t border-border/50">
                 <div className="text-xs text-muted-foreground font-mono flex items-center">
-                    Total Records: {filteredMemories.length} {searchQuery && `(Filtered from ${memories.length})`}
+                    記憶總量：{filteredMemories.length} {searchQuery && `(已過濾，原始總量：${memories.length})`}
                 </div>
 
                 <div className="flex space-x-2">
@@ -295,7 +330,7 @@ export function MemoryTable() {
                         size="sm"
                     >
                         <Upload className={cn("w-3.5 h-3.5 mr-1.5", isImporting && "animate-bounce")} />
-                        {isImporting ? "Importing..." : "Import DB"}
+                        {isImporting ? "注入中..." : "匯入資料庫 (Import)"}
                     </Button>
                     <Button
                         variant="ghost"
@@ -305,7 +340,7 @@ export function MemoryTable() {
                         size="sm"
                     >
                         <Download className="w-3.5 h-3.5 mr-1.5" />
-                        Export DB
+                        匯出資料庫 (Export)
                     </Button>
                     <Button
                         variant="ghost"
@@ -315,7 +350,7 @@ export function MemoryTable() {
                         size="sm"
                     >
                         <Trash2 className="w-3.5 h-3.5 mr-1.5" />
-                        {isWiping ? "Purging..." : "Wipe Database"}
+                        {isWiping ? "正在清洗..." : "清除整個資料庫 (Wipe)"}
                     </Button>
                 </div>
             </div>

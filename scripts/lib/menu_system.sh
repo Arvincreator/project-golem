@@ -36,6 +36,7 @@ show_menu() {
     options+=("Stop|🛑 關閉所有 Golem 程序 (Shutdown)")
     
     options+=("Install|📦 更新依賴與系統建置 (Update / Build)")
+    options+=("Magic|✨ 魔法一鍵安裝 (One-Click Setup)")
     
     show_menu_tools # Call the new function for the tools header
     
@@ -56,6 +57,7 @@ show_menu() {
         "Restart") stop_system false; launch_system ;;
         "Stop")    stop_system; show_menu ;;
         "Install") run_full_install ;;
+        "Magic")   export GOLEM_MAGIC_MODE=true; run_full_install ;;
         "Doctor")  run_health_check; echo ""; read -r -p "  按 Enter 返回主選單..."; show_menu ;;
         "Clean")   run_clean_dependencies; show_menu ;;
         "Init")    run_clean_init; show_menu ;;
@@ -91,18 +93,30 @@ stop_system() {
     echo -e "  ${YELLOW}🛑 正在執行深度清理，停止所有相關程序...${NC}"
     local killed=0
 
+    # Helper to kill gracefully then forcefully
+    safe_kill() {
+        local pids=$1
+        local name=$2
+        if [ -n "$pids" ]; then
+            echo "$pids" | xargs kill -15 2>/dev/null
+            sleep 0.5
+            # Fallback to -9 if still alive
+            local still_alive
+            still_alive=$(echo "$pids" | xargs ps -p 2>/dev/null | grep -v PID)
+            if [ -n "$still_alive" ]; then
+                echo "$pids" | xargs kill -9 2>/dev/null
+            fi
+            echo -e "  ${GREEN}✅ $name 已停止${NC}"
+            killed=1
+        fi
+    }
+
     # 1. Kill via .golem.pid (Primary PID file)
     local pid_file="$SCRIPT_DIR/.golem.pid"
     if [ -f "$pid_file" ]; then
         local gpid
         gpid=$(cat "$pid_file")
-        if kill -0 "$gpid" 2>/dev/null; then
-            kill "$gpid" 2>/dev/null
-            echo -e "  ${GREEN}✅ Golem 主程序已停止 (PID: $gpid)${NC}"
-            killed=1
-        else
-            echo -e "  ${DIM}   PID $gpid 已不存在${NC}"
-        fi
+        safe_kill "$gpid" "Golem 主程序 (PID: $gpid)"
         rm -f "$pid_file"
     fi
 
@@ -110,37 +124,24 @@ stop_system() {
     local dash_port="${DASHBOARD_PORT:-3000}"
     local dash_pids
     dash_pids=$(lsof -ti tcp:"$dash_port" 2>/dev/null)
-    if [ -n "$dash_pids" ]; then
-        echo "$dash_pids" | xargs kill -9 2>/dev/null
-        echo -e "  ${GREEN}✅ Dashboard (port $dash_port) 已停止${NC}"
-        killed=1
-    fi
+    safe_kill "$dash_pids" "Dashboard (port $dash_port)"
 
     # 3. Kill Next.js Dev Server if running on 3000 (standard for dev mode)
-    if [ -n "$(lsof -ti tcp:3000 2>/dev/null)" ] && [ "$dash_port" != "3000" ]; then
-        lsof -ti tcp:3000 2>/dev/null | xargs kill -9 2>/dev/null
-        echo -e "  ${GREEN}✅ Next.js Dev Server (port 3000) 已停止${NC}"
-        killed=1
+    local next_pids
+    next_pids=$(lsof -ti tcp:3000 2>/dev/null)
+    if [ -n "$next_pids" ] && [ "$dash_port" != "3000" ]; then
+        safe_kill "$next_pids" "Next.js Dev Server (port 3000)"
     fi
 
-    # 4. Kill Backend API if running on 3001 (standard for backend when dash is on 3000)
+    # 4. Kill Backend API if running on 3001
     local backend_pids
     backend_pids=$(lsof -ti tcp:3001 2>/dev/null)
-    if [ -n "$backend_pids" ]; then
-        echo "$backend_pids" | xargs kill -9 2>/dev/null
-        echo -e "  ${GREEN}✅ Backend API (port 3001) 已停止${NC}"
-        killed=1
-    fi
+    safe_kill "$backend_pids" "Backend API (port 3001)"
 
     # 5. Comprehensive regex kill for all related node/npm processes
-    # Patterns: index.js, dashboard.js, migrateData.js, nodemon, next-dev
     local golem_pids
     golem_pids=$(pgrep -f 'node.*(index|dashboard|migrateData)\.js|nodemon|next-dev|npm.*(start|dev|dashboard)' 2>/dev/null)
-    if [ -n "$golem_pids" ]; then
-        echo "$golem_pids" | xargs kill -9 2>/dev/null
-        echo -e "  ${GREEN}✅ 所有殘留 Golem 與 Web 程序的 Node.js 進程已終止${NC}"
-        killed=1
-    fi
+    safe_kill "$golem_pids" "其餘 Node.js 進程"
 
     if [ "$killed" -eq 0 ]; then
         echo -e "  ${DIM}   找不到正在執行的 Golem 相關程序${NC}"

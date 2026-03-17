@@ -4,7 +4,7 @@ const skills = require('../skills');
 const skillManager = require('./SkillManager');
 
 // ============================================================
-// 📖 Help Manager (動態說明書) - v9.0 Enhanced
+// 📖 Help Manager (動態說明書) - v9.1 Enhanced
 // ============================================================
 class HelpManager {
     static async getManual() {
@@ -25,7 +25,7 @@ class HelpManager {
         } catch (e) { }
 
         return `
-🤖 **Golem v9.0 (Ultimate Chronos + MultiAgent + WebSkillEngine)**
+🤖 **Golem v9.1 (Ultimate Chronos + MultiAgent + WebSkillEngine)**
 ---------------------------
 ⚡ **Node.js**: Reflex Layer + Action Executor
 🧠 **Web Gemini**: Infinite Context Brain

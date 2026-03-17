@@ -1,5 +1,5 @@
 // ============================================================
-// 🎭 InteractiveMultiAgent (v9.0 New Feature)
+// 🎭 InteractiveMultiAgent (v9.1 New Feature)
 // ============================================================
 class InteractiveMultiAgent {
     constructor(brain) {

@@ -38,7 +38,7 @@ const GolemContext = createContext<GolemContextType>({
     isBooting: false,
     isLoadingSystem: true,
     isSingleNode: true,
-    version: "v9.0",
+    version: `v${process.env.NEXT_PUBLIC_GOLEM_VERSION || "9.1.5"}`,
 });
 
 export const useGolem = () => useContext(GolemContext);
@@ -51,14 +51,18 @@ export function GolemProvider({ children }: { children: React.ReactNode }) {
     const [isBooting, setIsBooting] = useState(false);
     const [isLoadingSystem, setIsLoadingSystem] = useState(true);
     const [isSingleNode] = useState(true);
-    const [version, setVersion] = useState("v9.0");
+    const [version, setVersion] = useState(`v${process.env.NEXT_PUBLIC_GOLEM_VERSION || "9.1.5"}`);
 
     const fetchGolems = async () => {
         setIsLoadingGolems(true);
         try {
             const res = await fetch(apiUrl("/api/golems"));
-            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-            const data = await res.json();
+            if (!res.ok) return;
+
+            // Use a safer JSON parsing that won't throw SyntaxError on non-JSON bodies
+            const data = await res.json().catch(() => null);
+            if (!data) return;
+
             if (data.golems && data.golems.length > 0) {
                 setGolems(data.golems);
                 setActiveGolem((currentActive) => {
@@ -77,39 +81,74 @@ export function GolemProvider({ children }: { children: React.ReactNode }) {
                 setActiveGolem("");
             }
         } catch (err) {
-            console.error("Failed to fetch golems", err);
+            // Silently handle connection errors (e.g. during shutdown/restart)
+            console.debug("Golem API unavailable (fetchGolems)");
+            // 在離線狀態下，為了保持 Sidebar 可見以便重啟，我們保留一個虛擬的 Golem
+            setGolems([{ id: "golem_A", status: "offline" }]);
+            setActiveGolem("golem_A");
         } finally {
             setIsLoadingGolems(false);
         }
     };
 
-    const fetchSystemStatus = () => {
+    const fetchSystemStatus = async () => {
         setIsLoadingSystem(true);
-        fetch(apiUrl("/api/system/status"))
-            .then(res => {
-                if (!res.ok) throw new Error("Status failed");
-                return res.json();
-            })
-            .then(data => {
-                setIsSystemConfigured(data.isSystemConfigured ?? true);
-            })
-            .catch(() => setIsSystemConfigured(true)) // on error, don't block
-            .finally(() => setIsLoadingSystem(false));
+        try {
+            const statusRes = await fetch(apiUrl("/api/system/status"));
+            if (statusRes.ok) {
+                const data = await statusRes.json().catch(() => null);
+                if (data) {
+                    setIsSystemConfigured(data.isSystemConfigured ?? true);
+                    setIsBooting(data.isBooting ?? false);
+                }
+            }
+        } catch (e) {
+            setIsSystemConfigured(true); // default on error
+        } finally {
+            setIsLoadingSystem(false);
+        }
 
-        // Also fetch version from system config
-        fetch(apiUrl("/api/system/config"))
-            .then(res => {
-                if (!res.ok) throw new Error("Config failed");
-                return res.json();
-            })
-            .then(data => {
-                if (data.version) setVersion(`v${data.version}`);
-            })
-            .catch(err => console.error("Failed to fetch version", err));
+        try {
+            const configRes = await fetch(apiUrl("/api/system/config"));
+            if (configRes.ok) {
+                const data = await configRes.json().catch(() => null);
+                if (data && data.version) setVersion(`v${data.version}`);
+            }
+        } catch (e) {
+            console.debug("Golem API unavailable (fetchSystemStatus)");
+        }
     };
 
     const startGolem = async (id: string) => {
         try {
+            console.log("🌀 [GolemContext] Requesting remote launch...");
+            // 首先調用 Launcher API
+            await fetch("/api/system/launcher/start", { method: "POST" }).catch(() => null);
+            
+            // 輪詢後端是否已完成啟動 (最多等待 30 秒)
+            console.log("⏳ [GolemContext] Waiting for backend to finish booting...");
+            let backendReady = false;
+            for (let i = 0; i < 60; i++) {
+                try {
+                    const check = await fetch(apiUrl("/api/system/status"), { signal: AbortSignal.timeout(500) });
+                    if (check.ok) {
+                        const data = await check.json();
+                        setIsBooting(data.isBooting);
+                        if (!data.isBooting) {
+                            backendReady = true;
+                            break;
+                        }
+                    }
+                } catch (e) {}
+                await new Promise(r => setTimeout(r, 500));
+            }
+
+            if (!backendReady) {
+                console.error("❌ [GolemContext] Backend failed to start within timeout.");
+                return false;
+            }
+
+            console.log("✅ [GolemContext] Backend ready. Sending start command...");
             const res = await fetch(apiUrl("/api/golems/start"), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -118,11 +157,12 @@ export function GolemProvider({ children }: { children: React.ReactNode }) {
             const data = await res.json();
             if (data.success) {
                 fetchGolems();
+                fetchSystemStatus(); // 重整系統狀態
                 return true;
             }
             return false;
         } catch (err) {
-            console.error("Failed to start golem", err);
+            console.error("❌ [GolemContext] Failed to start golem", err);
             return false;
         }
     };
@@ -131,6 +171,20 @@ export function GolemProvider({ children }: { children: React.ReactNode }) {
         fetchGolems();
         fetchSystemStatus();
 
+        // 🎯 [v9.1.15] 自動輪詢 Booting 狀態，直到就緒
+        let bootPollingTimer: NodeJS.Timeout | null = null;
+        if (isBooting) {
+            bootPollingTimer = setInterval(() => {
+                fetchSystemStatus();
+            }, 1000);
+        }
+
+        return () => {
+            if (bootPollingTimer) clearInterval(bootPollingTimer);
+        };
+    }, [isBooting]);
+
+    useEffect(() => {
         const handleInit = (data: any) => {
             if (data.golems) {
                 const formattedGolems = typeof data.golems[0] === 'string'
@@ -177,7 +231,10 @@ export function GolemProvider({ children }: { children: React.ReactNode }) {
             golems,
             hasGolems,
             isLoadingGolems,
-            refreshGolems: fetchGolems,
+            refreshGolems: async () => {
+                await fetchSystemStatus();
+                await fetchGolems();
+            },
             startGolem,
             isSystemConfigured,
             isBooting,

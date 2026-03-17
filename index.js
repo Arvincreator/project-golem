@@ -1,5 +1,5 @@
 /**
- * 🦞 Project Golem v9.0.6 (Single-Golem Edition)
+ * 🦞 Project Golem v9.1.5 (Single-Golem Edition)
  * -------------------------------------------------------------------------
  * 架構：[Universal Context] -> [Conversation Queue] -> [NeuroShunter] <==> [Web Gemini]
  */
@@ -65,7 +65,7 @@ const InteractiveMultiAgent = require('./src/core/InteractiveMultiAgent');
 const introspection = require('./src/services/Introspection');
 const ActionQueue = require('./src/core/ActionQueue'); // ✨ [v9.1] Dual-Queue Architecture
 
-// 🎯 V9.0.7 解耦：不再於啟動時遍歷配置建立 Bot 與實體
+// 🎯 v9.1.5 解耦：不再於啟動時遍歷配置建立 Bot 與實體
 // TelegramBot 與 Golem 實體將由 Web Dashboard 透過 golemFactory 動態建立
 let activeTgBot = null;
 let activeDcBot = null;
@@ -124,7 +124,7 @@ function getOrCreateGolem() {
 (async () => {
     if (process.env.GOLEM_TEST_MODE === 'true') { console.log('🚧 GOLEM_TEST_MODE active.'); return; }
 
-    // 🎯 V9.0.7 解耦：啟動時不再遍歷建立 initialGolems
+    // 🎯 v9.1.5 解耦：啟動時不再遍歷建立 initialGolems
     // 也延後架構掃描與巡檢，直到第一個實體啟動
     let _isCoreInitialized = false;
     async function ensureCoreServices() {
@@ -154,7 +154,7 @@ function getOrCreateGolem() {
                 const { summary } = JSON.parse(signalRaw);
                 fsSync.unlinkSync('.reincarnate_signal.json');
                 console.log("🔄 [系統] 啟動記憶轉生程序！正在開啟新對話...");
-                
+
                 const instance = getOrCreateGolem();
                 if (instance.brain.page) {
                     console.log(`🚀 [System] Browser Session Started`);
@@ -180,7 +180,7 @@ function getOrCreateGolem() {
             }
             if (golemConfig.tgToken && !activeTgBot) {
                 try {
-                    // [V9.0.8 修正] 先以 polling: false 建立 Bot，
+                    // [v9.1.5 修正] 先以 polling: false 建立 Bot，
                     // 再延遲啟動 Polling 並使用 restart:true 讓舊 session 自動讓步，防止 409 Conflict
                     const bot = new TelegramBot(golemConfig.tgToken, { polling: false });
                     bot.golemConfig = golemConfig;
@@ -221,7 +221,7 @@ function getOrCreateGolem() {
                     });
                     console.log(`🔗 [Factory] TG events bound for Golem [${boundGolemId}]`);
 
-                    // [V9.0.8] 409 衝突自動修復：若偵測到 session conflict，5 秒後自動重啟 Polling
+                    // [v9.1.5] 409 衝突自動修復：若偵測到 session conflict，5 秒後自動重啟 Polling
                     let _pollingRestartTimer = null;
                     bot.on('polling_error', (err) => {
                         if (err.code === 'ETELEGRAM' && err.message.includes('409')) {
@@ -241,7 +241,7 @@ function getOrCreateGolem() {
                         }
                     });
 
-                    // [V9.0.8 保留] 409 衝突自動修復機制，但不再於此處強制提早啟動 polling
+                    // [v9.1.5 保留] 409 衝突自動修復機制，但不再於此處強制提早啟動 polling
                     // polling 將在 persona.json 存在且 brain.init() 完成後統一啟動
                 } catch (e) {
                     console.error(`❌ [Bot] 初始化 ${golemConfig.id} Telegram 失敗:`, e.message);
@@ -287,7 +287,7 @@ function getOrCreateGolem() {
                 instance.brain._linkDashboard(instance.autonomy);
             }
 
-            // [V9.0.9 Fix]: Verify persona.json to decide actual status
+            // [v9.1.5 Fix]: Verify persona.json to decide actual status
             const pathSync = require('path');
             const fsSync = require('fs');
 
@@ -318,7 +318,7 @@ function getOrCreateGolem() {
         const day = now.getDate();
         const year = now.getFullYear();
         console.log(`🕒 [Scheduler] 啟動多層記憶壓縮巡檢...`);
-        
+
         const instance = singleGolemInstance;
         if (instance) {
             const mgr = instance.brain.chatLogManager;
@@ -815,7 +815,32 @@ async function performCleanup() {
             console.warn(`⚠️ [System] 關閉瀏覽器失敗: ${e.message}`);
         }
     }
+
+    // 3. 停止 Web Dashboard (釋放 Port)
+    try {
+        const dashboard = require('./dashboard');
+        if (dashboard && typeof dashboard.detach === 'function') {
+            console.log(`🛑 [System] 正在關閉 Dashboard 服務...`);
+            dashboard.detach();
+            console.log(`✅ [System] Dashboard 服務已停止。`);
+        }
+    } catch (e) {
+        console.warn(`⚠️ [System] 停止 Dashboard 失敗: ${e.message}`);
+    }
 }
+
+global.stopGolem = async function (id) {
+    if (id !== 'golem_A') return; // Currently only single mode supported
+    await performCleanup();
+    singleGolemInstance = null;
+    
+    const dashboard = require('./dashboard');
+    if (dashboard && typeof dashboard.removeContext === 'function') {
+        dashboard.removeContext(id);
+    }
+    
+    console.log(`✅ [System] Golem ${id} has been stopped.`);
+};
 
 global.gracefulRestart = async function () {
     await performCleanup();

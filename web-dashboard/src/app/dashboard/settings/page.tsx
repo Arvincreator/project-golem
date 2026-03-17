@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import {
     Settings, Save, RefreshCw, AlertTriangle, CheckCircle2,
     Eye, EyeOff, Lock, Users, Server, Activity, Cpu, HardDrive,
-    DownloadCloud, Loader2, Sparkles, ArrowRight
+    DownloadCloud, Loader2, Sparkles, ArrowRight, MessageSquare,
+    Clock, ShieldCheck, Settings2, AlertCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { io } from "socket.io-client";
@@ -25,7 +26,11 @@ type ConfigData = {
 };
 
 type SystemStatus = {
-    runtime?: { node: string; npm: string; platform: string; arch: string; uptime: number };
+    hasGolems?: boolean;
+    liveCount?: number;
+    configuredCount?: number;
+    isSystemConfigured?: boolean;
+    runtime?: { node: string; npm: string; platform: string; arch: string; uptime: number; osName: string };
     health?: { node: boolean; env: boolean; keys: boolean; deps: boolean; core: boolean; dashboard: boolean };
     system?: { totalMem: string; freeMem: string; diskAvail: string };
 };
@@ -49,77 +54,131 @@ const SystemHealthDashboard = ({ systemStatus }: { systemStatus: SystemStatus | 
         </div>
     );
 
+    const healthChecks = health ? Object.values(health) : [];
+    const healthyCount = healthChecks.filter(Boolean).length;
+    const isReady = healthyCount === healthChecks.length && healthChecks.length > 0;
+    const needsAction = healthyCount < healthChecks.length;
+
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-4 duration-500 mb-8">
-            {/* 1. Runtime Info */}
-            <div className="bg-card border border-border hover:border-primary/30 transition-colors rounded-xl p-5 shadow-sm">
-                <div className="flex items-center gap-2 mb-4">
-                    <Cpu className="w-5 h-5 text-primary" />
-                    <h3 className="text-sm font-semibold text-foreground">運作環境 (Runtime)</h3>
-                </div>
-                <div className="space-y-3">
-                    <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">OS</span>
-                        <span className="text-primary font-medium">{(systemStatus as any)?.runtime?.osName || 'Unknown'}</span>
+        <div className="space-y-6 mb-8 animate-in fade-in slide-in-from-top-4 duration-500">
+            {/* 0. System Integrity Banner */}
+            <div className={cn(
+                "rounded-xl p-5 shadow-sm border transition-all duration-500 flex items-center justify-between",
+                isReady ? "bg-emerald-500/5 border-emerald-500/20" : 
+                needsAction ? "bg-amber-500/5 border-amber-500/20" : "bg-muted/5 border-border"
+            )}>
+                <div className="flex items-center gap-4">
+                    <div className={cn(
+                        "p-3 rounded-full shadow-inner",
+                        isReady ? "bg-emerald-500/10 text-emerald-500" : 
+                        needsAction ? "bg-amber-500/10 text-amber-500" : "bg-muted text-muted-foreground"
+                    )}>
+                        {isReady ? <ShieldCheck className="w-6 h-6" /> : 
+                         needsAction ? <AlertCircle className="w-6 h-6" /> : <Activity className="w-6 h-6" />}
                     </div>
-                    <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">Node.js</span>
-                        <span className="text-foreground font-mono">{runtime?.node || 'Unknown'}</span>
-                    </div>
-                    <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">npm</span>
-                        <span className="text-foreground font-mono">{runtime?.npm || 'Unknown'}</span>
-                    </div>
-                    <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">Platform</span>
-                        <span className="text-foreground capitalize">{runtime?.platform} ({runtime?.arch})</span>
-                    </div>
-                    <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">Uptime</span>
-                        <span className="text-foreground">{Math.floor((runtime?.uptime || 0) / 3600)}h {Math.floor(((runtime?.uptime || 0) % 3600) / 60)}m</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* 2. System Health */}
-            <div className="bg-card border border-border hover:border-primary/30 transition-colors rounded-xl p-5 shadow-sm">
-                <div className="flex items-center gap-2 mb-4">
-                    <Activity className="w-5 h-5 text-green-600 dark:text-emerald-400" />
-                    <h3 className="text-sm font-semibold text-foreground">健康檢查 (Health)</h3>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                    <StatusItem label="API Keys" status={!!health?.keys} icon={Activity} />
-                    <StatusItem label="Env Config" status={!!health?.env} icon={Activity} />
-                    <StatusItem label="Dependencies" status={!!health?.deps} icon={Activity} />
-                    <StatusItem label="Core Files" status={!!health?.core} icon={Activity} />
-                </div>
-            </div>
-
-            {/* 3. System Resources */}
-            <div className="bg-card border border-border hover:border-primary/30 transition-colors rounded-xl p-5 shadow-sm">
-                <div className="flex items-center gap-2 mb-4">
-                    <Server className="w-5 h-5 text-primary" />
-                    <h3 className="text-sm font-semibold text-foreground">系統資源 (Resources)</h3>
-                </div>
-                <div className="space-y-4">
                     <div>
-                        <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-                            <span>記憶體 (Memory)</span>
-                            <span>{system?.freeMem} / {system?.totalMem}</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                            <div
-                                className="h-full bg-indigo-500 transition-all duration-1000"
-                                style={{ width: `${100 - (parseInt(system?.freeMem || "0") / parseInt(system?.totalMem || "1")) * 100}%` }}
-                            />
+                        <h3 className="text-sm font-bold text-foreground">
+                            系統健康診斷 (System Integrity)
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            {isReady ? "所有核心模組與配置運作正常，系統處於最佳狀態。" :
+                             needsAction ? `檢測到 ${healthChecks.length - healthyCount} 項異常，請檢查下方健康檢查細項。` :
+                             "正在初始化系統狀態..."}
+                        </p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3">
+                    <div className="text-right hidden sm:block">
+                        <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Health Score</div>
+                        <div className={cn(
+                            "text-xl font-black font-mono",
+                            isReady ? "text-emerald-500" : needsAction ? "text-amber-500" : "text-muted-foreground"
+                        )}>
+                            {healthChecks.length > 0 ? Math.round((healthyCount / healthChecks.length) * 100) : 0}%
                         </div>
                     </div>
-                    <div className="flex justify-between text-xs pt-1">
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                            <HardDrive className="w-4 h-4" />
-                            磁碟可用空間
+                    <span className={cn(
+                        "px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-sm border",
+                        isReady ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : 
+                        needsAction ? "bg-amber-500/10 text-amber-500 border-amber-500/20" : "bg-muted text-muted-foreground border-border"
+                    )}>
+                        {isReady ? "Operational" : needsAction ? "Action Required" : "Unknown"}
+                    </span>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* 1. Runtime Info */}
+                <div className="bg-card border border-border hover:border-primary/30 transition-colors rounded-xl p-5 shadow-sm">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Cpu className="w-5 h-5 text-primary" />
+                        <h3 className="text-sm font-semibold text-foreground">運作環境 (Runtime)</h3>
+                    </div>
+                    <div className="space-y-3">
+                        <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">OS</span>
+                            <span className="text-primary font-medium truncate max-w-[150px]" title={runtime?.osName}>{runtime?.osName || 'Unknown'}</span>
                         </div>
-                        <span className="text-primary font-bold">{system?.diskAvail || 'N/A'}</span>
+                        <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">Node.js</span>
+                            <span className="text-foreground font-mono">{runtime?.node || 'Unknown'}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">npm</span>
+                            <span className="text-foreground font-mono">{runtime?.npm || 'Unknown'}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">Platform</span>
+                            <span className="text-foreground capitalize">{runtime?.platform} ({runtime?.arch})</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">Uptime</span>
+                            <span className="text-foreground">{Math.floor((runtime?.uptime || 0) / 3600)}h {Math.floor(((runtime?.uptime || 0) % 3600) / 60)}m</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 2. System Health */}
+                <div className="bg-card border border-border hover:border-primary/30 transition-colors rounded-xl p-5 shadow-sm">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Activity className="w-5 h-5 text-emerald-500" />
+                        <h3 className="text-sm font-semibold text-foreground">健康檢查 (Health)</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                        <StatusItem label="API Keys" status={!!health?.keys} icon={Activity} />
+                        <StatusItem label="Env Config" status={!!health?.env} icon={Activity} />
+                        <StatusItem label="Dependencies" status={!!health?.deps} icon={Activity} />
+                        <StatusItem label="Core Files" status={!!health?.core} icon={Activity} />
+                        <StatusItem label="Dashboard" status={!!health?.dashboard} icon={Activity} />
+                    </div>
+                </div>
+
+                {/* 3. System Resources */}
+                <div className="bg-card border border-border hover:border-primary/30 transition-colors rounded-xl p-5 shadow-sm">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Server className="w-5 h-5 text-primary" />
+                        <h3 className="text-sm font-semibold text-foreground">系統資源 (Resources)</h3>
+                    </div>
+                    <div className="space-y-4">
+                        <div>
+                            <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+                                <span>記憶體 (Memory)</span>
+                                <span>{system?.freeMem} / {system?.totalMem}</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-indigo-500 transition-all duration-1000 shadow-[0_0_8px_rgba(99,102,241,0.5)]"
+                                    style={{ width: `${100 - (parseInt(system?.freeMem || "0") / parseInt(system?.totalMem || "1")) * 100}%` }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex justify-between text-xs pt-1">
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                                <HardDrive className="w-4 h-4" />
+                                磁碟可用空間
+                            </div>
+                            <span className="text-primary font-bold">{system?.diskAvail || 'N/A'}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -149,9 +208,6 @@ const SettingField = ({
                         <span className="text-[10px] bg-secondary text-muted-foreground px-1.5 py-0.5 rounded border border-border flex items-center gap-1 whitespace-nowrap">
                             <Lock className="w-3 h-3" /> 唯讀
                         </span>
-                    )}
-                    {!isReadOnly && (
-                        <span className="text-[10px] bg-amber-500/10 text-amber-600 dark:text-orange-400 px-1.5 py-0.5 rounded border border-amber-500/20 whitespace-nowrap">需重啟</span>
                     )}
                 </div>
             </label>
@@ -198,7 +254,6 @@ const SettingSelectField = ({
         <div className="flex flex-col mb-4">
             <label className="text-sm font-medium text-muted-foreground mb-1 flex items-center justify-between gap-1 overflow-hidden">
                 <span className="truncate mr-1" title={label}>{label}</span>
-                <span className="text-[10px] bg-amber-500/10 text-amber-600 dark:text-orange-400 px-1.5 py-0.5 rounded border border-amber-500/20 whitespace-nowrap">需重啟</span>
             </label>
             <select
                 value={value}
@@ -532,6 +587,7 @@ export default function SettingsPage() {
     const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error' | 'warning', text: string } | null>(null);
     const [logInfo, setLogInfo] = useState<{ size: string, bytes: number } | null>(null);
     const [isRestartConfirmOpen, setIsRestartConfirmOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState("overview");
 
     useEffect(() => {
         fetchConfig();
@@ -689,14 +745,14 @@ export default function SettingsPage() {
             <div className="max-w-6xl mx-auto space-y-6">
 
                 {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4 sticky top-0 bg-background/95 backdrop-blur z-20">
                     <div>
                         <h1 className="text-2xl font-bold flex items-center gap-2">
                             <Settings className="w-6 h-6 text-primary" />
                             系統配置總表 (System Settings)
                         </h1>
                         <p className="text-sm text-muted-foreground mt-1">
-                            管理 Golem 的全域配置與 API 金鑰。部分變數支援熱抽換，不需斷電即可生效。
+                            管理 Golem 的全域配置與 API 金鑰。所有變更均需重啟系統才能完全生效。
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
@@ -723,6 +779,32 @@ export default function SettingsPage() {
                     </div>
                 </div>
 
+                {/* Tab Navigation */}
+                <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-xl border border-border/50 overflow-x-auto no-scrollbar">
+                    {[
+                        { id: 'overview', name: '系統概況', icon: Activity },
+                        { id: 'engine', name: '核心引擎', icon: Cpu },
+                        { id: 'messaging', name: '通訊平台', icon: MessageSquare },
+                        { id: 'schedule', name: '自動化作息', icon: Clock },
+                        { id: 'security', name: '安全與指令', icon: ShieldCheck },
+                        { id: 'advanced', name: '進階維護', icon: Settings2 }
+                    ].map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={cn(
+                                "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
+                                activeTab === tab.id
+                                    ? "bg-primary text-primary-foreground shadow-sm"
+                                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                            )}
+                        >
+                            <tab.icon className="w-4 h-4" />
+                            {tab.name}
+                        </button>
+                    ))}
+                </div>
+
                 {/* Status Message */}
                 {statusMessage && (
                     <div className={`p-4 rounded-lg flex items-start gap-3 border ${statusMessage.type === 'success' ? 'bg-green-950/30 border-green-900/50 text-green-400' :
@@ -736,439 +818,241 @@ export default function SettingsPage() {
                 )}
 
                 {/* System Health Dashboard */}
-                <SystemHealthDashboard systemStatus={systemStatus} />
+                {activeTab === 'overview' && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
+                        <SystemHealthDashboard systemStatus={systemStatus} />
+                        <SystemUpdateSection />
+                    </div>
+                )}
 
-                {/* System Update Region */}
-                <SystemUpdateSection />
+                {/* AI Engine Tab */}
+                {activeTab === 'engine' && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="space-y-6">
+                                {/* AI Backend Selection */}
+                                <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+                                    <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                                        🤖 AI 引擎選取 (AI Backend)
+                                    </h2>
+                                    <div className="flex flex-col mb-4">
+                                        <label className="text-sm font-medium text-muted-foreground mb-1 flex items-center justify-between gap-1 overflow-hidden">
+                                            <span className="truncate mr-1" title="核心引擎 (Primary Engine)">核心引擎 (Primary Engine)</span>
+                                        </label>
+                                        <select
+                                            value={config.env.GOLEM_BACKEND || "gemini"}
+                                            onChange={(e) => {
+                                                handleChangeEnv("GOLEM_BACKEND", e.target.value);
+                                            }}
+                                            className="w-full bg-secondary/30 border border-border focus:border-primary rounded-lg px-3 py-2 text-sm text-foreground transition-colors"
+                                        >
+                                            <option value="gemini">Web Gemini (自動化瀏覽器)</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* 左側：AI 大腦與控制權限 */}
-                    <div className="space-y-6">
-                        {/* Section: AI Backend Selection */}
-                        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                                🤖 AI 引擎選取 (AI Backend)
-                            </h2>
-                            <div className="flex flex-col mb-4">
-                                <label className="text-sm font-medium text-muted-foreground mb-1">
-                                    核心引擎 (Primary Engine)
-                                </label>
-                                <select
-                                    value={config.env.GOLEM_BACKEND || "gemini"}
-                                    onChange={(e) => {
-                                        handleChangeEnv("GOLEM_BACKEND", e.target.value);
-                                    }}
-                                    className="w-full bg-secondary/30 border border-border focus:border-primary rounded-lg px-3 py-2 text-sm text-foreground transition-colors"
-                                >
-                                    <option value="gemini">Web Gemini (自動化瀏覽器)</option>
-                                </select>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                    切換後需重啟系統生效。此模式使用自動化瀏覽器，不需 API Key。
-                                </p>
+                                {/* Gemini Brain Settings */}
+                                <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+                                    <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                                        🧠 Golem Brain (大腦設定)
+                                    </h2>
+                                    <SettingField
+                                        label="Gemini API Keys"
+                                        keyName="GEMINI_API_KEYS"
+                                        desc="支援多組 Key 輪替 (KeyChain)，請用半形逗號 ',' 分隔。"
+                                        placeholder="AIzaSy...,AIzaSy..."
+                                        isSecret
+                                        value={config.env.GEMINI_API_KEYS || ""}
+                                        onChange={(val) => handleChangeEnv("GEMINI_API_KEYS", val)}
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Section: Gemini Brain */}
-                        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                                🧠 Golem Brain (大腦設定)
-                            </h2>
-                            <SettingField
-                                label="Gemini API Keys"
-                                keyName="GEMINI_API_KEYS"
-                                desc="支援多組 Key 輪替 (KeyChain)，請用半形逗號 ',' 分隔。"
-                                placeholder="AIzaSy...,AIzaSy..."
-                                isSecret
-                                value={config.env.GEMINI_API_KEYS || ""}
-                                onChange={(val) => handleChangeEnv("GEMINI_API_KEYS", val)}
-                            />
-                        </div>
+                            <div className="space-y-6">
+                                {/* Memory Engine Settings */}
+                                <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+                                    <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                                        ⚙️ 記憶引擎設定
+                                    </h2>
+                                    <SettingSelectField
+                                        label="記憶引擎模式"
+                                        desc="browser: 內建 memory.html | lancedb: 高效向量資料庫 | qmd: 混合搜尋"
+                                        value={config.env.GOLEM_MEMORY_MODE || "browser"}
+                                        onChange={(val) => handleChangeEnv("GOLEM_MEMORY_MODE", val)}
+                                        options={[
+                                            { value: "browser", label: "Browser (預設)" },
+                                            { value: "lancedb", label: "LanceDB (高效能 Pro 版)" },
+                                            { value: "qmd", label: "QMD (進階混合)" }
+                                        ]}
+                                    />
 
-                        {/* Section: Telegram Config */}
-                        <div className="bg-card border border-border hover:border-primary/20 transition-colors rounded-xl p-5 shadow-sm">
-                            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                                ✈️ Telegram 設定 (單機全域)
-                            </h2>
-                            <SettingField
-                                label="Bot Token"
-                                keyName="TELEGRAM_TOKEN"
-                                placeholder="123456789:ABCDefgh..."
-                                desc="與 @BotFather 申請的憑證。"
-                                isSecret
-                                value={config.env.TELEGRAM_TOKEN || ""}
-                                onChange={(val) => handleChangeEnv("TELEGRAM_TOKEN", val)}
-                            />
-                            <SettingField
-                                label="Auth Mode"
-                                keyName="TG_AUTH_MODE"
-                                placeholder="ADMIN 或 CHAT"
-                                desc="ADMIN: 僅限管理員個人。CHAT: 僅限特定群組。"
-                                value={config.env.TG_AUTH_MODE || ""}
-                                onChange={(val) => handleChangeEnv("TG_AUTH_MODE", val)}
-                            />
-                            <div className="grid grid-cols-2 gap-4">
-                                <SettingField
-                                    label="Admin ID"
-                                    keyName="ADMIN_ID"
-                                    placeholder="無"
-                                    isSecret
-                                    value={config.env.ADMIN_ID || ""}
-                                    onChange={(val) => handleChangeEnv("ADMIN_ID", val)}
-                                />
-                                <SettingField
-                                    label="Chat ID"
-                                    keyName="TG_CHAT_ID"
-                                    placeholder="無"
-                                    isSecret
-                                    value={config.env.TG_CHAT_ID || ""}
-                                    onChange={(val) => handleChangeEnv("TG_CHAT_ID", val)}
-                                />
+                                    {config.env.GOLEM_MEMORY_MODE === "lancedb" && (
+                                        <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 space-y-4 mb-4 animate-in zoom-in-95 mt-4">
+                                            <h4 className="text-xs font-bold text-primary flex items-center gap-2">
+                                                <Sparkles className="w-3 h-3" /> 本地向量模型配置 (Local Embedding)
+                                            </h4>
+                                            <div className="space-y-4">
+                                                <SettingSelectField
+                                                    label="模型選擇"
+                                                    desc="本地端計算，具備極佳隱私性。"
+                                                    value={config.env.GOLEM_LOCAL_EMBEDDING_MODEL || "Xenova/bge-small-zh-v1.5"}
+                                                    onChange={(val) => {
+                                                        handleChangeEnv("GOLEM_LOCAL_EMBEDDING_MODEL", val);
+                                                        handleChangeEnv("GOLEM_EMBEDDING_PROVIDER", "local");
+                                                    }}
+                                                    options={LOCAL_MODELS.map(m => ({ value: m.id, label: m.name }))}
+                                                />
+                                                {(() => {
+                                                    const activeModelInfo = LOCAL_MODELS.find(m => m.id === (config.env.GOLEM_LOCAL_EMBEDDING_MODEL || "Xenova/bge-small-zh-v1.5"));
+                                                    if (!activeModelInfo) return null;
+                                                    return (
+                                                        <div className="bg-background/50 border border-border/40 rounded-lg p-3 space-y-2">
+                                                            <div className="text-[11px] text-foreground/80 leading-relaxed">
+                                                                <span className="font-bold text-primary">特色：</span> {activeModelInfo.features}
+                                                            </div>
+                                                            <div className="text-[11px] text-foreground/80 leading-relaxed">
+                                                                <span className="font-bold text-primary">推薦：</span> {activeModelInfo.recommendation}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })()}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-
-                        <ConfirmModal
-                            isOpen={isRestartConfirmOpen}
-                            onClose={() => setIsRestartConfirmOpen(false)}
-                            onConfirm={executeRestart}
-                            variant="warning"
-                            title="確定要重啟 Golem 嗎？"
-                            description="重啟將會中斷目前的對話並重置系統狀態。任何未儲存的變更可能遺失。"
-                            confirmText="立即重啟"
-                            cancelText="先不要"
-                        />
-
-                        {/* Section: Discord Config */}
-                        <div className="bg-card border border-border hover:border-primary/20 transition-colors rounded-xl p-5 shadow-sm">
-                            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                                👾 Discord 設定
-                            </h2>
-                            <SettingField
-                                label="Bot Token"
-                                keyName="DISCORD_TOKEN"
-                                placeholder="MTE1Mj..."
-                                desc="Discord Developer Portal 的 Token。"
-                                isSecret
-                                value={config.env.DISCORD_TOKEN || ""}
-                                onChange={(val) => handleChangeEnv("DISCORD_TOKEN", val)}
-                            />
-                            <SettingField
-                                label="Admin ID"
-                                keyName="DISCORD_ADMIN_ID"
-                                placeholder="無"
-                                isSecret
-                                value={config.env.DISCORD_ADMIN_ID || ""}
-                                onChange={(val) => handleChangeEnv("DISCORD_ADMIN_ID", val)}
-                            />
                         </div>
                     </div>
+                )}
 
-                    {/* 右側：系統進階與社交 */}
-                    <div className="space-y-6">
-                        {/* Section: Moltbook / Social */}
-                        <div className="bg-card border border-border hover:border-rose-900/20 transition-colors rounded-xl p-5 shadow-sm">
-                            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                                🦞 Moltbook 社交網絡
-                            </h2>
-                            <SettingField
-                                label="API Key"
-                                keyName="MOLTBOOK_API_KEY"
-                                placeholder="無"
-                                desc="Agent 在 Moltbook 上的身分證憑證。"
-                                isSecret
-                                value={config.env.MOLTBOOK_API_KEY || ""}
-                                onChange={(val) => handleChangeEnv("MOLTBOOK_API_KEY", val)}
-                            />
-                            <SettingField
-                                label="Agent Name"
-                                keyName="MOLTBOOK_AGENT_NAME"
-                                placeholder="例如: Golem_v9(golem)"
-                                desc="僅供辨識用的備註名稱。"
-                                value={config.env.MOLTBOOK_AGENT_NAME || ""}
-                                onChange={(val) => handleChangeEnv("MOLTBOOK_AGENT_NAME", val)}
-                            />
-                        </div>
-
-                        {/* Section: System Advanced */}
-                        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                                ⚙️ 系統進階設定
-                            </h2>
-                            <SettingField
-                                label="測試模式"
-                                keyName="GOLEM_TEST_MODE"
-                                placeholder="false"
-                                desc="true 或 false"
-                                value={config.env.GOLEM_TEST_MODE || ""}
-                                onChange={(val) => handleChangeEnv("GOLEM_TEST_MODE", val)}
-                            />
-
-                            <SettingSelectField
-                                label="記憶引擎模式"
-                                desc="browser: 內建 memory.html | lancedb: 高效向量資料庫 | qmd: 混合搜尋"
-                                value={config.env.GOLEM_MEMORY_MODE || "browser"}
-                                onChange={(val) => handleChangeEnv("GOLEM_MEMORY_MODE", val)}
-                                options={[
-                                    { value: "browser", label: "Browser (預設)" },
-                                    { value: "lancedb", label: "LanceDB (高效能 Pro 版)" },
-                                    { value: "qmd", label: "QMD (進階混合)" }
-                                ]}
-                            />
-
-                            {config.env.GOLEM_MEMORY_MODE === "lancedb" && (
-                                <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 space-y-4 mb-4 animate-in zoom-in-95">
-                                    <h4 className="text-xs font-bold text-primary flex items-center gap-2">
-                                        <Sparkles className="w-3 h-3" /> 本地向量模型配置 (Local Embedding)
-                                    </h4>
-                                    
-                                    <div className="space-y-4">
-                                        <SettingSelectField
-                                            label="模型選擇"
-                                            desc="本地端計算，具備極佳隱私性。"
-                                            value={config.env.GOLEM_LOCAL_EMBEDDING_MODEL || "Xenova/bge-small-zh-v1.5"}
-                                            onChange={(val) => {
-                                                handleChangeEnv("GOLEM_LOCAL_EMBEDDING_MODEL", val);
-                                                // 強制寫死 provider 為 local
-                                                handleChangeEnv("GOLEM_EMBEDDING_PROVIDER", "local");
-                                            }}
-                                            options={LOCAL_MODELS.map(m => ({ value: m.id, label: m.name }))}
-                                        />
-                                        
-                                        {(() => {
-                                            const activeModelInfo = LOCAL_MODELS.find(m => m.id === (config.env.GOLEM_LOCAL_EMBEDDING_MODEL || "Xenova/bge-small-zh-v1.5"));
-                                            if (!activeModelInfo) return null;
-                                            return (
-                                                <div className="bg-background/50 border border-border/40 rounded-lg p-3 space-y-2 animate-in fade-in slide-in-from-top-1">
-                                                    <div className="text-[11px] text-foreground/80 leading-relaxed">
-                                                        <span className="font-bold text-primary">特色：</span> {activeModelInfo.features}
-                                                    </div>
-                                                    <div className="text-[11px] text-foreground/80 leading-relaxed">
-                                                        <span className="font-bold text-primary">推薦：</span> {activeModelInfo.recommendation}
-                                                    </div>
-                                                    <div className="pt-2 border-t border-border/20">
-                                                        <p className="text-[10px] text-muted-foreground italic flex items-start gap-1">
-                                                            <span>💡</span>
-                                                            <span>注意事項：{activeModelInfo.notes}</span>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })()}
-                                    </div>
-                                </div>
-                            )}
-
-                            <SettingField
-                                label="系統維護推播通知"
-                                keyName="ENABLE_LOG_NOTIFICATIONS"
-                                placeholder="false"
-                                desc="是否在 Telegram/Discord 接收『自動化日誌維護』彙整通知 (預設 false)"
-                                value={config.env.ENABLE_LOG_NOTIFICATIONS || ""}
-                                onChange={(val) => handleChangeEnv("ENABLE_LOG_NOTIFICATIONS", val)}
-                            />
-
-                            <SettingField
-                                label="日誌檢查間隔 (分)"
-                                keyName="ARCHIVE_CHECK_INTERVAL"
-                                placeholder="30"
-                                desc="自動檢查日誌壓縮狀態的間隔分鐘數 (預設 30)"
-                                value={config.env.ARCHIVE_CHECK_INTERVAL || ""}
-                                onChange={(val) => handleChangeEnv("ARCHIVE_CHECK_INTERVAL", val)}
-                            />
-
-                            <SettingField
-                                label="昨日歸檔門檻 (份)"
-                                keyName="ARCHIVE_THRESHOLD_YESTERDAY"
-                                placeholder="3"
-                                desc="昨日日誌需累積多少份才啟動歸檔 (預設 3)"
-                                value={config.env.ARCHIVE_THRESHOLD_YESTERDAY || ""}
-                                onChange={(val) => handleChangeEnv("ARCHIVE_THRESHOLD_YESTERDAY", val)}
-                            />
-
-                            <SettingField
-                                label="本日歸檔門檻 (份)"
-                                keyName="ARCHIVE_THRESHOLD_TODAY"
-                                placeholder="12"
-                                desc="本日日誌需累積多少份才提前啟動歸檔 (預設 12)"
-                                value={config.env.ARCHIVE_THRESHOLD_TODAY || ""}
-                                onChange={(val) => handleChangeEnv("ARCHIVE_THRESHOLD_TODAY", val)}
-                            />
-                            <SettingField
-                                label="資料暫存路徑"
-                                keyName="USER_DATA_DIR"
-                                placeholder="./golem_memory"
-                                value={config.env.USER_DATA_DIR || ""}
-                                onChange={(val) => handleChangeEnv("USER_DATA_DIR", val)}
-                            />
-                            <div className="grid grid-cols-2 gap-4 mt-4">
+                {/* Messaging Tab */}
+                {activeTab === 'messaging' && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* Telegram Section */}
+                            <div className="bg-card border border-border hover:border-primary/20 transition-colors rounded-xl p-5 shadow-sm space-y-4">
+                                <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                                    ✈️ Telegram 設定
+                                </h2>
                                 <SettingField
-                                    label="OTA 升級節點 (GitHub Repo)"
-                                    keyName="GITHUB_REPO"
-                                    placeholder="https://raw.github..."
-                                    value={config.env.GITHUB_REPO || ""}
-                                    onChange={(val) => handleChangeEnv("GITHUB_REPO", val)}
+                                    label="Bot Token"
+                                    keyName="TELEGRAM_TOKEN"
+                                    placeholder="123456789:ABCDefgh..."
+                                    isSecret
+                                    value={config.env.TELEGRAM_TOKEN || ""}
+                                    onChange={(val) => handleChangeEnv("TELEGRAM_TOKEN", val)}
                                 />
-                                <div className="space-y-4 col-span-2">
-                                    <div className="bg-secondary/30 p-4 rounded-lg border border-border">
-                                        <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                                            日誌輪替策略 (Log Rotation Strategy)
-                                        </h4>
-                                        <p className="text-xs text-muted-foreground mb-4">
-                                            系統將自動在「跨日」或「檔案大小達標」時建立新的日誌壓縮檔，這兩個條件只要達成其一即會觸發輪替。
-                                        </p>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <SettingField
-                                                label="單檔儲存上限 (MB)"
-                                                keyName="LOG_MAX_SIZE_MB"
-                                                placeholder="10"
-                                                desc="超過此容量即切割壓縮新檔 (設 0 則不限制)"
-                                                value={config.env.LOG_MAX_SIZE_MB || ""}
-                                                onChange={(val) => handleChangeEnv("LOG_MAX_SIZE_MB", val)}
-                                            />
-                                            <SettingField
-                                                label="保留歷史檔案天數"
-                                                keyName="LOG_RETENTION_DAYS"
-                                                placeholder="7"
-                                                desc="過舊的壓縮日誌將會自動刪除"
-                                                value={config.env.LOG_RETENTION_DAYS || ""}
-                                                onChange={(val) => handleChangeEnv("LOG_RETENTION_DAYS", val)}
-                                            />
-                                        </div>
-                                    </div>
+                                <SettingField
+                                    label="Auth Mode"
+                                    keyName="TG_AUTH_MODE"
+                                    placeholder="ADMIN 或 CHAT"
+                                    value={config.env.TG_AUTH_MODE || ""}
+                                    onChange={(val) => handleChangeEnv("TG_AUTH_MODE", val)}
+                                />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <SettingField label="Admin ID" keyName="ADMIN_ID" isSecret placeholder="Telegram Admin ID (數值)" value={config.env.ADMIN_ID || ""} onChange={(val) => handleChangeEnv("ADMIN_ID", val)} />
+                                    <SettingField label="Chat ID" keyName="TG_CHAT_ID" isSecret placeholder="Telegram 群組/頻道 ID" value={config.env.TG_CHAT_ID || ""} onChange={(val) => handleChangeEnv("TG_CHAT_ID", val)} />
                                 </div>
                             </div>
-                            <SettingField
-                                label="嚴格指令防護 (Strict Safeguard)"
-                                keyName="GOLEM_STRICT_SAFEGUARD"
-                                placeholder="true"
-                                desc="是否在 initial validation 階段就攔截 dangerousOps (如 rm -rf)。設為 false 後危險指令仍需核准，但不會被直接擋掉。"
-                                value={config.env.GOLEM_STRICT_SAFEGUARD || ""}
-                                onChange={(val) => handleChangeEnv("GOLEM_STRICT_SAFEGUARD", val)}
-                            />
 
-                            <div className="mt-4 pt-4 border-t border-gray-800/80">
-
-                                <div className="flex items-center justify-between mb-4">
-                                    <span className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                                        啟用系統日誌 (System Log)
-                                        {logInfo && (
-                                            <span className={`px-2 py-0.5 rounded text-xs font-mono ml-2 ${logInfo.bytes > 10 * 1024 * 1024 ? 'bg-red-900/50 text-red-400' : 'bg-green-900/30 text-green-400'}`}>
-                                                system.log 大小: {logInfo.size}
-                                            </span>
-                                        )}
-                                    </span>
+                            <div className="space-y-6">
+                                {/* Discord Section */}
+                                <div className="bg-card border border-border hover:border-primary/20 transition-colors rounded-xl p-5 shadow-sm">
+                                    <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                                        👾 Discord 設定
+                                    </h2>
+                                    <SettingField
+                                        label="Bot Token"
+                                        keyName="DISCORD_TOKEN"
+                                        placeholder="MTAy... (Discord Bot Token)"
+                                        isSecret
+                                        value={config.env.DISCORD_TOKEN || ""}
+                                        onChange={(val) => handleChangeEnv("DISCORD_TOKEN", val)}
+                                    />
+                                    <SettingField
+                                        label="Admin ID"
+                                        keyName="DISCORD_ADMIN_ID"
+                                        placeholder="Discord User ID (數值)"
+                                        isSecret
+                                        value={config.env.DISCORD_ADMIN_ID || ""}
+                                        onChange={(val) => handleChangeEnv("DISCORD_ADMIN_ID", val)}
+                                    />
                                 </div>
-                                <SettingField
-                                    label=""
-                                    keyName="ENABLE_SYSTEM_LOG"
-                                    placeholder="true"
-                                    desc="設為 false 將完全不記錄 system.log，節省硬碟空間"
-                                    value={config.env.ENABLE_SYSTEM_LOG || ""}
-                                    onChange={(val) => handleChangeEnv("ENABLE_SYSTEM_LOG", val)}
-                                />
+
+                                {/* Moltbook Section */}
+                                <div className="bg-card border border-border hover:border-rose-900/20 transition-colors rounded-xl p-5 shadow-sm">
+                                    <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                                        🦞 Moltbook 社交網絡
+                                    </h2>
+                                    <SettingField
+                                        label="API Key"
+                                        keyName="MOLTBOOK_API_KEY"
+                                        placeholder="Moltbook 存取金鑰"
+                                        isSecret
+                                        value={config.env.MOLTBOOK_API_KEY || ""}
+                                        onChange={(val) => handleChangeEnv("MOLTBOOK_API_KEY", val)}
+                                    />
+                                    <SettingField
+                                        label="Agent Name"
+                                        keyName="MOLTBOOK_AGENT_NAME"
+                                        placeholder="Golem"
+                                        value={config.env.MOLTBOOK_AGENT_NAME || "Golem"}
+                                        onChange={(val) => handleChangeEnv("MOLTBOOK_AGENT_NAME", val)}
+                                    />
+                                </div>
                             </div>
                         </div>
+                    </div>
+                )}
 
-                        {/* Section: Autonomy Schedule */}
-                        <div className="bg-secondary/20 border border-border hover:border-primary/30 transition-colors rounded-xl p-5 shadow-sm">
+                {/* Schedule Tab */}
+                {activeTab === 'schedule' && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
+                        <div className="bg-card border border-border hover:border-primary/30 transition-colors rounded-xl p-5 shadow-sm">
                             <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                                 ⏳ 自動化與作息設定
                             </h2>
                             <div className="grid grid-cols-2 gap-4">
-                                <SettingField
-                                    label="喚醒間隔 (最小)"
-                                    keyName="GOLEM_AWAKE_INTERVAL_MIN"
-                                    placeholder="2"
-                                    desc="最短幾小時主動喚醒一次"
-                                    value={config.env.GOLEM_AWAKE_INTERVAL_MIN || ""}
-                                    onChange={(val) => handleChangeEnv("GOLEM_AWAKE_INTERVAL_MIN", val)}
-                                />
-                                <SettingField
-                                    label="喚醒間隔 (最大)"
-                                    keyName="GOLEM_AWAKE_INTERVAL_MAX"
-                                    placeholder="5"
-                                    desc="最長幾小時主動喚醒一次"
-                                    value={config.env.GOLEM_AWAKE_INTERVAL_MAX || ""}
-                                    onChange={(val) => handleChangeEnv("GOLEM_AWAKE_INTERVAL_MAX", val)}
-                                />
-                                <SettingField
-                                    label="夜間休眠開始"
-                                    keyName="GOLEM_SLEEP_START"
-                                    placeholder="1"
-                                    desc="24小時制，預設 1"
-                                    value={config.env.GOLEM_SLEEP_START || ""}
-                                    onChange={(val) => handleChangeEnv("GOLEM_SLEEP_START", val)}
-                                />
-                                <SettingField
-                                    label="夜間休眠結束"
-                                    keyName="GOLEM_SLEEP_END"
-                                    placeholder="7"
-                                    desc="24小時制，預設 7"
-                                    value={config.env.GOLEM_SLEEP_END || ""}
-                                    onChange={(val) => handleChangeEnv("GOLEM_SLEEP_END", val)}
-                                />
+                                <SettingField label="喚醒間隔 (最小)" keyName="GOLEM_AWAKE_INTERVAL_MIN" placeholder="10" desc="分鐘 (最小)" value={config.env.GOLEM_AWAKE_INTERVAL_MIN || "10"} onChange={(val) => handleChangeEnv("GOLEM_AWAKE_INTERVAL_MIN", val)} />
+                                <SettingField label="喚醒間隔 (最大)" keyName="GOLEM_AWAKE_INTERVAL_MAX" placeholder="60" desc="分鐘 (最大)" value={config.env.GOLEM_AWAKE_INTERVAL_MAX || "60"} onChange={(val) => handleChangeEnv("GOLEM_AWAKE_INTERVAL_MAX", val)} />
+                                <SettingField label="夜間休眠開始" keyName="GOLEM_SLEEP_START" placeholder="23:00" desc="格式: HH:mm (24小時制)" value={config.env.GOLEM_SLEEP_START || "23:00"} onChange={(val) => handleChangeEnv("GOLEM_SLEEP_START", val)} />
+                                <SettingField label="夜間休眠結束" keyName="GOLEM_SLEEP_END" placeholder="07:00" desc="格式: HH:mm (24小時制)" value={config.env.GOLEM_SLEEP_END || "07:00"} onChange={(val) => handleChangeEnv("GOLEM_SLEEP_END", val)} />
                             </div>
                             <div className="mt-4">
                                 <SettingField
                                     label="興趣標籤 (User Interests)"
                                     keyName="USER_INTERESTS"
-                                    placeholder="科技圈熱門話題,全球趣聞"
                                     desc="用於自主搜尋與聊天，請使用半形逗號「,」分隔多個興趣項目。"
-                                    value={config.env.USER_INTERESTS || ""}
+                                    value={config.env.USER_INTERESTS || "AI, Coding, Technology"}
                                     onChange={(val) => handleChangeEnv("USER_INTERESTS", val)}
                                 />
                             </div>
                         </div>
-
                     </div>
-                </div>
-
-                {/* Section: Other Variables (Read Only) */}
-                <div className="mt-8 border-t border-border pt-8">
-                    <h2 className="text-xl font-bold tracking-tight text-muted-foreground mb-6 flex items-center gap-2">
-                        🔧 其他唯讀參數 (Other Configs)
-                    </h2>
-                    <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                        {/* Section: Other Variables (Read Only) */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 mb-6">
-                            {Object.keys(config.env)
-                                .filter(k => ![
-                                    'GEMINI_API_KEYS', 'TELEGRAM_TOKEN', 'TG_AUTH_MODE', 'ADMIN_ID', 'TG_CHAT_ID',
-                                    'DISCORD_TOKEN', 'DISCORD_ADMIN_ID', 'USER_DATA_DIR', 'GOLEM_TEST_MODE',
-                                    'GOLEM_MODE', 'GOLEM_MEMORY_MODE', 'GOLEM_EMBEDDING_PROVIDER', 'GOLEM_LOCAL_EMBEDDING_MODEL', 'GITHUB_REPO',
-                                    'MOLTBOOK_API_KEY', 'MOLTBOOK_AGENT_NAME',
-                                    'GOLEM_AWAKE_INTERVAL_MIN', 'GOLEM_AWAKE_INTERVAL_MAX',
-                                    'GOLEM_SLEEP_START', 'GOLEM_SLEEP_END', 'USER_INTERESTS', 'COMMAND_WHITELIST', 'CUSTOM_COMMANDS',
-                                    'ENABLE_LOG_NOTIFICATIONS', 'ARCHIVE_CHECK_INTERVAL', 'ARCHIVE_THRESHOLD_YESTERDAY', 'ARCHIVE_THRESHOLD_TODAY',
-                                    'LOG_MAX_SIZE_MB', 'LOG_RETENTION_DAYS', 'ENABLE_SYSTEM_LOG'
-                                ].includes(k))
-                                .map(key => (
-                                    <div key={key}>
-                                        <SettingField
-                                            label={key}
-                                            keyName={key}
-                                            isReadOnly
-                                            value={config.env[key] || ""}
-                                            onChange={() => { }}
-                                        />
-                                    </div>
-                                ))
-                            }
+                )}
+                {activeTab === 'security' && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
+                        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+                            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                                🛡️ 指令安全設定
+                            </h2>
+                                <SettingField
+                                    label="嚴格指令防護 (Strict Safeguard)"
+                                    keyName="GOLEM_STRICT_SAFEGUARD"
+                                    placeholder="false"
+                                    desc="是否在 initial validation 階段就攔截 dangerousOps (如 rm -rf)。"
+                                    value={config.env.GOLEM_STRICT_SAFEGUARD || "false"}
+                                    onChange={(val) => handleChangeEnv("GOLEM_STRICT_SAFEGUARD", val)}
+                                />
                         </div>
-                        {Object.keys(config.env).length === 0 && (
-                            <p className="text-sm text-gray-500 italic text-center py-4">無其他參數</p>
-                        )}
 
-                        {/* Drag and Drop Command Configuration */}
-                        <div className="mt-8 border-t border-border pt-6">
+                        {/* Whitelist Settings */}
+                        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
                             <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                                <ShieldCheck className="w-5 h-5 text-primary" />
                                 🛡️ 指令安全與白名單設定 (Drag & Drop)
                             </h3>
-                            <p className="text-sm text-muted-foreground mb-6">
-                                預設的安全指令不可移除。您可以新增自訂指令，並在「備選池」與「允許清單」之間拖曳以啟用/停用免審批功能。
-                            </p>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 pb-4">
                                 {/* 🔴 危險指令 */}
                                 <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-4 flex flex-col h-full">
                                     <h4 className="text-sm font-semibold text-destructive flex items-center gap-2 mb-3">
@@ -1184,13 +1068,10 @@ export default function SettingsPage() {
                                 </div>
 
                                 {/* 🛡️ 系統安全庫 (預設) */}
-                                <div
-                                    className="bg-secondary/30 border border-border rounded-xl p-4 flex flex-col h-full transition-colors relative"
-                                >
+                                <div className="bg-secondary/30 border border-border rounded-xl p-4 flex flex-col h-full">
                                     <h4 className="text-sm font-semibold text-muted-foreground flex items-center gap-2 mb-3">
                                         🛡️ 系統安全庫 (預設)
                                     </h4>
-                                    <p className="text-[10px] text-muted-foreground/80 mb-3">系統內建的安全指令，必須拖出至允許清單才會免審批。</p>
                                     <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar h-[22rem]">
                                         {['dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check']
                                             .filter(cmd => !(config.env.COMMAND_WHITELIST || "").split(',').map(s => s.trim()).includes(cmd))
@@ -1202,10 +1083,10 @@ export default function SettingsPage() {
                                                         e.dataTransfer.setData("text/plain", cmd);
                                                         e.dataTransfer.effectAllowed = "move";
                                                     }}
-                                                    className="px-3 py-2 bg-secondary border border-border text-foreground/80 text-xs font-mono rounded cursor-grab active:cursor-grabbing hover:border-primary shadow-sm relative group flex items-center justify-between"
+                                                    className="px-3 py-2 bg-secondary border border-border text-foreground/80 text-xs font-mono rounded cursor-grab hover:border-primary shadow-sm active:cursor-grabbing group flex items-center justify-between"
                                                 >
                                                     <span>{cmd}</span>
-                                                    <span className="text-[10px] text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">拖曳啟用</span>
+                                                    <span className="text-[10px] text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">拖曳啟用</span>
                                                 </div>
                                             ))}
                                     </div>
@@ -1214,30 +1095,17 @@ export default function SettingsPage() {
                                 {/* 🟢 允許清單 (Whitelist) */}
                                 <div
                                     className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex flex-col h-full transition-colors relative"
-                                    onDragOver={(e) => {
-                                        e.preventDefault();
-                                        e.currentTarget.classList.add('border-primary', 'bg-primary/20');
-                                    }}
-                                    onDragLeave={(e) => {
-                                        e.currentTarget.classList.remove('border-primary', 'bg-primary/20');
-                                    }}
+                                    onDragOver={(e) => e.preventDefault()}
                                     onDrop={(e) => {
                                         e.preventDefault();
-                                        e.currentTarget.classList.remove('border-primary', 'bg-primary/20');
                                         const item = e.dataTransfer.getData("text/plain");
                                         if (!item) return;
-
-                                        const currentWhitelistStr = config.env.COMMAND_WHITELIST || "";
-                                        const currentWhitelist = currentWhitelistStr.split(',').map(s => s.trim()).filter(Boolean);
-                                        const poolStr = config.env.CUSTOM_COMMANDS || "";
-                                        let poolList = poolStr.split(',').map(s => s.trim()).filter(Boolean);
-
+                                        const currentWhitelist = (config.env.COMMAND_WHITELIST || "").split(',').map(s => s.trim()).filter(Boolean);
                                         if (!currentWhitelist.includes(item)) {
                                             const newWhitelist = [...currentWhitelist, item];
                                             handleChangeEnv("COMMAND_WHITELIST", newWhitelist.join(','));
-                                            // Remove from pool if it was there
-                                            poolList = poolList.filter(cmd => cmd !== item);
-                                            handleChangeEnv("CUSTOM_COMMANDS", poolList.join(','));
+                                            const pool = (config.env.CUSTOM_COMMANDS || "").split(',').map(s => s.trim()).filter(c => c !== item && c !== "");
+                                            handleChangeEnv("CUSTOM_COMMANDS", pool.join(','));
                                         }
                                     }}
                                 >
@@ -1245,160 +1113,185 @@ export default function SettingsPage() {
                                         <CheckCircle2 className="w-4 h-4" /> 允許清單 (免審批)
                                     </h4>
                                     <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar h-[22rem]">
-                                        {/* User Whitelist */}
-                                        <div className="text-xs text-primary/70 mb-2 mt-2 font-medium">免審批生效中</div>
-                                        {(config.env.COMMAND_WHITELIST || "")
-                                            .split(',')
-                                            .map(s => s.trim())
-                                            .filter(Boolean)
-                                            .map((cmd, idx) => (
-                                                <div
-                                                    key={`whitelist-${idx}`}
-                                                    draggable
-                                                    onDragStart={(e) => {
-                                                        e.dataTransfer.setData("text/plain", cmd);
-                                                        e.dataTransfer.effectAllowed = "move";
+                                        {(config.env.COMMAND_WHITELIST || "").split(',').map(s => s.trim()).filter(Boolean).map((cmd, idx) => (
+                                            <div
+                                                key={`whitelist-${idx}`}
+                                                draggable
+                                                onDragStart={(e) => {
+                                                    e.dataTransfer.setData("text/plain", cmd);
+                                                    e.dataTransfer.effectAllowed = "move";
+                                                }}
+                                                className="px-3 py-2 bg-primary/10 border border-primary/30 text-primary text-xs font-mono rounded cursor-grab flex items-center justify-between group shadow-sm"
+                                            >
+                                                <span>{cmd}</span>
+                                                <button
+                                                    onClick={() => {
+                                                        const current = (config.env.COMMAND_WHITELIST || "").split(',').map(s => s.trim()).filter(c => c !== cmd && c !== "");
+                                                        handleChangeEnv("COMMAND_WHITELIST", current.join(','));
+                                                        const defaultSafe = ['dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check'];
+                                                        if (!defaultSafe.includes(cmd)) {
+                                                            const pool = (config.env.CUSTOM_COMMANDS || "").split(',').map(s => s.trim()).filter(Boolean);
+                                                            if (!pool.includes(cmd)) handleChangeEnv("CUSTOM_COMMANDS", [...pool, cmd].join(','));
+                                                        }
                                                     }}
-                                                    className="px-3 py-2 bg-primary/10 border border-primary/30 text-primary text-xs font-mono rounded cursor-grab active:cursor-grabbing hover:border-destructive shadow-sm relative group flex items-center justify-between"
+                                                    className="opacity-0 group-hover:opacity-100 text-red-400 p-0.5"
                                                 >
-                                                    <span>{cmd}</span>
-                                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <span className="text-[10px] text-muted-foreground mr-1">拖出停用</span>
-                                                        <button
-                                                            onClick={() => {
-                                                                const poolStr = config.env.COMMAND_WHITELIST || "";
-                                                                const currentPool = poolStr.split(',').map(s => s.trim()).filter(Boolean);
-                                                                const newWhitelist = currentPool.filter(c => c !== cmd);
-                                                                handleChangeEnv("COMMAND_WHITELIST", newWhitelist.join(','));
-
-                                                                // 如果不是系統預設的指令，就丟回自訂備選池
-                                                                const defaultSafe = ['dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check'];
-                                                                if (!defaultSafe.includes(cmd)) {
-                                                                    const customPoolStr = config.env.CUSTOM_COMMANDS || "";
-                                                                    const currentCustomPool = customPoolStr.split(',').map(s => s.trim()).filter(Boolean);
-                                                                    if (!currentCustomPool.includes(cmd)) {
-                                                                        handleChangeEnv("CUSTOM_COMMANDS", [...currentCustomPool, cmd].join(','));
-                                                                    }
-                                                                }
-                                                            }}
-                                                            className="text-gray-500 hover:text-red-400 p-0.5"
-                                                            title="移除"
-                                                        >
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        }
-                                        {!(config.env.COMMAND_WHITELIST || "").trim() && (
-                                            <div className="text-center py-4 border border-dashed border-primary/30 rounded text-primary/60 text-xs mt-2">
-                                                拖拉至此處以啟用
+                                                    <RefreshCw className="w-3 h-3 rotate-45" />
+                                                </button>
                                             </div>
-                                        )}
+                                        ))}
                                     </div>
                                 </div>
 
                                 {/* 🔵 自訂指令池 (Pool) */}
                                 <div
                                     className="bg-blue-500/5 border border-blue-500/20 rounded-xl p-4 flex flex-col h-full transition-colors relative"
-                                    onDragOver={(e) => {
-                                        e.preventDefault();
-                                        e.currentTarget.classList.add('border-blue-500', 'bg-blue-500/20');
-                                    }}
-                                    onDragLeave={(e) => {
-                                        e.currentTarget.classList.remove('border-blue-500', 'bg-blue-500/20');
-                                    }}
+                                    onDragOver={(e) => e.preventDefault()}
                                     onDrop={(e) => {
                                         e.preventDefault();
-                                        e.currentTarget.classList.remove('border-blue-500', 'bg-blue-500/20');
                                         const item = e.dataTransfer.getData("text/plain");
                                         if (!item) return;
-
-                                        const poolStr = config.env.CUSTOM_COMMANDS || "";
-                                        const currentPool = poolStr.split(',').map(s => s.trim()).filter(Boolean);
-                                        const currentWhitelistStr = config.env.COMMAND_WHITELIST || "";
-                                        let currentWhitelist = currentWhitelistStr.split(',').map(s => s.trim()).filter(Boolean);
-
-                                        if (!currentPool.includes(item)) {
-                                            const newPool = [...currentPool, item];
-                                            handleChangeEnv("CUSTOM_COMMANDS", newPool.join(','));
-                                            // Remove from whitelist if it came from there
-                                            currentWhitelist = currentWhitelist.filter(cmd => cmd !== item);
+                                        const pool = (config.env.CUSTOM_COMMANDS || "").split(',').map(s => s.trim()).filter(Boolean);
+                                        if (!pool.includes(item)) {
+                                            handleChangeEnv("CUSTOM_COMMANDS", [...pool, item].join(','));
+                                            const currentWhitelist = (config.env.COMMAND_WHITELIST || "").split(',').map(s => s.trim()).filter(c => c !== item && c !== "");
                                             handleChangeEnv("COMMAND_WHITELIST", currentWhitelist.join(','));
                                         }
                                     }}
                                 >
-                                    <h4 className="text-sm font-semibold text-blue-600 dark:text-blue-400 flex items-center justify-between gap-2 mb-3">
-                                        <div className="flex items-center gap-2">
-                                            <HardDrive className="w-4 h-4" /> 自訂備選池
-                                        </div>
+                                    <h4 className="text-sm font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2 mb-3">
+                                        <HardDrive className="w-4 h-4" /> 自訂備選池
                                     </h4>
-
-                                    <div className="flex gap-2 mb-4">
-                                        <input
-                                            type="text"
-                                            id="newCommandInput"
-                                            placeholder="新增指令 (如 docker)"
-                                            className="flex-1 min-w-0 bg-secondary border border-border focus:border-blue-500 rounded px-2 py-1.5 text-xs text-foreground font-mono"
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter') {
-                                                    const val = e.currentTarget.value.trim();
-                                                    if (val) {
-                                                        const poolStr = config.env.CUSTOM_COMMANDS || "";
-                                                        const currentPool = poolStr.split(',').map(s => s.trim()).filter(Boolean);
-                                                        if (!currentPool.includes(val)) {
-                                                            handleChangeEnv("CUSTOM_COMMANDS", [...currentPool, val].join(','));
-                                                            e.currentTarget.value = "";
-                                                        }
+                                    <input
+                                        type="text"
+                                        placeholder="新增指令 (如 docker)"
+                                        className="w-full bg-secondary border border-border rounded px-2 py-1.5 text-xs font-mono mb-3"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                const val = e.currentTarget.value.trim();
+                                                if (val) {
+                                                    const pool = (config.env.CUSTOM_COMMANDS || "").split(',').map(s => s.trim()).filter(Boolean);
+                                                    if (!pool.includes(val)) {
+                                                        handleChangeEnv("CUSTOM_COMMANDS", [...pool, val].join(','));
+                                                        e.currentTarget.value = "";
                                                     }
                                                 }
-                                            }}
-                                        />
-                                    </div>
+                                            }
+                                        }}
+                                    />
                                     <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar h-[19rem]">
-                                        {(config.env.CUSTOM_COMMANDS || "")
-                                            .split(',')
-                                            .map(s => s.trim())
-                                            .filter(Boolean)
-                                            .map((cmd, idx) => (
-                                                <div
-                                                    key={`pool-${idx}`}
-                                                    draggable
-                                                    onDragStart={(e) => {
-                                                        e.dataTransfer.setData("text/plain", cmd);
-                                                        e.dataTransfer.effectAllowed = "move";
+                                        {(config.env.CUSTOM_COMMANDS || "").split(',').map(s => s.trim()).filter(Boolean).map((cmd, idx) => (
+                                            <div
+                                                key={`pool-${idx}`}
+                                                draggable
+                                                onDragStart={(e) => {
+                                                    e.dataTransfer.setData("text/plain", cmd);
+                                                    e.dataTransfer.effectAllowed = "move";
+                                                }}
+                                                className="px-3 py-2 bg-secondary border border-border text-foreground/80 text-xs font-mono rounded cursor-grab flex items-center justify-between group shadow-sm hover:border-blue-500"
+                                            >
+                                                <span>{cmd}</span>
+                                                <button
+                                                    onClick={() => {
+                                                        const pool = (config.env.CUSTOM_COMMANDS || "").split(',').map(s => s.trim()).filter(c => c !== cmd && c !== "");
+                                                        handleChangeEnv("CUSTOM_COMMANDS", pool.join(','));
                                                     }}
-                                                    className="px-3 py-2 bg-secondary border border-border text-foreground/80 text-xs font-mono rounded cursor-grab active:cursor-grabbing hover:border-blue-500 shadow-sm relative group flex items-center justify-between"
+                                                    className="opacity-0 group-hover:opacity-100 text-red-400 p-0.5"
                                                 >
-                                                    <span>{cmd}</span>
-                                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <span className="text-[10px] text-blue-500 dark:text-blue-400 mr-2">拖曳啟用</span>
-                                                        <button
-                                                            onClick={async () => {
-                                                                const poolStr = config.env.CUSTOM_COMMANDS || "";
-                                                                const currentPool = poolStr.split(',').map(s => s.trim()).filter(Boolean);
-                                                                handleChangeEnv("CUSTOM_COMMANDS", currentPool.filter(c => c !== cmd).join(','));
-                                                            }}
-                                                            className="text-gray-500 hover:text-red-400 p-0.5"
-                                                            title="刪除"
-                                                        >
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        }
-                                        {!(config.env.CUSTOM_COMMANDS || "").trim() && (
-                                            <div className="text-center py-4 border border-dashed border-border rounded text-muted-foreground text-xs mt-2">
-                                                庫存為空，請從上方新增
+                                                    <RefreshCw className="w-3 h-3 rotate-45" />
+                                                </button>
                                             </div>
-                                        )}
+                                        ))}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
+
+                {/* Advanced Tab */}
+                {activeTab === 'advanced' && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="bg-card border border-border rounded-xl p-5 shadow-sm space-y-6">
+                                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                                    ⚙️ 系統進階與維護
+                                </h2>
+
+                                <div className="space-y-4">
+                                    <SettingField label="測試模式" keyName="GOLEM_TEST_MODE" desc="設為 true 將在部分功能使用模擬數據" placeholder="false" value={config.env.GOLEM_TEST_MODE || "false"} onChange={(val) => handleChangeEnv("GOLEM_TEST_MODE", val)} />
+                                    <SettingField label="系統維護推播通知" keyName="ENABLE_LOG_NOTIFICATIONS" desc="是否在 Telegram/Discord 接收通知" placeholder="false" value={config.env.ENABLE_LOG_NOTIFICATIONS || "false"} onChange={(val) => handleChangeEnv("ENABLE_LOG_NOTIFICATIONS", val)} />
+                                    <SettingField label="日誌檢查間隔 (分)" keyName="ARCHIVE_CHECK_INTERVAL" placeholder="30" value={config.env.ARCHIVE_CHECK_INTERVAL || "30"} onChange={(val) => handleChangeEnv("ARCHIVE_CHECK_INTERVAL", val)} />
+                                    <SettingField label="資料暫存路徑" keyName="USER_DATA_DIR" placeholder="./.golem_data" value={config.env.USER_DATA_DIR || "./.golem_data"} onChange={(val) => handleChangeEnv("USER_DATA_DIR", val)} />
+                                    <SettingField label="OTA 升級節點" keyName="GITHUB_REPO" placeholder="Arvincreator/project-golem" value={config.env.GITHUB_REPO || "Arvincreator/project-golem"} onChange={(val) => handleChangeEnv("GITHUB_REPO", val)} />
+                                </div>
+
+                                <div className="pt-4 border-t border-border">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <span className="text-sm font-medium text-foreground flex items-center gap-2">
+                                            啟用系統日誌 (System Log)
+                                            {logInfo && (
+                                                <span className={`px-2 py-0.5 rounded text-xs font-mono ml-2 ${logInfo.bytes > 10 * 1024 * 1024 ? 'bg-red-900/50 text-red-400' : 'bg-green-900/30 text-green-400'}`}>
+                                                    大小: {logInfo.size}
+                                                </span>
+                                            )}
+                                        </span>
+                                    </div>
+                                    <SettingField label="" keyName="ENABLE_SYSTEM_LOG" desc="設為 false 將完全不記錄 system.log" placeholder="false" value={config.env.ENABLE_SYSTEM_LOG || "false"} onChange={(val) => handleChangeEnv("ENABLE_SYSTEM_LOG", val)} />
+                                </div>
+                            </div>
+
+                            <div className="space-y-6">
+                                <div className="bg-secondary/30 p-5 rounded-xl border border-border">
+                                    <h4 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                                        <RefreshCw className="w-4 h-4 text-primary" /> 日誌輪替策略
+                                    </h4>
+                                    <div className="space-y-4">
+                                        <SettingField label="單檔儲存上限 (MB)" keyName="LOG_MAX_SIZE_MB" desc="設 0 則不限制單個日誌檔大小" placeholder="10" value={config.env.LOG_MAX_SIZE_MB || ""} onChange={(val) => handleChangeEnv("LOG_MAX_SIZE_MB", val)} />
+                                        <SettingField label="保留歷史檔案天數" keyName="LOG_RETENTION_DAYS" desc="過舊的壓縮日誌將會自動刪除" placeholder="7" value={config.env.LOG_RETENTION_DAYS || ""} onChange={(val) => handleChangeEnv("LOG_RETENTION_DAYS", val)} />
+                                        <SettingField label="昨日歸檔門檻 (份)" keyName="ARCHIVE_THRESHOLD_YESTERDAY" desc="昨日日誌超過此數量即觸發歸檔" placeholder="5" value={config.env.ARCHIVE_THRESHOLD_YESTERDAY || ""} onChange={(val) => handleChangeEnv("ARCHIVE_THRESHOLD_YESTERDAY", val)} />
+                                        <SettingField label="本日歸檔門檻 (份)" keyName="ARCHIVE_THRESHOLD_TODAY" desc="今日日誌超過此數量即觸發歸檔" placeholder="20" value={config.env.ARCHIVE_THRESHOLD_TODAY || ""} onChange={(val) => handleChangeEnv("ARCHIVE_THRESHOLD_TODAY", val)} />
+                                    </div>
+                                </div>
+
+                                <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+                                    <h2 className="text-sm font-bold text-muted-foreground mb-4">🔧 其他唯讀參數</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
+                                        {Object.keys(config.env)
+                                            .filter(k => ![
+                                                'GEMINI_API_KEYS', 'TELEGRAM_TOKEN', 'TG_AUTH_MODE', 'ADMIN_ID', 'TG_CHAT_ID',
+                                                'DISCORD_TOKEN', 'DISCORD_ADMIN_ID', 'USER_DATA_DIR', 'GOLEM_TEST_MODE',
+                                                'GOLEM_MODE', 'GOLEM_MEMORY_MODE', 'GOLEM_EMBEDDING_PROVIDER', 'GOLEM_LOCAL_EMBEDDING_MODEL', 'GITHUB_REPO',
+                                                'MOLTBOOK_API_KEY', 'MOLTBOOK_AGENT_NAME',
+                                                'GOLEM_AWAKE_INTERVAL_MIN', 'GOLEM_AWAKE_INTERVAL_MAX',
+                                                'GOLEM_SLEEP_START', 'GOLEM_SLEEP_END', 'USER_INTERESTS', 'COMMAND_WHITELIST', 'CUSTOM_COMMANDS',
+                                                'ENABLE_LOG_NOTIFICATIONS', 'ARCHIVE_CHECK_INTERVAL', 'ARCHIVE_THRESHOLD_YESTERDAY', 'ARCHIVE_THRESHOLD_TODAY',
+                                                'LOG_MAX_SIZE_MB', 'LOG_RETENTION_DAYS', 'ENABLE_SYSTEM_LOG', 'GOLEM_BACKEND', 'GOLEM_STRICT_SAFEGUARD'
+                                            ].includes(k))
+                                            .map(key => (
+                                                <div key={key} className="bg-secondary/20 p-2 rounded border border-border/40">
+                                                    <label className="text-[10px] text-muted-foreground block mb-1 uppercase font-bold tracking-wider">{key}</label>
+                                                    <div className="text-xs font-mono truncate text-foreground/80">{config.env[key] || "N/A"}</div>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <ConfirmModal
+                    isOpen={isRestartConfirmOpen}
+                    onClose={() => setIsRestartConfirmOpen(false)}
+                    onConfirm={executeRestart}
+                    variant="warning"
+                    title="確定要重啟 Golem 嗎？"
+                    description="重啟將會中斷目前的對話並重置系統狀態。"
+                    confirmText="立即重啟"
+                    cancelText="先不要"
+                />
 
             </div>
         </div>

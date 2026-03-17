@@ -1,5 +1,5 @@
 // ============================================================
-// 📡 ProtocolFormatter - Golem 協議格式化 (v9.0.5 - OS, Markdown, Self-Learning & Workspace)
+// 📡 ProtocolFormatter - Golem 協議格式化 (v9.1.5 - OS, Markdown, Self-Learning & Workspace)
 // ============================================================
 const fs = require('fs').promises;
 const path = require('path');
@@ -191,7 +191,7 @@ ${text}`;
         }
 
         const superProtocol = `
-\n\n【⚠️ GOLEM PROTOCOL v9.0.6 - TWO-TIER ARCHITECTURE + OS-AWARE】
+\n\n【⚠️ GOLEM PROTOCOL v9.1.5 - TWO-TIER ARCHITECTURE + OS-AWARE】
 You act as a middleware OS. You MUST strictly follow this comprehensive output format.
 DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
 

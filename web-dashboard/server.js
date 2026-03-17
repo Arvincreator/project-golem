@@ -105,7 +105,7 @@ class WebServer {
         this.golemFactory = fn;
         console.log('🔗 [WebServer] Golem factory injected — dynamic Golem creation enabled.');
 
-        // 🎯 V9.0.7: Auto-start fully-configured Golem on backend boot.
+        // 🎯 v9.1.5: Auto-start fully-configured Golem on backend boot.
         setTimeout(async () => {
             const ConfigManager = require('../src/config/index');
             const fs = require('fs');
@@ -139,10 +139,12 @@ class WebServer {
                     console.error(`❌ [WebServer] Failed to auto-start Golem:`, e);
                 } finally {
                     this.isBooting = false;
+                    console.log('🏁 [WebServer] Booting complete! Dashboard is now ready.');
                 }
             } else {
                 console.log(`⏸️ [WebServer] Golem skipped auto-start (Missing persona.json).`);
                 this.isBooting = false;
+                console.log('🏁 [WebServer] Booting complete (No Golem to start). Dashboard is ready.');
             }
         }, 500);
     }
@@ -150,6 +152,11 @@ class WebServer {
     setContext(golemId, brain, memory, autonomy) {
         this.contexts.set(golemId, { brain, memory, autonomy });
         console.log(`🔗 [WebServer] Context linked: Brain, Memory & Autonomy for Golem [${golemId}]`);
+    }
+
+    removeContext(golemId) {
+        this.contexts.delete(golemId);
+        console.log(`🔌 [WebServer] Context unlinked: Golem [${golemId}] removed from memory.`);
     }
 
     init() {
@@ -200,7 +207,7 @@ class WebServer {
                 '/dashboard/system-setup'
             ];
 
-            // 🎯 V9.0.7 解耦：自動導引系統設定 (Auto-Setup)
+            // 🎯 v9.1.5 解耦：自動導引系統設定 (Auto-Setup)
             // 在進入 Dashboard 核心頁面之前，檢查系統配置狀態
             this.app.get(/\/dashboard.*/, (req, res, next) => {
                 const normalizedPath = req.path.replace(/\/$/, "");
@@ -211,7 +218,7 @@ class WebServer {
 
                 try {
                     const ConfigManager = require('../src/config/index');
-                    // V9.0.9 修正：強制檢查初始化標記
+                    // v9.1.5 修正：強制檢查初始化標記
                     // 只有在 SYSTEM_CONFIGURED 為 'true' 時才允許通行
                     const isConfigured = process.env.SYSTEM_CONFIGURED === 'true';
 
@@ -534,7 +541,21 @@ class WebServer {
                 const endIndex = startIndex + Number(limit);
                 const skills = allSkills.slice(startIndex, endIndex);
 
-                return res.json({ skills, total });
+                // Calculate counts for all categories
+                const categoryCounts = {};
+                let totalMarketSkills = 0;
+                if (fs.existsSync(marketplaceDir)) {
+                    const files = fs.readdirSync(marketplaceDir).filter(f => f.endsWith('.json'));
+                    for (const file of files) {
+                        const data = JSON.parse(fs.readFileSync(path.join(marketplaceDir, file), 'utf8'));
+                        const categoryId = file.replace('.json', '');
+                        categoryCounts[categoryId] = data.length;
+                        totalMarketSkills += data.length;
+                    }
+                }
+                categoryCounts['all'] = totalMarketSkills;
+
+                return res.json({ skills, total, categoryCounts });
             } catch (e) {
                 console.error("Failed to read marketplace skills:", e);
                 return res.status(500).json({ error: e.message });
@@ -1034,6 +1055,14 @@ class WebServer {
                     );
                 }
 
+                // De-duplicate by ID
+                const seenIds = new Set();
+                allPersonas = allPersonas.filter(p => {
+                    if (!p.id || seenIds.has(p.id)) return false;
+                    seenIds.add(p.id);
+                    return true;
+                });
+
                 const total = allPersonas.length;
                 const startIndex = (Number(page) - 1) * Number(limit);
                 const endIndex = startIndex + Number(limit);
@@ -1052,9 +1081,10 @@ class WebServer {
                 const envVars = EnvManager.readEnv();
 
                 let golemsData = [];
+                const isSingleMode = envVars.GOLEM_MODE === 'SINGLE' || !envVars.GOLEM_MODE;
                 const hasToken = envVars.TELEGRAM_TOKEN || envVars.DISCORD_TOKEN;
 
-                if (hasToken) {
+                if (hasToken || isSingleMode) {
                     const id = 'golem_A';
                     const context = this.contexts.get(id);
                     let status = 'not_started';
@@ -1062,11 +1092,7 @@ class WebServer {
                     if (context && context.brain) {
                         status = context.brain.status || 'running';
                     } else {
-                        const projectRoot = path.resolve(__dirname, '..');
-                        const personaPath = envVars.USER_DATA_DIR
-                            ? path.resolve(envVars.USER_DATA_DIR, 'persona.json')
-                            : path.resolve(projectRoot, 'golem_memory', 'persona.json');
-                        status = fs.existsSync(personaPath) ? 'running' : 'pending_setup';
+                        status = 'not_started';
                     }
                     golemsData.push({ id, status });
                 }
@@ -1180,7 +1206,7 @@ class WebServer {
                 const envVars = EnvManager.readEnv();
 
                 // Read version from package.json
-                let version = 'v9.0';
+                let version = 'v9.1';
                 try {
                     const pkg = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf8'));
                     version = pkg.version;
@@ -1298,7 +1324,7 @@ class WebServer {
             try {
                 console.log("🔄 [System] Restart requested by user. Triggering hard restart...");
                 res.json({ success: true, message: "Restarting system... Full re-initialization in progress." });
-                
+
                 if (typeof global.gracefulRestart === 'function') {
                     setTimeout(() => {
                         global.gracefulRestart().catch(err => {
@@ -1388,7 +1414,7 @@ class WebServer {
 
                 let instance = this.contexts.get(id);
 
-                // 🎯 V9.0.7 解耦：若實體尚未「孕育」，則先執行懶加載
+                // 🎯 v9.1.5 解耦：若實體尚未「孕育」，則先執行懶加載
                 if (!instance) {
                     if (typeof this.golemFactory === 'function') {
                         console.log(`🧬 [WebServer] Golem '${id}' not in memory. Triggering lazy gestation (Single Mode)...`);
@@ -1411,8 +1437,13 @@ class WebServer {
                 console.log(`🎬 [WebServer] Explicitly starting Golem: ${id}`);
 
                 // 1. 執行大腦初始化 (啟動瀏覽器等)
-                await instance.brain.init();
-                instance.brain.status = 'running';
+                this.isBooting = true;
+                try {
+                    await instance.brain.init();
+                    instance.brain.status = 'running';
+                } finally {
+                    this.isBooting = false;
+                }
 
                 // 2. 啟動 Telegram 輪詢
                 if (instance.brain.tgBot && typeof instance.brain.tgBot.startPolling === 'function') {
@@ -1432,6 +1463,34 @@ class WebServer {
                 return res.json({ success: true, message: `Golem '${id}' started successfully.` });
             } catch (e) {
                 console.error('[WebServer] Failed to start Golem:', e);
+                return res.status(500).json({ error: e.message });
+            }
+        });
+
+        this.app.post('/api/golems/stop', async (req, res) => {
+            try {
+                const { id } = req.body;
+                if (!id) return res.status(400).json({ error: 'Missing Golem ID' });
+
+                console.log(`🛑 [WebServer] Stopping Golem: ${id}`);
+                
+                if (typeof global.stopGolem === 'function') {
+                    await global.stopGolem(id);
+                    // Explicitly remove from local contexts to ensure status update
+                    this.removeContext(id);
+                    return res.json({ success: true, message: `Golem ${id} stopped.` });
+                } else {
+                    // Fallback cleanup if Golem is in memory but global helper not found
+                    const instance = this.contexts.get(id);
+                    if (instance && instance.brain && instance.brain.browser) {
+                        await instance.brain.browser.close();
+                        instance.brain.status = 'not_started';
+                        return res.json({ success: true, message: `Golem ${id} browser closed (fallback).` });
+                    }
+                    return res.status(404).json({ error: 'Stop helper not found and Golem not in memory.' });
+                }
+            } catch (e) {
+                console.error(`❌ [WebServer] Stop failed:`, e);
                 return res.status(500).json({ error: e.message });
             }
         });
@@ -1483,13 +1542,14 @@ class WebServer {
 
                 // Update status and initialize
                 context.brain.status = 'running';
+                this.isBooting = true;
 
                 // Initialize and start polling
                 (async () => {
                     try {
                         await context.brain.init();
 
-                        // 🎯 V9.0.7 解耦：設定完成後啟動 Telegram 輪詢
+                        // 🎯 v9.1.5 解耦：設定完成後啟動 Telegram 輪詢
                         if (context.brain.tgBot && typeof context.brain.tgBot.startPolling === 'function') {
                             await context.brain.tgBot.startPolling();
                             console.log(`🤖 [Bot] ${golemId} started polling after setup.`);
@@ -1502,6 +1562,9 @@ class WebServer {
                     } catch (err) {
                         console.error(`Failed to initialize Golem [${golemId}] after setup:`, err);
                         context.brain.status = 'error';
+                    } finally {
+                        this.isBooting = false;
+                        console.log(`✅ [WebServer] Setup complete for ${golemId}. Dashboard is ready.`);
                     }
                 })();
 

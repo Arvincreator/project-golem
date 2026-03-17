@@ -11,7 +11,7 @@ import {
     DialogDescription,
     DialogFooter,
 } from "@/components/ui/dialog";
-import { BookOpen, AlertCircle, CheckCircle2, RefreshCcw, ChevronRight, Zap, TriangleAlert, Plus, Pencil, X, Search, Download, Store, Tags, Trash2 } from "lucide-react";
+import { BookOpen, AlertCircle, CheckCircle2, RefreshCcw, ChevronRight, Zap, TriangleAlert, Plus, Pencil, X, Search, Download, Store, Tags, Trash2, Activity, Database, Globe } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
@@ -325,6 +325,7 @@ export default function SkillsPage() {
     const [marketSearchQuery, setMarketSearchQuery] = useState("");
     const [marketCategory, setMarketCategory] = useState("all");
     const [isMarketLoading, setIsMarketLoading] = useState(false);
+    const [marketCategoryCounts, setMarketCategoryCounts] = useState<Record<string, number>>({});
     const [installingId, setInstallingId] = useState<string | null>(null);
 
     const [isInjecting, setIsInjecting] = useState(false);
@@ -357,8 +358,6 @@ export default function SkillsPage() {
                     if (selectedSkill) {
                         const updated = data.find(s => s.id === selectedSkill.id);
                         if (updated) setSelectedSkill(updated);
-                    } else if (data.length > 0) {
-                        setSelectedSkill(data[0]);
                     }
                 }
             })
@@ -378,10 +377,10 @@ export default function SkillsPage() {
             const data = await res.json();
             setMarketSkills(data.skills || []);
             setMarketTotal(data.total || 0);
-
-            if (data.skills && data.skills.length > 0 && !selectedMarketSkill) {
-                setSelectedMarketSkill(data.skills[0]);
+            if (data.categoryCounts) {
+                setMarketCategoryCounts(data.categoryCounts);
             }
+
         } catch (err) {
             console.error("Failed to load marketplace:", err);
         } finally {
@@ -565,7 +564,22 @@ export default function SkillsPage() {
                                 <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/80 to-primary tracking-tight">
                                     技能說明書 (Skills)
                                 </h1>
-                                <p className="text-sm text-muted-foreground mt-0.5">管理 Golem 的核心能力與開放技能市場</p>
+                                <p className="text-sm text-muted-foreground mt-0.5 flex items-center gap-1.5">
+                                    {activeTab === "marketplace" ? (
+                                        <>
+                                            數據來源：
+                                            <a 
+                                                href="https://github.com/ComposioHQ/awesome-claude-skills" 
+                                                target="_blank" 
+                                                rel="noreferrer"
+                                                className="text-primary hover:underline flex items-center gap-1"
+                                            >
+                                                ComposioHQ/awesome-claude-skills
+                                                <Globe className="w-3 h-3" />
+                                            </a>
+                                        </>
+                                    ) : "管理 Golem 的核心能力與開放技能市場"}
+                                </p>
                             </div>
                         </div>
  
@@ -600,192 +614,110 @@ export default function SkillsPage() {
                                 <Plus className="w-4 h-4" />
                                 新增技能
                             </button>
-                            <button
-                                onClick={() => setShowConfirm(true)}
-                                disabled={isInjecting}
-                                className={`px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2 transition-all ${hasUnsyncedChanges
-                                    ? "bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/50 hover:bg-amber-500/30 animate-pulse"
-                                    : "bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20"
-                                    } ${isInjecting ? "opacity-60 cursor-not-allowed" : ""}`}
-                            >
-                                <Zap className={`w-4 h-4 ${isInjecting ? "animate-pulse" : ""}`} />
-                                {isInjecting ? "注入中..." : "注入技能書"}
-                            </button>
+                            {activeTab === "installed" && (
+                                <button
+                                    onClick={() => setShowConfirm(true)}
+                                    disabled={isInjecting}
+                                    className={`px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2 transition-all ${hasUnsyncedChanges
+                                        ? "bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/50 hover:bg-amber-500/30 animate-pulse"
+                                        : "bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20"
+                                        } ${isInjecting ? "opacity-60 cursor-not-allowed" : ""}`}
+                                >
+                                    <Zap className={`w-4 h-4 ${isInjecting ? "animate-pulse" : ""}`} />
+                                    {isInjecting ? "注入中..." : "注入技能書"}
+                                </button>
+                            )}
                         </div>
                     </div>
 
                     {/* Main Content */}
                     <div className="flex flex-1 min-h-0 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-                        {/* Detail View (Left) */}
-                        <Card className="flex-[2] bg-card border-border shadow-2xl flex flex-col min-h-0 rounded-2xl overflow-hidden backdrop-blur-sm">
-                            <CardHeader className="flex-shrink-0 border-b border-border bg-card/60 p-5 px-6">
-                                {activeTab === "installed" ? (
-                                    selectedSkill ? (
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-secondary border border-border flex items-center justify-center shadow-inner">
-                                                    <BookOpen className="w-5 h-5 text-primary/80" />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-lg font-bold text-foreground leading-tight">
-                                                        {selectedSkill.title}
-                                                    </h3>
-                                                    <p className="text-xs text-muted-foreground font-mono mt-0.5">
-                                                        {selectedSkill.id}.md
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                {!selectedSkill.isOptional && (
-                                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-secondary border border-border text-muted-foreground text-[11px] uppercase tracking-wider font-bold rounded-lg select-none">
-                                                        <AlertCircle className="w-3.5 h-3.5 opacity-70" />
-                                                        常駐核心技能
+                    {/* Main Content */}
+                    <div className="flex-1 min-h-0 min-h-[500px] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+                        {activeTab === "installed" ? (
+                            <div className="flex h-full gap-6">
+                                {/* Detail View (Left) */}
+                                <Card className="flex-[2] bg-card border-border shadow-2xl flex flex-col min-h-0 rounded-2xl overflow-hidden backdrop-blur-sm">
+                                    <CardHeader className="flex-shrink-0 border-b border-border bg-card/60 p-5 px-6">
+                                        {selectedSkill ? (
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-xl bg-secondary border border-border flex items-center justify-center shadow-inner">
+                                                        <BookOpen className="w-5 h-5 text-primary/80" />
                                                     </div>
-                                                )}
-                                                {selectedSkill.isOptional && (
-                                                    <div className="flex items-center gap-2">
-                                                        <button
-                                                            onClick={() => setShowDeleteConfirm(true)}
-                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 hover:text-red-500 hover:bg-red-500/20 text-xs font-medium rounded-lg transition-colors"
-                                                        >
-                                                            <Trash2 className="w-3.5 h-3.5" /> 刪除
-                                                        </button>
-                                                        <button
-                                                            onClick={(e) => handleEditSkill(e, selectedSkill)}
-                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-secondary border border-border text-muted-foreground hover:text-foreground hover:bg-accent text-xs font-medium rounded-lg transition-colors"
-                                                        >
-                                                            <Pencil className="w-3.5 h-3.5" /> 編輯
-                                                        </button>
-                                                    </div>
-                                                )}
-                                                {selectedSkill.isOptional && (
-                                                    <label className="relative inline-flex items-center cursor-pointer ml-1">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="sr-only peer"
-                                                            checked={selectedSkill.isEnabled}
-                                                            onChange={(e) => toggleSkill(selectedSkill.id, e.target.checked)}
-                                                        />
-                                                        <div className="w-11 h-6 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-primary-foreground after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-muted-foreground peer-checked:after:bg-primary-foreground after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all border border-border peer-checked:bg-primary peer-checked:border-primary shadow-inner"></div>
-                                                    </label>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="h-[46px] flex items-center text-muted-foreground text-sm">請選擇一個技能以檢視內容</div>
-                                    )
-                                ) : (
-                                    selectedMarketSkill ? (
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-secondary border border-border flex items-center justify-center shadow-inner">
-                                                    <Store className="w-5 h-5 text-primary/80" />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-lg font-bold text-foreground leading-tight">
-                                                        {selectedMarketSkill.title}
-                                                    </h3>
-                                                    <p className="text-xs text-muted-foreground font-mono mt-0.5">
-                                                        {selectedMarketSkill.id}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                {skills.some(s => s.id === selectedMarketSkill.id) ? (
-                                                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 border border-green-500/30 text-green-600 dark:text-green-400 text-xs tracking-wider font-bold rounded-lg cursor-default">
-                                                        <CheckCircle2 className="w-4 h-4" />
-                                                        已安裝
-                                                    </div>
-                                                ) : (
-                                                    <button
-                                                        onClick={() => installSkill(selectedMarketSkill)}
-                                                        disabled={installingId === selectedMarketSkill.id}
-                                                        className="flex items-center gap-1.5 px-4 py-2 bg-primary border border-primary/20 hover:bg-primary/90 text-primary-foreground text-sm font-medium rounded-lg transition-colors shadow-lg disabled:opacity-50"
-                                                    >
-                                                        {installingId === selectedMarketSkill.id ? (
-                                                            <><RefreshCcw className="w-4 h-4 animate-spin" /> 安裝中...</>
-                                                        ) : (
-                                                            <><Download className="w-4 h-4" /> 一鍵安裝</>
-                                                        )}
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="h-[46px] flex items-center text-muted-foreground text-sm">請在右側選擇技能以檢視詳細</div>
-                                    )
-                                )}
-                            </CardHeader>
-                            <CardContent className="flex-1 overflow-y-auto p-0 scroll-smooth">
-                                {activeTab === "installed" ? (
-                                    selectedSkill ? (
-                                        <div className="prose prose-slate dark:prose-invert prose-cyan max-w-none p-6 text-foreground/80 text-[15px] leading-relaxed 
-                                            prose-headings:text-foreground prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg
-                                            prose-a:text-primary hover:prose-a:text-primary/80 prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
-                                            prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-pre:shadow-lg
-                                            prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:px-4 prose-blockquote:py-1 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-muted-foreground
-                                            prose-strong:text-foreground prose-li:marker:text-muted-foreground/50"
-                                        >
-                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                                {selectedSkill.content.replace(/<SkillModule[^>]*>([\s\S]*?)<\/SkillModule>/g, '$1').trim()}
-                                            </ReactMarkdown>
-                                        </div>
-                                    ) : (
-                                        <div className="h-full flex flex-col items-center justify-center text-muted-foreground/50 space-y-4">
-                                            <BookOpen className="w-12 h-12 opacity-20" />
-                                            <p>在右側列表中選擇技能</p>
-                                        </div>
-                                    )
-                                ) : (
-                                    selectedMarketSkill ? (
-                                        <div className="p-8">
-                                            <div className="flex gap-4 items-start mb-6">
-                                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-secondary to-card border border-border flex items-center justify-center shadow-lg">
-                                                    <Store className="w-8 h-8 text-primary/80" />
-                                                </div>
-                                                <div>
-                                                    <h2 className="text-2xl font-bold text-foreground mb-2">{selectedMarketSkill.title}</h2>
-                                                    <div className="flex gap-2">
-                                                        <span className="flex items-center gap-1 text-xs px-2.5 py-1 bg-secondary text-muted-foreground rounded-md border border-border">
-                                                            <Tags className="w-3 h-3 text-primary" /> {selectedMarketSkill.category_name?.zh || selectedMarketSkill.category}
-                                                        </span>
-                                                        <a href={selectedMarketSkill.repoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs px-2.5 py-1 bg-secondary text-muted-foreground rounded-md border border-border hover:text-foreground hover:border-accent-foreground/30 transition-colors">
-                                                            View on GitHub
-                                                        </a>
+                                                    <div>
+                                                        <h3 className="text-lg font-bold text-foreground leading-tight">
+                                                            {selectedSkill.title}
+                                                        </h3>
+                                                        <p className="text-xs text-muted-foreground font-mono mt-0.5">
+                                                            {selectedSkill.id}.md
+                                                        </p>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div className="prose prose-slate dark:prose-invert prose-cyan max-w-none text-foreground/80 text-[15px] leading-relaxed">
-                                                <h3>Description</h3>
-                                                {selectedMarketSkill.description_zh && (
-                                                    <p className="font-medium text-foreground mb-2">{selectedMarketSkill.description_zh}</p>
-                                                )}
-                                                <p className={selectedMarketSkill.description_zh ? "text-muted-foreground text-sm italic" : "text-foreground/70"}>
-                                                    {selectedMarketSkill.description}
-                                                </p>
-                                                <div className="p-4 mt-6 bg-secondary border border-border rounded-xl relative overflow-hidden">
-                                                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none"></div>
-                                                    <h4 className="flex items-center gap-2 text-primary text-sm font-bold uppercase tracking-wide mt-0 mb-3"><Zap className="w-4 h-4" />如何安裝</h4>
-                                                    <p className="text-sm text-muted-foreground mt-0 m-0">
-                                                        點擊右上角的「一鍵安裝」，Golem 會自動從 GitHub 抓取這個技能學會新能力！
-                                                    </p>
+                                                <div className="flex items-center gap-3">
+                                                    {!selectedSkill.isOptional && (
+                                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-secondary border border-border text-muted-foreground text-[11px] uppercase tracking-wider font-bold rounded-lg select-none">
+                                                            <AlertCircle className="w-3.5 h-3.5 opacity-70" />
+                                                            常駐核心技能
+                                                        </div>
+                                                    )}
+                                                    {selectedSkill.isOptional && (
+                                                        <div className="flex items-center gap-2">
+                                                            <button
+                                                                onClick={() => setShowDeleteConfirm(true)}
+                                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 hover:text-red-500 hover:bg-red-500/20 text-xs font-medium rounded-lg transition-colors"
+                                                            >
+                                                                <Trash2 className="w-3.5 h-3.5" /> 刪除
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => handleEditSkill(e, selectedSkill)}
+                                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-secondary border border-border text-muted-foreground hover:text-foreground hover:bg-accent text-xs font-medium rounded-lg transition-colors"
+                                                            >
+                                                                <Pencil className="w-3.5 h-3.5" /> 編輯
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                    {selectedSkill.isOptional && (
+                                                        <label className="relative inline-flex items-center cursor-pointer ml-1">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="sr-only peer"
+                                                                checked={selectedSkill.isEnabled}
+                                                                onChange={(e) => toggleSkill(selectedSkill.id, e.target.checked)}
+                                                            />
+                                                            <div className="w-11 h-6 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-primary-foreground after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-muted-foreground peer-checked:after:bg-primary-foreground after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all border border-border peer-checked:bg-primary peer-checked:border-primary shadow-inner"></div>
+                                                        </label>
+                                                    )}
                                                 </div>
                                             </div>
-                                        </div>
-                                    ) : (
-                                        <div className="h-full flex flex-col items-center justify-center text-muted-foreground/50 space-y-4">
-                                            <Store className="w-12 h-12 opacity-20" />
-                                            <p>在市場列表中選擇技能</p>
-                                        </div>
-                                    )
-                                )}
-                            </CardContent>
-                        </Card>
+                                        ) : (
+                                            <div className="h-[46px] flex items-center text-muted-foreground text-sm">請選擇一個技能以檢視內容</div>
+                                        )}
+                                    </CardHeader>
+                                    <CardContent className="flex-1 overflow-y-auto p-0 scroll-smooth">
+                                        {selectedSkill ? (
+                                            <div className="prose prose-slate dark:prose-invert prose-cyan max-w-none p-6 text-foreground/80 text-[15px] leading-relaxed 
+                                                prose-headings:text-foreground prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg
+                                                prose-a:text-primary hover:prose-a:text-primary/80 prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
+                                                prose-pre:bg-secondary prose-pre:border prose-pre:border-border prose-pre:shadow-lg
+                                                prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:px-4 prose-blockquote:py-1 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-muted-foreground
+                                                prose-strong:text-foreground prose-li:marker:text-muted-foreground/50"
+                                            >
+                                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                    {selectedSkill.content.replace(/<SkillModule[^>]*>([\s\S]*?)<\/SkillModule>/g, '$1').trim()}
+                                                </ReactMarkdown>
+                                            </div>
+                                        ) : (
+                                            <div className="h-full flex flex-col items-center justify-center text-muted-foreground/50 space-y-4">
+                                                <BookOpen className="w-12 h-12 opacity-20" />
+                                                <p>在右側列表中選擇技能</p>
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
 
-                        {/* List (Right) */}
-                        <div className="flex-1 flex flex-col min-h-0 bg-card/30 border border-border rounded-2xl overflow-hidden shadow-xl">
-                            {activeTab === "installed" ? (
-                                <>
+                                {/* List (Right) */}
+                                <div className="flex-1 flex flex-col min-h-0 bg-card/30 border border-border rounded-2xl overflow-hidden shadow-xl max-w-sm">
                                     <div className="p-4 border-b border-border bg-card/50 backdrop-blur-sm flex justify-between items-center shrink-0">
                                         <h2 className="text-sm font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
                                             <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.8)]"></div>
@@ -802,14 +734,11 @@ export default function SkillsPage() {
                                                     : "hover:bg-secondary border border-transparent"
                                                     }`}
                                             >
-                                                {/* Highlight accent on selected */}
                                                 {selectedSkill?.id === skill.id && (
                                                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary shadow-[0_0_12px_rgba(var(--primary),0.6)] rounded-r-full"></div>
                                                 )}
-
                                                 <div className="flex flex-col gap-1 pr-4 z-10 w-full overflow-hidden">
-                                                    <span className={`font-semibold text-[15px] truncate ${selectedSkill?.id === skill.id ? "text-primary" : "text-foreground"
-                                                        }`}>
+                                                    <span className={`font-semibold text-[15px] truncate ${selectedSkill?.id === skill.id ? "text-primary" : "text-foreground"}`}>
                                                         {skill.title}
                                                     </span>
                                                     <div className="flex items-center gap-2">
@@ -826,7 +755,6 @@ export default function SkillsPage() {
                                                         )}
                                                     </div>
                                                 </div>
-
                                                 <div className="flex items-center gap-2 z-10 shrink-0">
                                                     {skill.isOptional && (
                                                         <div
@@ -839,108 +767,262 @@ export default function SkillsPage() {
                                                             <Pencil className="w-3.5 h-3.5" />
                                                         </div>
                                                     )}
-                                                    <ChevronRight className={`w-4 h-4 transition-transform ${selectedSkill?.id === skill.id ? "text-primary translate-x-1" : "text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5"
-                                                        }`} />
+                                                    <ChevronRight className={`w-4 h-4 transition-transform ${selectedSkill?.id === skill.id ? "text-primary translate-x-1" : "text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5"}`} />
                                                 </div>
                                             </button>
                                         ))}
                                     </div>
-                                </>
-                            ) : (
-                                <>
-                                    <div className="p-4 border-b border-border bg-card/50 backdrop-blur-sm shrink-0 flex flex-col gap-3">
-                                        <form onSubmit={handleSearchSubmit} className="relative w-full">
-                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                            <input
-                                                type="text"
-                                                value={marketSearchText}
-                                                onChange={(e) => setMarketSearchText(e.target.value)}
-                                                placeholder="搜尋市場技能..."
-                                                className="w-full bg-secondary/60 border border-border rounded-lg pl-9 pr-4 py-2 text-sm text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/60"
-                                            />
-                                        </form>
-                                        <div className="relative w-full">
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col h-full space-y-6">
+                                {/* Marketplace Top Bar */}
+                                <div className="bg-card/40 backdrop-blur-md border border-border p-4 rounded-2xl shadow-xl flex flex-col md:flex-row gap-4 items-center animate-in zoom-in-95 duration-500">
+                                    <form onSubmit={handleSearchSubmit} className="relative flex-1 group">
+                                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                                        <input
+                                            type="text"
+                                            value={marketSearchText}
+                                            onChange={(e) => setMarketSearchText(e.target.value)}
+                                            placeholder="搜尋市場中的 5,000+ 個 AI 技能..."
+                                            className="w-full bg-secondary/50 border border-border/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-muted-foreground/60 shadow-inner"
+                                        />
+                                    </form>
+                                    <div className="flex items-center gap-3 w-full md:w-auto">
+                                        <div className="relative flex-1 md:w-64 group">
+                                            <Tags className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground group-focus-within:text-primary transition-colors z-10" />
                                             <select
                                                 value={marketCategory}
                                                 onChange={handleCategoryChange}
-                                                className="w-full appearance-none bg-secondary/60 border border-border rounded-lg pl-3 pr-8 py-2 text-sm text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all cursor-pointer"
+                                                className="w-full appearance-none bg-secondary/50 border border-border/50 rounded-xl pl-10 pr-10 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all cursor-pointer shadow-inner relative z-0"
                                             >
-                                                {MARKET_CATEGORIES.map(cat => (
-                                                    <option key={cat.id} value={cat.id}>
-                                                        {cat.name} {cat.name_en ? `(${cat.name_en})` : ''}
-                                                    </option>
-                                                ))}
+                                                {MARKET_CATEGORIES.map(cat => {
+                                                    const count = marketCategoryCounts[cat.id];
+                                                    return (
+                                                        <option key={cat.id} value={cat.id} className="bg-card py-2">
+                                                            {cat.name} {cat.name_en ? `(${cat.name_en})` : ''}
+                                                            {count !== undefined ? ` (${count})` : ''}
+                                                        </option>
+                                                    );
+                                                })}
                                             </select>
-                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
                                                 <ChevronRight className="w-4 h-4 text-muted-foreground rotate-90" />
                                             </div>
                                         </div>
+                                        <div className="h-10 w-[1px] bg-border mx-1 hidden md:block"></div>
+                                        <div className="flex items-center gap-1 bg-secondary/30 p-1 rounded-lg border border-border/30">
+                                            <button
+                                                onClick={() => setMarketPage(p => Math.max(1, p - 1))}
+                                                disabled={marketPage === 1}
+                                                className="p-1.5 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                                            >
+                                                上頁
+                                            </button>
+                                            <span className="text-[10px] font-bold text-muted-foreground px-2 border-x border-border/30">
+                                                {marketPage} / {Math.ceil(marketTotal / 20) || 1}
+                                            </span>
+                                            <button
+                                                onClick={() => setMarketPage(p => p + 1)}
+                                                disabled={marketPage >= Math.ceil(marketTotal / 20)}
+                                                className="p-1.5 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                                            >
+                                                下頁
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="flex-1 overflow-y-auto p-2 space-y-1 scroll-smooth">
+                                </div>
+
+                                {/* Marketplace Grid */}
+                                <div className="flex-1 overflow-hidden relative">
+                                    <div className="absolute inset-0 overflow-y-auto pr-2 custom-scrollbar">
                                         {isMarketLoading ? (
-                                            <div className="p-8 flex flex-col items-center justify-center text-muted-foreground">
-                                                <RefreshCcw className="w-6 h-6 animate-spin mb-4" />
-                                                <p className="text-sm">載入技能資料中...</p>
+                                            <div className="h-64 flex flex-col items-center justify-center text-muted-foreground gap-4">
+                                                <RefreshCcw className="w-8 h-8 animate-spin text-primary/50" />
+                                                <p className="text-sm font-medium animate-pulse">正在精挑細選優質技能...</p>
                                             </div>
                                         ) : marketSkills.length === 0 ? (
-                                            <div className="p-8 text-center text-muted-foreground text-sm">找不到相關技能</div>
+                                            <div className="h-64 flex flex-col items-center justify-center text-muted-foreground/50 gap-4">
+                                                <Search className="w-12 h-12 opacity-10" />
+                                                <p className="text-sm">在此類別中找不到相關技能</p>
+                                            </div>
                                         ) : (
-                                            marketSkills.map((skill) => (
-                                                <button
-                                                    key={skill.id}
-                                                    onClick={() => setSelectedMarketSkill(skill)}
-                                                    className={`w-full text-left px-4 py-3 rounded-xl flex items-center justify-between transition-all duration-200 group relative overflow-hidden ${selectedMarketSkill?.id === skill.id
-                                                        ? "bg-primary/10 border border-primary/50 shadow-lg"
-                                                        : "hover:bg-secondary border border-transparent"
-                                                        }`}
-                                                >
-                                                    {selectedMarketSkill?.id === skill.id && (
-                                                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary shadow-[0_0_12px_rgba(var(--primary),0.6)] rounded-r-full"></div>
-                                                    )}
-                                                    <div className="flex flex-col gap-1 pr-4 z-10 w-full overflow-hidden">
-                                                        <span className={`font-semibold text-sm truncate w-full ${selectedMarketSkill?.id === skill.id ? "text-primary" : "text-foreground"
-                                                            }`}>
-                                                            {skill.title}
-                                                        </span>
-                                                        <div className="flex items-center justify-between">
-                                                            <span className="text-[10px] text-muted-foreground truncate w-3/4" title={skill.description_zh || skill.description}>
-                                                                {skill.description_zh || skill.description}
-                                                            </span>
-                                                            {skills.some(installedSkill => installedSkill.id === skill.id) && (
-                                                                <span className="text-[9px] bg-green-500/10 text-green-500 border border-green-500/30 px-1.5 py-0.5 rounded-md uppercase tracking-wider font-bold">
-                                                                    已安裝
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-20">
+                                                {marketSkills.map((skill) => {
+                                                    const isInstalled = skills.some(s => s.id === skill.id);
+                                                    return (
+                                                        <button
+                                                            key={skill.id}
+                                                            onClick={() => setSelectedMarketSkill(skill)}
+                                                            className={cn(
+                                                                "group relative flex flex-col bg-card/40 border rounded-2xl p-4 text-left transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden",
+                                                                selectedMarketSkill?.id === skill.id
+                                                                    ? "border-primary shadow-[0_0_20px_rgba(var(--primary),0.15)] bg-primary/5"
+                                                                    : "border-border hover:border-primary/50 hover:bg-card/60"
+                                                            )}
+                                                        >
+                                                            {/* Background Glow */}
+                                                            <div className="absolute -right-4 -top-4 w-20 h-20 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+                                                            
+                                                            <div className="flex items-start justify-between mb-3 z-10">
+                                                                <div className="w-10 h-10 rounded-xl bg-secondary border border-border flex items-center justify-center group-hover:border-primary/30 group-hover:bg-primary/5 transition-all shadow-inner">
+                                                                    {/* Mapping specific icons to categories could go here, for now generic Store icon */}
+                                                                    <Store className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                                                </div>
+                                                                {isInstalled && (
+                                                                    <span className="flex items-center gap-1 text-[9px] bg-green-500/10 text-green-500 border border-green-500/30 px-1.5 py-0.5 rounded-md uppercase tracking-wider font-bold">
+                                                                        <CheckCircle2 className="w-3.5 h-3.5" /> 已安裝
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            
+                                                            <div className="space-y-2 z-10">
+                                                                <h4 className="font-bold text-foreground text-sm group-hover:text-primary transition-colors truncate" title={skill.title}>
+                                                                    {skill.title}
+                                                                </h4>
+                                                                <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 h-8">
+                                                                    {skill.description_zh || skill.description}
+                                                                </p>
+                                                            </div>
+                                                            
+                                                            <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between z-10">
+                                                                <span className="text-[10px] text-muted-foreground font-medium flex items-center gap-1.5 max-w-[120px] truncate">
+                                                                    <Tags className="w-3 h-3" /> {skill.category_name?.zh || skill.category}
                                                                 </span>
+                                                                <span className="text-[10px] text-primary/80 font-bold group-hover:translate-x-1 transition-transform flex items-center">
+                                                                    詳情 <ChevronRight className="w-3 h-3" />
+                                                                </span>
+                                                            </div>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Marketplace Detail Drawer Overlay */}
+                                    <div className={cn(
+                                        "fixed inset-0 z-50 transition-opacity duration-300 pointer-events-none bg-black/60 backdrop-blur-sm",
+                                        selectedMarketSkill ? "opacity-100 pointer-events-auto" : "opacity-0"
+                                    )} onClick={() => setSelectedMarketSkill(null)} />
+
+                                    <aside className={cn(
+                                        "fixed inset-y-0 right-0 w-full sm:w-[450px] bg-card border-l border-border shadow-2xl z-50 transition-transform duration-500 ease-out flex flex-col overflow-hidden",
+                                        selectedMarketSkill ? "translate-x-0" : "translate-x-full"
+                                    )}>
+                                        {selectedMarketSkill && (
+                                            <>
+                                                <div className="flex items-center justify-between p-6 border-b border-border bg-accent/10">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30">
+                                                            <Store className="w-6 h-6 text-primary" />
+                                                        </div>
+                                                        <div>
+                                                            <h2 className="text-xl font-bold text-foreground truncate max-w-[200px]">
+                                                                {selectedMarketSkill.title}
+                                                            </h2>
+                                                            <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest mt-0.5">
+                                                                技能詳情 & 安裝
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => setSelectedMarketSkill(null)}
+                                                        className="p-2.5 rounded-xl hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+                                                    >
+                                                        <X className="w-5 h-5" />
+                                                    </button>
+                                                </div>
+
+                                                <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
+                                                    <div className="space-y-4">
+                                                        <h3 className="text-xs font-bold text-primary flex items-center gap-2 uppercase tracking-wider">
+                                                            <BookOpen className="w-3.5 h-3.5" /> 技能簡介
+                                                        </h3>
+                                                        <div className="bg-secondary/40 border border-border/50 rounded-2xl p-5 shadow-inner">
+                                                            {selectedMarketSkill.description_zh && (
+                                                                <p className="font-bold text-foreground mb-3 text-sm leading-relaxed">
+                                                                    {selectedMarketSkill.description_zh}
+                                                                </p>
+                                                            )}
+                                                            <p className={cn(
+                                                                "text-sm leading-relaxed",
+                                                                selectedMarketSkill.description_zh ? "text-muted-foreground italic" : "text-foreground"
+                                                            )}>
+                                                                {selectedMarketSkill.description}
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            <span className="px-2 py-0.5 rounded-md bg-secondary border border-border text-[10px] text-muted-foreground font-medium flex items-center gap-1 capitalize">
+                                                                <Tags className="w-2.5 h-2.5" /> {selectedMarketSkill.category_name?.zh || selectedMarketSkill.category}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-4">
+                                                        <h3 className="text-xs font-bold text-primary flex items-center gap-2 uppercase tracking-wider">
+                                                            <Activity className="w-3.5 h-3.5" /> 整合與安裝
+                                                        </h3>
+                                                        <div className="p-5 bg-primary/5 border border-primary/20 rounded-2xl relative overflow-hidden group">
+                                                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform"></div>
+                                                            <h5 className="flex items-center gap-2 text-primary text-sm font-bold uppercase tracking-wide mt-0 mb-4">
+                                                                <Zap className="w-4 h-4" /> 一鍵式整合
+                                                            </h5>
+                                                            <p className="text-sm text-muted-foreground/90 leading-relaxed mb-6">
+                                                                此技能將自動整合至您的 Golem 核心，並從開源 GitHub 倉庫同步最新的提示詞技術。
+                                                            </p>
+                                                            
+                                                            {skills.some(s => s.id === selectedMarketSkill.id) ? (
+                                                                <Button disabled className="w-full h-12 rounded-xl bg-green-500/10 text-green-500 border border-green-500/30 font-bold">
+                                                                    <CheckCircle2 className="w-5 h-5 mr-2" /> 該技能已就緒
+                                                                </Button>
+                                                            ) : (
+                                                                <Button
+                                                                    onClick={() => installSkill(selectedMarketSkill)}
+                                                                    disabled={installingId === selectedMarketSkill.id}
+                                                                    className="w-full h-12 font-bold bg-primary hover:bg-primary/90 text-primary-foreground border-none shadow-xl shadow-primary/25 transition-all hover:scale-[1.02] active:scale-95 rounded-xl text-sm"
+                                                                >
+                                                                    {installingId === selectedMarketSkill.id ? (
+                                                                        <><RefreshCcw className="w-5 h-5 mr-3 animate-spin" /> 正在抓取...</>
+                                                                    ) : (
+                                                                        <><Download className="w-5 h-5 mr-3" /> 一鍵安裝此技能</>
+                                                                    )}
+                                                                </Button>
                                                             )}
                                                         </div>
                                                     </div>
-                                                </button>
-                                            ))
+
+                                                    <div className="pt-4 border-t border-border/50">
+                                                        <a 
+                                                            href={selectedMarketSkill.repoUrl} 
+                                                            target="_blank" 
+                                                            rel="noreferrer" 
+                                                            className="flex items-center justify-between p-4 bg-secondary/60 border border-border rounded-xl hover:bg-secondary hover:border-primary/30 transition-all text-sm group"
+                                                        >
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-8 h-8 rounded-lg bg-card border border-border flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                                    <Database className="w-4 h-4 text-muted-foreground" />
+                                                                </div>
+                                                                <span className="text-muted-foreground font-medium group-hover:text-foreground">在 GitHub 上檢視原始碼</span>
+                                                            </div>
+                                                            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="p-6 bg-accent/5 border-t border-border">
+                                                    <p className="text-center text-[10px] text-muted-foreground opacity-60">
+                                                        數據來源於 ComposioHQ/awesome-claude-skills
+                                                    </p>
+                                                </div>
+                                            </>
                                         )}
-                                    </div>
-                                    {/* Pagination Controls */}
-                                    <div className="p-3 border-t border-border bg-card/50 shrink-0 flex items-center justify-between text-sm">
-                                        <button
-                                            onClick={() => setMarketPage(p => Math.max(1, p - 1))}
-                                            disabled={marketPage === 1}
-                                            className="px-3 py-1 bg-secondary border border-border rounded text-foreground disabled:opacity-50 hover:bg-accent transition"
-                                        >
-                                            上頁
-                                        </button>
-                                        <span className="text-muted-foreground text-xs">
-                                            {marketPage} / {Math.ceil(marketTotal / 20) || 1}
-                                        </span>
-                                        <button
-                                            onClick={() => setMarketPage(p => p + 1)}
-                                            disabled={marketPage >= Math.ceil(marketTotal / 20)}
-                                            className="px-3 py-1 bg-secondary border border-border rounded text-foreground disabled:opacity-50 hover:bg-accent transition"
-                                        >
-                                            下頁
-                                        </button>
-                                    </div>
-                                </>
-                            )}
-                        </div>
+                                    </aside>
+                                </div>
+                            </div>
+                        )}
                     </div>
+                </div>
                 </div>
 
                 {/* Floating Sync Hint */}

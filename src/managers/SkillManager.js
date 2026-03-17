@@ -13,7 +13,7 @@ class SkillManager {
         this.coreDir = path.join(this.baseDir, 'core');
 
         this.skills = new Map();
-        // 🎯 V9.0.7 解耦：不再於建構子中主動掃描，改為懶加載
+        // 🎯 v9.1.5 解耦：不再於建構子中主動掃描，改為懶加載
     }
 
     /**

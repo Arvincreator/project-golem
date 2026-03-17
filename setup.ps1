@@ -1,18 +1,18 @@
 # =======================================================
-# Project Golem v9.0 (Titan Chronos) - 自動化安裝精靈
+# Project Golem v9.1 (Titan Chronos) - 自動化安裝精靈
 # PowerShell 版本 - 完整支援 Unicode / 繁體中文
 # =======================================================
 Set-Location $PSScriptRoot
 
 function Show-Title {
-    $Host.UI.RawUI.WindowTitle = 'Project Golem v9.0 Setup (Titan Chronos)'
+    $Host.UI.RawUI.WindowTitle = 'Project Golem v9.1 Setup (Titan Chronos)'
 }
 
 function Show-MainMenu {
     Clear-Host
     Write-Host ''
     Write-Host '=======================================================' -ForegroundColor Cyan
-    Write-Host '  Project Golem v9.0 主控制台' -ForegroundColor White
+    Write-Host '  Project Golem v9.1 主控制台' -ForegroundColor White
     Write-Host '=======================================================' -ForegroundColor Cyan
     Write-Host ''
     Write-Host '  請選擇操作模式：' -ForegroundColor Yellow
@@ -70,7 +70,7 @@ function Step-CheckFiles {
     if ($missing.Count -gt 0) {
         Write-Host '   [ERROR] 嚴重錯誤：核心檔案遺失！' -ForegroundColor Red
         Write-Host "   缺失檔案: $($missing -join ', ')" -ForegroundColor Red
-        Write-Host '   請確保您已完整解壓縮 V9.0 檔案包。' -ForegroundColor Red
+        Write-Host '   請確保您已完整解壓縮 v9.1 檔案包。' -ForegroundColor Red
         Read-Host '按 Enter 返回主選單'
         return $false
     }
@@ -257,7 +257,7 @@ function Step-Final {
     Clear-Host
     Write-Host ''
     Write-Host '=======================================================' -ForegroundColor Green
-    Write-Host '  部署成功！ (Project Golem v9.0 Titan)' -ForegroundColor Green
+    Write-Host '  部署成功！ (Project Golem v9.1 Titan)' -ForegroundColor Green
     Write-Host '=======================================================' -ForegroundColor Green
     Write-Host ''
     Write-Host '  系統已準備就緒。'
@@ -284,7 +284,7 @@ function Launch-System {
     Clear-Host
     Write-Host ''
     Write-Host '=======================================================' -ForegroundColor Cyan
-    Write-Host '  正在啟動 Golem v9.0...' -ForegroundColor Cyan
+    Write-Host '  正在啟動 Golem v9.1...' -ForegroundColor Cyan
     Write-Host '=======================================================' -ForegroundColor Cyan
     Write-Host ''
     Write-Host '  [INFO] 正在載入神經記憶體與儀表板...'

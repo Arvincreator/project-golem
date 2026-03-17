@@ -39,7 +39,7 @@
     "blocked_command": "BLOCKED: \"{{command}}\" contains dangerous operation \"{{reason}}\""
   },
   "dashboard": {
-    "title": "Golem v9.0",
+    "title": "Golem v9.1",
     "subtitle": "MultiAgent War Room",
     "nav": {
       "tactical": "Tactical Console",

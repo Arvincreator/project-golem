@@ -370,7 +370,6 @@ export default function PersonaPage() {
     const [templates, setTemplates] = useState<Preset[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
-    const [activePresetId, setActivePresetId] = useState("");
 
     // Market / Tab states
     const [activeTab, setActiveTab] = useState<"local" | "market">("local");
@@ -380,6 +379,10 @@ export default function PersonaPage() {
     const [searchMarketTerm, setSearchMarketTerm] = useState("");
     const [marketCategory, setMarketCategory] = useState("all");
     const [isMarketLoading, setIsMarketLoading] = useState(false);
+
+    // Drawer state
+    const [selectedPersona, setSelectedPersona] = useState<Preset | null>(null);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     // Delete state
     const [personaToDelete, setPersonaToDelete] = useState<Preset | null>(null);
@@ -447,7 +450,8 @@ export default function PersonaPage() {
         if (saved) applyToForm(saved);
         setIsEditing(false);
         setIsDirty(false);
-        setActivePresetId("");
+        setSelectedPersona(null);
+        setIsDrawerOpen(false);
         setStatusMsg(null);
     };
 
@@ -484,17 +488,15 @@ export default function PersonaPage() {
     const applyPreset = (preset: Preset) => {
         const isZh = preset.tags?.includes('zh') || !!preset.name_zh;
 
-        setActivePresetId(preset.id);
+        setSelectedPersona(preset);
         setAiName(preset.name_zh || preset.aiName || preset.name);
         setUserName(isZh && (preset.userName === "User" || !preset.userName) ? "使用者" : (preset.userName || "User"));
         setRole(preset.role_zh || preset.role || preset.description_zh || preset.description);
         setTone(isZh && (preset.tone === "Professional" || !preset.tone) ? "專業" : (preset.tone || "Professional"));
         
+        setIsDrawerOpen(true);
         setIsEditing(true);
-        setStatusMsg({ 
-            type: "info", 
-            text: `已套用樣板「${preset.name_zh || preset.name}」，確認後請點擊「儲存並重啟」。` 
-        });
+        setStatusMsg(null);
     };
 
     const handleDeletePersona = async () => {
@@ -510,8 +512,9 @@ export default function PersonaPage() {
             if (data.success) {
                 setPersonaToDelete(null);
                 loadTemplates(); // 重新整理列表
-                if (activePresetId === personaToDelete.id) {
-                    setActivePresetId("");
+                if (selectedPersona?.id === personaToDelete.id) {
+                    setSelectedPersona(null);
+                    setIsDrawerOpen(false);
                 }
             } else {
                 alert(data.error || "刪除失敗");
@@ -535,129 +538,67 @@ export default function PersonaPage() {
     const inputCls = "w-full bg-secondary/30 border border-border rounded-xl px-4 py-3 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all placeholder:text-muted-foreground";
 
     return (
-        <>
-            <div className="flex-1 overflow-auto bg-background p-6 text-foreground">
-                <div className="max-w-5xl w-full mx-auto pb-12 pt-4 space-y-6">
+        <div className="flex h-full overflow-hidden bg-background">
+            <div className="flex-1 overflow-auto p-6 scrollbar-hide">
+                <div className="max-w-6xl w-full mx-auto pb-12 pt-4 space-y-8">
 
-                    {/* ── Page Header ─────────────────────────────────── */}
-                    <div className="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
-                        <div className="inline-flex items-center justify-center p-3 bg-primary/10 border border-primary/20 shadow-[0_0_20px_-5px_rgba(var(--primary),0.4)] rounded-xl">
-                            <User className="w-6 h-6 text-primary" />
+                    {/* ── Page Header & Current Status ─────────────────── */}
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                        <div className="flex items-center gap-4">
+                            <div className="inline-flex items-center justify-center p-3 bg-primary/10 border border-primary/20 shadow-[0_0_20px_-5px_rgba(var(--primary),0.4)] rounded-2xl">
+                                <User className="w-6 h-6 text-primary" />
+                            </div>
+                            <div>
+                                <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-primary tracking-tight">
+                                    人格設定 (Persona)
+                                </h1>
+                                <p className="text-sm text-muted-foreground mt-1.5 flex items-center gap-2">
+                                    <Sparkles className="w-3.5 h-3.5 text-primary/60" />
+                                    管理 Golem 的身份、任務定位與語言風格
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground via-primary to-primary tracking-tight">
-                                人格設定 (Persona)
-                            </h1>
-                            <p className="text-sm text-muted-foreground mt-0.5">管理 Golem 的身份、人設與語言風格</p>
-                        </div>
-                    </div>
 
-                    {/* ── Current Persona Edit Card ────────────────────── */}
-                    <div className="animate-in fade-in slide-in-from-top-2 duration-500 delay-100">
-                        <div className={cn(
-                            "bg-card/70 backdrop-blur-sm border rounded-2xl relative overflow-hidden transition-all duration-300",
-                            isEditing ? "border-primary/50 shadow-[0_0_30px_-8px_rgba(var(--primary),0.35)]" : "border-border"
-                        )}>
-                            {/* Top accent bar */}
-                            <div className={cn("absolute inset-x-0 top-0 h-[2px] transition-all duration-300",
-                                isEditing
-                                    ? "bg-gradient-to-r from-purple-600 via-blue-500 to-cyan-400"
-                                    : "bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700")} />
-
-                            {/* Card Header */}
-                            <div className="flex items-center justify-between px-6 pt-6 pb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className={cn(
-                                        "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
-                                        isEditing ? "bg-primary/20 border border-primary/40" : "bg-secondary border border-border"
-                                    )}>
-                                        <User className={cn("w-5 h-5 transition-colors", isEditing ? "text-primary/80" : "text-muted-foreground")} />
+                        {/* Current Persona Mini Card */}
+                        {saved && (
+                            <div 
+                                onClick={() => {
+                                    applyToForm(saved);
+                                    setSelectedPersona({
+                                        id: 'current',
+                                        name: saved.aiName,
+                                        description: '目前正在運行的設定',
+                                        icon: 'User',
+                                        aiName: saved.aiName,
+                                        userName: saved.userName,
+                                        role: saved.currentRole,
+                                        tone: saved.tone,
+                                        tags: [],
+                                        skills: []
+                                    });
+                                    setIsDrawerOpen(true);
+                                }}
+                                className="group flex items-center gap-4 bg-card/40 backdrop-blur-md border border-border/50 rounded-2xl p-3 pl-4 pr-6 cursor-pointer hover:border-primary/40 hover:bg-card/60 transition-all duration-300 shadow-sm"
+                            >
+                                <div className="relative">
+                                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30 group-hover:scale-110 transition-transform duration-500">
+                                        <User className="w-5 h-5 text-primary" />
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest">目前人格</p>
-                                        <p className="text-lg font-bold text-foreground leading-tight">{aiName}</p>
-                                    </div>
+                                    <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-background animate-pulse" />
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    {isDirty && !isEditing && (
-                                        <span className="text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-full px-2.5 py-1">
-                                            未儲存的變更
-                                        </span>
-                                    )}
-                                    {isEditing ? (
-                                        <button onClick={handleDiscard}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground bg-secondary hover:bg-secondary/80 border border-border rounded-lg transition-all">
-                                            <RotateCcw className="w-3.5 h-3.5" />捨棄變更
-                                        </button>
-                                    ) : (
-                                        <button onClick={() => setIsEditing(true)}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-primary/80 hover:text-primary bg-primary/10 hover:bg-primary/20 border border-primary/40 rounded-lg transition-all">
-                                            <Pencil className="w-3.5 h-3.5" />編輯人格
-                                        </button>
-                                    )}
+                                <div className="min-w-0">
+                                    <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-none mb-1.5 opacity-70">
+                                        執行中 (Active)
+                                    </p>
+                                    <h3 className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">
+                                        {saved.aiName}
+                                    </h3>
+                                </div>
+                                <div className="ml-2 p-1.5 rounded-lg bg-secondary/30 text-muted-foreground group-hover:text-primary transition-colors">
+                                    <Pencil className="w-3.5 h-3.5" />
                                 </div>
                             </div>
-
-                            {/* View Mode */}
-                            {!isEditing && (
-                                <div className="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    <div className="bg-secondary/40 border border-border/60 rounded-xl px-4 py-3">
-                                        <p className="text-[10px] text-foreground/60 uppercase tracking-wider mb-1 font-bold">稱呼你為</p>
-                                        <p className="text-sm text-foreground font-medium">「{userName}」</p>
-                                    </div>
-                                    <div className="bg-secondary/40 border border-border/60 rounded-xl px-4 py-3">
-                                        <p className="text-[10px] text-foreground/60 uppercase tracking-wider mb-1 font-bold">語言風格</p>
-                                        <p className="text-sm text-foreground font-medium line-clamp-1">{tone || "—"}</p>
-                                    </div>
-                                    <div className="bg-secondary/40 border border-border/60 rounded-xl px-4 py-3 sm:col-span-2">
-                                        <p className="text-[10px] text-foreground/60 uppercase tracking-wider mb-1 font-bold">任務定位 &amp; 人設背景</p>
-                                        <p className="text-sm text-foreground font-medium line-clamp-3">{role || "—"}</p>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Edit Mode */}
-                            {isEditing && (
-                                <div className="px-6 pb-6 space-y-4">
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <EditField label="AI 名稱" value={aiName} onChange={setAiName} placeholder="例如：Friday, Golem" />
-                                        <EditField label="你的稱呼" value={userName} onChange={setUserName} placeholder="例如：Boss, Commander" />
-                                    </div>
-                                    <EditField label="語言風格 & 語氣" value={tone} onChange={setTone}
-                                        placeholder="例如：活潑幽默、直接果斷" />
-                                    <EditField label="任務定位 & 人設背景" value={role} onChange={setRole} multiline
-                                        placeholder="描述這個人格的身份背景、任務與個性..." />
-
-                                    {/* Status msg inside edit card */}
-                                    {statusMsg && (
-                                        <div className={cn("flex items-start gap-2 text-sm rounded-lg px-3 py-2.5 border",
-                                            statusMsg.type === "info"
-                                                ? "bg-blue-950/30 border-blue-900/40 text-blue-300"
-                                                : "bg-red-950/30 border-red-900/40 text-red-400")}>
-                                            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                                            <p>{statusMsg.text}</p>
-                                        </div>
-                                    )}
-
-                                    {/* Save & Restart CTA */}
-                                    <div className="pt-1">
-                                        <Button
-                                            onClick={() => setShowConfirm(true)}
-                                            disabled={isInjecting}
-                                            className="w-full h-12 font-bold bg-primary hover:bg-primary/90 text-primary-foreground border-none shadow-xl shadow-primary/20 transition-all hover:scale-[1.01] active:scale-95 rounded-2xl text-base"
-                                        >
-                                            <span className="flex items-center gap-2">
-                                                <Zap className="w-5 h-5" />
-                                                儲存人格並開啟新對話窗口
-                                            </span>
-                                        </Button>
-                                        <p className="text-center text-xs text-muted-foreground mt-2">
-                                            重開視窗後新設定正式生效，前端將自動重新整理
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
+                        )}
                     </div>
 
                     {/* ── Templates Section ────────────────────────────── */}
@@ -743,26 +684,26 @@ export default function PersonaPage() {
                                             onKeyDown={(e) => e.key === 'Enter' && applyPreset(preset)}
                                             className={cn(
                                                 "text-left p-4 rounded-2xl border transition-all duration-300 group relative overflow-hidden flex flex-col cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary",
-                                                activePresetId === preset.id
+                                                selectedPersona?.id === preset.id
                                                     ? "bg-primary/5 border-primary/50 ring-1 ring-primary/30"
                                                     : "bg-card border-border hover:border-primary/50 hover:bg-accent/50"
                                             )}
                                         >
                                             <div className="flex items-start justify-between mb-3">
                                                 <div className={cn("p-2.5 rounded-xl transition-colors",
-                                                    activePresetId === preset.id
+                                                    selectedPersona?.id === preset.id
                                                         ? "bg-primary text-primary-foreground dark:text-primary-foreground"
                                                         : "bg-secondary text-muted-foreground group-hover:text-primary")}>
                                                     {(() => { const I = ICON_MAP[preset.icon] || ICON_MAP.BrainCircuit; return <I className="w-5 h-5" />; })()}
                                                 </div>
-                                                {activePresetId === preset.id && (
+                                                {selectedPersona?.id === preset.id && (
                                                     <div className="flex items-center gap-1 bg-primary/20 border border-primary/30 text-primary text-[9px] font-bold px-2 py-0.5 rounded-full">
                                                         <Check className="w-2.5 h-2.5" />套用中
                                                     </div>
                                                 )}
                                             </div>
                                             <h4 className={cn("font-bold mb-1 text-sm transition-colors",
-                                                activePresetId === preset.id ? "text-primary dark:text-primary-foreground text-base" : "text-foreground group-hover:text-primary text-sm")}>
+                                                selectedPersona?.id === preset.id ? "text-primary dark:text-primary-foreground text-base" : "text-foreground group-hover:text-primary text-sm")}>
                                                 {preset.name}
                                             </h4>
                                             <p className="text-xs text-muted-foreground leading-relaxed flex-1">{preset.description}</p>
@@ -852,26 +793,26 @@ export default function PersonaPage() {
                                                     onKeyDown={(e) => e.key === 'Enter' && applyPreset({ ...preset, icon: "Sparkles", aiName: preset.name, userName: "User", tone: "Professional", skills: [] })}
                                                     className={cn(
                                                         "text-left p-4 rounded-2xl border transition-all duration-300 group relative overflow-hidden flex flex-col cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary",
-                                                        activePresetId === preset.id
+                                                        selectedPersona?.id === preset.id
                                                             ? "bg-primary/5 border-primary/50 ring-1 ring-primary/30"
                                                             : "bg-card border-border hover:border-primary/50 hover:bg-accent/50"
                                                     )}
                                                 >
                                                     <div className="flex items-start justify-between mb-3">
                                                         <div className={cn("p-2.5 rounded-xl transition-colors",
-                                                            activePresetId === preset.id
+                                                            selectedPersona?.id === preset.id
                                                                 ? "bg-primary text-primary-foreground"
                                                                 : "bg-secondary text-muted-foreground group-hover:text-primary")}>
                                                             <Sparkles className="w-5 h-5" />
                                                         </div>
-                                                        {activePresetId === preset.id && (
+                                                        {selectedPersona?.id === preset.id && (
                                                             <div className="flex items-center gap-1 bg-primary/20 border border-primary/30 text-primary text-[9px] font-bold px-2 py-0.5 rounded-full">
                                                                 <Check className="w-2.5 h-2.5" />套用中
                                                             </div>
                                                         )}
                                                     </div>
                                                     <h4 className={cn("font-bold mb-1 text-sm transition-colors",
-                                                        activePresetId === preset.id ? "text-primary-foreground" : "text-foreground group-hover:text-primary")}>
+                                                        selectedPersona?.id === preset.id ? "text-primary-foreground" : "text-foreground group-hover:text-primary")}>
                                                         {preset.name_zh && preset.name_zh !== preset.name ? `${preset.name} / ${preset.name_zh}` : preset.name}
                                                     </h4>
                                                     <p className="text-xs text-muted-foreground leading-relaxed flex-1 line-clamp-3">
@@ -954,9 +895,139 @@ export default function PersonaPage() {
                 </div>
             </div>
 
-            <RestartConfirmDialog open={showConfirm} onOpenChange={setShowConfirm} onConfirm={handleInject} isLoading={isInjecting} />
+            {/* ── Detail Drawer ─────────────────────────────────────────── */}
+            <div className={cn(
+                "fixed inset-0 z-50 transition-opacity duration-300 pointer-events-none",
+                isDrawerOpen ? "bg-black/60 backdrop-blur-sm opacity-100 pointer-events-auto" : "opacity-0"
+            )} onClick={() => setIsDrawerOpen(false)} />
+
+            <aside className={cn(
+                "fixed inset-y-0 right-0 w-full sm:w-[450px] bg-card border-l border-border shadow-2xl z-50 transition-transform duration-500 ease-out flex flex-col overflow-hidden",
+                isDrawerOpen ? "translate-x-0" : "translate-x-full"
+            )}>
+                {selectedPersona && (
+                    <>
+                        <div className="flex items-center justify-between p-6 border-b border-border bg-accent/10">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30">
+                                    {(() => { const I = ICON_MAP[selectedPersona.icon] || ICON_MAP.BrainCircuit; return <I className="w-6 h-6 text-primary" />; })()}
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold text-foreground truncate max-w-[200px]">
+                                        {selectedPersona.name_zh || selectedPersona.name}
+                                    </h2>
+                                    <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest mt-0.5">
+                                        樣板詳情 & 設定
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setIsDrawerOpen(false)}
+                                className="p-2.5 rounded-xl hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
+                            <div className="space-y-4">
+                                <h3 className="text-xs font-bold text-primary flex items-center gap-2 uppercase tracking-wider">
+                                    <Sparkles className="w-3.5 h-3.5" /> 角色描述
+                                </h3>
+                                <div className="bg-secondary/40 border border-border/50 rounded-2xl p-5 shadow-inner">
+                                    <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap italic opacity-90">
+                                        「{selectedPersona.description_zh || selectedPersona.description}」
+                                    </p>
+                                </div>
+                                {selectedPersona.tags && selectedPersona.tags.length > 0 && (
+                                    <div className="flex flex-wrap gap-2">
+                                        {selectedPersona.tags.map(t => (
+                                            <span key={t} className="px-2 py-0.5 rounded-md bg-secondary border border-border text-[10px] text-muted-foreground font-medium flex items-center gap-1 capitalize">
+                                                <Tag className="w-2.5 h-2.5" /> {t}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="space-y-6">
+                                <h3 className="text-xs font-bold text-primary flex items-center gap-2 uppercase tracking-wider border-b border-border pb-2">
+                                    <Settings2 className="w-3.5 h-3.5" /> 人格詳細設定
+                                </h3>
+                                
+                                <div className="grid grid-cols-2 gap-4">
+                                    <EditField label="AI 名稱" value={aiName} onChange={setAiName} placeholder="例如：Friday, Golem" />
+                                    <EditField label="你的稱呼" value={userName} onChange={setUserName} placeholder="例如：Boss, Commander" />
+                                </div>
+
+                                <EditField 
+                                    label="語言風格 & 語氣" 
+                                    value={tone} 
+                                    onChange={setTone}
+                                    placeholder="例如：活潑幽默、直接果斷" 
+                                />
+
+                                <EditField 
+                                    label="任務定位 & 人設背景" 
+                                    value={role} 
+                                    onChange={setRole} 
+                                    multiline
+                                    placeholder="描述這個人格的身份背景、任務與個性..." 
+                                />
+                            </div>
+
+                            {statusMsg && (
+                                <div className={cn(
+                                    "flex items-start gap-3 text-sm rounded-xl px-4 py-3 border animate-in fade-in zoom-in-95",
+                                    statusMsg.type === "info"
+                                        ? "bg-blue-500/10 border-blue-500/30 text-blue-400"
+                                        : "bg-red-500/10 border-red-500/30 text-red-400"
+                                )}>
+                                    <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                                    <p>{statusMsg.text}</p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="p-6 border-t border-border bg-accent/5">
+                            <div className="flex gap-3">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => handleDiscard()}
+                                    className="flex-1 h-12 rounded-xl border-border text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                                >
+                                    放棄修改
+                                </Button>
+                                <Button
+                                    onClick={() => setShowConfirm(true)}
+                                    disabled={isInjecting || !isDirty}
+                                    className="flex-[2] h-12 font-bold bg-primary hover:bg-primary/90 text-primary-foreground border-none shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 rounded-xl text-sm"
+                                >
+                                    <Zap className="w-4 h-4 mr-2" />
+                                    儲存並重啟視窗
+                                </Button>
+                            </div>
+                            <p className="text-center text-[10px] text-muted-foreground mt-3 opacity-60">
+                                點擊「儲存並重啟」後設定將寫入檔案並開啟全新 Gemini 視窗
+                            </p>
+                        </div>
+                    </>
+                )}
+            </aside>
+
+            {/* ── Dialogs ─────────────────────────────────────────────────── */}
+            <RestartConfirmDialog
+                open={showConfirm}
+                onOpenChange={setShowConfirm}
+                onConfirm={handleInject}
+                isLoading={isInjecting}
+            />
             <RestartingDialog open={showDone} />
-            <CreatePersonaDialog open={showCreate} onOpenChange={setShowCreate} onCreated={loadTemplates} />
+            <CreatePersonaDialog
+                open={showCreate}
+                onOpenChange={setShowCreate}
+                onCreated={loadTemplates}
+            />
             <PersonaDeleteConfirmDialog
                 open={!!personaToDelete}
                 onOpenChange={(open) => !open && setPersonaToDelete(null)}
@@ -964,6 +1035,6 @@ export default function PersonaPage() {
                 isLoading={isDeletingPersona}
                 personaName={personaToDelete?.name || ""}
             />
-        </>
+        </div>
     );
 }

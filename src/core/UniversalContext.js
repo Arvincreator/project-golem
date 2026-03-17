@@ -200,7 +200,7 @@ class UniversalContext {
             }
         }
 
-        // ✨ [V9.0.2 修正] Telegram Topic (Forum) 支援
+        // ✨ [v9.1.5 修正] Telegram Topic (Forum) 支援
         let sendOptions = options || {};
         if (this.platform === 'telegram') {
             const threadId = this.event.message_thread_id || (this.event.message && this.event.message.message_thread_id);
@@ -208,13 +208,13 @@ class UniversalContext {
                 sendOptions = { ...sendOptions, message_thread_id: threadId };
             }
 
-            // ✨ [V9.0.6 鎖定回覆] 自動物理性掛鈎原始訊息，確保回覆對象絕對準確
+            // ✨ [v9.1.5 鎖定回覆] 自動物理性掛鈎原始訊息，確保回覆對象絕對準確
             // 僅在需要 Mention 的環境 (群組) 下執行，私聊不使用 reply氣泡 以保持簡潔
             if (this.shouldMentionSender && !sendOptions.reply_to_message_id) {
                 sendOptions.reply_to_message_id = this.messageId;
             }
 
-            // [V9.0.7 降級策略] 針對觀察者模式，若回覆 ID 過期或無效，則降級為普通發言
+            // [v9.1.5 降級策略] 針對觀察者模式，若回覆 ID 過期或無效，則降級為普通發言
             try {
                 return await MessageManager.send(this, content, sendOptions);
             } catch (e) {
@@ -233,7 +233,7 @@ class UniversalContext {
     async sendDocument(filePath) {
         try {
             if (this.platform === 'telegram') {
-                // ✨ [V9.0.2 修正] Telegram Topic (Forum) 支援
+                // ✨ [v9.1.5 修正] Telegram Topic (Forum) 支援
                 let sendOptions = {};
                 const threadId = this.event.message_thread_id || (this.event.message && this.event.message.message_thread_id);
                 if (threadId) {

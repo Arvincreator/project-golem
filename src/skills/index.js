@@ -4,10 +4,10 @@ const persona = require('./core/persona');
 const CORE_DEFINITION = require('./core/definition');
 
 // ============================================================
-// 2. 技能庫 - 自動發現版 (SKILL LIBRARY v9.0+)
+// 2. 技能庫 - 自動發現版 (SKILL LIBRARY v9.1+)
 // ============================================================
 
-// 🎯 V9.0.7 解耦：不再於模組加載時自動掃描技能
+// 🎯 v9.1.5 解耦：不再於模組加載時自動掃描技能
 const SKILLS = {};
 let _isLoaded = false;
 

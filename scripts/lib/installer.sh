@@ -145,7 +145,7 @@ step_check_files() {
     if [ $missing -eq 1 ]; then
         echo ""
         echo -e "  ${RED}${BOLD}❌ 嚴重錯誤：核心檔案不完整！${NC}"
-        echo -e "  ${RED}   請確認已正確解壓縮 V9.0 zip 檔到此目錄。${NC}"
+        echo -e "  ${RED}   請確認已正確解壓縮 v9.1 zip 檔到此目錄。${NC}"
         echo -e "  ${DIM}   目前目錄: $SCRIPT_DIR${NC}"
         log "FATAL: Core files missing"
         exit 1

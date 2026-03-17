@@ -12,7 +12,7 @@ class TaskController {
         this.golemId = options.golemId || 'default';
         this.executor = new Executor();
         this.security = new SecurityManager();
-        this.multiAgent = null; // ✨ [v9.0]
+        this.multiAgent = null; // ✨ [v9.1]
         this.pendingTasks = new Map(); // Moved from global to here
 
         // ✨ [v9.1] 防止記憶體流失: 定期清理過期的待審批任務 (5 分鐘)
@@ -26,7 +26,7 @@ class TaskController {
         }, 60 * 1000);
     }
 
-    // ✨ [v9.0] 處理多 Agent 請求
+    // ✨ [v9.1] 處理多 Agent 請求
     async _handleMultiAgent(ctx, action, brain) {
         try {
             if (!this.multiAgent) {
@@ -54,7 +54,7 @@ class TaskController {
             const step = steps[i];
             let cmdToRun = step.cmd || step.parameter || step.command || "";
 
-            // ✨ [v9.0 Hybrid Object Fix] 如果 cmd 為空但 action 存在，則自動組裝
+            // ✨ [v9.1 Hybrid Object Fix] 如果 cmd 為空但 action 存在，則自動組裝
             if (!cmdToRun && step.action && step.action !== 'command') {
                 const actionName = String(step.action).toLowerCase().replace(/_/g, '-');
                 const { action, ...params } = step;

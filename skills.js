@@ -1,5 +1,5 @@
 /**
- * 📜 Golem 技能書 v9.0 (Ultimate Chronos + MultiAgent Edition)
+ * 📜 Golem 技能書 v9.1 (Ultimate Chronos + MultiAgent Edition)
  * ---------------------------------------------------
  * 架構：[Node.js 反射層] <-> [Web Gemini 大腦] <-> [Transformers.js 海馬迴]
  * 核心變化：
