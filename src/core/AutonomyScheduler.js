@@ -15,6 +15,13 @@ const DEFAULT_RSS_HEAL_THRESHOLD = 350;   // MB
 const DEFAULT_EPISODE_DEDUP_THRESHOLD = 50;
 const MAX_HISTORY_SIZE = 50;
 
+// v12.0: RSS level thresholds (MB)
+const RSS_LEVELS = {
+    normal: 250,
+    elevated: 350,
+    critical: 500,
+};
+
 class AutonomyScheduler {
     constructor(options = {}) {
         this.golemId = options.golemId || 'default';
@@ -28,6 +35,7 @@ class AutonomyScheduler {
         this._workerAuditor = options.workerAuditor || null;
         this._securityAuditor = options.securityAuditor || null;
         this._yerenBridge = options.yerenBridge || null;
+        this._errorPatternLearner = options.errorPatternLearner || null; // v12.0
 
         // Configurable intervals (minutes)
         this._scanIntervalMs = (parseInt(process.env.V114_SCAN_INTERVAL_MIN) || DEFAULT_SCAN_INTERVAL_MIN) * 60 * 1000;
@@ -71,7 +79,33 @@ class AutonomyScheduler {
     }
 
     /**
+     * v12.0: Assess RSS level for graduated response
+     * @param {number} rss - RSS in MB
+     * @returns {'normal'|'elevated'|'critical'}
+     */
+    _assessRSSLevel(rss) {
+        if (rss >= RSS_LEVELS.critical) return 'critical';
+        if (rss >= RSS_LEVELS.elevated) return 'elevated';
+        return 'normal';
+    }
+
+    /**
+     * v12.0: Safe execution wrapper — try/catch per priority, records errors
+     */
+    async _safeExec(action, fn) {
+        try {
+            return await fn();
+        } catch (e) {
+            if (this._errorPatternLearner) {
+                this._errorPatternLearner.recordError(`AutonomyScheduler.${action}`, e, 'retry next tick');
+            }
+            return { action: `${action}_failed`, summary: e.message };
+        }
+    }
+
+    /**
      * Main tick — called by AutonomyManager.timeWatcher() every 60s
+     * v12.0: RSS grading + per-priority error isolation
      * @param {Object} systemState - { rss, uptime, episodeCount, tipCount }
      * @returns {Object} { action, summary }
      */
@@ -79,103 +113,90 @@ class AutonomyScheduler {
         const now = Date.now();
         const { rss = 0, uptime = 0, episodeCount = 0, tipCount = 0 } = systemState;
 
-        // Priority 1: RSS threshold → emergency optimize
-        if (rss > this._rssHealThreshold && this._optimizer) {
-            try {
+        // v12.0: RSS level assessment
+        const rssLevel = this._assessRSSLevel(rss);
+
+        // Priority 1: RSS threshold → graduated response
+        if (rssLevel !== 'normal' && this._optimizer) {
+            return this._safeExec('rss_heal', async () => {
                 const report = await this._optimizer.optimize();
                 this._lastOptimize = now;
                 this._optimizeCount++;
                 this._lastOptimizeReport = report;
-                this._appendHistory('rss_heal', { rss, report: this._summarizeReport(report) });
-                return { action: 'rss_heal', summary: `RSS ${rss}MB > ${this._rssHealThreshold}MB, optimized` };
-            } catch (e) {
-                return { action: 'rss_heal_failed', summary: e.message };
-            }
+                this._appendHistory('rss_heal', { rss, level: rssLevel, report: this._summarizeReport(report) });
+                return { action: 'rss_heal', summary: `RSS ${rss}MB (${rssLevel}), optimized` };
+            });
         }
 
         // Priority 2: Episode dedup threshold
         if (episodeCount > this._episodeDedupThreshold && this._optimizer) {
-            try {
+            return this._safeExec('episode_dedup', async () => {
                 const dedup = this._optimizer.deduplicateEpisodic();
                 this._appendHistory('episode_dedup', { episodeCount, merged: dedup?.merged || 0 });
                 return { action: 'episode_dedup', summary: `${episodeCount} episodes, merged ${dedup?.merged || 0}` };
-            } catch (e) {
-                return { action: 'episode_dedup_failed', summary: e.message };
-            }
+            });
         }
 
         // Priority 3: Scan interval expired
         if (now - this._lastScan >= this._scanIntervalMs && this._scanner) {
-            try {
+            return this._safeExec('scan', async () => {
                 const report = await this._runScanPipeline();
                 return { action: 'scan', summary: `Scan #${this._scanCount}: ${report?.totalFindings || 0} findings` };
-            } catch (e) {
-                return { action: 'scan_failed', summary: e.message };
-            }
+            });
         }
 
         // Priority 4: Debate interval expired (needs scan data)
         if (now - this._lastDebate >= this._debateIntervalMs && this._council && this._lastScanReport) {
-            try {
+            return this._safeExec('debate', async () => {
                 const result = await this._runDebatePipeline();
                 return { action: 'debate', summary: `Debate #${this._debateCount}: ${result?.perspectives?.length || 0} perspectives` };
-            } catch (e) {
-                return { action: 'debate_failed', summary: e.message };
-            }
+            });
         }
 
         // Priority 5: Optimize interval expired
         if (now - this._lastOptimize >= this._optimizeIntervalMs && this._optimizer) {
-            try {
+            return this._safeExec('optimize', async () => {
                 const report = await this._runOptimizePipeline();
                 return { action: 'optimize', summary: `Optimize #${this._optimizeCount}: dedup=${report?.dedup?.merged || 0} decay=${report?.decay?.decayed || 0}` };
-            } catch (e) {
-                return { action: 'optimize_failed', summary: e.message };
-            }
+            });
         }
 
         // Priority 6: Worker health check (v11.5)
         if (now - this._lastWorkerCheck >= this._workerCheckIntervalMs && this._workerAuditor) {
-            try {
+            return this._safeExec('worker_health_check', async () => {
                 const audit = await this._workerAuditor.auditAll();
                 this._lastWorkerCheck = now;
                 this._workerCheckCount++;
                 this._appendHistory('worker_health_check', { healthy: audit.summary.healthy, unhealthy: audit.summary.unhealthy });
                 return { action: 'worker_health_check', summary: `Worker check #${this._workerCheckCount}: ${audit.summary.healthy}/${audit.summary.total} healthy` };
-            } catch (e) {
-                return { action: 'worker_health_check_failed', summary: e.message };
-            }
+            });
         }
 
         // Priority 7: Security audit (v11.5)
         if (now - this._lastSecurityAudit >= this._securityAuditIntervalMs && this._securityAuditor) {
-            try {
+            return this._safeExec('security_audit', async () => {
                 const report = await this._securityAuditor.generateAuditReport();
                 this._lastSecurityAudit = now;
                 this._securityAuditCount++;
                 this._appendHistory('security_audit', { riskScore: report.riskScore, risks: report.risks.length });
                 return { action: 'security_audit', summary: `Security audit #${this._securityAuditCount}: risk=${report.riskScore}, ${report.risks.length} risks` };
-            } catch (e) {
-                return { action: 'security_audit_failed', summary: e.message };
-            }
+            });
         }
 
         // Priority 8: Yeren sync (v11.5)
         if (now - this._lastYerenSync >= this._yerenSyncIntervalMs && this._yerenBridge) {
-            try {
+            return this._safeExec('yeren_sync', async () => {
                 const mem = this._yerenBridge.syncMemory();
                 const scan = this._yerenBridge.syncScanResults();
                 this._lastYerenSync = now;
                 this._yerenSyncCount++;
                 this._appendHistory('yeren_sync', { memSynced: mem.synced.length, scanSynced: scan.synced });
                 return { action: 'yeren_sync', summary: `Yeren sync #${this._yerenSyncCount}: mem=${mem.synced.length}, scan=${scan.synced}` };
-            } catch (e) {
-                return { action: 'yeren_sync_failed', summary: e.message };
-            }
+            });
         }
 
         // Nothing to do
-        return { action: 'noop', summary: `rss=${rss} up=${uptime}s ep=${episodeCount} tips=${tipCount}` };
+        return { action: 'noop', summary: `rss=${rss} (${rssLevel}) up=${uptime}s ep=${episodeCount} tips=${tipCount}` };
     }
 
     /**

@@ -17,18 +17,57 @@ function _getCircuit(server) {
 class MCPBridge {
     constructor() {
         this.servers = MCP_SERVERS;
+        this._localModules = {}; // v12.0: local module dispatch
+    }
+
+    /**
+     * v12.0: Register local modules as callable MCP tools
+     * @param {Object} modules - { name: { instance, methods: ['method1', ...] } }
+     */
+    setLocalModules(modules) {
+        if (!modules || typeof modules !== 'object') return;
+        this._localModules = modules;
     }
 
     getToolManifest() {
-        return Object.entries(this.servers).map(([id, cfg]) => ({
+        const remote = Object.entries(this.servers).map(([id, cfg]) => ({
             name: `mcp_${id.replace(/-/g, '_')}`,
             description: cfg.desc,
             server: id,
-            parameters: { method: 'string', params: 'object' }
+            parameters: { method: 'string', params: 'object' },
+            type: 'remote',
         }));
+
+        // v12.0: Add local module tools
+        const local = Object.entries(this._localModules).map(([name, mod]) => ({
+            name: `local-${name.replace(/-/g, '_')}`,
+            description: mod.description || `Local module: ${name}`,
+            server: `local-${name}`,
+            parameters: { method: 'string', params: 'object' },
+            type: 'local',
+            methods: mod.methods || [],
+        }));
+
+        return [...remote, ...local];
     }
 
     async callTool(server, method, params = {}) {
+        // v12.0: Local module dispatch (local- prefix)
+        if (server.startsWith('local-')) {
+            const moduleName = server.replace('local-', '');
+            const mod = this._localModules[moduleName];
+            if (!mod || !mod.instance) return { error: `Unknown local module: ${moduleName}` };
+            try {
+                if (typeof mod.instance[method] === 'function') {
+                    const result = await mod.instance[method](params);
+                    return result || { ok: true };
+                }
+                return { error: `Method ${method} not found on local module ${moduleName}` };
+            } catch (e) {
+                return { error: e.message };
+            }
+        }
+
         const cfg = this.servers[server];
         if (!cfg) throw new Error(`Unknown MCP server: ${server}`);
         if (!cfg.url) return { error: 'Server URL not configured' };

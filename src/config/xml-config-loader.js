@@ -274,6 +274,109 @@ class GolemConfigLoader {
     };
   }
 
+  // v12.0: 8 new getters for v11.5 module externalization
+
+  getErrorPatternLearnerConfig() {
+    if (!this.config) this.load();
+    const e = this.config?.['error-pattern-learner'];
+    if (!e) return { maxPatterns: 200, dedupThreshold: 0.8, retentionDays: 90, autoSuggest: true };
+    return {
+      maxPatterns: e['@_max-patterns'] || 200,
+      dedupThreshold: e['@_dedup-threshold'] || 0.8,
+      retentionDays: e['@_retention-days'] || 90,
+      autoSuggest: e['@_auto-suggest'] !== false && e['@_auto-suggest'] !== 'false',
+    };
+  }
+
+  getScanQualityTrackerConfig() {
+    if (!this.config) this.load();
+    const s = this.config?.['scan-quality-tracker'];
+    if (!s) return { maxRecords: 500, worthlessThreshold: 3, autoSkip: true, minEffectiveness: 0.1 };
+    return {
+      maxRecords: s['@_max-records'] || 500,
+      worthlessThreshold: s['@_worthless-threshold'] || 3,
+      autoSkip: s['@_auto-skip'] !== false && s['@_auto-skip'] !== 'false',
+      minEffectiveness: s['@_min-effectiveness'] || 0.1,
+    };
+  }
+
+  getWorkerHealthAuditorConfig() {
+    if (!this.config) this.load();
+    const w = this.config?.['worker-health-auditor'];
+    if (!w) return { timeoutMs: 5000, maxConsecutiveFailures: 3, checkIntervalMin: 30, maxHistory: 200 };
+    return {
+      timeoutMs: w['@_timeout-ms'] || 5000,
+      maxConsecutiveFailures: w['@_max-consecutive-failures'] || 3,
+      checkIntervalMin: w['@_check-interval-min'] || 30,
+      maxHistory: w['@_max-history'] || 200,
+    };
+  }
+
+  getSecurityAuditorConfig() {
+    if (!this.config) this.load();
+    const s = this.config?.['security-auditor'];
+    if (!s) return { aiRiskChecks: true, traditionalWeight: 0.6, aiRiskWeight: 0.4, maxRiskScore: 100 };
+    return {
+      aiRiskChecks: s['@_ai-risk-checks'] !== false && s['@_ai-risk-checks'] !== 'false',
+      traditionalWeight: s['@_traditional-weight'] || 0.6,
+      aiRiskWeight: s['@_ai-risk-weight'] || 0.4,
+      maxRiskScore: s['@_max-risk-score'] || 100,
+    };
+  }
+
+  getRAGQualityMonitorConfig() {
+    if (!this.config) this.load();
+    const r = this.config?.['rag-quality-monitor'];
+    if (!r) return { testQueryCount: 10, minRecall: 0.3, latencyWarnMs: 500, checkIntervalMin: 120 };
+    return {
+      testQueryCount: r['@_test-query-count'] || 10,
+      minRecall: r['@_min-recall'] || 0.3,
+      latencyWarnMs: r['@_latency-warn-ms'] || 500,
+      checkIntervalMin: r['@_check-interval-min'] || 120,
+    };
+  }
+
+  getDebateQualityTrackerConfig() {
+    if (!this.config) this.load();
+    const d = this.config?.['debate-quality-tracker'];
+    if (!d) return { maxHistory: 100, diversityWeight: 0.3, differentiationWeight: 0.4, coverageWeight: 0.3 };
+    return {
+      maxHistory: d['@_max-history'] || 100,
+      diversityWeight: d['@_diversity-weight'] || 0.3,
+      differentiationWeight: d['@_differentiation-weight'] || 0.4,
+      coverageWeight: d['@_coverage-weight'] || 0.3,
+    };
+  }
+
+  getAutonomySchedulerConfig() {
+    if (!this.config) this.load();
+    const a = this.config?.['autonomy-scheduler'];
+    if (!a) return { scanIntervalMin: 120, debateIntervalMin: 180, optimizeIntervalMin: 60, rssHealThresholdMb: 350, episodeDedupThreshold: 50, workerCheckIntervalMin: 30, securityAuditIntervalMin: 360, yerenSyncIntervalMin: 60 };
+    return {
+      scanIntervalMin: a['@_scan-interval-min'] || 120,
+      debateIntervalMin: a['@_debate-interval-min'] || 180,
+      optimizeIntervalMin: a['@_optimize-interval-min'] || 60,
+      rssHealThresholdMb: a['@_rss-heal-threshold-mb'] || 350,
+      episodeDedupThreshold: a['@_episode-dedup-threshold'] || 50,
+      workerCheckIntervalMin: a['@_worker-check-interval-min'] || 30,
+      securityAuditIntervalMin: a['@_security-audit-interval-min'] || 360,
+      yerenSyncIntervalMin: a['@_yeren-sync-interval-min'] || 60,
+    };
+  }
+
+  getTokenTrackingConfig() {
+    if (!this.config) this.load();
+    const t = this.config?.['token-tracking'];
+    if (!t) return { enabled: true, budgetDaily: 50000, persistIntervalMs: 5000, dataFile: 'data/token_usage.json', warnThresholdPct: 80 };
+    return {
+      enabled: t['@_enabled'] !== false && t['@_enabled'] !== 'false',
+      budgetDaily: t['@_budget-daily'] || 50000,
+      persistIntervalMs: t['@_persist-interval-ms'] || 5000,
+      dataFile: t['@_data-file'] || 'data/token_usage.json',
+      warnThresholdPct: t['@_warn-threshold-pct'] || 80,
+    };
+  }
+
   getFailoverConfig() {
     if (!this.config) this.load();
     const fo = this.config?.failover;

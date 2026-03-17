@@ -176,10 +176,11 @@ describe('PromptEvolver', () => {
     });
 
     describe('MUTATION_OPS', () => {
-        it('exports 5 operators', () => {
-            expect(PromptEvolver.MUTATION_OPS).toHaveLength(5);
+        it('exports 6 operators', () => {
+            expect(PromptEvolver.MUTATION_OPS).toHaveLength(6);
             expect(PromptEvolver.MUTATION_OPS).toContain('rephrase');
             expect(PromptEvolver.MUTATION_OPS).toContain('pattern-inject');
+            expect(PromptEvolver.MUTATION_OPS).toContain('nl-to-structured');
         });
     });
 

@@ -227,6 +227,84 @@ Reply JSON only:
         for (const dim of DIMENSIONS) scores[dim] = 0;
         return { scores, overall: 0 };
     }
+
+    /**
+     * v12.0: NL→Structured prompt conversion
+     * Heuristic detection of missing structure/ambiguity/constraints,
+     * then applies CoT/ToT/ReAct templates as appropriate
+     * @param {string} prompt - Free-text natural language prompt
+     * @param {string} intent - Optional intent description
+     * @returns {{ structured, improvements, scoreGain }}
+     */
+    nlToStructured(prompt, intent) {
+        if (!prompt) return { structured: '', improvements: [], scoreGain: 0 };
+
+        const improvements = [];
+        const parts = [];
+
+        // Detect missing structure
+        const hasRole = /角色|role|你是|you are|act as|作為/i.test(prompt);
+        const hasContext = /背景|context|情境|scenario/i.test(prompt);
+        const hasTask = /任務|task|請|please|幫|help|分析|analyze/i.test(prompt);
+        const hasFormat = /格式|format|輸出|output|JSON|列表|markdown/i.test(prompt);
+        const hasConstraint = /限制|constraint|不要|do not|必須|must|規則|rule/i.test(prompt);
+
+        // Role section
+        if (!hasRole) {
+            const roleGuess = intent ? `專精於${intent}的 AI 助手` : 'AI 專業助手';
+            parts.push(`## 角色\n你是${roleGuess}。`);
+            improvements.push('added-role');
+        }
+
+        // Context section
+        if (!hasContext) {
+            parts.push(`## 背景\n${intent || '使用者需要專業分析和建議。'}`);
+            improvements.push('added-context');
+        }
+
+        // Task section — wrap original prompt
+        parts.push(`## 任務\n${prompt}`);
+
+        // Detect ambiguity
+        const ambiguous = /\b(它|這個|那個|this|that|some|something|某)\b/i;
+        if (ambiguous.test(prompt)) {
+            improvements.push('detected-ambiguity');
+        }
+
+        // Format section
+        if (!hasFormat) {
+            parts.push('## 輸出格式\n請使用結構化 Markdown 格式，包含標題和重點摘要。');
+            improvements.push('added-format');
+        }
+
+        // Constraints
+        if (!hasConstraint) {
+            parts.push('## 約束條件\n- 回答須準確且有依據\n- 使用清晰易懂的語言\n- 控制在合理篇幅內');
+            improvements.push('added-constraints');
+        }
+
+        // Inject reasoning pattern based on intent
+        const lower = (intent || prompt).toLowerCase();
+        if (/分析|推理|計算|步驟|step|reason|calcu/i.test(lower)) {
+            parts.push('## 推理模式 (CoT)\n讓我們一步一步思考。');
+            improvements.push('injected-CoT');
+        } else if (/探索|方案|列舉|brainstorm|explore/i.test(lower)) {
+            parts.push('## 推理模式 (ToT)\n請列出 3 種可能的方案，分別分析優缺點。');
+            improvements.push('injected-ToT');
+        } else if (/搜尋|查詢|API|工具|search|tool/i.test(lower)) {
+            parts.push('## 推理模式 (ReAct)\n思考 → 行動 → 觀察 → 結論');
+            improvements.push('injected-ReAct');
+        }
+
+        const structured = parts.join('\n\n');
+
+        // Score gain estimate
+        const beforeScore = this.quickScore(prompt, intent || '').overall;
+        const afterScore = this.quickScore(structured, intent || '').overall;
+        const scoreGain = Math.round((afterScore - beforeScore) * 100) / 100;
+
+        return { structured, improvements, scoreGain, beforeScore, afterScore };
+    }
 }
 
 PromptScorer.DIMENSIONS = DIMENSIONS;

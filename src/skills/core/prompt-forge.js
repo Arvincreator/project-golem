@@ -384,7 +384,47 @@ async function execute(args) {
             }
         }
 
-        return '未知 prompt-forge 指令。可用: generate, optimize, evaluate, evolve, detect-pattern, compare, history, stats, templates, export, import';
+        // ═══ nl-optimize: 自然語言→結構化 + 演化優化 ═══
+        if (task === 'nl-optimize') {
+            const prompt = args.prompt || args.parameter;
+            if (!prompt) return '請提供自然語言提示詞。例如: { task: "nl-optimize", prompt: "幫我分析這個數據", intent: "..." }';
+
+            const scorer = getScorer(brain);
+            const nlResult = scorer.nlToStructured(prompt, args.intent || '');
+
+            // Chain: nlToStructured → optimize
+            const evolver = getEvolver(brain);
+            const optimized = await evolver.optimize(nlResult.structured, args.intent || '', {
+                generations: args.generations || 2,
+                pattern: detectPattern(args.intent || prompt),
+            });
+
+            const dna = loadDNA();
+            const entry = {
+                id: `pf_${Date.now()}`,
+                intent: args.intent || '',
+                prompt: optimized.best.prompt,
+                pattern: detectPattern(args.intent || prompt),
+                scores: optimized.best.scores,
+                overall: optimized.best.overall,
+                generation: optimized.trajectory.length,
+                parent_ids: [],
+                mutation_type: 'nl-optimized',
+                created_at: new Date().toISOString(),
+                used_count: 0,
+            };
+            dna.prompts.push(entry);
+            dna.stats.total_evolved++;
+            saveDNA(dna);
+
+            return `🔄 PromptForge — NL→結構化→優化\n\n` +
+                `📝 原始 (NL): ${prompt.substring(0, 100)}...\n` +
+                `🔧 改善項目: ${nlResult.improvements.join(', ') || 'none'}\n` +
+                `📊 分數提升: ${nlResult.beforeScore}/4.0 → ${nlResult.afterScore}/4.0 (結構化) → ${optimized.best.overall}/4.0 (演化)\n\n` +
+                `📝 最佳結果:\n${'─'.repeat(40)}\n${optimized.best.prompt.substring(0, 800)}\n${'─'.repeat(40)}`;
+        }
+
+        return '未知 prompt-forge 指令。可用: generate, optimize, evaluate, evolve, detect-pattern, compare, history, stats, templates, export, import, nl-optimize';
 
     } catch (e) {
         await ragEvolve(`PromptForge error: ${task}`, task, e.message, 0);

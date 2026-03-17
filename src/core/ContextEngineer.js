@@ -32,6 +32,7 @@ class ContextEngineer {
         this._sections = [];
         this._budget = options.budget || DEFAULT_BUDGET;
         this._reserveRatio = options.reserveRatio || 0.15; // 15% reserve for response
+        this._tokenTracker = options.tokenTracker || null; // v12.0: TokenTracker injection
     }
 
     /**
@@ -118,6 +119,11 @@ class ContextEngineer {
 
         stats.totalTokens = totalTokens;
         stats.sectionsIncluded = included.length;
+
+        // v12.0: Record assembled token usage
+        if (this._tokenTracker) {
+            this._tokenTracker.record('ContextEngineer', totalTokens, 'input');
+        }
 
         // Assemble final context string
         const context = included.map(s => s.content).join('\n\n');

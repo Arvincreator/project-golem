@@ -1,4 +1,4 @@
-# Project Golem v11.5 — 開發指南
+# Project Golem v12.0 — 開發指南
 
 ## 架構概覽
 - **RouterBrain**: 智能多模型路由器，fallback chain: monica-web → monica → sdk → ollama → claude, 90s 全鏈超時
@@ -216,3 +216,33 @@
 
 ### 測試基線
 - v11.5: 1225 tests / 89 suites / 0 failures
+
+## v12.0 全自動自主運行 — AI 風險分析 + Token 追蹤 + 自動技能生成
+
+### XML Config v2.1
+- **golem-config.xml** 升級至 v2.1，新增 8 個 section: `<error-pattern-learner>`, `<scan-quality-tracker>`, `<worker-health-auditor>`, `<security-auditor>`, `<rag-quality-monitor>`, `<debate-quality-tracker>`, `<autonomy-scheduler>`, `<token-tracking>`
+- **xml-config-loader.js** +8 getter: `getErrorPatternLearnerConfig()`, `getScanQualityTrackerConfig()`, `getWorkerHealthAuditorConfig()`, `getSecurityAuditorConfig()`, `getRAGQualityMonitorConfig()`, `getDebateQualityTrackerConfig()`, `getAutonomySchedulerConfig()`, `getTokenTrackingConfig()`
+
+### 新模組
+- **TokenTracker** (`src/core/TokenTracker.js`): Per-module token 使用追蹤, daily budget, 持久化 `data/token_usage.json`, DebouncedWriter, 警告閾值 80%, `record(module, tokens, type)` + `getReport()` + `isOverBudget()`
+- **SkillGenerator** (`src/skills/core/skill-generator.js`): 讀取掃描結果 → 識別 integration/optimization/monitor 候選 → 生成 skill template → DANGEROUS_PATTERNS 安全驗證 → 預覽模式 (default)
+
+### 修改
+- **SecurityAuditor**: +`auditAIRisks()` — 4 維 AI 風險分析 (alignment mirage/capability concealment/agent autonomy/concentration, 各 0-25), `generateAuditReport()` 整合 weighted combination (traditional*0.6 + aiRisk*0.4), XML gate `<security-auditor ai-risk-checks="true"/>`
+- **ContextEngineer**: +`_tokenTracker` 注入, `assemble()` 後自動記錄 token
+- **PromptScorer**: +`nlToStructured(prompt, intent)` — 自由文本 → 結構化 prompt (偵測缺少 Role/Context/Format/Constraints, 注入 CoT/ToT/ReAct), 回傳 `{ structured, improvements, scoreGain }`
+- **PromptEvolver**: 5→6 突變算子, +`nl-to-structured` — 自由文本→結構化 prompt (委派 PromptScorer.nlToStructured)
+- **prompt-forge**: +`nl-optimize` 子任務 — chain nlToStructured() → optimize()
+- **RAGProvider**: +`searchBySource(query, source, options)` — 按 source metadata 過濾向量搜尋
+- **ThreeLayerMemory**: +`ingestOperationalMemory(type, data)` — 審計摘要存入 episodic layer + RAG
+- **WebResearcher**: +`_circuitBreaker` 注入, Gemini 搜尋包裝到 OpossumBridge circuit breaker
+- **AutonomyScheduler**: +`_assessRSSLevel(rss)` → `'normal'|'elevated'|'critical'` 分級回應, +`_safeExec()` per-priority try/catch + ErrorPatternLearner 記錄, 不 halt 整個 tick
+- **MCPBridge**: +`setLocalModules(modules)` 注入本地模組, `getToolManifest()` 含 local modules, `callTool()` 增加 `local-` prefix dispatch
+
+### v12.0 Live Runner (`scripts/run-v120-live.js`)
+- 5 模式: `test` | `full` | `ai-risk` | `skill-gen` | `token-report`
+- `full`: AI risk analysis → skill generation → token report
+- XML config v2.1 載入 + TokenTracker + SecurityAuditor (AI risk) + SkillGenerator
+
+### 測試基線
+- v12.0: 1283 tests / 97 suites / 0 failures

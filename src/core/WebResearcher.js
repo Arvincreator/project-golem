@@ -7,6 +7,7 @@ class WebResearcher {
         this._cacheSize = options.cacheSize || 50;
         this._cache = new Map(); // LRU cache: normalized query → result
         this._errorPatternLearner = options.errorPatternLearner || null;
+        this._circuitBreaker = options.circuitBreaker || null; // v12.0: OpossumBridge circuit breaker
     }
 
     /**
@@ -29,14 +30,21 @@ class WebResearcher {
         let lastError = null;
         for (const apiKey of keys) {
             try {
-                const { GoogleGenAI } = require('@google/genai');
-                const ai = new GoogleGenAI({ apiKey });
-                const model = process.env.GEMINI_SEARCH_MODEL || 'gemini-2.0-flash';
-                const response = await ai.models.generateContent({
-                    model,
-                    contents: `搜尋並總結最新資訊: ${query}`,
-                    config: { tools: [{ googleSearch: {} }] },
-                });
+                const searchFn = async () => {
+                    const { GoogleGenAI } = require('@google/genai');
+                    const ai = new GoogleGenAI({ apiKey });
+                    const model = process.env.GEMINI_SEARCH_MODEL || 'gemini-2.0-flash';
+                    return ai.models.generateContent({
+                        model,
+                        contents: `搜尋並總結最新資訊: ${query}`,
+                        config: { tools: [{ googleSearch: {} }] },
+                    });
+                };
+
+                // v12.0: Wrap in circuit breaker if available
+                const response = this._circuitBreaker
+                    ? await this._circuitBreaker.execute('gemini-search', searchFn)
+                    : await searchFn();
 
                 const parsed = this._parseGroundingResults(response);
                 const result = {

@@ -237,6 +237,38 @@ class RAGProvider {
     }
 
     /**
+     * v12.0: Search by source metadata filter
+     * @param {string} query
+     * @param {string} source - Source filter (e.g., 'security-audit', 'worker-health', 'error-patterns')
+     * @param {{limit?: number}} options
+     * @returns {Promise<object[]>}
+     */
+    async searchBySource(query, source, options = {}) {
+        if (this._readyPromise) await this._readyPromise;
+        if (this._initFailed) return [];
+
+        const limit = options.limit || 5;
+
+        // Vector search then filter by source metadata
+        const vectorResults = await this._vectorSearch(query, limit * 3); // Over-fetch for filtering
+        const filtered = vectorResults.filter(r =>
+            r.metadata && (r.metadata.source === source || r.metadata.type === source)
+        ).slice(0, limit);
+
+        // If not enough results from vector, also check graph
+        if (filtered.length < limit && this._magma) {
+            const graphResults = await this._graphSearch(query, limit);
+            for (const gr of graphResults) {
+                if (gr.metadata && (gr.metadata.type === source) && filtered.length < limit) {
+                    filtered.push(gr);
+                }
+            }
+        }
+
+        return filtered;
+    }
+
+    /**
      * Format merged results into a context string for LLM consumption
      */
     _formatForContext(merged) {

@@ -1,10 +1,10 @@
 // ============================================================
 // PromptEvolver — EvoPrompt + PromptBreeder Evolution Engine
-// Population-based prompt optimization with 5 mutation operators
+// Population-based prompt optimization with 6 mutation operators
 // Token budget: max (popSize × maxGen × 2) brain calls ≈ 30
 // ============================================================
 
-const MUTATION_OPS = ['rephrase', 'add-detail', 'remove-detail', 'restructure', 'pattern-inject'];
+const MUTATION_OPS = ['rephrase', 'add-detail', 'remove-detail', 'restructure', 'pattern-inject', 'nl-to-structured'];
 
 const PATTERN_TEMPLATES = {
     CoT: '讓我們一步一步思考。\nStep 1: ',
@@ -129,7 +129,7 @@ Output ONLY the combined prompt, nothing else.`;
     }
 
     /**
-     * Mutate with one of 5 operators
+     * Mutate with one of 6 operators
      */
     async _mutate(prompt, intent, operator, pattern) {
         if (this.brain) {
@@ -149,6 +149,7 @@ Output ONLY the combined prompt, nothing else.`;
             'remove-detail': 'Simplify this prompt by removing redundant or unnecessary parts while keeping the core intent.',
             'restructure': 'Restructure this prompt into clear sections: Role → Context → Task → Format → Constraints.',
             'pattern-inject': `Inject a ${pattern || 'Chain-of-Thought'} reasoning pattern into this prompt.`,
+            'nl-to-structured': 'Convert this free-text prompt into a structured format with Role, Context, Task, Format, and Constraints sections. Add CoT/ToT/ReAct reasoning as appropriate.',
         };
 
         const mutatePrompt = `${instructions[operator] || instructions['rephrase']}
@@ -193,6 +194,15 @@ Output ONLY the modified prompt, nothing else.`;
                 const key = pattern || 'CoT';
                 const template = PATTERN_TEMPLATES[key] || PATTERN_TEMPLATES.CoT;
                 return prompt + '\n\n' + template;
+            }
+            case 'nl-to-structured': {
+                // v12.0: Use PromptScorer.nlToStructured if available
+                if (this.scorer && this.scorer.nlToStructured) {
+                    const result = this.scorer.nlToStructured(prompt, intent);
+                    return result.structured || prompt;
+                }
+                // Fallback: manual structuring
+                return `## 角色\n你是專精於${intent || '解決問題'}的 AI 助手。\n\n## 背景\n${intent || '使用者需要專業協助。'}\n\n## 任務\n${prompt}\n\n## 輸出格式\n結構化 Markdown，含標題與重點。\n\n## 約束\n- 準確有據\n- 清晰易懂`;
             }
             default:
                 return prompt;

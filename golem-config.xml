@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<golem-config version="2.0" updated="2026-03-16">
+<golem-config version="2.1" updated="2026-03-17">
 
   <node id="rensin" role="primary">
     <platform>wsl2</platform>
@@ -124,6 +124,44 @@
 
   <!-- v10.5: Claude Gateway -->
   <claude-gateway enabled="true" token-env="CLAUDE_GATEWAY_TOKEN" rate-limit-rpm="60"/>
+
+  <!-- v12.0: Error Pattern Learner configuration -->
+  <error-pattern-learner max-patterns="200" dedup-threshold="0.8"
+                          retention-days="90" auto-suggest="true"/>
+
+  <!-- v12.0: Scan Quality Tracker configuration -->
+  <scan-quality-tracker max-records="500" worthless-threshold="3"
+                         auto-skip="true" min-effectiveness="0.1"/>
+
+  <!-- v12.0: Worker Health Auditor configuration -->
+  <worker-health-auditor timeout-ms="5000" max-consecutive-failures="3"
+                          check-interval-min="30" max-history="200"/>
+
+  <!-- v12.0: Security Auditor configuration -->
+  <security-auditor ai-risk-checks="true" traditional-weight="0.6"
+                     ai-risk-weight="0.4" max-risk-score="100"/>
+
+  <!-- v12.0: RAG Quality Monitor configuration -->
+  <rag-quality-monitor test-query-count="10" min-recall="0.3"
+                        latency-warn-ms="500" check-interval-min="120"/>
+
+  <!-- v12.0: Debate Quality Tracker configuration -->
+  <debate-quality-tracker max-history="100"
+                           diversity-weight="0.3" differentiation-weight="0.4"
+                           coverage-weight="0.3"/>
+
+  <!-- v12.0: Autonomy Scheduler configuration -->
+  <autonomy-scheduler scan-interval-min="120" debate-interval-min="180"
+                       optimize-interval-min="60" rss-heal-threshold-mb="350"
+                       episode-dedup-threshold="50"
+                       worker-check-interval-min="30"
+                       security-audit-interval-min="360"
+                       yeren-sync-interval-min="60"/>
+
+  <!-- v12.0: Token Tracking configuration -->
+  <token-tracking enabled="true" budget-daily="50000"
+                   persist-interval-ms="5000" data-file="data/token_usage.json"
+                   warn-threshold-pct="80"/>
 
   <dependencies>
     <dep name="grammy" version="^1" for="rensin"/>

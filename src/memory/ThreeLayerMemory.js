@@ -232,9 +232,71 @@ class ThreeLayerMemory {
     _loadEpisodes() {
         try {
             if (fs.existsSync(this._episodicFile)) {
-                return JSON.parse(fs.readFileSync(this._episodicFile, 'utf-8'));
+                const raw = fs.readFileSync(this._episodicFile, 'utf-8');
+                return JSON.parse(raw);
             }
-        } catch (e) { console.warn('[ThreeLayerMemory] Failed to load episodes:', e.message); }
+        } catch (e) {
+            console.warn('[ThreeLayerMemory] Failed to load episodes:', e.message);
+            // v11.3: Auto-repair corrupted JSON (e.g. concatenated arrays from concurrent writes)
+            const repaired = this._tryRepairJSON(this._episodicFile);
+            if (repaired !== null) return repaired;
+        }
+        return [];
+    }
+
+    /**
+     * v11.3: Attempt to repair corrupted JSON file
+     * Handles concatenated arrays (e.g. ][) from concurrent writes
+     * @returns {Array|null} Recovered array or null if unrecoverable
+     */
+    _tryRepairJSON(filePath) {
+        try {
+            const raw = fs.readFileSync(filePath, 'utf-8').trim();
+            if (!raw.startsWith('[')) return null;
+
+            // Strategy 1: Find first complete JSON array (ignore trailing garbage)
+            let depth = 0;
+            let end = 0;
+            for (let i = 0; i < raw.length; i++) {
+                if (raw[i] === '[') depth++;
+                else if (raw[i] === ']') {
+                    depth--;
+                    if (depth === 0) { end = i + 1; break; }
+                }
+            }
+            if (end > 0) {
+                const data = JSON.parse(raw.substring(0, end));
+                if (Array.isArray(data)) {
+                    // Write back clean version
+                    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+                    console.log(`[ThreeLayerMemory] Auto-repaired ${filePath}: recovered ${data.length} episodes`);
+                    return data;
+                }
+            }
+
+            // Strategy 2: Split on ][ boundary, parse each, merge
+            const parts = raw.split(/\]\s*\[/).map((part, i, arr) => {
+                if (i === 0) part = part + ']';
+                else if (i === arr.length - 1) part = '[' + part;
+                else part = '[' + part + ']';
+                try { return JSON.parse(part); } catch { return []; }
+            });
+            const merged = parts.flat().filter(e => e && e.id);
+            if (merged.length > 0) {
+                fs.writeFileSync(filePath, JSON.stringify(merged, null, 2));
+                console.log(`[ThreeLayerMemory] Auto-repaired (merge strategy) ${filePath}: recovered ${merged.length} episodes`);
+                return merged;
+            }
+        } catch (e2) {
+            console.warn('[ThreeLayerMemory] Auto-repair failed:', e2.message);
+        }
+        // Last resort: backup corrupted file, start fresh
+        try {
+            const backup = filePath + '.corrupted.' + Date.now();
+            fs.copyFileSync(filePath, backup);
+            fs.writeFileSync(filePath, '[]');
+            console.warn(`[ThreeLayerMemory] Unrecoverable — backed up to ${backup}, starting fresh`);
+        } catch { /* nothing left to try */ }
         return [];
     }
 
@@ -287,6 +349,36 @@ class ThreeLayerMemory {
             }
         }
         return paged;
+    }
+
+    /**
+     * v12.0: Ingest operational memory (audit summaries) into episodic layer
+     * @param {string} type - 'security-audit' | 'worker-health' | 'error-patterns'
+     * @param {object} data - Audit/operational data to ingest
+     * @returns {object} Created episode
+     */
+    ingestOperationalMemory(type, data) {
+        if (!type || !data) return null;
+
+        const summary = typeof data === 'string' ? data : JSON.stringify(data).substring(0, 500);
+        const episode = this.recordEpisode(
+            `[${type}] ${summary}`,
+            ['operational_ingest'],
+            `Operational memory: ${type}`,
+            0.7
+        );
+
+        // Also ingest into RAG if available
+        if (this._ragProvider) {
+            try {
+                this._ragProvider.ingest(
+                    `[${type}] ${summary}`,
+                    { type, source: type, operational: true }
+                ).catch(() => {});
+            } catch (e) { /* non-blocking */ }
+        }
+
+        return episode;
     }
 
     getStats() {
