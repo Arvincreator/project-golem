@@ -1,4 +1,4 @@
-# Project Golem v11.2 — 開發指南
+# Project Golem v11.5 — 開發指南
 
 ## 架構概覽
 - **RouterBrain**: 智能多模型路由器，fallback chain: monica-web → monica → sdk → ollama → claude, 90s 全鏈超時
@@ -180,3 +180,39 @@
 ## EmbeddingProvider 模型升級
 - `text-embedding-004` → `gemini-embedding-001` (3072 維)
 - `GEMINI_EMBED_MODEL` env var 可覆蓋
+
+## v11.5 全自動自主運行 — 全球掃描 + 審計 + 自我優化 + Yeren 連接
+
+### 新模組
+- **ErrorPatternLearner** (`src/core/ErrorPatternLearner.js`): 錯誤模式學習, 記錄錯誤+解法, 查重複, 建議修復, 持久化 `data/error_patterns.json` (max 200)
+- **ScanQualityTracker** (`src/core/ScanQualityTracker.js`): 掃描品質追蹤, 查詢成功率, 自動跳過連續 3 次 0 結果的查詢, 持久化 `data/scan_quality_tracker.json` (max 500)
+- **WorkerHealthAuditor** (`src/core/WorkerHealthAuditor.js`): CF Worker 健康審計, 9+ known workers + endpoints.js 動態, 5s timeout, 連續 3 失敗建議重部署, 持久化 `data/worker_health_history.json` (max 200)
+- **SecurityAuditor** (`src/core/SecurityAuditor.js`): 綜合安全審計 (沙盒域名/安全規則/熔斷器/Token預算), 風險評分 0-100, 持久化 `data/security_audit_report.json`
+- **RAGQualityMonitor** (`src/core/RAGQualityMonitor.js`): RAG 品質監控, 10 標準測試查詢 recall+relevance+latency, 向量增長追蹤, TipMemory 效能統計, 持久化 `data/rag_quality_metrics.json`
+- **DebateQualityTracker** (`src/core/DebateQualityTracker.js`): 辯論品質 A/B 測試, 3 軸評分 (keyword diversity + perspective differentiation + synthesis coverage), A/B 比較, 持久化 `data/debate_quality_history.json` (max 100)
+- **YerenBridge** (`src/bridges/YerenBridge.js`): Rensin↔Yeren 雙向同步, WSL2 檔案系統橋, 記憶/掃描結果同步, 共享路徑 `/mnt/c/.../data/bridge/`
+
+### 修改
+- **WebResearcher**: +`errorPatternLearner` 注入, 搜尋失敗自動記錄錯誤模式
+- **AGIScanner**: +`scanQualityTracker` 注入, 掃描後記錄品質, `SKIP_WORTHLESS_QUERIES` 自動跳過無效查詢
+- **AutonomyScheduler**: +3 新 priority (P6: worker_health_check/30min, P7: security_audit/6hr, P8: yeren_sync/60min), +3 新注入 (workerAuditor, securityAuditor, yerenBridge)
+- **SandboxGuard**: +`.workers.dev` wildcard (允許所有 CF workers 健康檢查)
+- **SecurityManager**: +`getRulesCoverage()` 方法 (規則類別覆蓋率)
+- **VectorStore**: `getStats()` 擴充 (oldest/newest/sourceDistribution)
+- **TipMemory**: +`getEffectivenessStats()` (successRate/avgConfidence/usedTips)
+- **CouncilDebate**: +`debateWithRAGContext()` (RAG 增強辯論, 先查歷史再分析)
+
+### v11.5 Live Runner (`scripts/run-v115-live.js`)
+- 6 模式: `test` | `full` | `autonomy` | `worker-audit` | `security-audit` | `ab-debate`
+- `full`: scan → ingest → debate → worker audit → security audit → RAG quality → optimize → Yeren sync
+- `autonomy`: 60s tick, 8 級優先序 (RSS > dedup > scan > debate > optimize > worker > security > yeren)
+- 所有模組注入 ErrorPatternLearner + ScanQualityTracker
+
+### v11.5 環境變數
+- `SKIP_WORTHLESS_QUERIES` (預設 true): 跳過無效查詢
+- `V115_WORKER_CHECK_INTERVAL_MIN` (預設 30): Worker 健康檢查間隔
+- `V115_SECURITY_AUDIT_INTERVAL_MIN` (預設 360): 安全審計間隔
+- `V115_YEREN_SYNC_INTERVAL_MIN` (預設 60): Yeren 同步間隔
+
+### 測試基線
+- v11.5: 1225 tests / 89 suites / 0 failures

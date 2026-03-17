@@ -7,6 +7,7 @@ const ALLOWED_DOMAINS = [
     'generativelanguage.googleapis.com',
     'aistudio.google.com',
     '.yagami8095.workers.dev',
+    '.workers.dev',  // v11.5: Allow all CF workers for health auditing
     'moltbook.io',
     'api.moltbook.io',
     'moltbook.com',

@@ -6,6 +6,7 @@ class WebResearcher {
     constructor(options = {}) {
         this._cacheSize = options.cacheSize || 50;
         this._cache = new Map(); // LRU cache: normalized query → result
+        this._errorPatternLearner = options.errorPatternLearner || null;
     }
 
     /**
@@ -62,6 +63,10 @@ class WebResearcher {
         }
 
         console.warn('[WebResearcher] googleSearch failed (all keys):', lastError?.message);
+        // v11.5: Record error pattern for learning
+        if (this._errorPatternLearner && lastError) {
+            this._errorPatternLearner.recordError('WebResearcher.search', lastError, 'rotate keys or wait for quota reset');
+        }
         return { query, results: [], synthesis: '', webSearchQueries: [], timestamp: new Date().toISOString(), fromCache: false, error: lastError?.message };
     }
 

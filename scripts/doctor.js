@@ -123,6 +123,35 @@ if (warRoomUrl) {
     );
 }
 
+// 11. v11.5: Check all known CF Workers
+const KNOWN_WORKER_URLS = [
+    { name: 'rag', url: 'https://rag.yagami8095.workers.dev' },
+    { name: 'notion-warroom', url: 'https://notion-warroom.yagami8095.workers.dev' },
+    { name: 'health-commander', url: 'https://health-commander.yagami8095.workers.dev' },
+    { name: 'intel-ops', url: 'https://intel-ops.yagami8095.workers.dev' },
+    { name: 'orchestrator', url: 'https://orchestrator.yagami8095.workers.dev' },
+    { name: 'content-engine', url: 'https://content-engine.yagami8095.workers.dev' },
+    { name: 'revenue-sentinel', url: 'https://revenue-sentinel.yagami8095.workers.dev' },
+    { name: 'analytics-dashboard', url: 'https://analytics-dashboard.yagami8095.workers.dev' },
+    { name: 'auto-agent', url: 'https://auto-agent-worker.yagami8095.workers.dev' },
+];
+
+for (const worker of KNOWN_WORKER_URLS) {
+    cfChecks.push(
+        (async () => {
+            const start = Date.now();
+            try {
+                const res = await fetch(worker.url + '/health', { signal: AbortSignal.timeout(5000) });
+                const latency = Date.now() - start;
+                check(`CF Worker: ${worker.name}`, res.ok, `Reachable (${latency}ms)`, `HTTP ${res.status}`, `Check ${worker.url}`, true);
+            } catch (e) {
+                const latency = Date.now() - start;
+                check(`CF Worker: ${worker.name}`, false, '', `${e.message} (${latency}ms)`, `Worker may be offline: ${worker.url}`, true);
+            }
+        })()
+    );
+}
+
 Promise.all(cfChecks).then(() => testPort(3000)).then((isFree) => {
     check('Port 3000 (Dashboard)', isFree, 'Available', 'In Use', 'Port 3000 is occupied. Stop processes using this port (e.g. `lsof -i :3000` then `kill <PID>`), or change DASHBOARD_PORT in .env.', true);
 

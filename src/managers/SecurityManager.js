@@ -128,6 +128,23 @@ class SecurityManager {
             `[${a.level}${a.success ? '✓' : '✗'}] ${a.action}${a.task ? ':' + a.task : ''}`
         ).join(' | ');
     }
+    /**
+     * v11.5: Get rules coverage across skill categories
+     */
+    getRulesCoverage() {
+        const categories = new Set();
+        for (const rule of this.LEVEL_RULES) {
+            const src = rule.test.source;
+            const match = src.match(/^\^([a-z_-]+):/);
+            if (match) categories.add(match[1]);
+        }
+        return {
+            coveredCategories: [...categories],
+            totalCategories: categories.size,
+            totalRules: this.LEVEL_RULES.length,
+        };
+    }
+
     assess(cmd) {
         const safeCmd = (cmd || "").trim();
         if (this.BLOCK_PATTERNS.some(regex => regex.test(safeCmd))) return { level: 'BLOCKED', reason: '毀滅性指令' };

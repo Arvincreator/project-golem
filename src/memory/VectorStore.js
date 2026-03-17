@@ -148,10 +148,26 @@ class VectorStore {
      */
     getStats() {
         const count = this._stmtCount.get().count;
-        return {
+        const result = {
             totalVectors: count,
             dbPath: this._dbPath,
         };
+
+        // v11.5: Extended stats
+        try {
+            if (count > 0) {
+                const oldest = this._db.prepare('SELECT MIN(created_at) as oldest FROM vectors').get();
+                const newest = this._db.prepare('SELECT MAX(created_at) as newest FROM vectors').get();
+                const sourceDist = this._db.prepare('SELECT source, COUNT(*) as cnt FROM vectors GROUP BY source ORDER BY cnt DESC LIMIT 10').all();
+                result.oldest = oldest?.oldest || null;
+                result.newest = newest?.newest || null;
+                result.sourceDistribution = sourceDist.reduce((acc, r) => { acc[r.source || '(none)'] = r.cnt; return acc; }, {});
+            }
+        } catch (e) {
+            // Extended stats are optional
+        }
+
+        return result;
     }
 
     /**

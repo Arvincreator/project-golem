@@ -98,6 +98,7 @@ class AGIScanner {
     constructor(options = {}) {
         this._webResearcher = options.webResearcher || null;
         this._ragProvider = options.ragProvider || null;
+        this._scanQualityTracker = options.scanQualityTracker || null;
     }
 
     /**
@@ -165,19 +166,37 @@ class AGIScanner {
         };
 
         for (const query of queries) {
+            // v11.5: Skip worthless queries if tracker enabled
+            if (this._scanQualityTracker && process.env.SKIP_WORTHLESS_QUERIES !== 'false' && this._scanQualityTracker.isWorthless(query)) {
+                continue;
+            }
+
             try {
                 const searchResult = await researcher.search(query);
                 result.queriesRun++;
-                result.results.push({
+                const entry = {
                     query,
                     synthesis: searchResult.synthesis || '',
                     resultCount: (searchResult.results || []).length,
                     webSearchQueries: searchResult.webSearchQueries || [],
                     timestamp: searchResult.timestamp,
-                });
+                };
+                result.results.push(entry);
+
+                // v11.5: Record scan quality
+                if (this._scanQualityTracker) {
+                    this._scanQualityTracker.recordScanResult(query, category, {
+                        resultCount: entry.resultCount,
+                        hasSynthesis: !!entry.synthesis,
+                    });
+                }
             } catch (e) {
                 result.errors.push(`Query "${query}" failed: ${e.message}`);
                 result.queriesRun++;
+                // v11.5: Record failure
+                if (this._scanQualityTracker) {
+                    this._scanQualityTracker.recordScanResult(query, category, { resultCount: 0, hasSynthesis: false });
+                }
             }
 
             // Rate limit protection
