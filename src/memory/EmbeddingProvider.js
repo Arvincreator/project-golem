@@ -4,10 +4,10 @@
 // ============================================================
 const crypto = require('crypto');
 
-const DEFAULT_MODEL = 'text-embedding-004';
+const DEFAULT_MODEL = process.env.GEMINI_EMBED_MODEL || 'gemini-embedding-001';
 const DEFAULT_CACHE_SIZE = 100;
 const DEFAULT_BATCH_SIZE = 20;
-const EMBEDDING_DIM = 768;
+const EMBEDDING_DIM = 3072;
 
 class EmbeddingProvider {
     constructor(options = {}) {

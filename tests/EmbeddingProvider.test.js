@@ -12,19 +12,19 @@ describe('EmbeddingProvider', () => {
     test('embed returns Float32Array of correct dimension on empty provider', async () => {
         const result = await ep.embed('hello world');
         expect(result).toBeInstanceOf(Float32Array);
-        expect(result.length).toBe(768);
+        expect(result.length).toBe(3072);
     });
 
     test('embed returns zero vector for empty input', async () => {
         const result = await ep.embed('');
         expect(result).toBeInstanceOf(Float32Array);
-        expect(result.length).toBe(768);
+        expect(result.length).toBe(3072);
         expect(result[0]).toBe(0);
     });
 
     test('embed returns zero vector for null input', async () => {
         const result = await ep.embed(null);
-        expect(result.length).toBe(768);
+        expect(result.length).toBe(3072);
     });
 
     test('cosineSimilarity computes correctly', () => {
@@ -89,7 +89,7 @@ describe('EmbeddingProvider', () => {
         expect(results).toHaveLength(3);
         results.forEach(r => {
             expect(r).toBeInstanceOf(Float32Array);
-            expect(r.length).toBe(768);
+            expect(r.length).toBe(3072);
         });
     });
 
@@ -106,6 +106,6 @@ describe('EmbeddingProvider', () => {
         const stats = ep.getStats();
         expect(stats).toHaveProperty('cacheSize', 0);
         expect(stats).toHaveProperty('cacheCapacity', 5);
-        expect(stats).toHaveProperty('model', 'text-embedding-004');
+        expect(stats).toHaveProperty('model', 'gemini-embedding-001');
     });
 });

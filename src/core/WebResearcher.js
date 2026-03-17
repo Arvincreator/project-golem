@@ -19,34 +19,65 @@ class WebResearcher {
         const cached = this._getCached(query);
         if (cached) return { ...cached, fromCache: true };
 
-        try {
-            const { GoogleGenAI } = require('@google/genai');
-            const apiKey = process.env.GEMINI_API_KEY;
-            if (!apiKey) throw new Error('GEMINI_API_KEY not set');
-
-            const ai = new GoogleGenAI({ apiKey });
-            const response = await ai.models.generateContent({
-                model: 'gemini-2.0-flash',
-                contents: `搜尋並總結最新資訊: ${query}`,
-                config: { tools: [{ googleSearch: {} }] },
-            });
-
-            const parsed = this._parseGroundingResults(response);
-            const result = {
-                query,
-                results: parsed.results,
-                synthesis: response.text || parsed.synthesis || '無法取得摘要',
-                webSearchQueries: parsed.webSearchQueries,
-                timestamp: new Date().toISOString(),
-                fromCache: false,
-            };
-
-            this._setCache(query, result);
-            return result;
-        } catch (e) {
-            console.warn('[WebResearcher] googleSearch failed:', e.message);
-            return { query, results: [], synthesis: '', webSearchQueries: [], timestamp: new Date().toISOString(), fromCache: false, error: e.message };
+        // Gather all available API keys for rotation
+        const keys = this._getApiKeys();
+        if (keys.length === 0) {
+            return { query, results: [], synthesis: '', webSearchQueries: [], timestamp: new Date().toISOString(), fromCache: false, error: 'No GEMINI_API_KEY(S) set' };
         }
+
+        let lastError = null;
+        for (const apiKey of keys) {
+            try {
+                const { GoogleGenAI } = require('@google/genai');
+                const ai = new GoogleGenAI({ apiKey });
+                const model = process.env.GEMINI_SEARCH_MODEL || 'gemini-2.0-flash';
+                const response = await ai.models.generateContent({
+                    model,
+                    contents: `搜尋並總結最新資訊: ${query}`,
+                    config: { tools: [{ googleSearch: {} }] },
+                });
+
+                const parsed = this._parseGroundingResults(response);
+                const result = {
+                    query,
+                    results: parsed.results,
+                    synthesis: response.text || parsed.synthesis || '無法取得摘要',
+                    webSearchQueries: parsed.webSearchQueries,
+                    timestamp: new Date().toISOString(),
+                    fromCache: false,
+                };
+
+                this._setCache(query, result);
+                return result;
+            } catch (e) {
+                lastError = e;
+                const is429 = e.message && (e.message.includes('429') || e.message.includes('RESOURCE_EXHAUSTED') || e.message.includes('quota'));
+                if (is429) {
+                    console.warn(`[WebResearcher] Key rate-limited, trying next key...`);
+                    continue;
+                }
+                // Non-rate-limit error — don't retry other keys
+                break;
+            }
+        }
+
+        console.warn('[WebResearcher] googleSearch failed (all keys):', lastError?.message);
+        return { query, results: [], synthesis: '', webSearchQueries: [], timestamp: new Date().toISOString(), fromCache: false, error: lastError?.message };
+    }
+
+    /**
+     * Get all available Gemini API keys (GEMINI_API_KEY + GEMINI_API_KEYS)
+     */
+    _getApiKeys() {
+        const keys = [];
+        if (process.env.GEMINI_API_KEY) keys.push(process.env.GEMINI_API_KEY);
+        if (process.env.GEMINI_API_KEYS) {
+            for (const k of process.env.GEMINI_API_KEYS.split(',')) {
+                const trimmed = k.trim();
+                if (trimmed && !keys.includes(trimmed)) keys.push(trimmed);
+            }
+        }
+        return keys;
     }
 
     /**
