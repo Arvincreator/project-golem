@@ -1013,8 +1013,8 @@ export default function SettingsPage() {
                                 ⏳ 自動化與作息設定
                             </h2>
                             <div className="grid grid-cols-2 gap-4">
-                                <SettingField label="喚醒間隔 (最小)" keyName="GOLEM_AWAKE_INTERVAL_MIN" placeholder="10" desc="分鐘 (最小)" value={config.env.GOLEM_AWAKE_INTERVAL_MIN || ""} onChange={(val) => handleChangeEnv("GOLEM_AWAKE_INTERVAL_MIN", val)} />
-                                <SettingField label="喚醒間隔 (最大)" keyName="GOLEM_AWAKE_INTERVAL_MAX" placeholder="60" desc="分鐘 (最大)" value={config.env.GOLEM_AWAKE_INTERVAL_MAX || ""} onChange={(val) => handleChangeEnv("GOLEM_AWAKE_INTERVAL_MAX", val)} />
+                                <SettingField label="喚醒間隔 (最小)" keyName="GOLEM_AWAKE_INTERVAL_MIN" placeholder="10" desc="分鐘 (最小 1)" value={config.env.GOLEM_AWAKE_INTERVAL_MIN || ""} onChange={(val) => handleChangeEnv("GOLEM_AWAKE_INTERVAL_MIN", val)} />
+                                <SettingField label="喚醒間隔 (最大)" keyName="GOLEM_AWAKE_INTERVAL_MAX" placeholder="10080" desc="分鐘 (最大 10080 / 一週)" value={config.env.GOLEM_AWAKE_INTERVAL_MAX || ""} onChange={(val) => handleChangeEnv("GOLEM_AWAKE_INTERVAL_MAX", val)} />
                                 <SettingField label="夜間休眠開始" keyName="GOLEM_SLEEP_START" placeholder="23:00" desc="格式: HH:mm (24小時制)" value={config.env.GOLEM_SLEEP_START || ""} onChange={(val) => handleChangeEnv("GOLEM_SLEEP_START", val)} />
                                 <SettingField label="夜間休眠結束" keyName="GOLEM_SLEEP_END" placeholder="07:00" desc="格式: HH:mm (24小時制)" value={config.env.GOLEM_SLEEP_END || ""} onChange={(val) => handleChangeEnv("GOLEM_SLEEP_END", val)} />
                             </div>
@@ -1022,6 +1022,7 @@ export default function SettingsPage() {
                                 <SettingField
                                     label="興趣標籤 (User Interests)"
                                     keyName="USER_INTERESTS"
+                                    placeholder="科技圈熱門話題,全球趣聞"
                                     desc="用於自主搜尋與聊天，請使用半形逗號「,」分隔多個興趣項目。"
                                     value={config.env.USER_INTERESTS || ""}
                                     onChange={(val) => handleChangeEnv("USER_INTERESTS", val)}

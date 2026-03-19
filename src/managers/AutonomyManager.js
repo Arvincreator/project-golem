@@ -26,7 +26,7 @@ class AutonomyManager {
 
     start() {
         console.log(`🚀 [Autonomy][${this.golemId}] Starting autonomy services...`);
-        this.scheduleNextAwakening();
+        this.resumeOrScheduleAwakening();
         setInterval(() => this.timeWatcher(), 60000);
         // ✨ [v9.1.5] 定時自動檢查一次日誌狀態 (改為動態排程，支援熱重載)
         this.archiveTimer = null;
@@ -162,23 +162,57 @@ class AutonomyManager {
             }
         }
     }
+
+    resumeOrScheduleAwakening() {
+        const logDir = ConfigManager.LOG_BASE_DIR;
+        const stateFile = path.join(logDir, 'awake_state.json');
+
+        if (fs.existsSync(stateFile)) {
+            try {
+                const state = JSON.parse(fs.readFileSync(stateFile, 'utf-8'));
+                if (state.nextWakeTime) {
+                    const nextWake = new Date(state.nextWakeTime);
+                    const now = new Date();
+                    const waitMs = nextWake.getTime() - now.getTime();
+
+                    if (waitMs > 0) {
+                        console.log(`📡 [Autonomy] 偵測到現有排程，將在 ${(waitMs / 60000).toFixed(1)} 分鐘後醒來 (Resume from state)`);
+                        this.setupAwakeTimer(waitMs);
+                        return;
+                    } else {
+                        console.log(`📡 [Autonomy] 偵測到已逾期的排程，立即啟動行動...`);
+                        this.manifestFreeWill();
+                    }
+                }
+            } catch (e) {
+                console.error("❌ [Autonomy] 讀取 awake_state.json 失敗:", e.message);
+            }
+        }
+        this.scheduleNextAwakening();
+    }
+
     scheduleNextAwakening() {
-        const minHours = ConfigManager.CONFIG.AWAKE_INTERVAL_MIN || 2;
-        const maxHours = ConfigManager.CONFIG.AWAKE_INTERVAL_MAX || 5;
-        const randomHours = minHours + Math.random() * (maxHours - minHours);
-        const waitMs = randomHours * 3600000;
+        const minMinutes = ConfigManager.CONFIG.AWAKE_INTERVAL_MIN || 10;
+        const maxMinutes = ConfigManager.CONFIG.AWAKE_INTERVAL_MAX || 60;
+        const randomMinutes = minMinutes + Math.random() * (maxMinutes - minMinutes);
+        const waitMs = randomMinutes * 60000;
+        
+        this.setupAwakeTimer(waitMs);
+    }
+
+    setupAwakeTimer(waitMs) {
         const nextWakeTime = new Date(Date.now() + waitMs);
         const hour = nextWakeTime.getHours();
         let finalWait = waitMs;
-        const sleepStart = ConfigManager.CONFIG.SLEEP_START !== undefined ? ConfigManager.CONFIG.SLEEP_START : 1;
-        const sleepEnd = ConfigManager.CONFIG.SLEEP_END !== undefined ? ConfigManager.CONFIG.SLEEP_END : 7;
+        const sleepStart = ConfigManager.CONFIG.SLEEP_START !== undefined ? this.parseHour(ConfigManager.CONFIG.SLEEP_START) : 1;
+        const sleepEnd = ConfigManager.CONFIG.SLEEP_END !== undefined ? this.parseHour(ConfigManager.CONFIG.SLEEP_END) : 7;
 
         // 處理跨夜情況 (例如 23:00 ~ 07:00)
         let isSleeping = false;
         if (sleepStart > sleepEnd) {
-            isSleeping = hour >= sleepStart || hour < sleepEnd;
+            isSleeping = (hour >= sleepStart || hour < sleepEnd);
         } else {
-            isSleeping = hour >= sleepStart && hour < sleepEnd;
+            isSleeping = (hour >= sleepStart && hour < sleepEnd);
         }
 
         if (isSleeping) {
@@ -189,8 +223,33 @@ class AutonomyManager {
             if (morning < nextWakeTime) morning.setDate(morning.getDate() + 1);
             finalWait = morning.getTime() - Date.now();
         }
-        console.log(`♻️ [LifeCycle] 下次醒來: ${(finalWait / 60000).toFixed(1)} 分鐘後`);
-        setTimeout(() => { this.manifestFreeWill(); this.scheduleNextAwakening(); }, finalWait);
+
+        const actualWakeTime = new Date(Date.now() + finalWait);
+        console.log(`♻️ [LifeCycle] 下次醒來時間: ${actualWakeTime.toLocaleString('zh-TW')} (${(finalWait / 60000).toFixed(1)} 分鐘後)`);
+        
+        // 儲存狀態以利重啟恢復
+        try {
+            const logDir = ConfigManager.LOG_BASE_DIR;
+            const stateFile = path.join(logDir, 'awake_state.json');
+            fs.mkdirSync(path.dirname(stateFile), { recursive: true });
+            fs.writeFileSync(stateFile, JSON.stringify({ nextWakeTime: actualWakeTime.toISOString() }, null, 2));
+        } catch (e) {
+            console.error("❌ [Autonomy] 儲存 awake_state.json 失敗:", e.message);
+        }
+
+        if (this.awakeTimer) clearTimeout(this.awakeTimer);
+        this.awakeTimer = setTimeout(() => { 
+            this.manifestFreeWill(); 
+            this.scheduleNextAwakening(); 
+        }, finalWait);
+    }
+
+    // 輔助函數：解析 HH:mm 或 純數字
+    parseHour(val) {
+        if (typeof val === 'string' && val.includes(':')) {
+            return parseInt(val.split(':')[0], 10);
+        }
+        return Number(val);
     }
     async manifestFreeWill() {
         try {

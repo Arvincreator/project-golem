@@ -5,7 +5,8 @@ const path = require('path');
 // --- ⚙️ 全域配置 ---
 const cleanEnv = (str, allowSpaces = false) => {
     if (!str) return "";
-    let cleaned = str.replace(/[^\x20-\x7E]/g, "");
+    // [Fix] 僅移除控制字元，保留 Unicode (如中文) 以避免 USER_INTERESTS 等欄位被清空
+    let cleaned = str.replace(/[\x00-\x1F\x7F]/g, "");
     if (!allowSpaces) cleaned = cleaned.replace(/\s/g, "");
     return (cleaned || "").trim();
 };
@@ -36,8 +37,8 @@ const CONFIG = {
     // --- AI Backend ---
     GOLEM_BACKEND: cleanEnv(process.env.GOLEM_BACKEND) || 'gemini',
     // --- Scheduled Tasks ---
-    AWAKE_INTERVAL_MIN: Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MIN)) || 2, // 預設最小 2 小時
-    AWAKE_INTERVAL_MAX: Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MAX)) || 5,  // 預設最大 5 小時 (2 + 3)
+    AWAKE_INTERVAL_MIN: Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MIN)) || 10, // 預設最小 10 分鐘
+    AWAKE_INTERVAL_MAX: Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MAX)) || 60, // 預設最大 60 分鐘
     SLEEP_START: process.env.GOLEM_SLEEP_START !== undefined ? Number(cleanEnv(process.env.GOLEM_SLEEP_START)) : 1, // 預設凌晨 1 點
     SLEEP_END: process.env.GOLEM_SLEEP_END !== undefined ? Number(cleanEnv(process.env.GOLEM_SLEEP_END)) : 7, // 預設早上 7 點
     USER_INTERESTS: cleanEnv(process.env.USER_INTERESTS || '科技圈熱門話題,全球趣聞', true),
@@ -109,8 +110,8 @@ const reloadConfig = () => {
     CONFIG.TZ = cleanEnv(process.env.TZ) || 'Asia/Taipei';
     CONFIG.INTERVENTION_LEVEL = cleanEnv(process.env.GOLEM_INTERVENTION_LEVEL) || 'CONSERVATIVE';
     CONFIG.GOLEM_BACKEND = cleanEnv(process.env.GOLEM_BACKEND) || 'gemini';
-    CONFIG.AWAKE_INTERVAL_MIN = Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MIN)) || 2;
-    CONFIG.AWAKE_INTERVAL_MAX = Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MAX)) || 5;
+    CONFIG.AWAKE_INTERVAL_MIN = Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MIN)) || 10;
+    CONFIG.AWAKE_INTERVAL_MAX = Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MAX)) || 60;
     CONFIG.SLEEP_START = process.env.GOLEM_SLEEP_START !== undefined ? Number(cleanEnv(process.env.GOLEM_SLEEP_START)) : 1;
     CONFIG.SLEEP_END = process.env.GOLEM_SLEEP_END !== undefined ? Number(cleanEnv(process.env.GOLEM_SLEEP_END)) : 7;
     CONFIG.USER_INTERESTS = cleanEnv(process.env.USER_INTERESTS || '科技圈熱門話題,全球趣聞', true);
