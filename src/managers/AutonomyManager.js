@@ -26,6 +26,11 @@ class AutonomyManager {
 
     start() {
         console.log(`🚀 [Autonomy][${this.golemId}] Starting autonomy services...`);
+        // Guard: skip scheduling if no bot tokens are configured
+        if (!ConfigManager.CONFIG.TG_TOKEN && !ConfigManager.CONFIG.DC_TOKEN) {
+            console.warn(`⚠️ [Autonomy][${this.golemId}] No bot tokens configured, skipping autonomy scheduling.`);
+            return;
+        }
         this.resumeOrScheduleAwakening();
         setInterval(() => this.timeWatcher(), 60000);
         // ✨ [v9.1.5] 定時自動檢查一次日誌狀態 (改為動態排程，支援熱重載)

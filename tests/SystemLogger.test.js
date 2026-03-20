@@ -75,6 +75,7 @@ describe('SystemLogger', () => {
     });
 
     test('_write appends to log file', () => {
+        SystemLogger.logFile = '/tmp/test_logs/system.log';
         SystemLogger.logFile = path.join(logDir, 'system.log');
         fs.existsSync.mockReturnValue(false);
         SystemLogger._write('INFO', 'test message');
@@ -85,6 +86,7 @@ describe('SystemLogger', () => {
     });
 
     test('_write triggers rotation on date change', () => {
+        SystemLogger.logFile = '/tmp/test_logs/system.log';
         SystemLogger.logFile = path.join(logDir, 'system.log');
         SystemLogger.currentDateString = '2024-01-01';
         fs.existsSync.mockReturnValue(true);
@@ -99,6 +101,7 @@ describe('SystemLogger', () => {
     });
 
     test('_write triggers rotation on size limit', () => {
+        SystemLogger.logFile = '/tmp/test_logs/system.log';
         SystemLogger.logFile = path.join(logDir, 'system.log');
         process.env.LOG_MAX_SIZE_MB = '1';
         fs.existsSync.mockReturnValue(true);
@@ -113,6 +116,7 @@ describe('SystemLogger', () => {
     });
 
     test('_write handles Error objects', () => {
+        SystemLogger.logFile = '/tmp/test_logs/system.log';
         SystemLogger.logFile = path.join(logDir, 'system.log');
         fs.existsSync.mockReturnValue(false);
         const err = new Error('Test error');
