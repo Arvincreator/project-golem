@@ -1,18 +1,55 @@
+# Node.js
 node_modules
 npm-debug.log
-.git
-.gitignore
-.env
-.env.*
+yarn-error.log
+.npm
+.eslintcache
+
+# Project specific
 logs
 golem_memory
-coverage
-test
-*.md
-!README.md
-web-dashboard/node_modules
+data
+*.log
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+.github
+
+# Build artifacts
+dist
+build
+out
+.next
 web-dashboard/.next
 web-dashboard/out
+web-dashboard/node_modules
+
+# Tests and Coverage
+coverage
+test
+tests
+*.test.js
+*.spec.js
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Documentation
+*.md
+!README.md
+docs/
+
+# Scripts
 oracle-deploy.sh
 ORACLE-DEPLOY.md
+setup.sh
+setup.bat
+setup.ps1
+dev.sh
+migrateData.js
+translateMarketplace.js

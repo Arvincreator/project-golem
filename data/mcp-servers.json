@@ -7,7 +7,7 @@
       "chrome-devtools-mcp@latest"
     ],
     "env": {},
-    "enabled": false,
+    "enabled": true,
     "description": "Chrome DevTools MCP — 網頁除錯、效能分析、DOM 操作、Lighthouse",
     "cachedTools": [
       {
@@ -125,6 +125,122 @@
       {
         "name": "wait_for",
         "description": "Wait for the specified text to appear on the selected page."
+      }
+    ]
+  },
+  {
+    "name": "notebooklm",
+    "command": "./notebooklm_venv/bin/python",
+    "args": [
+      "src/mcp/notebooklm_stdio.py"
+    ],
+    "enabled": true,
+    "description": "Google NotebookLM API Server (Stdio Bridge)",
+    "env": {},
+    "cachedTools": [
+      {
+        "name": "list_notebooks",
+        "description": "List all NotebookLM notebooks."
+      },
+      {
+        "name": "create_notebook",
+        "description": "Create a new NotebookLM notebook."
+      },
+      {
+        "name": "delete_notebook",
+        "description": "Delete a NotebookLM notebook."
+      },
+      {
+        "name": "rename_notebook",
+        "description": "Rename a NotebookLM notebook."
+      },
+      {
+        "name": "describe_notebook",
+        "description": "Get an AI-generated summary and suggested topics for a notebook."
+      },
+      {
+        "name": "list_sources",
+        "description": "List all sources in a notebook."
+      },
+      {
+        "name": "add_url_source",
+        "description": "Add a URL (web page or YouTube video) as a source to a notebook."
+      },
+      {
+        "name": "add_text_source",
+        "description": "Add pasted text as a source to a notebook."
+      },
+      {
+        "name": "delete_source",
+        "description": "Delete a source from a notebook."
+      },
+      {
+        "name": "get_source_guide",
+        "description": "Get an AI-generated summary and keywords for a specific source."
+      },
+      {
+        "name": "ask",
+        "description": "Ask the notebook a question. Returns the answer and a conversation_id for follow-up questions."
+      },
+      {
+        "name": "get_chat_history",
+        "description": "Get Q&A history for the most recent conversation in a notebook."
+      },
+      {
+        "name": "list_artifacts",
+        "description": "List all AI-generated artifacts in a notebook."
+      },
+      {
+        "name": "generate_audio",
+        "description": "Generate an Audio Overview (podcast) for a notebook. Waits for completion and returns the saved file path."
+      },
+      {
+        "name": "generate_video",
+        "description": "Generate a Video Overview for a notebook. Waits for completion and returns the saved file path."
+      },
+      {
+        "name": "generate_report",
+        "description": "Generate a report (Briefing Doc, Study Guide, Blog Post, or Custom). Waits for completion and returns the content."
+      },
+      {
+        "name": "generate_quiz",
+        "description": "Generate a Quiz for a notebook. Waits for completion and returns the quiz content."
+      },
+      {
+        "name": "generate_flashcards",
+        "description": "Generate Flashcards for a notebook. Waits for completion and returns the flashcard content."
+      },
+      {
+        "name": "generate_infographic",
+        "description": "Generate an Infographic for a notebook. Waits for completion and returns the saved file path."
+      },
+      {
+        "name": "generate_slide_deck",
+        "description": "Generate a Slide Deck for a notebook. Waits for completion and returns the saved file path."
+      },
+      {
+        "name": "generate_mind_map",
+        "description": "Generate a Mind Map for a notebook. Waits for completion and returns the artifact info."
+      },
+      {
+        "name": "delete_artifact",
+        "description": "Delete an artifact from a notebook."
+      },
+      {
+        "name": "list_notes",
+        "description": "List all user-created notes in a notebook."
+      },
+      {
+        "name": "create_note",
+        "description": "Create a new note in a notebook."
+      },
+      {
+        "name": "update_note",
+        "description": "Update an existing note's title and content."
+      },
+      {
+        "name": "delete_note",
+        "description": "Delete a note from a notebook."
       }
     ]
   }

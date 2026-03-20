@@ -2,37 +2,45 @@ version: '3.8'
 
 services:
   golem:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: golem-core
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "${DASHBOARD_PORT:-3000}:3000"
     volumes:
-      # Persistence for memory and logs
+      # Persistence for memory and logs (Map to the app's internal paths)
       - ./golem_memory:/app/golem_memory
       - ./logs:/app/logs
-      # Mount .env to allow configuration changes without rebuild
-      - ./.env:/app/.env
+      # Optional: Mount .env to allow configuration changes without rebuild
+      # Using a relative path that works across environments
+      - ./.env:/app/.env:ro
     environment:
       - ENABLE_WEB_DASHBOARD=true
       - NODE_ENV=production
       - PLAYWRIGHT_HEADLESS=true
-      - DASHBOARD_PORT=${DASHBOARD_PORT}
-      # Optional: Control Host Chrome (requires start-host-chrome.sh)
-      - PLAYWRIGHT_REMOTE_DEBUGGING_PORT=${PLAYWRIGHT_REMOTE_DEBUGGING_PORT}
-      # Host project path for Remote Chrome to resolve file:// URLs correctly
+      - DASHBOARD_PORT=3000
+      # Use host values if provided, otherwise leave empty
+      - PLAYWRIGHT_REMOTE_DEBUGGING_PORT=${PLAYWRIGHT_REMOTE_DEBUGGING_PORT:-}
       - HOST_PROJECT_DIR=${PWD}
-    # TTY and Stdin are useful for maintaining the process if it expects interaction
+    # TTY and Stdin are useful for interactive sessions or maintaining terminal-based processes
     stdin_open: true
     tty: true
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 30s
-      timeout: 5s
-      start_period: 15s
-      retries: 3
+      timeout: 10s
+      start_period: 20s
+      retries: 5
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
-        max-file: "3"
+        max-file: "5"
+    networks:
+      - golem-net
+
+networks:
+  golem-net:
+    driver: bridge

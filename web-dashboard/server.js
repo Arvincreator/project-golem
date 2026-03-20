@@ -1257,7 +1257,7 @@ class WebServer {
                 const health = {
                     node: process.version.startsWith('v20') || process.version.startsWith('v22') || process.version.startsWith('v21') || process.version.startsWith('v23') || process.version.startsWith('v25'),
                     env: fs.existsSync(DOT_ENV_PATH),
-                    keys: !!(envVars.GEMINI_API_KEYS && envVars.GEMINI_API_KEYS !== '你的Key1,你的Key2,你的Key3'),
+                    keys: true, // API Keys are now optional
                     deps: fs.existsSync(path.join(process.cwd(), 'node_modules')),
                     core: ['index.js', 'package.json', 'dashboard.js'].every(f => fs.existsSync(path.join(process.cwd(), f))),
                     dashboard: fs.existsSync(path.join(process.cwd(), 'web-dashboard/node_modules')) || fs.existsSync(path.join(process.cwd(), 'web-dashboard/.next'))

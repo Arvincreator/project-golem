@@ -877,21 +877,6 @@ export default function SettingsPage() {
                                     />
                                 </div>
 
-                                {/* Gemini Brain Settings */}
-                                <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                                    <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                                        🧠 Golem Brain (大腦設定)
-                                    </h2>
-                                    <SettingField
-                                        label="Gemini API Keys"
-                                        keyName="GEMINI_API_KEYS"
-                                        desc="支援多組 Key 輪替 (KeyChain)，請用半形逗號 ',' 分隔。"
-                                        placeholder="AIzaSy...,AIzaSy..."
-                                        isSecret
-                                        value={config.env.GEMINI_API_KEYS || ""}
-                                        onChange={(val) => handleChangeEnv("GEMINI_API_KEYS", val)}
-                                    />
-                                </div>
                             </div>
 
                             <div className="space-y-6">
