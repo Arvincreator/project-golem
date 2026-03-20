@@ -43,12 +43,15 @@ describe('AutonomyManager', () => {
         jest.useRealTimers();
     });
 
-    test('start aborts if no tokens', () => {
+    test('start always schedules regardless of tokens (v9.1 decoupled)', () => {
+        // v9.1: start() no longer gates on tokens; bots are managed by golemFactory
+        jest.useFakeTimers();
         ConfigManager.CONFIG.TG_TOKEN = '';
         ConfigManager.CONFIG.DC_TOKEN = '';
-        const spy = jest.spyOn(manager, 'scheduleNextAwakening');
+        const spy = jest.spyOn(manager, 'scheduleNextAwakening').mockImplementation(() => {});
         manager.start();
-        expect(spy).not.toHaveBeenCalled();
+        expect(spy).toHaveBeenCalled();
+        jest.useRealTimers();
     });
 
     test('checkArchiveStatus triggers archive if threshold met', async () => {
@@ -62,10 +65,16 @@ describe('AutonomyManager', () => {
             '2024010100.log', '2024010101.log', '2024010102.log' // 3 files meets yesterday threshold
         ]);
         
+        // v9.1: sendNotification is gated behind ENABLE_LOG_NOTIFICATIONS flag
+        ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS = true;
+        ConfigManager.CONFIG.ARCHIVE_THRESHOLD_YESTERDAY = 3;
+        ConfigManager.CONFIG.ARCHIVE_THRESHOLD_TODAY = 1;
         manager.sendNotification = jest.fn().mockResolvedValue();
         await manager.checkArchiveStatus();
         
+        // 2 calls: one start notification + one done notification for yesterday batch
         expect(manager.sendNotification).toHaveBeenCalledTimes(2);
+        ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS = false; // restore
     });
 
     test('checkArchiveStatus skips if threshold not met', async () => {
