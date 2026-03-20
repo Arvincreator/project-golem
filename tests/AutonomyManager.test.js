@@ -66,8 +66,8 @@ describe('AutonomyManager', () => {
         manager.sendNotification = jest.fn().mockResolvedValue();
         await manager.checkArchiveStatus();
         
-        // sendNotification called once (yesterday threshold met; today has 0 files)
-        expect(manager.sendNotification).toHaveBeenCalledTimes(1);
+        // sendNotification called twice per triggered date: start notification + completion notification
+        expect(manager.sendNotification).toHaveBeenCalledTimes(2);
     });
 
     test('checkArchiveStatus skips if threshold not met', async () => {
