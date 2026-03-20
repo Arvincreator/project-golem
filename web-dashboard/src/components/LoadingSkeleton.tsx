@@ -10,6 +10,9 @@ interface SkeletonProps {
     style?: React.CSSProperties;
 }
 
+// Pre-defined widths to avoid Math.random() hydration mismatch
+const LOG_WIDTHS = [75, 55, 90, 65, 80, 50, 70, 60, 85, 45];
+
 export function Skeleton({ className = "", style }: SkeletonProps) {
     return (
         <div
@@ -78,7 +81,7 @@ export function LogSkeleton({ lines = 8 }: { lines?: number }) {
                 <Skeleton
                     key={i}
                     className="h-4"
-                    style={{ width: `${50 + Math.random() * 50}%` } as React.CSSProperties}
+                    style={{ width: `${LOG_WIDTHS[i % LOG_WIDTHS.length]}%` } as React.CSSProperties}
                 />
             ))}
         </div>

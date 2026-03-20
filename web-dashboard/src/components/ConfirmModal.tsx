@@ -10,7 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, RefreshCw } from "lucide-react";
+import { AlertTriangle, AlertCircle, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ConfirmModalProps {
@@ -36,7 +36,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   variant = "warning",
   isLoading = false,
 }) => {
-  const Icon = variant === "danger" ? AlertTriangle : AlertTriangle; // For now default to AlertTriangle
+  const Icon = variant === "danger" ? AlertCircle : AlertTriangle;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
