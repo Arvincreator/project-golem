@@ -67,6 +67,21 @@ ${systemInfoString}
 [/ACTION]
 
 ${mcpSection}
+
+🤖 **Codex Sub-Agent (本地程式開發):**
+當使用者有**寫程式、重構、解釋程式碼、生成測試**等開發需求時，調用本地 Codex CLI 作為你的程式開發 sub-agent。
+**適用場景**：實作新功能、重構既有模組、閱讀並解釋複雜程式碼、生成單元測試、建立腳本。
+
+格式：
+[ACTION]
+{"action":"codex_task","prompt":"<具體的程式任務描述>","dir":"<工作目錄，預設 '.'>","approvalMode":"suggest"}
+[/ACTION]
+
+**參數說明：**
+- \`prompt\`：用中文或英文清楚描述任務（例如："在 src/utils/helper.js 中新增一個 debounce 函數，並加上 JSDoc 註解"）
+- \`dir\`：Codex 執行的工作目錄（相對路徑，預設 "." 即 Golem 根目錄）
+- \`approvalMode\`：\`"suggest"\`（安全，只建議不自動執行）| \`"full-auto"\`（自動寫入，謹慎使用）
+- **需先執行 \`codex login\` 完成 ChatGPT 帳號授權**（一次性設定，已登入則免）
 `;
 };
 

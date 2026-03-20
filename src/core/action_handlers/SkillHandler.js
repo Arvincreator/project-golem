@@ -1,5 +1,6 @@
-const skillManager = require('../../managers/SkillManager');
-const MCPManager   = require('../../mcp/MCPManager');
+const skillManager  = require('../../managers/SkillManager');
+const MCPManager    = require('../../mcp/MCPManager');
+const CodexHandler  = require('./CodexHandler');
 
 class SkillHandler {
     static async execute(ctx, act, brain) {
@@ -35,6 +36,11 @@ class SkillHandler {
                 await ctx.reply(`❌ [MCP] 執行錯誤: ${e.message}`);
             }
             return true;
+        }
+
+        // ─── Codex Sub-Agent ──────────────────────────────────────────────
+        if (act.action === 'codex_task') {
+            return await CodexHandler.execute(ctx, act);
         }
 
         // ─── Dynamic Skills ────────────────────────────────────────────
