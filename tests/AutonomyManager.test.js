@@ -43,12 +43,14 @@ describe('AutonomyManager', () => {
         jest.useRealTimers();
     });
 
-    test('start aborts if no tokens', () => {
+    test('start always proceeds (token check removed from start flow)', () => {
+        jest.useFakeTimers();
         ConfigManager.CONFIG.TG_TOKEN = '';
         ConfigManager.CONFIG.DC_TOKEN = '';
-        const spy = jest.spyOn(manager, 'scheduleNextAwakening');
+        const spy = jest.spyOn(manager, 'scheduleNextAwakening').mockImplementation(() => {});
         manager.start();
-        expect(spy).not.toHaveBeenCalled();
+        expect(spy).toHaveBeenCalled();
+        jest.useRealTimers();
     });
 
     test('checkArchiveStatus triggers archive if threshold met', async () => {
@@ -62,6 +64,7 @@ describe('AutonomyManager', () => {
             '2024010100.log', '2024010101.log', '2024010102.log' // 3 files meets yesterday threshold
         ]);
         
+        ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS = true;
         manager.sendNotification = jest.fn().mockResolvedValue();
         await manager.checkArchiveStatus();
         
