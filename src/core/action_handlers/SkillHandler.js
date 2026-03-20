@@ -1,7 +1,43 @@
 const skillManager = require('../../managers/SkillManager');
+const MCPManager   = require('../../mcp/MCPManager');
 
 class SkillHandler {
     static async execute(ctx, act, brain) {
+        // ─── MCP Tool Call ─────────────────────────────────────────────
+        if (act.action === 'mcp_call') {
+            const { server, tool, parameters = {} } = act;
+            if (!server || !tool) {
+                await ctx.reply(`❌ mcp_call 缺少必要欄位 server 或 tool`);
+                return true;
+            }
+            await ctx.reply(`🔌 [MCP] 調用 **${server}** → **${tool}**...`);
+            try {
+                const mcpManager = MCPManager.getInstance();
+                await mcpManager.load();   // 確保 servers 已連線（load 內部有冪等保護）
+                const result     = await mcpManager.callTool(server, tool, parameters);
+
+                // 格式化結果
+                let displayResult = '';
+                if (result && result.content && Array.isArray(result.content)) {
+                    displayResult = result.content
+                        .map(c => c.type === 'text' ? c.text : JSON.stringify(c))
+                        .join('\n');
+                } else {
+                    displayResult = JSON.stringify(result, null, 2);
+                }
+
+                const MAX_LEN = 3800;
+                if (displayResult.length > MAX_LEN) {
+                    displayResult = displayResult.slice(0, MAX_LEN) + '\n...(已截斷)';
+                }
+                await ctx.reply(`✅ [MCP:${server}/${tool}]\n${displayResult}`);
+            } catch (e) {
+                await ctx.reply(`❌ [MCP] 執行錯誤: ${e.message}`);
+            }
+            return true;
+        }
+
+        // ─── Dynamic Skills ────────────────────────────────────────────
         const skillName = act.action;
         const dynamicSkill = skillManager.getSkill(skillName);
 

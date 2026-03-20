@@ -1,0 +1,131 @@
+[
+  {
+    "name": "chrome-devtools",
+    "command": "npx",
+    "args": [
+      "-y",
+      "chrome-devtools-mcp@latest"
+    ],
+    "env": {},
+    "enabled": false,
+    "description": "Chrome DevTools MCP — 網頁除錯、效能分析、DOM 操作、Lighthouse",
+    "cachedTools": [
+      {
+        "name": "click",
+        "description": "Clicks on the provided element"
+      },
+      {
+        "name": "close_page",
+        "description": "Closes the page by its index. The last open page cannot be closed."
+      },
+      {
+        "name": "drag",
+        "description": "Drag an element onto another element"
+      },
+      {
+        "name": "emulate",
+        "description": "Emulates various features on the selected page."
+      },
+      {
+        "name": "evaluate_script",
+        "description": "Evaluate a JavaScript function inside the currently selected page. Returns the response as JSON,\nso returned values have to be JSON-serializable."
+      },
+      {
+        "name": "fill",
+        "description": "Type text into a input, text area or select an option from a <select> element."
+      },
+      {
+        "name": "fill_form",
+        "description": "Fill out multiple form elements at once"
+      },
+      {
+        "name": "get_console_message",
+        "description": "Gets a console message by its ID. You can get all messages by calling list_console_messages."
+      },
+      {
+        "name": "get_network_request",
+        "description": "Gets a network request by an optional reqid, if omitted returns the currently selected request in the DevTools Network panel."
+      },
+      {
+        "name": "handle_dialog",
+        "description": "If a browser dialog was opened, use this command to handle it"
+      },
+      {
+        "name": "hover",
+        "description": "Hover over the provided element"
+      },
+      {
+        "name": "lighthouse_audit",
+        "description": "Get Lighthouse score and reports for accessibility, SEO and best practices. This excludes performance. For performance audits, run performance_start_trace"
+      },
+      {
+        "name": "list_console_messages",
+        "description": "List all console messages for the currently selected page since the last navigation."
+      },
+      {
+        "name": "list_network_requests",
+        "description": "List all requests for the currently selected page since the last navigation."
+      },
+      {
+        "name": "list_pages",
+        "description": "Get a list of pages  open in the browser."
+      },
+      {
+        "name": "navigate_page",
+        "description": "Go to a URL, or back, forward, or reload. Use project URL if not specified otherwise."
+      },
+      {
+        "name": "new_page",
+        "description": "Open a new tab and load a URL. Use project URL if not specified otherwise."
+      },
+      {
+        "name": "performance_analyze_insight",
+        "description": "Provides more detailed information on a specific Performance Insight of an insight set that was highlighted in the results of a trace recording."
+      },
+      {
+        "name": "performance_start_trace",
+        "description": "Start a performance trace on the selected webpage. Use to find frontend performance issues, Core Web Vitals (LCP, INP, CLS), and improve page load speed."
+      },
+      {
+        "name": "performance_stop_trace",
+        "description": "Stop the active performance trace recording on the selected webpage."
+      },
+      {
+        "name": "press_key",
+        "description": "Press a key or key combination. Use this when other input methods like fill() cannot be used (e.g., keyboard shortcuts, navigation keys, or special key combinations)."
+      },
+      {
+        "name": "resize_page",
+        "description": "Resizes the selected page's window so that the page has specified dimension"
+      },
+      {
+        "name": "select_page",
+        "description": "Select a page as a context for future tool calls."
+      },
+      {
+        "name": "take_memory_snapshot",
+        "description": "Capture a memory heapsnapshot of the currently selected page to memory leak debugging"
+      },
+      {
+        "name": "take_screenshot",
+        "description": "Take a screenshot of the page or element."
+      },
+      {
+        "name": "take_snapshot",
+        "description": "Take a text snapshot of the currently selected page based on the a11y tree. The snapshot lists page elements along with a unique\nidentifier (uid). Always use the latest snapshot. Prefer taking a snapshot over taking a screenshot. The snapshot indicates the element selected\nin the DevTools Elements panel (if any)."
+      },
+      {
+        "name": "type_text",
+        "description": "Type text using keyboard into a previously focused input"
+      },
+      {
+        "name": "upload_file",
+        "description": "Upload a file through a provided element."
+      },
+      {
+        "name": "wait_for",
+        "description": "Wait for the specified text to appear on the selected page."
+      }
+    ]
+  }
+]
