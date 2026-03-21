@@ -52,6 +52,8 @@ describe('AutonomyManager', () => {
     });
 
     test('checkArchiveStatus triggers archive if threshold met', async () => {
+        ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS = true;
+        ConfigManager.CONFIG.ARCHIVE_THRESHOLD_YESTERDAY = 3;
         const ChatLogManager = require('../src/managers/ChatLogManager');
         ChatLogManager.mockImplementation(() => ({
             dirs: { hourly: '/tmp/logs' },

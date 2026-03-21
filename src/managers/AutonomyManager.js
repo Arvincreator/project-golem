@@ -25,6 +25,10 @@ class AutonomyManager {
     }
 
     start() {
+        if (!ConfigManager.CONFIG.TG_TOKEN && !ConfigManager.CONFIG.DC_TOKEN) {
+            console.log(`⛔ [Autonomy][${this.golemId}] No integration tokens configured, aborting start.`);
+            return;
+        }
         console.log(`🚀 [Autonomy][${this.golemId}] Starting autonomy services...`);
         this.resumeOrScheduleAwakening();
         setInterval(() => this.timeWatcher(), 60000);
