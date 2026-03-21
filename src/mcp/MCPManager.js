@@ -133,6 +133,11 @@ class MCPManager extends EventEmitter {
         let error   = null;
 
         try {
+            // 自動補齊 Google Workspace 的 email 參數 (如果環境變數有設定)
+            if (serverName === 'googleworkspace' && !params.email && client.env && client.env.GOOGLE_WORKSPACE_EMAIL) {
+                params.email = client.env.GOOGLE_WORKSPACE_EMAIL;
+            }
+
             result = await client.callTool(toolName, params);
         } catch (e) {
             success = false;
@@ -197,7 +202,18 @@ class MCPManager extends EventEmitter {
         // Stop existing client if any
         await this._stopClient(cfg.name);
 
-        const client = new MCPClient(cfg);
+        // 解析環境變數 (支援 ${VAR} 語法)
+        const resolvedEnv = {};
+        for (const [k, v] of Object.entries(cfg.env || {})) {
+            if (typeof v === 'string' && v.startsWith('${') && v.endsWith('}')) {
+                const varName = v.substring(2, v.length - 1);
+                resolvedEnv[k] = process.env[varName] || '';
+            } else {
+                resolvedEnv[k] = v;
+            }
+        }
+
+        const client = new MCPClient({ ...cfg, env: resolvedEnv });
 
         client.on('disconnected', () => {
             console.log(`[MCPManager] Server "${cfg.name}" disconnected.`);

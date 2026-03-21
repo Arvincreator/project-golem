@@ -1,5 +1,56 @@
 [
   {
+    "name": "googleworkspace",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@aaronsb/google-workspace-mcp"
+    ],
+    "env": {
+      "GOOGLE_WORKSPACE_EMAIL": "${GOOGLE_WORKSPACE_EMAIL}"
+    },
+    "enabled": true,
+    "description": "Google Workspace MCP Server — 提供對 Google Drive, Gmail, Calendar 等服務的訪問控管 (由 @aaronsb 維護)",
+    "cachedTools": [
+      {
+        "name": "manage_accounts",
+        "description": "Manage Google Workspace account lifecycle: list, authenticate, check status, refresh credentials, update scopes, or remove accounts."
+      },
+      {
+        "name": "manage_workspace",
+        "description": "Read, write, list, or delete files in the workspace directory. The workspace is the exchange point for file operations (attachments, downloads, exports)."
+      },
+      {
+        "name": "queue_operations",
+        "description": "Execute multiple operations in sequence. Operations run in order with result references ($0.field) to chain outputs. Use for multi-step workflows."
+      },
+      {
+        "name": "manage_email",
+        "description": "Search, read, send, forward, or manage emails in a Google Workspace account. Supports Gmail search syntax."
+      },
+      {
+        "name": "manage_calendar",
+        "description": "List events, view agenda, check availability, or manage calendar events."
+      },
+      {
+        "name": "manage_drive",
+        "description": "Search, upload, download, share, or manage files in Google Drive."
+      },
+      {
+        "name": "manage_sheets",
+        "description": "Read, write, and manage Google Sheets spreadsheets."
+      },
+      {
+        "name": "manage_docs",
+        "description": "Read and write Google Docs documents."
+      },
+      {
+        "name": "manage_tasks",
+        "description": "Manage task lists and tasks in Google Tasks."
+      }
+    ]
+  },
+  {
     "name": "chrome-devtools",
     "command": "npx",
     "args": [
@@ -7,7 +58,7 @@
       "chrome-devtools-mcp@latest"
     ],
     "env": {},
-    "enabled": true,
+    "enabled": false,
     "description": "Chrome DevTools MCP — 網頁除錯、效能分析、DOM 操作、Lighthouse",
     "cachedTools": [
       {
@@ -134,7 +185,7 @@
     "args": [
       "src/mcp/notebooklm_stdio.py"
     ],
-    "enabled": true,
+    "enabled": false,
     "description": "Google NotebookLM API Server (Stdio Bridge)",
     "env": {},
     "cachedTools": [
