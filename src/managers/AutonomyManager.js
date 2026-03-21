@@ -25,6 +25,10 @@ class AutonomyManager {
     }
 
     start() {
+        if (!ConfigManager.CONFIG.TG_TOKEN && !ConfigManager.CONFIG.DC_TOKEN) {
+            console.warn(`⚠️ [Autonomy][${this.golemId}] 沒有可用的通訊 Token，自動任務將不啟動。`);
+            return;
+        }
         console.log(`🚀 [Autonomy][${this.golemId}] Starting autonomy services...`);
         this.resumeOrScheduleAwakening();
         setInterval(() => this.timeWatcher(), 60000);

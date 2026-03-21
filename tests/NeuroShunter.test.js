@@ -60,7 +60,7 @@ describe('NeuroShunter', () => {
 
         await NeuroShunter.dispatch(mockCtx, '[INTERVENE] raw', mockBrain, mockController, { suppressReply: true });
 
-        expect(mockCtx.reply).toHaveBeenCalledWith('Hello there');
+        expect(mockCtx.reply).toHaveBeenCalledWith('Hello there', { attachments: [] });
     });
 
     test('dispatch formats reply for telegram with mention', async () => {
@@ -74,7 +74,7 @@ describe('NeuroShunter', () => {
 
         await NeuroShunter.dispatch(mockCtx, 'raw', mockBrain, mockController);
 
-        expect(mockCtx.reply).toHaveBeenCalledWith('@user Hello');
+        expect(mockCtx.reply).toHaveBeenCalledWith('@user Hello', { attachments: [] });
     });
 
     test('dispatch handles multi_agent action', async () => {

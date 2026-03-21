@@ -34,6 +34,7 @@ describe('SystemLogger', () => {
         SystemLogger.initialized = false;
         SystemLogger.logFile = null;
         SystemLogger.currentDateString = null;
+        SystemLogger._isLogging = false;
         delete process.env.ENABLE_SYSTEM_LOG;
         delete process.env.LOG_MAX_SIZE_MB;
         delete process.env.LOG_RETENTION_DAYS;

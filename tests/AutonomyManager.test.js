@@ -7,6 +7,7 @@ jest.mock('../src/managers/ChatLogManager');
 jest.mock('../src/skills/core/log-archive', () => ({
     run: jest.fn().mockResolvedValue('Archive successful')
 }));
+jest.mock('../dashboard', () => ({ webServer: null }));
 jest.mock('../src/core/NeuroShunter', () => ({
     dispatch: jest.fn()
 }));
@@ -62,6 +63,7 @@ describe('AutonomyManager', () => {
             '2024010100.log', '2024010101.log', '2024010102.log' // 3 files meets yesterday threshold
         ]);
         
+        ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS = true;
         manager.sendNotification = jest.fn().mockResolvedValue();
         await manager.checkArchiveStatus();
         
