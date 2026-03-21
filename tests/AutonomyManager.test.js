@@ -62,6 +62,7 @@ describe('AutonomyManager', () => {
             '2024010100.log', '2024010101.log', '2024010102.log' // 3 files meets yesterday threshold
         ]);
         
+        ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS = true;
         manager.sendNotification = jest.fn().mockResolvedValue();
         await manager.checkArchiveStatus();
         
