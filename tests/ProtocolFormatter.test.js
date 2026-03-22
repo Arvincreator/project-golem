@@ -26,7 +26,8 @@ jest.mock('../src/skills/skillsConfig', () => ({
     OPTIONAL_SKILLS: ['git']
 }));
 jest.mock('../src/config', () => ({
-    MEMORY_BASE_DIR: '/tmp/test'
+    MEMORY_BASE_DIR: '/tmp/test',
+    CONFIG: { MAX_RESPONSE_WORDS: 0 }
 }));
 
 const ProtocolFormatter = require('../src/services/ProtocolFormatter');

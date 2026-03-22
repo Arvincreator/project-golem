@@ -34,7 +34,11 @@ async function runTests() {
   console.log('✅ TelegramBotFactory tests passed.');
 }
 
-runTests().catch(err => {
+test("TelegramBotFactory creates bots and detects engine correctly", async () => {
+  await runTests();
+});
+// Original runner kept for direct node execution
+if (require.main === module) runTests().catch(err => {
   console.error('❌ Test failed:', err);
   process.exit(1);
 });
