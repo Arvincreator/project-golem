@@ -1,6 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs').promises;
 const path = require('path');
+const LanceDBProDriver = require('../memory/LanceDBProDriver');
 
 class SkillIndexManager {
     constructor(userDataDir) {
@@ -11,6 +12,7 @@ class SkillIndexManager {
         this.dbPath = path.join(userDataDir, 'skills.db');
         this.db = null;
         this.libPath = path.join(process.cwd(), 'src', 'skills', 'lib');
+        this.vectorDb = new LanceDBProDriver({ namespace: 'lancedb-pro-skills' });
     }
 
     /**
@@ -24,6 +26,11 @@ class SkillIndexManager {
         try {
             await fs.mkdir(dbDir, { recursive: true });
         } catch (e) { }
+        
+        // 初始化向量資料庫
+        if (!this.vectorDb.store) {
+            await this.vectorDb.init().catch(e => console.warn("Vector DB Init Warning:", e.message));
+        }
 
         return new Promise((resolve, reject) => {
             this.db = new sqlite3.Database(this.dbPath, (err) => {
@@ -111,7 +118,12 @@ class SkillIndexManager {
                     category: 'lib',
                     last_modified: lastModified
                 });
-                console.log(`✅ [SkillIndex] 已加入/更新 (已去除標籤): ${id}`);
+                
+                // 📝 Generate Embedding dynamically
+                const skillTextForEmbedding = `Skill ID: ${id}\nName: ${name}\nDescription: ${description}\n\nContent:\n${content.substring(0, 1500)}`;
+                await this.vectorDb.memorize(skillTextForEmbedding, { type: 'skill', skillId: id, name });
+                
+                console.log(`✅ [SkillIndex] 已加入/更新 (SQLite+LanceDB): ${id}`);
             }
         } catch (e) {
             console.warn(`⚠️ [SkillIndex] 無法載入技能檔案 ${id}:`, e.message);
@@ -149,6 +161,35 @@ class SkillIndexManager {
                 }
             );
         });
+    }
+
+    /**
+     * 從 LanceDB 語意搜尋相關技能 (RAG)
+     */
+    async searchRelevantSkills(queryText, limit = 3) {
+        await this.init();
+        if (!this.vectorDb || !this.vectorDb.store) return [];
+        
+        try {
+            const results = await this.vectorDb.recall(queryText, limit * 2); // Fetch extra for deduplication
+            
+            // Extract unique skill IDs
+            const skillIds = [];
+            const seen = new Set();
+            for (const r of results) {
+                if (r.metadata && r.metadata.skillId && !seen.has(r.metadata.skillId)) {
+                    seen.add(r.metadata.skillId);
+                    skillIds.push(r.metadata.skillId);
+                    if (skillIds.length >= limit) break;
+                }
+            }
+            
+            if (skillIds.length === 0) return [];
+            return await this.getEnabledSkills(skillIds);
+        } catch (err) {
+            console.warn("⚠️ [SkillIndex] RAG 搜尋失敗:", err.message);
+            return [];
+        }
     }
 
     /**

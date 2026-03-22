@@ -7,7 +7,7 @@ const { getSystemFingerprint } = require('../utils/system');
 const skills = require('../skills');
 const skillManager = require('../managers/SkillManager');
 const skillIndexManager = require('../managers/SkillIndexManager');
-const { resolveEnabledSkills, OPTIONAL_SKILLS } = require('../skills/skillsConfig');
+const { resolveEnabledSkills, OPTIONAL_SKILLS, MANDATORY_SKILLS } = require('../skills/skillsConfig');
 const ConfigManager = require('../config');
 
 class ProtocolFormatter {
@@ -81,6 +81,15 @@ ${selectedPrompt}
 - To speak, you MUST include the token [INTERVENE] at the very beginning of your [GOLEM_REPLY].
 - Otherwise, output null or a minimal confirmation within [GOLEM_REPLY].\n`;
         }
+        
+        let dynamicSkillsPrompt = "";
+        if (options.dynamicSkills && options.dynamicSkills.length > 0) {
+            dynamicSkillsPrompt = "\n[AVAILABLE DYNAMIC SKILLS FOR THIS TURN (RAG Injected)]\n";
+            dynamicSkillsPrompt += "You can use the following skills to fulfill the user's request if they are relevant:\n";
+            for (const res of options.dynamicSkills) {
+                dynamicSkillsPrompt += `\n#### SKILL: ${res.id.toUpperCase()}\n${res.content}\n`;
+            }
+        }
 
         return `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
 1. ENVELOPE & ONE-TURN RULE: 
@@ -98,6 +107,7 @@ ${selectedPrompt}
 9. WORKSPACE: If you cannot access Google Workspace (@Google Drive/Keep/etc.), explicitly tell the user to enable the extension.
 ${ConfigManager.CONFIG.MAX_RESPONSE_WORDS > 0 ? `10. LENGTH: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE reply under ${ConfigManager.CONFIG.MAX_RESPONSE_WORDS} characters/words. Be extremely concise.` : ''}
 ${observerPrompt}
+${dynamicSkillsPrompt}
 [USER INPUT / SYSTEM MESSAGE]
 ${text}`;
     }
@@ -159,15 +169,16 @@ ${text}`;
 
                 const filteredSkillIds = mdFiles.filter(file => {
                     const baseName = file.replace('.md', '').toLowerCase();
-                    return enabledSkills.has(baseName);
+                    // NEW RAG LOGIC: Only inject MANDATORY skills into the global system prompt.
+                    return MANDATORY_SKILLS.includes(baseName);
                 }).map(file => file.replace('.md', '').toLowerCase());
 
                 const golemId = golemContext.golemId || 'golem_A';
                 const dbRelativePath = 'golem_memory/skills.db';
 
-                console.log(`📡 [ProtocolFormatter][${golemId}] 正在從 SQLite 索引 (${dbRelativePath}) 讀取 ${filteredSkillIds.length} 個技能...`);
-                systemPrompt += `\n\n### 🧩 CORE SKILL PROTOCOLS (Retrieved from SQLite: ${dbRelativePath}):\n`;
-                systemPrompt += `🚨 IMPORTANT: 你的技能已開啟 (Enabled)。請透過 ${dbRelativePath} 查看對應的認知說明書，並依據其規範使用腳本服務。你必須嚴格遵守以下列出的協議內容：\n\n`;
+                console.log(`📡 [ProtocolFormatter][${golemId}] 正在從 SQLite 載入 ${filteredSkillIds.length} 個【核心必備技能】至 System Prompt...`);
+                systemPrompt += `\n\n### 🧩 CORE MANDATORY SKILLS (Retrieved from SQLite: ${dbRelativePath}):\n`;
+                systemPrompt += `🚨 IMPORTANT: 你具備這些常駐核心能力。至於其他進階技能，系統會根據你的需求動態為你加載 (RAG)。\n\n`;
 
                 const instanceSkillIndex = new skillIndexManager(golemContext.userDataDir);
                 const indexedSkills = await instanceSkillIndex.getEnabledSkills(filteredSkillIds);

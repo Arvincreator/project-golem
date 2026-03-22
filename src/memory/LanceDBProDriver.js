@@ -8,9 +8,10 @@ const { CONFIG, KNOWLEDGE_BASE_DIR } = require('../config');
  * Wraps memory-lancedb-pro for project-golem
  */
 class LanceDBProDriver {
-    constructor() {
+    constructor(options = {}) {
         this.baseDir = KNOWLEDGE_BASE_DIR;
-        this.dbPath = path.join(this.baseDir, 'lancedb-pro');
+        this.namespace = options.namespace || 'lancedb-pro';
+        this.dbPath = path.join(this.baseDir, this.namespace);
         this.keyChain = new KeyChain();
         
         this.store = null;
@@ -41,7 +42,7 @@ class LanceDBProDriver {
         this.embedder.dimensions = testEmbedding.length;
         
         // 🚀 Set isolated DB Path based on dimensions to avoid mismatch errors
-        this.dbPath = path.join(this.baseDir, 'lancedb-pro', `dim_${this.embedder.dimensions}`);
+        this.dbPath = path.join(this.baseDir, this.namespace, `dim_${this.embedder.dimensions}`);
         if (!fs.existsSync(this.dbPath)) fs.mkdirSync(this.dbPath, { recursive: true });
         
         console.log(`🧠 [Memory:Pro] Using embedding dimensions: ${this.embedder.dimensions}`);

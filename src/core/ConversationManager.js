@@ -176,6 +176,16 @@ class ConversationManager {
             });
 
             await task.ctx.sendTyping();
+            
+            // 🧠 [v9.2] RAG Skill Retrieval: Dynamically fetch relevant skills
+            let dynamicSkills = [];
+            if (this.brain.skillIndex && typeof this.brain.skillIndex.searchRelevantSkills === 'function') {
+                dynamicSkills = await this.brain.skillIndex.searchRelevantSkills(task.text, 3);
+                if (dynamicSkills.length > 0) {
+                    console.log(`🎯 [Dialogue Queue:${this.golemId}] RAG 動態提取技能: ${dynamicSkills.map(s => s.id).join(', ')}`);
+                }
+            }
+
             const memories = await this.brain.recall(task.text);
             let finalInput = task.text;
             if (memories.length > 0) {
@@ -202,6 +212,7 @@ class ConversationManager {
                 isObserver: this.observerMode,
                 interventionLevel: this.interventionLevel,
                 attachment: task.attachment,
+                dynamicSkills: dynamicSkills, // 🎯 [v9.2] RAG Injected Skills
                 ...task.options // 🎯 [v9.1.13] 透傳來自隊列的自定義選項 (如 suppressReply)
             });
 
