@@ -1,11 +1,11 @@
 # --- Stage 1: Base (System Dependencies) ---
 FROM node:20-slim AS base
 
-# Install system dependencies for Puppeteer (Chromium) + curl for healthcheck
-# We keep these in the base because they are needed at runtime
+# Install system dependencies for Playwright (libraries only, no chromium)
+# These are required even if we use Playwright's own browser binaries
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    chromium \
     curl \
+    ca-certificates \
     fonts-liberation \
     libasound2 \
     libatk-bridge2.0-0 \
@@ -43,8 +43,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xdg-utils \
     && rm -rf /var/lib/apt/lists/*
 
-ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=true \
-    PLAYWRIGHT_BROWSERS_PATH=/usr/bin/chromium \
+ENV PLAYWRIGHT_BROWSERS_PATH=/app/pw-browsers \
     NEXT_TELEMETRY_DISABLED=1 \
     NODE_ENV=production
 
@@ -57,11 +56,14 @@ COPY package*.json ./
 # Install all dependencies (including dev) to build web-dashboard
 RUN npm install
 
+# Download Playwright Chromium browser
+RUN npx playwright install chromium
+
 # Copy web-dashboard package files
 COPY web-dashboard/package*.json ./web-dashboard/
 WORKDIR /app/web-dashboard
 # Install dashboard dependencies
-RUN npm install
+RUN NODE_ENV=development npm install
 
 # Copy all source code for building
 WORKDIR /app
@@ -73,9 +75,6 @@ RUN npm run build
 # --- Stage 3: Runner (Production Image) ---
 FROM base AS runner
 WORKDIR /app
-
-# Create a non-root user for security
-RUN groupadd -r golem && useradd -r -g golem golem
 
 # Copy production node_modules from builder (or reinstall production-only)
 # Reinstalling production-only is cleaner to keep image size small
@@ -90,16 +89,18 @@ RUN npm ci --omit=dev
 # Copy built assets and source code from builder
 WORKDIR /app
 COPY --from=builder /app/web-dashboard/.next ./web-dashboard/.next
+COPY --from=builder /app/web-dashboard/out ./web-dashboard/out
 COPY --from=builder /app/web-dashboard/public ./web-dashboard/public
 COPY --from=builder /app/web-dashboard/server.js ./web-dashboard/server.js
+COPY --from=builder /app/pw-browsers /app/pw-browsers
 COPY . .
 
 # Ensure golem_memory and logs directory exist and have correct permissions
 RUN mkdir -p golem_memory logs && \
-    chown -R golem:golem /app
+    chown -R node:node /app
 
 # Switch to non-root user
-USER golem
+USER node
 
 # Expose the dashboard port
 EXPOSE 3000
