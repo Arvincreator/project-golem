@@ -17,8 +17,11 @@ async function run(ctx) {
         }
 
         // 以 process.cwd() 為基準解析實體路徑，防止超出目錄
-        const absPath = path.resolve(process.cwd(), file);
-        if (!absPath.startsWith(process.cwd())) {
+        // 注意：必須加上 path.sep，否則 /app 開頭的判斷可能誤放行 /app-extra 之類的路徑
+        const cwd = process.cwd();
+        const absPath = path.resolve(cwd, file);
+        const cwdWithSep = cwd.endsWith(path.sep) ? cwd : cwd + path.sep;
+        if (!absPath.startsWith(cwdWithSep) && absPath !== cwd) {
             return `❌ 錯誤：安全攔截，禁止操作專案目錄外的檔案 (${file})。`;
         }
 
@@ -44,9 +47,9 @@ async function run(ctx) {
             if (!fileContent.includes(findStr)) {
                 return `❌ 錯誤：在目標檔案中找不到指定的 \`find\` 內容，替換失敗。請確保空白與縮排完全精確。`;
             }
-            // 使用字串替換
+            // 使用全域字串替換（split/join 確保所有符合處皆替換）
             const count = fileContent.split(findStr).length - 1;
-            fileContent = fileContent.replace(findStr, replaceStr);
+            fileContent = fileContent.split(findStr).join(replaceStr);
             fs.writeFileSync(absPath, fileContent, 'utf8');
             return `✅ 成功：已在 ${file} 中替換了 ${count} 處內容。`;
         } else if (newContent !== undefined) {
