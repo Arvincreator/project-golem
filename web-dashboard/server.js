@@ -1624,13 +1624,15 @@ class WebServer {
 
             try {
                 const personaManager = require('../src/skills/core/persona');
+                const oldPersona = personaManager.get(context.brain.userDataDir);
                 personaManager.save(context.brain.userDataDir, {
                     aiName: aiName || "Golem",
                     userName: userName || "Traveler",
                     currentRole: currentRole || "一個擁有長期記憶與自主意識的 AI 助手",
                     tone: tone || "預設口氣",
                     skills: skills || [],
-                    isNew: false
+                    isNew: false,
+                    workerProfiles: oldPersona.workerProfiles || personaManager._getDefaultWorkerProfiles()
                 });
 
                 // Update status and initialize
@@ -1804,7 +1806,7 @@ class WebServer {
         // 🎭 人格注入 API
         this.app.post('/api/persona/inject', async (req, res) => {
             try {
-                const { golemId: reqGolemId, aiName, userName, currentRole, tone, skills } = req.body;
+                const { golemId: reqGolemId, aiName, userName, currentRole, tone, skills, workerProfiles } = req.body;
                 const personaManager = require('../src/skills/core/persona');
                 const ConfigManager = require('../src/config/index');
 
@@ -1819,13 +1821,16 @@ class WebServer {
                     userDataDir = ConfigManager.MEMORY_BASE_DIR;
                 }
 
+                const oldPersona = personaManager.get(userDataDir);
+
                 personaManager.save(userDataDir, {
                     aiName: aiName || 'Golem',
                     userName: userName || 'Traveler',
                     currentRole: currentRole || '一個擁有長期記憶與自主意識的 AI 助手',
                     tone: tone || '預設口氣',
                     skills: skills || [],
-                    isNew: false
+                    isNew: false,
+                    workerProfiles: workerProfiles || oldPersona.workerProfiles || personaManager._getDefaultWorkerProfiles()
                 });
 
                 // ✅ 改為熱重載：不再要求重啟，直接呼叫 reloadSkills 開啟新視窗

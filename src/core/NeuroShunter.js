@@ -78,6 +78,30 @@ class NeuroShunter {
                     case 'multi_agent':
                         await MultiAgentHandler.execute(ctx, act, controller, brain);
                         break;
+                    case 'delegate': {
+                        // 🧬 [Supervisor] delegate 技能需要活躍的 brain context，不能走 shell 路徑
+                        try {
+                            const delegateSkill = require('../skills/core/delegate');
+                            const result = await delegateSkill.run({
+                                brain: brain,
+                                args: act,
+                                reply: (msg) => ctx.reply(msg),
+                                log: console
+                            });
+                            if (result) {
+                                // 將 Observation 放回 AI，讓 Supervisor 彙整結果
+                                const feedbackPrompt = `[System Observation - Delegate Result]\n${result}\n\nPlease analyze this result and report to the user using [GOLEM_REPLY].`;
+                                if (brain && typeof brain.sendMessage === 'function') {
+                                    const followup = await brain.sendMessage(feedbackPrompt);
+                                    await NeuroShunter.dispatch(ctx, followup, brain, controller, { ...options, suppressReply: false });
+                                }
+                            }
+                        } catch (e) {
+                            console.error(`❌ [NeuroShunter] delegate 執行失敗: ${e.message}`);
+                            await ctx.reply(`❌ [Supervisor] 子代理人委派失敗: ${e.message}`);
+                        }
+                        break;
+                    }
                     default:
                         // 檢查是否為動態擴充技能
                         const isSkillHandled = await SkillHandler.execute(ctx, act, brain);

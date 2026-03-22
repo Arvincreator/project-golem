@@ -10,6 +10,35 @@ class PersonaManager {
         // Fallback for global usage, though golems should use getForContext
     }
 
+    _getDefaultWorkerProfiles() {
+        return {
+            CODER: {
+                aiName: "DevMaster",
+                currentRole: "資深全端工程師",
+                tone: "精準、技術導向",
+                skills: ["code-wizard", "git"]
+            },
+            OPS: {
+                aiName: "OpsBot",
+                currentRole: "系統管理專家",
+                tone: "嚴謹、注重安全與穩定",
+                skills: ["sys-admin", "log-reader", "git"]
+            },
+            RESEARCHER: {
+                aiName: "Researcher",
+                currentRole: "資訊探索與研究員",
+                tone: "客觀、細心整理",
+                skills: ["optic-nerve", "tool-explorer"]
+            },
+            CREATOR: {
+                aiName: "CreatorEngine",
+                currentRole: "創意發想與視覺設計師",
+                tone: "充滿創意、友善",
+                skills: ["image-prompt", "tool-explorer"]
+            }
+        };
+    }
+
     _getPersonaPath(userDataDir) {
         if (!userDataDir) return path.join(process.cwd(), 'golem_persona.json');
         return path.join(userDataDir, 'persona.json');
@@ -19,7 +48,11 @@ class PersonaManager {
         const filePath = this._getPersonaPath(userDataDir);
         try {
             if (fs.existsSync(filePath)) {
-                return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+                const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+                if (!data.workerProfiles) {
+                    data.workerProfiles = this._getDefaultWorkerProfiles();
+                }
+                return data;
             }
         } catch (e) {
             console.error(`人格讀取失敗 (${filePath}):`, e);
@@ -30,7 +63,8 @@ class PersonaManager {
             currentRole: "一個擁有長期記憶與自主意識的 AI 助手",
             tone: "預設口氣",
             skills: [],
-            isNew: true
+            isNew: true,
+            workerProfiles: this._getDefaultWorkerProfiles()
         };
     }
 

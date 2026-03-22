@@ -58,6 +58,7 @@ interface PersonaData {
     tone: string;
     skills: string[];
     isNew?: boolean;
+    workerProfiles?: Record<string, any>;
 }
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -373,6 +374,7 @@ export default function PersonaPage() {
 
     // Market / Tab states
     const [activeTab, setActiveTab] = useState<"local" | "market">("local");
+    const [workerProfiles, setWorkerProfiles] = useState<Record<string, any>>({});
     const [marketPersonas, setMarketPersonas] = useState<Preset[]>([]);
     const [marketTotal, setMarketTotal] = useState(0);
     const [marketPage, setMarketPage] = useState(1);
@@ -395,6 +397,7 @@ export default function PersonaPage() {
         setUserName(data.userName || "Traveler");
         setRole(data.currentRole || "");
         setTone(data.tone || "");
+        setWorkerProfiles(data.workerProfiles || {});
     };
 
     // Load current persona
@@ -442,9 +445,10 @@ export default function PersonaPage() {
     useEffect(() => {
         if (!saved) return;
         const changed = aiName !== saved.aiName || userName !== saved.userName
-            || role !== saved.currentRole || tone !== saved.tone;
+            || role !== saved.currentRole || tone !== saved.tone
+            || JSON.stringify(workerProfiles) !== JSON.stringify(saved.workerProfiles || {});
         setIsDirty(changed);
-    }, [aiName, userName, role, tone, saved]);
+    }, [aiName, userName, role, tone, workerProfiles, saved]);
 
     const handleDiscard = () => {
         if (saved) applyToForm(saved);
@@ -462,7 +466,7 @@ export default function PersonaPage() {
             const res = await fetch("/api/persona/inject", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ aiName, userName, currentRole: role, tone }),
+                body: JSON.stringify({ aiName, userName, currentRole: role, tone, workerProfiles }),
             });
             const data = await res.json();
             if (res.ok && data.success) {
@@ -974,6 +978,51 @@ export default function PersonaPage() {
                                     multiline
                                     placeholder="描述這個人格的身份背景、任務與個性..." 
                                 />
+                            </div>
+
+                            <div className="space-y-6">
+                                <h3 className="text-xs font-bold text-primary flex items-center gap-2 uppercase tracking-wider border-b border-border pb-2 mt-8">
+                                    <Cpu className="w-3.5 h-3.5" /> 子代理人設定 (Sub-Agents)
+                                </h3>
+                                
+                                {["CODER", "OPS", "RESEARCHER", "CREATOR"].map(woRole => {
+                                    const profile = workerProfiles[woRole] || {};
+                                    return (
+                                        <div key={woRole} className="space-y-4 bg-secondary/20 p-4 rounded-xl border border-border/60">
+                                            <h4 className="font-bold text-sm flex items-center gap-2">
+                                                <BrainCircuit className="w-4 h-4 text-primary" />
+                                                {woRole} 代理人
+                                            </h4>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <EditField 
+                                                    label="AI 名稱" 
+                                                    value={profile.aiName || ""} 
+                                                    onChange={v => setWorkerProfiles(prev => ({...prev, [woRole]: {...(prev[woRole] || {}), aiName: v}}))} 
+                                                    placeholder="例如：DevMaster" 
+                                                />
+                                                <EditField 
+                                                    label="預設技能 (逗號分隔)" 
+                                                    value={(profile.skills || []).join(", ")} 
+                                                    onChange={v => setWorkerProfiles(prev => ({...prev, [woRole]: {...(prev[woRole] || {}), skills: v.split(",").map(s => s.trim()).filter(Boolean)}}))} 
+                                                    placeholder="code-wizard, git" 
+                                                />
+                                            </div>
+                                            <EditField 
+                                                label="語言風格 & 語氣" 
+                                                value={profile.tone || ""} 
+                                                onChange={v => setWorkerProfiles(prev => ({...prev, [woRole]: {...(prev[woRole] || {}), tone: v}}))}
+                                                placeholder="例如：精準、理智" 
+                                            />
+                                            <EditField 
+                                                label="任務定位 & 人設背景" 
+                                                value={profile.currentRole || ""} 
+                                                onChange={v => setWorkerProfiles(prev => ({...prev, [woRole]: {...(prev[woRole] || {}), currentRole: v}}))} 
+                                                multiline
+                                                placeholder="描述這個子代理人的專業定位..." 
+                                            />
+                                        </div>
+                                    )
+                                })}
                             </div>
 
                             {statusMsg && (

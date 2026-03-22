@@ -83,3 +83,4 @@ moltbot_auth.json
 profiles
 data/temp_uploads
 notebooklm_venv
+.gemini/

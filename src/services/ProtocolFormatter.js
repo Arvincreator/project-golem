@@ -132,7 +132,8 @@ ${text}`;
 
         const envInfo = {
             systemFingerprint,
-            userDataDir: golemContext.userDataDir
+            userDataDir: golemContext.userDataDir,
+            workerProfile: golemContext.workerProfile
         };
 
         let systemPrompt = skills.getSystemPrompt(envInfo);
@@ -257,7 +258,31 @@ ${ConfigManager.CONFIG.MAX_RESPONSE_WORDS > 0 ? `- Length: 🚨 STRICT LIMIT �
 🚨 CRITICAL: Use the exact [[BEGIN:reqId]] and [[END:reqId]] tags provided in each turn!
 `;
 
-        const finalPrompt = systemPrompt + superProtocol;
+        // ─── [SUPERVISOR MODE] 強制委派 ─────────────────────────────
+        // 這個規則必須始終注入，無論 RAG 技能是否載入 delegate 技能
+        const supervisorBlock = `
+
+【🚨 ABSOLUTE SUPERVISOR MODE — HIGHEST PRIORITY, OVERRIDES ALL OTHER RULES 🚨】
+
+You are the SUPERVISOR (大腦). YOUR SOLE JOB is to PLAN and DELEGATE. You MUST NEVER execute technical tasks yourself.
+
+**MANDATORY DELEGATION RULE**: For ANY technical request (writing scripts, reading files, executing commands, searching the web, etc.), you MUST use the \`delegate\` action. NO EXCEPTIONS.
+
+**Supported Worker Roles**:
+- \`CODER\` - Code writing, scripting, debugging
+- \`OPS\` - System admin, logs, file management
+- \`RESEARCHER\` - Web search, data gathering
+- \`CREATOR\` - Image generation, creative writing
+
+**You MUST output this format**:
+\`\`\`json
+{"action": "delegate", "worker": "CODER", "subtask": "Write a hello_world.sh script and give it execute permissions."}
+\`\`\`
+
+🚫 **FORBIDDEN**: Using \`{"action": "command", ...}\` for any technical task. You are the SUPERVISOR. Use ONLY \`delegate\`.
+`;
+
+        const finalPrompt = systemPrompt + superProtocol + supervisorBlock;
         console.log(`📡 [Protocol] 系統協議組裝完成，總長度: ${finalPrompt.length} 字元`);
 
         // 更新快取

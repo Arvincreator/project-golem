@@ -25,8 +25,13 @@ class GolemBrain {
         this.userDataDir = options.userDataDir || path.resolve(ConfigManager.CONFIG.USER_DATA_DIR || './golem_memory');
         this.skillIndex = new SkillIndexManager(this.userDataDir);
 
+        // ── 子代理人 (Multi-Agent) 支援 ──
+        this.isSubAgent = options.isSubAgent || false;
+        this.assignedSkills = options.assignedSkills || null;
+        this.workerProfile = options.workerProfile || null;
+
         // ── 瀏覽器狀態 ──
-        this.context = null; // Playwright BrowserContext
+        this.context = options.sharedContext || null; // Playwright BrowserContext
         this.page = null;
         this.cdpSession = null;
 
@@ -63,8 +68,10 @@ class GolemBrain {
      */
     async init(forceReload = false) {
         console.log(`🎬 [Brain] 啟動初始化程序 (forceReload: ${forceReload})...`);
-        if (this.context && !forceReload) {
-            console.log("✅ [Brain] 瀏覽器實體已存在且無須強制重新載入，跳過啟動。");
+        // ✅ [Fix] 必須同時有 context 和 page 才算初始化完成
+        // 子代理人注入了 sharedContext 但仍需建立自己的 page
+        if (this.context && this.page && !forceReload) {
+            console.log("✅ [Brain] 瀏覽器實體與頁面已存在且無須強制重新載入，跳過啟動。");
             return;
         }
 
@@ -83,8 +90,14 @@ class GolemBrain {
         // 2. 取得或建立頁面
         if (!this.page) {
             console.log(`🚀 [System] 正在建立瀏覽子頁面...`);
-            const pages = this.context.pages();
-            this.page = pages.length > 0 ? pages[0] : await this.context.newPage();
+            if (this.isSubAgent) {
+                // 子代理人永遠開新分頁，避免污染主 Supervisor 頁面
+                this.page = await this.context.newPage();
+                console.log(`🆕 [System] 子代理人新分頁已建立 (Golem: ${this.golemId})`);
+            } else {
+                const pages = this.context.pages();
+                this.page = pages.length > 0 ? pages[0] : await this.context.newPage();
+            }
             isNewSession = true;
         }
 
@@ -449,7 +462,8 @@ class GolemBrain {
     async _injectSystemPrompt(forceRefresh = false) {
         let { systemPrompt, skillMemoryText } = await ProtocolFormatter.buildSystemPrompt(forceRefresh, {
             userDataDir: this.userDataDir,
-            golemId: this.golemId
+            golemId: this.golemId,
+            workerProfile: this.workerProfile
         });
 
         if (skillMemoryText) {

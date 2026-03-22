@@ -9,7 +9,18 @@ const path = require('path');
 const CORE_DEFINITION = (envInfo) => {
     const version = packageJson.version;
     const userDataDir = envInfo && typeof envInfo === 'object' ? envInfo.userDataDir : null;
-    const { aiName, userName, currentRole, tone } = personaManager.get(userDataDir);
+    let persona = personaManager.get(userDataDir);
+
+    if (envInfo && envInfo.workerProfile) {
+        persona = {
+            ...persona,
+            aiName: envInfo.workerProfile.aiName || persona.aiName,
+            currentRole: envInfo.workerProfile.currentRole || persona.currentRole,
+            tone: envInfo.workerProfile.tone || persona.tone
+        };
+    }
+
+    const { aiName, userName, currentRole, tone } = persona;
 
     let systemInfoString = typeof envInfo === 'string' ? envInfo : (envInfo.systemFingerprint || '');
 
