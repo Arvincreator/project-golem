@@ -62,10 +62,12 @@ describe('AutonomyManager', () => {
             '2024010100.log', '2024010101.log', '2024010102.log' // 3 files meets yesterday threshold
         ]);
         
+        ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS = true; // required to trigger sendNotification
         manager.sendNotification = jest.fn().mockResolvedValue();
         await manager.checkArchiveStatus();
         
         expect(manager.sendNotification).toHaveBeenCalledTimes(2);
+        ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS = false; // cleanup
     });
 
     test('checkArchiveStatus skips if threshold not met', async () => {
@@ -87,7 +89,11 @@ describe('AutonomyManager', () => {
         const oldTask = { time: new Date(now - 1000).toISOString(), task: 'do something' };
         
         fs.existsSync.mockReturnValue(true);
-        fs.readFileSync.mockReturnValue(JSON.stringify([oldTask]));
+        // AutonomyManager.timeWatcher() uses fs.promises.readFile (async) since v9.1.x
+        fs.promises = {
+            readFile: jest.fn().mockResolvedValue(JSON.stringify([oldTask])),
+            writeFile: jest.fn().mockResolvedValue()
+        };
         
         manager.convoManager = { enqueue: jest.fn().mockResolvedValue() };
         manager.getAdminContext = jest.fn().mockResolvedValue({});
@@ -95,7 +101,7 @@ describe('AutonomyManager', () => {
         await manager.timeWatcher();
         
         expect(manager.convoManager.enqueue).toHaveBeenCalled();
-        expect(fs.writeFileSync).toHaveBeenCalled(); // Update schedules
+        expect(fs.promises.writeFile).toHaveBeenCalled(); // async writeFile since v9.1.x
     });
 
     test('manifestFreeWill executes reflection 20% of time', async () => {

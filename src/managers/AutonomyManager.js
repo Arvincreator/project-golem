@@ -25,6 +25,12 @@ class AutonomyManager {
     }
 
     start() {
+        const hasTelegram = !!ConfigManager.CONFIG.TG_TOKEN;
+        const hasDiscord = !!ConfigManager.CONFIG.DC_TOKEN;
+        if (!hasTelegram && !hasDiscord) {
+            console.warn(`⚠️ [Autonomy][${this.golemId}] No TG_TOKEN or DC_TOKEN configured — autonomy services not started.`);
+            return;
+        }
         console.log(`🚀 [Autonomy][${this.golemId}] Starting autonomy services...`);
         this.resumeOrScheduleAwakening();
         setInterval(() => this.timeWatcher(), 60000);
