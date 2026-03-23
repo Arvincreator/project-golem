@@ -1,6 +1,8 @@
 const { v4: uuidv4 } = require('uuid');
 const ConfigManager = require('../config');
 const ConfidenceTracker = require('../managers/ConfidenceTracker');
+const AGoTRouter = require('./AGoTRouter');
+const AGoTEngine = require('./AGoTEngine');
 
 // ============================================================
 // 🚦 Conversation Manager (隊列與防抖系統 - 多用戶隔離版)
@@ -20,8 +22,10 @@ class ConversationManager {
         this.DEBOUNCE_MS = 1500;
         this.autoTurnCount = 0; // 🎯 [v9.1.15] Track autonomous turns
 
-        // 初始化信心追蹤器
+        // 初始化信心追蹤器與 AGoT 模組
         this.confidenceTracker = new ConfidenceTracker(this.brain.chatLogManager);
+        this.agotRouter = new AGoTRouter();
+        this.agotEngine = new AGoTEngine(this.brain);
 
         // 🔄 [Instance Pooling] 背景監控與定時重啟定時器
         this.UPTIME_LIMIT_MS = 24 * 60 * 60 * 1000; // 24H
@@ -243,12 +247,22 @@ class ConversationManager {
                 console.log(`📢 [Dialogue Queue:${this.golemId}] 模式中偵測到標記，強制恢復回應。`);
             }
 
-            const brainResponse = await this.brain.sendMessage(finalInput, false, {
-                isObserver: this.observerMode,
-                interventionLevel: this.interventionLevel,
-                attachment: task.attachment,
-                ...task.options // 🎯 [v9.1.13] 透傳來自隊列的自定義選項 (如 suppressReply)
-            });
+            let brainResponse;
+            // 條件：問題複雜 且 未帶有附件 (避免視覺長提示誤觸 AGoT)
+            // options 的 bypass 是優先級或者特殊操作，暫時也讓它跳過 DAG
+            if (this.agotRouter.shouldDecompose(task.text) && !task.attachment && !task.options.bypassDebounce) {
+                console.log(`🕸️ [AGoT] 複雜問題偵測，啟動 DAG 推理... (${this.golemId})`);
+                // 傳入 task.ctx，讓 AGoTEngine 可以編輯/回傳狀態
+                const agotResult = await this.agotEngine.run(task.text, task.ctx);
+                brainResponse = { text: agotResult, attachments: [], status: 'AGOT_COMPLETE' };
+            } else {
+                brainResponse = await this.brain.sendMessage(finalInput, false, {
+                    isObserver: this.observerMode,
+                    interventionLevel: this.interventionLevel,
+                    attachment: task.attachment,
+                    ...task.options // 🎯 [v9.1.13] 透傳來自隊列的自定義選項 (如 suppressReply)
+                });
+            }
 
             let { text: raw, attachments: responseAttachments, status: extractorStatus } = brainResponse;
 
