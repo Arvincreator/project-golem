@@ -14,7 +14,7 @@ describe('TelegramBotFactory', () => {
             jest.doMock('../../src/config', () => ({
                 CONFIG: { TG_ENGINE: 'legacy' },
             }));
-            jest.doMock('node-telegram-bot-api', () => LegacyBot);
+            jest.doMock('node-telegram-bot-api', () => LegacyBot, { virtual: true });
 
             const { detectEngine, createTelegramBot } = require('../../src/bridges/TelegramBotFactory');
 

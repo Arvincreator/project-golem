@@ -5,9 +5,30 @@ const os = require('os');
 const { execSync } = require('child_process');
 const { getLocalIp } = require('../../src/utils/HttpUtils');
 const { resolveEnabledSkills } = require('../../src/skills/skillsConfig');
+const { buildOperationGuard, auditSecurityEvent } = require('../server/security');
+
+function normalizeMemoryMode(modeRaw) {
+    const mode = String(modeRaw || '').trim().toLowerCase();
+    if (!mode) return 'lancedb-pro';
+
+    if (mode === 'lancedb' || mode === 'lancedb-pro' || mode === 'lancedb_legacy' || mode === 'lancedb-legacy') {
+        return 'lancedb-pro';
+    }
+
+    if (mode === 'native' || mode === 'system') {
+        return mode;
+    }
+
+    return 'lancedb-pro';
+}
 
 module.exports = function registerSystemRoutes(server) {
     const router = express.Router();
+    const requireUpdateExecute = buildOperationGuard(server, 'system_update_execute');
+    const requireSystemConfigUpdate = buildOperationGuard(server, 'system_config_update');
+    const requireRestart = buildOperationGuard(server, 'system_restart');
+    const requireReload = buildOperationGuard(server, 'system_reload');
+    const requireShutdown = buildOperationGuard(server, 'system_shutdown');
 
     router.get('/api/system/status', (req, res) => {
         try {
@@ -103,7 +124,7 @@ module.exports = function registerSystemRoutes(server) {
             return res.json({
                 version,
                 userDataDir: envVars.USER_DATA_DIR || './golem_memory',
-                golemMemoryMode: envVars.GOLEM_MEMORY_MODE || 'lancedb',
+                golemMemoryMode: normalizeMemoryMode(envVars.GOLEM_MEMORY_MODE),
                 golemEmbeddingProvider: envVars.GOLEM_EMBEDDING_PROVIDER || 'gemini',
                 golemLocalEmbeddingModel: envVars.GOLEM_LOCAL_EMBEDDING_MODEL || 'Xenova/bge-small-zh-v1.5',
                 golemMode: 'SINGLE',
@@ -116,7 +137,7 @@ module.exports = function registerSystemRoutes(server) {
         }
     });
 
-    router.post('/api/system/config', (req, res) => {
+    router.post('/api/system/config', requireSystemConfigUpdate, (req, res) => {
         try {
             const {
                 geminiApiKeys,
@@ -134,7 +155,7 @@ module.exports = function registerSystemRoutes(server) {
 
             if (geminiApiKeys !== undefined) updates.GEMINI_API_KEYS = geminiApiKeys;
             if (userDataDir) updates.USER_DATA_DIR = userDataDir;
-            if (golemMemoryMode) updates.GOLEM_MEMORY_MODE = golemMemoryMode;
+            if (golemMemoryMode !== undefined) updates.GOLEM_MEMORY_MODE = normalizeMemoryMode(golemMemoryMode);
             if (golemEmbeddingProvider) updates.GOLEM_EMBEDDING_PROVIDER = golemEmbeddingProvider;
             if (golemLocalEmbeddingModel) updates.GOLEM_LOCAL_EMBEDDING_MODEL = golemLocalEmbeddingModel;
             if (allowRemoteAccess !== undefined) updates.ALLOW_REMOTE_ACCESS = String(allowRemoteAccess);
@@ -174,21 +195,41 @@ module.exports = function registerSystemRoutes(server) {
             const expectedPassword = process.env.REMOTE_ACCESS_PASSWORD || '';
 
             if (!expectedPassword || expectedPassword.trim() === '') {
+                auditSecurityEvent(server, 'login_skipped', req, { reason: 'no_remote_password_configured' });
                 return res.json({ success: true, message: 'Authentication not required.' });
             }
 
             if (password === expectedPassword) {
-                res.cookie('golem_auth_token', 'verified', {
-                    maxAge: 7 * 24 * 60 * 60 * 1000,
-                    httpOnly: false,
+                const token = server.createAuthSession(req);
+                const isSecure = req.secure || String(req.headers['x-forwarded-proto'] || '').includes('https');
+                res.cookie('golem_auth_token', token, {
+                    maxAge: server.authSessionTtlMs,
+                    httpOnly: true,
                     sameSite: 'lax',
+                    secure: !!isSecure,
+                    path: '/',
                 });
+                auditSecurityEvent(server, 'login_success', req, { remote: server.requiresRemoteAuth(req) });
                 return res.json({ success: true, message: 'Login successful.' });
             }
 
+            auditSecurityEvent(server, 'login_failed', req, { reason: 'invalid_password' });
             return res.status(401).json({ success: false, message: '密碼錯誤 (Invalid password)' });
         } catch (e) {
             console.error('[WebServer] Login failed:', e);
+            return res.status(500).json({ error: e.message });
+        }
+    });
+
+    router.post('/api/system/logout', (req, res) => {
+        try {
+            const token = server.resolveAuthToken(req);
+            server.invalidateAuthSession(token);
+            res.clearCookie('golem_auth_token', { path: '/' });
+            auditSecurityEvent(server, 'logout', req, {});
+            return res.json({ success: true, message: 'Logged out' });
+        } catch (e) {
+            console.error('[WebServer] Logout failed:', e);
             return res.status(500).json({ error: e.message });
         }
     });
@@ -226,7 +267,7 @@ module.exports = function registerSystemRoutes(server) {
         }
     });
 
-    router.post('/api/system/update/execute', async (req, res) => {
+    router.post('/api/system/update/execute', requireUpdateExecute, async (req, res) => {
         try {
             const { keepOldData = true, keepMemory = true } = req.body;
             const SystemUpdater = require('../../src/utils/SystemUpdater');
@@ -240,7 +281,7 @@ module.exports = function registerSystemRoutes(server) {
         }
     });
 
-    router.post('/api/system/restart', (req, res) => {
+    router.post('/api/system/restart', requireRestart, (req, res) => {
         try {
             console.log('🔄 [System] Restart requested by user. Triggering hard restart...');
             res.json({ success: true, message: 'Restarting system... Full re-initialization in progress.' });
@@ -249,19 +290,17 @@ module.exports = function registerSystemRoutes(server) {
                 setTimeout(() => {
                     global.gracefulRestart().catch((err) => {
                         console.error('❌ [System] Restart error:', err);
-                        process.exit(1);
                     });
                 }, 1000);
             } else {
-                console.warn('⚠️ [System] global.gracefulRestart not found, falling back to process.exit()');
-                setTimeout(() => process.exit(0), 1000);
+                console.warn('⚠️ [System] global.gracefulRestart not found, skipping forced process exit');
             }
         } catch (e) {
             return res.status(500).json({ error: e.message });
         }
     });
 
-    router.post('/api/system/reload', (req, res) => {
+    router.post('/api/system/reload', requireReload, (req, res) => {
         console.log('🔄 [WebServer] Received reload request. Restarting system...');
         res.json({ success: true, message: 'System is restarting with full re-initialization...' });
 
@@ -269,16 +308,14 @@ module.exports = function registerSystemRoutes(server) {
             setTimeout(() => {
                 global.gracefulRestart().catch((err) => {
                     console.error('❌ [System] Reload error:', err);
-                    process.exit(1);
                 });
             }, 1000);
         } else {
-            console.warn('⚠️ [System] global.gracefulRestart not found, falling back to process.exit()');
-            setTimeout(() => process.exit(0), 1000);
+            console.warn('⚠️ [System] global.gracefulRestart not found, skipping forced process exit');
         }
     });
 
-    router.post('/api/system/shutdown', (req, res) => {
+    router.post('/api/system/shutdown', requireShutdown, (req, res) => {
         console.log('⛔ [WebServer] Received shutdown request. Stopping system...');
         res.json({ success: true, message: 'System is shutting down... Please restart manually if needed.' });
 
@@ -286,12 +323,21 @@ module.exports = function registerSystemRoutes(server) {
             setTimeout(() => {
                 global.fullShutdown().catch((err) => {
                     console.error('❌ [System] Shutdown error:', err);
-                    process.exit(1);
                 });
             }, 1000);
         } else {
-            console.warn('⚠️ [System] global.fullShutdown not found, falling back to process.exit()');
-            setTimeout(() => process.exit(0), 1000);
+            console.warn('⚠️ [System] global.fullShutdown not found, skipping forced process exit');
+        }
+    });
+
+    router.get('/api/system/security/events', (req, res) => {
+        try {
+            const limitRaw = Number(req.query.limit || 100);
+            const limit = Number.isFinite(limitRaw) && limitRaw > 0 ? Math.min(limitRaw, 500) : 100;
+            const events = (server.securityEvents || []).slice(-limit);
+            return res.json({ success: true, events });
+        } catch (e) {
+            return res.status(500).json({ error: e.message });
         }
     });
 

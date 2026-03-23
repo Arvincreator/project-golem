@@ -5,6 +5,10 @@ const cors = require('cors');
 
 const registerStaticRoutes = require('./server/registerStaticRoutes');
 const registerSocketHandlers = require('./server/registerSocketHandlers');
+const {
+    installSecurityContext,
+    buildApiSecurityMiddleware,
+} = require('./server/security');
 
 const registerUploadRoutes = require('./routes/api.upload');
 const registerChatRoutes = require('./routes/api.chat');
@@ -35,8 +39,22 @@ class WebServer {
             origin: corsOrigin,
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
         }));
-        this.app.use(express.json({ limit: '50mb' }));
-        this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+        const uploadMaxBytesRaw = Number(process.env.UPLOAD_MAX_BYTES || 8 * 1024 * 1024);
+        this.maxUploadBytes = Number.isFinite(uploadMaxBytesRaw) && uploadMaxBytesRaw > 0
+            ? Math.floor(uploadMaxBytesRaw)
+            : 8 * 1024 * 1024;
+
+        const bodyLimitMbRaw = Number(process.env.DASHBOARD_API_BODY_LIMIT_MB || 5);
+        const baseBodyLimitMb = Number.isFinite(bodyLimitMbRaw) && bodyLimitMbRaw > 0
+            ? Math.min(bodyLimitMbRaw, 25)
+            : 5;
+        const uploadOverheadMb = Math.ceil((this.maxUploadBytes * 1.4) / (1024 * 1024));
+        const bodyLimitMb = Math.min(50, Math.max(baseBodyLimitMb, uploadOverheadMb));
+        const bodyLimit = `${bodyLimitMb}mb`;
+
+        this.app.use(express.json({ limit: bodyLimit }));
+        this.app.use(express.urlencoded({ limit: bodyLimit, extended: true }));
 
         this.server = http.createServer(this.app);
         this.server.timeout = 300000;
@@ -75,6 +93,8 @@ class WebServer {
         this.isBooting = true;
         this.logBuffer = [];
         this.chatHistory = new Map();
+        installSecurityContext(this);
+        this.app.use(buildApiSecurityMiddleware(this));
 
         this.init();
     }

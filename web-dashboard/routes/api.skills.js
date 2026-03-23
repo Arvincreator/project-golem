@@ -2,9 +2,11 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const { MANDATORY_SKILLS, OPTIONAL_SKILLS: OPTIONAL_SKILL_LIST, resolveEnabledSkills } = require('../../src/skills/skillsConfig');
+const { buildOperationGuard } = require('../server/security');
 
 module.exports = function(server) {
     const router = express.Router();
+    const requireSkillAdmin = buildOperationGuard(server, 'skills_admin_operation');
 
     router.get('/api/skills/marketplace', (req, res) => {
         try {
@@ -61,7 +63,7 @@ module.exports = function(server) {
         }
     });
 
-    router.post('/api/skills/marketplace/install', async (req, res) => {
+    router.post('/api/skills/marketplace/install', requireSkillAdmin, async (req, res) => {
         try {
             const { id, repoUrl } = req.body;
             if (!id || !repoUrl) return res.status(400).json({ error: 'Missing id or repoUrl' });
@@ -200,7 +202,7 @@ module.exports = function(server) {
         }
     });
 
-    router.post('/api/skills/toggle', (req, res) => {
+    router.post('/api/skills/toggle', requireSkillAdmin, (req, res) => {
         try {
             const { id, enabled } = req.body;
             if (!id) return res.status(400).json({ error: "Missing skill ID" });
@@ -257,7 +259,7 @@ module.exports = function(server) {
         }
     });
 
-    router.post('/api/skills/create', (req, res) => {
+    router.post('/api/skills/create', requireSkillAdmin, (req, res) => {
         try {
             const { id, content } = req.body;
             if (!id || !content) return res.status(400).json({ error: 'Missing id or content' });
@@ -293,7 +295,7 @@ module.exports = function(server) {
         }
     });
 
-    router.post('/api/skills/update', (req, res) => {
+    router.post('/api/skills/update', requireSkillAdmin, (req, res) => {
         try {
             const { id, content } = req.body;
             if (!id || !content) return res.status(400).json({ error: 'Missing id or content' });
@@ -329,7 +331,7 @@ module.exports = function(server) {
         }
     });
 
-    router.post('/api/skills/delete', async (req, res) => {
+    router.post('/api/skills/delete', requireSkillAdmin, async (req, res) => {
         try {
             const { id } = req.body;
             if (!id) return res.status(400).json({ error: 'Missing skill ID' });
@@ -365,7 +367,7 @@ module.exports = function(server) {
         }
     });
 
-    router.post('/api/skills/reload', (req, res) => {
+    router.post('/api/skills/reload', requireSkillAdmin, (req, res) => {
         try {
             console.log("🔄 [WebServer] Hot-reloading skills... Clearing ProtocolFormatter cache.");
             const ProtocolFormatter = require('../../src/services/ProtocolFormatter');
@@ -377,7 +379,7 @@ module.exports = function(server) {
         }
     });
 
-    router.post('/api/skills/inject', async (req, res) => {
+    router.post('/api/skills/inject', requireSkillAdmin, async (req, res) => {
         try {
             const ProtocolFormatter = require('../../src/services/ProtocolFormatter');
             ProtocolFormatter._lastScanTime = 0;

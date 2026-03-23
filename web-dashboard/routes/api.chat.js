@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = function(server) {
     const router = express.Router();
@@ -43,6 +45,17 @@ module.exports = function(server) {
                 url: attachmentData.url,
                 mimeType: finalMimeType || 'application/octet-stream'
             } : null;
+
+            if (attachment && attachment.path) {
+                const uploadRoot = path.resolve(process.cwd(), 'data', 'temp_uploads');
+                const resolvedPath = path.resolve(String(attachment.path));
+                const isInsideUploadDir = resolvedPath === uploadRoot || resolvedPath.startsWith(`${uploadRoot}${path.sep}`);
+
+                if (!isInsideUploadDir || !fs.existsSync(resolvedPath)) {
+                    return res.status(400).json({ error: 'Invalid attachment path' });
+                }
+                attachment.path = resolvedPath;
+            }
 
             const mockContext = {
                 platform: 'web',

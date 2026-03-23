@@ -35,7 +35,7 @@ const CONFIG = {
     DONATE_URL: 'https://buymeacoffee.com/arvincreator',
     TZ: cleanEnv(process.env.TZ) || 'Asia/Taipei',
     INTERVENTION_LEVEL: cleanEnv(process.env.GOLEM_INTERVENTION_LEVEL) || 'CONSERVATIVE',
-    TG_ENGINE: cleanEnv(process.env.TG_ENGINE) || 'legacy',
+    TG_ENGINE: cleanEnv(process.env.TG_ENGINE) || 'grammy',
     CB_TG_TIMEOUT_MS: cleanEnv(process.env.CB_TG_TIMEOUT_MS) || '10000',
     CB_TG_RESET_MS: cleanEnv(process.env.CB_TG_RESET_MS) || '15000',
     CB_TG_ERROR_PCT: cleanEnv(process.env.CB_TG_ERROR_PCT) || '30',
@@ -137,7 +137,7 @@ const reloadConfig = () => {
     CONFIG.QMD_PATH = cleanEnv(process.env.GOLEM_QMD_PATH || 'qmd', true);
     CONFIG.TZ = cleanEnv(process.env.TZ) || 'Asia/Taipei';
     CONFIG.INTERVENTION_LEVEL = cleanEnv(process.env.GOLEM_INTERVENTION_LEVEL) || 'CONSERVATIVE';
-    CONFIG.TG_ENGINE = cleanEnv(process.env.TG_ENGINE) || 'legacy';
+    CONFIG.TG_ENGINE = cleanEnv(process.env.TG_ENGINE) || 'grammy';
     CONFIG.CB_TG_TIMEOUT_MS = cleanEnv(process.env.CB_TG_TIMEOUT_MS) || '10000';
     CONFIG.CB_TG_RESET_MS = cleanEnv(process.env.CB_TG_RESET_MS) || '15000';
     CONFIG.CB_TG_ERROR_PCT = cleanEnv(process.env.CB_TG_ERROR_PCT) || '30';

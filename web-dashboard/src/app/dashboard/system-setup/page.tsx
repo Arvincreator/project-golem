@@ -10,7 +10,15 @@ import {
 import Link from "next/link";
 import { useGolem } from "@/components/GolemContext";
 
-type MemoryMode = "lancedb";
+type MemoryMode = "lancedb-pro";
+
+function normalizeMemoryMode(value: unknown): MemoryMode {
+    const mode = String(value || "").trim().toLowerCase();
+    if (mode === "lancedb" || mode === "lancedb-pro" || mode === "lancedb-legacy") {
+        return "lancedb-pro";
+    }
+    return "lancedb-pro";
+}
 
 const LOCAL_MODELS = [
     {
@@ -55,7 +63,7 @@ export default function SystemSetupPage() {
     const { isSystemConfigured } = useGolem();
 
     const [userDataDir, setUserDataDir] = useState("./golem_memory");
-    const [memoryMode, setMemoryMode] = useState<MemoryMode>("lancedb");
+    const [memoryMode, setMemoryMode] = useState<MemoryMode>("lancedb-pro");
     const golemMode = "SINGLE";
     const [embeddingProvider, setEmbeddingProvider] = useState<"gemini" | "local">("local");
     const [localEmbeddingModel, setLocalEmbeddingModel] = useState("Xenova/bge-small-zh-v1.5");
@@ -73,8 +81,8 @@ export default function SystemSetupPage() {
             .then(r => r.json())
             .then(data => {
                 setUserDataDir(data.userDataDir || "./golem_memory");
-                setMemoryMode("lancedb");
-                setEmbeddingProvider("local");
+                setMemoryMode(normalizeMemoryMode(data.golemMemoryMode));
+                setEmbeddingProvider(data.golemEmbeddingProvider === "gemini" ? "gemini" : "local");
                 setLocalEmbeddingModel(data.golemLocalEmbeddingModel || "Xenova/bge-small-zh-v1.5");
                 setAllowRemoteAccess(data.allowRemoteAccess === true || data.allowRemoteAccess === "true");
             })
@@ -163,7 +171,7 @@ export default function SystemSetupPage() {
                             <label className="block text-sm font-medium text-gray-400 mb-3">記憶引擎模式</label>
                             <div className="grid grid-cols-1 gap-3">
                                 {([
-                                    { value: "lancedb", label: "LanceDB Vector Engine", desc: "高效能向量資料庫，支援 Hybrid Search (效能最強)" },
+                                    { value: "lancedb-pro", label: "LanceDB Pro Vector Engine", desc: "高效能向量資料庫，支援 Hybrid Search (推薦)" },
                                 ] as { value: MemoryMode; label: string; desc: string }[]).map(opt => (
                                     <button
                                         key={opt.value}
@@ -199,7 +207,7 @@ export default function SystemSetupPage() {
                         </div>
 
                         {/* Embedding Config (Only for LanceDB) */}
-                        {memoryMode === "lancedb" && (
+                        {memoryMode === "lancedb-pro" && (
                             <div className="bg-gray-950 border border-gray-800 rounded-xl p-5 shadow-inner animate-in zoom-in-95 duration-300">
                                 <div className="flex items-center gap-2 mb-4">
                                     <Sparkles className="w-4 h-4 text-purple-400" />

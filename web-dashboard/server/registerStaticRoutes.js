@@ -2,25 +2,6 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-function parseCookies(cookieHeader) {
-    if (!cookieHeader) return {};
-    try {
-        return Object.fromEntries(
-            cookieHeader
-                .split(';')
-                .map((c) => c.trim().split('='))
-                .filter((pair) => pair.length === 2)
-        );
-    } catch (e) {
-        return {};
-    }
-}
-
-function isLocalIp(ip) {
-    if (!ip) return false;
-    return ip.includes('127.0.0.1') || ip === '::1' || ip.includes('::ffff:127.0.0.1');
-}
-
 module.exports = function registerStaticRoutes(server) {
     const projectRoot = path.resolve(__dirname, '../..');
     const uploadDir = path.join(projectRoot, 'data', 'temp_uploads');
@@ -87,18 +68,10 @@ module.exports = function registerStaticRoutes(server) {
             return next();
         }
 
-        if (server.allowRemote) {
-            const remotePassword = process.env.REMOTE_ACCESS_PASSWORD;
-            if (remotePassword && remotePassword.trim() !== '') {
-                const clientIp = req.ip || req.connection.remoteAddress || '';
-                if (!isLocalIp(clientIp)) {
-                    const cookies = parseCookies(req.headers.cookie);
-                    if (cookies.golem_auth_token !== 'verified') {
-                        console.log(`🔒 [WebServer] Blocked unauthorized remote access to ${req.path} from IP: ${clientIp}`);
-                        return res.redirect('/dashboard/login');
-                    }
-                }
-            }
+        if (server.requiresRemoteAuth(req) && !server.isAuthenticatedRequest(req)) {
+            const clientIp = req.clientIp || req.ip || req.connection.remoteAddress || '';
+            console.log(`🔒 [WebServer] Blocked unauthorized remote access to ${req.path} from IP: ${clientIp}`);
+            return res.redirect('/dashboard/login');
         }
 
         try {

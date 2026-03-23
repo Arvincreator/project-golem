@@ -2,9 +2,11 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const { resolveActiveContext } = require('./utils/context');
+const { buildOperationGuard } = require('../server/security');
 
 module.exports = function registerPersonaRoutes(server) {
     const router = express.Router();
+    const requirePersonaAdmin = buildOperationGuard(server, 'persona_admin_operation');
 
     router.get('/api/golems/templates', (req, res) => {
         const personasDir = path.resolve(process.cwd(), 'personas');
@@ -132,7 +134,7 @@ module.exports = function registerPersonaRoutes(server) {
         }
     });
 
-    router.post('/api/persona/inject', async (req, res) => {
+    router.post('/api/persona/inject', requirePersonaAdmin, async (req, res) => {
         try {
             const { golemId: reqGolemId, aiName, userName, currentRole, tone, skills } = req.body;
             const personaManager = require('../../src/skills/core/persona');
@@ -184,7 +186,7 @@ module.exports = function registerPersonaRoutes(server) {
         }
     });
 
-    router.post('/api/persona/create', (req, res) => {
+    router.post('/api/persona/create', requirePersonaAdmin, (req, res) => {
         try {
             const { id, name, description, icon, aiName, userName, role, tone, tags } = req.body;
             if (!id || !name) return res.status(400).json({ success: false, error: 'Missing id or name' });
@@ -212,7 +214,7 @@ module.exports = function registerPersonaRoutes(server) {
         }
     });
 
-    router.post('/api/persona/delete', async (req, res) => {
+    router.post('/api/persona/delete', requirePersonaAdmin, async (req, res) => {
         try {
             const { id } = req.body;
             if (!id) return res.status(400).json({ success: false, error: 'Missing persona ID' });

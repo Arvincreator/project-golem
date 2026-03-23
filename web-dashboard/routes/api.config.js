@@ -1,7 +1,9 @@
 const express = require('express');
+const { buildOperationGuard } = require('../server/security');
 
 module.exports = function(server) {
     const router = express.Router();
+    const requireConfigAdmin = buildOperationGuard(server, 'config_update');
 
     router.get('/api/config', (req, res) => {
         try {
@@ -14,7 +16,7 @@ module.exports = function(server) {
         }
     });
 
-    router.post('/api/config', (req, res) => {
+    router.post('/api/config', requireConfigAdmin, (req, res) => {
         try {
             const { env: envPayload } = req.body;
 

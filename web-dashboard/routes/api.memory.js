@@ -1,9 +1,11 @@
 const express = require('express');
 const fs = require('fs');
 const { resolveActiveContext } = require('./utils/context');
+const { buildOperationGuard } = require('../server/security');
 
 module.exports = function registerMemoryRoutes(server) {
     const router = express.Router();
+    const requireMemoryAdmin = buildOperationGuard(server, 'memory_mutation');
 
     router.get('/api/memory', async (req, res) => {
         const { golemId, context } = resolveActiveContext(server, req.query.golemId);
@@ -18,7 +20,7 @@ module.exports = function registerMemoryRoutes(server) {
         }
     });
 
-    router.delete('/api/memory', async (req, res) => {
+    router.delete('/api/memory', requireMemoryAdmin, async (req, res) => {
         const { context } = resolveActiveContext(server, req.query.golemId);
         if (!context || !context.memory) return res.status(503).json({ error: 'Memory not engaged' });
 
@@ -51,7 +53,7 @@ module.exports = function registerMemoryRoutes(server) {
         }
     });
 
-    router.post('/api/memory/import', async (req, res) => {
+    router.post('/api/memory/import', requireMemoryAdmin, async (req, res) => {
         const { context } = resolveActiveContext(server, req.query.golemId);
         if (!context || !context.memory) return res.status(503).json({ error: 'Memory not engaged' });
 
@@ -68,7 +70,7 @@ module.exports = function registerMemoryRoutes(server) {
         }
     });
 
-    router.post('/api/memory', async (req, res) => {
+    router.post('/api/memory', requireMemoryAdmin, async (req, res) => {
         const { golemId, context } = resolveActiveContext(server, req.query.golemId);
         if (!context || !context.memory) return res.status(503).json({ error: 'Memory not engaged' });
 

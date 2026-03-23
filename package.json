@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "test:coverage": "jest --coverage --runInBand",
     "test:security": "jest tests/safeguard.test.js",
+    "audit:prod": "npm audit --omit=dev --audit-level=high",
     "build": "cd web-dashboard && npm run build",
     "// --- 核心啟動 ---": "",
     "start": "node --expose-gc index.js",
@@ -39,27 +41,30 @@
     "blessed": "0.1.81",
     "blessed-contrib": "4.11.0",
     "cors": "^2.8.6",
-    "discord.js": "14.14.1",
+    "discord.js": "^14.25.1",
     "dotenv": "16.4.5",
     "express": "5.2.1",
     "grammy": "^1.41.1",
     "jiti": "^2.6.1",
     "memory-lancedb-pro": "^1.1.0-beta.9",
-    "node-telegram-bot-api": "0.65.1",
     "opossum": "^9.0.0",
     "playwright": "^1.42.1",
     "playwright-extra": "^4.3.6",
     "puppeteer-extra-plugin-stealth": "2.11.2",
     "socket.io": "4.8.3",
     "socket.io-client": "4.8.3",
-    "sqlite3": "^5.1.7",
+    "sqlite3": "^6.0.1",
     "uuid": "9.0.1"
   },
   "devDependencies": {
     "jest": "^30.3.0",
     "nodemon": "3.0.2"
   },
+  "overrides": {
+    "undici": "^6.24.1",
+    "xml2js": "^0.6.2"
+  },
   "engines": {
-    "node": "^20.0.0"
+    "node": ">=20 <23"
   }
 }

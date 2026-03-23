@@ -2,32 +2,48 @@
 // Non-invasive factory: decides between grammY (GrammyBridge) and node-telegram-bot-api
 // Reads environment configuration via ConfigManager to decide
 
-const path = require('path');
 const ConfigManager = require('../config');
 
 let _engine = null;
+let _legacyCtor = null;
+
+function loadLegacyEngine() {
+  if (_legacyCtor) return _legacyCtor;
+  try {
+    _legacyCtor = require('node-telegram-bot-api');
+    return _legacyCtor;
+  } catch {
+    return null;
+  }
+}
 
 function detectEngine() {
   if (_engine) return _engine;
 
-  // Check env override from ConfigManager
-  if (ConfigManager.CONFIG.TG_ENGINE === 'legacy') {
-    _engine = 'legacy';
-    console.log('[TG Factory] Engine: node-telegram-bot-api (legacy, from ConfigManager)');
-    return _engine;
+  const requested = String(ConfigManager.CONFIG.TG_ENGINE || '').trim().toLowerCase();
+  if (requested === 'legacy') {
+    if (loadLegacyEngine()) {
+      _engine = 'legacy';
+      console.log('[TG Factory] Engine: node-telegram-bot-api (legacy, from ConfigManager)');
+      return _engine;
+    }
+    console.warn('[TG Factory] TG_ENGINE=legacy but node-telegram-bot-api is not installed. Falling back to grammY.');
   }
 
-  // Default to grammY or if configured
   try {
-    require('grammy');
+    require.resolve('grammy');
     _engine = 'grammy';
     console.log('[TG Factory] Engine: grammY (modern)');
+    return _engine;
   } catch {
-    _engine = 'legacy';
-    console.log('[TG Factory] Engine: node-telegram-bot-api (grammy not installed)');
-  }
+    if (loadLegacyEngine()) {
+      _engine = 'legacy';
+      console.log('[TG Factory] Engine: node-telegram-bot-api (grammy not installed)');
+      return _engine;
+    }
 
-  return _engine;
+    throw new Error('No Telegram engine is available. Install "grammy" or "node-telegram-bot-api".');
+  }
 }
 
 /**
@@ -45,7 +61,10 @@ function createTelegramBot(token, opts = {}) {
   }
 
   // Fallback: original node-telegram-bot-api
-  const TelegramBot = require('node-telegram-bot-api');
+  const TelegramBot = loadLegacyEngine();
+  if (!TelegramBot) {
+    throw new Error('TG_ENGINE=legacy but node-telegram-bot-api is not installed.');
+  }
   return new TelegramBot(token, opts);
 }
 

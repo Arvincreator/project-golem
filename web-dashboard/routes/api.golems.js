@@ -1,7 +1,9 @@
 const express = require('express');
+const { buildOperationGuard } = require('../server/security');
 
 module.exports = function registerGolemRoutes(server) {
     const router = express.Router();
+    const requireGolemOps = buildOperationGuard(server, 'golem_admin_operation');
 
     router.get('/api/golems', (req, res) => {
         try {
@@ -36,7 +38,7 @@ module.exports = function registerGolemRoutes(server) {
         }
     });
 
-    router.post('/api/golems/create', async (req, res) => {
+    router.post('/api/golems/create', requireGolemOps, async (req, res) => {
         try {
             const {
                 id,
@@ -106,7 +108,7 @@ module.exports = function registerGolemRoutes(server) {
         }
     });
 
-    router.post('/api/golems/start', async (req, res) => {
+    router.post('/api/golems/start', requireGolemOps, async (req, res) => {
         try {
             const { id } = req.body;
             if (!id) return res.status(400).json({ error: 'Missing Golem ID' });
@@ -158,7 +160,7 @@ module.exports = function registerGolemRoutes(server) {
         }
     });
 
-    router.post('/api/golems/stop', async (req, res) => {
+    router.post('/api/golems/stop', requireGolemOps, async (req, res) => {
         try {
             const { id } = req.body;
             if (!id) return res.status(400).json({ error: 'Missing Golem ID' });
@@ -184,7 +186,7 @@ module.exports = function registerGolemRoutes(server) {
         }
     });
 
-    router.post('/api/golems/setup', async (req, res) => {
+    router.post('/api/golems/setup', requireGolemOps, async (req, res) => {
         const { golemId, aiName, userName, currentRole, tone, skills } = req.body;
         if (!golemId) return res.status(400).json({ error: 'Missing golemId' });
 
