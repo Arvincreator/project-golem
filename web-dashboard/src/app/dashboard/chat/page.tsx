@@ -9,6 +9,7 @@ import { Typewriter } from "@/components/Typewriter";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { apiGet, apiPost, apiPostWrite } from "@/lib/api-client";
+import { useI18n } from "@/components/I18nProvider";
 
 interface ChatMessage {
     id: string;
@@ -126,6 +127,7 @@ function normalizeShortcutKey(input: string): string {
 
 export default function DirectChatPage() {
     const { activeGolem } = useGolem();
+    const { t } = useI18n();
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [completedTypingMsgs, setCompletedTypingMsgs] = useState<Set<string>>(new Set());
     const [input, setInput] = useState("");
@@ -584,7 +586,7 @@ export default function DirectChatPage() {
                 .map((item) => ({
                     key: `prompt-${item.id}`,
                     command: item.shortcut,
-                    description: item.note || item.prompt.replace(/\s+/g, " ").slice(0, 80) || "從指令池注入 Prompt",
+                    description: item.note || item.prompt.replace(/\s+/g, " ").slice(0, 80) || t("chat.suggestion.promptInjectedFallback"),
                     source: "prompt",
                     injectedPrompt: item.prompt,
                 }))
@@ -599,7 +601,7 @@ export default function DirectChatPage() {
                 let options = exactCmd.options;
 
                 if (options.some((o) => o.name === '@username') && activeGolem) {
-                    const dynamicOption = { name: `@${activeGolem}`, description: `針對目前的 ${activeGolem} 執行` };
+                    const dynamicOption = { name: `@${activeGolem}`, description: t("chat.dynamicOptionForGolem", { golem: activeGolem }) };
                     options = [dynamicOption, ...options.filter((o) => o.name !== '@username')];
                 }
 
@@ -637,10 +639,10 @@ export default function DirectChatPage() {
             <div className="flex justify-between items-center mb-6 flex-shrink-0">
                 <div>
                     <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500">
-                        直接交談 (Direct Chat)
+                        {t("chat.title")}
                     </h2>
                     <p className="text-sm text-muted-foreground mt-1">
-                        與目前活躍的 Golem ({activeGolem || "未選擇"}) 進行對話測試。不須透過外部通訊軟體。
+                        {t("chat.subtitle", { golem: activeGolem || t("chat.noActiveGolem") })}
                     </p>
                 </div>
             </div>
@@ -650,7 +652,7 @@ export default function DirectChatPage() {
                 <div className="flex-1 overflow-y-auto p-4 space-y-4" ref={scrollRef}>
                     {messages.length === 0 ? (
                         <div className="flex items-center justify-center h-full text-muted-foreground/60 italic">
-                            請在下方輸入訊息開始交談...
+                            {t("chat.emptyState")}
                         </div>
                     ) : (
                         messages.map((msg, index) => {
@@ -713,14 +715,14 @@ export default function DirectChatPage() {
                                                             <FileText size={20} className="text-primary flex-shrink-0" />
                                                             <div className="overflow-hidden">
                                                                 <p className="text-[10px] text-muted-foreground truncate max-w-[150px]">{att.name || att.url.split('/').pop()}</p>
-                                                                <p className="text-[10px] text-primary/60 font-medium">點擊下載</p>
+                                                                <p className="text-[10px] text-primary/60 font-medium">{t("chat.download")}</p>
                                                             </div>
                                                         </a>
                                                     )
                                                 ))}
                                             </div>
                                         )}
-                                        {msg.isThinking ? "思考中..." : (msg.isSystem && !msg.isHistory ?
+                                        {msg.isThinking ? t("chat.thinking") : (msg.isSystem && !msg.isHistory ?
                                             <Typewriter content={msg.content.replace(/\n{2,}/g, '\n\n').trim()} onComplete={() => handleTypingComplete(msg.id)} />
                                             : (msg.isSystem ?
                                                 <div className="prose dark:prose-invert prose-sm max-w-none prose-p:m-0 prose-headings:my-1 prose-pre:my-1 prose-pre:bg-zinc-950 dark:prose-pre:bg-gray-950 prose-pre:border prose-pre:border-border dark:prose-pre:border-gray-800 prose-ul:list-disc prose-ul:ml-4 prose-ol:list-decimal prose-ol:ml-4 prose-li:m-0 leading-snug [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
@@ -798,7 +800,7 @@ export default function DirectChatPage() {
                                                 {cmd.command}
                                             </span>
                                             <span className="text-[10px] text-muted-foreground/80">
-                                                {cmd.source === "prompt" ? "Prompt 指令池" : "系統指令"}
+                                                {cmd.source === "prompt" ? t("chat.suggestion.promptPool") : t("chat.suggestion.systemCommand")}
                                             </span>
                                             <span className="text-[10px] text-muted-foreground line-clamp-1 group-hover:line-clamp-none mt-0.5">
                                                 {cmd.description}
@@ -814,7 +816,7 @@ export default function DirectChatPage() {
                     {isDragging && (
                         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 rounded-b-xl border-2 border-dashed border-primary/60 bg-primary/10 backdrop-blur-sm pointer-events-none">
                             <UploadCloud size={28} className="text-primary animate-bounce" />
-                            <p className="text-sm font-semibold text-primary">放開以上傳檔案</p>
+                            <p className="text-sm font-semibold text-primary">{t("chat.dragOverlay")}</p>
                         </div>
                     )}
 
@@ -841,7 +843,7 @@ export default function DirectChatPage() {
                             </button>
                             <div className="ml-3 pr-2">
                                 <p className="text-[10px] text-muted-foreground truncate max-w-[120px]">{selectedFile.name}</p>
-                                <p className="text-[10px] text-primary/60 font-medium">檔案已就緒</p>
+                                <p className="text-[10px] text-primary/60 font-medium">{t("chat.fileReady")}</p>
                             </div>
                         </div>
                     )}
@@ -858,7 +860,7 @@ export default function DirectChatPage() {
                             onClick={() => fileInputRef.current?.click()}
                             disabled={!activeGolem || isSending}
                             className="p-2.5 rounded-lg bg-secondary/80 border border-border text-muted-foreground hover:text-primary hover:bg-secondary transition-all"
-                            title="上傳附件（或將檔案拖曳至此）"
+                            title={t("chat.uploadTitle")}
                         >
                             <Paperclip size={20} />
                         </button>
@@ -866,7 +868,9 @@ export default function DirectChatPage() {
                         <div className="relative flex-1 flex items-center">
                             <textarea
                                 className="flex-1 max-h-32 min-h-[44px] bg-secondary/50 border border-border rounded-lg px-4 py-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 resize-none transition-all"
-                                placeholder={activeGolem ? `傳送訊息給 ${activeGolem}… 可拖曳或 ⌘V 貼入圖片` : "請先選擇一個 Golem..."}
+                                placeholder={activeGolem
+                                    ? t("chat.placeholder.withGolem", { golem: activeGolem })
+                                    : t("chat.placeholder.noGolem")}
                                 value={input}
                                 onChange={(e) => onInputChange(e.target.value)}
                                 onKeyDown={(e) => {

@@ -10,6 +10,7 @@ import { SystemActionDialogs } from "@/components/SystemActionDialogs";
 import { useGolem } from "@/components/GolemContext";
 import { useToast } from "@/components/ui/toast-provider";
 import { apiGet, apiPost } from "@/lib/api-client";
+import { useI18n } from "@/components/I18nProvider";
 
 type MetricsState = {
     uptime: string;
@@ -129,6 +130,8 @@ function parseSystemStatus(payload: unknown): SystemStatusData | null {
 
 export default function TerminalPage() {
     const toast = useToast();
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     const { activeGolem, activeGolemStatus, startGolem } = useGolem();
     const [metrics, setMetrics] = useState<MetricsState>({
         uptime: "0h 0m",
@@ -211,11 +214,17 @@ export default function TerminalPage() {
                 setConfirmDialog(prev => ({ ...prev, open: false }));
                 setDoneDialog({ open: true, variant: "started" });
             } else {
-                toast.error("啟動失敗", "後端服務逾時或未就緒。請稍後再試。");
+                toast.error(
+                    isEnglish ? "Start failed" : "啟動失敗",
+                    isEnglish ? "Backend timeout or not ready. Please try again later." : "後端服務逾時或未就緒。請稍後再試。"
+                );
             }
         } catch (e) {
             console.error("Start failed:", e);
-            toast.error("啟動失敗", "啟動過程發生錯誤，請查看控制台日誌。");
+            toast.error(
+                isEnglish ? "Start failed" : "啟動失敗",
+                isEnglish ? "An error occurred while starting. Please check logs." : "啟動過程發生錯誤，請查看控制台日誌。"
+            );
         } finally {
             setIsLoading(false);
         }
@@ -248,7 +257,7 @@ export default function TerminalPage() {
             const heartbeat = parseHeartbeat(payload);
             if (!heartbeat) return;
 
-            const timeStr = new Date().toLocaleTimeString("zh-TW", { hour12: false });
+            const timeStr = new Date().toLocaleTimeString(locale, { hour12: false });
             setMetrics((prev) => ({
                 ...prev,
                 uptime: heartbeat.uptime ?? prev.uptime,
@@ -300,7 +309,7 @@ export default function TerminalPage() {
             socket.off("heartbeat", handleHeartbeat);
             clearInterval(interval);
         };
-    }, []);
+    }, [locale]);
 
     const handleChartHover = (e: MouseEvent<SVGSVGElement>, history: TimePoint[], type: "mem" | "cpu") => {
         if (history.length < 2) return;
@@ -335,7 +344,9 @@ export default function TerminalPage() {
                     <div>
                         <h2 className="text-base font-bold text-foreground tracking-tight">Terminal Dashboard</h2>
                         <div className="flex items-center space-x-2">
-                            <p className="text-xs text-muted-foreground font-medium">Golem 核心系統即時監測儀表板</p>
+                            <p className="text-xs text-muted-foreground font-medium">
+                                {isEnglish ? "Real-time monitoring dashboard for Golem core system" : "Golem 核心系統即時監測儀表板"}
+                            </p>
                             <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border font-mono">{systemStatus?.runtime?.osName || "Loading..."}</span>
                         </div>
                     </div>
@@ -350,7 +361,7 @@ export default function TerminalPage() {
                         )}
                     >
                         <LayoutDashboard className="w-3.5 h-3.5" />
-                        <span>核心監視</span>
+                        <span>{isEnglish ? "Overview" : "核心監視"}</span>
                     </button>
                     <button
                         onClick={() => setActiveTab('LOGS')}
@@ -360,7 +371,7 @@ export default function TerminalPage() {
                         )}
                     >
                         <TerminalIcon className="w-3.5 h-3.5" />
-                        <span>日誌串流</span>
+                        <span>{isEnglish ? "Logs" : "日誌串流"}</span>
                     </button>
                 </div>
 
@@ -383,7 +394,7 @@ export default function TerminalPage() {
                             "w-1.5 h-1.5 rounded-full",
                             isConnected ? "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.5)] animate-pulse" : "bg-destructive"
                         )}></div>
-                        <span>{isConnected ? "系統在線" : "系統離線"}</span>
+                        <span>{isConnected ? (isEnglish ? "Online" : "系統在線") : (isEnglish ? "Offline" : "系統離線")}</span>
                     </div>
                 </div>
             </div>
@@ -399,7 +410,7 @@ export default function TerminalPage() {
                     {/* System Metrics (Fluid) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <MetricChart
-                            title="記憶體使用率快照"
+                            title={isEnglish ? "Memory Snapshot" : "記憶體使用率快照"}
                             value={metrics.memUsage.toFixed(1)}
                             unit="MB"
                             history={memHistory}
@@ -411,7 +422,7 @@ export default function TerminalPage() {
                             icon={<Activity className="w-4 h-4" />}
                         />
                         <MetricChart
-                            title="CPU 效能指數"
+                            title={isEnglish ? "CPU Performance" : "CPU 效能指數"}
                             value={metrics.cpuUsage.toFixed(1)}
                             unit="%"
                             history={cpuHistory}
@@ -429,44 +440,44 @@ export default function TerminalPage() {
                         <div className="md:col-span-4 space-y-8">
                             {/* System Status */}
                             <div className="bg-card border border-border rounded-2xl flex flex-col overflow-hidden shadow-sm">
-                                <PanelHeader icon={<ShieldCheck className="w-3 h-3" />} title="系統狀態" />
+                                <PanelHeader icon={<ShieldCheck className="w-3 h-3" />} title={isEnglish ? "System Status" : "系統狀態"} />
                                 <div className="p-6 text-sm font-mono bg-background/50">
                                     <ul className="space-y-4">
-                                        <StatusItem label="核心模擬" value={systemStatus?.runtime?.platform?.toUpperCase() || "N/A"} icon={<Cpu className="w-3 h-3" />} />
-                                        <StatusItem label="環境配置" value={systemStatus?.health?.env ? "已載入" : "錯誤"} color={systemStatus?.health?.env ? "primary" : "destructive"} />
-                                        <StatusItem label="依賴項目" value={systemStatus?.health?.deps ? "正常" : "檢查"} color={systemStatus?.health?.deps ? "primary" : "destructive"} />
-                                        <StatusItem label="核心服務" value={systemStatus?.health?.core ? "在線" : "離線"} color={systemStatus?.health?.core ? "primary" : "destructive"} />
-                                        <StatusItem label="磁碟空間" value={systemStatus?.system?.diskAvail || "N/A"} />
-                                        <StatusItem label="可用記憶體" value={systemStatus?.system?.freeMem || "N/A"} />
-                                        <StatusItem label="隊列代理" value={`就緒 (${metrics.queueCount})`} color="primary" />
+                                        <StatusItem label={isEnglish ? "Core Mode" : "核心模擬"} value={systemStatus?.runtime?.platform?.toUpperCase() || "N/A"} icon={<Cpu className="w-3 h-3" />} />
+                                        <StatusItem label={isEnglish ? "Environment" : "環境配置"} value={systemStatus?.health?.env ? (isEnglish ? "Loaded" : "已載入") : (isEnglish ? "Error" : "錯誤")} color={systemStatus?.health?.env ? "primary" : "destructive"} />
+                                        <StatusItem label={isEnglish ? "Dependencies" : "依賴項目"} value={systemStatus?.health?.deps ? (isEnglish ? "Healthy" : "正常") : (isEnglish ? "Check" : "檢查")} color={systemStatus?.health?.deps ? "primary" : "destructive"} />
+                                        <StatusItem label={isEnglish ? "Core Service" : "核心服務"} value={systemStatus?.health?.core ? (isEnglish ? "Online" : "在線") : (isEnglish ? "Offline" : "離線")} color={systemStatus?.health?.core ? "primary" : "destructive"} />
+                                        <StatusItem label={isEnglish ? "Disk Space" : "磁碟空間"} value={systemStatus?.system?.diskAvail || "N/A"} />
+                                        <StatusItem label={isEnglish ? "Free Memory" : "可用記憶體"} value={systemStatus?.system?.freeMem || "N/A"} />
+                                        <StatusItem label={isEnglish ? "Queue Agent" : "隊列代理"} value={isEnglish ? `Ready (${metrics.queueCount})` : `就緒 (${metrics.queueCount})`} color="primary" />
                                     </ul>
                                 </div>
                             </div>
 
                             {/* Quick Actions */}
                             <div className="bg-card border border-border rounded-2xl flex flex-col overflow-hidden shadow-sm">
-                                <PanelHeader icon={<LayoutDashboard className="w-3 h-3" />} title="快捷操作" />
+                                <PanelHeader icon={<LayoutDashboard className="w-3 h-3" />} title={isEnglish ? "Quick Actions" : "快捷操作"} />
                                 <div className="p-6 grid grid-cols-1 gap-4 bg-background/50">
                                     <ActionButton
                                         icon={<Play className="w-5 h-5" />}
-                                        label="啟動 Golem"
-                                        description="初始化核心實體"
+                                        label={isEnglish ? "Start Golem" : "啟動 Golem"}
+                                        description={isEnglish ? "Initialize core instance" : "初始化核心實體"}
                                         onClick={() => openConfirm("start")}
                                         disabled={activeGolemStatus === "running" || isLoading}
                                         color="primary"
                                     />
                                     <ActionButton
                                         icon={<RefreshCw className="w-5 h-5" />}
-                                        label="重新啟動"
-                                        description="Hot-reload · 自動重連"
+                                        label={isEnglish ? "Restart" : "重新啟動"}
+                                        description={isEnglish ? "Hot-reload · Auto reconnect" : "Hot-reload · 自動重連"}
                                         onClick={() => openConfirm("restart")}
                                         disabled={!isConnected || isLoading}
                                         color="primary"
                                     />
                                     <ActionButton
                                         icon={<Zap className="w-5 h-5" />}
-                                        label="關閉 Golem"
-                                        description="完全停止 · 需手動重啟"
+                                        label={isEnglish ? "Shutdown Golem" : "關閉 Golem"}
+                                        description={isEnglish ? "Full stop · Manual restart required" : "完全停止 · 需手動重啟"}
                                         onClick={() => openConfirm("shutdown")}
                                         disabled={!isConnected || isLoading}
                                         color="destructive"
@@ -477,7 +488,7 @@ export default function TerminalPage() {
 
                         {/* Large Logs Preview */}
                         <div className="md:col-span-8 bg-card border border-border rounded-2xl flex flex-col overflow-hidden shadow-sm min-h-[500px]">
-                            <PanelHeader icon={<span className="text-[10px]">📡</span>} title="信號總覽 (最新日誌)" />
+                            <PanelHeader icon={<span className="text-[10px]">📡</span>} title={isEnglish ? "Signal Overview (Latest Logs)" : "信號總覽 (最新日誌)"} />
                             <div className="flex-1 bg-black/20">
                                 <LogStream className="border-0 rounded-none p-6 text-[12px] font-mono leading-relaxed h-[500px]" types={["general", "error"]} />
                             </div>
@@ -495,9 +506,13 @@ export default function TerminalPage() {
                         <div className="px-5 py-3 bg-muted/30 border-b border-border flex items-center justify-between">
                             <div className="flex items-center space-x-2">
                                 <span className="text-foreground">📝</span>
-                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground">核心日誌串流 (Neuro-Link)</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground">
+                                    {isEnglish ? "Core Log Stream (Neuro-Link)" : "核心日誌串流 (Neuro-Link)"}
+                                </span>
                             </div>
-                            <Button variant="ghost" size="sm" className="h-6 text-[9px] font-bold uppercase" onClick={handleClearLogs}>清除緩衝區</Button>
+                            <Button variant="ghost" size="sm" className="h-6 text-[9px] font-bold uppercase" onClick={handleClearLogs}>
+                                {isEnglish ? "Clear Buffer" : "清除緩衝區"}
+                            </Button>
                         </div>
                         <div className="flex-1 relative bg-black/20">
                             <LogStream className="absolute inset-0 border-0 rounded-none p-6 text-[13px] font-mono leading-relaxed" types={["general", "error"]} />
@@ -506,13 +521,13 @@ export default function TerminalPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="bg-card border border-border rounded-2xl flex flex-col overflow-hidden shadow-sm h-[400px]">
-                            <PanelHeader icon={<span className="text-[10px]">⏰</span>} title="時間軸事件 (Chronos)" />
+                            <PanelHeader icon={<span className="text-[10px]">⏰</span>} title={isEnglish ? "Timeline Events (Chronos)" : "時間軸事件 (Chronos)"} />
                             <div className="flex-1 relative bg-black/20">
                                 <LogStream className="absolute inset-0 border-0 rounded-none p-4 text-[11px] font-mono" types={["chronos"]} />
                             </div>
                         </div>
                         <div className="bg-card border border-border rounded-2xl flex flex-col overflow-hidden shadow-sm h-[400px]">
-                            <PanelHeader icon={<span className="text-[10px]">🚦</span>} title="流量監控" />
+                            <PanelHeader icon={<span className="text-[10px]">🚦</span>} title={isEnglish ? "Traffic Monitor" : "流量監控"} />
                             <div className="flex-1 relative bg-black/20">
                                 <LogStream className="absolute inset-0 border-0 rounded-none p-4 text-[11px] font-mono" types={["queue", "agent"]} autoScroll={false} />
                             </div>

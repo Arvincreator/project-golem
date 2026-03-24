@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Press_Start_2P } from "next/font/google"; // 👈 Added Pixel Font
 import { ThemeProvider } from "../components/ThemeProvider";
+import { I18nProvider } from "../components/I18nProvider";
 import { ToastProvider } from "../components/ui/toast-provider";
 import "./globals.css";
 
@@ -31,12 +32,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="zh-TW" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${pressStart2P.variable} antialiased`}
       >
         <ThemeProvider>
-          <ToastProvider>{children}</ToastProvider>
+          <I18nProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -29,30 +29,32 @@ import SystemHealthDashboard from "./components/SystemHealthDashboard";
 import SystemUpdateSection from "./components/SystemUpdateSection";
 import UrlsTab from "./tabs/UrlsTab";
 import { ConfigData, LogInfo, SystemStatus } from "./types";
+import { useI18n } from "@/components/I18nProvider";
 
 type StatusMessage = {
     type: "success" | "error" | "warning";
     text: string;
 };
 
-function getErrorMessage(error: unknown, fallback = "操作失敗，請稍後再試"): string {
+function getErrorMessage(error: unknown, fallback: string): string {
     if (error instanceof Error && error.message) return error.message;
     return fallback;
 }
 
 const TAB_ITEMS = [
-    { id: "overview", name: "系統概況", icon: Activity },
-    { id: "engine", name: "核心引擎", icon: Cpu },
-    { id: "messaging", name: "通訊平台", icon: MessageSquare },
-    { id: "tg_advanced", name: "Telegram 進階", icon: Settings2 },
-    { id: "urls", name: "網址管理", icon: Server },
-    { id: "schedule", name: "自動化作息", icon: Clock },
-    { id: "security", name: "安全與指令", icon: ShieldCheck },
-    { id: "advanced", name: "進階維護", icon: Settings2 }
+    { id: "overview", labelKey: "settings.tab.overview", icon: Activity },
+    { id: "engine", labelKey: "settings.tab.engine", icon: Cpu },
+    { id: "messaging", labelKey: "settings.tab.messaging", icon: MessageSquare },
+    { id: "tg_advanced", labelKey: "settings.tab.tgAdvanced", icon: Settings2 },
+    { id: "urls", labelKey: "settings.tab.urls", icon: Server },
+    { id: "schedule", labelKey: "settings.tab.schedule", icon: Clock },
+    { id: "security", labelKey: "settings.tab.security", icon: ShieldCheck },
+    { id: "advanced", labelKey: "settings.tab.advanced", icon: Settings2 }
 ] as const;
 
 export default function SettingsPage() {
     const toast = useToast();
+    const { t } = useI18n();
     const [config, setConfig] = useState<ConfigData>({ env: {}, golems: [] });
     const [originalConfig, setOriginalConfig] = useState<ConfigData>({ env: {}, golems: [] });
     const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null);
@@ -77,7 +79,7 @@ export default function SettingsPage() {
             setConfig(data);
             setOriginalConfig(data);
         } catch (error: unknown) {
-            setStatusMessage({ type: "error", text: getErrorMessage(error, "讀取設定失敗") });
+            setStatusMessage({ type: "error", text: getErrorMessage(error, t("settings.error.loadConfigFailed")) });
         } finally {
             setIsLoading(false);
         }
@@ -125,7 +127,7 @@ export default function SettingsPage() {
         });
 
         if (hasEnvChanges === false) {
-            setStatusMessage({ type: "warning", text: "沒有任何變更需要儲存" });
+            setStatusMessage({ type: "warning", text: t("settings.warning.noChanges") });
             setIsSaving(false);
             return;
         }
@@ -137,12 +139,12 @@ export default function SettingsPage() {
 
             if (data.success === true) {
                 setOriginalConfig(config);
-                setStatusMessage({ type: "warning", text: "部分設定已儲存，但需要重啟總開關（Restart System）才能完全生效。" });
+                setStatusMessage({ type: "warning", text: t("settings.warning.partialSavedNeedsRestart") });
             } else {
-                throw new Error(data.message || data.error || "儲存失敗");
+                throw new Error(data.message || data.error || t("settings.error.saveFailed"));
             }
         } catch (error: unknown) {
-            setStatusMessage({ type: "error", text: getErrorMessage(error, "儲存失敗") });
+            setStatusMessage({ type: "error", text: getErrorMessage(error, t("settings.error.saveFailed")) });
         } finally {
             setIsSaving(false);
         }
@@ -157,7 +159,7 @@ export default function SettingsPage() {
 
         try {
             await apiPost("/api/system/reload");
-            setStatusMessage({ type: "warning", text: "重新啟動指令已發送... 等待系統恢復中！" });
+            setStatusMessage({ type: "warning", text: t("settings.warning.restartCommandSent") });
 
             let retries = 0;
             const maxRetries = 30;
@@ -169,12 +171,12 @@ export default function SettingsPage() {
                     const data = await apiGet<{ isBooting?: boolean }>("/api/system/status");
                     if (data.isBooting === false) {
                         clearInterval(pollInterval);
-                        setStatusMessage({ type: "success", text: "重新啟動完成！頁面即將重新載入..." });
+                        setStatusMessage({ type: "success", text: t("settings.success.restartComplete") });
                         setTimeout(() => {
                             window.location.reload();
                         }, 1000);
                     } else {
-                        setStatusMessage({ type: "warning", text: "系統正在初始化中..." });
+                        setStatusMessage({ type: "warning", text: t("settings.warning.systemInitializing") });
                     }
                 } catch {
                     // Ignore errors while backend is still rebooting.
@@ -182,11 +184,11 @@ export default function SettingsPage() {
 
                 if (retries >= maxRetries) {
                     clearInterval(pollInterval);
-                    setStatusMessage({ type: "error", text: "重啟超時。請手動檢查終端機日誌。" });
+                    setStatusMessage({ type: "error", text: t("settings.error.restartTimeout") });
                 }
             }, 1000);
         } catch (error: unknown) {
-            toast.error("重啟失敗", getErrorMessage(error, "重啟請求發送失敗。"));
+            toast.error(t("settings.restartSystem"), getErrorMessage(error, t("settings.error.restartRequestFailed")));
         }
     };
 
@@ -195,7 +197,7 @@ export default function SettingsPage() {
             <div className="flex-1 p-6 flex items-center justify-center">
                 <div className="flex flex-col items-center space-y-4">
                     <RefreshCw className="w-8 h-8 text-primary animate-spin" />
-                    <p className="text-muted-foreground font-mono text-sm">讀取總開關系統中...</p>
+                    <p className="text-muted-foreground font-mono text-sm">{t("settings.loading")}</p>
                 </div>
             </div>
         );
@@ -208,10 +210,10 @@ export default function SettingsPage() {
                     <div>
                         <h1 className="text-2xl font-bold flex items-center gap-2">
                             <Settings className="w-6 h-6 text-primary" />
-                            系統配置總表 (System Settings)
+                            {t("settings.title")}
                         </h1>
                         <p className="text-sm text-muted-foreground mt-1">
-                            管理 Golem 的全域配置與 API 金鑰。所有變更均需重啟系統才能完全生效。
+                            {t("settings.subtitle")}
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
@@ -220,7 +222,7 @@ export default function SettingsPage() {
                             className="px-4 py-2 bg-secondary hover:bg-destructive/10 text-muted-foreground hover:text-destructive border border-border hover:border-destructive/30 rounded-lg text-sm transition-all flex items-center gap-2"
                         >
                             <RefreshCw className="w-4 h-4" />
-                            Restart System
+                            {t("settings.restartSystem")}
                         </button>
                         <button
                             onClick={handleSave}
@@ -233,7 +235,7 @@ export default function SettingsPage() {
                             )}
                         >
                             {isSaving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                            {isSaving ? "Saving..." : "Save Settings"}
+                            {isSaving ? t("settings.saving") : t("settings.saveSettings")}
                         </button>
                     </div>
                 </div>
@@ -251,7 +253,7 @@ export default function SettingsPage() {
                             )}
                         >
                             <tab.icon className="w-4 h-4" />
-                            {tab.name}
+                            {t(tab.labelKey)}
                         </button>
                     ))}
                 </div>
@@ -316,10 +318,10 @@ export default function SettingsPage() {
                     onClose={() => setIsRestartConfirmOpen(false)}
                     onConfirm={executeRestart}
                     variant="warning"
-                    title="確定要重啟 Golem 嗎？"
-                    description="重啟將會中斷目前的對話並重置系統狀態。"
-                    confirmText="立即重啟"
-                    cancelText="先不要"
+                    title={t("settings.confirmRestartTitle")}
+                    description={t("settings.confirmRestartDescription")}
+                    confirmText={t("settings.confirmRestartConfirm")}
+                    cancelText={t("settings.confirmRestartCancel")}
                 />
             </div>
         </div>

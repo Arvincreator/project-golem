@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/components/ui/toast-provider";
 import { apiGet } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/components/I18nProvider";
 
 type PromptPoolItem = {
     id: string;
@@ -50,10 +51,10 @@ type ShortcutTrendResponse = {
 
 type RangeType = "all" | "30d" | "7d";
 
-const RANGE_OPTIONS: Array<{ key: RangeType; label: string }> = [
-    { key: "all", label: "全部" },
-    { key: "30d", label: "30 天" },
-    { key: "7d", label: "7 天" },
+const RANGE_OPTIONS: Array<{ key: RangeType; zh: string; en: string }> = [
+    { key: "all", zh: "全部", en: "All" },
+    { key: "30d", zh: "30 天", en: "30d" },
+    { key: "7d", zh: "7 天", en: "7d" },
 ];
 
 function getErrorMessage(error: unknown, fallback: string) {
@@ -97,6 +98,8 @@ function TrendBars({
     trend: TrendPoint[];
     tone: "cyan" | "emerald";
 }) {
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     const safeTrend = Array.isArray(trend) ? trend : [];
     const maxCount = safeTrend.reduce((max, point) => Math.max(max, Number(point.count || 0)), 0);
     const boxTone = tone === "cyan"
@@ -117,7 +120,7 @@ function TrendBars({
                         <div
                             key={point.date}
                             className={cn("h-24 rounded-lg border relative overflow-hidden", boxTone)}
-                            title={`${point.date}：${count} 次`}
+                            title={isEnglish ? `${point.date}: ${count} uses` : `${point.date}：${count} 次`}
                         >
                             <div
                                 className={cn("absolute left-0 right-0 bottom-0 rounded-b-lg transition-all", fillTone)}
@@ -136,12 +139,14 @@ function TrendBars({
 }
 
 function PromptTrendsPageFallback() {
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     return (
         <div className="flex flex-col h-full bg-background p-6 gap-6 overflow-auto">
             <Card className="border-border/80 min-h-[300px]">
                 <CardContent className="h-[300px] flex items-center justify-center text-muted-foreground text-sm">
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    載入趨勢頁面中...
+                    {isEnglish ? "Loading trends page..." : "載入趨勢頁面中..."}
                 </CardContent>
             </Card>
         </div>
@@ -150,6 +155,8 @@ function PromptTrendsPageFallback() {
 
 function PromptTrendsContent() {
     const toast = useToast();
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -176,11 +183,14 @@ function PromptTrendsContent() {
             setTopUsed30d(Array.isArray(data.topUsedShortcuts30d) ? data.topUsedShortcuts30d : []);
             setUsageTrend14d(Array.isArray(data.usageTrend14d) ? data.usageTrend14d : []);
         } catch (error) {
-            toast.error("讀取失敗", getErrorMessage(error, "無法讀取 Prompt 趨勢資料"));
+            toast.error(
+                isEnglish ? "Load failed" : "讀取失敗",
+                getErrorMessage(error, isEnglish ? "Failed to load prompt trend data" : "無法讀取 Prompt 趨勢資料")
+            );
         } finally {
             setIsLoading(false);
         }
-    }, [toast]);
+    }, [isEnglish, toast]);
 
     const loadSingleShortcutTrend = useCallback(async (shortcut: string) => {
         const safeShortcut = String(shortcut || "").trim();
@@ -203,11 +213,14 @@ function PromptTrendsContent() {
             });
         } catch (error) {
             setSelectedTrend(null);
-            toast.warning("讀取單指令趨勢失敗", getErrorMessage(error, "請稍後再試"));
+            toast.warning(
+                isEnglish ? "Failed to load shortcut trend" : "讀取單指令趨勢失敗",
+                getErrorMessage(error, isEnglish ? "Please try again later" : "請稍後再試")
+            );
         } finally {
             setIsLoadingDetail(false);
         }
-    }, [toast]);
+    }, [isEnglish, toast]);
 
     useEffect(() => {
         loadPromptTrendSummary();
@@ -286,10 +299,12 @@ function PromptTrendsContent() {
             <div className="flex items-start justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-emerald-400">
-                        Prompt 趨勢視圖
+                        {isEnglish ? "Prompt Trends" : "Prompt 趨勢視圖"}
                     </h2>
                     <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                        將趨勢分析獨立成單頁，避免管理頁塞入過多資訊。可快速看整體熱度、單指令曲線與使用排行。
+                        {isEnglish
+                            ? "A dedicated page for trend analytics so management views stay clean. Quickly inspect overall usage, per-shortcut trends, and rankings."
+                            : "將趨勢分析獨立成單頁，避免管理頁塞入過多資訊。可快速看整體熱度、單指令曲線與使用排行。"}
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -300,7 +315,7 @@ function PromptTrendsContent() {
                         className="gap-2"
                     >
                         <ChevronLeft className="w-4 h-4" />
-                        回到指令池
+                        {isEnglish ? "Back to Pool" : "回到指令池"}
                     </Button>
                     <Button
                         type="button"
@@ -310,7 +325,7 @@ function PromptTrendsContent() {
                         className="gap-2"
                     >
                         <RefreshCcw className={cn("w-4 h-4", isLoading && "animate-spin")} />
-                        重新整理
+                        {isEnglish ? "Refresh" : "重新整理"}
                     </Button>
                 </div>
             </div>
@@ -319,7 +334,7 @@ function PromptTrendsContent() {
                 <Card className="border-border/80 min-h-[300px]">
                     <CardContent className="h-[300px] flex items-center justify-center text-muted-foreground text-sm">
                         <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                        載入趨勢資料中...
+                        {isEnglish ? "Loading trend data..." : "載入趨勢資料中..."}
                     </CardContent>
                 </Card>
             ) : (
@@ -328,10 +343,12 @@ function PromptTrendsContent() {
                         <CardHeader className="pb-4">
                             <CardTitle className="text-lg flex items-center gap-2">
                                 <BarChart3 className="w-4 h-4 text-cyan-300" />
-                                近 14 天整體使用趨勢
+                                {isEnglish ? "Overall Usage (Last 14 Days)" : "近 14 天整體使用趨勢"}
                             </CardTitle>
                             <CardDescription>
-                                總計 {globalSummary.total} 次 · 日均 {globalSummary.average} 次 · 峰值 {globalSummary.peak} 次
+                                {isEnglish
+                                    ? `Total ${globalSummary.total} · Avg/day ${globalSummary.average} · Peak ${globalSummary.peak}`
+                                    : `總計 ${globalSummary.total} 次 · 日均 ${globalSummary.average} 次 · 峰值 ${globalSummary.peak} 次`}
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -345,10 +362,12 @@ function PromptTrendsContent() {
                                 <div>
                                     <CardTitle className="text-lg flex items-center gap-2">
                                         <Activity className="w-4 h-4 text-emerald-300" />
-                                        單指令 14 天趨勢
+                                        {isEnglish ? "Single Shortcut Trend (14 Days)" : "單指令 14 天趨勢"}
                                     </CardTitle>
                                     <CardDescription>
-                                        總計 {detailSummary.total} 次 · 日均 {detailSummary.average} 次 · 峰值 {detailSummary.peak} 次
+                                        {isEnglish
+                                            ? `Total ${detailSummary.total} · Avg/day ${detailSummary.average} · Peak ${detailSummary.peak}`
+                                            : `總計 ${detailSummary.total} 次 · 日均 ${detailSummary.average} 次 · 峰值 ${detailSummary.peak} 次`}
                                     </CardDescription>
                                 </div>
                                 <select
@@ -358,7 +377,7 @@ function PromptTrendsContent() {
                                     disabled={items.length === 0}
                                 >
                                     {items.length === 0 ? (
-                                        <option value="">尚無快捷指令</option>
+                                        <option value="">{isEnglish ? "No shortcuts yet" : "尚無快捷指令"}</option>
                                     ) : (
                                         items.map((item) => (
                                             <option key={item.id} value={item.shortcut}>
@@ -373,13 +392,13 @@ function PromptTrendsContent() {
                             {isLoadingDetail ? (
                                 <div className="h-[140px] flex items-center justify-center text-muted-foreground text-sm">
                                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                                    載入單指令趨勢...
+                                    {isEnglish ? "Loading shortcut trend..." : "載入單指令趨勢..."}
                                 </div>
                             ) : selectedTrend && Array.isArray(selectedTrend.trend) ? (
                                 <TrendBars trend={selectedTrend.trend} tone="emerald" />
                             ) : (
                                 <div className="h-[140px] flex items-center justify-center text-muted-foreground text-sm italic">
-                                    目前沒有可顯示的單指令趨勢資料
+                                    {isEnglish ? "No trend data for the selected shortcut" : "目前沒有可顯示的單指令趨勢資料"}
                                 </div>
                             )}
                         </CardContent>
@@ -389,8 +408,12 @@ function PromptTrendsContent() {
                         <CardHeader className="pb-4">
                             <div className="flex flex-wrap items-center justify-between gap-3">
                                 <div>
-                                    <CardTitle className="text-lg">快捷指令使用排行 (Telegram + Dashboard)</CardTitle>
-                                    <CardDescription>可切換統計區間，快速找出最常被觸發的快捷指令。</CardDescription>
+                                    <CardTitle className="text-lg">
+                                        {isEnglish ? "Shortcut Ranking (Telegram + Dashboard)" : "快捷指令使用排行 (Telegram + Dashboard)"}
+                                    </CardTitle>
+                                    <CardDescription>
+                                        {isEnglish ? "Switch ranges to find the most frequently triggered shortcuts." : "可切換統計區間，快速找出最常被觸發的快捷指令。"}
+                                    </CardDescription>
                                 </div>
                                 <div className="inline-flex rounded-lg border border-border overflow-hidden">
                                     {RANGE_OPTIONS.map((option) => (
@@ -405,7 +428,7 @@ function PromptTrendsContent() {
                                                     : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
                                             )}
                                         >
-                                            {option.label}
+                                            {isEnglish ? option.en : option.zh}
                                         </button>
                                     ))}
                                 </div>
@@ -413,7 +436,7 @@ function PromptTrendsContent() {
                         </CardHeader>
                         <CardContent>
                             {activeRanking.length === 0 ? (
-                                <p className="text-sm text-muted-foreground italic">尚無使用記錄</p>
+                                <p className="text-sm text-muted-foreground italic">{isEnglish ? "No usage records yet" : "尚無使用記錄"}</p>
                             ) : (
                                 <div className="space-y-2">
                                     {activeRanking.map((item, index) => {
@@ -440,7 +463,7 @@ function PromptTrendsContent() {
                                                     )}
                                                 </div>
                                                 <span className="text-sm text-cyan-300 whitespace-nowrap">
-                                                    {Number(item.recentUseCount || 0)} 次
+                                                    {Number(item.recentUseCount || 0)} {isEnglish ? "uses" : "次"}
                                                 </span>
                                             </button>
                                         );

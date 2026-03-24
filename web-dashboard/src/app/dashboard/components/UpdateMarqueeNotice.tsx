@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowRight, BellRing } from "lucide-react";
 import { apiGet } from "@/lib/api-client";
+import { useI18n } from "@/components/I18nProvider";
 
 type UpdateInfo = {
     remoteVersion?: string;
@@ -17,14 +18,17 @@ type UpdateInfo = {
 
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 
-function resolveUpdateMessage(updateInfo: UpdateInfo | null): string | null {
+function resolveUpdateMessage(
+    updateInfo: UpdateInfo | null,
+    t: (key: "updateMarquee.gitBehind" | "updateMarquee.newVersionKnown" | "updateMarquee.newVersionUnknown", params?: Record<string, string | number>) => string
+): string | null {
     if (!updateInfo) return null;
 
     if (updateInfo.installMode === "git") {
         const behindCount = updateInfo.gitInfo?.behindCount ?? 0;
         if (behindCount > 0) {
             const branch = updateInfo.gitInfo?.currentBranch || "main";
-            return `GitHub ${branch} 分支有 ${behindCount} 個更新，前往「設定總表」可一鍵更新。`;
+            return t("updateMarquee.gitBehind", { branch, count: behindCount });
         }
         return null;
     }
@@ -33,13 +37,14 @@ function resolveUpdateMessage(updateInfo: UpdateInfo | null): string | null {
 
     const remoteVersion = updateInfo.remoteVersion;
     if (remoteVersion && remoteVersion !== "Unknown") {
-        return `GitHub 發現新版本 v${remoteVersion}，前往「設定總表」可一鍵更新。`;
+        return t("updateMarquee.newVersionKnown", { version: remoteVersion });
     }
-    return "GitHub 發現新版本，前往「設定總表」可一鍵更新。";
+    return t("updateMarquee.newVersionUnknown");
 }
 
 export default function UpdateMarqueeNotice() {
     const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
+    const { t } = useI18n();
 
     const fetchUpdateInfo = useCallback(async () => {
         try {
@@ -63,7 +68,7 @@ export default function UpdateMarqueeNotice() {
         return () => window.clearInterval(intervalId);
     }, [fetchUpdateInfo]);
 
-    const message = useMemo(() => resolveUpdateMessage(updateInfo), [updateInfo]);
+    const message = useMemo(() => resolveUpdateMessage(updateInfo, t), [updateInfo, t]);
 
     if (!message) return null;
 
@@ -75,7 +80,7 @@ export default function UpdateMarqueeNotice() {
             <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5 shrink-0 text-amber-700 dark:text-amber-300">
                     <BellRing className="w-4 h-4" />
-                    <span className="text-[11px] font-semibold tracking-wide uppercase">Update</span>
+                    <span className="text-[11px] font-semibold tracking-wide uppercase">{t("updateMarquee.tag")}</span>
                 </div>
 
                 <div className="min-w-0 flex-1 overflow-hidden">
@@ -86,7 +91,7 @@ export default function UpdateMarqueeNotice() {
                 </div>
 
                 <div className="shrink-0 hidden sm:flex items-center gap-1 text-xs font-semibold text-amber-700 dark:text-amber-300">
-                    前往設定總表
+                    {t("updateMarquee.gotoSettingsSummary")}
                     <ArrowRight className="w-3.5 h-3.5" />
                 </div>
             </div>

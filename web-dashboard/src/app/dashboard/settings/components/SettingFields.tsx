@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Eye, EyeOff, Lock } from "lucide-react";
+import { useI18n } from "@/components/I18nProvider";
 
 export const LOCAL_MODELS = [
     {
@@ -51,6 +52,7 @@ export const SettingField = ({
     isReadOnly?: boolean, isSecret?: boolean, value?: string, onChange?: (val: string) => void,
     type?: string, placeholder?: string, keyName?: string
 }) => {
+    const { t } = useI18n();
     const [isVisible, setIsVisible] = useState(false);
     const inputType = (isSecret && !isVisible) ? "password" : type;
 
@@ -61,7 +63,7 @@ export const SettingField = ({
                 <div className="flex items-center gap-1.5 shrink-0">
                     {isReadOnly && (
                         <span className="text-[10px] bg-secondary text-muted-foreground px-1.5 py-0.5 rounded border border-border flex items-center gap-1 whitespace-nowrap">
-                            <Lock className="w-3 h-3" /> 唯讀
+                            <Lock className="w-3 h-3" /> {t("settingField.readOnly")}
                         </span>
                     )}
                 </div>
@@ -86,7 +88,7 @@ export const SettingField = ({
                         type="button"
                         onClick={() => setIsVisible(!isVisible)}
                         className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
-                        title={isVisible ? "隱藏內容" : "顯示內容"}
+                        title={isVisible ? t("settingField.hideContent") : t("settingField.showContent")}
                     >
                         {isVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>

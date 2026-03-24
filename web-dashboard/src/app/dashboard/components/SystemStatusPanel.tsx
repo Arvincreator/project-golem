@@ -1,6 +1,7 @@
 "use client";
 
 import { PowerOff, RefreshCcw } from "lucide-react";
+import { useI18n } from "@/components/I18nProvider";
 
 type SystemStatusPanelProps = {
     isSingleNode: boolean;
@@ -23,33 +24,35 @@ export default function SystemStatusPanel({
     onRestart,
     onShutdown,
 }: SystemStatusPanelProps) {
+    const { t } = useI18n();
+
     return (
         <div className="bg-card border border-border rounded-xl p-6 flex flex-col justify-between">
             <div>
-                <h2 className="text-lg font-semibold mb-4">System Status</h2>
+                <h2 className="text-lg font-semibold mb-4">{t("status.title")}</h2>
                 <div className="space-y-4">
                     <div className="flex justify-between items-center text-sm border-b border-border pb-2">
-                        <span className="text-muted-foreground">Environment</span>
-                        <span className="text-foreground">Production</span>
+                        <span className="text-muted-foreground">{t("status.environment")}</span>
+                        <span className="text-foreground">{t("status.production")}</span>
                     </div>
                     <div className="flex justify-between items-center text-sm border-b border-border pb-2">
-                        <span className="text-muted-foreground">Mode</span>
+                        <span className="text-muted-foreground">{t("status.mode")}</span>
                         <span className="text-primary font-medium">
-                            {isSingleNode ? "Single Node" : "Multi Node"}
+                            {isSingleNode ? t("status.singleNode") : t("status.multiNode")}
                         </span>
                     </div>
                     {allowRemote && (
                         <div className="flex justify-between items-center text-sm border-b border-border pb-2">
-                            <span className="text-muted-foreground">Access URL</span>
+                            <span className="text-muted-foreground">{t("status.accessUrl")}</span>
                             <span className="text-cyan-500 font-bold">
                                 http://{localIp}:{dashboardPort}
                             </span>
                         </div>
                     )}
                     <div className="flex justify-between items-center text-sm border-b border-border pb-2">
-                        <span className="text-muted-foreground">Backend</span>
+                        <span className="text-muted-foreground">{t("status.backend")}</span>
                         <span className={isConnected ? "text-green-600 dark:text-green-400" : "text-destructive animate-pulse"}>
-                            {isConnected ? "Connected" : "Disconnected"}
+                            {isConnected ? t("status.connected") : t("status.disconnected")}
                         </span>
                     </div>
                 </div>
@@ -65,8 +68,8 @@ export default function SystemStatusPanel({
                         <RefreshCcw className="w-3.5 h-3.5 text-primary" />
                     </div>
                     <div className="text-left">
-                        <p className="text-xs font-medium text-foreground">重新啟動</p>
-                        <p className="text-[10px] text-muted-foreground">Hot-reload · 自動重連</p>
+                        <p className="text-xs font-medium text-foreground">{t("status.restartTitle")}</p>
+                        <p className="text-[10px] text-muted-foreground">{t("status.restartSubtitle")}</p>
                     </div>
                 </button>
 
@@ -79,8 +82,8 @@ export default function SystemStatusPanel({
                         <PowerOff className="w-3.5 h-3.5 text-destructive" />
                     </div>
                     <div className="text-left">
-                        <p className="text-xs font-medium text-destructive">關閉 Golem</p>
-                        <p className="text-[10px] text-muted-foreground">完全停止 · 需手動重啟</p>
+                        <p className="text-xs font-medium text-destructive">{t("status.shutdownTitle")}</p>
+                        <p className="text-[10px] text-muted-foreground">{t("status.shutdownSubtitle")}</p>
                     </div>
                 </button>
             </div>

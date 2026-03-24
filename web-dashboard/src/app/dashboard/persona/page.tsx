@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast-provider";
 import { apiGet, apiPost } from "@/lib/api-client";
 import { useQuery } from "@/hooks/useQuery";
+import { useI18n } from "@/components/I18nProvider";
 
 interface Preset {
     id: string;
@@ -77,6 +78,10 @@ function getErrorMessage(error: unknown, fallback = "請求發送失敗"): strin
     return fallback;
 }
 
+function hasCJKText(value: string): boolean {
+    return /[\u3400-\u9FFF]/.test(value);
+}
+
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
     BrainCircuit, Cpu, Palette, Sparkles, User, Settings2,
 };
@@ -91,6 +96,8 @@ function RestartConfirmDialog({
     onConfirm: () => void;
     isLoading: boolean;
 }) {
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     return (
         <Dialog open={open} onOpenChange={isLoading ? undefined : onOpenChange}>
             <DialogContent showCloseButton={!isLoading} className="bg-card border-border text-foreground max-w-sm">
@@ -98,22 +105,26 @@ function RestartConfirmDialog({
                     <div className="w-12 h-12 rounded-xl border bg-primary/10 border-primary/20 flex items-center justify-center mb-2">
                         <Zap className="w-5 h-5 text-primary" />
                     </div>
-                    <DialogTitle className="text-foreground text-base">儲存人格並開啟新對話窗口？</DialogTitle>
+                    <DialogTitle className="text-foreground text-base">{isEnglish ? "Save persona and open a new chat window?" : "儲存人格並開啟新對話窗口？"}</DialogTitle>
                     <DialogDescription className="text-muted-foreground text-sm leading-relaxed">
-                        人格設定將寫入檔案，並重新開啟 Golem 對話窗口使新設定正式生效。
+                        {isEnglish
+                            ? "Persona settings will be written to file, and a fresh Golem chat window will open to apply the new profile."
+                            : "人格設定將寫入檔案，並重新開啟 Golem 對話窗口使新設定正式生效。"}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-2">
                     <div className="flex items-start gap-2 rounded-lg bg-muted border border-border px-3 py-2.5">
                         <TriangleAlert className="w-3.5 h-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                        <p className="text-xs text-muted-foreground">進行中的對話將被中斷，此動作將為 Golem 開啟全新的對話視窗。</p>
+                        <p className="text-xs text-muted-foreground">
+                            {isEnglish ? "Current conversations will be interrupted and a new Golem chat window will be opened." : "進行中的對話將被中斷，此動作將為 Golem 開啟全新的對話視窗。"}
+                        </p>
                     </div>
                     <div className="rounded-lg bg-secondary/30 border border-border px-3 py-2">
-                        <p className="text-[11px] text-muted-foreground mb-1 font-medium">確認後將自動執行：</p>
+                        <p className="text-[11px] text-muted-foreground mb-1 font-medium">{isEnglish ? "After confirmation, the system will:" : "確認後將自動執行："}</p>
                         <ol className="text-[11px] text-muted-foreground/80 space-y-0.5 list-decimal list-inside">
-                            <li>將人格設定寫入 persona.json</li>
-                            <li>重新開啟 Gemini 對話視窗</li>
-                            <li>載入新的人格與歷史記憶</li>
+                            <li>{isEnglish ? "Write persona settings to persona.json" : "將人格設定寫入 persona.json"}</li>
+                            <li>{isEnglish ? "Reopen Gemini chat window" : "重新開啟 Gemini 對話視窗"}</li>
+                            <li>{isEnglish ? "Load new persona and memory history" : "載入新的人格與歷史記憶"}</li>
                         </ol>
                     </div>
                 </div>
@@ -123,7 +134,7 @@ function RestartConfirmDialog({
                         className="flex-1 bg-transparent border-border text-muted-foreground hover:bg-accent hover:text-foreground"
                         onClick={() => onOpenChange(false)}
                         disabled={isLoading}
-                    >取消</Button>
+                    >{isEnglish ? "Cancel" : "取消"}</Button>
                     <Button
                         className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
                         onClick={onConfirm}
@@ -131,11 +142,11 @@ function RestartConfirmDialog({
                     >
                         {isLoading ? (
                             <span className="flex items-center gap-1.5">
-                                <RefreshCcw className="w-3.5 h-3.5 animate-spin" />儲存並重啟視窗中...
+                                <RefreshCcw className="w-3.5 h-3.5 animate-spin" />{isEnglish ? "Saving and restarting..." : "儲存並重啟視窗中..."}
                             </span>
                         ) : (
                             <span className="flex items-center gap-1.5">
-                                <Zap className="w-3.5 h-3.5" />確認開啟
+                                <Zap className="w-3.5 h-3.5" />{isEnglish ? "Confirm" : "確認開啟"}
                             </span>
                         )}
                     </Button>
@@ -147,6 +158,8 @@ function RestartConfirmDialog({
 
 // ── Restarting Dialog ────────────────────────────────────────────────────────
 function RestartingDialog({ open }: { open: boolean }) {
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     return (
         <Dialog open={open} onOpenChange={() => { }}>
             <DialogContent className="bg-card border-border text-foreground max-w-sm" showCloseButton={false}>
@@ -154,9 +167,11 @@ function RestartingDialog({ open }: { open: boolean }) {
                     <div className="w-12 h-12 rounded-xl border bg-green-500/10 border-green-500/20 flex items-center justify-center mb-2">
                         <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     </div>
-                    <DialogTitle className="text-foreground text-base">人格設定已儲存 ✅</DialogTitle>
+                    <DialogTitle className="text-foreground text-base">{isEnglish ? "Persona saved ✅" : "人格設定已儲存 ✅"}</DialogTitle>
                     <DialogDescription className="text-muted-foreground text-sm">
-                        人格已更新，Golem 正在新視窗載入您的設定。頁面將在 3 秒後自動重新整理。
+                        {isEnglish
+                            ? "Persona updated. Golem is loading your settings in a new window. This page will refresh in 3 seconds."
+                            : "人格已更新，Golem 正在新視窗載入您的設定。頁面將在 3 秒後自動重新整理。"}
                     </DialogDescription>
                 </DialogHeader>
             </DialogContent>
@@ -174,6 +189,8 @@ function PersonaDeleteConfirmDialog({
     isLoading: boolean;
     personaName: string;
 }) {
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     return (
         <Dialog open={open} onOpenChange={isLoading ? undefined : onOpenChange}>
             <DialogContent showCloseButton={!isLoading} className="bg-card border-border text-foreground max-w-sm">
@@ -181,9 +198,13 @@ function PersonaDeleteConfirmDialog({
                     <div className="w-12 h-12 rounded-xl border bg-destructive/10 border-destructive/20 flex items-center justify-center mb-2">
                         <Trash2 className="w-5 h-5 text-destructive" />
                     </div>
-                    <DialogTitle className="text-foreground text-base">確定要刪除此人格嗎？</DialogTitle>
+                    <DialogTitle className="text-foreground text-base">{isEnglish ? "Delete this persona?" : "確定要刪除此人格嗎？"}</DialogTitle>
                     <DialogDescription className="text-muted-foreground text-sm leading-relaxed">
-                        您即將刪除樣板「<span className="text-foreground font-medium">{personaName}</span>」。此動作無法復原。
+                        {isEnglish ? (
+                            <>You are deleting template "<span className="text-foreground font-medium">{personaName}</span>". This cannot be undone.</>
+                        ) : (
+                            <>您即將刪除樣板「<span className="text-foreground font-medium">{personaName}</span>」。此動作無法復原。</>
+                        )}
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="gap-2 sm:gap-2 pt-2">
@@ -192,7 +213,7 @@ function PersonaDeleteConfirmDialog({
                         className="flex-1 bg-transparent border-border text-muted-foreground hover:bg-accent hover:text-foreground"
                         onClick={() => onOpenChange(false)}
                         disabled={isLoading}
-                    >取消</Button>
+                    >{isEnglish ? "Cancel" : "取消"}</Button>
                     <Button
                         className="flex-1 bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                         onClick={onConfirm}
@@ -200,11 +221,11 @@ function PersonaDeleteConfirmDialog({
                     >
                         {isLoading ? (
                             <span className="flex items-center gap-1.5">
-                                <RefreshCcw className="w-3.5 h-3.5 animate-spin" />刪除中...
+                                <RefreshCcw className="w-3.5 h-3.5 animate-spin" />{isEnglish ? "Deleting..." : "刪除中..."}
                             </span>
                         ) : (
                             <span className="flex items-center gap-1.5">
-                                <Trash2 className="w-3.5 h-3.5" />確認刪除
+                                <Trash2 className="w-3.5 h-3.5" />{isEnglish ? "Confirm delete" : "確認刪除"}
                             </span>
                         )}
                     </Button>
@@ -222,6 +243,8 @@ function CreatePersonaDialog({
     onOpenChange: (v: boolean) => void;
     onCreated: () => void;
 }) {
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     const [id, setId] = useState("");
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -243,7 +266,7 @@ function CreatePersonaDialog({
     const handleClose = (v: boolean) => { if (!v) reset(); onOpenChange(v); };
 
     const handleSubmit = async () => {
-        if (!id.trim() || !name.trim()) { setError("請填寫 ID 與名稱"); return; }
+        if (!id.trim() || !name.trim()) { setError(isEnglish ? "Please fill in ID and Name" : "請填寫 ID 與名稱"); return; }
         setIsLoading(true); setError(null);
         try {
             const data = await apiPost<{ success?: boolean; error?: string }>("/api/persona/create", {
@@ -258,9 +281,9 @@ function CreatePersonaDialog({
                 tags
             });
             if (data.success) { reset(); onOpenChange(false); onCreated(); }
-            else setError(data.error || "建立失敗");
+            else setError(data.error || (isEnglish ? "Create failed" : "建立失敗"));
         } catch (error: unknown) {
-            setError(getErrorMessage(error));
+            setError(getErrorMessage(error, isEnglish ? "Request failed" : "請求發送失敗"));
         }
         finally { setIsLoading(false); }
     };
@@ -274,28 +297,28 @@ function CreatePersonaDialog({
                     <div className="w-10 h-10 rounded-xl border bg-primary/10 border-primary/20 flex items-center justify-center mb-2">
                         <Plus className="w-5 h-5 text-primary" />
                     </div>
-                    <DialogTitle className="text-foreground text-base">新增人格樣板</DialogTitle>
-                    <DialogDescription className="text-muted-foreground text-sm">建立新的 persona .md 樣板。</DialogDescription>
+                    <DialogTitle className="text-foreground text-base">{isEnglish ? "Create Persona Template" : "新增人格樣板"}</DialogTitle>
+                    <DialogDescription className="text-muted-foreground text-sm">{isEnglish ? "Create a new persona template (.md)." : "建立新的 persona .md 樣板。"}</DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4 py-2">
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-xs font-medium text-muted-foreground mb-1.5">檔案 ID <span className="text-destructive">*</span></label>
+                            <label className="block text-xs font-medium text-muted-foreground mb-1.5">{isEnglish ? "File ID" : "檔案 ID"} <span className="text-destructive">*</span></label>
                             <input value={id} onChange={e => setId(e.target.value)} placeholder="my_persona" className={fieldCls} />
-                            <p className="text-[10px] text-muted-foreground mt-1">英數字與底線，自動轉小寫</p>
+                            <p className="text-[10px] text-muted-foreground mt-1">{isEnglish ? "Letters, numbers, underscore. Auto-lowercased." : "英數字與底線，自動轉小寫"}</p>
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-muted-foreground mb-1.5">顯示名稱 <span className="text-destructive">*</span></label>
-                            <input value={name} onChange={e => setName(e.target.value)} placeholder="我的人格" className={fieldCls} />
+                            <label className="block text-xs font-medium text-muted-foreground mb-1.5">{isEnglish ? "Display Name" : "顯示名稱"} <span className="text-destructive">*</span></label>
+                            <input value={name} onChange={e => setName(e.target.value)} placeholder={isEnglish ? "My Persona" : "我的人格"} className={fieldCls} />
                         </div>
                     </div>
                     <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">簡短描述</label>
-                        <input value={description} onChange={e => setDescription(e.target.value)} placeholder="一句話描述這個人格的特色" className={fieldCls} />
+                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">{isEnglish ? "Short Description" : "簡短描述"}</label>
+                        <input value={description} onChange={e => setDescription(e.target.value)} placeholder={isEnglish ? "One-line description of this persona" : "一句話描述這個人格的特色"} className={fieldCls} />
                     </div>
                     <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">圖示</label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">{isEnglish ? "Icon" : "圖示"}</label>
                         <div className="flex flex-wrap gap-2">
                             {ICON_OPTIONS.map(opt => {
                                 const Ico = ICON_MAP[opt];
@@ -310,27 +333,27 @@ function CreatePersonaDialog({
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-xs font-medium text-muted-foreground mb-1.5">AI 名稱</label>
+                            <label className="block text-xs font-medium text-muted-foreground mb-1.5">{isEnglish ? "AI Name" : "AI 名稱"}</label>
                             <input value={aiName} onChange={e => setAiName(e.target.value)} placeholder="Golem" className={fieldCls} />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-muted-foreground mb-1.5">使用者稱呼</label>
+                            <label className="block text-xs font-medium text-muted-foreground mb-1.5">{isEnglish ? "User Name" : "使用者稱呼"}</label>
                             <input value={userName} onChange={e => setUserName(e.target.value)} placeholder="Traveler" className={fieldCls} />
                         </div>
                     </div>
                     <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">任務定位 &amp; 人設背景</label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">{isEnglish ? "Role & Persona Background" : "任務定位 &amp; 人設背景"}</label>
                         <textarea value={role} onChange={e => setRole(e.target.value)}
-                            placeholder="描述這個人格的身份背景、任務與個性..."
+                            placeholder={isEnglish ? "Describe this persona's background, mission, and personality..." : "描述這個人格的身份背景、任務與個性..."}
                             className={`${fieldCls} resize-y min-h-[90px]`} />
                     </div>
                     <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">語言風格 &amp; 語氣</label>
-                        <input value={tone} onChange={e => setTone(e.target.value)} placeholder="例如：活潑幽默、直接果斷" className={fieldCls} />
+                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">{isEnglish ? "Language Style & Tone" : "語言風格 &amp; 語氣"}</label>
+                        <input value={tone} onChange={e => setTone(e.target.value)} placeholder={isEnglish ? "e.g. lively and humorous, direct and decisive" : "例如：活潑幽默、直接果斷"} className={fieldCls} />
                     </div>
                     <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">標籤（逗號分隔）</label>
-                        <input value={tags} onChange={e => setTags(e.target.value)} placeholder="生產力, 助手, 專業" className={fieldCls} />
+                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">{isEnglish ? "Tags (comma-separated)" : "標籤（逗號分隔）"}</label>
+                        <input value={tags} onChange={e => setTags(e.target.value)} placeholder={isEnglish ? "productivity, assistant, professional" : "生產力, 助手, 專業"} className={fieldCls} />
                     </div>
                     {error && (
                         <div className="flex items-center gap-2 text-destructive text-sm bg-destructive/10 border border-destructive/20 rounded-lg px-3 py-2">
@@ -341,11 +364,11 @@ function CreatePersonaDialog({
 
                 <DialogFooter className="gap-2 sm:gap-2 pt-2">
                     <Button variant="outline" className="flex-1 bg-transparent border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
-                        onClick={() => handleClose(false)} disabled={isLoading}>取消</Button>
+                        onClick={() => handleClose(false)} disabled={isLoading}>{isEnglish ? "Cancel" : "取消"}</Button>
                     <Button className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground" onClick={handleSubmit} disabled={isLoading}>
                         {isLoading
-                            ? <span className="flex items-center gap-1.5"><RefreshCcw className="w-3.5 h-3.5 animate-spin" />建立中...</span>
-                            : <span className="flex items-center gap-1.5"><Plus className="w-3.5 h-3.5" />建立人格</span>}
+                            ? <span className="flex items-center gap-1.5"><RefreshCcw className="w-3.5 h-3.5 animate-spin" />{isEnglish ? "Creating..." : "建立中..."}</span>
+                            : <span className="flex items-center gap-1.5"><Plus className="w-3.5 h-3.5" />{isEnglish ? "Create Persona" : "建立人格"}</span>}
                     </Button>
                 </DialogFooter>
             </DialogContent>
@@ -379,6 +402,8 @@ function EditField({
 // ── Main Page ────────────────────────────────────────────────────────────────
 export default function PersonaPage() {
     const toast = useToast();
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     const [saved, setSaved] = useState<PersonaData | null>(null);  // last-saved state
     const [aiName, setAiName] = useState("Golem");
     const [userName, setUserName] = useState("Traveler");
@@ -413,6 +438,7 @@ export default function PersonaPage() {
     const [isDeletingPersona, setIsDeletingPersona] = useState(false);
 
     const [statusMsg, setStatusMsg] = useState<{ type: "error" | "info"; text: string } | null>(null);
+    const hasHydratedPersonaRef = useRef(false);
 
     const applyToForm = (data: PersonaData) => {
         setAiName(data.aiName || "Golem");
@@ -421,19 +447,25 @@ export default function PersonaPage() {
         setTone(data.tone || "");
     };
 
+    const fetchPersona = useCallback(() => apiGet<PersonaData>("/api/persona"), []);
+    const fetchTemplates = useCallback(() => apiGet<PersonaTemplatesResponse>("/api/golems/templates"), []);
+
     const {
         data: personaData,
-    } = useQuery<PersonaData>(() => apiGet<PersonaData>("/api/persona"), []);
+    } = useQuery<PersonaData>(fetchPersona, []);
 
     const {
         data: templatesData,
         refetch: refetchTemplates,
-    } = useQuery<PersonaTemplatesResponse>(() => apiGet<PersonaTemplatesResponse>("/api/golems/templates"), []);
+    } = useQuery<PersonaTemplatesResponse>(fetchTemplates, []);
 
     useEffect(() => {
         if (!personaData) return;
         setSaved(personaData);
-        applyToForm(personaData);
+        if (!hasHydratedPersonaRef.current) {
+            applyToForm(personaData);
+            hasHydratedPersonaRef.current = true;
+        }
     }, [personaData]);
 
     useEffect(() => {
@@ -503,24 +535,49 @@ export default function PersonaPage() {
                 setTimeout(() => window.location.reload(), 3000);
             } else {
                 setShowConfirm(false);
-                setStatusMsg({ type: "error", text: data.message || data.error || "注入失敗" });
+                setStatusMsg({ type: "error", text: data.message || data.error || (isEnglish ? "Inject failed" : "注入失敗") });
             }
         } catch {
             setShowConfirm(false);
-            setStatusMsg({ type: "error", text: "注入請求發送失敗" });
+            setStatusMsg({ type: "error", text: isEnglish ? "Failed to send inject request" : "注入請求發送失敗" });
         } finally {
             setIsInjecting(false);
         }
     };
 
-    const applyPreset = (preset: Preset) => {
-        const isZh = preset.tags?.includes('zh') || !!preset.name_zh;
+    const applyPreset = (preset: Preset, options?: { preferOriginal?: boolean }) => {
+        const preferOriginal = Boolean(options?.preferOriginal);
+        const preferZh = !isEnglish && !options?.preferOriginal && (preset.tags?.includes('zh') || !!preset.name_zh);
 
         setSelectedPersona(preset);
-        setAiName(preset.name_zh || preset.aiName || preset.name);
-        setUserName(isZh && (preset.userName === "User" || !preset.userName) ? "使用者" : (preset.userName || "User"));
-        setRole(preset.role_zh || preset.role || preset.description_zh || preset.description);
-        setTone(isZh && (preset.tone === "Professional" || !preset.tone) ? "專業" : (preset.tone || "Professional"));
+
+        if (preferOriginal) {
+            const originalAiName = (preset.aiName || preset.name || "Golem").trim();
+            const originalUserNameRaw = (preset.userName || "").trim();
+            const originalRoleRaw = (preset.role || "").trim();
+            const originalDescription = (preset.description || "").trim();
+            const originalToneRaw = (preset.tone || "").trim();
+
+            const originalUserName = originalUserNameRaw && !hasCJKText(originalUserNameRaw) ? originalUserNameRaw : "User";
+            const originalRole = originalRoleRaw && !hasCJKText(originalRoleRaw)
+                ? originalRoleRaw
+                : (originalDescription || "A thoughtful AI assistant that helps the user effectively.");
+            const originalTone = originalToneRaw && !hasCJKText(originalToneRaw)
+                ? originalToneRaw
+                : "Professional, natural, and friendly";
+
+            setAiName(originalAiName);
+            setUserName(originalUserName);
+            setRole(originalRole);
+            setTone(originalTone);
+        } else {
+            setAiName(preferZh ? (preset.name_zh || preset.aiName || preset.name) : (preset.aiName || preset.name));
+            setUserName(preferZh && (preset.userName === "User" || !preset.userName) ? "使用者" : (preset.userName || "User"));
+            setRole(preferZh
+                ? (preset.role_zh || preset.role || preset.description_zh || preset.description)
+                : (preset.role || preset.description));
+            setTone(preferZh && (preset.tone === "Professional" || !preset.tone) ? "專業" : (preset.tone || "Professional"));
+        }
         
         setIsDrawerOpen(true);
         setStatusMsg(null);
@@ -541,11 +598,11 @@ export default function PersonaPage() {
                     setIsDrawerOpen(false);
                 }
             } else {
-                toast.error("刪除失敗", data.error || "刪除失敗");
+                toast.error(isEnglish ? "Delete failed" : "刪除失敗", data.error || (isEnglish ? "Delete failed" : "刪除失敗"));
             }
         } catch (err) {
             console.error(err);
-            toast.error("請求失敗", "請求發送失敗");
+            toast.error(isEnglish ? "Request failed" : "請求失敗", isEnglish ? "Request failed" : "請求發送失敗");
         } finally {
             setIsDeletingPersona(false);
         }
@@ -572,11 +629,11 @@ export default function PersonaPage() {
                             </div>
                             <div>
                                 <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-primary tracking-tight">
-                                    人格設定 (Persona)
+                                    {isEnglish ? "Persona Settings" : "人格設定 (Persona)"}
                                 </h1>
                                 <p className="text-sm text-muted-foreground mt-1.5 flex items-center gap-2">
                                     <Sparkles className="w-3.5 h-3.5 text-primary/60" />
-                                    管理 Golem 的身份、任務定位與語言風格
+                                    {isEnglish ? "Manage Golem identity, role positioning, and language style" : "管理 Golem 的身份、任務定位與語言風格"}
                                 </p>
                             </div>
                         </div>
@@ -589,7 +646,7 @@ export default function PersonaPage() {
                                     setSelectedPersona({
                                         id: 'current',
                                         name: saved.aiName,
-                                        description: '目前正在運行的設定',
+                                        description: isEnglish ? "Currently active settings" : '目前正在運行的設定',
                                         icon: 'User',
                                         aiName: saved.aiName,
                                         userName: saved.userName,
@@ -610,7 +667,7 @@ export default function PersonaPage() {
                                 </div>
                                 <div className="min-w-0">
                                     <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-none mb-1.5 opacity-70">
-                                        執行中 (Active)
+                                        {isEnglish ? "ACTIVE" : "執行中 (Active)"}
                                     </p>
                                     <h3 className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">
                                         {saved.aiName}
@@ -632,7 +689,7 @@ export default function PersonaPage() {
                                     activeTab === "local" ? "text-primary" : "text-muted-foreground hover:text-foreground")}
                             >
                                 <div className="flex items-center gap-2">
-                                    <User className="w-4 h-4" /> 我的樣板 (Local)
+                                    <User className="w-4 h-4" /> {isEnglish ? "My Templates (Local)" : "我的樣板 (Local)"}
                                 </div>
                                 {activeTab === "local" && (
                                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full" />
@@ -644,7 +701,7 @@ export default function PersonaPage() {
                                     activeTab === "market" ? "text-primary" : "text-muted-foreground hover:text-foreground")}
                             >
                                 <div className="flex items-center gap-2">
-                                    <Sparkles className="w-4 h-4" /> 人格市集 (Market)
+                                    <Sparkles className="w-4 h-4" /> {isEnglish ? "Persona Market" : "人格市集 (Market)"}
                                 </div>
                                 {activeTab === "market" && (
                                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full" />
@@ -655,9 +712,9 @@ export default function PersonaPage() {
                         {activeTab === "local" && (
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-sm font-medium text-muted-foreground">本地自訂與預設樣板</h2>
+                                    <h2 className="text-sm font-medium text-muted-foreground">{isEnglish ? "Local custom and preset templates" : "本地自訂與預設樣板"}</h2>
                                     <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 text-xs font-medium rounded-lg transition-all">
-                                        <Plus className="w-3.5 h-3.5" />新增人格
+                                        <Plus className="w-3.5 h-3.5" />{isEnglish ? "Add Persona" : "新增人格"}
                                     </button>
                                 </div>
                                 {/* Search + Tags */}
@@ -667,7 +724,7 @@ export default function PersonaPage() {
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                             <input
                                                 type="text"
-                                                placeholder="搜尋樣板..."
+                                                placeholder={isEnglish ? "Search templates..." : "搜尋樣板..."}
                                                 value={searchTerm}
                                                 onChange={e => setSearchTerm(e.target.value)}
                                                 className="w-full bg-secondary/30 border border-border rounded-xl pl-9 pr-4 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all placeholder:text-muted-foreground"
@@ -683,7 +740,7 @@ export default function PersonaPage() {
                                         <button onClick={() => setSelectedTag(null)}
                                             className={cn("px-3 py-1 rounded-lg text-xs font-medium transition-all",
                                                 selectedTag === null ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground")}>
-                                            全部
+                                            {isEnglish ? "All" : "全部"}
                                         </button>
                                         {allTags.map(tag => (
                                             <button key={tag} onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
@@ -720,7 +777,7 @@ export default function PersonaPage() {
                                                 </div>
                                                 {selectedPersona?.id === preset.id && (
                                                     <div className="flex items-center gap-1 bg-primary/20 border border-primary/30 text-primary text-[9px] font-bold px-2 py-0.5 rounded-full">
-                                                        <Check className="w-2.5 h-2.5" />套用中
+                                                        <Check className="w-2.5 h-2.5" />{isEnglish ? "Applied" : "套用中"}
                                                     </div>
                                                 )}
                                             </div>
@@ -738,7 +795,7 @@ export default function PersonaPage() {
                                                         setPersonaToDelete(preset);
                                                     }}
                                                     className="absolute bottom-3 right-3 p-2 bg-background/50 border border-border text-muted-foreground hover:text-destructive hover:border-destructive/40 rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
-                                                    title="刪除人格樣板"
+                                                    title={isEnglish ? "Delete persona template" : "刪除人格樣板"}
                                                 >
                                                     <Trash2 className="w-3.5 h-3.5" />
                                                 </button>
@@ -747,7 +804,7 @@ export default function PersonaPage() {
                                     )) : (
                                         <div className="col-span-full py-16 text-center bg-secondary/20 border border-dashed border-border rounded-2xl flex flex-col items-center">
                                             <Search className="w-8 h-8 text-muted-foreground/40 mb-2" />
-                                            <p className="text-muted-foreground text-sm">找不到符合條件的樣板</p>
+                                            <p className="text-muted-foreground text-sm">{isEnglish ? "No templates found" : "找不到符合條件的樣板"}</p>
                                         </div>
                                     )}
                                 </div>
@@ -757,7 +814,9 @@ export default function PersonaPage() {
                         {activeTab === "market" && (
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-sm font-medium text-muted-foreground">來自 Awesome ChatGPT Prompts 的海量人格</h2>
+                                    <h2 className="text-sm font-medium text-muted-foreground">
+                                        {isEnglish ? "Massive personas from Awesome ChatGPT Prompts" : "來自 Awesome ChatGPT Prompts 的海量人格"}
+                                    </h2>
                                 </div>
                                 <div className="bg-card/40 border border-border rounded-2xl p-4">
                                     <div className="flex gap-3 mb-4">
@@ -765,7 +824,7 @@ export default function PersonaPage() {
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                             <input
                                                 type="text"
-                                                placeholder="搜尋市集人格..."
+                                                placeholder={isEnglish ? "Search market personas..." : "搜尋市集人格..."}
                                                 value={searchMarketTerm}
                                                 onChange={e => { setSearchMarketTerm(e.target.value); setMarketPage(1); }}
                                                 className="w-full bg-secondary/30 border border-border rounded-xl pl-9 pr-4 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all placeholder:text-muted-foreground"
@@ -779,21 +838,21 @@ export default function PersonaPage() {
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {[
-                                            { id: 'all', label: '全部' },
-                                            { id: 'coding-and-dev', label: '寫程式與開發' },
-                                            { id: 'writing-and-language', label: '寫作與語言' },
-                                            { id: 'business-and-marketing', label: '商業與行銷' },
-                                            { id: 'education', label: '教育與學習' },
-                                            { id: 'health-and-fitness', label: '健康與塑身' },
-                                            { id: 'gaming-and-rpg', label: '遊戲與角色扮演' },
-                                            { id: 'data-and-research', label: '數據與研究' },
-                                            { id: 'creative-arts', label: '創意與藝術' },
-                                            { id: 'other', label: '其他角色' }
+                                            { id: 'all', zh: '全部', en: 'All' },
+                                            { id: 'coding-and-dev', zh: '寫程式與開發', en: 'Coding & Dev' },
+                                            { id: 'writing-and-language', zh: '寫作與語言', en: 'Writing & Language' },
+                                            { id: 'business-and-marketing', zh: '商業與行銷', en: 'Business & Marketing' },
+                                            { id: 'education', zh: '教育與學習', en: 'Education' },
+                                            { id: 'health-and-fitness', zh: '健康與塑身', en: 'Health & Fitness' },
+                                            { id: 'gaming-and-rpg', zh: '遊戲與角色扮演', en: 'Gaming & RPG' },
+                                            { id: 'data-and-research', zh: '數據與研究', en: 'Data & Research' },
+                                            { id: 'creative-arts', zh: '創意與藝術', en: 'Creative Arts' },
+                                            { id: 'other', zh: '其他角色', en: 'Other' }
                                         ].map(cat => (
                                             <button key={cat.id} onClick={() => { setMarketCategory(cat.id); setMarketPage(1); }}
                                                 className={cn("px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1",
                                                     marketCategory === cat.id ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground")}>
-                                                <Filter className="w-3 h-3" />{cat.label}
+                                                <Filter className="w-3 h-3" />{isEnglish ? cat.en : cat.zh}
                                             </button>
                                         ))}
                                     </div>
@@ -811,8 +870,8 @@ export default function PersonaPage() {
                                                     key={preset.id}
                                                     role="button"
                                                     tabIndex={0}
-                                                    onClick={() => applyPreset({ ...preset, icon: "Sparkles", aiName: preset.name, userName: "User", tone: "Professional", skills: [] })}
-                                                    onKeyDown={(e) => e.key === 'Enter' && applyPreset({ ...preset, icon: "Sparkles", aiName: preset.name, userName: "User", tone: "Professional", skills: [] })}
+                                                    onClick={() => applyPreset({ ...preset, icon: "Sparkles", aiName: preset.name, userName: "User", tone: "Professional", skills: [] }, { preferOriginal: true })}
+                                                    onKeyDown={(e) => e.key === 'Enter' && applyPreset({ ...preset, icon: "Sparkles", aiName: preset.name, userName: "User", tone: "Professional", skills: [] }, { preferOriginal: true })}
                                                     className={cn(
                                                         "text-left p-4 rounded-2xl border transition-all duration-300 group relative overflow-hidden flex flex-col cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary",
                                                         selectedPersona?.id === preset.id
@@ -829,21 +888,21 @@ export default function PersonaPage() {
                                                         </div>
                                                         {selectedPersona?.id === preset.id && (
                                                             <div className="flex items-center gap-1 bg-primary/20 border border-primary/30 text-primary text-[9px] font-bold px-2 py-0.5 rounded-full">
-                                                                <Check className="w-2.5 h-2.5" />套用中
+                                                                <Check className="w-2.5 h-2.5" />{isEnglish ? "Applied" : "套用中"}
                                                             </div>
                                                         )}
                                                     </div>
                                                     <h4 className={cn("font-bold mb-1 text-sm transition-colors",
                                                         selectedPersona?.id === preset.id ? "text-primary-foreground" : "text-foreground group-hover:text-primary")}>
-                                                        {preset.name_zh && preset.name_zh !== preset.name ? `${preset.name} / ${preset.name_zh}` : preset.name}
+                                                        {preset.name}
                                                     </h4>
                                                     <p className="text-xs text-muted-foreground leading-relaxed flex-1 line-clamp-3">
-                                                        {preset.description_zh && preset.tags.includes('zh') ? preset.description_zh : preset.description}
+                                                        {preset.description}
                                                     </p>
                                                     {preset.category_name && (
                                                         <div className="mt-3 pt-3 border-t border-border/50 flex justify-between items-center w-full">
                                                             <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                                                <Tag className="w-3 h-3" /> {preset.category_name.zh || preset.category_name.en}
+                                                                <Tag className="w-3 h-3" /> {preset.category_name.en || preset.category_name.zh}
                                                             </span>
                                                         </div>
                                                     )}
@@ -856,7 +915,7 @@ export default function PersonaPage() {
                                             )) : (
                                                 <div className="col-span-full py-16 text-center bg-secondary/20 border border-dashed border-border rounded-2xl flex flex-col items-center">
                                                     <Search className="w-8 h-8 text-muted-foreground/40 mb-2" />
-                                                    <p className="text-muted-foreground text-sm">找不到符合條件的人格</p>
+                                                    <p className="text-muted-foreground text-sm">{isEnglish ? "No personas found" : "找不到符合條件的人格"}</p>
                                                 </div>
                                             )}
                                         </div>
@@ -865,7 +924,9 @@ export default function PersonaPage() {
                                         {marketTotal > 0 && (
                                             <div className="flex items-center justify-between mt-6 bg-secondary/40 p-3 rounded-xl border border-border">
                                                 <p className="text-xs text-muted-foreground">
-                                                    Showing {(marketPage - 1) * 20 + 1} to {Math.min(marketPage * 20, marketTotal)} of {marketTotal}
+                                                    {isEnglish
+                                                        ? `Showing ${(marketPage - 1) * 20 + 1} to ${Math.min(marketPage * 20, marketTotal)} of ${marketTotal}`
+                                                        : `顯示 ${(marketPage - 1) * 20 + 1} 到 ${Math.min(marketPage * 20, marketTotal)}，共 ${marketTotal} 筆`}
                                                 </p>
                                                 <div className="flex items-center gap-2">
                                                     <Button
@@ -874,7 +935,7 @@ export default function PersonaPage() {
                                                         onClick={() => setMarketPage(p => Math.max(1, p - 1))}
                                                         disabled={marketPage === 1}
                                                     >
-                                                        Prev
+                                                        {isEnglish ? "Prev" : "上一頁"}
                                                     </Button>
                                                     <div className="flex items-center gap-1">
                                                         {Array.from({ length: Math.min(5, Math.ceil(marketTotal / 20)) }, (_, i) => {
@@ -904,7 +965,7 @@ export default function PersonaPage() {
                                                         onClick={() => setMarketPage(p => Math.min(Math.ceil(marketTotal / 20), p + 1))}
                                                         disabled={marketPage === Math.ceil(marketTotal / 20)}
                                                     >
-                                                        Next
+                                                        {isEnglish ? "Next" : "下一頁"}
                                                     </Button>
                                                 </div>
                                             </div>
@@ -929,6 +990,14 @@ export default function PersonaPage() {
             )}>
                 {selectedPersona && (
                     <>
+                        {(() => {
+                            const selectedIsMarket = Array.isArray(selectedPersona.tags) && selectedPersona.tags.includes("market");
+                            const displaySelectedName = selectedIsMarket ? selectedPersona.name : (selectedPersona.name_zh || selectedPersona.name);
+                            const displaySelectedDescription = selectedIsMarket
+                                ? selectedPersona.description
+                                : (selectedPersona.description_zh || selectedPersona.description);
+                            return (
+                                <>
                         <div className="flex items-center justify-between p-6 border-b border-border bg-accent/10">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30">
@@ -936,10 +1005,10 @@ export default function PersonaPage() {
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-bold text-foreground truncate max-w-[200px]">
-                                        {selectedPersona.name_zh || selectedPersona.name}
+                                        {displaySelectedName}
                                     </h2>
                                     <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest mt-0.5">
-                                        樣板詳情 & 設定
+                                        {isEnglish ? "Template Details & Settings" : "樣板詳情 & 設定"}
                                     </p>
                                 </div>
                             </div>
@@ -954,11 +1023,11 @@ export default function PersonaPage() {
                         <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
                             <div className="space-y-4">
                                 <h3 className="text-xs font-bold text-primary flex items-center gap-2 uppercase tracking-wider">
-                                    <Sparkles className="w-3.5 h-3.5" /> 角色描述
+                                    <Sparkles className="w-3.5 h-3.5" /> {isEnglish ? "Description" : "角色描述"}
                                 </h3>
                                 <div className="bg-secondary/40 border border-border/50 rounded-2xl p-5 shadow-inner">
                                     <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap italic opacity-90">
-                                        「{selectedPersona.description_zh || selectedPersona.description}」
+                                        「{displaySelectedDescription}」
                                     </p>
                                 </div>
                                 {selectedPersona.tags && selectedPersona.tags.length > 0 && (
@@ -974,27 +1043,27 @@ export default function PersonaPage() {
 
                             <div className="space-y-6">
                                 <h3 className="text-xs font-bold text-primary flex items-center gap-2 uppercase tracking-wider border-b border-border pb-2">
-                                    <Settings2 className="w-3.5 h-3.5" /> 人格詳細設定
+                                    <Settings2 className="w-3.5 h-3.5" /> {isEnglish ? "Persona Details" : "人格詳細設定"}
                                 </h3>
                                 
                                 <div className="grid grid-cols-2 gap-4">
-                                    <EditField label="AI 名稱" value={aiName} onChange={setAiName} placeholder="例如：Friday, Golem" />
-                                    <EditField label="你的稱呼" value={userName} onChange={setUserName} placeholder="例如：Boss, Commander" />
+                                    <EditField label={isEnglish ? "AI Name" : "AI 名稱"} value={aiName} onChange={setAiName} placeholder={isEnglish ? "e.g. Friday, Golem" : "例如：Friday, Golem"} />
+                                    <EditField label={isEnglish ? "Your Name" : "你的稱呼"} value={userName} onChange={setUserName} placeholder={isEnglish ? "e.g. Boss, Commander" : "例如：Boss, Commander"} />
                                 </div>
 
                                 <EditField 
-                                    label="語言風格 & 語氣" 
+                                    label={isEnglish ? "Language Style & Tone" : "語言風格 & 語氣"} 
                                     value={tone} 
                                     onChange={setTone}
-                                    placeholder="例如：活潑幽默、直接果斷" 
+                                    placeholder={isEnglish ? "e.g. lively and humorous, direct and decisive" : "例如：活潑幽默、直接果斷"} 
                                 />
 
                                 <EditField 
-                                    label="任務定位 & 人設背景" 
+                                    label={isEnglish ? "Role & Persona Background" : "任務定位 & 人設背景"} 
                                     value={role} 
                                     onChange={setRole} 
                                     multiline
-                                    placeholder="描述這個人格的身份背景、任務與個性..." 
+                                    placeholder={isEnglish ? "Describe this persona's background, mission, and personality..." : "描述這個人格的身份背景、任務與個性..."} 
                                 />
                             </div>
 
@@ -1018,7 +1087,7 @@ export default function PersonaPage() {
                                     onClick={() => handleDiscard()}
                                     className="flex-1 h-12 rounded-xl border-border text-muted-foreground hover:bg-accent/50 hover:text-foreground"
                                 >
-                                    放棄修改
+                                    {isEnglish ? "Discard Changes" : "放棄修改"}
                                 </Button>
                                 <Button
                                     onClick={() => setShowConfirm(true)}
@@ -1026,13 +1095,18 @@ export default function PersonaPage() {
                                     className="flex-[2] h-12 font-bold bg-primary hover:bg-primary/90 text-primary-foreground border-none shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 rounded-xl text-sm"
                                 >
                                     <Zap className="w-4 h-4 mr-2" />
-                                    儲存並重啟視窗
+                                    {isEnglish ? "Save & Restart Window" : "儲存並重啟視窗"}
                                 </Button>
                             </div>
                             <p className="text-center text-[10px] text-muted-foreground mt-3 opacity-60">
-                                點擊「儲存並重啟」後設定將寫入檔案並開啟全新 Gemini 視窗
+                                {isEnglish
+                                    ? "After clicking save & restart, settings will be written to file and a new Gemini window will open."
+                                    : "點擊「儲存並重啟」後設定將寫入檔案並開啟全新 Gemini 視窗"}
                             </p>
                         </div>
+                                </>
+                            );
+                        })()}
                     </>
                 )}
             </aside>

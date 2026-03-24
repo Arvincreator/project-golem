@@ -7,6 +7,7 @@ import { Copy, Plus, RefreshCw, Trash2, Search, Filter, Database, Download, Uplo
 import { useGolem } from "@/components/GolemContext";
 import { cn } from "@/lib/utils";
 import { apiDeleteWrite, apiGet, apiPost } from "@/lib/api-client";
+import { useI18n } from "@/components/I18nProvider";
 
 interface MemoryItem {
     text: string;
@@ -14,9 +15,9 @@ interface MemoryItem {
     score?: number;
 }
 
-function getErrorMessage(error: unknown): string {
+function getErrorMessage(error: unknown, locale: "zh-TW" | "en"): string {
     if (error instanceof Error && error.message) return error.message;
-    return "未知錯誤";
+    return locale === "en" ? "Unknown error" : "未知錯誤";
 }
 
 function getMemoryType(metadata?: Record<string, unknown>): string {
@@ -25,6 +26,8 @@ function getMemoryType(metadata?: Record<string, unknown>): string {
 }
 
 function ExpandableText({ text, limit = 150 }: { text: string; limit?: number }) {
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     const [isExpanded, setIsExpanded] = useState(false);
     const shouldTruncate = text.length > limit;
     
@@ -43,9 +46,9 @@ function ExpandableText({ text, limit = 150 }: { text: string; limit?: number })
                 className="flex items-center gap-1 text-[10px] font-bold text-primary hover:text-primary/80 uppercase tracking-wider bg-primary/5 px-2 py-1 rounded-md border border-primary/20 transition-all hover:scale-105 active:scale-95"
             >
                 {isExpanded ? (
-                    <><ChevronUp className="w-3 h-3" /> 收起內容 (Collapse)</>
+                    <><ChevronUp className="w-3 h-3" /> {isEnglish ? "Collapse" : "收起內容 (Collapse)"}</>
                 ) : (
-                    <><ChevronDown className="w-3 h-3" /> 展開完整內容 (Expand)</>
+                    <><ChevronDown className="w-3 h-3" /> {isEnglish ? "Expand" : "展開完整內容 (Expand)"}</>
                 )}
             </button>
         </div>
@@ -54,6 +57,8 @@ function ExpandableText({ text, limit = 150 }: { text: string; limit?: number })
 
 export function MemoryTable() {
     const toast = useToast();
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     const { activeGolem } = useGolem();
     const [memories, setMemories] = useState<MemoryItem[]>([]);
     const [loading, setLoading] = useState(false);
@@ -103,7 +108,11 @@ export function MemoryTable() {
 
     const wipeMemory = async () => {
         if (!activeGolem) return;
-        if (!confirm(`核心警告：您確定要清除 ${activeGolem} 的所有記憶嗎？此動作不可撤銷。`)) {
+        if (!confirm(
+            isEnglish
+                ? `Core warning: Are you sure you want to wipe all memories for ${activeGolem}? This action cannot be undone.`
+                : `核心警告：您確定要清除 ${activeGolem} 的所有記憶嗎？此動作不可撤銷。`
+        )) {
             return;
         }
         setIsWiping(true);
@@ -112,7 +121,7 @@ export function MemoryTable() {
             setMemories([]);
         } catch (e: unknown) {
             console.error("Failed to wipe memory", e);
-            toast.error("清除失敗", getErrorMessage(e));
+            toast.error(isEnglish ? "Wipe failed" : "清除失敗", getErrorMessage(e, locale));
         } finally {
             setIsWiping(false);
         }
@@ -139,7 +148,10 @@ export function MemoryTable() {
                 parsed = JSON.parse(text);
                 if (!Array.isArray(parsed)) throw new Error("Must be an array");
             } catch {
-                toast.error("匯入失敗", "無效的 JSON 檔案格式。");
+                toast.error(
+                    isEnglish ? "Import failed" : "匯入失敗",
+                    isEnglish ? "Invalid JSON file format." : "無效的 JSON 檔案格式。"
+                );
                 setIsImporting(false);
                 return;
             }
@@ -148,11 +160,16 @@ export function MemoryTable() {
                 `/api/memory/import?golemId=${encodeURIComponent(activeGolem)}`,
                 parsed
             );
-            toast.success("匯入成功", `成功匯入 ${data.count ?? parsed.length} 條記憶。`);
+            toast.success(
+                isEnglish ? "Import successful" : "匯入成功",
+                isEnglish
+                    ? `Imported ${data.count ?? parsed.length} memories successfully.`
+                    : `成功匯入 ${data.count ?? parsed.length} 條記憶。`
+            );
             fetchMemories();
         } catch (e: unknown) {
             console.error("Import failed:", e);
-            toast.error("匯入錯誤", getErrorMessage(e));
+            toast.error(isEnglish ? "Import error" : "匯入錯誤", getErrorMessage(e, locale));
         } finally {
             setIsImporting(false);
             if (fileInputRef.current) fileInputRef.current.value = "";
@@ -181,7 +198,11 @@ export function MemoryTable() {
     }, [memories, searchQuery, filterType]);
 
     if (!activeGolem) {
-        return <div className="text-muted-foreground italic p-4 text-sm animate-pulse">正在等待目標節點指令...</div>;
+        return (
+            <div className="text-muted-foreground italic p-4 text-sm animate-pulse">
+                {isEnglish ? "Waiting for target node..." : "正在等待目標節點指令..."}
+            </div>
+        );
     }
 
     return (
@@ -195,7 +216,7 @@ export function MemoryTable() {
                         type="text"
                         value={newMemory}
                         onChange={(e) => setNewMemory(e.target.value)}
-                        placeholder="在此輸入新的記憶內容並注入核心..."
+                        placeholder={isEnglish ? "Type a new memory and inject into core..." : "在此輸入新的記憶內容並注入核心..."}
                         className="flex-1 bg-transparent border-none px-3 py-1 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
                         onKeyDown={(e) => e.key === 'Enter' && addMemory()}
                     />
@@ -206,7 +227,7 @@ export function MemoryTable() {
                         size="sm"
                     >
                         <Plus className="w-4 h-4 mr-1" />
-                        注入核心
+                        {isEnglish ? "Inject" : "注入核心"}
                     </Button>
                 </div>
 
@@ -219,7 +240,7 @@ export function MemoryTable() {
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="過濾紀錄..."
+                            placeholder={isEnglish ? "Filter records..." : "過濾紀錄..."}
                             className="w-full bg-secondary/30 border border-border rounded-lg pl-9 pr-3 py-1.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors h-10 shadow-inner"
                         />
                     </div>
@@ -231,7 +252,7 @@ export function MemoryTable() {
                             onChange={(e) => setFilterType(e.target.value)}
                             className="appearance-none bg-secondary/30 border border-border rounded-lg pl-9 pr-8 py-1.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors h-10 shadow-inner cursor-pointer"
                         >
-                            <option value="all">所有類別</option>
+                            <option value="all">{isEnglish ? "All types" : "所有類別"}</option>
                             {uniqueTypes.map(t => (
                                 <option key={t} value={t}>{t}</option>
                             ))}
@@ -257,10 +278,10 @@ export function MemoryTable() {
                     <table className="w-full text-sm text-left text-muted-foreground relative">
                         <thead className="text-xs text-muted-foreground uppercase bg-secondary/80 sticky top-0 backdrop-blur-md z-10 border-b border-border font-bold">
                             <tr>
-                                <th scope="col" className="px-5 py-3 tracking-wider w-16 text-center">序號</th>
-                                <th scope="col" className="px-4 py-3 tracking-wider w-32 text-center">類型 (Type)</th>
-                                <th scope="col" className="px-4 py-3 tracking-wider">數據核心內容 (Neural Content)</th>
-                                <th scope="col" className="px-4 py-3 tracking-wider w-16 text-center">動作</th>
+                                <th scope="col" className="px-5 py-3 tracking-wider w-16 text-center">{isEnglish ? "No." : "序號"}</th>
+                                <th scope="col" className="px-4 py-3 tracking-wider w-32 text-center">{isEnglish ? "Type" : "類型 (Type)"}</th>
+                                <th scope="col" className="px-4 py-3 tracking-wider">{isEnglish ? "Neural Content" : "數據核心內容 (Neural Content)"}</th>
+                                <th scope="col" className="px-4 py-3 tracking-wider w-16 text-center">{isEnglish ? "Action" : "動作"}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border/50">
@@ -268,7 +289,7 @@ export function MemoryTable() {
                                 <tr>
                                     <td colSpan={4} className="px-6 py-20 text-center text-muted-foreground/50">
                                         <Database className="w-10 h-10 mx-auto mb-3 opacity-20" />
-                                        <p className="text-sm">未發現任何記憶紀錄</p>
+                                        <p className="text-sm">{isEnglish ? "No memory records found" : "未發現任何記憶紀錄"}</p>
                                     </td>
                                 </tr>
                             ) : (
@@ -299,7 +320,7 @@ export function MemoryTable() {
                                             <td className="px-4 py-4 text-center">
                                                 <button
                                                     className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all opacity-0 group-hover:opacity-100"
-                                                    title="複製到剪貼簿"
+                                                    title={isEnglish ? "Copy to clipboard" : "複製到剪貼簿"}
                                                     onClick={() => navigator.clipboard.writeText(mem.text)}
                                                 >
                                                     <Copy className="w-4 h-4" />
@@ -317,7 +338,12 @@ export function MemoryTable() {
             {/* Footer Toolbar */}
             <div className="flex justify-between items-center pt-2 border-t border-border/50">
                 <div className="text-xs text-muted-foreground font-mono flex items-center">
-                    記憶總量：{filteredMemories.length} {searchQuery && `(已過濾，原始總量：${memories.length})`}
+                    {isEnglish
+                        ? `Total memories: ${filteredMemories.length}`
+                        : `記憶總量：${filteredMemories.length}`}{" "}
+                    {searchQuery && (isEnglish
+                        ? `(filtered, original: ${memories.length})`
+                        : `(已過濾，原始總量：${memories.length})`)}
                 </div>
 
                 <div className="flex space-x-2">
@@ -336,7 +362,7 @@ export function MemoryTable() {
                         size="sm"
                     >
                         <Upload className={cn("w-3.5 h-3.5 mr-1.5", isImporting && "animate-bounce")} />
-                        {isImporting ? "注入中..." : "匯入資料庫 (Import)"}
+                        {isImporting ? (isEnglish ? "Importing..." : "注入中...") : (isEnglish ? "Import Database" : "匯入資料庫 (Import)")}
                     </Button>
                     <Button
                         variant="ghost"
@@ -346,7 +372,7 @@ export function MemoryTable() {
                         size="sm"
                     >
                         <Download className="w-3.5 h-3.5 mr-1.5" />
-                        匯出資料庫 (Export)
+                        {isEnglish ? "Export Database" : "匯出資料庫 (Export)"}
                     </Button>
                     <Button
                         variant="ghost"
@@ -356,7 +382,7 @@ export function MemoryTable() {
                         size="sm"
                     >
                         <Trash2 className="w-3.5 h-3.5 mr-1.5" />
-                        {isWiping ? "正在清洗..." : "清除整個資料庫 (Wipe)"}
+                        {isWiping ? (isEnglish ? "Wiping..." : "正在清洗...") : (isEnglish ? "Wipe Database" : "清除整個資料庫 (Wipe)")}
                     </Button>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { SettingField } from "../SettingFields";
+import { useI18n } from "@/components/I18nProvider";
 
 type MessagingTabProps = {
     env: Record<string, string>;
@@ -8,12 +9,14 @@ type MessagingTabProps = {
 };
 
 export default function MessagingTab({ env, onChangeEnv }: MessagingTabProps) {
+    const { t } = useI18n();
+
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-card border border-border hover:border-primary/20 transition-colors rounded-xl p-5 shadow-sm space-y-4">
                     <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                        ✈️ Telegram 設定
+                        {t("settings.messaging.telegramTitle")}
                     </h2>
                     <SettingField
                         label="Bot Token"
@@ -24,9 +27,9 @@ export default function MessagingTab({ env, onChangeEnv }: MessagingTabProps) {
                         onChange={(val) => onChangeEnv("TELEGRAM_TOKEN", val)}
                     />
                     <SettingField
-                        label="Auth Mode"
+                        label={t("settings.messaging.authMode.label")}
                         keyName="TG_AUTH_MODE"
-                        placeholder="ADMIN 或 CHAT"
+                        placeholder={t("settings.messaging.authMode.placeholder")}
                         value={env.TG_AUTH_MODE || ""}
                         onChange={(val) => onChangeEnv("TG_AUTH_MODE", val)}
                     />
@@ -35,7 +38,7 @@ export default function MessagingTab({ env, onChangeEnv }: MessagingTabProps) {
                             label="Admin ID"
                             keyName="ADMIN_ID"
                             isSecret
-                            placeholder="Telegram Admin ID (數值)"
+                            placeholder={t("settings.messaging.telegramAdmin.placeholder")}
                             value={env.ADMIN_ID || ""}
                             onChange={(val) => onChangeEnv("ADMIN_ID", val)}
                         />
@@ -43,7 +46,7 @@ export default function MessagingTab({ env, onChangeEnv }: MessagingTabProps) {
                             label="Chat ID"
                             keyName="TG_CHAT_ID"
                             isSecret
-                            placeholder="Telegram 群組/頻道 ID"
+                            placeholder={t("settings.messaging.telegramChat.placeholder")}
                             value={env.TG_CHAT_ID || ""}
                             onChange={(val) => onChangeEnv("TG_CHAT_ID", val)}
                         />
@@ -53,12 +56,12 @@ export default function MessagingTab({ env, onChangeEnv }: MessagingTabProps) {
                 <div className="space-y-6">
                     <div className="bg-card border border-border hover:border-primary/20 transition-colors rounded-xl p-5 shadow-sm">
                         <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                            👾 Discord 設定
+                            {t("settings.messaging.discordTitle")}
                         </h2>
                         <SettingField
                             label="Bot Token"
                             keyName="DISCORD_TOKEN"
-                            placeholder="MTAy... (Discord Bot Token)"
+                            placeholder={t("settings.messaging.discordToken.placeholder")}
                             isSecret
                             value={env.DISCORD_TOKEN || ""}
                             onChange={(val) => onChangeEnv("DISCORD_TOKEN", val)}
@@ -66,7 +69,7 @@ export default function MessagingTab({ env, onChangeEnv }: MessagingTabProps) {
                         <SettingField
                             label="Admin ID"
                             keyName="DISCORD_ADMIN_ID"
-                            placeholder="Discord User ID (數值)"
+                            placeholder={t("settings.messaging.discordAdmin.placeholder")}
                             isSecret
                             value={env.DISCORD_ADMIN_ID || ""}
                             onChange={(val) => onChangeEnv("DISCORD_ADMIN_ID", val)}
@@ -75,12 +78,12 @@ export default function MessagingTab({ env, onChangeEnv }: MessagingTabProps) {
 
                     <div className="bg-card border border-border hover:border-rose-900/20 transition-colors rounded-xl p-5 shadow-sm">
                         <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                            🦞 Moltbook 社交網絡
+                            {t("settings.messaging.moltbookTitle")}
                         </h2>
                         <SettingField
                             label="API Key"
                             keyName="MOLTBOOK_API_KEY"
-                            placeholder="Moltbook 存取金鑰"
+                            placeholder={t("settings.messaging.moltbookApi.placeholder")}
                             isSecret
                             value={env.MOLTBOOK_API_KEY || ""}
                             onChange={(val) => onChangeEnv("MOLTBOOK_API_KEY", val)}
@@ -88,7 +91,7 @@ export default function MessagingTab({ env, onChangeEnv }: MessagingTabProps) {
                         <SettingField
                             label="Agent Name"
                             keyName="MOLTBOOK_AGENT_NAME"
-                            placeholder="Golem"
+                            placeholder={t("settings.messaging.moltbookAgent.placeholder")}
                             value={env.MOLTBOOK_AGENT_NAME || ""}
                             onChange={(val) => onChangeEnv("MOLTBOOK_AGENT_NAME", val)}
                         />

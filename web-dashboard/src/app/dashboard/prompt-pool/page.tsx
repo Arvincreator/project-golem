@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/toast-provider";
 import { apiDeleteWrite, apiGet, apiPostWrite, apiWrite } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { Keyboard, Plus, Pencil, Trash2, Loader2, Save, X, Copy, Sparkles, RefreshCcw, TriangleAlert, Wand2, Activity } from "lucide-react";
+import { useI18n } from "@/components/I18nProvider";
 
 type PromptPoolItem = {
     id: string;
@@ -95,6 +96,8 @@ function normalizeShortcutKey(input: string) {
 
 export default function PromptPoolPage() {
     const toast = useToast();
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     const router = useRouter();
 
     const [items, setItems] = useState<PromptPoolItem[]>([]);
@@ -118,11 +121,14 @@ export default function PromptPoolPage() {
             setItems(Array.isArray(data.items) ? data.items : []);
             setLegacyConflicts(Array.isArray(data.legacyConflicts) ? data.legacyConflicts : []);
         } catch (error) {
-            toast.error("讀取失敗", getErrorMessage(error, "無法讀取 Prompt 指令池"));
+            toast.error(
+                isEnglish ? "Load failed" : "讀取失敗",
+                getErrorMessage(error, isEnglish ? "Unable to load prompt pool" : "無法讀取 Prompt 指令池")
+            );
         } finally {
             setIsLoading(false);
         }
-    }, [toast]);
+    }, [isEnglish, toast]);
 
     const loadAuditRecords = useCallback(async () => {
         setIsAuditLoading(true);
@@ -179,10 +185,10 @@ export default function PromptPoolPage() {
     }, [legacyConflicts]);
 
     const conflictReasonLabel = (reason: string) => {
-        if (reason === "reserved_system_command") return "與系統指令衝突";
-        if (reason === "invalid_shortcut_format") return "格式不合法";
-        if (reason === "duplicate_shortcut") return "重複快捷指令";
-        return "需修復";
+        if (reason === "reserved_system_command") return isEnglish ? "Conflicts with system command" : "與系統指令衝突";
+        if (reason === "invalid_shortcut_format") return isEnglish ? "Invalid format" : "格式不合法";
+        if (reason === "duplicate_shortcut") return isEnglish ? "Duplicate shortcut" : "重複快捷指令";
+        return isEnglish ? "Needs repair" : "需修復";
     };
 
     const describeAuditRecord = (record: PromptPoolAuditRecord) => {
@@ -190,16 +196,24 @@ export default function PromptPoolPage() {
             ? record.details as Record<string, unknown>
             : {};
         if (record.event === "prompt_pool_create") {
-            return `新增 ${String(details.shortcut || "")}`;
+            return isEnglish
+                ? `Created ${String(details.shortcut || "")}`
+                : `新增 ${String(details.shortcut || "")}`;
         }
         if (record.event === "prompt_pool_update") {
-            return `更新 ${String(details.previousShortcut || "")} -> ${String(details.nextShortcut || "")}`;
+            return isEnglish
+                ? `Updated ${String(details.previousShortcut || "")} -> ${String(details.nextShortcut || "")}`
+                : `更新 ${String(details.previousShortcut || "")} -> ${String(details.nextShortcut || "")}`;
         }
         if (record.event === "prompt_pool_delete") {
-            return `刪除 ${String(details.shortcut || "")}`;
+            return isEnglish
+                ? `Deleted ${String(details.shortcut || "")}`
+                : `刪除 ${String(details.shortcut || "")}`;
         }
         if (record.event === "prompt_pool_repair_conflicts") {
-            return `一鍵修復 ${Number(details.repairedCount || 0)} 筆衝突`;
+            return isEnglish
+                ? `Auto-repaired ${Number(details.repairedCount || 0)} conflicts`
+                : `一鍵修復 ${Number(details.repairedCount || 0)} 筆衝突`;
         }
         return record.event || "unknown";
     };
@@ -229,17 +243,23 @@ export default function PromptPoolPage() {
         const note = String(form.note || "").trim();
 
         if (!shortcut) {
-            toast.warning("請輸入快捷指令", "例如：/daily、/summary、/會議筆記");
+            toast.warning(
+                isEnglish ? "Please enter a shortcut" : "請輸入快捷指令",
+                isEnglish ? "Example: /daily, /summary, /meeting_notes" : "例如：/daily、/summary、/會議筆記"
+            );
             return;
         }
         if (!prompt) {
-            toast.warning("請輸入 Prompt 內容");
+            toast.warning(isEnglish ? "Please enter prompt content" : "請輸入 Prompt 內容");
             return;
         }
 
         const normalizedShortcut = normalizeShortcutKey(shortcut);
         if (reservedCommands.has(normalizedShortcut)) {
-            toast.warning("快捷指令與系統指令衝突", `${shortcut} 已被系統保留，請改用其他名稱`);
+            toast.warning(
+                isEnglish ? "Shortcut conflicts with system command" : "快捷指令與系統指令衝突",
+                isEnglish ? `${shortcut} is reserved by system commands` : `${shortcut} 已被系統保留，請改用其他名稱`
+            );
             return;
         }
 
@@ -247,7 +267,10 @@ export default function PromptPoolPage() {
             normalizeShortcutKey(item.shortcut) === normalizedShortcut && item.id !== editingId
         );
         if (hasDup) {
-            toast.warning("快捷指令重複", `${shortcut} 已存在，請改用其他名稱`);
+            toast.warning(
+                isEnglish ? "Duplicate shortcut" : "快捷指令重複",
+                isEnglish ? `${shortcut} already exists` : `${shortcut} 已存在，請改用其他名稱`
+            );
             return;
         }
 
@@ -264,13 +287,16 @@ export default function PromptPoolPage() {
             const nextItems = Array.isArray(data.items) ? data.items : [];
             setItems(nextItems);
             resetForm();
-            toast.success(isEditing ? "已更新 Prompt" : "已新增 Prompt");
+            toast.success(isEditing ? (isEnglish ? "Prompt updated" : "已更新 Prompt") : (isEnglish ? "Prompt created" : "已新增 Prompt"));
             loadAuditRecords();
             if (isEditing) {
                 setLegacyConflicts((prev) => prev.filter((item) => item.id !== editingId));
             }
         } catch (error) {
-            toast.error("儲存失敗", getErrorMessage(error, "無法儲存 Prompt"));
+            toast.error(
+                isEnglish ? "Save failed" : "儲存失敗",
+                getErrorMessage(error, isEnglish ? "Unable to save prompt" : "無法儲存 Prompt")
+            );
         } finally {
             setIsSaving(false);
         }
@@ -286,7 +312,11 @@ export default function PromptPoolPage() {
     };
 
     const handleDelete = async (item: PromptPoolItem) => {
-        const confirmed = window.confirm(`確定要刪除快捷指令 ${item.shortcut} 嗎？`);
+        const confirmed = window.confirm(
+            isEnglish
+                ? `Delete shortcut ${item.shortcut}?`
+                : `確定要刪除快捷指令 ${item.shortcut} 嗎？`
+        );
         if (!confirmed) return;
 
         setIsDeletingId(item.id);
@@ -296,10 +326,13 @@ export default function PromptPoolPage() {
             if (editingId === item.id) {
                 resetForm();
             }
-            toast.success("已刪除快捷指令");
+            toast.success(isEnglish ? "Shortcut deleted" : "已刪除快捷指令");
             loadAuditRecords();
         } catch (error) {
-            toast.error("刪除失敗", getErrorMessage(error, "無法刪除該快捷指令"));
+            toast.error(
+                isEnglish ? "Delete failed" : "刪除失敗",
+                getErrorMessage(error, isEnglish ? "Unable to delete this shortcut" : "無法刪除該快捷指令")
+            );
         } finally {
             setIsDeletingId("");
         }
@@ -308,9 +341,12 @@ export default function PromptPoolPage() {
     const handleCopyShortcut = async (shortcut: string) => {
         try {
             await navigator.clipboard.writeText(shortcut);
-            toast.info("已複製快捷指令", shortcut);
+            toast.info(isEnglish ? "Shortcut copied" : "已複製快捷指令", shortcut);
         } catch {
-            toast.warning("複製失敗", "你的瀏覽器可能封鎖了剪貼簿權限");
+            toast.warning(
+                isEnglish ? "Copy failed" : "複製失敗",
+                isEnglish ? "Clipboard permission may be blocked by your browser" : "你的瀏覽器可能封鎖了剪貼簿權限"
+            );
         }
     };
 
@@ -322,7 +358,10 @@ export default function PromptPoolPage() {
             prompt: item.prompt,
             note: item.note || "",
         });
-        toast.info("已套用建議改名", `${item.shortcut} → ${suggested}`);
+        toast.info(
+            isEnglish ? "Applied suggested rename" : "已套用建議改名",
+            `${item.shortcut} → ${suggested}`
+        );
     };
 
     const handleRepairConflicts = async () => {
@@ -335,11 +374,17 @@ export default function PromptPoolPage() {
 
             const repairedCount = Number(data.repairedCount || 0);
             if (repairedCount > 0) {
-                toast.success("衝突修復完成", `已自動修復 ${repairedCount} 筆快捷指令`);
+                toast.success(
+                    isEnglish ? "Conflicts repaired" : "衝突修復完成",
+                    isEnglish ? `Auto-repaired ${repairedCount} shortcuts` : `已自動修復 ${repairedCount} 筆快捷指令`
+                );
             } else if (data.hasLegacyConflicts) {
-                toast.warning("仍有衝突未修復", "請逐筆檢查並手動調整");
+                toast.warning(
+                    isEnglish ? "Conflicts remain" : "仍有衝突未修復",
+                    isEnglish ? "Please review and fix manually" : "請逐筆檢查並手動調整"
+                );
             } else {
-                toast.info("目前沒有可修復的衝突");
+                toast.info(isEnglish ? "No conflicts to repair" : "目前沒有可修復的衝突");
             }
             loadAuditRecords();
 
@@ -356,7 +401,10 @@ export default function PromptPoolPage() {
                 }
             }
         } catch (error) {
-            toast.error("修復失敗", getErrorMessage(error, "無法自動修復舊資料衝突"));
+            toast.error(
+                isEnglish ? "Repair failed" : "修復失敗",
+                getErrorMessage(error, isEnglish ? "Unable to repair legacy conflicts" : "無法自動修復舊資料衝突")
+            );
         } finally {
             setIsRepairing(false);
         }
@@ -376,10 +424,12 @@ export default function PromptPoolPage() {
             <div className="flex items-start justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-cyan-400">
-                        Prompt 指令池
+                        {isEnglish ? "Prompt Pool" : "Prompt 指令池"}
                     </h2>
                     <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                        專注在管理「快捷指令 → 常用 Prompt」映射。趨勢分析已移到獨立的「Prompt 趨勢視圖」。
+                        {isEnglish
+                            ? "Manage the mapping from shortcuts to reusable prompts. Trend analysis has moved to a dedicated Prompt Trends page."
+                            : "專注在管理「快捷指令 → 常用 Prompt」映射。趨勢分析已移到獨立的「Prompt 趨勢視圖」。"}
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -390,7 +440,7 @@ export default function PromptPoolPage() {
                         className="gap-2"
                     >
                         <Activity className="w-4 h-4" />
-                        趨勢視圖
+                        {isEnglish ? "Trends" : "趨勢視圖"}
                     </Button>
                     <Button
                         type="button"
@@ -400,7 +450,7 @@ export default function PromptPoolPage() {
                         className="gap-2"
                     >
                         <RefreshCcw className={cn("w-4 h-4", isLoading && "animate-spin")} />
-                        重新整理
+                        {isEnglish ? "Refresh" : "重新整理"}
                     </Button>
                 </div>
             </div>
@@ -410,16 +460,20 @@ export default function PromptPoolPage() {
                     <CardHeader className="pb-4">
                         <CardTitle className="flex items-center gap-2 text-lg">
                             <Sparkles className="w-4 h-4 text-primary" />
-                            {isEditing ? "編輯 Prompt 指令" : "新增 Prompt 指令"}
+                            {isEditing
+                                ? (isEnglish ? "Edit Prompt Shortcut" : "編輯 Prompt 指令")
+                                : (isEnglish ? "Create Prompt Shortcut" : "新增 Prompt 指令")}
                         </CardTitle>
                         <CardDescription>
-                            快捷指令不能有空白，例如：`/daily`、`/寫週報`、`#brainstorm`
+                            {isEnglish
+                                ? "Shortcut cannot contain spaces, e.g. `/daily`, `/weekly_report`, `#brainstorm`"
+                                : "快捷指令不能有空白，例如：`/daily`、`/寫週報`、`#brainstorm`"}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-xs uppercase tracking-wide text-muted-foreground">快捷指令</label>
+                                <label className="text-xs uppercase tracking-wide text-muted-foreground">{isEnglish ? "Shortcut" : "快捷指令"}</label>
                                 <input
                                     value={form.shortcut}
                                     onChange={(e) => setForm((prev) => ({ ...prev, shortcut: e.target.value }))}
@@ -431,11 +485,11 @@ export default function PromptPoolPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs uppercase tracking-wide text-muted-foreground">Prompt 內容</label>
+                                <label className="text-xs uppercase tracking-wide text-muted-foreground">{isEnglish ? "Prompt Content" : "Prompt 內容"}</label>
                                 <textarea
                                     value={form.prompt}
                                     onChange={(e) => setForm((prev) => ({ ...prev, prompt: e.target.value }))}
-                                    placeholder="例如：你是一位資深產品經理，請先整理需求重點，再提供 3 個可執行方案..."
+                                    placeholder={isEnglish ? "Example: You are a senior PM. Summarize requirements, then provide 3 actionable plans..." : "例如：你是一位資深產品經理，請先整理需求重點，再提供 3 個可執行方案..."}
                                     className="w-full min-h-[180px] rounded-lg border border-border bg-secondary/40 px-3 py-2 text-sm resize-y focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/50"
                                     maxLength={8000}
                                     disabled={isSaving}
@@ -443,11 +497,11 @@ export default function PromptPoolPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs uppercase tracking-wide text-muted-foreground">備註 (可選)</label>
+                                <label className="text-xs uppercase tracking-wide text-muted-foreground">{isEnglish ? "Note (Optional)" : "備註 (可選)"}</label>
                                 <input
                                     value={form.note}
                                     onChange={(e) => setForm((prev) => ({ ...prev, note: e.target.value }))}
-                                    placeholder="例如：週報模板 / Code Review / 會議摘要"
+                                    placeholder={isEnglish ? "Example: Weekly report / Code review / Meeting summary" : "例如：週報模板 / Code Review / 會議摘要"}
                                     className="w-full rounded-lg border border-border bg-secondary/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/50"
                                     maxLength={240}
                                     disabled={isSaving}
@@ -457,12 +511,12 @@ export default function PromptPoolPage() {
                             <div className="flex items-center gap-2 pt-2">
                                 <Button type="submit" disabled={isSaving} className="gap-2">
                                     {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : isEditing ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                                    {isEditing ? "更新 Prompt" : "新增 Prompt"}
+                                    {isEditing ? (isEnglish ? "Update Prompt" : "更新 Prompt") : (isEnglish ? "Create Prompt" : "新增 Prompt")}
                                 </Button>
                                 {isEditing && (
                                     <Button type="button" variant="ghost" onClick={resetForm} disabled={isSaving} className="gap-2">
                                         <X className="w-4 h-4" />
-                                        取消編輯
+                                        {isEnglish ? "Cancel Edit" : "取消編輯"}
                                     </Button>
                                 )}
                             </div>
@@ -474,10 +528,12 @@ export default function PromptPoolPage() {
                     <CardHeader className="pb-4">
                         <CardTitle className="flex items-center gap-2 text-lg">
                             <Keyboard className="w-4 h-4 text-primary" />
-                            已儲存快捷指令 ({sortedItems.length})
+                            {isEnglish ? `Saved Shortcuts (${sortedItems.length})` : `已儲存快捷指令 (${sortedItems.length})`}
                         </CardTitle>
                         <CardDescription>
-                            在直接交談輸入快捷指令並按 Tab/Enter，即可把完整 Prompt 帶入對話框。
+                            {isEnglish
+                                ? "Type a shortcut in direct chat and press Tab/Enter to inject the full prompt."
+                                : "在直接交談輸入快捷指令並按 Tab/Enter，即可把完整 Prompt 帶入對話框。"}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
@@ -485,7 +541,9 @@ export default function PromptPoolPage() {
                             <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-200 flex items-start gap-2">
                                 <TriangleAlert className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-300" />
                                 <div className="leading-relaxed">
-                                    偵測到 {legacyConflicts.length} 筆舊資料衝突。這些快捷指令可能不會在聊天注入生效，可先用「一鍵修復」，再逐筆確認。
+                                    {isEnglish
+                                        ? `Detected ${legacyConflicts.length} legacy conflicts. These shortcuts may not inject correctly in chat. Run auto-repair first, then review one by one.`
+                                        : `偵測到 ${legacyConflicts.length} 筆舊資料衝突。這些快捷指令可能不會在聊天注入生效，可先用「一鍵修復」，再逐筆確認。`}
                                 </div>
                                 <Button
                                     type="button"
@@ -496,18 +554,18 @@ export default function PromptPoolPage() {
                                     className="ml-auto flex-shrink-0 gap-1.5 h-7 px-2 text-[11px]"
                                 >
                                     {isRepairing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
-                                    一鍵修復
+                                    {isEnglish ? "Auto Repair" : "一鍵修復"}
                                 </Button>
                             </div>
                         )}
                         {isLoading ? (
                             <div className="h-56 flex items-center justify-center text-muted-foreground text-sm">
                                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                                讀取中...
+                                {isEnglish ? "Loading..." : "讀取中..."}
                             </div>
                         ) : sortedItems.length === 0 ? (
                             <div className="h-56 flex items-center justify-center text-muted-foreground text-sm italic">
-                                尚未建立任何 Prompt 快捷指令
+                                {isEnglish ? "No prompt shortcuts yet" : "尚未建立任何 Prompt 快捷指令"}
                             </div>
                         ) : (
                             sortedItems.map((item) => (
@@ -527,18 +585,20 @@ export default function PromptPoolPage() {
                                                     <span className="text-xs text-muted-foreground truncate">{item.note}</span>
                                                 )}
                                                 <span className="inline-flex items-center rounded-md border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-semibold text-cyan-300">
-                                                    近期使用 {Number(item.recentUseCount || 0)} 次
+                                                    {isEnglish
+                                                        ? `Recent uses ${Number(item.recentUseCount || 0)}`
+                                                        : `近期使用 ${Number(item.recentUseCount || 0)} 次`}
                                                 </span>
                                             </div>
                                             <p className="text-xs text-muted-foreground mt-2 line-clamp-3 whitespace-pre-wrap">
                                                 {item.prompt}
                                             </p>
                                             <p className="text-[10px] text-muted-foreground/80 mt-2">
-                                                最後更新：{new Date(item.updatedAt).toLocaleString()}
+                                                {isEnglish ? "Updated: " : "最後更新："}{new Date(item.updatedAt).toLocaleString()}
                                             </p>
                                             {item.lastUsedAt && (
                                                 <p className="text-[10px] text-muted-foreground/70 mt-1">
-                                                    最近使用：{new Date(item.lastUsedAt).toLocaleString()}
+                                                    {isEnglish ? "Last used: " : "最近使用："}{new Date(item.lastUsedAt).toLocaleString()}
                                                 </p>
                                             )}
                                         </div>
@@ -547,7 +607,7 @@ export default function PromptPoolPage() {
                                             <button
                                                 onClick={() => handleCopyShortcut(item.shortcut)}
                                                 className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                                                title="複製快捷指令"
+                                                title={isEnglish ? "Copy shortcut" : "複製快捷指令"}
                                             >
                                                 <Copy className="w-4 h-4" />
                                             </button>
@@ -557,14 +617,14 @@ export default function PromptPoolPage() {
                                                     "p-2 rounded-lg text-muted-foreground hover:text-blue-300 hover:bg-blue-500/10 transition-colors",
                                                     editingId === item.id && "text-blue-300 bg-blue-500/10"
                                                 )}
-                                                title="編輯"
+                                                title={isEnglish ? "Edit" : "編輯"}
                                             >
                                                 <Pencil className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => openTrendView(item.shortcut)}
                                                 className="p-2 rounded-lg text-muted-foreground hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors"
-                                                title="到趨勢視圖查看"
+                                                title={isEnglish ? "View in trends" : "到趨勢視圖查看"}
                                             >
                                                 <Activity className="w-4 h-4" />
                                             </button>
@@ -572,8 +632,8 @@ export default function PromptPoolPage() {
                                                 <button
                                                     onClick={() => handleApplySuggestedShortcut(item)}
                                                     className="p-2 rounded-lg text-muted-foreground hover:text-amber-300 hover:bg-amber-500/10 transition-colors"
-                                                    title="套用建議改名"
-                                                >
+                                                title={isEnglish ? "Apply suggested rename" : "套用建議改名"}
+                                            >
                                                     <Wand2 className="w-4 h-4" />
                                                 </button>
                                             )}
@@ -581,7 +641,7 @@ export default function PromptPoolPage() {
                                                 onClick={() => handleDelete(item)}
                                                 disabled={isDeletingId === item.id}
                                                 className="p-2 rounded-lg text-muted-foreground hover:text-red-300 hover:bg-red-500/10 transition-colors disabled:opacity-60"
-                                                title="刪除"
+                                                title={isEnglish ? "Delete" : "刪除"}
                                             >
                                                 {isDeletingId === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                                             </button>
@@ -594,7 +654,7 @@ export default function PromptPoolPage() {
                         <div className="rounded-lg border border-border bg-secondary/30 p-3 mt-2">
                             <div className="flex items-center justify-between mb-2">
                                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                                    最近異動記錄
+                                    {isEnglish ? "Recent Activity" : "最近異動記錄"}
                                 </p>
                                 <Button
                                     type="button"
@@ -604,11 +664,11 @@ export default function PromptPoolPage() {
                                     disabled={isAuditLoading}
                                     className="h-7 px-2 text-[11px]"
                                 >
-                                    {isAuditLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : "更新"}
+                                    {isAuditLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : (isEnglish ? "Refresh" : "更新")}
                                 </Button>
                             </div>
                             {auditRecords.length === 0 ? (
-                                <p className="text-[11px] text-muted-foreground italic">尚無異動記錄</p>
+                                <p className="text-[11px] text-muted-foreground italic">{isEnglish ? "No activity records yet" : "尚無異動記錄"}</p>
                             ) : (
                                 <div className="space-y-1.5">
                                     {auditRecords.slice(0, 8).map((record, idx) => (

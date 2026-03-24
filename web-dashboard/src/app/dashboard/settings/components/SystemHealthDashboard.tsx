@@ -3,6 +3,7 @@
 import { Activity, AlertTriangle, CheckCircle2, Cpu, HardDrive, Server, ShieldCheck, AlertCircle, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SystemStatus } from "../types";
+import { useI18n } from "@/components/I18nProvider";
 
 const StatusItem = ({ label, status, icon: Icon }: { label: string; status: boolean; icon: LucideIcon }) => (
     <div className="flex items-center justify-between p-2 rounded-lg bg-secondary/30 border border-border/40">
@@ -19,6 +20,7 @@ const StatusItem = ({ label, status, icon: Icon }: { label: string; status: bool
 );
 
 export default function SystemHealthDashboard({ systemStatus }: { systemStatus: SystemStatus | null }) {
+    const { t } = useI18n();
     if (!systemStatus) return null;
 
     const { runtime, health, system } = systemStatus;
@@ -45,18 +47,18 @@ export default function SystemHealthDashboard({ systemStatus }: { systemStatus: 
                     </div>
                     <div>
                         <h3 className="text-sm font-bold text-foreground">
-                            系統健康診斷 (System Integrity)
+                            {t("settings.health.integrityTitle")}
                         </h3>
                         <p className="text-xs text-muted-foreground mt-1">
-                            {isReady ? "所有核心模組與配置運作正常，系統處於最佳狀態。" :
-                                needsAction ? `檢測到 ${healthChecks.length - healthyCount} 項異常，請檢查下方健康檢查細項。` :
-                                    "正在初始化系統狀態..."}
+                            {isReady ? t("settings.health.integrity.readyDesc") :
+                                needsAction ? t("settings.health.integrity.needsActionDesc", { count: healthChecks.length - healthyCount }) :
+                                    t("settings.health.integrity.initializingDesc")}
                         </p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="text-right hidden sm:block">
-                        <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Health Score</div>
+                        <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">{t("settings.health.healthScore")}</div>
                         <div className={cn(
                             "text-xl font-black font-mono",
                             isReady ? "text-emerald-500" : needsAction ? "text-amber-500" : "text-muted-foreground"
@@ -69,7 +71,7 @@ export default function SystemHealthDashboard({ systemStatus }: { systemStatus: 
                         isReady ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
                             needsAction ? "bg-amber-500/10 text-amber-500 border-amber-500/20" : "bg-muted text-muted-foreground border-border"
                     )}>
-                        {isReady ? "Operational" : needsAction ? "Action Required" : "Unknown"}
+                        {isReady ? t("settings.health.status.operational") : needsAction ? t("settings.health.status.actionRequired") : t("settings.health.status.unknown")}
                     </span>
                 </div>
             </div>
@@ -78,32 +80,32 @@ export default function SystemHealthDashboard({ systemStatus }: { systemStatus: 
                 <div className="bg-card border border-border hover:border-primary/30 transition-colors rounded-xl p-5 shadow-sm">
                     <div className="flex items-center gap-2 mb-4">
                         <Cpu className="w-5 h-5 text-primary" />
-                        <h3 className="text-sm font-semibold text-foreground">運作環境 (Runtime)</h3>
+                        <h3 className="text-sm font-semibold text-foreground">{t("settings.health.runtime.title")}</h3>
                     </div>
                     <div className="space-y-3">
                         <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground">OS</span>
-                            <span className="text-primary font-medium truncate max-w-[150px]" title={runtime?.osName}>{runtime?.osName || "Unknown"}</span>
+                            <span className="text-muted-foreground">{t("settings.health.runtime.os")}</span>
+                            <span className="text-primary font-medium truncate max-w-[150px]" title={runtime?.osName}>{runtime?.osName || t("settings.health.status.unknown")}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground">Node.js</span>
-                            <span className="text-foreground font-mono">{runtime?.node || "Unknown"}</span>
+                            <span className="text-muted-foreground">{t("settings.health.runtime.node")}</span>
+                            <span className="text-foreground font-mono">{runtime?.node || t("settings.health.status.unknown")}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground">npm</span>
-                            <span className="text-foreground font-mono">{runtime?.npm || "Unknown"}</span>
+                            <span className="text-muted-foreground">{t("settings.health.runtime.npm")}</span>
+                            <span className="text-foreground font-mono">{runtime?.npm || t("settings.health.status.unknown")}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground">Platform</span>
+                            <span className="text-muted-foreground">{t("settings.health.runtime.platform")}</span>
                             <span className="text-foreground capitalize">{runtime?.platform} ({runtime?.arch})</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground">Uptime</span>
+                            <span className="text-muted-foreground">{t("settings.health.runtime.uptime")}</span>
                             <span className="text-foreground">{Math.floor((runtime?.uptime || 0) / 3600)}h {Math.floor(((runtime?.uptime || 0) % 3600) / 60)}m</span>
                         </div>
                         {systemStatus?.allowRemote && (
                             <div className="flex justify-between text-xs pt-1 border-t border-border/50 mt-1">
-                                <span className="text-cyan-500 font-bold">Access URL</span>
+                                <span className="text-cyan-500 font-bold">{t("settings.health.runtime.accessUrl")}</span>
                                 <span className="text-cyan-500 font-mono font-bold">http://{systemStatus.localIp}:{systemStatus.dashboardPort}</span>
                             </div>
                         )}
@@ -113,25 +115,25 @@ export default function SystemHealthDashboard({ systemStatus }: { systemStatus: 
                 <div className="bg-card border border-border hover:border-primary/30 transition-colors rounded-xl p-5 shadow-sm">
                     <div className="flex items-center gap-2 mb-4">
                         <Activity className="w-5 h-5 text-emerald-500" />
-                        <h3 className="text-sm font-semibold text-foreground">健康檢查 (Health)</h3>
+                        <h3 className="text-sm font-semibold text-foreground">{t("settings.health.checks.title")}</h3>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
-                        <StatusItem label="Env Config" status={!!health?.env} icon={Activity} />
-                        <StatusItem label="Dependencies" status={!!health?.deps} icon={Activity} />
-                        <StatusItem label="Core Files" status={!!health?.core} icon={Activity} />
-                        <StatusItem label="Dashboard" status={!!health?.dashboard} icon={Activity} />
+                        <StatusItem label={t("settings.health.checks.envConfig")} status={!!health?.env} icon={Activity} />
+                        <StatusItem label={t("settings.health.checks.dependencies")} status={!!health?.deps} icon={Activity} />
+                        <StatusItem label={t("settings.health.checks.coreFiles")} status={!!health?.core} icon={Activity} />
+                        <StatusItem label={t("settings.health.checks.dashboard")} status={!!health?.dashboard} icon={Activity} />
                     </div>
                 </div>
 
                 <div className="bg-card border border-border hover:border-primary/30 transition-colors rounded-xl p-5 shadow-sm">
                     <div className="flex items-center gap-2 mb-4">
                         <Server className="w-5 h-5 text-primary" />
-                        <h3 className="text-sm font-semibold text-foreground">系統資源 (Resources)</h3>
+                        <h3 className="text-sm font-semibold text-foreground">{t("settings.health.resources.title")}</h3>
                     </div>
                     <div className="space-y-4">
                         <div>
                             <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-                                <span>記憶體 (Memory)</span>
+                                <span>{t("settings.health.resources.memory")}</span>
                                 <span>{system?.freeMem} / {system?.totalMem}</span>
                             </div>
                             <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
@@ -144,7 +146,7 @@ export default function SystemHealthDashboard({ systemStatus }: { systemStatus: 
                         <div className="flex justify-between text-xs pt-1">
                             <div className="flex items-center gap-2 text-muted-foreground">
                                 <HardDrive className="w-4 h-4" />
-                                磁碟可用空間
+                                {t("settings.health.resources.diskAvail")}
                             </div>
                             <span className="text-primary font-bold">{system?.diskAvail || "N/A"}</span>
                         </div>

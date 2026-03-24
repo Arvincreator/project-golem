@@ -7,6 +7,7 @@ import {
     AlertTriangle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/components/I18nProvider";
 
 interface UrlsTabProps {
     geminiUrls: string;
@@ -22,6 +23,7 @@ function normalizeUrls(raw: string): string[] {
 }
 
 export default function UrlsTab({ geminiUrls, onChange }: UrlsTabProps) {
+    const { t } = useI18n();
     // Current URLs as an array
     const [urls, setUrls] = useState<string[]>(() => normalizeUrls(geminiUrls));
     
@@ -75,10 +77,10 @@ export default function UrlsTab({ geminiUrls, onChange }: UrlsTabProps) {
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                            🌐 Gemini 網址管理 (URL Management)
+                            {t("settings.urls.title")}
                         </h2>
                         <p className="text-sm text-muted-foreground mt-1">
-                            配置多組備援網址，確保在不同地區或網路環境下都能穩定存取。
+                            {t("settings.urls.subtitle")}
                         </p>
                     </div>
                     <button
@@ -90,10 +92,10 @@ export default function UrlsTab({ geminiUrls, onChange }: UrlsTabProps) {
                                 ? "bg-secondary text-muted-foreground cursor-not-allowed border border-border opacity-50" 
                                 : "bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20"
                         )}
-                        title={isAddDisabled ? "請先填寫現有的網址欄位" : "新增網址"}
+                        title={isAddDisabled ? t("settings.urls.addDisabledTitle") : t("settings.urls.addTitle")}
                     >
                         <Plus className="w-3.5 h-3.5" />
-                        新增網址
+                        {t("settings.urls.add")}
                     </button>
                 </div>
 
@@ -135,7 +137,7 @@ export default function UrlsTab({ geminiUrls, onChange }: UrlsTabProps) {
                                     urls.length <= 1 && "opacity-20 cursor-not-allowed grayscale"
                                 )}
                                 disabled={urls.length <= 1}
-                                title="刪除此網址"
+                                title={t("settings.urls.deleteTitle")}
                             >
                                 <Trash2 className="w-4 h-4" />
                             </button>
@@ -144,7 +146,7 @@ export default function UrlsTab({ geminiUrls, onChange }: UrlsTabProps) {
                     
                     {isAddDisabled && (
                         <p className="text-[10px] text-amber-500 mt-2 flex items-center gap-1 animate-pulse">
-                            <AlertCircle className="w-3 h-3" /> 請完成目前的所有網址填寫，才能新增下一個。
+                            <AlertCircle className="w-3 h-3" /> {t("settings.urls.fillAllBeforeAdd")}
                         </p>
                     )}
                 </div>
@@ -152,33 +154,33 @@ export default function UrlsTab({ geminiUrls, onChange }: UrlsTabProps) {
                 <div className="mt-8 pt-6 border-t border-border">
                     <div className="bg-primary/5 p-4 rounded-xl border border-primary/20">
                         <h4 className="text-xs font-bold text-primary flex items-center gap-2 mb-3">
-                            <AlertCircle className="w-3.5 h-3.5" /> 設定技巧與建議 (Guide)
+                            <AlertCircle className="w-3.5 h-3.5" /> {t("settings.urls.guideTitle")}
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <h5 className="text-[11px] font-bold text-foreground flex items-center gap-1.5">
-                                    <ShieldCheck className="w-3 h-3 text-emerald-500" /> 高可用備援 (Failover)
+                                    <ShieldCheck className="w-3 h-3 text-emerald-500" /> {t("settings.urls.failoverTitle")}
                                 </h5>
                                 <p className="text-[11px] text-muted-foreground leading-relaxed">
-                                    當第一組網址無法連線時（如遭遇 403、Timeout），系統會自動切換至下一組，直到成功為止。
+                                    {t("settings.urls.failoverDesc")}
                                 </p>
                             </div>
                             <div className="space-y-2">
                                 <h5 className="text-[11px] font-bold text-foreground flex items-center gap-1.5">
-                                    <Globe className="w-3 h-3 text-blue-500" /> 多語言與地區
+                                    <Globe className="w-3 h-3 text-blue-500" /> {t("settings.urls.localeTitle")}
                                 </h5>
                                 <p className="text-[11px] text-muted-foreground leading-relaxed">
-                                    您可以加上 <code className="bg-secondary px-1 rounded">?hl=zh-TW</code> 強制指定介面語言，避免系統自動偵測錯誤。
+                                    {t("settings.urls.localeDesc")} <code className="bg-secondary px-1 rounded">?hl=zh-TW</code>
                                 </p>
                             </div>
                         </div>
                         <div className="mt-4 pt-3 border-t border-primary/10">
-                            <h5 className="text-[10px] font-bold text-primary uppercase tracking-wider mb-2">常用推薦網址：</h5>
+                            <h5 className="text-[10px] font-bold text-primary uppercase tracking-wider mb-2">{t("settings.urls.recommendedTitle")}</h5>
                             <div className="flex flex-wrap gap-2">
                                 {[
-                                    { label: "標準入口", url: "https://gemini.google.com/app" },
-                                    { label: "繁體中文", url: "https://gemini.google.com/app?hl=zh-TW" },
-                                    { label: "英文介面", url: "https://gemini.google.com/app?hl=en" }
+                                    { label: t("settings.urls.recommended.standard"), url: "https://gemini.google.com/app" },
+                                    { label: t("settings.urls.recommended.zhTW"), url: "https://gemini.google.com/app?hl=zh-TW" },
+                                    { label: t("settings.urls.recommended.english"), url: "https://gemini.google.com/app?hl=en" }
                                 ].map((rec, i) => (
                                     <button 
                                         key={i}
@@ -203,10 +205,9 @@ export default function UrlsTab({ geminiUrls, onChange }: UrlsTabProps) {
             <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 flex gap-3">
                 <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
                 <div className="space-y-1">
-                    <h4 className="text-sm font-bold text-amber-500">注意事項</h4>
+                    <h4 className="text-sm font-bold text-amber-500">{t("settings.urls.noticeTitle")}</h4>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                        網址變更儲存後，需要點擊右上角的 <span className="text-foreground font-medium">「Restart System」</span> 重新啟動 Golem 才會生效。
-                        若配置無效網址可能導致 Golem 無法正常初始化。
+                        {t("settings.urls.noticeDesc")}
                     </p>
                 </div>
             </div>

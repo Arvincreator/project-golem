@@ -8,6 +8,7 @@ import { LogStream } from "@/components/LogStream";
 import { cn } from "@/lib/utils";
 import { apiGet } from "@/lib/api-client";
 import { useQuery } from "@/hooks/useQuery";
+import { useI18n } from "@/components/I18nProvider";
 
 type MemoryConfig = {
     golemEmbeddingProvider?: string;
@@ -18,6 +19,7 @@ type MemoryConfig = {
 
 export default function MemoryPage() {
     const { activeGolem, golems } = useGolem();
+    const { t } = useI18n();
     const [status, setStatus] = useState("initializing");
     const { data: config } = useQuery<MemoryConfig>(() => apiGet<MemoryConfig>("/api/system/config"), []);
 
@@ -33,7 +35,7 @@ export default function MemoryPage() {
     }, [activeGolem]);
 
     const getModelDisplayName = (modelId?: string, provider?: string) => {
-        if (provider === "ollama") return modelId || "Ollama Embedding";
+        if (provider === "ollama") return modelId || t("memory.model.ollamaEmbedding");
         const models: Record<string, string> = {
             "Xenova/bge-small-zh-v1.5": "BGE-Small (ZH)",
             "Xenova/bge-base-zh-v1.5": "BGE-Base (ZH)",
@@ -41,7 +43,7 @@ export default function MemoryPage() {
             "Xenova/nomic-embed-text-v1.5": "Nomic Embed",
             "Xenova/all-MiniLM-L6-v2": "MiniLM-L6 (EN)"
         };
-        return modelId ? models[modelId] || modelId : "Unknown Model";
+        return modelId ? models[modelId] || modelId : t("memory.model.unknown");
     };
 
     return (
@@ -55,10 +57,10 @@ export default function MemoryPage() {
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-blue-500 tracking-tight">
-                            記憶核心 (Neural Core)
+                            {t("memory.title")}
                         </h1>
                         <div className="text-sm text-muted-foreground mt-1 flex items-center flex-wrap">
-                            向量記憶與 LanceDB 混合搜尋引擎 (Vector Memory & LanceDB Hybrid Search)
+                            {t("memory.subtitle")}
                             <span className="ml-3 px-2 py-0.5 rounded-full bg-secondary border border-border text-xs font-mono text-muted-foreground">
                                 v9.1.5
                             </span>
@@ -69,7 +71,7 @@ export default function MemoryPage() {
                 {activeGolem && (
                     <div className="flex items-center bg-card/80 backdrop-blur-sm border border-border rounded-lg p-2 px-4 shadow-sm flex-shrink-0">
                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse mr-3"></div>
-                        <span className="text-muted-foreground text-sm mr-2">目標節點 (Target Node):</span>
+                        <span className="text-muted-foreground text-sm mr-2">{t("memory.targetNode")}</span>
                         <span className="text-primary font-mono font-semibold tracking-wide">
                             {activeGolem}
                         </span>
@@ -80,7 +82,7 @@ export default function MemoryPage() {
             {!activeGolem && golems.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-gray-500 space-y-4">
                     <Activity className="w-12 h-12 text-gray-700 animate-pulse" />
-                    <p>系統離線或未偵測到 Golem 節點。</p>
+                    <p>{t("memory.offline")}</p>
                 </div>
             ) : (
                 <div className="flex-1 overflow-y-auto space-y-6 pb-12 pr-2 custom-scrollbar z-10">
@@ -89,7 +91,7 @@ export default function MemoryPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <StatusCard
                             icon={Cpu}
-                            title="向量模型 (Embedding)"
+                            title={t("memory.status.embeddingTitle")}
                             value={getModelDisplayName(
                                 config?.golemEmbeddingProvider === 'ollama' ? config?.golemOllamaEmbeddingModel : config?.golemLocalEmbeddingModel,
                                 config?.golemEmbeddingProvider
@@ -97,23 +99,23 @@ export default function MemoryPage() {
                             status={status === 'ready' ? 'online' : 'loading'}
                             description={
                                 config?.golemEmbeddingProvider === 'ollama'
-                                    ? "Ollama 本地/私有部署模型"
-                                    : "本地 Transformers.js 推論引擎 (Local)"
+                                    ? t("memory.status.embeddingDescOllama")
+                                    : t("memory.status.embeddingDescLocal")
                             }
                         />
                         <StatusCard
                             icon={Database}
-                            title="記憶儲存 (Storage)"
-                            value={config?.golemMemoryMode === 'lancedb-pro' ? "LanceDB (Pro)" : (config?.golemMemoryMode ? config.golemMemoryMode.toUpperCase() : "LanceDB (Pro)")}
+                            title={t("memory.status.storageTitle")}
+                            value={config?.golemMemoryMode === 'lancedb-pro' ? t("memory.storage.lancedbPro") : (config?.golemMemoryMode ? config.golemMemoryMode.toUpperCase() : t("memory.storage.lancedbPro"))}
                             status={status === 'ready' ? 'online' : 'loading'}
-                            description="高效本地向量資料庫 (Persistent Storage)"
+                            description={t("memory.status.storageDesc")}
                         />
                         <StatusCard
                             icon={Activity}
-                            title="Chronos 引擎"
-                            value="TimeWatch 運行中"
+                            title={t("memory.status.chronosTitle")}
+                            value={t("memory.status.chronosValue")}
                             status="online"
-                            description="時序調度與自動化觸發系統"
+                            description={t("memory.status.chronosDesc")}
                         />
                     </div>
 
@@ -124,7 +126,7 @@ export default function MemoryPage() {
                                 <div className="flex items-center justify-between mb-4">
                                     <h2 className="text-lg font-semibold text-foreground flex items-center">
                                         <Database className="w-5 h-5 mr-2 text-primary" />
-                                        記憶紀錄 (Memory Records)
+                                        {t("memory.recordsTitle")}
                                     </h2>
                                 </div>
                                 <div className="flex-1">
@@ -138,7 +140,7 @@ export default function MemoryPage() {
                             <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-5 shadow-lg flex-1 flex flex-col h-full min-h-[500px]">
                                 <h2 className="text-lg font-semibold text-foreground flex items-center mb-4 flex-shrink-0">
                                     <Activity className="w-5 h-5 mr-2 text-primary" />
-                                    核心遙測 (Neural Telemetry)
+                                    {t("memory.telemetryTitle")}
                                 </h2>
                                 <div className="flex-1 bg-background/60 rounded-lg overflow-hidden border border-border/50 shadow-inner">
                                     <LogStream

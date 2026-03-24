@@ -8,6 +8,8 @@ import { LayoutDashboard, Users, Globe, ChevronLeft, ChevronRight, Terminal, Bra
 import { GolemProvider, useGolem } from "@/components/GolemContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BootScreen } from "@/components/BootScreen";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useI18n } from "@/components/I18nProvider";
 
 function DashboardSidebar({
     isSidebarOpen,
@@ -18,20 +20,21 @@ function DashboardSidebar({
 }) {
     const pathname = usePathname();
     const { activeGolem, setActiveGolem, golems, version } = useGolem();
+    const { t } = useI18n();
 
     const navItems = [
-        { name: "直接交談", href: "/dashboard/chat", icon: MessageSquare },
-        { name: "Prompt 指令池", href: "/dashboard/prompt-pool", icon: Library },
-        { name: "Prompt 趨勢", href: "/dashboard/prompt-trends", icon: Activity },
-        { name: "技能說明書", href: "/dashboard/skills", icon: BookOpen },
-        { name: "羈絆日記", href: "/dashboard/diary", icon: BookHeart },
-        { name: "MCP 工具", href: "/dashboard/mcp", icon: Plug },
-        { name: "人格設定", href: "/dashboard/persona", icon: User },
-        { name: "Agent 會議室", href: "/dashboard/agents", icon: Users },
-        { name: "辦公室模式", href: "/dashboard/office", icon: Users },
-        { name: "記憶核心", href: "/dashboard/memory", icon: BrainCircuit },
-        { name: "系統總表", href: "/dashboard/settings", icon: Settings },
-    ];
+        { labelKey: "sidebar.nav.chat", href: "/dashboard/chat", icon: MessageSquare },
+        { labelKey: "sidebar.nav.promptPool", href: "/dashboard/prompt-pool", icon: Library },
+        { labelKey: "sidebar.nav.promptTrends", href: "/dashboard/prompt-trends", icon: Activity },
+        { labelKey: "sidebar.nav.skills", href: "/dashboard/skills", icon: BookOpen },
+        { labelKey: "sidebar.nav.diary", href: "/dashboard/diary", icon: BookHeart },
+        { labelKey: "sidebar.nav.mcp", href: "/dashboard/mcp", icon: Plug },
+        { labelKey: "sidebar.nav.persona", href: "/dashboard/persona", icon: User },
+        { labelKey: "sidebar.nav.agents", href: "/dashboard/agents", icon: Users },
+        { labelKey: "sidebar.nav.office", href: "/dashboard/office", icon: Users },
+        { labelKey: "sidebar.nav.memory", href: "/dashboard/memory", icon: BrainCircuit },
+        { labelKey: "sidebar.nav.settingsSummary", href: "/dashboard/settings", icon: Settings },
+    ] as const;
 
     const isTactical = pathname === "/dashboard" || pathname === "/dashboard/";
     const isTerminal = pathname.startsWith("/dashboard/terminal");
@@ -48,14 +51,14 @@ function DashboardSidebar({
                             Golem {version}
                         </h1>
                         <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
-                            Bot Control Center
+                            {t("sidebar.botControlCenter")}
                         </p>
                     </div>
                 )}
                 <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                     className="p-1 hover:bg-accent rounded text-muted-foreground hover:text-accent-foreground flex-shrink-0"
-                    title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+                    title={isSidebarOpen ? t("sidebar.collapseSidebar") : t("sidebar.expandSidebar")}
                 >
                     {isSidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
                 </button>
@@ -64,7 +67,7 @@ function DashboardSidebar({
             {/* Golem Switcher - Only show if there are multiple golems */}
             {isSidebarOpen && golems.length > 1 && (
                 <div className="px-4 py-3 border-b border-border">
-                    <label className="text-xs text-muted-foreground mb-1 block">Active Golem</label>
+                    <label className="text-xs text-muted-foreground mb-1 block">{t("sidebar.activeGolem")}</label>
                     <select
                         value={activeGolem}
                         onChange={(e) => setActiveGolem(e.target.value)}
@@ -98,7 +101,7 @@ function DashboardSidebar({
                             )}
                         >
                             <LayoutDashboard className="w-3.5 h-3.5 mb-1" />
-                            戰術控制台
+                            {t("sidebar.tacticalDashboard")}
                         </Link>
                         <Link
                             href="/dashboard/terminal"
@@ -108,14 +111,14 @@ function DashboardSidebar({
                             )}
                         >
                             <Terminal className="w-3.5 h-3.5 mb-1" />
-                            終端機控制台
+                            {t("sidebar.terminalDashboard")}
                         </Link>
                     </div>
                 ) : (
                     <div className="flex flex-col gap-2 items-center">
                         <Link
                             href="/dashboard"
-                            title="戰術控制台"
+                            title={t("sidebar.tacticalDashboard")}
                             className={cn(
                                 "w-10 h-10 flex items-center justify-center rounded-lg transition-all",
                                 isTactical ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30" : "text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground"
@@ -125,7 +128,7 @@ function DashboardSidebar({
                         </Link>
                         <Link
                             href="/dashboard/terminal"
-                            title="終端機控制台"
+                            title={t("sidebar.terminalDashboard")}
                             className={cn(
                                 "w-10 h-10 flex items-center justify-center rounded-lg transition-all",
                                 isTerminal ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30" : "text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground"
@@ -147,7 +150,7 @@ function DashboardSidebar({
                         <Link
                             key={item.href}
                             href={item.href}
-                            title={!isSidebarOpen ? item.name : undefined}
+                            title={!isSidebarOpen ? t(item.labelKey) : undefined}
                             className={cn(
                                 "flex items-center rounded-lg transition-colors text-sm",
                                 isSidebarOpen ? "w-[90%] space-x-3 px-3 py-2" : "w-10 h-10 justify-center",
@@ -157,7 +160,7 @@ function DashboardSidebar({
                             )}
                         >
                             <Icon className="w-5 h-5 flex-shrink-0" />
-                            {isSidebarOpen && <span className="whitespace-nowrap">{item.name}</span>}
+                            {isSidebarOpen && <span className="whitespace-nowrap">{t(item.labelKey)}</span>}
                         </Link>
                     );
                 })}
@@ -165,9 +168,10 @@ function DashboardSidebar({
 
             <div className="p-4 border-t border-border flex flex-col items-center gap-4">
                 <ThemeToggle />
+                {isSidebarOpen && <LanguageToggle />}
                 <div className="flex items-center text-xs text-muted-foreground overflow-hidden text-center whitespace-nowrap h-4">
                     <Globe className="w-4 h-4 flex-shrink-0" />
-                    {isSidebarOpen && <span className="ml-2">Web Gemini: Online</span>}
+                    {isSidebarOpen && <span className="ml-2">{t("sidebar.webGeminiOnline")}</span>}
                 </div>
             </div>
         </aside>

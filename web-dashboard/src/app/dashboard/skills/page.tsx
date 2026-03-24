@@ -17,6 +17,7 @@ import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast-provider";
 import { apiGet, apiPost, apiPostWrite } from "@/lib/api-client";
+import { useI18n } from "@/components/I18nProvider";
 
 type InstalledSkill = {
     id: string;
@@ -31,6 +32,7 @@ type MarketplaceSkill = {
     id: string;
     title: string;
     description: string;
+    original_description?: string;
     description_zh?: string;
     category?: string;
     category_name?: {
@@ -462,6 +464,8 @@ function InstallSuccessDialog({
     open: boolean;
     onOpenChange: (v: boolean) => void;
 }) {
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="bg-card border-border text-foreground max-w-sm sm:max-w-[425px]">
@@ -469,12 +473,24 @@ function InstallSuccessDialog({
                     <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex flex-col items-center justify-center">
                         <CheckCircle2 className="w-8 h-8 text-primary" />
                     </div>
-                    <DialogTitle className="text-foreground text-lg mt-2 font-bold">技能已安裝成功</DialogTitle>
+                    <DialogTitle className="text-foreground text-lg mt-2 font-bold">
+                        {isEnglish ? "Skill Installed Successfully" : "技能已安裝成功"}
+                    </DialogTitle>
                     <DialogDescription className="text-muted-foreground text-sm text-center leading-relaxed mt-2" asChild>
                         <div>
-                            新技能已經加入「已載入模組」標籤中囉！<br />
-                            請記得切換至 <strong>「已載入模組」</strong> 並將其 <strong>手動啟用</strong>，<br />
-                            最後再點擊右上角的 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 mx-1 font-medium"><Zap className="w-3 h-3" />注入技能書</span> 即可。
+                            {isEnglish ? (
+                                <>
+                                    The new skill has been added to <strong>Loaded Modules</strong>.<br />
+                                    Switch to <strong>Loaded Modules</strong>, enable it manually,<br />
+                                    then click <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 mx-1 font-medium"><Zap className="w-3 h-3" />Inject Skills</span> in the top-right.
+                                </>
+                            ) : (
+                                <>
+                                    新技能已經加入「已載入模組」標籤中囉！<br />
+                                    請記得切換至 <strong>「已載入模組」</strong> 並將其 <strong>手動啟用</strong>，<br />
+                                    最後再點擊右上角的 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 mx-1 font-medium"><Zap className="w-3 h-3" />注入技能書</span> 即可。
+                                </>
+                            )}
                         </div>
                     </DialogDescription>
                 </DialogHeader>
@@ -483,7 +499,7 @@ function InstallSuccessDialog({
                         className="bg-primary hover:bg-primary/90 text-primary-foreground w-full focus:ring-2 focus:ring-primary/50 outline-none"
                         onClick={() => onOpenChange(false)}
                     >
-                        我知道了
+                        {isEnglish ? "Got it" : "我知道了"}
                     </Button>
                 </div>
             </DialogContent>
@@ -746,6 +762,8 @@ const MARKET_CATEGORIES = [
 // ── Main Page ───────────────────────────────────────────────────────────────
 export default function SkillsPage() {
     const toast = useToast();
+    const { locale } = useI18n();
+    const isEnglish = locale === "en";
     const [activeTab, setActiveTab] = useState<"installed" | "marketplace">("installed");
 
     // Installed Skills
@@ -1212,12 +1230,12 @@ export default function SkillsPage() {
                                 </div>
                                 <div>
                                     <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/80 to-primary tracking-tight">
-                                        技能說明書 (Skills)
+                                        {isEnglish ? "Skills Handbook" : "技能說明書 (Skills)"}
                                     </h1>
                                     <p className="text-sm text-muted-foreground mt-0.5 flex items-center gap-1.5">
                                         {activeTab === "marketplace" ? (
                                             <>
-                                                數據來源：
+                                                {isEnglish ? "Data source:" : "數據來源："}
                                                 <a
                                                     href="https://github.com/ComposioHQ/awesome-claude-skills"
                                                     target="_blank"
@@ -1228,7 +1246,7 @@ export default function SkillsPage() {
                                                     <Globe className="w-3 h-3" />
                                                 </a>
                                             </>
-                                        ) : "管理 Golem 的核心能力與開放技能市場"}
+                                        ) : (isEnglish ? "Manage Golem core capabilities and open skills marketplace" : "管理 Golem 的核心能力與開放技能市場")}
                                     </p>
                                 </div>
                             </div>
@@ -1242,7 +1260,7 @@ export default function SkillsPage() {
                                         }`}
                                 >
                                     <BookOpen className="w-4 h-4" />
-                                    已載入模組
+                                    {isEnglish ? "Loaded Modules" : "已載入模組"}
                                 </button>
                                 <button
                                     onClick={() => setActiveTab("marketplace")}
@@ -1252,7 +1270,7 @@ export default function SkillsPage() {
                                         }`}
                                 >
                                     <Store className="w-4 h-4" />
-                                    技能市場
+                                    {isEnglish ? "Skill Market" : "技能市場"}
                                 </button>
                             </div>
                         </div>
@@ -1264,7 +1282,7 @@ export default function SkillsPage() {
                                     className="px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2 transition-all bg-secondary text-muted-foreground border border-border hover:bg-accent hover:text-foreground"
                                 >
                                     <Plus className="w-4 h-4" />
-                                    新增技能
+                                    {isEnglish ? "New Skill" : "新增技能"}
                                 </button>
                                 {activeTab === "installed" && (
                                     <button
@@ -1273,7 +1291,11 @@ export default function SkillsPage() {
                                         className={`px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2 transition-all bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20 ${isImporting || isPreparingImport || exportingTarget !== null ? "opacity-60 cursor-not-allowed" : ""}`}
                                     >
                                         <Upload className={`w-4 h-4 ${isImporting || isPreparingImport ? "animate-pulse" : ""}`} />
-                                        {isPreparingImport ? "分析中..." : isImporting ? "匯入中..." : "匯入技能書"}
+                                        {isPreparingImport
+                                            ? (isEnglish ? "Analyzing..." : "分析中...")
+                                            : isImporting
+                                                ? (isEnglish ? "Importing..." : "匯入中...")
+                                                : (isEnglish ? "Import Skill Book" : "匯入技能書")}
                                     </button>
                                 )}
                                 {activeTab === "installed" && (
@@ -1283,7 +1305,9 @@ export default function SkillsPage() {
                                         className={`px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2 transition-all bg-primary text-primary-foreground border border-primary hover:bg-primary/90 ${checkedSkillIds.length === 0 || exportingTarget !== null || isImporting || isPreparingImport ? "opacity-60 cursor-not-allowed" : ""}`}
                                     >
                                         <Download className={`w-4 h-4 ${exportingTarget === "checked" ? "animate-pulse" : ""}`} />
-                                        {exportingTarget === "checked" ? "匯出中..." : `匯出已勾選 (${checkedSkillIds.length})`}
+                                        {exportingTarget === "checked"
+                                            ? (isEnglish ? "Exporting..." : "匯出中...")
+                                            : (isEnglish ? `Export Checked (${checkedSkillIds.length})` : `匯出已勾選 (${checkedSkillIds.length})`)}
                                     </button>
                                 )}
                                 {activeTab === "installed" && (
@@ -1293,7 +1317,7 @@ export default function SkillsPage() {
                                         className={`px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2 transition-all bg-secondary text-muted-foreground border border-border hover:bg-accent hover:text-foreground ${exportingTarget !== null || isImporting || isPreparingImport ? "opacity-60 cursor-not-allowed" : ""}`}
                                     >
                                         <Download className={`w-4 h-4 ${exportingTarget === "all" ? "animate-pulse" : ""}`} />
-                                        {exportingTarget === "all" ? "匯出中..." : "匯出全部"}
+                                        {exportingTarget === "all" ? (isEnglish ? "Exporting..." : "匯出中...") : (isEnglish ? "Export All" : "匯出全部")}
                                     </button>
                                 )}
                                 {activeTab === "installed" && (
@@ -1306,12 +1330,14 @@ export default function SkillsPage() {
                                             } ${isInjecting || exportingTarget !== null || isImporting || isPreparingImport ? "opacity-60 cursor-not-allowed" : ""}`}
                                     >
                                         <Zap className={`w-4 h-4 ${isInjecting ? "animate-pulse" : ""}`} />
-                                        {isInjecting ? "注入中..." : "注入技能書"}
+                                        {isInjecting ? (isEnglish ? "Injecting..." : "注入中...") : (isEnglish ? "Inject Skills" : "注入技能書")}
                                     </button>
                                 )}
                                 {activeTab === "installed" && (
                                     <span className="text-xs text-muted-foreground px-2 py-1 rounded-md bg-secondary/40 border border-border/60 ml-auto">
-                                        已勾選 {checkedSkillIds.length} / {skills.length}
+                                        {isEnglish
+                                            ? `Checked ${checkedSkillIds.length} / ${skills.length}`
+                                            : `已勾選 ${checkedSkillIds.length} / ${skills.length}`}
                                     </span>
                                 )}
                             </div>
@@ -1329,9 +1355,13 @@ export default function SkillsPage() {
                                             <div>
                                                 <h2 className="text-sm font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
                                                     <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.8)]"></div>
-                                                    已載入模組 ({sortedFilteredSkills.length}/{skills.length})
+                                                    {isEnglish
+                                                        ? `Loaded Modules (${sortedFilteredSkills.length}/${skills.length})`
+                                                        : `已載入模組 (${sortedFilteredSkills.length}/${skills.length})`}
                                                 </h2>
-                                                <p className="text-xs text-muted-foreground mt-1">左側勾選後可批次匯出，點擊列可查看詳情。</p>
+                                                <p className="text-xs text-muted-foreground mt-1">
+                                                    {isEnglish ? "Check items on the left for batch export. Click a row for details." : "左側勾選後可批次匯出，點擊列可查看詳情。"}
+                                                </p>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <button
@@ -1339,14 +1369,16 @@ export default function SkillsPage() {
                                                     disabled={sortedFilteredSkills.length === 0}
                                                     className={`px-2.5 py-1.5 text-xs font-medium rounded-md border transition-colors ${sortedFilteredSkills.length === 0 ? "opacity-50 cursor-not-allowed bg-secondary/40 border-border text-muted-foreground" : "bg-secondary border-border text-muted-foreground hover:text-foreground hover:bg-accent"}`}
                                                 >
-                                                    {allVisibleSkillsChecked ? "取消可見項目" : "全選可見項目"}
+                                                    {allVisibleSkillsChecked
+                                                        ? (isEnglish ? "Uncheck Visible" : "取消可見項目")
+                                                        : (isEnglish ? "Check Visible" : "全選可見項目")}
                                                 </button>
                                                 <button
                                                     onClick={() => setCheckedSkillIds([])}
                                                     disabled={checkedSkillIds.length === 0}
                                                     className={`px-2.5 py-1.5 text-xs font-medium rounded-md border transition-colors ${checkedSkillIds.length === 0 ? "opacity-50 cursor-not-allowed bg-secondary/40 border-border text-muted-foreground" : "bg-secondary border-border text-muted-foreground hover:text-foreground hover:bg-accent"}`}
                                                 >
-                                                    清除
+                                                    {isEnglish ? "Clear" : "清除"}
                                                 </button>
                                             </div>
                                         </div>
@@ -1357,15 +1389,15 @@ export default function SkillsPage() {
                                                     type="text"
                                                     value={installedSearchText}
                                                     onChange={(event) => setInstalledSearchText(event.target.value)}
-                                                    placeholder="搜尋技能名稱或 ID..."
+                                                    placeholder={isEnglish ? "Search skill name or ID..." : "搜尋技能名稱或 ID..."}
                                                     className="w-full bg-secondary/45 border border-border/70 rounded-lg pl-9 pr-3 py-2 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                                                 />
                                             </div>
                                             <div className="flex items-center gap-1.5">
                                                 {[
-                                                    { key: "all" as const, label: "全部" },
-                                                    { key: "enabled" as const, label: "已啟用" },
-                                                    { key: "core" as const, label: "核心技能" },
+                                                    { key: "all" as const, label: isEnglish ? "All" : "全部" },
+                                                    { key: "enabled" as const, label: isEnglish ? "Enabled" : "已啟用" },
+                                                    { key: "core" as const, label: isEnglish ? "Core" : "核心技能" },
                                                 ].map((filterOption) => (
                                                     <button
                                                         key={filterOption.key}
@@ -1388,10 +1420,10 @@ export default function SkillsPage() {
                                                     onChange={(event) => setInstalledSortMode(event.target.value as InstalledSortMode)}
                                                     className="w-full appearance-none bg-secondary/45 border border-border/70 rounded-lg pl-9 pr-9 py-2 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                                                 >
-                                                    <option value="enabled_first">排序：已啟用優先</option>
-                                                    <option value="core_first">排序：核心技能優先</option>
-                                                    <option value="title_asc">排序：名稱 A → Z</option>
-                                                    <option value="title_desc">排序：名稱 Z → A</option>
+                                                    <option value="enabled_first">{isEnglish ? "Sort: Enabled First" : "排序：已啟用優先"}</option>
+                                                    <option value="core_first">{isEnglish ? "Sort: Core First" : "排序：核心技能優先"}</option>
+                                                    <option value="title_asc">{isEnglish ? "Sort: Name A → Z" : "排序：名稱 A → Z"}</option>
+                                                    <option value="title_desc">{isEnglish ? "Sort: Name Z → A" : "排序：名稱 Z → A"}</option>
                                                 </select>
                                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                                                     <ChevronRight className="w-3.5 h-3.5 text-muted-foreground rotate-90" />
@@ -1429,7 +1461,7 @@ export default function SkillsPage() {
                                                             onChange={(event) => toggleCheckedSkill(skill.id, event.target.checked)}
                                                             onClick={(event) => event.stopPropagation()}
                                                             className="mt-0.5 h-4 w-4 rounded border-border bg-secondary text-primary focus:ring-primary/30"
-                                                            aria-label={`選擇技能 ${skill.title}`}
+                                                            aria-label={isEnglish ? `Select skill ${skill.title}` : `選擇技能 ${skill.title}`}
                                                         />
                                                         <div className="min-w-0 flex-1">
                                                             <div className="flex items-start justify-between gap-3">
@@ -1446,14 +1478,14 @@ export default function SkillsPage() {
                                                             <div className="mt-2 flex items-center gap-2">
                                                                 {isCoreSkill(skill) ? (
                                                                     <span className="text-[10px] bg-indigo-500/10 text-indigo-500 border border-indigo-500/30 px-1.5 py-0.5 rounded-md uppercase tracking-wider font-bold">
-                                                                        常駐核心
+                                                                        {isEnglish ? "Core" : "常駐核心"}
                                                                     </span>
                                                                 ) : skill.isEnabled ? (
                                                                     <span className="flex items-center gap-1 text-[10px] text-primary uppercase tracking-wider font-bold">
-                                                                        <CheckCircle2 className="w-3 h-3" /> 已啟用
+                                                                        <CheckCircle2 className="w-3 h-3" /> {isEnglish ? "Enabled" : "已啟用"}
                                                                     </span>
                                                                 ) : (
-                                                                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">未啟用</span>
+                                                                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">{isEnglish ? "Disabled" : "未啟用"}</span>
                                                                 )}
                                                             </div>
                                                         </div>
@@ -1464,13 +1496,13 @@ export default function SkillsPage() {
                                         {skills.length === 0 && (
                                             <div className="h-48 rounded-xl border border-dashed border-border/60 bg-card/40 flex flex-col items-center justify-center text-muted-foreground/70 gap-2">
                                                 <BookOpen className="w-8 h-8 opacity-30" />
-                                                <p className="text-sm">目前尚無已載入技能</p>
+                                                <p className="text-sm">{isEnglish ? "No loaded skills yet" : "目前尚無已載入技能"}</p>
                                             </div>
                                         )}
                                         {skills.length > 0 && sortedFilteredSkills.length === 0 && (
                                             <div className="h-48 rounded-xl border border-dashed border-border/60 bg-card/40 flex flex-col items-center justify-center text-muted-foreground/70 gap-2">
                                                 <Search className="w-8 h-8 opacity-30" />
-                                                <p className="text-sm">目前篩選條件下沒有符合的技能</p>
+                                                <p className="text-sm">{isEnglish ? "No skills match current filters" : "目前篩選條件下沒有符合的技能"}</p>
                                             </div>
                                         )}
                                     </CardContent>
@@ -1502,7 +1534,7 @@ export default function SkillsPage() {
                                                             onChange={(event) => toggleCheckedSkill(selectedSkill.id, event.target.checked)}
                                                             className="h-3.5 w-3.5 rounded border-border bg-secondary text-primary focus:ring-primary/30"
                                                         />
-                                                        納入批次匯出
+                                                        {isEnglish ? "Include in batch export" : "納入批次匯出"}
                                                     </label>
                                                     <button
                                                         onClick={() => downloadSkillsBook("selected")}
@@ -1510,12 +1542,12 @@ export default function SkillsPage() {
                                                         className={`flex items-center gap-1.5 px-3 py-1.5 bg-secondary border border-border text-muted-foreground hover:text-foreground hover:bg-accent text-xs font-medium rounded-lg transition-colors ${exportingTarget !== null || isImporting || isPreparingImport ? "opacity-60 cursor-not-allowed" : ""}`}
                                                     >
                                                         <Download className={`w-3.5 h-3.5 ${exportingTarget === "selected" ? "animate-pulse" : ""}`} />
-                                                        {exportingTarget === "selected" ? "匯出中..." : "匯出單一"}
+                                                        {exportingTarget === "selected" ? (isEnglish ? "Exporting..." : "匯出中...") : (isEnglish ? "Export Single" : "匯出單一")}
                                                     </button>
                                                     {isCoreSkill(selectedSkill) && (
                                                         <div className="flex items-center gap-1.5 px-3 py-1 bg-secondary border border-border text-muted-foreground text-[11px] uppercase tracking-wider font-bold rounded-lg select-none">
                                                             <AlertCircle className="w-3.5 h-3.5 opacity-70" />
-                                                            常駐核心技能
+                                                            {isEnglish ? "Core Skill" : "常駐核心技能"}
                                                         </div>
                                                     )}
                                                     <div className="flex items-center gap-2">
@@ -1524,7 +1556,7 @@ export default function SkillsPage() {
                                                                 onClick={() => setShowDeleteConfirm(true)}
                                                                 className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 hover:text-red-500 hover:bg-red-500/20 text-xs font-medium rounded-lg transition-colors"
                                                             >
-                                                                <Trash2 className="w-3.5 h-3.5" /> 刪除
+                                                                <Trash2 className="w-3.5 h-3.5" /> {isEnglish ? "Delete" : "刪除"}
                                                             </button>
                                                         )}
                                                         {selectedSkill.isOptional && (
@@ -1532,7 +1564,7 @@ export default function SkillsPage() {
                                                                 onClick={(e) => handleEditSkill(e, selectedSkill)}
                                                                 className="flex items-center gap-1.5 px-3 py-1.5 bg-secondary border border-border text-muted-foreground hover:text-foreground hover:bg-accent text-xs font-medium rounded-lg transition-colors"
                                                             >
-                                                                <Pencil className="w-3.5 h-3.5" /> 編輯
+                                                                <Pencil className="w-3.5 h-3.5" /> {isEnglish ? "Edit" : "編輯"}
                                                             </button>
                                                         )}
                                                     </div>
@@ -1550,7 +1582,9 @@ export default function SkillsPage() {
                                                 </div>
                                             </div>
                                         ) : (
-                                            <div className="h-[46px] flex items-center text-muted-foreground text-sm">請先在左側列表選擇一個技能查看詳情</div>
+                                            <div className="h-[46px] flex items-center text-muted-foreground text-sm">
+                                                {isEnglish ? "Select a skill on the left to view details" : "請先在左側列表選擇一個技能查看詳情"}
+                                            </div>
                                         )}
                                     </CardHeader>
                                     <CardContent className="flex-1 overflow-y-auto p-0 scroll-smooth">
@@ -1569,7 +1603,7 @@ export default function SkillsPage() {
                                         ) : (
                                             <div className="h-full flex flex-col items-center justify-center text-muted-foreground/50 space-y-4">
                                                 <BookOpen className="w-12 h-12 opacity-20" />
-                                                <p>在左側列表中選擇技能</p>
+                                                <p>{isEnglish ? "Select a skill from the left list" : "在左側列表中選擇技能"}</p>
                                             </div>
                                         )}
                                     </CardContent>
@@ -1585,7 +1619,7 @@ export default function SkillsPage() {
                                             type="text"
                                             value={marketSearchText}
                                             onChange={(e) => setMarketSearchText(e.target.value)}
-                                            placeholder="搜尋市場中的 5,000+ 個 AI 技能..."
+                                            placeholder={isEnglish ? "Search 5,000+ AI skills in the market..." : "搜尋市場中的 5,000+ 個 AI 技能..."}
                                             className="w-full bg-secondary/50 border border-border/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-muted-foreground/60 shadow-inner"
                                         />
                                     </form>
@@ -1618,7 +1652,7 @@ export default function SkillsPage() {
                                                 disabled={marketPage === 1}
                                                 className="p-1.5 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
                                             >
-                                                上頁
+                                                {isEnglish ? "Prev" : "上頁"}
                                             </button>
                                             <span className="text-[10px] font-bold text-muted-foreground px-2 border-x border-border/30">
                                                 {marketPage} / {Math.ceil(marketTotal / 20) || 1}
@@ -1628,7 +1662,7 @@ export default function SkillsPage() {
                                                 disabled={marketPage >= Math.ceil(marketTotal / 20)}
                                                 className="p-1.5 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
                                             >
-                                                下頁
+                                                {isEnglish ? "Next" : "下頁"}
                                             </button>
                                         </div>
                                     </div>
@@ -1640,17 +1674,19 @@ export default function SkillsPage() {
                                         {isMarketLoading ? (
                                             <div className="h-64 flex flex-col items-center justify-center text-muted-foreground gap-4">
                                                 <RefreshCcw className="w-8 h-8 animate-spin text-primary/50" />
-                                                <p className="text-sm font-medium animate-pulse">正在精挑細選優質技能...</p>
+                                                <p className="text-sm font-medium animate-pulse">{isEnglish ? "Curating top skills..." : "正在精挑細選優質技能..."}</p>
                                             </div>
                                         ) : marketSkills.length === 0 ? (
                                             <div className="h-64 flex flex-col items-center justify-center text-muted-foreground/50 gap-4">
                                                 <Search className="w-12 h-12 opacity-10" />
-                                                <p className="text-sm">在此類別中找不到相關技能</p>
+                                                <p className="text-sm">{isEnglish ? "No skills found in this category" : "在此類別中找不到相關技能"}</p>
                                             </div>
                                         ) : (
                                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-20">
                                                 {marketSkills.map((skill) => {
                                                     const isInstalled = skills.some(s => s.id === skill.id);
+                                                    const marketDescription = skill.original_description || skill.description;
+                                                    const marketCategory = skill.category_name?.en || skill.category || "uncategorized";
                                                     return (
                                                         <button
                                                             key={skill.id}
@@ -1672,7 +1708,7 @@ export default function SkillsPage() {
                                                                 </div>
                                                                 {isInstalled && (
                                                                     <span className="flex items-center gap-1 text-[9px] bg-green-500/10 text-green-500 border border-green-500/30 px-1.5 py-0.5 rounded-md uppercase tracking-wider font-bold">
-                                                                        <CheckCircle2 className="w-3.5 h-3.5" /> 已安裝
+                                                                        <CheckCircle2 className="w-3.5 h-3.5" /> {isEnglish ? "Installed" : "已安裝"}
                                                                     </span>
                                                                 )}
                                                             </div>
@@ -1682,16 +1718,16 @@ export default function SkillsPage() {
                                                                     {skill.title}
                                                                 </h4>
                                                                 <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 h-8">
-                                                                    {skill.description_zh || skill.description}
+                                                                    {marketDescription}
                                                                 </p>
                                                             </div>
                                                             
                                                             <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between z-10">
                                                                 <span className="text-[10px] text-muted-foreground font-medium flex items-center gap-1.5 max-w-[120px] truncate">
-                                                                    <Tags className="w-3 h-3" /> {skill.category_name?.zh || skill.category}
+                                                                    <Tags className="w-3 h-3" /> {marketCategory}
                                                                 </span>
                                                                 <span className="text-[10px] text-primary/80 font-bold group-hover:translate-x-1 transition-transform flex items-center">
-                                                                    詳情 <ChevronRight className="w-3 h-3" />
+                                                                    {isEnglish ? "Details" : "詳情"} <ChevronRight className="w-3 h-3" />
                                                                 </span>
                                                             </div>
                                                         </button>
@@ -1713,6 +1749,11 @@ export default function SkillsPage() {
                                     )}>
                                         {selectedMarketSkill && (
                                             <>
+                                                {(() => {
+                                                    const detailDescription = selectedMarketSkill.original_description || selectedMarketSkill.description;
+                                                    const detailCategory = selectedMarketSkill.category_name?.en || selectedMarketSkill.category || "uncategorized";
+                                                    return (
+                                                        <>
                                                 <div className="flex items-center justify-between p-6 border-b border-border bg-accent/10">
                                                     <div className="flex items-center gap-4">
                                                         <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30">
@@ -1723,7 +1764,7 @@ export default function SkillsPage() {
                                                                 {selectedMarketSkill.title}
                                                             </h2>
                                                             <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest mt-0.5">
-                                                                技能詳情 & 安裝
+                                                                {isEnglish ? "SKILL DETAILS & INSTALL" : "技能詳情 & 安裝"}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -1738,44 +1779,38 @@ export default function SkillsPage() {
                                                 <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
                                                     <div className="space-y-4">
                                                         <h3 className="text-xs font-bold text-primary flex items-center gap-2 uppercase tracking-wider">
-                                                            <BookOpen className="w-3.5 h-3.5" /> 技能簡介
+                                                            <BookOpen className="w-3.5 h-3.5" /> {isEnglish ? "Overview" : "技能簡介"}
                                                         </h3>
                                                         <div className="bg-secondary/40 border border-border/50 rounded-2xl p-5 shadow-inner">
-                                                            {selectedMarketSkill.description_zh && (
-                                                                <p className="font-bold text-foreground mb-3 text-sm leading-relaxed">
-                                                                    {selectedMarketSkill.description_zh}
-                                                                </p>
-                                                            )}
-                                                            <p className={cn(
-                                                                "text-sm leading-relaxed",
-                                                                selectedMarketSkill.description_zh ? "text-muted-foreground italic" : "text-foreground"
-                                                            )}>
-                                                                {selectedMarketSkill.description}
+                                                            <p className="text-sm leading-relaxed text-foreground">
+                                                                {detailDescription}
                                                             </p>
                                                         </div>
                                                         <div className="flex flex-wrap gap-2">
                                                             <span className="px-2 py-0.5 rounded-md bg-secondary border border-border text-[10px] text-muted-foreground font-medium flex items-center gap-1 capitalize">
-                                                                <Tags className="w-2.5 h-2.5" /> {selectedMarketSkill.category_name?.zh || selectedMarketSkill.category}
+                                                                <Tags className="w-2.5 h-2.5" /> {detailCategory}
                                                             </span>
                                                         </div>
                                                     </div>
 
                                                     <div className="space-y-4">
                                                         <h3 className="text-xs font-bold text-primary flex items-center gap-2 uppercase tracking-wider">
-                                                            <Activity className="w-3.5 h-3.5" /> 整合與安裝
+                                                            <Activity className="w-3.5 h-3.5" /> {isEnglish ? "Integration & Install" : "整合與安裝"}
                                                         </h3>
                                                         <div className="p-5 bg-primary/5 border border-primary/20 rounded-2xl relative overflow-hidden group">
                                                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform"></div>
                                                             <h5 className="flex items-center gap-2 text-primary text-sm font-bold uppercase tracking-wide mt-0 mb-4">
-                                                                <Zap className="w-4 h-4" /> 一鍵式整合
+                                                                <Zap className="w-4 h-4" /> {isEnglish ? "One-click Integration" : "一鍵式整合"}
                                                             </h5>
                                                             <p className="text-sm text-muted-foreground/90 leading-relaxed mb-6">
-                                                                此技能將自動整合至您的 Golem 核心，並從開源 GitHub 倉庫同步最新的提示詞技術。
+                                                                {isEnglish
+                                                                    ? "This skill will be integrated into your Golem core automatically and synced with the latest prompt techniques from the open-source GitHub repository."
+                                                                    : "此技能將自動整合至您的 Golem 核心，並從開源 GitHub 倉庫同步最新的提示詞技術。"}
                                                             </p>
                                                             
                                                             {skills.some(s => s.id === selectedMarketSkill.id) ? (
                                                                 <Button disabled className="w-full h-12 rounded-xl bg-green-500/10 text-green-500 border border-green-500/30 font-bold">
-                                                                    <CheckCircle2 className="w-5 h-5 mr-2" /> 該技能已就緒
+                                                                    <CheckCircle2 className="w-5 h-5 mr-2" /> {isEnglish ? "Skill Ready" : "該技能已就緒"}
                                                                 </Button>
                                                             ) : (
                                                                 <Button
@@ -1784,9 +1819,9 @@ export default function SkillsPage() {
                                                                     className="w-full h-12 font-bold bg-primary hover:bg-primary/90 text-primary-foreground border-none shadow-xl shadow-primary/25 transition-all hover:scale-[1.02] active:scale-95 rounded-xl text-sm"
                                                                 >
                                                                     {installingId === selectedMarketSkill.id ? (
-                                                                        <><RefreshCcw className="w-5 h-5 mr-3 animate-spin" /> 正在抓取...</>
+                                                                        <><RefreshCcw className="w-5 h-5 mr-3 animate-spin" /> {isEnglish ? "Fetching..." : "正在抓取..."}</>
                                                                     ) : (
-                                                                        <><Download className="w-5 h-5 mr-3" /> 一鍵安裝此技能</>
+                                                                        <><Download className="w-5 h-5 mr-3" /> {isEnglish ? "Install This Skill" : "一鍵安裝此技能"}</>
                                                                     )}
                                                                 </Button>
                                                             )}
@@ -1804,7 +1839,7 @@ export default function SkillsPage() {
                                                                 <div className="w-8 h-8 rounded-lg bg-card border border-border flex items-center justify-center group-hover:scale-110 transition-transform">
                                                                     <Database className="w-4 h-4 text-muted-foreground" />
                                                                 </div>
-                                                                <span className="text-muted-foreground font-medium group-hover:text-foreground">在 GitHub 上檢視原始碼</span>
+                                                                <span className="text-muted-foreground font-medium group-hover:text-foreground">{isEnglish ? "View Source on GitHub" : "在 GitHub 上檢視原始碼"}</span>
                                                             </div>
                                                             <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                                                         </a>
@@ -1813,9 +1848,12 @@ export default function SkillsPage() {
                                                 
                                                 <div className="p-6 bg-accent/5 border-t border-border">
                                                     <p className="text-center text-[10px] text-muted-foreground opacity-60">
-                                                        數據來源於 ComposioHQ/awesome-claude-skills
+                                                        {isEnglish ? "Data source: ComposioHQ/awesome-claude-skills" : "數據來源於 ComposioHQ/awesome-claude-skills"}
                                                     </p>
                                                 </div>
+                                                        </>
+                                                    );
+                                                })()}
                                             </>
                                         )}
                                     </aside>
@@ -1834,9 +1872,15 @@ export default function SkillsPage() {
                             </div>
                             <div className="flex flex-col">
                                 <p className="text-sm font-bold text-amber-700 dark:text-amber-200">
-                                    {syncHintType === "enable" ? "技能已啟用！" : "技能已刪除！"}
+                                    {syncHintType === "enable"
+                                        ? (isEnglish ? "Skill enabled!" : "技能已啟用！")
+                                        : (isEnglish ? "Skill deleted!" : "技能已刪除！")}
                                 </p>
-                                <p className="text-xs text-amber-600/80 dark:text-amber-400/80">請記得點擊右上方「注入技能書」按鈕，讓 AI 同步最新的能力。</p>
+                                <p className="text-xs text-amber-600/80 dark:text-amber-400/80">
+                                    {isEnglish
+                                        ? "Remember to click \"Inject Skills\" in the top-right to sync AI capabilities."
+                                        : "請記得點擊右上方「注入技能書」按鈕，讓 AI 同步最新的能力。"}
+                                </p>
                             </div>
                             <Button 
                                 size="sm" 
