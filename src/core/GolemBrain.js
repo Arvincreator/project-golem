@@ -35,15 +35,25 @@ class GolemBrain {
         this.selectors = this.doctor.loadSelectors();
 
         // ── 記憶引擎 ──
-        const mode = ConfigManager.cleanEnv(process.env.GOLEM_MEMORY_MODE || 'lancedb-pro').toLowerCase();
-        console.log(`⚙️ [System] 記憶引擎模式: ${mode.toUpperCase()} (Golem: ${this.golemId})`);
+        const requestedMode = ConfigManager.cleanEnv(process.env.GOLEM_MEMORY_MODE || 'lancedb-pro').toLowerCase() || 'lancedb-pro';
+        const isIntelMac = process.platform === 'darwin' && process.arch === 'x64';
+        let effectiveMode = requestedMode;
 
-        if (mode === 'native' || mode === 'system') {
+        // Intel Mac 無法使用目前的 LanceDB npm native binary，啟動時主動降級避免初始化爆炸。
+        if (requestedMode === 'native' || requestedMode === 'system') {
+            effectiveMode = 'native';
+            this.memoryDriver = new SystemNativeDriver();
+        } else if (isIntelMac) {
+            effectiveMode = 'native';
+            console.warn('⚠️ [Memory] 偵測到 Intel Mac (darwin-x64)。LanceDB Pro 在此架構不受支援，已自動切換為 SystemNativeDriver。');
             this.memoryDriver = new SystemNativeDriver();
         } else {
-            // Default to lancedb-pro
+            effectiveMode = 'lancedb-pro';
             this.memoryDriver = new LanceDBProDriver();
         }
+
+        console.log(`⚙️ [System] 記憶引擎模式(請求): ${requestedMode.toUpperCase()} (Golem: ${this.golemId})`);
+        console.log(`🧠 [System] 記憶引擎模式(實際): ${effectiveMode.toUpperCase()} (Golem: ${this.golemId})`);
 
         // ── 對話日誌 ──
         this.chatLogManager = new ChatLogManager({

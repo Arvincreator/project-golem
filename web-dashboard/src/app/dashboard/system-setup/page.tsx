@@ -9,12 +9,13 @@ import {
 import { useGolem } from "@/components/GolemContext";
 import { apiGet, apiPostWrite } from "@/lib/api-client";
 
-type MemoryMode = "lancedb-pro";
+type MemoryMode = "lancedb-pro" | "native";
 type BackendMode = "gemini" | "ollama";
 type EmbeddingProvider = "local" | "ollama";
 type SystemConfigResponse = {
     userDataDir?: string;
     golemMemoryMode?: string;
+    hasCustomMemoryMode?: boolean;
     golemBackend?: string;
     golemEmbeddingProvider?: string;
     golemLocalEmbeddingModel?: string;
@@ -24,6 +25,12 @@ type SystemConfigResponse = {
     golemOllamaRerankModel?: string;
     golemOllamaTimeoutMs?: string | number;
     allowRemoteAccess?: boolean | string;
+};
+type SystemStatusResponse = {
+    runtime?: {
+        platform?: string;
+        arch?: string;
+    };
 };
 
 function getErrorMessage(error: unknown, fallback = "儲存失敗，請稍後再試"): string {
@@ -35,6 +42,9 @@ function normalizeMemoryMode(value: unknown): MemoryMode {
     const mode = String(value || "").trim().toLowerCase();
     if (mode === "lancedb" || mode === "lancedb-pro" || mode === "lancedb-legacy") {
         return "lancedb-pro";
+    }
+    if (mode === "native" || mode === "system") {
+        return "native";
     }
     return "lancedb-pro";
 }
@@ -96,6 +106,7 @@ export default function SystemSetupPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isIntelMacRuntime, setIsIntelMacRuntime] = useState(false);
 
     const activeModelInfo = LOCAL_MODELS.find(m => m.id === localEmbeddingModel);
 
@@ -103,9 +114,23 @@ export default function SystemSetupPage() {
     useEffect(() => {
         const loadConfig = async () => {
             try {
-                const data = await apiGet<SystemConfigResponse>("/api/system/config");
+                const [data, status] = await Promise.all([
+                    apiGet<SystemConfigResponse>("/api/system/config"),
+                    apiGet<SystemStatusResponse>("/api/system/status").catch(() => null)
+                ]);
+
+                const runtimePlatform = String(status?.runtime?.platform || "").toLowerCase();
+                const runtimeArch = String(status?.runtime?.arch || "").toLowerCase();
+                const intelMac = runtimePlatform === "darwin" && runtimeArch === "x64";
+                setIsIntelMacRuntime(intelMac);
+
                 setUserDataDir(data.userDataDir || "./golem_memory");
-                setMemoryMode(normalizeMemoryMode(data.golemMemoryMode));
+                const normalizedMode = normalizeMemoryMode(data.golemMemoryMode);
+                const shouldAutoPreferNative = intelMac
+                    && normalizedMode === "lancedb-pro"
+                    && data.hasCustomMemoryMode !== true;
+                setMemoryMode(shouldAutoPreferNative ? "native" : normalizedMode);
+
                 setBackend(data.golemBackend === "ollama" ? "ollama" : "gemini");
                 if (data.golemEmbeddingProvider === "ollama") setEmbeddingProvider("ollama");
                 else setEmbeddingProvider("local");
@@ -129,6 +154,15 @@ export default function SystemSetupPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+
+        if (isIntelMacRuntime && memoryMode === "lancedb-pro") {
+            const confirmed = window.confirm(
+                "偵測到 Intel Mac (darwin-x64)。\nLanceDB Pro 在此架構目前不支援，系統啟動時會自動降級為 Native。\n\n是否仍要儲存為 lancedb-pro？"
+            );
+            if (!confirmed) {
+                return;
+            }
+        }
 
         setIsLoading(true);
         try {
@@ -261,21 +295,36 @@ export default function SystemSetupPage() {
                             <label className="block text-sm font-medium text-gray-400 mb-3">記憶引擎模式</label>
                             <div className="grid grid-cols-1 gap-3">
                                 {([
-                                    { value: "lancedb-pro", label: "LanceDB Pro Vector Engine", desc: "高效能向量資料庫，支援 Hybrid Search (推薦)" },
+                                    { value: "lancedb-pro", label: "LanceDB Pro Vector Engine", desc: "高效能語義向量檢索，召回品質最佳。" },
+                                    { value: "native", label: "System Native Memory Engine", desc: "關鍵字檢索，跨平台最穩定（含 Intel Mac）。" }
                                 ] as { value: MemoryMode; label: string; desc: string }[]).map(opt => (
                                     <button
                                         key={opt.value}
                                         type="button"
-                                        className="p-3 rounded-xl border text-sm font-medium transition-all text-left bg-blue-950/30 border-blue-600/50 text-blue-300 cursor-default"
+                                        onClick={() => setMemoryMode(opt.value)}
+                                        className={`p-3 rounded-xl border text-sm font-medium transition-all text-left ${
+                                            memoryMode === opt.value
+                                                ? "bg-blue-950/30 border-blue-600/50 text-blue-300"
+                                                : "bg-gray-950 border-gray-800 text-gray-300 hover:border-blue-700/60 hover:text-blue-200"
+                                        }`}
                                     >
                                         <div className="flex items-center justify-between mb-0.5">
                                             <span className="font-bold text-xs">{opt.label}</span>
-                                            <CheckCircle2 className="w-3.5 h-3.5 text-blue-400" />
+                                            {memoryMode === opt.value && <CheckCircle2 className="w-3.5 h-3.5 text-blue-400" />}
                                         </div>
                                         <div className="text-[10px] font-normal opacity-70">{opt.desc}</div>
                                     </button>
                                 ))}
                             </div>
+                            {isIntelMacRuntime && (
+                                <div className="mt-3 p-3 bg-amber-950/20 border border-amber-900/30 rounded-lg flex items-start gap-2">
+                                    <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                                    <p className="text-[11px] text-amber-200/80 leading-relaxed">
+                                        偵測到目前主機為 Intel Mac (darwin-x64)。建議選擇 <code className="font-mono">native</code>；
+                                        若選擇 <code className="font-mono">lancedb-pro</code>，系統啟動時會自動降級為 <code className="font-mono">native</code>。
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
                         {/* User Data Dir */}

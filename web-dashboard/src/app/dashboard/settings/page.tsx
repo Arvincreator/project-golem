@@ -113,7 +113,6 @@ export default function SettingsPage() {
     };
 
     const handleSave = async () => {
-        setIsSaving(true);
         setStatusMessage(null);
 
         const changedEnv: Record<string, string> = {};
@@ -128,10 +127,24 @@ export default function SettingsPage() {
 
         if (hasEnvChanges === false) {
             setStatusMessage({ type: "warning", text: t("settings.warning.noChanges") });
-            setIsSaving(false);
             return;
         }
 
+        const runtimePlatform = String(systemStatus?.runtime?.platform || "").toLowerCase();
+        const runtimeArch = String(systemStatus?.runtime?.arch || "").toLowerCase();
+        const isIntelMac = runtimePlatform === "darwin" && runtimeArch === "x64";
+        const changedMemoryMode = String(changedEnv.GOLEM_MEMORY_MODE || "").trim().toLowerCase();
+        const wantsLanceDbPro = changedMemoryMode === "lancedb" || changedMemoryMode === "lancedb-pro" || changedMemoryMode === "lancedb-legacy" || changedMemoryMode === "lancedb_legacy";
+
+        if (isIntelMac && wantsLanceDbPro) {
+            const confirmed = window.confirm(t("settings.confirm.intelMacLanceDbPro"));
+            if (!confirmed) {
+                setStatusMessage({ type: "warning", text: t("settings.warning.intelMacLanceDbProCancelled") });
+                return;
+            }
+        }
+
+        setIsSaving(true);
         try {
             const data = await apiPostWrite<{ success?: boolean; message?: string; error?: string }>("/api/config", {
                 env: changedEnv

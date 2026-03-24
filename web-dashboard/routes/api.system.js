@@ -16,7 +16,7 @@ function normalizeMemoryMode(modeRaw) {
     }
 
     if (mode === 'native' || mode === 'system') {
-        return mode;
+        return 'native';
     }
 
     return 'lancedb-pro';
@@ -128,6 +128,7 @@ module.exports = function registerSystemRoutes(server) {
         try {
             const EnvManager = require('../../src/utils/EnvManager');
             const envVars = EnvManager.readEnv();
+            const rawMemoryMode = String(envVars.GOLEM_MEMORY_MODE || '').trim();
 
             let version = 'v9.1';
             try {
@@ -141,7 +142,8 @@ module.exports = function registerSystemRoutes(server) {
                 version,
                 userDataDir: envVars.USER_DATA_DIR || './golem_memory',
                 golemBackend: normalizeBackend(envVars.GOLEM_BACKEND),
-                golemMemoryMode: normalizeMemoryMode(envVars.GOLEM_MEMORY_MODE),
+                golemMemoryMode: normalizeMemoryMode(rawMemoryMode),
+                hasCustomMemoryMode: rawMemoryMode.length > 0,
                 golemEmbeddingProvider: normalizeEmbeddingProvider(envVars.GOLEM_EMBEDDING_PROVIDER),
                 golemLocalEmbeddingModel: envVars.GOLEM_LOCAL_EMBEDDING_MODEL || 'Xenova/bge-small-zh-v1.5',
                 golemOllamaBaseUrl: envVars.GOLEM_OLLAMA_BASE_URL || envVars.OLLAMA_BASE_URL || 'http://127.0.0.1:11434',
