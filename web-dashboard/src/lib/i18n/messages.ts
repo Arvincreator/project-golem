@@ -22,6 +22,7 @@ const zhTWMessages = {
     "sidebar.customizeNav.moveDown": "下移",
 
     "sidebar.nav.chat": "直接交談",
+    "sidebar.nav.launchpad": "啟動中心",
     "sidebar.nav.promptPool": "Prompt 指令池",
     "sidebar.nav.promptTrends": "Prompt 趨勢",
     "sidebar.nav.skills": "技能說明書",
@@ -380,6 +381,7 @@ const enMessages: Record<MessageKey, string> = {
     "sidebar.customizeNav.moveDown": "Move down",
 
     "sidebar.nav.chat": "Chat",
+    "sidebar.nav.launchpad": "Launchpad",
     "sidebar.nav.promptPool": "Prompt Pool",
     "sidebar.nav.promptTrends": "Prompt Trends",
     "sidebar.nav.skills": "Skills",

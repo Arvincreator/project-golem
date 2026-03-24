@@ -1,13 +1,27 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
-    HardDrive, Brain, AlertTriangle,
-    Sparkles, ExternalLink, CheckCircle2, ArrowRight, Lock
+    Activity,
+    AlertTriangle,
+    ArrowRight,
+    Brain,
+    CheckCircle2,
+    Cpu,
+    Database,
+    ExternalLink,
+    Gauge,
+    Globe,
+    HardDrive,
+    Lock,
+    ShieldCheck,
+    Sparkles
 } from "lucide-react";
 import { useGolem } from "@/components/GolemContext";
 import { apiGet, apiPostWrite } from "@/lib/api-client";
+import { cn } from "@/lib/utils";
+import { useToast } from "@/components/ui/toast-provider";
 
 type MemoryMode = "lancedb-pro" | "native";
 type BackendMode = "gemini" | "ollama";
@@ -31,6 +45,29 @@ type SystemStatusResponse = {
         platform?: string;
         arch?: string;
     };
+};
+type SystemSetupDraft = {
+    userDataDir: string;
+    memoryMode: MemoryMode;
+    backend: BackendMode;
+    embeddingProvider: EmbeddingProvider;
+    localEmbeddingModel: string;
+    ollamaBaseUrl: string;
+    ollamaBrainModel: string;
+    ollamaEmbeddingModel: string;
+    ollamaRerankModel: string;
+    ollamaTimeoutMs: string;
+    allowRemoteAccess: boolean;
+    remoteAccessPassword: string;
+    updatedAt: number;
+};
+type SystemHealthStatus = "pass" | "warn" | "fail";
+type SystemHealthItem = {
+    id: string;
+    label: string;
+    status: SystemHealthStatus;
+    hint: string;
+    fixLabel?: string;
 };
 
 function getErrorMessage(error: unknown, fallback = "儲存失敗，請稍後再試"): string {
@@ -87,8 +124,24 @@ const LOCAL_MODELS = [
     }
 ];
 
+const MEMORY_MODE_OPTIONS: { value: MemoryMode; label: string; desc: string }[] = [
+    {
+        value: "lancedb-pro",
+        label: "LanceDB Pro Vector Engine",
+        desc: "高效能語義向量檢索，召回品質最佳。"
+    },
+    {
+        value: "native",
+        label: "System Native Memory Engine",
+        desc: "關鍵字檢索，跨平台最穩定（含 Intel Mac）。"
+    }
+];
+const SYSTEM_SETUP_DRAFT_KEY = "system_setup_draft_v1";
+const SYSTEM_SETUP_DRAFT_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
+
 export default function SystemSetupPage() {
     const { isSystemConfigured } = useGolem();
+    const toast = useToast();
 
     const [userDataDir, setUserDataDir] = useState("./golem_memory");
     const [memoryMode, setMemoryMode] = useState<MemoryMode>("lancedb-pro");
@@ -107,8 +160,120 @@ export default function SystemSetupPage() {
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isIntelMacRuntime, setIsIntelMacRuntime] = useState(false);
+    const [isDraftRestored, setIsDraftRestored] = useState(false);
+    const [isDraftReady, setIsDraftReady] = useState(false);
+    const [healthCheckTriggered, setHealthCheckTriggered] = useState(false);
 
     const activeModelInfo = LOCAL_MODELS.find(m => m.id === localEmbeddingModel);
+    const isOllamaBackend = backend === "ollama";
+    const isLanceMode = memoryMode === "lancedb-pro";
+    const isOllamaEmbedding = embeddingProvider === "ollama";
+    const timeoutMsNumber = Number(ollamaTimeoutMs);
+    const isTimeoutValid = !isOllamaBackend || (Number.isFinite(timeoutMsNumber) && timeoutMsNumber >= 1000);
+    const isStoragePathValid = Boolean(userDataDir.trim());
+
+    const hasBackendConfig = !isOllamaBackend || (
+        Boolean(ollamaBaseUrl.trim())
+        && Boolean(ollamaBrainModel.trim())
+        && isTimeoutValid
+    );
+    const hasEmbeddingConfig = !isLanceMode || (
+        !isOllamaEmbedding
+            ? Boolean(localEmbeddingModel)
+            : Boolean(ollamaEmbeddingModel.trim()) && Boolean(ollamaBaseUrl.trim())
+    );
+    const hasRemotePassword = Boolean(remoteAccessPassword.trim());
+    const hasRemoteRisk = allowRemoteAccess && !hasRemotePassword;
+    const canSubmit = !isLoading && isStoragePathValid && hasBackendConfig && hasEmbeddingConfig;
+    const validationChecks = [
+        { label: "記憶資料路徑不可空白", done: isStoragePathValid },
+        { label: "後端設定完整", done: hasBackendConfig },
+        { label: "向量模型設定完整", done: hasEmbeddingConfig },
+        { label: "遠端安全策略已確認", done: !hasRemoteRisk }
+    ];
+    const healthItems: SystemHealthItem[] = [
+        {
+            id: "storage",
+            label: "記憶資料路徑不可空白",
+            status: isStoragePathValid ? "pass" : "fail",
+            hint: isStoragePathValid ? "儲存路徑已設定" : "請指定 .env 中 USER_DATA_DIR 的儲存位置",
+            fixLabel: isStoragePathValid ? undefined : "填入預設路徑"
+        },
+        {
+            id: "backend",
+            label: "後端設定完整",
+            status: hasBackendConfig ? "pass" : "fail",
+            hint: hasBackendConfig ? "後端連線參數已完成" : "請補齊 Ollama URL、模型與 timeout",
+            fixLabel: hasBackendConfig ? undefined : "套用 Ollama 預設"
+        },
+        {
+            id: "embedding",
+            label: "向量模型設定完整",
+            status: hasEmbeddingConfig ? "pass" : "fail",
+            hint: hasEmbeddingConfig ? "Embedding 設定可用" : "請補齊 embedding provider 與模型參數",
+            fixLabel: hasEmbeddingConfig ? undefined : "修復 embedding 設定"
+        },
+        {
+            id: "remote",
+            label: "遠端存取風險",
+            status: hasRemoteRisk ? "warn" : "pass",
+            hint: hasRemoteRisk ? "目前開啟遠端但未設密碼，建議加上保護" : "遠端策略安全性正常",
+            fixLabel: hasRemoteRisk ? "填入安全密碼" : undefined
+        },
+        {
+            id: "intel",
+            label: "Intel Mac 與記憶引擎相容",
+            status: isIntelMacRuntime && memoryMode === "lancedb-pro" ? "warn" : "pass",
+            hint: isIntelMacRuntime && memoryMode === "lancedb-pro"
+                ? "此組合會在啟動時降級，建議直接改為 Native"
+                : "平台與記憶引擎相容",
+            fixLabel: isIntelMacRuntime && memoryMode === "lancedb-pro" ? "切換為 Native" : undefined
+        }
+    ];
+    const healthFailCount = healthItems.filter(item => item.status === "fail").length;
+    const healthWarnCount = healthItems.filter(item => item.status === "warn").length;
+
+    const setupScore = Math.min(
+        100,
+        (userDataDir.trim() ? 15 : 0)
+        + (backend ? 10 : 0)
+        + (hasBackendConfig ? 20 : 0)
+        + (memoryMode ? 15 : 0)
+        + (hasEmbeddingConfig ? 25 : 0)
+        + (hasRemoteRisk ? 8 : 15)
+    );
+    const readinessLabel = setupScore >= 85 ? "部署就緒" : setupScore >= 60 ? "接近完成" : "需補設定";
+    const readinessGradient = setupScore >= 85
+        ? "from-emerald-400 via-teal-400 to-cyan-400"
+        : setupScore >= 60
+            ? "from-amber-400 via-orange-400 to-rose-400"
+            : "from-slate-500 via-slate-400 to-zinc-400";
+    const setupSteps = [
+        {
+            title: "引擎與記憶模式",
+            description: "確認後端與記憶引擎，建立核心運作基礎。",
+            done: Boolean(backend && memoryMode),
+            icon: Cpu
+        },
+        {
+            title: "向量模型配置",
+            description: "若使用 LanceDB，完成 embedding provider 與模型設定。",
+            done: hasEmbeddingConfig,
+            icon: Database
+        },
+        {
+            title: "網路與安全",
+            description: "決定遠端策略，開啟遠端時建議加入密碼保護。",
+            done: !hasRemoteRisk,
+            icon: ShieldCheck
+        },
+        {
+            title: "完成初始化",
+            description: "儲存後進入建立 Golem 流程。",
+            done: setupScore >= 85,
+            icon: Sparkles
+        }
+    ];
 
     // 載入現有設定
     useEffect(() => {
@@ -141,19 +306,148 @@ export default function SystemSetupPage() {
                 setOllamaRerankModel(data.golemOllamaRerankModel || "");
                 setOllamaTimeoutMs(String(data.golemOllamaTimeoutMs || "60000"));
                 setAllowRemoteAccess(data.allowRemoteAccess === true || data.allowRemoteAccess === "true");
+
+                if (typeof window !== "undefined") {
+                    const rawDraft = window.localStorage.getItem(SYSTEM_SETUP_DRAFT_KEY);
+                    if (rawDraft) {
+                        try {
+                            const parsed = JSON.parse(rawDraft) as Partial<SystemSetupDraft>;
+                            const updatedAt = Number(parsed.updatedAt || 0);
+                            const isExpired = updatedAt > 0 && Date.now() - updatedAt > SYSTEM_SETUP_DRAFT_MAX_AGE_MS;
+
+                            if (isExpired) {
+                                window.localStorage.removeItem(SYSTEM_SETUP_DRAFT_KEY);
+                            } else {
+                                if (typeof parsed.userDataDir === "string") setUserDataDir(parsed.userDataDir);
+                                if (parsed.memoryMode === "lancedb-pro" || parsed.memoryMode === "native") setMemoryMode(parsed.memoryMode);
+                                if (parsed.backend === "gemini" || parsed.backend === "ollama") setBackend(parsed.backend);
+                                if (parsed.embeddingProvider === "local" || parsed.embeddingProvider === "ollama") setEmbeddingProvider(parsed.embeddingProvider);
+                                if (typeof parsed.localEmbeddingModel === "string") setLocalEmbeddingModel(parsed.localEmbeddingModel);
+                                if (typeof parsed.ollamaBaseUrl === "string") setOllamaBaseUrl(parsed.ollamaBaseUrl);
+                                if (typeof parsed.ollamaBrainModel === "string") setOllamaBrainModel(parsed.ollamaBrainModel);
+                                if (typeof parsed.ollamaEmbeddingModel === "string") setOllamaEmbeddingModel(parsed.ollamaEmbeddingModel);
+                                if (typeof parsed.ollamaRerankModel === "string") setOllamaRerankModel(parsed.ollamaRerankModel);
+                                if (typeof parsed.ollamaTimeoutMs === "string") setOllamaTimeoutMs(parsed.ollamaTimeoutMs);
+                                if (typeof parsed.allowRemoteAccess === "boolean") setAllowRemoteAccess(parsed.allowRemoteAccess);
+                                if (typeof parsed.remoteAccessPassword === "string") setRemoteAccessPassword(parsed.remoteAccessPassword);
+                                setIsDraftRestored(true);
+                            }
+                        } catch {
+                            window.localStorage.removeItem(SYSTEM_SETUP_DRAFT_KEY);
+                        }
+                    }
+                }
             } catch (fetchError) {
                 console.error(fetchError);
             } finally {
                 setIsFetching(false);
+                setIsDraftReady(true);
             }
         };
 
         loadConfig();
     }, []);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    useEffect(() => {
+        if (typeof window === "undefined" || !isDraftReady || isFetching) return;
+
+        const draft: SystemSetupDraft = {
+            userDataDir,
+            memoryMode,
+            backend,
+            embeddingProvider,
+            localEmbeddingModel,
+            ollamaBaseUrl,
+            ollamaBrainModel,
+            ollamaEmbeddingModel,
+            ollamaRerankModel,
+            ollamaTimeoutMs,
+            allowRemoteAccess,
+            remoteAccessPassword,
+            updatedAt: Date.now()
+        };
+        window.localStorage.setItem(SYSTEM_SETUP_DRAFT_KEY, JSON.stringify(draft));
+    }, [
+        userDataDir,
+        memoryMode,
+        backend,
+        embeddingProvider,
+        localEmbeddingModel,
+        ollamaBaseUrl,
+        ollamaBrainModel,
+        ollamaEmbeddingModel,
+        ollamaRerankModel,
+        ollamaTimeoutMs,
+        allowRemoteAccess,
+        remoteAccessPassword,
+        isDraftReady,
+        isFetching
+    ]);
+
+    const clearDraft = () => {
+        if (typeof window === "undefined") return;
+        window.localStorage.removeItem(SYSTEM_SETUP_DRAFT_KEY);
+        setIsDraftRestored(false);
+        toast.info("草稿已清除", "重新整理後將不再還原先前未送出的設定。");
+    };
+
+    const applyHealthFix = (itemId: string) => {
+        if (itemId === "storage") {
+            setUserDataDir("./golem_memory");
+            return;
+        }
+        if (itemId === "backend") {
+            setBackend("ollama");
+            setOllamaBaseUrl("http://127.0.0.1:11434");
+            setOllamaBrainModel("llama3.1:8b");
+            setOllamaTimeoutMs("60000");
+            return;
+        }
+        if (itemId === "embedding") {
+            if (!isLanceMode) setMemoryMode("lancedb-pro");
+            setEmbeddingProvider("local");
+            setLocalEmbeddingModel("Xenova/bge-small-zh-v1.5");
+            setOllamaEmbeddingModel("nomic-embed-text");
+            return;
+        }
+        if (itemId === "remote") {
+            setRemoteAccessPassword("change-me-strong-password");
+            return;
+        }
+        if (itemId === "intel") {
+            setMemoryMode("native");
+        }
+    };
+
+    const runHealthCheck = () => {
+        setHealthCheckTriggered(true);
+        if (healthFailCount === 0 && healthWarnCount === 0) {
+            toast.success("健康檢查完成", "系統設定狀態良好，可直接初始化。");
+            return;
+        }
+        if (healthFailCount === 0) {
+            toast.warning("健康檢查完成", `有 ${healthWarnCount} 項風險提醒，建議先修正。`);
+            return;
+        }
+        toast.warning("健康檢查未通過", `尚有 ${healthFailCount} 項必修設定。`);
+    };
+
+    const submitConfig = async () => {
         setError(null);
+
+        if (!canSubmit) {
+            toast.warning("設定尚未完成", "請先完成檢查清單中的項目，再送出初始化設定。");
+            return;
+        }
+
+        if (hasRemoteRisk) {
+            const keepGoing = window.confirm(
+                "目前已開啟遠端存取但未設密碼，存在安全風險。\n\n是否仍要繼續儲存設定？"
+            );
+            if (!keepGoing) {
+                return;
+            }
+        }
 
         if (isIntelMacRuntime && memoryMode === "lancedb-pro") {
             const confirmed = window.confirm(
@@ -185,7 +479,10 @@ export default function SystemSetupPage() {
             if (!data.success) {
                 throw new Error(data.error || "儲存失敗，請稍後再試");
             }
-            window.location.href = "/dashboard/agents/create";
+            if (typeof window !== "undefined") {
+                window.localStorage.removeItem(SYSTEM_SETUP_DRAFT_KEY);
+            }
+            window.location.href = "/dashboard/launchpad?from=system-setup";
         } catch (error: unknown) {
             setError(getErrorMessage(error));
         } finally {
@@ -193,321 +490,580 @@ export default function SystemSetupPage() {
         }
     };
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await submitConfig();
+    };
+    const submitConfigRef = useRef(submitConfig);
+    submitConfigRef.current = submitConfig;
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+                event.preventDefault();
+                void submitConfigRef.current();
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, []);
+
     if (isFetching) {
         return (
-            <div className="flex-1 flex items-center justify-center bg-gray-950">
-                <div className="w-8 h-8 border-2 border-indigo-500/30 border-t-indigo-400 rounded-full animate-spin" />
+            <div className="flex-1 flex items-center justify-center bg-background">
+                <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-cyan-300/30 bg-cyan-300/10">
+                    <div className="h-7 w-7 rounded-full border-2 border-cyan-300/30 border-t-cyan-200 animate-spin" />
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="flex-1 overflow-auto bg-gray-950 p-6 flex flex-col text-white">
-            <div className="max-w-2xl w-full mx-auto pt-8 pb-16">
+        <div className="relative flex-1 overflow-auto bg-[radial-gradient(circle_at_12%_0%,rgba(45,212,191,0.14),transparent_40%),radial-gradient(circle_at_90%_16%,rgba(14,165,233,0.12),transparent_35%),radial-gradient(circle_at_50%_100%,rgba(251,191,36,0.1),transparent_42%)] text-foreground">
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                <div className="absolute -top-24 left-[7%] h-80 w-80 rounded-full bg-cyan-500/10 blur-3xl" />
+                <div className="absolute top-1/3 right-[9%] h-80 w-80 rounded-full bg-emerald-400/10 blur-3xl" />
+                <div className="absolute -bottom-28 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-amber-400/10 blur-3xl" />
+            </div>
 
-                {/* Header */}
-                <div className="flex flex-col items-center text-center mb-12 animate-in fade-in slide-in-from-top-4 duration-500">
-                    <div className="inline-flex items-center justify-center p-4 bg-emerald-950/50 border border-emerald-800/40 rounded-2xl mb-5 shadow-[0_0_40px_-8px_theme(colors.emerald.900)]">
-                        <Sparkles className="w-8 h-8 text-emerald-400" />
+            <div className="relative mx-auto w-full max-w-[1320px] px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+                <section className="mb-6 overflow-hidden rounded-3xl border border-border/80 bg-card/75 p-6 shadow-[0_24px_60px_-35px_rgba(15,23,42,0.85)] backdrop-blur-md sm:p-8">
+                    <div className="pointer-events-none absolute inset-0">
+                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-cyan-400/0 via-cyan-300/80 to-cyan-400/0" />
                     </div>
-                    <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-white via-emerald-100 to-emerald-400 mb-3 tracking-tight">
-                        系統初始化設定
-                    </h1>
-                    <p className="text-lg text-gray-400 max-w-lg leading-relaxed">
-                        在開始使用 Golem 之前，請完成核心參數設定。<br />
-                        Golem Bot 可以在設定完成後隨時從 Dashboard 新增。
-                    </p>
-                </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+                    <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                        <div className="max-w-3xl">
+                            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-300/10 px-3 py-1 text-xs font-semibold tracking-wide text-cyan-100">
+                                <Sparkles className="h-3.5 w-3.5" />
+                                System Initialization Studio
+                            </div>
+                            <h1 className="text-3xl font-semibold leading-tight text-white sm:text-4xl lg:text-[2.6rem]">
+                                打造穩定、可擴充的
+                                <span className="bg-gradient-to-r from-cyan-200 via-emerald-200 to-teal-300 bg-clip-text text-transparent"> Golem 基礎系統</span>
+                            </h1>
+                            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">
+                                這是第一次啟動前最關鍵的配置區。把後端、記憶引擎與網路策略設定好，後續新增 Golem 節點就會非常順暢。
+                            </p>
+                            <div className="mt-5 flex flex-wrap gap-2.5">
+                                <div className="inline-flex items-center gap-2 rounded-full border border-sky-300/25 bg-sky-300/10 px-3 py-1 text-xs text-sky-100">
+                                    <Cpu className="h-3.5 w-3.5" />
+                                    Backend: {backend === "ollama" ? "Ollama" : "Web Gemini"}
+                                </div>
+                                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1 text-xs text-emerald-100">
+                                    <Database className="h-3.5 w-3.5" />
+                                    Memory: {memoryMode === "lancedb-pro" ? "LanceDB Pro" : "Native"}
+                                </div>
+                                <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                                    <Gauge className="h-3.5 w-3.5" />
+                                    就緒度 {setupScore}%
+                                </div>
+                            </div>
+                        </div>
 
+                        <div className="grid w-full gap-3 sm:grid-cols-3 lg:max-w-md">
+                            <div className="rounded-2xl border border-border/70 bg-background/60 px-4 py-3">
+                                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Runtime</div>
+                                <div className="mt-1 text-sm font-semibold text-foreground">{isIntelMacRuntime ? "Intel Mac" : "Standard"}</div>
+                            </div>
+                            <div className="rounded-2xl border border-border/70 bg-background/60 px-4 py-3">
+                                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Remote Access</div>
+                                <div className="mt-1 text-sm font-semibold text-foreground">{allowRemoteAccess ? "Enabled" : "Local Only"}</div>
+                            </div>
+                            <div className="rounded-2xl border border-border/70 bg-background/60 px-4 py-3">
+                                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Status</div>
+                                <div className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-foreground">
+                                    <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                                    {readinessLabel}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="relative mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                        {setupSteps.map((step, idx) => {
+                            const IconComponent = step.icon;
+                            return (
+                                <div
+                                    key={step.title}
+                                    className={cn(
+                                        "rounded-2xl border px-4 py-3 transition-all",
+                                        step.done
+                                            ? "border-emerald-400/35 bg-emerald-400/10"
+                                            : "border-border/70 bg-background/55"
+                                    )}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div className="inline-flex items-center gap-2 text-sm font-semibold text-foreground">
+                                            <span className="flex h-6 w-6 items-center justify-center rounded-full border border-border/70 bg-background/80 text-xs">
+                                                {idx + 1}
+                                            </span>
+                                            {step.title}
+                                        </div>
+                                        <IconComponent className={cn("h-4 w-4", step.done ? "text-emerald-300" : "text-muted-foreground")} />
+                                    </div>
+                                    <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{step.description}</p>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
                     {error && (
-                        <div className="flex items-start gap-3 p-4 bg-red-950/30 border border-red-900/40 rounded-xl text-red-400">
-                            <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                        <div className="flex items-start gap-3 rounded-2xl border border-red-400/35 bg-red-400/10 p-4 text-red-100">
+                            <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-300" />
                             <p className="text-sm">{error}</p>
                         </div>
                     )}
 
-
-                    {/* Memory Config */}
-                    <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
-                        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-600 to-indigo-400 rounded-t-2xl" />
-
-                        <div className="flex items-center gap-2 mb-5">
-                            <Brain className="w-5 h-5 text-blue-400" />
-                            <h2 className="text-base font-semibold text-white">記憶引擎設定</h2>
-                        </div>
-
-                        {/* Backend */}
-                        <div className="mb-5">
-                            <label className="block text-sm font-medium text-gray-400 mb-2">大腦後端 (Brain Backend)</label>
-                            <select
-                                value={backend}
-                                onChange={e => setBackend(e.target.value as BackendMode)}
-                                className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all"
-                            >
-                                <option value="gemini">Web Gemini (Playwright Browser)</option>
-                                <option value="ollama">Ollama API (Local / Self-hosted)</option>
-                            </select>
-                            <p className="text-xs text-gray-600 mt-1.5">
-                                Ollama 模式不需瀏覽器登入，適合私有化部署；Gemini 模式保留 Browser-in-the-Loop。
-                            </p>
-                        </div>
-
-                        {backend === "ollama" && (
-                            <div className="mb-5 bg-blue-950/20 border border-blue-900/40 rounded-xl p-4 space-y-3">
-                                <div>
-                                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Ollama Base URL</label>
-                                    <input
-                                        type="text"
-                                        value={ollamaBaseUrl}
-                                        onChange={e => setOllamaBaseUrl(e.target.value)}
-                                        className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-blue-500 transition-all"
-                                        placeholder="http://127.0.0.1:11434"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Ollama Brain Model</label>
-                                    <input
-                                        type="text"
-                                        value={ollamaBrainModel}
-                                        onChange={e => setOllamaBrainModel(e.target.value)}
-                                        className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-blue-500 transition-all"
-                                        placeholder="llama3.1:8b"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Ollama Timeout (ms)</label>
-                                    <input
-                                        type="number"
-                                        min={1000}
-                                        value={ollamaTimeoutMs}
-                                        onChange={e => setOllamaTimeoutMs(e.target.value)}
-                                        className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-blue-500 transition-all"
-                                        placeholder="60000"
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Memory Mode */}
-                        <div className="mb-5">
-                            <label className="block text-sm font-medium text-gray-400 mb-3">記憶引擎模式</label>
-                            <div className="grid grid-cols-1 gap-3">
-                                {([
-                                    { value: "lancedb-pro", label: "LanceDB Pro Vector Engine", desc: "高效能語義向量檢索，召回品質最佳。" },
-                                    { value: "native", label: "System Native Memory Engine", desc: "關鍵字檢索，跨平台最穩定（含 Intel Mac）。" }
-                                ] as { value: MemoryMode; label: string; desc: string }[]).map(opt => (
-                                    <button
-                                        key={opt.value}
-                                        type="button"
-                                        onClick={() => setMemoryMode(opt.value)}
-                                        className={`p-3 rounded-xl border text-sm font-medium transition-all text-left ${
-                                            memoryMode === opt.value
-                                                ? "bg-blue-950/30 border-blue-600/50 text-blue-300"
-                                                : "bg-gray-950 border-gray-800 text-gray-300 hover:border-blue-700/60 hover:text-blue-200"
-                                        }`}
-                                    >
-                                        <div className="flex items-center justify-between mb-0.5">
-                                            <span className="font-bold text-xs">{opt.label}</span>
-                                            {memoryMode === opt.value && <CheckCircle2 className="w-3.5 h-3.5 text-blue-400" />}
-                                        </div>
-                                        <div className="text-[10px] font-normal opacity-70">{opt.desc}</div>
-                                    </button>
-                                ))}
-                            </div>
-                            {isIntelMacRuntime && (
-                                <div className="mt-3 p-3 bg-amber-950/20 border border-amber-900/30 rounded-lg flex items-start gap-2">
-                                    <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                                    <p className="text-[11px] text-amber-200/80 leading-relaxed">
-                                        偵測到目前主機為 Intel Mac (darwin-x64)。建議選擇 <code className="font-mono">native</code>；
-                                        若選擇 <code className="font-mono">lancedb-pro</code>，系統啟動時會自動降級為 <code className="font-mono">native</code>。
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* User Data Dir */}
-                        <div className="mb-5">
-                            <label className="block text-sm font-medium text-gray-400 mb-2">
-                                <HardDrive className="w-3.5 h-3.5 inline mr-1.5 text-gray-500" />
-                                記憶資料儲存路徑
-                            </label>
-                            <input
-                                type="text"
-                                value={userDataDir}
-                                onChange={e => setUserDataDir(e.target.value)}
-                                className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all"
-                                placeholder="./golem_memory"
-                            />
-                            <p className="text-xs text-gray-600 mt-1.5">
-                                存放 Playwright Session（若使用 Gemini）與長期記憶資料庫。
-                            </p>
-                        </div>
-
-                        {/* Embedding Config (Only for LanceDB) */}
-                        {memoryMode === "lancedb-pro" && (
-                            <div className="bg-gray-950 border border-gray-800 rounded-xl p-5 shadow-inner animate-in zoom-in-95 duration-300">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <Sparkles className="w-4 h-4 text-purple-400" />
-                                    <h3 className="text-sm font-semibold text-white">向量模型設定 (Embedding)</h3>
+                    <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                        <section className="space-y-6 xl:col-span-8">
+                            <div className="overflow-hidden rounded-3xl border border-border/80 bg-card/80 p-6 shadow-xl backdrop-blur-sm">
+                                <div className="mb-5 flex items-center gap-2">
+                                    <Brain className="h-5 w-5 text-cyan-300" />
+                                    <h2 className="text-base font-semibold text-foreground">核心引擎與記憶配置</h2>
                                 </div>
 
-                                <div className="space-y-4">
+                                <div className="space-y-5">
                                     <div>
-                                        <label className="block text-xs font-medium text-gray-500 mb-2">提供者</label>
+                                        <label className="mb-2 block text-sm font-medium text-muted-foreground">大腦後端 (Brain Backend)</label>
                                         <select
-                                            value={embeddingProvider}
-                                            onChange={e => setEmbeddingProvider(e.target.value as EmbeddingProvider)}
-                                            className="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500 transition-all"
+                                            value={backend}
+                                            onChange={e => setBackend(e.target.value as BackendMode)}
+                                            className="w-full rounded-xl border border-border bg-background/70 px-4 py-3 text-sm text-foreground transition-all focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/25"
                                         >
-                                            <option value="local">Local (Transformers.js)</option>
-                                            <option value="ollama">Ollama Embedding</option>
+                                            <option value="gemini">Web Gemini (Playwright Browser)</option>
+                                            <option value="ollama">Ollama API (Local / Self-hosted)</option>
                                         </select>
+                                        <p className="mt-1.5 text-xs text-muted-foreground">
+                                            Ollama 適合私有化部署；Gemini 保留 Browser-in-the-Loop。
+                                        </p>
                                     </div>
 
-                                    {embeddingProvider === "local" && (
-                                        <>
+                                    {isOllamaBackend && (
+                                        <div className="rounded-2xl border border-cyan-300/25 bg-cyan-300/10 p-4 space-y-3">
                                             <div>
-                                                <label className="block text-xs font-medium text-gray-500 mb-2">模型選擇</label>
-                                                <select
-                                                    value={localEmbeddingModel}
-                                                    onChange={e => setLocalEmbeddingModel(e.target.value)}
-                                                    className="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-purple-500 transition-all"
-                                                >
-                                                    {LOCAL_MODELS.map(model => (
-                                                        <option key={model.id} value={model.id}>{model.name}</option>
-                                                    ))}
-                                                </select>
+                                                <label className="mb-1.5 block text-xs font-medium text-cyan-100/90">Ollama Base URL</label>
+                                                <input
+                                                    type="text"
+                                                    value={ollamaBaseUrl}
+                                                    onChange={e => setOllamaBaseUrl(e.target.value)}
+                                                    className="w-full rounded-lg border border-border bg-background/80 px-3 py-2 font-mono text-xs text-foreground transition-all focus:border-cyan-300 focus:outline-none"
+                                                    placeholder="http://127.0.0.1:11434"
+                                                />
                                             </div>
-
-                                            {activeModelInfo && (
-                                                <div className="bg-purple-950/20 border border-purple-900/30 rounded-lg p-3 space-y-2">
-                                                    <div className="text-[11px] text-gray-300 leading-relaxed">
-                                                        <span className="font-bold text-purple-400">特色：</span> {activeModelInfo.features}
-                                                    </div>
-                                                    <div className="text-[11px] text-gray-300 leading-relaxed">
-                                                        <span className="font-bold text-purple-400">推薦：</span> {activeModelInfo.recommendation}
-                                                    </div>
-                                                    <div className="text-[10px] text-gray-500 italic pt-1 border-t border-purple-900/20">
-                                                        💡 {activeModelInfo.notes}
-                                                    </div>
+                                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                                <div>
+                                                    <label className="mb-1.5 block text-xs font-medium text-cyan-100/90">Ollama Brain Model</label>
+                                                    <input
+                                                        type="text"
+                                                        value={ollamaBrainModel}
+                                                        onChange={e => setOllamaBrainModel(e.target.value)}
+                                                        className="w-full rounded-lg border border-border bg-background/80 px-3 py-2 font-mono text-xs text-foreground transition-all focus:border-cyan-300 focus:outline-none"
+                                                        placeholder="llama3.1:8b"
+                                                    />
                                                 </div>
-                                            )}
-                                        </>
+                                                <div>
+                                                    <label className="mb-1.5 block text-xs font-medium text-cyan-100/90">Ollama Timeout (ms)</label>
+                                                    <input
+                                                        type="number"
+                                                        min={1000}
+                                                        value={ollamaTimeoutMs}
+                                                        onChange={e => setOllamaTimeoutMs(e.target.value)}
+                                                        className="w-full rounded-lg border border-border bg-background/80 px-3 py-2 font-mono text-xs text-foreground transition-all focus:border-cyan-300 focus:outline-none"
+                                                        placeholder="60000"
+                                                    />
+                                                    {!isTimeoutValid && (
+                                                        <p className="mt-1 text-[10px] text-amber-200">Timeout 建議至少 1000ms。</p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
                                     )}
 
-                                    {embeddingProvider === "ollama" && (
-                                        <div className="space-y-3 bg-blue-950/20 border border-blue-900/40 rounded-lg p-3">
-                                            <div>
-                                                <label className="block text-xs font-medium text-gray-400 mb-1.5">Embedding Model</label>
-                                                <input
-                                                    type="text"
-                                                    value={ollamaEmbeddingModel}
-                                                    onChange={e => setOllamaEmbeddingModel(e.target.value)}
-                                                    className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-blue-500 transition-all"
-                                                    placeholder="nomic-embed-text"
-                                                />
+                                    <div>
+                                        <label className="mb-3 block text-sm font-medium text-muted-foreground">記憶引擎模式</label>
+                                        <div className="grid gap-3 sm:grid-cols-2">
+                                            {MEMORY_MODE_OPTIONS.map(opt => (
+                                                <button
+                                                    key={opt.value}
+                                                    type="button"
+                                                    onClick={() => setMemoryMode(opt.value)}
+                                                    className={cn(
+                                                        "rounded-xl border p-3 text-left transition-all",
+                                                        memoryMode === opt.value
+                                                            ? "border-cyan-300/45 bg-cyan-300/15"
+                                                            : "border-border bg-background/55 hover:border-cyan-300/35 hover:bg-cyan-300/10"
+                                                    )}
+                                                >
+                                                    <div className="mb-0.5 flex items-center justify-between">
+                                                        <span className="text-xs font-semibold text-foreground">{opt.label}</span>
+                                                        {memoryMode === opt.value && <CheckCircle2 className="h-3.5 w-3.5 text-cyan-300" />}
+                                                    </div>
+                                                    <div className="text-[11px] leading-relaxed text-muted-foreground">{opt.desc}</div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                        {isIntelMacRuntime && (
+                                            <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-400/35 bg-amber-400/10 p-3">
+                                                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+                                                <p className="text-[11px] leading-relaxed text-amber-100/90">
+                                                    偵測到 Intel Mac (darwin-x64)。建議選擇 <code className="font-mono">native</code>；
+                                                    若選擇 <code className="font-mono">lancedb-pro</code>，系統啟動時會自動降級為 <code className="font-mono">native</code>。
+                                                </p>
                                             </div>
-                                            <div>
-                                                <label className="block text-xs font-medium text-gray-400 mb-1.5">Rerank Model (選填)</label>
-                                                <input
-                                                    type="text"
-                                                    value={ollamaRerankModel}
-                                                    onChange={e => setOllamaRerankModel(e.target.value)}
-                                                    className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-blue-500 transition-all"
-                                                    placeholder="bge-reranker-v2-m3 (optional)"
-                                                />
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium text-muted-foreground">
+                                            <HardDrive className="mr-1.5 inline h-3.5 w-3.5 text-muted-foreground" />
+                                            記憶資料儲存路徑
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={userDataDir}
+                                            onChange={e => setUserDataDir(e.target.value)}
+                                            className="w-full rounded-xl border border-border bg-background/70 px-4 py-3 font-mono text-sm text-foreground transition-all focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/25"
+                                            placeholder="./golem_memory"
+                                        />
+                                        <p className="mt-1.5 text-xs text-muted-foreground">
+                                            存放 Playwright Session（若使用 Gemini）與長期記憶資料庫。
+                                        </p>
+                                    </div>
+
+                                    {isLanceMode && (
+                                        <div className="rounded-2xl border border-sky-300/25 bg-sky-300/10 p-5">
+                                            <div className="mb-4 flex items-center gap-2">
+                                                <Sparkles className="h-4 w-4 text-sky-200" />
+                                                <h3 className="text-sm font-semibold text-foreground">向量模型設定 (Embedding)</h3>
                                             </div>
-                                            <p className="text-[10px] text-blue-200/70 leading-relaxed">
-                                                若填寫 rerank 模型，查詢結果會在向量召回後再重排；若空白則維持原始 hybrid ranking。
+
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label className="mb-2 block text-xs font-medium text-sky-100/90">提供者</label>
+                                                    <select
+                                                        value={embeddingProvider}
+                                                        onChange={e => setEmbeddingProvider(e.target.value as EmbeddingProvider)}
+                                                        className="w-full rounded-lg border border-border bg-background/75 px-3 py-2 text-sm text-foreground transition-all focus:border-sky-300 focus:outline-none"
+                                                    >
+                                                        <option value="local">Local (Transformers.js)</option>
+                                                        <option value="ollama">Ollama Embedding</option>
+                                                    </select>
+                                                </div>
+
+                                                {!isOllamaEmbedding && (
+                                                    <>
+                                                        <div>
+                                                            <label className="mb-2 block text-xs font-medium text-sky-100/90">模型選擇</label>
+                                                            <select
+                                                                value={localEmbeddingModel}
+                                                                onChange={e => setLocalEmbeddingModel(e.target.value)}
+                                                                className="w-full rounded-lg border border-border bg-background/75 px-3 py-2 font-mono text-sm text-foreground transition-all focus:border-sky-300 focus:outline-none"
+                                                            >
+                                                                {LOCAL_MODELS.map(model => (
+                                                                    <option key={model.id} value={model.id}>{model.name}</option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+
+                                                        {activeModelInfo && (
+                                                            <div className="space-y-2 rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-3">
+                                                                <div className="text-[11px] leading-relaxed text-cyan-50/90">
+                                                                    <span className="font-semibold text-cyan-200">特色：</span> {activeModelInfo.features}
+                                                                </div>
+                                                                <div className="text-[11px] leading-relaxed text-cyan-50/90">
+                                                                    <span className="font-semibold text-cyan-200">推薦：</span> {activeModelInfo.recommendation}
+                                                                </div>
+                                                                <div className="border-t border-cyan-300/20 pt-1 text-[10px] italic text-cyan-100/80">
+                                                                    {activeModelInfo.notes}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                )}
+
+                                                {isOllamaEmbedding && (
+                                                    <div className="space-y-3 rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-3">
+                                                        {!isOllamaBackend && (
+                                                            <div>
+                                                                <label className="mb-1.5 block text-xs font-medium text-cyan-100/90">Ollama Base URL (Embedding)</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={ollamaBaseUrl}
+                                                                    onChange={e => setOllamaBaseUrl(e.target.value)}
+                                                                    className="w-full rounded-lg border border-border bg-background/80 px-3 py-2 font-mono text-xs text-foreground transition-all focus:border-cyan-300 focus:outline-none"
+                                                                    placeholder="http://127.0.0.1:11434"
+                                                                />
+                                                            </div>
+                                                        )}
+                                                        <div>
+                                                            <label className="mb-1.5 block text-xs font-medium text-cyan-100/90">Embedding Model</label>
+                                                            <input
+                                                                type="text"
+                                                                value={ollamaEmbeddingModel}
+                                                                onChange={e => setOllamaEmbeddingModel(e.target.value)}
+                                                                className="w-full rounded-lg border border-border bg-background/80 px-3 py-2 font-mono text-xs text-foreground transition-all focus:border-cyan-300 focus:outline-none"
+                                                                placeholder="nomic-embed-text"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label className="mb-1.5 block text-xs font-medium text-cyan-100/90">Rerank Model (選填)</label>
+                                                            <input
+                                                                type="text"
+                                                                value={ollamaRerankModel}
+                                                                onChange={e => setOllamaRerankModel(e.target.value)}
+                                                                className="w-full rounded-lg border border-border bg-background/80 px-3 py-2 font-mono text-xs text-foreground transition-all focus:border-cyan-300 focus:outline-none"
+                                                                placeholder="bge-reranker-v2-m3 (optional)"
+                                                            />
+                                                        </div>
+                                                        <p className="text-[10px] leading-relaxed text-cyan-100/85">
+                                                            若填寫 rerank 模型，查詢結果會在向量召回後再重排；若空白則維持原始 hybrid ranking。
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="overflow-hidden rounded-3xl border border-border/80 bg-card/80 p-6 shadow-xl backdrop-blur-sm">
+                                <div className="mb-5 flex items-center gap-2">
+                                    <ExternalLink className="h-5 w-5 text-emerald-300" />
+                                    <h2 className="text-base font-semibold text-foreground">網路連線與安全策略</h2>
+                                </div>
+
+                                <div className="flex items-center justify-between gap-4 rounded-2xl border border-border/70 bg-background/55 p-4">
+                                    <div className="space-y-1">
+                                        <div className="text-sm font-medium text-foreground">允許遠端存取 (Remote Access)</div>
+                                        <div className="text-xs leading-relaxed text-muted-foreground">
+                                            開啟後可允許區域網路或其他 IP 連線。若關閉則僅限 localhost。
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setAllowRemoteAccess(value => !value)}
+                                        aria-pressed={allowRemoteAccess}
+                                        className={cn(
+                                            "relative h-7 w-14 rounded-full border p-1 transition-colors",
+                                            allowRemoteAccess
+                                                ? "border-emerald-300/45 bg-emerald-400/45"
+                                                : "border-border bg-secondary/70"
+                                        )}
+                                    >
+                                        <span
+                                            className={cn(
+                                                "block h-5 w-5 rounded-full bg-white shadow-sm transition-transform",
+                                                allowRemoteAccess ? "translate-x-7" : "translate-x-0"
+                                            )}
+                                        />
+                                    </button>
+                                </div>
+
+                                {allowRemoteAccess && (
+                                    <>
+                                        <div className="mt-5 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 p-4">
+                                            <label className="mb-2 block text-sm font-medium text-emerald-100">
+                                                <Lock className="mr-1.5 inline h-3.5 w-3.5 text-emerald-200" />
+                                                自定義遠端存取密碼 (選填)
+                                            </label>
+                                            <input
+                                                type="password"
+                                                value={remoteAccessPassword}
+                                                onChange={e => setRemoteAccessPassword(e.target.value)}
+                                                className="w-full rounded-xl border border-border bg-background/80 px-4 py-3 font-mono text-sm text-foreground transition-all focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-300/20"
+                                                placeholder="若留空，則遠端存取不需要密碼"
+                                                autoComplete="new-password"
+                                            />
+                                            <p className="mt-1.5 text-[10px] leading-relaxed text-emerald-100/80">
+                                                設定密碼後，非本機連線皆須輸入此密碼才可登入控制台。
                                             </p>
                                         </div>
-                                    )}
-
-                                </div>
+                                        <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber-400/35 bg-amber-400/10 p-3">
+                                            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+                                            <p className="text-[10px] leading-relaxed text-amber-100/90">
+                                                開啟遠端存取會提高暴露風險。請搭配強密碼、可信任網路與防火牆策略。
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
                             </div>
-                        )}
-                    </div>
+                        </section>
 
-                    {/* Network Config */}
-                    <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
-                        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-600 to-teal-400 rounded-t-2xl" />
-
-                        <div className="flex items-center gap-2 mb-5">
-                            <ExternalLink className="w-5 h-5 text-emerald-400" />
-                            <h2 className="text-base font-semibold text-white">網路連線設定</h2>
-                        </div>
-
-                        <div className="flex items-center justify-between p-4 bg-gray-950 border border-gray-800 rounded-xl">
-                            <div className="space-y-1">
-                                <div className="text-sm font-medium text-white">允許遠端存取 (Remote Access)</div>
-                                <div className="text-xs text-gray-500 leading-relaxed">
-                                    開啟後可允許區域網路或其他 IP 連線。若關閉則僅限 localhost。
-                                </div>
-                            </div>
-                            <div 
-                                onClick={() => setAllowRemoteAccess(!allowRemoteAccess)}
-                                className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors duration-200 ease-in-out ${allowRemoteAccess ? 'bg-emerald-600' : 'bg-gray-700'}`}
-                            >
-                                <div className={`w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform duration-200 ease-in-out ${allowRemoteAccess ? 'translate-x-6' : 'translate-x-0'}`} />
-                            </div>
-                        </div>
-
-                        {allowRemoteAccess && (
-                            <>
-                                <div className="mt-5 animate-in fade-in zoom-in-95">
-                                    <label className="block text-sm font-medium text-gray-400 mb-2">
-                                        <Lock className="w-3.5 h-3.5 inline mr-1.5 text-gray-500" />
-                                        自定義遠端存取密碼 (選填)
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type="password"
-                                            value={remoteAccessPassword}
-                                            onChange={e => setRemoteAccessPassword(e.target.value)}
-                                            className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all pr-10"
-                                            placeholder="若留空，則遠端存取不需要密碼"
-                                            autoComplete="new-password"
-                                        />
+                        <aside className="space-y-6 xl:col-span-4 xl:sticky xl:top-6 h-fit">
+                            <div className="rounded-3xl border border-border/80 bg-card/85 p-6 shadow-xl backdrop-blur-sm">
+                                <div className="mb-3 flex items-center justify-between">
+                                    <div className="inline-flex items-center gap-2 text-sm font-semibold text-foreground">
+                                        <Gauge className="h-4 w-4 text-cyan-300" />
+                                        初始化就緒度
                                     </div>
-                                    <p className="text-[10px] text-gray-500 mt-1.5 leading-relaxed">
-                                        設定密碼後，非本機連線皆須輸入此密碼才可登入控制台。
-                                    </p>
+                                    <div className="text-sm font-semibold text-foreground">{setupScore}%</div>
                                 </div>
-                                <div className="mt-4 p-3 bg-amber-950/20 border border-amber-900/30 rounded-lg flex items-start gap-2 animate-in fade-in zoom-in-95">
-                                    <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                                    <p className="text-[10px] text-amber-200/70 leading-relaxed">
-                                        ⚠️ 警告：開啟遠端存取會降低安全性。請確保您在受信任的網路環境中，或已設置適當的密碼保護。
-                                    </p>
+                                <div className="h-2 w-full overflow-hidden rounded-full bg-secondary/70">
+                                    <div
+                                        className={cn("h-full bg-gradient-to-r transition-all duration-500", readinessGradient)}
+                                        style={{ width: `${setupScore}%` }}
+                                    />
                                 </div>
-                            </>
-                        )}
+                                <p className="mt-2 text-xs text-muted-foreground">
+                                    狀態：{readinessLabel}。建議至少 85% 再進行首次部署。
+                                </p>
+
+                                <div className="mt-4 space-y-2">
+                                    <div className="flex items-center justify-between rounded-xl border border-border/70 bg-background/55 px-3 py-2 text-xs">
+                                        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                                            <Cpu className="h-3.5 w-3.5" />
+                                            大腦後端
+                                        </span>
+                                        <span className="font-semibold text-foreground">{backend === "ollama" ? "Ollama" : "Gemini"}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between rounded-xl border border-border/70 bg-background/55 px-3 py-2 text-xs">
+                                        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                                            <Database className="h-3.5 w-3.5" />
+                                            記憶模式
+                                        </span>
+                                        <span className="font-semibold text-foreground">{memoryMode === "lancedb-pro" ? "LanceDB Pro" : "Native"}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between rounded-xl border border-border/70 bg-background/55 px-3 py-2 text-xs">
+                                        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                                            <Globe className="h-3.5 w-3.5" />
+                                            遠端策略
+                                        </span>
+                                        <span className="font-semibold text-foreground">{allowRemoteAccess ? "Remote On" : "Local Only"}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between rounded-xl border border-border/70 bg-background/55 px-3 py-2 text-xs">
+                                        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                                            <Activity className="h-3.5 w-3.5" />
+                                            設定檔狀態
+                                        </span>
+                                        <span className="font-semibold text-foreground">{isSystemConfigured ? "已存在" : "首次初始化"}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="rounded-3xl border border-border/80 bg-card/85 p-6 shadow-xl backdrop-blur-sm">
+                                <div className="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-foreground">
+                                    <ShieldCheck className="h-4 w-4 text-emerald-300" />
+                                    送出設定
+                                </div>
+                                <p className="text-xs leading-relaxed text-muted-foreground">
+                                    儲存完成後會進入建立 Golem 節點流程。設定值會寫入 <code className="font-mono text-foreground/90">.env</code>。
+                                </p>
+
+                                <div className="mt-4 rounded-2xl border border-border/70 bg-background/55 p-3">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                                            <ShieldCheck className="h-3.5 w-3.5 text-cyan-300" />
+                                            初始化健康檢查
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={runHealthCheck}
+                                            className="rounded-lg border border-cyan-300/35 bg-cyan-300/15 px-2.5 py-1 text-[11px] text-cyan-100 transition-colors hover:bg-cyan-300/25"
+                                        >
+                                            一鍵檢查
+                                        </button>
+                                    </div>
+                                    <p className="mt-2 text-[11px] text-muted-foreground">可先檢查引擎、向量模型與安全策略是否有風險。</p>
+
+                                    {healthCheckTriggered && (
+                                        <div className="mt-3 space-y-2">
+                                            {healthItems.map((item) => (
+                                                <div
+                                                    key={item.id}
+                                                    className={cn(
+                                                        "rounded-xl border px-2.5 py-2",
+                                                        item.status === "pass"
+                                                            ? "border-emerald-300/30 bg-emerald-300/10"
+                                                            : item.status === "warn"
+                                                                ? "border-amber-300/30 bg-amber-300/10"
+                                                                : "border-red-300/35 bg-red-300/10"
+                                                    )}
+                                                >
+                                                    <div className="flex items-start justify-between gap-2">
+                                                        <div>
+                                                            <div className={cn(
+                                                                "text-[11px] font-medium",
+                                                                item.status === "pass"
+                                                                    ? "text-emerald-100"
+                                                                    : item.status === "warn"
+                                                                        ? "text-amber-100"
+                                                                        : "text-red-100"
+                                                            )}>
+                                                                {item.label}
+                                                            </div>
+                                                            <p className="mt-1 text-[10px] text-muted-foreground">{item.hint}</p>
+                                                        </div>
+                                                        {item.fixLabel && item.status !== "pass" && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => applyHealthFix(item.id)}
+                                                                className="shrink-0 rounded-md border border-border/70 bg-background/60 px-2 py-1 text-[10px] text-foreground hover:border-cyan-300/40 hover:text-cyan-100"
+                                                            >
+                                                                {item.fixLabel}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="mt-4 space-y-2">
+                                    {validationChecks.map((check) => (
+                                        <div
+                                            key={check.label}
+                                            className="flex items-center justify-between rounded-xl border border-border/70 bg-background/55 px-3 py-2 text-xs"
+                                        >
+                                            <span className={cn("inline-flex items-center gap-1.5", check.done ? "text-emerald-200" : "text-muted-foreground")}>
+                                                <CheckCircle2 className={cn("h-3.5 w-3.5", check.done ? "text-emerald-300" : "text-muted-foreground/60")} />
+                                                {check.label}
+                                            </span>
+                                            <span className={cn("font-semibold", check.done ? "text-emerald-200" : "text-muted-foreground")}>
+                                                {check.done ? "完成" : "待補"}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="mt-4 rounded-xl border border-border/70 bg-background/55 px-3 py-2.5 text-xs text-muted-foreground">
+                                    {isDraftRestored ? "已自動還原上次系統設定草稿。" : "此頁會自動保存草稿，避免中途中斷造成設定遺失。"}
+                                    <button
+                                        type="button"
+                                        onClick={clearDraft}
+                                        className="ml-2 text-cyan-200 hover:text-cyan-100 hover:underline"
+                                    >
+                                        清除草稿
+                                    </button>
+                                </div>
+
+                                <Button
+                                    type="submit"
+                                    disabled={!canSubmit}
+                                    className="mt-5 h-14 w-full rounded-2xl border-none bg-gradient-to-r from-cyan-500 via-emerald-500 to-teal-500 text-base font-semibold text-white shadow-[0_20px_50px_-25px_rgba(16,185,129,0.9)] transition-all hover:scale-[1.01] hover:from-cyan-400 hover:via-emerald-400 hover:to-teal-400 active:scale-[0.99]"
+                                >
+                                    {isLoading ? (
+                                        <span className="flex items-center gap-2">
+                                            <div className="h-5 w-5 rounded-full border-2 border-white/35 border-t-white animate-spin" />
+                                            正在儲存設定...
+                                        </span>
+                                    ) : (
+                                        <span className="flex items-center gap-2">
+                                            {isSystemConfigured ? "更新系統設定" : "完成設定，進入控制台"}
+                                            <ArrowRight className="h-5 w-5" />
+                                        </span>
+                                    )}
+                                </Button>
+                                <p className="mt-2 text-center text-[11px] text-muted-foreground">快捷鍵：Cmd/Ctrl + Enter</p>
+                            </div>
+                        </aside>
                     </div>
-
-                    {/* Submit */}
-                    <Button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full h-14 text-base font-bold bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 border-none shadow-xl shadow-emerald-900/20 transition-all hover:scale-[1.02] active:scale-95 rounded-2xl group"
-                    >
-                        {isLoading ? (
-                            <span className="flex items-center gap-2">
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                正在儲存設定...
-                            </span>
-                        ) : (
-                            <span className="flex items-center gap-2">
-                                {isSystemConfigured ? "更新系統設定" : "完成設定，進入控制台"}
-                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                            </span>
-                        )}
-                    </Button>
-
-                    <p className="text-center text-xs text-gray-600">
-                        設定完成後可隨時從側欄「新增 Golem」加入 Telegram Bot。
-                        設定值儲存至 <code className="text-gray-500 font-mono">.env</code>。
-                    </p>
                 </form>
             </div>
         </div>

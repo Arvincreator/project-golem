@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, Globe, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, GripVertical, Terminal, BrainCircuit, BookOpen, Settings, User, MessageSquare, Plug, BookHeart, Library, Activity } from "lucide-react";
+import { LayoutDashboard, Users, Globe, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, GripVertical, Terminal, BrainCircuit, BookOpen, Settings, User, MessageSquare, Plug, BookHeart, Library, Activity, Rocket } from "lucide-react";
 import { GolemProvider, useGolem } from "@/components/GolemContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BootScreen } from "@/components/BootScreen";
@@ -14,8 +14,10 @@ import { useI18n } from "@/components/I18nProvider";
 import GlobalAutoDiaryBell from "./components/GlobalAutoDiaryBell";
 
 const SIDEBAR_NAV_ORDER_STORAGE_KEY = "golem-sidebar-nav-order-v1";
+const LAUNCHPAD_MILESTONE_STORAGE_KEY = "golem-launchpad-milestones-v1";
 
 const NAV_ITEMS = [
+    { labelKey: "sidebar.nav.launchpad", href: "/dashboard/launchpad", icon: Rocket },
     { labelKey: "sidebar.nav.chat", href: "/dashboard/chat", icon: MessageSquare },
     { labelKey: "sidebar.nav.diary", href: "/dashboard/diary", icon: BookHeart },
     { labelKey: "sidebar.nav.persona", href: "/dashboard/persona", icon: User },
@@ -57,11 +59,6 @@ function normalizeSidebarNavOrder(order: readonly string[]): SidebarNavHref[] {
     return normalized;
 }
 
-function isSameNavOrder(a: readonly string[], b: readonly string[]): boolean {
-    if (a.length !== b.length) return false;
-    return a.every((item, index) => item === b[index]);
-}
-
 function readStoredSidebarNavOrder(): SidebarNavHref[] {
     if (typeof window === "undefined") return [...DEFAULT_SIDEBAR_NAV_ORDER];
     try {
@@ -74,6 +71,35 @@ function readStoredSidebarNavOrder(): SidebarNavHref[] {
     } catch {
         return [...DEFAULT_SIDEBAR_NAV_ORDER];
     }
+}
+
+type LaunchpadMilestones = {
+    system_setup?: boolean;
+    golem_setup?: boolean;
+    first_chat?: boolean;
+    diary_center?: boolean;
+};
+
+function readLaunchpadMilestones(): LaunchpadMilestones {
+    if (typeof window === "undefined") return {};
+    try {
+        const raw = localStorage.getItem(LAUNCHPAD_MILESTONE_STORAGE_KEY);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw) as LaunchpadMilestones;
+        return {
+            system_setup: parsed.system_setup === true,
+            golem_setup: parsed.golem_setup === true,
+            first_chat: parsed.first_chat === true,
+            diary_center: parsed.diary_center === true
+        };
+    } catch {
+        return {};
+    }
+}
+
+function writeLaunchpadMilestones(next: LaunchpadMilestones) {
+    if (typeof window === "undefined") return;
+    localStorage.setItem(LAUNCHPAD_MILESTONE_STORAGE_KEY, JSON.stringify(next));
 }
 
 function DashboardSidebar({
@@ -92,13 +118,8 @@ function DashboardSidebar({
     const [dragOverHref, setDragOverHref] = useState<SidebarNavHref | null>(null);
 
     useEffect(() => {
-        const normalized = normalizeSidebarNavOrder(navOrder);
-        if (!isSameNavOrder(navOrder, normalized)) {
-            setNavOrder(normalized);
-            return;
-        }
         if (typeof window !== "undefined") {
-            localStorage.setItem(SIDEBAR_NAV_ORDER_STORAGE_KEY, JSON.stringify(normalized));
+            localStorage.setItem(SIDEBAR_NAV_ORDER_STORAGE_KEY, JSON.stringify(normalizeSidebarNavOrder(navOrder)));
         }
     }, [navOrder]);
 
@@ -404,13 +425,42 @@ function DashboardContent({
     const { activeGolemStatus, isSystemConfigured, isLoadingSystem, isLoadingGolems, hasGolems, isBooting } = useGolem();
     const router = useRouter();
     const pathname = usePathname();
+    const isLaunchpadPage = pathname.startsWith('/dashboard/launchpad');
 
     useEffect(() => {
         if (isLoadingGolems) return;
-        if (activeGolemStatus === 'pending_setup' && pathname !== '/dashboard/setup') {
+        if (activeGolemStatus === 'pending_setup' && pathname !== '/dashboard/setup' && !isLaunchpadPage) {
             router.push('/dashboard/setup');
         }
-    }, [activeGolemStatus, pathname, router, isLoadingGolems]);
+    }, [activeGolemStatus, pathname, router, isLoadingGolems, isLaunchpadPage]);
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        const current = readLaunchpadMilestones();
+        const next: LaunchpadMilestones = { ...current };
+        let changed = false;
+
+        if (isSystemConfigured && !next.system_setup) {
+            next.system_setup = true;
+            changed = true;
+        }
+        if (hasGolems && activeGolemStatus !== "pending_setup" && !next.golem_setup) {
+            next.golem_setup = true;
+            changed = true;
+        }
+        if (pathname.startsWith("/dashboard/chat") && !next.first_chat) {
+            next.first_chat = true;
+            changed = true;
+        }
+        if (pathname.startsWith("/dashboard/diary") && !next.diary_center) {
+            next.diary_center = true;
+            changed = true;
+        }
+
+        if (changed) {
+            writeLaunchpadMilestones(next);
+        }
+    }, [pathname, isSystemConfigured, hasGolems, activeGolemStatus]);
 
     // 系統設定保護：若 GEMINI_API_KEYS 未設定且不在設定頁，就導向設定向導
     useEffect(() => {
