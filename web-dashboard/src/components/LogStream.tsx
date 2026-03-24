@@ -27,11 +27,13 @@ function isLogMessage(value: unknown): value is LogMessage {
 export function LogStream({
     className,
     types,
-    autoScroll = true
+    autoScroll = true,
+    showHeader = true,
 }: {
     className?: string;
     types?: LogMessage["type"][];
     autoScroll?: boolean;
+    showHeader?: boolean;
 }) {
     const [logs, setLogs] = useState<LogMessage[]>([]);
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -81,8 +83,17 @@ export function LogStream({
     };
 
     return (
-        <div className={cn("bg-card border border-border rounded-md p-4 font-mono text-xs h-full flex flex-col", className)}>
-            <div className="flex-1 overflow-y-auto space-y-1" ref={scrollRef}>
+        <div className={cn("enterprise-card border border-border rounded-2xl font-mono text-xs h-full flex flex-col overflow-hidden", className)}>
+            {showHeader && (
+                <div className="mx-4 mt-4 px-3 py-2 rounded-lg border border-border/70 bg-secondary/45 flex items-center justify-between">
+                    <span className="enterprise-panel-title text-[10px]">System Stream</span>
+                    <span className="enterprise-badge">Live {logs.length}</span>
+                </div>
+            )}
+            <div className={cn(
+                "flex-1 overflow-y-auto space-y-1 px-4 pb-4 custom-scrollbar",
+                showHeader ? "pt-3" : "pt-4"
+            )} ref={scrollRef}>
                 {logs.filter(log => !types || types.includes(log.type)).map((log, i) => {
                     // Aggressive regex to catch both ISO and Local timestamps if they leak into msg
                     const isoRegex = /^\[(\d{4}-\d{2}-\d{2}T[\d:.]+Z?)\]/;
@@ -113,8 +124,8 @@ export function LogStream({
                     displayMsg = trimmedMsg;
 
                     return (
-                        <div key={i} className="flex border-b border-dashed border-border pb-1 mb-1 last:border-0">
-                            <span className="text-muted-foreground mr-2 flex-shrink-0">[{displayTime}]</span>
+                        <div key={i} className="flex border-b border-dashed border-border/70 pb-1 mb-1 last:border-0">
+                            <span className="text-muted-foreground/90 mr-2 flex-shrink-0">[{displayTime}]</span>
                             <span className={cn(getLogColor(log.type), "break-words")}>
                                 {displayMsg}
                             </span>

@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Press_Start_2P } from "next/font/google"; // 👈 Added Pixel Font
+import { JetBrains_Mono, Manrope, Space_Grotesk } from "next/font/google";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { I18nProvider } from "../components/I18nProvider";
+import { OpsStyleProvider } from "../components/OpsStyleProvider";
 import { ToastProvider } from "../components/ui/toast-provider";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const fontSans = Manrope({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const fontDisplay = Space_Grotesk({
+  variable: "--font-display",
   subsets: ["latin"],
 });
 
-const pressStart2P = Press_Start_2P({
-  weight: "400",
-  variable: "--font-press-start",
+const fontMono = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
@@ -34,11 +34,13 @@ export default function RootLayout({
   return (
     <html lang="zh-TW" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${pressStart2P.variable} antialiased`}
+        className={`${fontSans.variable} ${fontDisplay.variable} ${fontMono.variable} antialiased`}
       >
         <ThemeProvider>
           <I18nProvider>
-            <ToastProvider>{children}</ToastProvider>
+            <OpsStyleProvider>
+              <ToastProvider>{children}</ToastProvider>
+            </OpsStyleProvider>
           </I18nProvider>
         </ThemeProvider>
       </body>

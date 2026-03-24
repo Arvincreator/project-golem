@@ -1,5 +1,6 @@
 "use client";
 
+import { Monitor, MoonStar, Sun } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
 export function ThemeToggle() {
@@ -9,35 +10,28 @@ export function ThemeToggle() {
         <div className="flex items-center gap-2">
             <button
                 onClick={toggleTheme}
-                className="relative inline-flex h-8 w-14 items-center rounded-full
-                           bg-secondary transition-colors duration-300
-                           hover:bg-muted focus:outline-none focus:ring-2
-                           focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+                className="relative inline-flex h-9 w-16 items-center rounded-full border border-border bg-secondary/70 transition-all duration-300 hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
                 role="switch"
                 aria-checked={resolvedTheme === "dark"}
                 aria-label="Toggle dark mode"
             >
-                {/* Sun icon */}
                 <span
-                    className={`absolute left-1 text-sm transition-opacity duration-300 ${
+                    className={`absolute left-2 transition-opacity duration-300 ${
                         resolvedTheme === "light" ? "opacity-100" : "opacity-30"
                     }`}
                 >
-                    ☀️
+                    <Sun className="h-3.5 w-3.5 text-amber-400" />
                 </span>
-                {/* Moon icon */}
                 <span
-                    className={`absolute right-1 text-sm transition-opacity duration-300 ${
+                    className={`absolute right-2 transition-opacity duration-300 ${
                         resolvedTheme === "dark" ? "opacity-100" : "opacity-30"
                     }`}
                 >
-                    🌙
+                    <MoonStar className="h-3.5 w-3.5 text-sky-300" />
                 </span>
-                {/* Toggle dot */}
                 <span
-                    className={`inline-block h-6 w-6 transform rounded-full bg-foreground
-                                shadow-lg transition-transform duration-300 ${
-                        resolvedTheme === "dark" ? "translate-x-6" : "translate-x-1"
+                    className={`inline-block h-7 w-7 transform rounded-full bg-foreground shadow-lg transition-transform duration-300 ${
+                        resolvedTheme === "dark" ? "translate-x-8" : "translate-x-1"
                     }`}
                 />
             </button>
@@ -46,11 +40,14 @@ export function ThemeToggle() {
                 className={`rounded px-2 py-1 text-xs transition-colors ${
                     theme === "system"
                         ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-muted-foreground hover:text-foreground"
+                        : "bg-secondary/70 text-muted-foreground hover:text-foreground"
                 }`}
                 aria-label="Use system theme"
             >
-                Auto
+                <span className="inline-flex items-center gap-1">
+                    <Monitor className="h-3 w-3" />
+                    Auto
+                </span>
             </button>
         </div>
     );
