@@ -76,8 +76,8 @@ Visit `http://YOUR_VM_IP:3000/dashboard` in your browser.
 Oracle Cloud VM (ARM64, Always Free)
 ├── Docker
 │   └── golem-core container
-│       ├── Node.js 20 + Chromium (ARM64)
-│       ├── Playwright (headless browser)
+│       ├── Node.js 22 + Chromium (ARM64/Ubuntu 24.04)
+│       ├── Playwright Noble (GLIBC 2.39+)
 │       ├── Telegram Bot integration
 │       ├── Web Dashboard (Next.js :3000)
 │       └── 16 Skill Libraries
@@ -97,8 +97,8 @@ sudo docker compose restart
 # Stop
 sudo docker compose down
 
-# Update to latest
-git pull && sudo docker compose up -d --build
+# Update to latest (uses optimized scripts)
+git pull && ./scripts/rebuild-docker.sh && sudo docker compose up -d
 
 # Edit configuration
 nano .env && sudo docker compose restart
@@ -141,4 +141,4 @@ Chromium needs at least 1-2GB RAM. Ensure your VM has 6GB+ RAM.
 
 - Oracle Linux 9.7 aarch64 (ARM) - VM.Standard.A1.Flex
 - Docker CE 29.3.0 + docker-compose-plugin 5.1.0
-- Node.js 20 (slim) + Chromium (ARM64)
+- Node.js 22 (Playwright Noble) + Chromium (ARM64)
