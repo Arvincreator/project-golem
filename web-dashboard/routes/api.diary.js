@@ -1929,6 +1929,10 @@ module.exports = function registerDiaryRoutes(server) {
             const mood = normalizeMood(req.body && req.body.mood);
             const tags = normalizeTags(req.body && req.body.tags);
 
+            if (entryType !== 'user_diary') {
+                return res.status(400).json({ error: 'Manual diary creation only supports user_diary. Use /api/diary/generate for AI entries.' });
+            }
+
             if (!content) {
                 return res.status(400).json({ error: 'Diary content is required' });
             }

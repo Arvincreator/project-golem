@@ -320,7 +320,6 @@ export default function DiaryPage() {
     const [restoreConfirmFile, setRestoreConfirmFile] = useState<string | null>(null);
     const [backupLabel, setBackupLabel] = useState("");
 
-    const [entryType, setEntryType] = useState<DiaryEntryType>("user_diary");
     const [manualContent, setManualContent] = useState("");
     const [aiTopic, setAiTopic] = useState("");
     const [manualMood, setManualMood] = useState("");
@@ -329,24 +328,6 @@ export default function DiaryPage() {
     const [feedView, setFeedView] = useState<FeedViewMode>("timeline");
     const [feedFilter, setFeedFilter] = useState<"all" | DiaryEntryType | "threaded">("all");
     const [selectedWeeklySummaryId, setSelectedWeeklySummaryId] = useState<string | null>(null);
-
-    const entryTypeOptions = useMemo<Array<{ value: DiaryEntryType; label: string; hint: string }>>(() => ([
-        {
-            value: "user_diary",
-            label: isEnglish ? "User Diary" : "使用者日記",
-            hint: isEnglish ? "Your thoughts and feelings for AI" : "你寫給 AI 的心情與想法",
-        },
-        {
-            value: "ai_diary",
-            label: isEnglish ? "AI Diary" : "AI 日記",
-            hint: isEnglish ? "AI records today in first person" : "AI 以第一人稱記錄今天",
-        },
-        {
-            value: "ai_thought",
-            label: isEnglish ? "AI Thoughts About User" : "AI 對使用者的想法",
-            hint: isEnglish ? "What AI wants to tell you" : "AI 想對你說的話",
-        },
-    ]), [isEnglish]);
 
     const filterOptions = useMemo<Array<{ value: "all" | DiaryEntryType | "threaded"; label: string }>>(() => ([
         { value: "all", label: isEnglish ? "All" : "全部" },
@@ -501,7 +482,7 @@ export default function DiaryPage() {
             const data = await apiPostWrite<DiaryMutationResponse>(
                 withGolemId("/api/diary"),
                 {
-                    entryType,
+                    entryType: "user_diary",
                     content,
                     shared: true,
                     mood: manualMood || undefined,
@@ -1175,22 +1156,11 @@ export default function DiaryPage() {
                             </div>
                         )}
 
-                        <div className="grid grid-cols-1 gap-2">
-                            {entryTypeOptions.map((option) => (
-                                <button
-                                    key={option.value}
-                                    onClick={() => setEntryType(option.value)}
-                                    className={cn(
-                                        "text-left rounded-xl border px-3 py-2.5 transition-colors",
-                                        entryType === option.value
-                                            ? "border-primary/50 bg-primary/10"
-                                            : "border-border bg-secondary/20 hover:bg-secondary/40"
-                                    )}
-                                >
-                                    <p className="text-sm font-medium text-foreground">{option.label}</p>
-                                    <p className="text-xs text-muted-foreground mt-0.5">{option.hint}</p>
-                                </button>
-                            ))}
+                        <div className="rounded-xl border border-primary/50 bg-primary/10 px-3 py-2.5">
+                            <p className="text-sm font-medium text-foreground">{isEnglish ? "User Diary" : "使用者日記"}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                                {isEnglish ? "Your thoughts and feelings for AI" : "你寫給 AI 的心情與想法"}
+                            </p>
                         </div>
 
                         <textarea
