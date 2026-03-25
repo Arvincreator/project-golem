@@ -77,6 +77,7 @@ const InteractiveMultiAgent = require('../../src/core/InteractiveMultiAgent');
 const introspection = require('../../src/services/Introspection');
 const ActionQueue = require('../../src/core/ActionQueue'); // ✨ [v9.1] Dual-Queue Architecture
 const PromptShortcutManager = require('../../src/managers/PromptShortcutManager');
+const { normalizeShortcutKey } = PromptShortcutManager;
 
 
 // 🎯 v9.1.5 解耦：不再於啟動時遍歷配置建立 Bot 與實體
@@ -87,14 +88,6 @@ let singleGolemInstance = null;
 let promptPoolWatcherTimer = null;
 let lastPromptPoolMtimeMs = Number.NaN;
 let lastTelegramCommandsSignature = '';
-
-function normalizeShortcutKey(raw) {
-    return String(raw || '')
-        .trim()
-        .replace(/^((?:\/)?[a-z0-9_]{1,32})@[a-z0-9_]{3,}$/i, '$1')
-        .toLowerCase()
-        .replace(/^\/+/, '');
-}
 
 function getHeadToken(rawText) {
     const text = String(rawText || '').trim();

@@ -205,10 +205,15 @@ function getTelegramPromptCommands() {
     return deduped;
 }
 
+// Exported alias used by the runtime to normalize Telegram shortcut keys.
+// Keeping a single source of truth avoids silent drift between the two usages.
+const normalizeShortcutKey = toShortcutKey;
+
 module.exports = {
     PROMPT_POOL_PATH,
     readPromptPoolItems,
     expandPromptShortcutInput,
     suggestPromptShortcuts,
     getTelegramPromptCommands,
+    normalizeShortcutKey,
 };

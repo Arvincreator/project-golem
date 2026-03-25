@@ -123,4 +123,15 @@ describe('PromptShortcutManager', () => {
         expect(suggestions.length).toBeGreaterThan(0);
         expect(suggestions[0].shortcut).toBe('/report_daily');
     });
+
+    test('normalizeShortcutKey is exported and strips slash prefix and bot mention', () => {
+        jest.resetModules();
+        const manager = require('../src/managers/PromptShortcutManager');
+
+        expect(manager.normalizeShortcutKey('/weekly')).toBe('weekly');
+        expect(manager.normalizeShortcutKey('/weekly@golem_test_bot')).toBe('weekly');
+        expect(manager.normalizeShortcutKey('weekly')).toBe('weekly');
+        expect(manager.normalizeShortcutKey('')).toBe('');
+        expect(manager.normalizeShortcutKey(null)).toBe('');
+    });
 });
