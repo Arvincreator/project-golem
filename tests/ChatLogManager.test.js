@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 const mockDbInstances = [];
 const mockDatabase = jest.fn(() => {
@@ -57,13 +58,13 @@ describe('ChatLogManager', () => {
         fs.existsSync.mockImplementation((target) => {
             const p = String(target);
             if (p.includes('.legacy_migrated')) return true;
-            if (p.includes('/db')) return false;
+            if (p.endsWith(path.sep + 'db') || p.endsWith('/db')) return false;
             return true;
         });
 
         await manager.init();
 
-        expect(fs.mkdirSync).toHaveBeenCalledWith(expect.stringContaining('/db'), { recursive: true });
+        expect(fs.mkdirSync).toHaveBeenCalledWith(expect.stringContaining('db'), { recursive: true });
         expect(mockDatabase).toHaveBeenCalled();
         expect(manager._isInitialized).toBe(true);
     });
