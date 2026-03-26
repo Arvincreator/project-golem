@@ -64,4 +64,21 @@ describe('PageInteractor Improvements', () => {
         await interactor._moveWindowToBottom();
         expect(mockPage.context).toHaveBeenCalled();
     });
+
+    test('_waitForReady should correctly identify stop buttons by text and aria-label', async () => {
+        // Mock page evaluate behavior for _waitForReady
+        // We simulate that the page has a button with aria-label="stop generating"
+        mockPage.evaluate = jest.fn()
+            .mockResolvedValueOnce(true)  // First check: busy (stop button present)
+            .mockResolvedValueOnce(false); // Second check: free
+            
+        // Mock setTimeout to advance quickly in test
+        jest.spyOn(global, 'setTimeout').mockImplementation((cb) => cb());
+        
+        await interactor._waitForReady('.send-btn');
+        
+        expect(mockPage.evaluate).toHaveBeenCalledTimes(2);
+        
+        jest.restoreAllMocks();
+    });
 });

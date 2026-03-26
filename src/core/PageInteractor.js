@@ -221,6 +221,14 @@ class PageInteractor {
             await inputEl.click({ delay: 50 });    // [強化] 點擊一下以確保真實 Focus
             await inputEl.focus();
             await new Promise(r => setTimeout(r, 300)); // 給予瀏覽器反應時間
+            
+            // 🧹 清除可能殘留的舊內容
+            const isMac = process.platform === 'darwin';
+            await this.page.keyboard.down(isMac ? 'Meta' : 'Control');
+            await this.page.keyboard.press('a');
+            await this.page.keyboard.up(isMac ? 'Meta' : 'Control');
+            await this.page.keyboard.press('Backspace');
+            await new Promise(r => setTimeout(r, 100));
         } catch (e) {
             console.warn(`⚠️ [PageInteractor] focus 失敗: ${e.message}`);
         }
@@ -280,13 +288,14 @@ class PageInteractor {
             }
         } catch (e) { }
 
+        // 防止 Enter 太快，給予輸入框更新時間
+        await new Promise(r => setTimeout(r, 500));
         await this.page.keyboard.press('Enter');
 
         // 2. 實體按鈕補強 (優先使用 ARIA Label 狙擊)
         await this.page.evaluate((s) => {
             const btn = document.querySelector('button[aria-label*="發送"], button[aria-label*="Send"], button[aria-label*="傳送"]') ||
-                document.querySelector(s) ||
-                document.querySelector('button[disabled="false"]');
+                document.querySelector(s);
             
             if (btn) {
                 // [強化] 檢查是否真的可見
@@ -481,10 +490,12 @@ class PageInteractor {
         while (Date.now() - startTime < maxWait) {
             const isBusy = await this.page.evaluate(() => {
                 // 尋找「停止」按鈕或特定的正在處理標記
-                const stopButtons = Array.from(document.querySelectorAll('button, [role="button"]'))
+                const stopButtons = Array.from(document.querySelectorAll('button, [role="button"], [data-test-id*="stop"], .stop-button, [aria-label*="stop" i]'))
                     .filter(b => {
                         const txt = (b.innerText || b.textContent || "").trim();
-                        return ['停止', 'Stop', '中斷', 'Stop generating'].includes(txt);
+                        const label = (b.getAttribute('aria-label') || "").trim();
+                        const stopTexts = ['停止', 'Stop', '中斷', 'Stop generating'];
+                        return stopTexts.includes(txt) || stopTexts.some(s => label.includes(s)) || (label && label.toLowerCase().includes('stop'));
                     });
 
                 // 如果有停止按鈕，代表還在跑
