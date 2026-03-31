@@ -22,6 +22,14 @@ async function run(ctx) {
             return `❌ 錯誤：安全攔截，禁止操作專案目錄外的檔案 (${file})。`;
         }
 
+        // Rollback mode
+        if (args.action === 'rollback' || args.task === 'rollback') {
+            const bakPath = absPath + '.bak';
+            if (!fs.existsSync(bakPath)) return `❌ 錯誤：找不到備份檔案 (${file}.bak)，無法還原。`;
+            fs.copyFileSync(bakPath, absPath);
+            return `✅ 成功：已還原 ${file} 至上一個備份版本。`;
+        }
+
         let isNewFile = false;
         if (!fs.existsSync(absPath)) {
             // 如果是純粹的替換模式但檔案不存在，則必須報錯。若為整檔覆寫，則視為建立新檔
@@ -38,6 +46,11 @@ async function run(ctx) {
         }
 
         let fileContent = isNewFile ? "" : fs.readFileSync(absPath, 'utf8');
+
+        // ✨ Backup before write
+        if (!isNewFile) {
+            try { fs.copyFileSync(absPath, absPath + '.bak'); } catch (e) { console.warn("備份失敗:", e); }
+        }
 
         if (findStr !== undefined && replaceStr !== undefined) {
             // Find & Replace Mode

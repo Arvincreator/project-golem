@@ -137,7 +137,7 @@ class PageInteractor {
             }
 
             console.log(`🏁 [Brain] 捕獲: ${finalResponse.status} | 長度: ${finalResponse.text.length} | 附件: ${finalResponse.attachments?.length || 0}`);
-            
+
             // 🧹 [Memory Optimization] 實體修剪老舊 DOM 節點
             await this._runObservedStep('dom-prune', () => this._pruneDOM(), { retries: 0 });
 
@@ -247,7 +247,7 @@ class PageInteractor {
                     console.log(`🧭 [PageInteractor] ${type} selector fallback 命中 (#${this.selectorFallbackStats[type]}): ${candidate}`);
                 }
                 return candidate;
-            } catch {}
+            } catch { }
         }
 
         if (options.allowNull) return null;
@@ -330,7 +330,7 @@ class PageInteractor {
             await inputEl.click({ delay: 50 });    // [強化] 點擊一下以確保真實 Focus
             await inputEl.focus();
             await this._sleep(300); // 給予瀏覽器反應時間
-            
+
             // 🧹 清除可能殘留的舊內容
             const isMac = process.platform === 'darwin';
             await this.page.keyboard.down(isMac ? 'Meta' : 'Control');
@@ -405,12 +405,12 @@ class PageInteractor {
         await this.page.evaluate((s) => {
             const btn = document.querySelector('button[aria-label*="發送"], button[aria-label*="Send"], button[aria-label*="傳送"]') ||
                 document.querySelector(s);
-            
+
             if (btn) {
                 // [強化] 檢查是否真的可見
                 const style = window.getComputedStyle(btn);
                 const isVisible = btn.offsetHeight > 0 && style.display !== 'none' && style.visibility !== 'hidden';
-                
+
                 // 🛡️ 防禦：避免點到「停止」按鈕 (如果是忙碌中，直接退出)
                 const txt = (btn.innerText || btn.textContent || "").trim();
                 if (['停止', 'Stop', '中斷'].includes(txt)) return;
@@ -438,7 +438,7 @@ class PageInteractor {
 
         try {
             console.log("⚓ [PageInteractor] 正在將 Chrome 視窗自動移動至隱藏位置...");
-            
+
             // 複用 CDPSession 以提升效能
             if (!this._persistedCdpSession) {
                 this._persistedCdpSession = await this.page.context().newCDPSession(this.page);
@@ -526,7 +526,7 @@ class PageInteractor {
      */
     async _attachFile(targetSelector, filePath, mimeType) {
         console.log(`📋 [PageInteractor] 正在讀取並模擬貼上附件: ${filePath} (${mimeType || 'unknown'})`);
-        
+
         try {
             const fs = require('fs');
             const path = require('path');
@@ -536,7 +536,7 @@ class PageInteractor {
 
             const buffer = fs.readFileSync(filePath);
             const fileName = path.basename(filePath);
-            
+
             // 如果沒帶 mimeType，則根據副檔名做最後保險 (Gemini 對文件的 mimetype 比較敏感)
             let resolvedMimeType = mimeType;
             if (!resolvedMimeType) {
@@ -549,7 +549,7 @@ class PageInteractor {
                 };
                 resolvedMimeType = mimeMap[ext] || 'application/octet-stream';
             }
-            
+
             // 🚀 將 Buffer 轉換為 Base64 以便傳入 evaluate
             const base64 = buffer.toString('base64');
 
@@ -599,10 +599,13 @@ class PageInteractor {
      */
     async _waitForReady(sendSelector) {
         console.log("🔍 [PageInteractor] 正在檢查頁面空閒狀態...");
-        const maxWait = this.actionTimeoutMs;
+        const ConfigManager = require('../config');
+        const maxWait = ConfigManager.CONFIG.BROWSER_WAIT_MS || 15000;
+        const isThinkingMode = ConfigManager.CONFIG.GEMINI_MODEL === 'thinking';
+        const effectiveWait = isThinkingMode ? Math.max(maxWait, 120000) : maxWait;
         const startTime = Date.now();
 
-        while (Date.now() - startTime < maxWait) {
+        while (Date.now() - startTime < effectiveWait) {
             const isBusy = await this.page.evaluate(() => {
                 // 尋找「停止」按鈕或特定的正在處理標記
                 const stopButtons = Array.from(document.querySelectorAll('button, [role="button"], [data-test-id*="stop"], .stop-button, [aria-label*="stop" i]'))
@@ -650,11 +653,11 @@ class PageInteractor {
      */
     async _handleUpload(uploadSelector, filePath) {
         console.log(`📸 [PageInteractor] 正在嘗試上傳圖片: ${filePath}`);
-        
+
         try {
             // 🚀 尋找隱藏的 file input
             let fileInput = await this.page.$('input[type="file"]');
-            
+
             if (!fileInput) {
                 console.log("🚑 找不到標準 input[type='file']，嘗試點擊上傳按鈕啟動元件...");
                 const uploadBtn = await this.page.$(uploadSelector);
@@ -713,9 +716,9 @@ class PageInteractor {
             await this.page.evaluate(() => {
                 // 涵蓋 Gemini 與主流大模型的前端對話節點特徵
                 const chatNodes = document.querySelectorAll('message-content, model-response, user-message, .message-row, .conversation-turn');
-                
+
                 if (chatNodes.length <= 6) return; // 至少保留最後 6 個節點 (剛好是一兩組合法對話視窗)
-                
+
                 // 保留最後 6 個，其餘砍掉
                 for (let i = 0; i < chatNodes.length - 6; i++) {
                     const node = chatNodes[i];

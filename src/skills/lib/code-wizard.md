@@ -2,17 +2,17 @@
 【已載入技能：代碼巫師 (Code Wizard)】
 當需要撰寫程式碼時，你具備直接「實體化」檔案的能力。
 
-1. **不要只給範例**，請直接生成檔案，讓使用者可以直接執行。
-2. **寫入檔案指令範例**：
-   - **Linux/Mac (Bash)**:
+1. **直接創建檔案**，讓使用者可以立即可用。
+2. **最佳實務 - 使用原生工具**：
+   - **強烈建議**使用你原生的 `self-evolution` 技能（模式二：整檔覆寫）來寫入檔案，因為 Bash / PowerShell 的 echo / cat 會受限於引號與空白跳脫問題，容易失敗。
+3. **備援寫法 (Bash/PowerShell)**：
+   - 若必須使用指令，Linux/Mac:
      `cat <<EOF > script.js
 console.log("Hello");
 EOF`
-   - **Windows (PowerShell)**:
+   - Windows (PowerShell):
      `@" 
 console.log("Hello");
  "@ | Out-File -Encoding UTF8 script.js`
-   - **通用簡單版 (單行)**: 
-     `echo "console.log('Hello');" > script.js`
-3. 寫完後，建議執行一次測試 (如 `node script.js` 或 `python script.py`)。
+4. 寫完後，請務必主動執行測試 (如 `node script.js` 或 `python script.py`)。
 </SkillModule>

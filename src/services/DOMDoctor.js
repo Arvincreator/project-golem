@@ -21,18 +21,53 @@ class DOMDoctor {
         try {
             if (fs.existsSync(this.cacheFile)) {
                 const cached = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
-                return { ...this.defaults, ...cached };
+                const resolved = { ...this.defaults };
+                for (const key in cached) {
+                    if (cached[key] && typeof cached[key] === 'object' && cached[key].value) {
+                        resolved[key] = cached[key].value;
+                    } else if (typeof cached[key] === 'string') {
+                        resolved[key] = cached[key];
+                    }
+                }
+                return resolved;
             }
         } catch (e) { }
         return { ...this.defaults };
     }
     saveSelectors(newSelectors) {
         try {
-            const current = this.loadSelectors();
-            const updated = { ...current, ...newSelectors };
-            fs.writeFileSync(this.cacheFile, JSON.stringify(updated, null, 2));
-            console.log("💾 [Doctor] Selector 已更新並存檔！");
-        } catch (e) { }
+            let currentMeta = {};
+            if (fs.existsSync(this.cacheFile)) {
+                try {
+                    currentMeta = JSON.parse(fs.readFileSync(this.cacheFile, 'utf-8'));
+                } catch (pe) { currentMeta = {}; }
+            }
+            
+            for (const key in newSelectors) {
+                const newVal = newSelectors[key];
+                let existing = currentMeta[key];
+                if (typeof existing === 'string') {
+                    existing = { value: existing, version: 1, history: [] };
+                } else if (!existing) {
+                    existing = { value: this.defaults[key] || '', version: 1, history: [] };
+                }
+
+                if (existing.value !== newVal) {
+                    existing.history = existing.history || [];
+                    existing.history.push({ value: existing.value, version: existing.version });
+                    if (existing.history.length > 5) existing.history.shift();
+                    existing.version += 1;
+                    existing.value = newVal;
+                    existing.validatedAt = Date.now();
+                } else {
+                    existing.validatedAt = Date.now();
+                }
+                currentMeta[key] = existing;
+            }
+
+            fs.writeFileSync(this.cacheFile, JSON.stringify(currentMeta, null, 2));
+            console.log("💾 [Doctor] Selector 已更新並存檔 (含版本紀錄)！");
+        } catch (e) { console.error("Error saving selectors:", e.message); }
     }
     async diagnose(htmlSnippet, targetType) {
         if (this.keyChain.keys.length === 0) return null;

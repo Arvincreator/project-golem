@@ -23,6 +23,7 @@ class ConversationManager {
 
         // 初始化信心追蹤器
         this.confidenceTracker = new ConfidenceTracker(this.brain.chatLogManager);
+        this.userConfidenceState = new Map();
 
         // 🔄 [Instance Pooling] 背景監控與定時重啟定時器
         this.UPTIME_LIMIT_MS = 24 * 60 * 60 * 1000; // 24H
@@ -298,6 +299,46 @@ class ConversationManager {
 
             // ✨ [Metacognition] AUQ 信心評分與標記
             const evaluation = this.confidenceTracker.evaluate(raw, extractorStatus, task.text);
+            
+            // O-5 用戶專屬信心狀態追蹤
+            const chatId = task.ctx.chatId;
+            const state = this.userConfidenceState.get(chatId) || { lowScoreCount: 0 };
+            if (evaluation.score < 0.5) {
+                state.lowScoreCount++;
+                if (state.lowScoreCount >= 3) {
+                    await task.ctx.reply(`⚠️ 我最近對這類問題的回答品質偏低，建議您考慮切換模型 (例如使用 \`/model thinking\`) 或重載技能書。`);
+                    state.lowScoreCount = 0; // 重置
+                }
+            } else {
+                state.lowScoreCount = Math.max(0, state.lowScoreCount - 1);
+            }
+            this.userConfidenceState.set(chatId, state);
+
+            // O-1 低信心自動重試
+            if (evaluation.score < 0.5 && !task.options._isRetry) {
+                console.warn(`🔄 [Metacognition] 低信心回應，自動追問澄清...`);
+                // 非同步寫入原本的失敗紀錄 (用於除錯)
+                this.confidenceTracker.record({
+                    query: task.text,
+                    response: raw,
+                    score: evaluation.score,
+                    label: evaluation.label,
+                    flags: evaluation.flags,
+                    extractor_status: extractorStatus
+                }).catch(e => console.error("[ConfidenceTracker] Record error:", e));
+
+                const retryPrompt = `你剛才的回答信心測值偏低，請重新分析並給出更確定的答案：\n${task.text}`;
+                this.queue.unshift({
+                    ...task,
+                    text: retryPrompt,
+                    options: { ...task.options, _isRetry: true } // 標記為已重試過，避免無限迴圈
+                });
+                
+                this.isProcessing = false;
+                setTimeout(() => this._processQueue(), 500);
+                return;
+            }
+
             if (evaluation.score < 0.5) {
                 raw += `\n\n🔶 *(系統提示: AI 信心指數 ${(evaluation.score * 100).toFixed(0)}% · ${evaluation.label})*`;
             }

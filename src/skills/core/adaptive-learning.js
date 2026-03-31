@@ -30,6 +30,7 @@ async function run(ctx) {
                 timestamp: new Date().toISOString(),
                 category: args.category || (args.parameters && args.parameters.category) || 'general',
                 content: content,
+                verified: false,
                 tags: args.tags || (args.parameters && args.parameters.tags) || []
             };
 
@@ -39,14 +40,28 @@ async function run(ctx) {
             return `✅ 學習已成功記錄 (ID: ${newLearning.id})。下次遇到類似問題時我會參考這項紀錄。`;
         }
 
+        if (action === 'verify') {
+            const id = args.id || (args.parameters && args.parameters.id);
+            if (!id) return "❌ 缺少 id 參數。";
+            const item = learnings.find(l => l.id === id);
+            if (!item) return `❌ 找不到 ID 為 ${id} 的學習紀錄。`;
+            item.verified = true;
+            fs.writeFileSync(learningsPath, JSON.stringify(learnings, null, 2));
+            return `✅ 學習紀錄 #${id} 已標記為【已驗證】。`;
+        }
+
         if (action === 'recall_records') {
             const query = (args.query || (args.parameters && args.parameters.query) || "").toLowerCase();
             if (!query) return "❌ 缺少 query 參數。";
 
-            const results = learnings.filter(l =>
+            let results = learnings.filter(l =>
                 l.content.toLowerCase().includes(query) ||
                 (l.tags && l.tags.some(t => t.toLowerCase().includes(query)))
-            ).slice(-5); // Return last 5 matches
+            );
+            
+            // 排序：verified 優先，其次時間
+            results.sort((a, b) => (b.verified === a.verified) ? (new Date(b.timestamp) - new Date(a.timestamp)) : (b.verified ? 1 : -1));
+            results = results.slice(0, 5);
 
             if (results.length === 0) {
                 return `ℹ️ 找不到與「${query}」相關的學習紀錄。`;
@@ -54,7 +69,8 @@ async function run(ctx) {
 
             let output = `🧠 [搜尋結果：${query}]\n`;
             results.forEach((l, i) => {
-                output += `\n--- 紀錄 #${i + 1} (${new Date(l.timestamp).toLocaleDateString()}) ---\n${l.content}\n`;
+                const badge = l.verified ? "✅ 已驗證" : "⚠️ 待驗證";
+                output += `\n--- 紀錄 [${l.id}] (${badge} · ${new Date(l.timestamp).toLocaleDateString()}) ---\n${l.content}\n`;
             });
             return output;
         }

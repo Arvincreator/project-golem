@@ -294,6 +294,17 @@ class AutonomyManager {
     }
     async manifestFreeWill() {
         try {
+            const hour = new Date().getHours();
+            
+            // 深夜 → 優先做自我反思
+            if (hour >= 23 || hour <= 5) {
+                return await this.performSelfReflection();
+            }
+            // 早晨 -> 新聞
+            if (hour >= 6 && hour <= 10) {
+                return await this.performNewsChat();
+            }
+
             const roll = Math.random();
             if (roll < 0.2) await this.performSelfReflection();
             else if (roll < 0.6) await this.performNewsChat();
@@ -353,6 +364,15 @@ ${summaryContext || "（目前尚無對話摘要）"}
         } else {
             // 如果是自動觸發
             const raw = await this.brain.sendMessage(prompt);
+            
+            // 驗證閉環
+            if (raw && raw.text && raw.text.includes('[PATCH]')) {
+                console.log(`🔧 [Autonomy] 偵測到自我反思產生了 PATCH，排定自我驗證...`);
+                setTimeout(async () => {
+                    await this.brain.sendMessage("系統自我檢測：請確認剛才的修復是否成功，並回報系統狀態。");
+                }, 15000);
+            }
+            
             await NeuroShunter.dispatch(adminCtx, raw, this.brain, this.controller);
         }
     }
