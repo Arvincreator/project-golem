@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, Globe, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, GripVertical, Terminal, BrainCircuit, BookOpen, Settings, User, MessageSquare, Plug, BookHeart, Library, Activity } from "lucide-react";
+import { LayoutDashboard, Users, Globe, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, GripVertical, Terminal, BrainCircuit, BookOpen, Settings, User, MessageSquare, Plug, BookHeart, Library, Activity, ListTodo } from "lucide-react";
 import { GolemProvider, useGolem } from "@/components/GolemContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BootScreen } from "@/components/BootScreen";
@@ -26,6 +26,7 @@ const NAV_ITEMS = [
     { labelKey: "sidebar.nav.agents", href: "/dashboard/agents", icon: Users },
     { labelKey: "sidebar.nav.office", href: "/dashboard/office", icon: Users },
     { labelKey: "sidebar.nav.memory", href: "/dashboard/memory", icon: BrainCircuit },
+    { labelKey: "sidebar.nav.tasks", href: "/dashboard/tasks", icon: ListTodo },
     { labelKey: "sidebar.nav.settingsSummary", href: "/dashboard/settings", icon: Settings },
 ] as const;
 

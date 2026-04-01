@@ -40,6 +40,7 @@ class PageInteractor {
         this.page = page;
         this.doctor = doctor;
         this.actionTimeoutMs = TIMINGS.ACTION_TIMEOUT_MS || 15000;
+        this.sendTimeoutMs = Math.max(this.actionTimeoutMs, TIMINGS.SEND_TIMEOUT_MS || this.actionTimeoutMs);
         this.retryBackoffBaseMs = TIMINGS.RETRY_BACKOFF_BASE_MS || 500;
         this.selectorFallbackStats = {
             input: 0,
@@ -89,7 +90,7 @@ class PageInteractor {
             // 1. 捕獲基準文字
             const responseSelector = await this._runObservedStep(
                 'resolve-response-selector',
-                () => this._resolveSelectorWithFallback('response', selectors.response, RESPONSE_FALLBACK_SELECTORS),
+                () => this._resolveSelectorWithFallback('response', selectors.response, RESPONSE_FALLBACK_SELECTORS, { allowMissing: true }),
                 { retries: 1 }
             );
             const baseline = await this._runObservedStep('baseline-capture', () => this._captureBaseline(responseSelector), { retries: 1 });
@@ -106,7 +107,10 @@ class PageInteractor {
             await this._sleep(TIMINGS.INPUT_DELAY);
 
             // 4. 發送訊息 (使用物理 Enter 爆破法)
-            await this._runObservedStep('send-message', () => this._clickSend(selectors.send), { retries: 1 });
+            await this._runObservedStep('send-message', () => this._clickSend(selectors.send), {
+                retries: 1,
+                timeoutMs: this.sendTimeoutMs,
+            });
 
             // 5. 若為系統訊息，延遲後直接返回
             if (isSystem) {
@@ -234,12 +238,24 @@ class PageInteractor {
         pushCandidate(primarySelector);
         fallbackSelectors.forEach(pushCandidate);
 
+        const defaultWaitTimeout = options.allowMissing
+            ? Math.min(this.actionTimeoutMs, 1200)
+            : Math.min(this.actionTimeoutMs, 5000);
         const waitTimeout = Number.isFinite(options.waitTimeout)
             ? Math.max(250, options.waitTimeout)
-            : Math.min(this.actionTimeoutMs, 5000);
+            : defaultWaitTimeout;
+        let firstUsableCandidate = null;
 
         for (let i = 0; i < candidates.length; i += 1) {
             const candidate = candidates[i];
+            let candidateUsable = false;
+            try {
+                await this.page.$(candidate);
+                candidateUsable = true;
+                if (!firstUsableCandidate) firstUsableCandidate = candidate;
+            } catch { }
+            if (!candidateUsable) continue;
+
             try {
                 await this.page.waitForSelector(candidate, { state: 'attached', timeout: waitTimeout });
                 if (i > 0) {
@@ -248,6 +264,12 @@ class PageInteractor {
                 }
                 return candidate;
             } catch { }
+        }
+
+        // 回應節點在首輪對話可能尚未產生，允許先使用可解析的 selector 追蹤後續新回應。
+        if (options.allowMissing && firstUsableCandidate) {
+            console.log(`🧭 [PageInteractor] ${type} selector 尚未出現在 DOM，先使用可用候選: ${firstUsableCandidate}`);
+            return firstUsableCandidate;
         }
 
         if (options.allowNull) return null;

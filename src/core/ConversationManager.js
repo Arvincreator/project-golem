@@ -2,6 +2,18 @@ const { randomUUID } = require('crypto');
 const ConfigManager = require('../config');
 const ConfidenceTracker = require('../managers/ConfidenceTracker');
 
+function parseRatio(value, fallback) {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed) || parsed <= 0 || parsed >= 1) return fallback;
+    return parsed;
+}
+
+function parsePositiveInteger(value, fallback) {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed) || parsed <= 0) return fallback;
+    return Math.floor(parsed);
+}
+
 // ============================================================
 // 🚦 Conversation Manager (隊列與防抖系統 - 多用戶隔離版)
 // ============================================================
@@ -20,6 +32,11 @@ class ConversationManager {
         this.DEBOUNCE_MS = 1500;
         this.autoTurnCount = 0; // 🎯 [v9.1.15] Track autonomous turns
         this.memoryPressureGuard = null;
+        this.heapGcWarnRatio = parseRatio(
+            process.env.GOLEM_HEAP_GC_WARN_PCT,
+            parseRatio(process.env.GOLEM_MEMORY_FATAL_PCT, 0.92)
+        );
+        this.heapGcMinTotalMb = parsePositiveInteger(process.env.GOLEM_HEAP_GC_MIN_TOTAL_MB, 96);
 
         // 初始化信心追蹤器
         this.confidenceTracker = new ConfidenceTracker(this.brain.chatLogManager);
@@ -39,11 +56,22 @@ class ConversationManager {
 
     setMemoryPressureGuard(guard) {
         this.memoryPressureGuard = guard || null;
+        if (!process.env.GOLEM_HEAP_GC_WARN_PCT && guard && Number.isFinite(guard.fatalRatio) && guard.fatalRatio > 0 && guard.fatalRatio < 1) {
+            this.heapGcWarnRatio = guard.fatalRatio;
+        }
     }
 
     _isRecoverableInteractionError(error) {
         const message = String((error && error.message) || error || '');
         return /Target page, context or browser has been closed|Execution context was destroyed|browser has been closed|Page closed/i.test(message);
+    }
+
+    _evaluateHeapGcNeed(heapObj = process.memoryUsage()) {
+        const heapRatio = heapObj.heapTotal > 0 ? (heapObj.heapUsed / heapObj.heapTotal) : 0;
+        const usedMB = Math.round(heapObj.heapUsed / 1024 / 1024);
+        const totalMB = Math.round(heapObj.heapTotal / 1024 / 1024);
+        const shouldCollect = heapRatio > this.heapGcWarnRatio && totalMB >= this.heapGcMinTotalMb;
+        return { shouldCollect, heapRatio, usedMB, totalMB };
     }
 
     async _checkInstanceHealth() {
@@ -108,14 +136,28 @@ class ConversationManager {
             const approvalId = randomUUID();
 
             // 將對話任務暫存在 Controller 的 pendingTasks
-            this.controller.pendingTasks.set(approvalId, {
-                type: 'DIALOGUE_QUEUE_APPROVAL',
-                ctx,
-                text,
-                attachment,
-                options, // 🎯 [v9.1.13] 攜帶附加選項
-                timestamp: Date.now()
-            });
+            if (this.controller && typeof this.controller.registerPendingTask === 'function') {
+                this.controller.registerPendingTask(approvalId, {
+                    type: 'DIALOGUE_QUEUE_APPROVAL',
+                    text,
+                    attachment,
+                    options, // 🎯 [v9.1.13] 攜帶附加選項
+                    sourceChannel: ctx && ctx.platform ? ctx.platform : 'unknown',
+                    chatId: ctx && ctx.chatId ? String(ctx.chatId) : '',
+                    timestamp: Date.now(),
+                }, {
+                    actor: 'system',
+                    ttlMs: 30 * 1000,
+                });
+            } else {
+                this.controller.pendingTasks.set(approvalId, {
+                    type: 'DIALOGUE_QUEUE_APPROVAL',
+                    text,
+                    attachment,
+                    options,
+                    timestamp: Date.now(),
+                });
+            }
 
             // 回傳 Telegram 行內鍵盤選項
             ctx.reply(
@@ -132,9 +174,15 @@ class ConversationManager {
             ).then(msg => {
                 // 30 秒自動 Timeout 防呆 (預設為 Append)
                 setTimeout(async () => {
-                    const task = this.controller.pendingTasks.get(approvalId);
+                    const task = this.controller && typeof this.controller.getPendingTask === 'function'
+                        ? this.controller.getPendingTask(approvalId)
+                        : this.controller.pendingTasks.get(approvalId);
                     if (task && task.type === 'DIALOGUE_QUEUE_APPROVAL') {
-                        this.controller.pendingTasks.delete(approvalId);
+                        if (this.controller && typeof this.controller.deletePendingTask === 'function') {
+                            this.controller.deletePendingTask(approvalId, { reason: 'timeout', actor: 'system' });
+                        } else {
+                            this.controller.pendingTasks.delete(approvalId);
+                        }
                         console.log(`⏳ [Dialogue Queue] 互動超時，任務 ${approvalId} 自動排入隊尾。`);
 
                         try {
@@ -214,12 +262,9 @@ class ConversationManager {
         }
 
         // 🧹 [Extra Arch 3] Memory Guard 記憶體上限監控
-        const heapObj = process.memoryUsage();
-        const heapRatio = heapObj.heapTotal > 0 ? (heapObj.heapUsed / heapObj.heapTotal) : 0;
-        if (heapRatio > 0.8) {
-            const usedMB = Math.round(heapObj.heapUsed / 1024 / 1024);
-            const totalMB = Math.round(heapObj.heapTotal / 1024 / 1024);
-            console.warn(`⚠️ [Memory Guard] 堆疊記憶體使用率達 ${(heapRatio * 100).toFixed(1)}% (${usedMB}MB / ${totalMB}MB)，強制觸發系統回收...`);
+        const heapCheck = this._evaluateHeapGcNeed();
+        if (heapCheck.shouldCollect) {
+            console.warn(`⚠️ [Memory Guard] 堆疊記憶體使用率達 ${(heapCheck.heapRatio * 100).toFixed(1)}% (${heapCheck.usedMB}MB / ${heapCheck.totalMB}MB)，強制觸發系統回收...`);
             if (global.gc) global.gc();
         }
 
@@ -243,6 +288,13 @@ class ConversationManager {
             let finalInput = task.text;
             if (memories.length > 0) {
                 finalInput = `【相關記憶】\n${memories.map(m => `• ${m.text}`).join('\n')}\n---\n${finalInput}`;
+            }
+
+            if (this.controller && typeof this.controller.getPendingContextSummary === 'function') {
+                const pendingSummary = this.controller.getPendingContextSummary(12);
+                if (pendingSummary) {
+                    finalInput = `${finalInput}\n\n【Pending Tasks Snapshot】\n${pendingSummary}\n\n【Task Governance】\n多步任務請先更新 task list，維持一個 in_progress，其餘標記 pending/blocked。`;
+                }
             }
             const isMentioned = task.ctx.isMentioned ? task.ctx.isMentioned(task.text) : false;
 

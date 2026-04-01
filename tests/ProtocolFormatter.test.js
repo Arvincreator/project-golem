@@ -11,6 +11,7 @@ jest.mock('../src/skills', () => ({
     getSystemPrompt: jest.fn().mockReturnValue('Base System Prompt'),
     loadSkills: jest.fn().mockReturnValue({})
 }));
+jest.mock('../src/skills/core/definition', () => jest.fn().mockReturnValue('Base Definition Prompt'));
 jest.mock('../src/managers/SkillManager', () => ({
     getEnabled: jest.fn().mockReturnValue([])
 }));
@@ -88,6 +89,13 @@ describe('ProtocolFormatter', () => {
         expect(result).toContain('CONSERVATIVE OBSERVER MODE');
     });
 
+    test('buildEnvelope uses core governance source and avoids duplicated status rule wording', () => {
+        const result = ProtocolFormatter.buildEnvelope('msg', 'req1');
+        expect(result).toContain('TASK GOVERNANCE SOURCE');
+        expect(result).toContain('TASK ACTION CONTRACT');
+        expect(result).not.toContain('TASK STATUS RULES');
+    });
+
     test('buildSystemPrompt resolves with a prompt string', async () => {
         const result = await ProtocolFormatter.buildSystemPrompt(true, { userDataDir: '/tmp' });
         expect(result).toBeDefined();
@@ -123,5 +131,28 @@ describe('ProtocolFormatter', () => {
         // It should inject knowledge about activated skills and deactivated ones
         expect(result.systemPrompt).toContain('SKILL: ACTOR'); // It injects the loaded skill contents
         expect(result.systemPrompt).toContain('DEACTIVATED SERVICES:');
+    });
+
+    test('buildSystemPrompt logs prompt composition and warns on threshold overflow', async () => {
+        const previousThreshold = process.env.GOLEM_SYSTEM_PROMPT_WARN_CHARS;
+        const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+        const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        process.env.GOLEM_SYSTEM_PROMPT_WARN_CHARS = '10';
+
+        try {
+            await ProtocolFormatter.buildSystemPrompt(true, { userDataDir: '/tmp/warn-threshold' });
+            const logText = logSpy.mock.calls.map((call) => call.join(' ')).join('\n');
+            const warnText = warnSpy.mock.calls.map((call) => call.join(' ')).join('\n');
+            expect(logText).toContain('Prompt composition');
+            expect(warnText).toContain('exceeds warning threshold');
+        } finally {
+            if (previousThreshold === undefined) {
+                delete process.env.GOLEM_SYSTEM_PROMPT_WARN_CHARS;
+            } else {
+                process.env.GOLEM_SYSTEM_PROMPT_WARN_CHARS = previousThreshold;
+            }
+            logSpy.mockRestore();
+            warnSpy.mockRestore();
+        }
     });
 });

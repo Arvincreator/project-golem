@@ -12,6 +12,8 @@ module.exports = function registerSocketHandlers(server) {
             lastSchedule: server.dashboard ? server.dashboard.lastSchedule : 'N/A',
             uptime: process.uptime(),
             logs: server.logBuffer,
+            taskEvents: server.taskEventBuffer || [],
+            taskRecovery: server.taskRecoveryState || {},
             golems: getGolemsData(),
             runtime: server.runtimeController ? server.runtimeController.getRuntimeSnapshot() : null,
         };
@@ -21,6 +23,8 @@ module.exports = function registerSocketHandlers(server) {
         socket.on('request_logs', () => {
             socket.emit('init', {
                 logs: server.logBuffer,
+                taskEvents: server.taskEventBuffer || [],
+                taskRecovery: server.taskRecoveryState || {},
                 runtime: server.runtimeController ? server.runtimeController.getRuntimeSnapshot() : null,
             });
         });

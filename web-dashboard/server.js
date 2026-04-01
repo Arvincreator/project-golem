@@ -21,6 +21,7 @@ const registerMemoryRoutes = require('./routes/api.memory');
 const registerMcpRoutes = require('./routes/api.mcp');
 const registerDiaryRoutes = require('./routes/api.diary');
 const registerPromptPoolRoutes = require('./routes/api.prompt-pool');
+const registerTaskRoutes = require('./routes/api.tasks');
 
 class WebServer {
     constructor(dashboard) {
@@ -95,6 +96,8 @@ class WebServer {
         this.runtimeController = null;
         this.isBooting = true;
         this.logBuffer = [];
+        this.taskEventBuffer = [];
+        this.taskRecoveryState = {};
         this.chatHistory = new Map();
         installSecurityContext(this);
         this.app.use(buildApiSecurityMiddleware(this));
@@ -179,6 +182,7 @@ class WebServer {
             registerMcpRoutes,
             registerDiaryRoutes,
             registerPromptPoolRoutes,
+            registerTaskRoutes,
         ];
 
         routeFactories.forEach((factory) => {
@@ -282,6 +286,24 @@ class WebServer {
                 payload.runtime = this.runtimeController.getRuntimeSnapshot();
             }
             this.io.emit('heartbeat', payload);
+        }
+    }
+
+    broadcastTaskEvent(payload = {}) {
+        this.taskEventBuffer.push(payload);
+        if (this.taskEventBuffer.length > 500) {
+            this.taskEventBuffer.shift();
+        }
+        if (this.io) {
+            this.io.emit('task_event', payload);
+        }
+    }
+
+    broadcastTaskRecovery(payload = {}) {
+        const golemId = payload && payload.golemId ? String(payload.golemId) : 'golem_A';
+        this.taskRecoveryState[golemId] = payload;
+        if (this.io) {
+            this.io.emit('task_recovery', payload);
         }
     }
 

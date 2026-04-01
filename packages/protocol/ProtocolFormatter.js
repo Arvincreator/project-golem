@@ -5,6 +5,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const { getSystemFingerprint } = require('../../src/utils/system');
 const skills = require('../../src/skills');
+const CORE_DEFINITION = require('../../src/skills/core/definition');
 const skillManager = require('../../src/managers/SkillManager');
 const skillIndexManager = require('../../src/managers/SkillIndexManager');
 const { resolveEnabledSkills, OPTIONAL_SKILLS } = require('../../src/skills/skillsConfig');
@@ -12,6 +13,20 @@ const ConfigManager = require('../../src/config');
 
 function getMaxResponseWords() {
     return Number(ConfigManager?.CONFIG?.MAX_RESPONSE_WORDS) || 0;
+}
+
+const VALID_MCP_MODES = new Set(['compact', 'verbose', 'conditional']);
+
+function normalizeMcpMode(value, fallback = 'compact') {
+    const mode = String(value || '').trim().toLowerCase();
+    if (VALID_MCP_MODES.has(mode)) return mode;
+    return fallback;
+}
+
+function resolvePromptWarningThreshold() {
+    const raw = Number(process.env.GOLEM_SYSTEM_PROMPT_WARN_CHARS || 20000);
+    if (Number.isFinite(raw) && raw > 0) return Math.floor(raw);
+    return 20000;
 }
 
 class ProtocolFormatter {
@@ -99,9 +114,11 @@ ${selectedPrompt}
 5. FEASIBILITY: ZERO TRIAL-AND-ERROR. Provide the most stable, one-shot successful command.
 6. STRICT JSON: ESCAPE ALL DOUBLE QUOTES (\\") inside string values!
 7. ReAct: If you use [GOLEM_ACTION], DO NOT guess the result in [GOLEM_REPLY]. Wait for Observation.
-8. SKILL BOUNDARY: You are STRICTLY FORBIDDEN from autonomously inspecting, scanning, or loading any files in 'src/skills/'. You DO NOT HAVE A PHYSICAL BODY or FILESYSTEM presence; you only exist within this conversation. Use ONLY the skills provided in the 'CORE SKILL PROTOCOLS' section below. If a skill is not listed there, you DO NOT have it.
-9. WORKSPACE: If you cannot access Google Workspace (@Google Drive/Keep/etc.), explicitly tell the user to enable the extension.
-${maxResponseWords > 0 ? `10. LENGTH: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE reply under ${maxResponseWords} characters/words. Be extremely concise.` : ''}
+8. TASK GOVERNANCE SOURCE: Follow the hard task-governance contract defined in CORE definition (task-first, only one in_progress, verify-before-complete, no fake completion).
+9. TASK ACTION CONTRACT: Supported task actions are task_create / task_list / task_get / task_update / task_stop / todo_write / task_metrics / task_integrity.
+10. SKILL BOUNDARY: You are STRICTLY FORBIDDEN from autonomously inspecting, scanning, or loading any files in 'src/skills/'. You DO NOT HAVE A PHYSICAL BODY or FILESYSTEM presence; you only exist within this conversation. Use ONLY the skills provided in the 'CORE SKILL PROTOCOLS' section below. If a skill is not listed there, you DO NOT have it.
+11. WORKSPACE: If you cannot access Google Workspace (@Google Drive/Keep/etc.), explicitly tell the user to enable the extension.
+${maxResponseWords > 0 ? `12. LENGTH: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE reply under ${maxResponseWords} characters/words. Be extremely concise.` : ''}
 ${observerPrompt}
 [USER INPUT / SYSTEM MESSAGE]
 ${text}`;
@@ -140,8 +157,16 @@ ${text}`;
             systemFingerprint,
             userDataDir: golemContext.userDataDir
         };
+        const promptMcpMode = normalizeMcpMode(
+            golemContext.mcpMode || process.env.GOLEM_PROMPT_MCP_MODE || 'compact'
+        );
+        const promptOptions = {
+            mcpMode: promptMcpMode,
+            verboseMcp: golemContext.verboseMcp === true || golemContext.mcpVerbose === true,
+        };
 
-        let systemPrompt = skills.getSystemPrompt(envInfo);
+        const definitionPreview = CORE_DEFINITION(envInfo, promptOptions);
+        let systemPrompt = skills.getSystemPrompt(envInfo, promptOptions);
         let skillMemoryText = "【系統技能庫初始化】我目前已掛載並精通以下可用技能：\n";
 
         // --- [優化] 使用 Promise.all 平行掃描 src/skills/lib/*.md ---
@@ -225,16 +250,25 @@ ${maxResponseWords > 0 ? `- Length: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE repl
 - **OS COMPATIBILITY**: Commands MUST match the current system: **${systemFingerprint}**.
 - **PRECISION**: Use stable, native commands (e.g., 'dir' for Windows, 'ls' for Linux).
 - **ONE-SHOT SUCCESS**: No guessing. Provide the most feasible, error-free command possible.
+- **TASK GOVERNANCE SOURCE**: Follow CORE definition task governance rules for status transitions and task sequencing.
 - **Execution Layer**: Skills are now separated from prompts. Execute via action name.
 - ⚡ **ACTION: command**: Execute Native BASH/Shell commands.
+- 📌 **TASK ACTIONS**:
+  - 'task_create' — create a tracked task
+  - 'task_list' / 'task_get' — inspect current tasks
+  - 'task_update' — move status ('pending/in_progress/completed/failed/blocked/killed') and metadata
+  - 'task_stop' — kill/stop task safely
+  - 'todo_write' — batch upsert task list
+  - 'task_metrics' — read task telemetry, completion/blocking/cost estimates
+  - 'task_integrity' — run consistency checks and inspect violations
 - 🛠️ **System Skills**: Authorized JS scripts in \`src/skills/core/*.js\` are invoked via their specific action names.
 - 🚫 **WARNING**: DO NOT use hallucinated scripts like 'shell-executor.js'. Use only native commands or authorized actions.
 - **Example**:
 \`\`\`json
 [
+  {"action": "todo_write", "items": [{"content": "Inspect repo", "status": "in_progress"}, {"content": "Run tests", "status": "pending"}]},
   {"action": "command", "parameter": "ls -la"},
-  {"action": "moltbot", "task": "..."},
-  {"action": "command", "parameter": "SPECIFIC_STABLE_COMMAND_FOR_${systemFingerprint}"}
+  {"action": "task_update", "taskId": "task_000001", "status": "completed", "verification": {"status": "verified", "note": "validated by command output"}}
 ]
 \`\`\`
 
@@ -264,6 +298,15 @@ ${maxResponseWords > 0 ? `- Length: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE repl
 `;
 
         const finalPrompt = systemPrompt + superProtocol;
+        const definitionLength = definitionPreview.length;
+        const preProtocolLength = systemPrompt.length;
+        const skillsLength = Math.max(0, preProtocolLength - definitionLength);
+        const superProtocolLength = superProtocol.length;
+        const warnThreshold = resolvePromptWarningThreshold();
+        console.log(`📊 [Protocol] Prompt composition: definition=${definitionLength}, skills=${skillsLength}, superProtocol=${superProtocolLength}, total=${finalPrompt.length}, mcpMode=${promptMcpMode}`);
+        if (finalPrompt.length > warnThreshold) {
+            console.warn(`⚠️ [Protocol] System prompt length ${finalPrompt.length} exceeds warning threshold ${warnThreshold}.`);
+        }
         console.log(`📡 [Protocol] 系統協議組裝完成，總長度: ${finalPrompt.length} 字元`);
 
         // 更新快取

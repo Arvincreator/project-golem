@@ -2,6 +2,7 @@ const ResponseParser = require('../../src/utils/ResponseParser');
 const MultiAgentHandler = require('../../src/core/action_handlers/MultiAgentHandler');
 const SkillHandler = require('../../src/core/action_handlers/SkillHandler');
 const CommandHandler = require('../../src/core/action_handlers/CommandHandler');
+const TaskActionHandler = require('../../src/core/action_handlers/TaskActionHandler');
 
 // ============================================================
 // 🧬 NeuroShunter (神經分流中樞 - 核心路由器)
@@ -78,6 +79,11 @@ class NeuroShunter {
             const normalActions = [];
 
             for (const act of parsed.actions) {
+                if (TaskActionHandler.isTaskAction(act.action)) {
+                    await TaskActionHandler.execute(ctx, act, controller);
+                    continue;
+                }
+
                 switch (act.action) {
                     case 'multi_agent':
                         await MultiAgentHandler.execute(ctx, act, controller, brain);

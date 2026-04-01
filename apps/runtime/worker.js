@@ -249,7 +249,16 @@ function getOrCreateGolem() {
         userDataDir: ConfigManager.MEMORY_BASE_DIR,
         logDir: ConfigManager.LOG_BASE_DIR
     });
-    const controller = new TaskController({ golemId });
+    const controller = new TaskController({
+        golemId,
+        logDir: ConfigManager.LOG_BASE_DIR,
+        onTaskEvent: (event) => {
+            WorkerBridge.sendEvent('task.event', {
+                ...(event || {}),
+                golemId,
+            });
+        },
+    });
     const autonomy = new AutonomyManager(brain, controller, brain.memoryDriver, { golemId });
 
     const interventionLevel = ConfigManager.CONFIG.INTERVENTION_LEVEL;
@@ -272,6 +281,22 @@ function getOrCreateGolem() {
     brain.dcBot = activeDcBot || dcClient;
 
     singleGolemInstance = { brain, controller, autonomy, convoManager, actionQueue };
+    try {
+        const recovery = controller.getTaskRecoverySummary();
+        const metrics = controller.taskMetrics();
+        const integrity = controller.taskIntegrity({ limit: 50 });
+        WorkerBridge.sendEvent('task.recovery', {
+            golemId,
+            source: 'startup',
+            recovery,
+            pendingSummary: controller.getPendingContextSummary(20),
+            metrics,
+            integrity,
+        });
+        console.log(`📋 [TaskKernel:${golemId}] recovered pending=${recovery.pendingCount}, in_progress=${recovery.inProgressCount}, blocked=${recovery.blockedCount}, next=${recovery.nextTaskId || 'none'}`);
+    } catch (error) {
+        console.warn(`⚠️ [TaskKernel:${golemId}] recovery summary failed: ${error.message}`);
+    }
     ensureLifecycleResources(singleGolemInstance);
     return singleGolemInstance;
 }
@@ -492,19 +517,20 @@ async function callContextMethod(target, method, args = []) {
     return subject[method](...(Array.isArray(args) ? args : []));
 }
 
-async function getPendingTaskSummary(taskId) {
-    const instance = getOrCreateGolem();
-    const task = instance && instance.controller && instance.controller.pendingTasks
-        ? instance.controller.pendingTasks.get(taskId)
-        : null;
+async function getPendingTaskSummary(taskId, golemId = 'golem_A') {
+    const instance = getOrCreateGolem(golemId);
+    const controller = instance && instance.controller;
+    if (!controller || typeof controller.getPendingTaskSummary !== 'function') return null;
+    return controller.getPendingTaskSummary(taskId);
+}
 
-    if (!task || !task.steps || !task.steps[task.nextIndex]) return null;
-
-    const step = task.steps[task.nextIndex];
-    return {
-        cmd: step.cmd || step.parameter || step.command || '',
-        nextIndex: task.nextIndex,
-    };
+function getTaskController(golemId = 'golem_A') {
+    const instance = getOrCreateGolem(golemId);
+    const controller = instance && instance.controller;
+    if (!controller) {
+        throw new Error(`Task controller unavailable for ${golemId}`);
+    }
+    return controller;
 }
 
 async function ensureGolemForConfig(golemConfig, options = {}) {
@@ -716,8 +742,63 @@ if (WORKER_MODE) {
                 }
                 return tracker.getHistory(limit);
             },
-            'controller.pendingTaskSummary': async ({ taskId }) => {
-                return getPendingTaskSummary(taskId);
+            'tasks.list': async ({ golemId = 'golem_A', filters = {} }) => {
+                const controller = getTaskController(golemId);
+                return {
+                    tasks: controller.taskList(filters),
+                };
+            },
+            'tasks.get': async ({ golemId = 'golem_A', taskId }) => {
+                const controller = getTaskController(golemId);
+                return {
+                    task: controller.taskGet(taskId),
+                };
+            },
+            'tasks.create': async ({ golemId = 'golem_A', input = {}, options = {} }) => {
+                const controller = getTaskController(golemId);
+                return controller.taskCreate(input, options);
+            },
+            'tasks.update': async ({ golemId = 'golem_A', taskId, patch = {}, options = {} }) => {
+                const controller = getTaskController(golemId);
+                return controller.taskUpdate(taskId, patch, options);
+            },
+            'tasks.stop': async ({ golemId = 'golem_A', taskId, options = {} }) => {
+                const controller = getTaskController(golemId);
+                return controller.taskStop(taskId, options);
+            },
+            'tasks.todoWrite': async ({ golemId = 'golem_A', items = [], options = {} }) => {
+                const controller = getTaskController(golemId);
+                return controller.todoWrite(items, options);
+            },
+            'tasks.recovery': async ({ golemId = 'golem_A' }) => {
+                const controller = getTaskController(golemId);
+                return {
+                    recovery: controller.getTaskRecoverySummary(),
+                    pendingSummary: controller.getPendingContextSummary(20),
+                    metrics: controller.taskMetrics(),
+                    integrity: controller.taskIntegrity({ limit: 50 }),
+                };
+            },
+            'tasks.audit': async ({ golemId = 'golem_A', filters = {} }) => {
+                const controller = getTaskController(golemId);
+                return {
+                    events: controller.taskAudit(filters),
+                };
+            },
+            'tasks.metrics': async ({ golemId = 'golem_A' }) => {
+                const controller = getTaskController(golemId);
+                return {
+                    metrics: controller.taskMetrics(),
+                };
+            },
+            'tasks.integrity': async ({ golemId = 'golem_A', options = {} }) => {
+                const controller = getTaskController(golemId);
+                return {
+                    integrity: controller.taskIntegrity(options),
+                };
+            },
+            'controller.pendingTaskSummary': async ({ taskId, golemId = 'golem_A' }) => {
+                return getPendingTaskSummary(taskId, golemId);
             },
         },
     });
@@ -911,9 +992,15 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
             const isOllamaBackend = brain.backend === 'ollama';
             if (brain.page || isOllamaBackend) {
                 await brain.init(true);
+                const recovery = controller && typeof controller.getTaskRecoverySummary === 'function'
+                    ? controller.getTaskRecoverySummary()
+                    : null;
+                const recoveryHint = recovery
+                    ? `\n\n📋 任務恢復摘要：pending=${recovery.pendingCount}、in_progress=${recovery.inProgressCount}、blocked=${recovery.blockedCount}、next=${recovery.nextTaskId || 'none'}`
+                    : '';
                 await ctx.reply(isOllamaBackend
-                    ? "✅ Ollama 對話狀態已重置完成！目前大腦記憶脈絡已重新注入。"
-                    : "✅ 物理重置完成！已經為您切斷舊有記憶，現在這是一個全新且乾淨的 Golem 實體。");
+                    ? `✅ Ollama 對話狀態已重置完成！目前大腦記憶脈絡已重新注入。${recoveryHint}`
+                    : `✅ 物理重置完成！已經為您切斷舊有記憶，現在這是一個全新且乾淨的 Golem 實體。${recoveryHint}`);
             } else {
                 await ctx.reply("⚠️ 找不到活躍的網頁視窗，無法執行物理重置。");
             }
@@ -1190,18 +1277,23 @@ async function handleUnifiedCallback(ctx, actionData) {
     }
 
     const { brain, controller, convoManager, actionQueue } = getOrCreateGolem();
-    const pendingTasks = controller.pendingTasks;
     if (actionData === 'SYSTEM_FORCE_UPDATE') return SystemUpgrader.performUpdate(ctx);
     if (actionData === 'SYSTEM_UPDATE_CANCEL') return await ctx.reply("已取消更新操作。");
 
     if (actionData.includes('_')) {
         const [action, taskId] = actionData.split('_');
-        const task = pendingTasks.get(taskId);
+        const task = controller && typeof controller.getPendingTask === 'function'
+            ? controller.getPendingTask(taskId)
+            : controller.pendingTasks.get(taskId);
         if (!task) return await ctx.reply('⚠️ 任務已失效');
 
         // ✨ [v9.1] 處理【大腦對話佇列】插隊系統的 Callback (DIALOGUE_QUEUE_APPROVAL)
         if (task.type === 'DIALOGUE_QUEUE_APPROVAL') {
-            pendingTasks.delete(taskId);
+            if (controller && typeof controller.deletePendingTask === 'function') {
+                controller.deletePendingTask(taskId, { reason: `dialogue-${action.toLowerCase()}`, actor: 'system' });
+            } else {
+                controller.pendingTasks.delete(taskId);
+            }
 
             try {
                 if (ctx.platform === 'telegram' && ctx.event.message) {
@@ -1221,17 +1313,55 @@ async function handleUnifiedCallback(ctx, actionData) {
 
             // 重新入隊處理對話
             if (convoManager) {
-                convoManager._actualCommit(task.ctx, task.text, isPriority);
+                convoManager._actualCommit(ctx, task.text, isPriority, task.attachment || null, task.options || {});
             }
             return;
         }
 
         if (action === 'DENY') {
-            pendingTasks.delete(taskId);
+            if (controller && typeof controller.deletePendingTask === 'function') {
+                controller.deletePendingTask(taskId, { reason: 'user-deny', actor: 'system' });
+            } else {
+                controller.pendingTasks.delete(taskId);
+            }
+            if (task.taskId && controller && typeof controller.taskUpdate === 'function') {
+                try {
+                    controller.taskUpdate(task.taskId, {
+                        status: 'failed',
+                        error: 'Command approval denied by user',
+                        metadata: {
+                            approvalDeniedAt: Date.now(),
+                        },
+                    }, {
+                        actor: 'system',
+                    });
+                } catch (error) {
+                    console.warn(`⚠️ [TaskKernel] 無法將任務標記為失敗: ${error.message}`);
+                }
+            }
             await ctx.reply('🛡️ 操作駁回');
         } else if (action === 'APPROVE') {
             const { steps, nextIndex } = task;
-            pendingTasks.delete(taskId);
+            if (controller && typeof controller.deletePendingTask === 'function') {
+                controller.deletePendingTask(taskId, { reason: 'user-approve', actor: 'system' });
+            } else {
+                controller.pendingTasks.delete(taskId);
+            }
+
+            if (task.taskId && controller && typeof controller.taskUpdate === 'function') {
+                try {
+                    controller.taskUpdate(task.taskId, {
+                        status: 'in_progress',
+                        metadata: {
+                            pendingApprovalId: null,
+                            resumedAt: Date.now(),
+                        },
+                        clearError: true,
+                    }, {
+                        actor: 'system',
+                    });
+                } catch {}
+            }
 
             await ctx.reply("✅ 授權通過，執行中 (這可能需要幾秒鐘)...");
             const approvedStep = steps[nextIndex];
@@ -1294,6 +1424,7 @@ async function handleUnifiedCallback(ctx, actionData) {
             await actionQueue.enqueue(ctx, async () => {
                 let execResult = "";
                 let finalOutput = "";
+                let approvedStepFailed = false;
                 try {
                     finalOutput = await controller.executor.run(cmd, {
                         timeout: 45000,
@@ -1302,9 +1433,23 @@ async function handleUnifiedCallback(ctx, actionData) {
                     execResult = `[Step ${nextIndex + 1} Success] cmd: ${cmd}\nResult:\n${finalOutput}`;
                     console.log(`✅ [Executor] 成功捕獲終端機輸出 (${finalOutput.length} 字元)`);
                 } catch (e) {
+                    approvedStepFailed = true;
                     finalOutput = `Error: ${e.message}\n${e.stderr || ''}`;
                     execResult = `[Step ${nextIndex + 1} Failed] cmd: ${cmd}\nResult:\n${finalOutput}`;
                     console.error(`❌ [Executor] 執行錯誤: ${e.message}`);
+                    if (task.taskId && controller && typeof controller.taskUpdate === 'function') {
+                        try {
+                            controller.taskUpdate(task.taskId, {
+                                status: 'failed',
+                                error: String(e.message || e),
+                                metadata: {
+                                    failedApprovedStep: nextIndex + 1,
+                                },
+                            }, {
+                                actor: 'system',
+                            });
+                        } catch {}
+                    }
                 }
 
                 const MAX_LENGTH = 15000;
@@ -1315,9 +1460,24 @@ async function handleUnifiedCallback(ctx, actionData) {
 
                 let remainingResult = "";
                 try {
-                    remainingResult = await controller.runSequence(ctx, steps, nextIndex + 1) || "";
+                    remainingResult = await controller.runSequence(ctx, steps, nextIndex + 1, {
+                        taskId: task.taskId || '',
+                        actor: 'system',
+                        source: 'command_approval_resume',
+                    }) || "";
                 } catch (err) {
                     console.warn(`⚠️ [System] 執行後續步驟時發生警告: ${err.message}`);
+                }
+
+                if (approvedStepFailed && !remainingResult && task.taskId && controller && typeof controller.taskUpdate === 'function') {
+                    try {
+                        controller.taskUpdate(task.taskId, {
+                            status: 'failed',
+                            error: String(finalOutput || '').slice(0, 500),
+                        }, {
+                            actor: 'system',
+                        });
+                    } catch {}
                 }
 
                 const observation = [execResult, remainingResult].filter(Boolean).join('\n\n----------------\n\n');

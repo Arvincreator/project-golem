@@ -8,6 +8,12 @@ function parsePositiveInteger(value, fallback) {
     return Math.floor(parsed);
 }
 
+const actionTimeoutMs = parsePositiveInteger(process.env.PLAYWRIGHT_ACTION_TIMEOUT_MS, 15000);
+const sendTimeoutMs = parsePositiveInteger(
+    process.env.PLAYWRIGHT_SEND_TIMEOUT_MS,
+    Math.max(actionTimeoutMs, 30000)
+);
+
 /** @enum {number} 時間相關常數 (毫秒) */
 const TIMINGS = Object.freeze({
     INPUT_DELAY: 800,
@@ -16,7 +22,8 @@ const TIMINGS = Object.freeze({
     TIMEOUT: 300000,           // 5 分鐘總超時
     BROWSER_RETRY_DELAY: 1000,
     CDP_TIMEOUT: 5000,
-    ACTION_TIMEOUT_MS: parsePositiveInteger(process.env.PLAYWRIGHT_ACTION_TIMEOUT_MS, 15000),
+    ACTION_TIMEOUT_MS: actionTimeoutMs,
+    SEND_TIMEOUT_MS: sendTimeoutMs,
     RETRY_BACKOFF_BASE_MS: parsePositiveInteger(process.env.PLAYWRIGHT_RETRY_BACKOFF_BASE_MS, 500),
 });
 

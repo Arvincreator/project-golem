@@ -134,4 +134,34 @@ describe('ConversationManager', () => {
         expect(mockShunter.dispatch).toHaveBeenCalledTimes(3);
         expect(cm.queue.length).toBe(0);
     });
+
+    test('should not force heap gc when heap total is still small', () => {
+        cm = new ConversationManager(mockBrain, mockShunter, mockController);
+        cm.heapGcWarnRatio = 0.9;
+        cm.heapGcMinTotalMb = 96;
+        const MB = 1024 * 1024;
+
+        const result = cm._evaluateHeapGcNeed({
+            heapUsed: 50 * MB,
+            heapTotal: 54 * MB,
+        });
+
+        expect(result.shouldCollect).toBe(false);
+        expect(result.heapRatio).toBeCloseTo(50 / 54, 5);
+    });
+
+    test('should force heap gc when ratio and heap total both exceed thresholds', () => {
+        cm = new ConversationManager(mockBrain, mockShunter, mockController);
+        cm.heapGcWarnRatio = 0.9;
+        cm.heapGcMinTotalMb = 96;
+        const MB = 1024 * 1024;
+
+        const result = cm._evaluateHeapGcNeed({
+            heapUsed: 120 * MB,
+            heapTotal: 128 * MB,
+        });
+
+        expect(result.shouldCollect).toBe(true);
+        expect(result.heapRatio).toBeCloseTo(120 / 128, 5);
+    });
 });

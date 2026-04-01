@@ -49,6 +49,10 @@ describe('PageInteractor Improvements', () => {
         expect(mockKeyboard.press).toHaveBeenCalledWith('Backspace');
     });
 
+    test('constructor should set send timeout no lower than action timeout', () => {
+        expect(interactor.sendTimeoutMs).toBeGreaterThanOrEqual(interactor.actionTimeoutMs);
+    });
+
     test('_clickSend should use Enter and click with ARIA labels', async () => {
         const selector = '.send-button';
         
@@ -105,5 +109,20 @@ describe('PageInteractor Improvements', () => {
         await expect(interactor._runObservedStep('fatal-step', async () => {
             throw new Error('Validation failed');
         }, { retries: 2, timeoutMs: 50 })).rejects.toThrow('Validation failed');
+    });
+
+    test('_resolveSelectorWithFallback should allow missing response nodes on first turn', async () => {
+        mockPage.$ = jest.fn().mockResolvedValue(null);
+        mockPage.waitForSelector = jest.fn().mockRejectedValue(new Error('Timeout'));
+
+        const selector = await interactor._resolveSelectorWithFallback(
+            'response',
+            '.model-response-text',
+            ['.message-content'],
+            { allowMissing: true, waitTimeout: 250 }
+        );
+
+        expect(selector).toBe('.model-response-text');
+        expect(mockDoctor.diagnose).not.toHaveBeenCalled();
     });
 });

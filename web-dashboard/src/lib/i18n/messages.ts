@@ -31,6 +31,7 @@ const zhTWMessages = {
     "sidebar.nav.agents": "Agent 會議室",
     "sidebar.nav.office": "辦公室模式",
     "sidebar.nav.memory": "記憶核心",
+    "sidebar.nav.tasks": "任務追蹤",
     "sidebar.nav.settingsSummary": "設定總表",
 
     "dashboard.liveSystemLogs": "即時系統日誌",
@@ -76,6 +77,16 @@ const zhTWMessages = {
     "chat.placeholder.withGolem": "傳送訊息給 {golem}… 可拖曳或 ⌘V 貼入圖片",
     "chat.placeholder.noGolem": "請先選擇一個 Golem...",
     "chat.dynamicOptionForGolem": "針對目前的 {golem} 執行",
+
+    "tasks.title": "任務追蹤 (Task Tracking)",
+    "tasks.subtitle": "跨對話與重啟持久化的任務核心，提供狀態流轉、恢復摘要與審計軌跡。",
+    "tasks.create": "建立任務",
+    "tasks.refresh": "重新整理",
+    "tasks.empty": "目前沒有任務。",
+    "tasks.recovery": "恢復摘要",
+    "tasks.audit": "審計時間軸",
+    "tasks.pendingSummary": "待辦摘要",
+    "tasks.subjectPlaceholder": "輸入任務主題",
 
     "memory.title": "記憶核心 (Neural Core)",
     "memory.subtitle": "向量記憶與 LanceDB 混合搜尋引擎 (Vector Memory & LanceDB Hybrid Search)",
@@ -389,6 +400,7 @@ const enMessages: Record<MessageKey, string> = {
     "sidebar.nav.agents": "Agents",
     "sidebar.nav.office": "Office Mode",
     "sidebar.nav.memory": "Memory Core",
+    "sidebar.nav.tasks": "Task Tracking",
     "sidebar.nav.settingsSummary": "Settings Overview",
 
     "dashboard.liveSystemLogs": "Live System Logs",
@@ -434,6 +446,16 @@ const enMessages: Record<MessageKey, string> = {
     "chat.placeholder.withGolem": "Send a message to {golem}… drag or paste image with ⌘V",
     "chat.placeholder.noGolem": "Please select a Golem first...",
     "chat.dynamicOptionForGolem": "Run against current {golem}",
+
+    "tasks.title": "Task Tracking",
+    "tasks.subtitle": "Persistent task kernel across chat resets and restarts with status transitions, recovery snapshot, and audit timeline.",
+    "tasks.create": "Create Task",
+    "tasks.refresh": "Refresh",
+    "tasks.empty": "No tasks yet.",
+    "tasks.recovery": "Recovery Snapshot",
+    "tasks.audit": "Audit Timeline",
+    "tasks.pendingSummary": "Pending Summary",
+    "tasks.subjectPlaceholder": "Enter task subject",
 
     "memory.title": "Neural Core",
     "memory.subtitle": "Vector memory and LanceDB hybrid search engine",

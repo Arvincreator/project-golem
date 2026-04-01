@@ -363,6 +363,46 @@ class RuntimeController {
         return this.rpc('controller.pendingTaskSummary', { golemId, taskId }, { timeoutMs: 30000 });
     }
 
+    async listTasks(golemId, filters = {}) {
+        return this.rpc('tasks.list', { golemId, filters }, { timeoutMs: 30000 });
+    }
+
+    async getTask(golemId, taskId) {
+        return this.rpc('tasks.get', { golemId, taskId }, { timeoutMs: 30000 });
+    }
+
+    async createTask(golemId, input = {}, options = {}) {
+        return this.rpc('tasks.create', { golemId, input, options }, { timeoutMs: 30000 });
+    }
+
+    async updateTask(golemId, taskId, patch = {}, options = {}) {
+        return this.rpc('tasks.update', { golemId, taskId, patch, options }, { timeoutMs: 30000 });
+    }
+
+    async stopTask(golemId, taskId, options = {}) {
+        return this.rpc('tasks.stop', { golemId, taskId, options }, { timeoutMs: 30000 });
+    }
+
+    async todoWrite(golemId, items = [], options = {}) {
+        return this.rpc('tasks.todoWrite', { golemId, items, options }, { timeoutMs: 30000 });
+    }
+
+    async getTaskRecoverySummary(golemId) {
+        return this.rpc('tasks.recovery', { golemId }, { timeoutMs: 30000 });
+    }
+
+    async getTaskAudit(golemId, filters = {}) {
+        return this.rpc('tasks.audit', { golemId, filters }, { timeoutMs: 30000 });
+    }
+
+    async getTaskMetrics(golemId) {
+        return this.rpc('tasks.metrics', { golemId }, { timeoutMs: 30000 });
+    }
+
+    async getTaskIntegrity(golemId, options = {}) {
+        return this.rpc('tasks.integrity', { golemId, options }, { timeoutMs: 30000 });
+    }
+
     _handleWorkerMessage(message) {
         if (!message || typeof message !== 'object') return;
 
@@ -470,6 +510,16 @@ class RuntimeController {
 
         if (name === 'dashboard.reply' && this.server && typeof this.server.broadcastLog === 'function') {
             this.server.broadcastLog(payload);
+            return;
+        }
+
+        if (name === 'task.event' && this.server && typeof this.server.broadcastTaskEvent === 'function') {
+            this.server.broadcastTaskEvent(payload);
+            return;
+        }
+
+        if (name === 'task.recovery' && this.server && typeof this.server.broadcastTaskRecovery === 'function') {
+            this.server.broadcastTaskRecovery(payload);
         }
     }
 

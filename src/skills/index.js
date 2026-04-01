@@ -3,6 +3,26 @@ const path = require('path');
 const persona = require('./core/persona');
 const CORE_DEFINITION = require('./core/definition');
 
+const VALID_MCP_MODES = new Set(['compact', 'verbose', 'conditional']);
+
+function normalizeMcpMode(value, fallback = 'compact') {
+    const mode = String(value || '').trim().toLowerCase();
+    if (VALID_MCP_MODES.has(mode)) return mode;
+    return fallback;
+}
+
+function resolvePromptOptions(systemInfo, options = {}) {
+    const safeOptions = (options && typeof options === 'object') ? options : {};
+    const modeFromInfo = systemInfo && typeof systemInfo === 'object' ? systemInfo.mcpMode : '';
+    const resolvedMcpMode = normalizeMcpMode(
+        safeOptions.mcpMode || modeFromInfo || process.env.GOLEM_PROMPT_MCP_MODE || 'compact'
+    );
+    return {
+        ...safeOptions,
+        mcpMode: resolvedMcpMode,
+    };
+}
+
 // ============================================================
 // 2. 技能庫 - 自動發現版 (SKILL LIBRARY v9.1+)
 // ============================================================
@@ -49,9 +69,10 @@ module.exports = {
     loadSkills,
     getSKILLS: () => SKILLS,
 
-    getSystemPrompt: (systemInfo) => {
+    getSystemPrompt: (systemInfo, options = {}) => {
         const currentSkills = loadSkills(); // 確保已加載
-        let fullPrompt = CORE_DEFINITION(systemInfo) + "\n";
+        const promptOptions = resolvePromptOptions(systemInfo, options);
+        let fullPrompt = CORE_DEFINITION(systemInfo, promptOptions) + "\n";
         const userDataDir = systemInfo && typeof systemInfo === 'object' ? systemInfo.userDataDir : null;
 
         for (const [name, module] of Object.entries(currentSkills)) {
