@@ -6,6 +6,7 @@ describe('ConversationManager', () => {
     let mockShunter;
     let mockController;
     let mockCtx;
+    let mockPlanningExecutor;
 
     beforeEach(() => {
         jest.useFakeTimers();
@@ -23,6 +24,7 @@ describe('ConversationManager', () => {
 
         mockShunter = { dispatch: jest.fn().mockResolvedValue() };
         mockController = { pendingTasks: new Map() };
+        mockPlanningExecutor = { execute: jest.fn().mockResolvedValue({ success: true }) };
 
         mockCtx = {
             chatId: '123',
@@ -82,7 +84,7 @@ describe('ConversationManager', () => {
     });
 
     test('should process queue and dispatch through shunter', async () => {
-        cm = new ConversationManager(mockBrain, mockShunter, mockController);
+        cm = new ConversationManager(mockBrain, mockShunter, mockController, { planningExecutor: mockPlanningExecutor });
         mockBrain.recall.mockResolvedValue([{ text: 'memory-hit' }]);
 
         cm.queue.push({ ctx: mockCtx, text: 'hello', attachment: null, options: {} });
@@ -94,6 +96,27 @@ describe('ConversationManager', () => {
             expect.any(Object)
         );
         expect(mockShunter.dispatch).toHaveBeenCalled();
+    });
+
+    test('should route planning_auto execution to PlanningModeExecutor only', async () => {
+        jest.useRealTimers();
+        cm = new ConversationManager(mockBrain, mockShunter, mockController, { planningExecutor: mockPlanningExecutor });
+
+        cm.queue.push({
+            ctx: mockCtx,
+            text: '請規劃多階段實作',
+            attachment: null,
+            options: {
+                executionMode: 'planning_auto',
+                planningDecision: { usePlanning: true, score: 8, reason: 'explicit_planning_request' },
+            },
+        });
+
+        await cm._processQueue();
+
+        expect(mockPlanningExecutor.execute).toHaveBeenCalledTimes(1);
+        expect(mockBrain.sendMessage).not.toHaveBeenCalled();
+        expect(mockShunter.dispatch).not.toHaveBeenCalled();
     });
 
     test('should retry recoverable browser-closed errors up to three attempts', async () => {

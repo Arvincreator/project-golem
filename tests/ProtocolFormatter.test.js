@@ -92,7 +92,11 @@ describe('ProtocolFormatter', () => {
     test('buildEnvelope uses core governance source and avoids duplicated status rule wording', () => {
         const result = ProtocolFormatter.buildEnvelope('msg', 'req1');
         expect(result).toContain('TASK GOVERNANCE SOURCE');
-        expect(result).toContain('TASK ACTION CONTRACT');
+        expect(result).toContain('AGENT GOVERNANCE SOURCE');
+        expect(result).toContain('ACTION CONTRACT');
+        expect(result).toContain('task_resume');
+        expect(result).toContain('agent_session_create');
+        expect(result).toContain('agent_focus');
         expect(result).not.toContain('TASK STATUS RULES');
     });
 

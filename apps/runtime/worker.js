@@ -84,11 +84,12 @@ const { downloadFile, getLocalIp } = require('../../src/utils/HttpUtils');
 const OpticNerve = require('../../src/services/OpticNerve');
 const SystemUpgrader = require('../../src/utils/SystemUpdater');
 const https = require('https');
-const InteractiveMultiAgent = require('../../src/core/InteractiveMultiAgent');
 const introspection = require('../../src/services/Introspection');
 const ActionQueue = require('../../src/core/ActionQueue'); // ✨ [v9.1] Dual-Queue Architecture
 const PromptShortcutManager = require('../../src/managers/PromptShortcutManager');
 const MCPManager = require('../../src/mcp/MCPManager');
+const PlanningIntentRouter = require('../../src/core/PlanningIntentRouter');
+const EnvManager = require('../../src/utils/EnvManager');
 const { normalizeShortcutKey } = PromptShortcutManager;
 
 
@@ -124,6 +125,47 @@ const SYSTEM_COMMAND_KEY_SET = (() => {
         return new Set();
     }
 })();
+
+const planningIntentRouter = new PlanningIntentRouter({
+    threshold: Number(process.env.GOLEM_CHAT_PLANNING_THRESHOLD || 5),
+});
+
+let chatPlanningModeEnabled = String(process.env.GOLEM_CHAT_PLANNING_MODE || '').trim().toLowerCase() === 'true';
+let chatPlanningModeUpdatedAt = Date.now();
+
+function getPlanningModeState() {
+    return {
+        enabled: chatPlanningModeEnabled === true,
+        updatedAt: chatPlanningModeUpdatedAt,
+    };
+}
+
+function setPlanningModeState(enabled, options = {}) {
+    const nextEnabled = enabled === true;
+    chatPlanningModeEnabled = nextEnabled;
+    chatPlanningModeUpdatedAt = Date.now();
+    process.env.GOLEM_CHAT_PLANNING_MODE = nextEnabled ? 'true' : 'false';
+
+    const persist = options.persist !== false;
+    if (persist) {
+        try {
+            EnvManager.updateEnv({
+                GOLEM_CHAT_PLANNING_MODE: nextEnabled ? 'true' : 'false',
+            });
+        } catch (error) {
+            console.warn(`⚠️ [PlanningMode] persist failed: ${error.message}`);
+        }
+    }
+
+    WorkerBridge.sendEvent('chat.planning.mode', {
+        enabled: nextEnabled,
+        updatedAt: chatPlanningModeUpdatedAt,
+        source: String(options.source || 'runtime'),
+        persist,
+    });
+
+    return getPlanningModeState();
+}
 
 // ✅ [Bug #6 修復] 啟動時間戳記，用於過濾重啟前的舊訊息
 const BOOT_TIME = Date.now();
@@ -258,6 +300,12 @@ function getOrCreateGolem() {
                 golemId,
             });
         },
+        onAgentEvent: (event) => {
+            WorkerBridge.sendEvent('agent.event', {
+                ...(event || {}),
+                golemId,
+            });
+        },
     });
     const autonomy = new AutonomyManager(brain, controller, brain.memoryDriver, { golemId });
 
@@ -285,17 +333,43 @@ function getOrCreateGolem() {
         const recovery = controller.getTaskRecoverySummary();
         const metrics = controller.taskMetrics();
         const integrity = controller.taskIntegrity({ limit: 50 });
+        const seq = typeof controller.nextRecoverySequence === 'function'
+            ? controller.nextRecoverySequence({ persist: true })
+            : Date.now();
         WorkerBridge.sendEvent('task.recovery', {
             golemId,
             source: 'startup',
+            recoveryType: 'startup',
+            seq,
             recovery,
             pendingSummary: controller.getPendingContextSummary(20),
+            resumeBrief: controller.taskResumeBrief({ limit: 20 }),
             metrics,
             integrity,
         });
         console.log(`📋 [TaskKernel:${golemId}] recovered pending=${recovery.pendingCount}, in_progress=${recovery.inProgressCount}, blocked=${recovery.blockedCount}, next=${recovery.nextTaskId || 'none'}`);
     } catch (error) {
         console.warn(`⚠️ [TaskKernel:${golemId}] recovery summary failed: ${error.message}`);
+    }
+    try {
+        const recovery = controller.getAgentRecoverySummary();
+        const metrics = controller.agentMetrics();
+        const seq = typeof controller.nextAgentRecoverySequence === 'function'
+            ? controller.nextAgentRecoverySequence({ persist: true })
+            : Date.now();
+        WorkerBridge.sendEvent('agent.recovery', {
+            golemId,
+            source: 'startup',
+            recoveryType: 'startup',
+            seq,
+            recovery,
+            pendingSummary: controller.getPendingAgentContextSummary(16),
+            resumeBrief: controller.agentResumeBrief({ limit: 20 }),
+            metrics,
+        });
+        console.log(`📋 [AgentKernel:${golemId}] recovered pending=${recovery.pendingSessions}, running=${recovery.runningSessions}, blocked=${recovery.blockedSessions}, failed=${recovery.failedSessions}, next=${recovery.nextSessionId || 'none'}`);
+    } catch (error) {
+        console.warn(`⚠️ [AgentKernel:${golemId}] recovery summary failed: ${error.message}`);
     }
     ensureLifecycleResources(singleGolemInstance);
     return singleGolemInstance;
@@ -397,6 +471,9 @@ function buildRuntimeSnapshot() {
                 lastExitReason: '',
             },
             memory: memorySnapshot,
+            chat: {
+                planningMode: getPlanningModeState(),
+            },
             managedChildren: runtimeRegistry.getStats(),
         },
         contexts: buildContextSnapshots(),
@@ -529,6 +606,14 @@ function getTaskController(golemId = 'golem_A') {
     const controller = instance && instance.controller;
     if (!controller) {
         throw new Error(`Task controller unavailable for ${golemId}`);
+    }
+    return controller;
+}
+
+function getAgentController(golemId = 'golem_A') {
+    const controller = getTaskController(golemId);
+    if (!controller || typeof controller.agentSessionCreate !== 'function') {
+        throw new Error(`Agent controller unavailable for ${golemId}`);
     }
     return controller;
 }
@@ -742,6 +827,23 @@ if (WORKER_MODE) {
                 }
                 return tracker.getHistory(limit);
             },
+            'chat.planning.get': async ({ golemId = 'golem_A' }) => {
+                return {
+                    golemId,
+                    planningMode: getPlanningModeState(),
+                };
+            },
+            'chat.planning.set': async ({ golemId = 'golem_A', enabled = false, persist = true, source = 'rpc' }) => {
+                const state = setPlanningModeState(enabled === true, {
+                    persist: persist !== false,
+                    source: String(source || 'rpc'),
+                });
+                reportRuntimeState();
+                return {
+                    golemId,
+                    planningMode: state,
+                };
+            },
             'tasks.list': async ({ golemId = 'golem_A', filters = {} }) => {
                 const controller = getTaskController(golemId);
                 return {
@@ -770,11 +872,22 @@ if (WORKER_MODE) {
                 const controller = getTaskController(golemId);
                 return controller.todoWrite(items, options);
             },
+            'tasks.resume': async ({ golemId = 'golem_A', options = {} }) => {
+                const controller = getTaskController(golemId);
+                return controller.taskResume(options || {});
+            },
+            'tasks.resumeBrief': async ({ golemId = 'golem_A', options = {} }) => {
+                const controller = getTaskController(golemId);
+                return {
+                    brief: controller.taskResumeBrief(options || {}),
+                };
+            },
             'tasks.recovery': async ({ golemId = 'golem_A' }) => {
                 const controller = getTaskController(golemId);
                 return {
                     recovery: controller.getTaskRecoverySummary(),
                     pendingSummary: controller.getPendingContextSummary(20),
+                    resumeBrief: controller.taskResumeBrief({ limit: 20 }),
                     metrics: controller.taskMetrics(),
                     integrity: controller.taskIntegrity({ limit: 50 }),
                 };
@@ -796,6 +909,109 @@ if (WORKER_MODE) {
                 return {
                     integrity: controller.taskIntegrity(options),
                 };
+            },
+            'tasks.budgets.get': async ({ golemId = 'golem_A' }) => {
+                const controller = getTaskController(golemId);
+                return {
+                    budgets: controller.taskBudgetGet(),
+                };
+            },
+            'tasks.budgets.set': async ({ golemId = 'golem_A', policy = {}, options = {} }) => {
+                const controller = getTaskController(golemId);
+                return controller.taskBudgetSet(policy || {}, options || {});
+            },
+            'agents.sessions.list': async ({ golemId = 'golem_A', filters = {} }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentList(filters || {});
+            },
+            'agents.sessions.get': async ({ golemId = 'golem_A', sessionId }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentGetSession(sessionId);
+            },
+            'agents.sessions.orchestration': async ({ golemId = 'golem_A', sessionId }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentGetOrchestration(sessionId);
+            },
+            'agents.sessions.create': async ({ golemId = 'golem_A', input = {}, options = {} }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentSessionCreate(input || {}, options || {});
+            },
+            'agents.sessions.update': async ({ golemId = 'golem_A', sessionId, patch = {}, options = {} }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentSessionUpdate(sessionId, patch || {}, options || {});
+            },
+            'agents.sessions.resume': async ({ golemId = 'golem_A', options = {} }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentResume(options || {});
+            },
+            'agents.sessions.wait': async ({ golemId = 'golem_A', sessionId, options = {} }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentWait(sessionId, options || {});
+            },
+            'agents.sessions.stop': async ({ golemId = 'golem_A', sessionId, options = {} }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentStop({ sessionId, reason: options.reason }, options || {});
+            },
+            'agents.workers.list': async ({ golemId = 'golem_A', filters = {} }) => {
+                const controller = getAgentController(golemId);
+                const result = controller.agentList(filters || {});
+                return {
+                    workers: Array.isArray(result.workers) ? result.workers : [],
+                    sessions: Array.isArray(result.sessions) ? result.sessions : [],
+                };
+            },
+            'agents.workers.get': async ({ golemId = 'golem_A', workerId }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentGetWorker(workerId);
+            },
+            'agents.workers.create': async ({ golemId = 'golem_A', input = {}, options = {} }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentWorkerSpawn(input || {}, options || {});
+            },
+            'agents.workers.update': async ({ golemId = 'golem_A', workerId, patch = {}, options = {} }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentWorkerUpdate(workerId, patch || {}, options || {});
+            },
+            'agents.message': async ({ golemId = 'golem_A', input = {}, options = {} }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentMessage(input || {}, options || {});
+            },
+            'agents.recovery': async ({ golemId = 'golem_A' }) => {
+                const controller = getAgentController(golemId);
+                return {
+                    recovery: controller.getAgentRecoverySummary(),
+                    pendingSummary: controller.getPendingAgentContextSummary(16),
+                    resumeBrief: controller.agentResumeBrief({ limit: 20 }),
+                    metrics: controller.agentMetrics(),
+                };
+            },
+            'agents.resumeBrief': async ({ golemId = 'golem_A', options = {} }) => {
+                const controller = getAgentController(golemId);
+                return {
+                    brief: controller.agentResumeBrief(options || {}),
+                };
+            },
+            'agents.audit': async ({ golemId = 'golem_A', filters = {} }) => {
+                const controller = getAgentController(golemId);
+                return {
+                    events: controller.agentAudit(filters || {}),
+                };
+            },
+            'agents.metrics': async ({ golemId = 'golem_A' }) => {
+                const controller = getAgentController(golemId);
+                return {
+                    metrics: controller.agentMetrics(),
+                };
+            },
+            'agents.budgets.get': async ({ golemId = 'golem_A' }) => {
+                const controller = getAgentController(golemId);
+                return {
+                    budgets: controller.agentBudgetGet(),
+                };
+            },
+            'agents.budgets.set': async ({ golemId = 'golem_A', policy = {}, options = {} }) => {
+                const controller = getAgentController(golemId);
+                return controller.agentBudgetSet(policy || {}, options || {});
             },
             'controller.pendingTaskSummary': async ({ taskId, golemId = 'golem_A' }) => {
                 return getPendingTaskSummary(taskId, golemId);
@@ -995,12 +1211,49 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
                 const recovery = controller && typeof controller.getTaskRecoverySummary === 'function'
                     ? controller.getTaskRecoverySummary()
                     : null;
+                const agentRecovery = controller && typeof controller.getAgentRecoverySummary === 'function'
+                    ? controller.getAgentRecoverySummary()
+                    : null;
+                if (controller && recovery) {
+                    const seq = typeof controller.nextRecoverySequence === 'function'
+                        ? controller.nextRecoverySequence({ persist: true })
+                        : Date.now();
+                    WorkerBridge.sendEvent('task.recovery', {
+                        golemId: forceTargetId || 'golem_A',
+                        source: '/new',
+                        recoveryType: 'chat_reset',
+                        seq,
+                        recovery,
+                        pendingSummary: controller.getPendingContextSummary(20),
+                        resumeBrief: controller.taskResumeBrief({ limit: 20 }),
+                        metrics: controller.taskMetrics(),
+                        integrity: controller.taskIntegrity({ limit: 50 }),
+                    });
+                }
+                if (controller && agentRecovery) {
+                    const seq = typeof controller.nextAgentRecoverySequence === 'function'
+                        ? controller.nextAgentRecoverySequence({ persist: true })
+                        : Date.now();
+                    WorkerBridge.sendEvent('agent.recovery', {
+                        golemId: forceTargetId || 'golem_A',
+                        source: '/new',
+                        recoveryType: 'chat_reset',
+                        seq,
+                        recovery: agentRecovery,
+                        pendingSummary: controller.getPendingAgentContextSummary(16),
+                        resumeBrief: controller.agentResumeBrief({ limit: 20 }),
+                        metrics: controller.agentMetrics(),
+                    });
+                }
                 const recoveryHint = recovery
                     ? `\n\n📋 任務恢復摘要：pending=${recovery.pendingCount}、in_progress=${recovery.inProgressCount}、blocked=${recovery.blockedCount}、next=${recovery.nextTaskId || 'none'}`
                     : '';
+                const agentRecoveryHint = agentRecovery
+                    ? `\n🤖 Agent 恢復摘要：pending=${agentRecovery.pendingSessions}、running=${agentRecovery.runningSessions}、blocked=${agentRecovery.blockedSessions}、failed=${agentRecovery.failedSessions}、next=${agentRecovery.nextSessionId || 'none'}`
+                    : '';
                 await ctx.reply(isOllamaBackend
-                    ? `✅ Ollama 對話狀態已重置完成！目前大腦記憶脈絡已重新注入。${recoveryHint}`
-                    : `✅ 物理重置完成！已經為您切斷舊有記憶，現在這是一個全新且乾淨的 Golem 實體。${recoveryHint}`);
+                    ? `✅ Ollama 對話狀態已重置完成！目前大腦記憶脈絡已重新注入。${recoveryHint}${agentRecoveryHint}`
+                    : `✅ 物理重置完成！已經為您切斷舊有記憶，現在這是一個全新且乾淨的 Golem 實體。${recoveryHint}${agentRecoveryHint}`);
             } else {
                 await ctx.reply("⚠️ 找不到活躍的網頁視窗，無法執行物理重置。");
             }
@@ -1053,6 +1306,43 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
         } catch (e) {
             await ctx.reply(`❌ 切換模組失敗: ${e.message}`);
         }
+        return;
+    }
+
+    if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase().startsWith('/planning')) {
+        const args = ctx.text.trim().split(/\s+/);
+        const command = String(args[1] || 'status').trim().toLowerCase();
+
+        if (!['on', 'off', 'status'].includes(command)) {
+            const state = getPlanningModeState();
+            await ctx.reply([
+                'ℹ️ 用法：`/planning on`、`/planning off`、`/planning status`',
+                `目前狀態：${state.enabled ? 'ON' : 'OFF'}`,
+            ].join('\n'), { parse_mode: 'Markdown' });
+            return;
+        }
+
+        if (command === 'status') {
+            const state = getPlanningModeState();
+            await ctx.reply([
+                `🧭 Planning Mode：${state.enabled ? 'ON' : 'OFF'}`,
+                '啟用時會在複雜任務自動啟動多代理流程；一般問題仍走單代理。',
+            ].join('\n'));
+            return;
+        }
+
+        const enabled = command === 'on';
+        const state = setPlanningModeState(enabled, {
+            persist: true,
+            source: `${ctx.platform || 'unknown'}:/planning`,
+        });
+        reportRuntimeState();
+        await ctx.reply([
+            `🧭 Planning Mode 已${state.enabled ? '開啟' : '關閉'}。`,
+            state.enabled
+                ? '之後遇到複雜任務會自動走 Coordinator-Worker，多代理中間過程不會在聊天窗展開。'
+                : '之後所有訊息都回到一般單代理流程。',
+        ].join('\n'));
         return;
     }
 
@@ -1151,19 +1441,6 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
         return;
     }
 
-    if (InteractiveMultiAgent.multiAgentListeners && InteractiveMultiAgent.multiAgentListeners.has(ctx.chatId)) {
-        const callback = InteractiveMultiAgent.multiAgentListeners.get(ctx.chatId);
-        callback(ctx.text);
-        return;
-    }
-
-    if (ctx.text && ['恢復會議', 'resume', '繼續會議'].includes(ctx.text.toLowerCase())) {
-        if (InteractiveMultiAgent.canResume(ctx.chatId)) {
-            await InteractiveMultiAgent.resumeConversation(ctx, brain);
-            return;
-        }
-    }
-
     if (!ctx.text && !ctx.getAttachment) return;
     const allowPromptShortcutForNonAdmin = ctx.platform === 'telegram' && Boolean(matchedPromptShortcut);
     if (!ctx.isAdmin && !allowPromptShortcutForNonAdmin) return;
@@ -1250,7 +1527,34 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
         }
 
         if (!finalInput && !attachment) return;
-        await convoManager.enqueue(ctx, finalInput, { attachment: attachment });
+        const normalizedText = String(ctx.text || '').trim().toLowerCase();
+        const isSlashCommand = normalizedText.startsWith('/');
+        const planningModeState = getPlanningModeState();
+        let executionMode = 'chat_standard';
+        let planningDecision = {
+            usePlanning: false,
+            score: 0,
+            threshold: Number(process.env.GOLEM_CHAT_PLANNING_THRESHOLD || 5),
+            reason: planningModeState.enabled ? 'simple_request' : 'planning_mode_disabled',
+        };
+
+        if (planningModeState.enabled && !isSlashCommand) {
+            planningDecision = planningIntentRouter.evaluate({
+                text: finalInput,
+                hasAttachment: Boolean(attachment),
+            });
+            if (planningDecision.usePlanning) {
+                executionMode = 'planning_auto';
+                console.log(`🧭 [PlanningMode] auto route enabled score=${planningDecision.score} reason=${planningDecision.reason}`);
+            }
+        }
+
+        await convoManager.enqueue(ctx, finalInput, {
+            attachment: attachment,
+            executionMode,
+            planningDecision,
+            planningModeEnabled: planningModeState.enabled,
+        });
     } catch (e) {
         console.error(e);
         await ctx.reply(`❌ 錯誤: ${e.message}`);

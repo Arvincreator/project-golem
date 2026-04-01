@@ -13,6 +13,12 @@ describe('TaskActionHandler', () => {
             taskCreate: jest.fn().mockReturnValue({ task: { id: 'task_1', status: 'pending', subject: 'A' } }),
             taskList: jest.fn().mockReturnValue([{ id: 'task_1', status: 'pending', subject: 'A' }]),
             taskGet: jest.fn().mockReturnValue({ id: 'task_1', status: 'pending', subject: 'A', version: 1 }),
+            taskResume: jest.fn().mockReturnValue({
+                resumed: true,
+                promoted: true,
+                task: { id: 'task_1', status: 'in_progress', subject: 'A' },
+                brief: { nextTask: { id: 'task_1' } },
+            }),
             taskUpdate: jest.fn().mockReturnValue({ task: { id: 'task_1', status: 'in_progress', subject: 'A' } }),
             taskStop: jest.fn().mockReturnValue({ task: { id: 'task_1', status: 'killed', subject: 'A' } }),
             taskMetrics: jest.fn().mockReturnValue({
@@ -36,6 +42,8 @@ describe('TaskActionHandler', () => {
 
     test('isTaskAction recognizes supported actions', () => {
         expect(TaskActionHandler.isTaskAction('task_create')).toBe(true);
+        expect(TaskActionHandler.isTaskAction('task_resume')).toBe(true);
+        expect(TaskActionHandler.isTaskAction('task_focus')).toBe(true);
         expect(TaskActionHandler.isTaskAction('task_metrics')).toBe(true);
         expect(TaskActionHandler.isTaskAction('todo_write')).toBe(true);
         expect(TaskActionHandler.isTaskAction('command')).toBe(false);
@@ -61,6 +69,16 @@ describe('TaskActionHandler', () => {
         expect(controller.taskUpdate).toHaveBeenCalledWith('task_1', { status: 'in_progress' }, expect.any(Object));
     });
 
+    test('executes task_resume', async () => {
+        const handled = await TaskActionHandler.execute(ctx, {
+            action: 'task_resume',
+            taskId: 'task_1',
+        }, controller);
+        expect(handled).toBe(true);
+        expect(controller.taskResume).toHaveBeenCalledWith(expect.objectContaining({ taskId: 'task_1' }));
+        expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining('接續先前進度'));
+    });
+
     test('executes todo_write', async () => {
         const handled = await TaskActionHandler.execute(ctx, {
             action: 'todo_write',
@@ -68,7 +86,7 @@ describe('TaskActionHandler', () => {
         }, controller);
         expect(handled).toBe(true);
         expect(controller.todoWrite).toHaveBeenCalled();
-        expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining('todo_write'));
+        expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining('待辦進度已同步'));
     });
 
     test('executes task_metrics', async () => {
@@ -77,7 +95,7 @@ describe('TaskActionHandler', () => {
         }, controller);
         expect(handled).toBe(true);
         expect(controller.taskMetrics).toHaveBeenCalled();
-        expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining('任務遙測'));
+        expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining('任務健康度'));
     });
 
     test('executes task_integrity', async () => {
@@ -88,5 +106,15 @@ describe('TaskActionHandler', () => {
         expect(handled).toBe(true);
         expect(controller.taskIntegrity).toHaveBeenCalledWith({ limit: 10 });
         expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining('一致性檢查'));
+    });
+
+    test('supports detail mode for explicit task detail output', async () => {
+        const handled = await TaskActionHandler.execute(ctx, {
+            action: 'task_get',
+            taskId: 'task_1',
+            detail: true,
+        }, controller);
+        expect(handled).toBe(true);
+        expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining('任務詳情'));
     });
 });

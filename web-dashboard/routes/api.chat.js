@@ -1,9 +1,58 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const { buildOperationGuard } = require('../server/security');
 
 module.exports = function(server) {
     const router = express.Router();
+    const requirePlanningModeUpdate = buildOperationGuard(server, 'chat_planning_mode_update');
+
+    router.get('/api/chat/planning-mode', async (req, res) => {
+        try {
+            const golemId = String(req.query && req.query.golemId || 'golem_A').trim() || 'golem_A';
+            if (!server.runtimeController || typeof server.runtimeController.getChatPlanningMode !== 'function') {
+                return res.status(503).json({ error: 'Planning mode service unavailable' });
+            }
+
+            const result = await server.runtimeController.getChatPlanningMode(golemId);
+            return res.json({
+                success: true,
+                golemId,
+                planningMode: result && result.planningMode ? result.planningMode : { enabled: false, updatedAt: Date.now() },
+            });
+        } catch (e) {
+            console.error('Failed to get planning mode:', e);
+            return res.status(500).json({ error: e.message });
+        }
+    });
+
+    router.post('/api/chat/planning-mode', requirePlanningModeUpdate, async (req, res) => {
+        try {
+            const body = req.body && typeof req.body === 'object' ? req.body : {};
+            const golemId = String(body.golemId || 'golem_A').trim() || 'golem_A';
+            if (typeof body.enabled !== 'boolean') {
+                return res.status(400).json({ error: 'enabled must be boolean' });
+            }
+
+            if (!server.runtimeController || typeof server.runtimeController.setChatPlanningMode !== 'function') {
+                return res.status(503).json({ error: 'Planning mode service unavailable' });
+            }
+
+            const persist = body.persist !== false;
+            const result = await server.runtimeController.setChatPlanningMode(golemId, body.enabled, {
+                persist,
+                source: 'dashboard_api',
+            });
+            return res.json({
+                success: true,
+                golemId,
+                planningMode: result && result.planningMode ? result.planningMode : { enabled: body.enabled, updatedAt: Date.now() },
+            });
+        } catch (e) {
+            console.error('Failed to update planning mode:', e);
+            return res.status(500).json({ error: e.message });
+        }
+    });
 
     router.post('/api/chat', async (req, res) => {
         try {

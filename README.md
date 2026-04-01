@@ -191,6 +191,7 @@ npm run arch:check
 |------|------|
 | `/help` | 查看完整指令說明 |
 | `/new` | 重置對話並載入相關記憶 |
+| `/planning on/off/status` | 切換直聊 Planning Mode（複雜任務自動多代理） |
 | `/learn <功能>` | 讓 AI 自動學習並生成新技能 |
 | `/skills` | 列出所有已安裝的技能 |
 
@@ -299,6 +300,7 @@ DIARY_BACKUP_RETENTION_DAYS=180
 | [🗂️ 大型產品架構藍圖](docs/大型產品架構藍圖.md) | `apps + packages + infra` 分層策略與遷移路線圖 |
 | [🏗️ 架構治理規範](infra/architecture/README.md) | 分層邊界規則與 `arch:check` 自動檢查 |
 | [🔌 MCP 使用與開發指南](docs/MCP-使用與開發指南.md) | **[最新]** 如何安裝、配置與調用 MCP Server (含 Hacker News 範例) |
+| [🤝 多代理使用指南](docs/多代理使用指南.md) | Coordinator-Worker Hard Cut 協議、action/REST/恢復流程與排錯手冊 |
 | [🧠 記憶系統架構說明](docs/記憶系統架構說明.md) | 金字塔壓縮原理與存放路徑解析 |
 | [🖥️ VPS Headless + VNC 指南](docs/VPS_VNC_Setup_Guide.md) | 無桌面 Linux / Docker 的 noVNC 一鍵部署 |
 | [🖥️ Web Dashboard 使用說明](docs/Web-Dashboard-使用說明.md) | Web UI 各個分頁的延伸細節 |

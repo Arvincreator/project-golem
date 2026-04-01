@@ -435,6 +435,83 @@ class GolemBrain {
         return result;
     }
 
+    /**
+     * 使用隔離分頁執行一段邏輯，完成後自動關閉分頁並恢復主分頁。
+     * 用於 planning mode 的內部多代理執行，避免污染主對話上下文。
+     * @param {Function} taskFn
+     * @param {Object} [options={}]
+     * @returns {Promise<any>}
+     */
+    async runInIsolatedTab(taskFn, options = {}) {
+        if (typeof taskFn !== 'function') {
+            throw new Error('runInIsolatedTab requires a function callback');
+        }
+
+        this.backend = ConfigManager.CONFIG.GOLEM_BACKEND || this.backend || 'gemini';
+        if (this.backend === 'ollama') {
+            return taskFn({ page: null, backend: 'ollama', options });
+        }
+
+        await this._ensureBrowserHealth();
+        if (!this.context || !this.isInitialized) {
+            await this.init();
+        }
+
+        const previousPage = this.page;
+        const previousCdpSession = this.cdpSession;
+        let isolatedPage = null;
+
+        try {
+            isolatedPage = await this.context.newPage();
+
+            const currentUrl = previousPage && typeof previousPage.url === 'function'
+                ? previousPage.url()
+                : '';
+            const fallbackUrl = this.backend === 'perplexity' ? URLS.PERPLEXITY : URLS.GEMINI;
+            const targetUrl = currentUrl || fallbackUrl;
+
+            if (targetUrl && typeof isolatedPage.goto === 'function') {
+                try {
+                    await isolatedPage.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
+                } catch {
+                    if (targetUrl !== fallbackUrl) {
+                        await isolatedPage.goto(fallbackUrl, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+                    }
+                }
+            }
+
+            this.page = isolatedPage;
+            this.cdpSession = null;
+            return await taskFn({ page: isolatedPage, backend: this.backend, options });
+        } finally {
+            if (isolatedPage && typeof isolatedPage.close === 'function') {
+                await isolatedPage.close().catch(() => {});
+            }
+
+            const previousAlive = previousPage
+                && (typeof previousPage.isClosed !== 'function' || previousPage.isClosed() === false);
+            if (previousAlive) {
+                this.page = previousPage;
+            } else if (this.context && typeof this.context.pages === 'function') {
+                const candidates = this.context.pages().filter((page) => {
+                    if (!page) return false;
+                    if (isolatedPage && page === isolatedPage) return false;
+                    if (typeof page.isClosed === 'function' && page.isClosed()) return false;
+                    return true;
+                });
+                this.page = candidates[0] || this.page;
+            }
+
+            this.cdpSession = previousCdpSession || null;
+
+            try {
+                if (this.page && typeof this.page.bringToFront === 'function') {
+                    await this.page.bringToFront();
+                }
+            } catch {}
+        }
+    }
+
     async _sendMessageViaOllama(text, isSystem = false, options = {}) {
         if (!this.ollamaClient) this.ollamaClient = new OllamaClient();
         const attachment = options.attachment || null;

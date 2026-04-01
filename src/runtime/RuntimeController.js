@@ -7,6 +7,11 @@ const { setManagedProcessRegistry, setRuntimeController } = require('./RuntimeSt
 
 let nextRpcId = 1;
 
+function compactErrorMessage(value, fallback = 'Runtime RPC failure') {
+    const text = String(value || '').trim();
+    return text || fallback;
+}
+
 function createDefaultRuntimeSnapshot() {
     return {
         mode: 'supervisor-worker',
@@ -359,6 +364,19 @@ class RuntimeController {
         return this.rpc('dashboard.chat.metacognitionHistory', { golemId, limit }, { timeoutMs: 30000 });
     }
 
+    async getChatPlanningMode(golemId = 'golem_A') {
+        return this.rpc('chat.planning.get', { golemId }, { timeoutMs: 30000 });
+    }
+
+    async setChatPlanningMode(golemId = 'golem_A', enabled = false, options = {}) {
+        return this.rpc('chat.planning.set', {
+            golemId,
+            enabled: enabled === true,
+            persist: options.persist !== false,
+            source: compactErrorMessage(options.source, 'runtime_controller'),
+        }, { timeoutMs: 30000 });
+    }
+
     async getPendingTaskSummary(golemId, taskId) {
         return this.rpc('controller.pendingTaskSummary', { golemId, taskId }, { timeoutMs: 30000 });
     }
@@ -391,6 +409,14 @@ class RuntimeController {
         return this.rpc('tasks.recovery', { golemId }, { timeoutMs: 30000 });
     }
 
+    async getTaskResumeBrief(golemId, options = {}) {
+        return this.rpc('tasks.resumeBrief', { golemId, options }, { timeoutMs: 30000 });
+    }
+
+    async resumeTask(golemId, options = {}) {
+        return this.rpc('tasks.resume', { golemId, options }, { timeoutMs: 30000 });
+    }
+
     async getTaskAudit(golemId, filters = {}) {
         return this.rpc('tasks.audit', { golemId, filters }, { timeoutMs: 30000 });
     }
@@ -403,6 +429,90 @@ class RuntimeController {
         return this.rpc('tasks.integrity', { golemId, options }, { timeoutMs: 30000 });
     }
 
+    async getTaskBudgets(golemId) {
+        return this.rpc('tasks.budgets.get', { golemId }, { timeoutMs: 30000 });
+    }
+
+    async setTaskBudgets(golemId, policy = {}, options = {}) {
+        return this.rpc('tasks.budgets.set', { golemId, policy, options }, { timeoutMs: 30000 });
+    }
+
+    async listAgentSessions(golemId, filters = {}) {
+        return this.rpc('agents.sessions.list', { golemId, filters }, { timeoutMs: 30000 });
+    }
+
+    async getAgentSession(golemId, sessionId) {
+        return this.rpc('agents.sessions.get', { golemId, sessionId }, { timeoutMs: 30000 });
+    }
+
+    async getAgentOrchestration(golemId, sessionId) {
+        return this.rpc('agents.sessions.orchestration', { golemId, sessionId }, { timeoutMs: 30000 });
+    }
+
+    async createAgentSession(golemId, input = {}, options = {}) {
+        return this.rpc('agents.sessions.create', { golemId, input, options }, { timeoutMs: 30000 });
+    }
+
+    async updateAgentSession(golemId, sessionId, patch = {}, options = {}) {
+        return this.rpc('agents.sessions.update', { golemId, sessionId, patch, options }, { timeoutMs: 30000 });
+    }
+
+    async resumeAgentSession(golemId, options = {}) {
+        return this.rpc('agents.sessions.resume', { golemId, options }, { timeoutMs: 30000 });
+    }
+
+    async waitAgentSession(golemId, sessionId, options = {}) {
+        return this.rpc('agents.sessions.wait', { golemId, sessionId, options }, { timeoutMs: 30000 });
+    }
+
+    async stopAgentSession(golemId, sessionId, options = {}) {
+        return this.rpc('agents.sessions.stop', { golemId, sessionId, options }, { timeoutMs: 30000 });
+    }
+
+    async listAgentWorkers(golemId, filters = {}) {
+        return this.rpc('agents.workers.list', { golemId, filters }, { timeoutMs: 30000 });
+    }
+
+    async getAgentWorker(golemId, workerId) {
+        return this.rpc('agents.workers.get', { golemId, workerId }, { timeoutMs: 30000 });
+    }
+
+    async createAgentWorker(golemId, input = {}, options = {}) {
+        return this.rpc('agents.workers.create', { golemId, input, options }, { timeoutMs: 30000 });
+    }
+
+    async updateAgentWorker(golemId, workerId, patch = {}, options = {}) {
+        return this.rpc('agents.workers.update', { golemId, workerId, patch, options }, { timeoutMs: 30000 });
+    }
+
+    async sendAgentMessage(golemId, input = {}, options = {}) {
+        return this.rpc('agents.message', { golemId, input, options }, { timeoutMs: 30000 });
+    }
+
+    async getAgentRecoverySummary(golemId) {
+        return this.rpc('agents.recovery', { golemId }, { timeoutMs: 30000 });
+    }
+
+    async getAgentResumeBrief(golemId, options = {}) {
+        return this.rpc('agents.resumeBrief', { golemId, options }, { timeoutMs: 30000 });
+    }
+
+    async getAgentAudit(golemId, filters = {}) {
+        return this.rpc('agents.audit', { golemId, filters }, { timeoutMs: 30000 });
+    }
+
+    async getAgentMetrics(golemId) {
+        return this.rpc('agents.metrics', { golemId }, { timeoutMs: 30000 });
+    }
+
+    async getAgentBudgets(golemId) {
+        return this.rpc('agents.budgets.get', { golemId }, { timeoutMs: 30000 });
+    }
+
+    async setAgentBudgets(golemId, policy = {}, options = {}) {
+        return this.rpc('agents.budgets.set', { golemId, policy, options }, { timeoutMs: 30000 });
+    }
+
     _handleWorkerMessage(message) {
         if (!message || typeof message !== 'object') return;
 
@@ -412,7 +522,19 @@ class RuntimeController {
             clearTimeout(pending.timer);
             this._pendingRpc.delete(message.id);
             if (message.error) {
-                pending.reject(new Error(message.error));
+                const errorPayload = message.error;
+                const errObj = (typeof errorPayload === 'string')
+                    ? { message: errorPayload }
+                    : (errorPayload && typeof errorPayload === 'object' ? errorPayload : { message: String(errorPayload) });
+                const err = new Error(compactErrorMessage(errObj.message || 'RPC failure'));
+                if (errObj.code) err.code = String(errObj.code);
+                if (Number.isFinite(Number(errObj.statusCode || errObj.status))) {
+                    err.statusCode = Number(errObj.statusCode || errObj.status);
+                }
+                if (errObj.details && typeof errObj.details === 'object') {
+                    err.details = errObj.details;
+                }
+                pending.reject(err);
             } else {
                 pending.resolve(message.result);
             }
@@ -513,6 +635,11 @@ class RuntimeController {
             return;
         }
 
+        if (name === 'chat.planning.mode' && this.server && this.server.io) {
+            this.server.io.emit('chat_planning_mode', payload || {});
+            return;
+        }
+
         if (name === 'task.event' && this.server && typeof this.server.broadcastTaskEvent === 'function') {
             this.server.broadcastTaskEvent(payload);
             return;
@@ -520,6 +647,16 @@ class RuntimeController {
 
         if (name === 'task.recovery' && this.server && typeof this.server.broadcastTaskRecovery === 'function') {
             this.server.broadcastTaskRecovery(payload);
+            return;
+        }
+
+        if (name === 'agent.event' && this.server && typeof this.server.broadcastAgentEvent === 'function') {
+            this.server.broadcastAgentEvent(payload);
+            return;
+        }
+
+        if (name === 'agent.recovery' && this.server && typeof this.server.broadcastAgentRecovery === 'function') {
+            this.server.broadcastAgentRecovery(payload);
         }
     }
 

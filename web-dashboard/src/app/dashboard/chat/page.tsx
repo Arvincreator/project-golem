@@ -94,6 +94,11 @@ type SocketLogPayload = {
     attachment?: ChatMessage["attachments"] extends Array<infer T> ? T : never;
 };
 
+type PlanningModePayload = {
+    enabled?: boolean;
+    updatedAt?: number;
+};
+
 function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null;
 }
@@ -140,6 +145,8 @@ export default function DirectChatPage() {
     const [allCommands, setAllCommands] = useState<CommandItem[]>([]);
     const [promptShortcuts, setPromptShortcuts] = useState<PromptShortcutItem[]>([]);
     const [injectedShortcutCandidate, setInjectedShortcutCandidate] = useState<InjectedShortcutCandidate | null>(null);
+    const [planningModeEnabled, setPlanningModeEnabled] = useState(false);
+    const [planningModeLoading, setPlanningModeLoading] = useState(false);
 
     const systemCommandSet = useMemo(() => {
         const set = new Set<string>();
@@ -192,6 +199,41 @@ export default function DirectChatPage() {
             }
         };
         fetchPromptPool();
+    }, []);
+
+    useEffect(() => {
+        if (!activeGolem) return;
+        let isMounted = true;
+
+        const fetchPlanningMode = async () => {
+            try {
+                const data = await apiGet<{
+                    success?: boolean;
+                    planningMode?: PlanningModePayload;
+                }>(`/api/chat/planning-mode?golemId=${encodeURIComponent(activeGolem)}`);
+                if (!isMounted) return;
+                if (data && data.success && data.planningMode && typeof data.planningMode.enabled === "boolean") {
+                    setPlanningModeEnabled(data.planningMode.enabled);
+                }
+            } catch (error) {
+                console.error("Failed to fetch planning mode:", error);
+            }
+        };
+
+        fetchPlanningMode();
+        return () => { isMounted = false; };
+    }, [activeGolem]);
+
+    useEffect(() => {
+        const handlePlanningModeSocket = (payload: PlanningModePayload) => {
+            if (payload && typeof payload.enabled === "boolean") {
+                setPlanningModeEnabled(payload.enabled);
+            }
+        };
+        socket.on("chat_planning_mode", handlePlanningModeSocket);
+        return () => {
+            socket.off("chat_planning_mode", handlePlanningModeSocket);
+        };
     }, []);
     const [suggestionIndex, setSuggestionIndex] = useState(0);
     const suggestionListRef = useRef<HTMLDivElement>(null);
@@ -350,6 +392,33 @@ export default function DirectChatPage() {
             console.error("Failed to send action:", e);
         } finally {
             setIsSending(false);
+        }
+    };
+
+    const togglePlanningMode = async () => {
+        if (!activeGolem || planningModeLoading) return;
+        const nextEnabled = !planningModeEnabled;
+        const previousEnabled = planningModeEnabled;
+        setPlanningModeEnabled(nextEnabled);
+        setPlanningModeLoading(true);
+
+        try {
+            const data = await apiPostWrite<{
+                success?: boolean;
+                planningMode?: PlanningModePayload;
+            }>("/api/chat/planning-mode", {
+                golemId: activeGolem,
+                enabled: nextEnabled,
+                persist: true,
+            });
+            if (data && data.success && data.planningMode && typeof data.planningMode.enabled === "boolean") {
+                setPlanningModeEnabled(data.planningMode.enabled);
+            }
+        } catch (error) {
+            console.error("Failed to toggle planning mode:", error);
+            setPlanningModeEnabled(previousEnabled);
+        } finally {
+            setPlanningModeLoading(false);
         }
     };
 
@@ -644,6 +713,36 @@ export default function DirectChatPage() {
                     <p className="text-sm text-muted-foreground mt-1">
                         {t("chat.subtitle", { golem: activeGolem || t("chat.noActiveGolem") })}
                     </p>
+                </div>
+                <div className="flex items-center gap-3">
+                    <div className="text-right">
+                        <p className="text-xs font-semibold text-foreground/90">Planning Mode</p>
+                        <p className="text-[10px] text-muted-foreground">
+                            Complex-only auto multi-agent
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        role="switch"
+                        aria-checked={planningModeEnabled}
+                        disabled={!activeGolem || planningModeLoading}
+                        onClick={togglePlanningMode}
+                        className={cn(
+                            "relative inline-flex h-6 w-11 items-center rounded-full border transition-colors",
+                            planningModeEnabled
+                                ? "bg-cyan-500/30 border-cyan-400/60"
+                                : "bg-secondary border-border",
+                            (!activeGolem || planningModeLoading) && "opacity-60 cursor-not-allowed"
+                        )}
+                        title={!activeGolem ? "Select a golem first" : "Toggle planning mode"}
+                    >
+                        <span
+                            className={cn(
+                                "inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform",
+                                planningModeEnabled ? "translate-x-6" : "translate-x-1"
+                            )}
+                        />
+                    </button>
                 </div>
             </div>
 

@@ -233,4 +233,84 @@ describe('TaskKernel', () => {
         expect(report.byType.multiple_in_progress).toBeGreaterThanOrEqual(1);
         expect(report.byType.completed_without_verified).toBeGreaterThanOrEqual(1);
     });
+
+    test('resumeTask promotes oldest pending task when none is in progress', () => {
+        const kernel = new TaskKernel({
+            golemId: 'resume',
+            logDir: tempRoot,
+            strictMode: true,
+        });
+
+        const a = kernel.createTask({ subject: 'A', status: 'pending' }).task;
+        kernel.createTask({ subject: 'B', status: 'pending' });
+
+        const resumed = kernel.resumeTask({ actor: 'tester' });
+        expect(resumed.resumed).toBe(true);
+        expect(resumed.promoted).toBe(true);
+        expect(resumed.task.id).toBe(a.id);
+        expect(resumed.task.status).toBe('in_progress');
+    });
+
+    test('todo_write preflight prevents partial mutation when strict transition would break', () => {
+        const kernel = new TaskKernel({
+            golemId: 'todo-preflight',
+            logDir: tempRoot,
+            strictMode: true,
+        });
+
+        const taskA = kernel.createTask({ subject: 'A', status: 'in_progress' }).task;
+        const taskB = kernel.createTask({ subject: 'B', status: 'pending' }).task;
+        const beforeCount = kernel.listTasks({ includeCompleted: true }).length;
+
+        expect(() => kernel.applyTodoWrite([
+            { id: taskB.id, status: 'in_progress' }, // violates single in_progress
+            { content: 'C', status: 'pending' },
+        ])).toThrow(/in_progress/i);
+
+        const allTasks = kernel.listTasks({ includeCompleted: true });
+        expect(allTasks.length).toBe(beforeCount);
+        expect(kernel.getTask(taskA.id).status).toBe('in_progress');
+        expect(kernel.getTask(taskB.id).status).toBe('pending');
+    });
+
+    test('budget hard limit blocks usage growth and exposes structured error code', () => {
+        const previousHardLimit = process.env.GOLEM_TASK_BUDGET_TASK_TOKEN_HARD_LIMIT;
+        process.env.GOLEM_TASK_BUDGET_TASK_TOKEN_HARD_LIMIT = '20';
+
+        try {
+            const kernel = new TaskKernel({
+                golemId: 'budget-hard',
+                logDir: tempRoot,
+                strictMode: true,
+            });
+
+            const created = kernel.createTask({
+                subject: 'Budget task',
+                status: 'pending',
+                usage: { promptTokens: 10, completionTokens: 0, totalTokens: 10 },
+            }).task;
+
+            expect(() => kernel.updateTask(created.id, {
+                usage: { promptTokens: 15, completionTokens: 0, totalTokens: 15 },
+            })).toThrow(/budget hard limit/i);
+
+            try {
+                kernel.updateTask(created.id, {
+                    usage: { promptTokens: 15, completionTokens: 0, totalTokens: 15 },
+                });
+            } catch (error) {
+                expect(error.code).toBe('TASK_BUDGET_HARD_LIMIT');
+                expect(error.statusCode).toBe(409);
+            }
+
+            const latest = kernel.getTask(created.id);
+            expect(latest.usage.totalTokens).toBe(10);
+        } finally {
+            if (previousHardLimit === undefined) {
+                delete process.env.GOLEM_TASK_BUDGET_TASK_TOKEN_HARD_LIMIT;
+            } else {
+                process.env.GOLEM_TASK_BUDGET_TASK_TOKEN_HARD_LIMIT = previousHardLimit;
+            }
+        }
+    });
 });

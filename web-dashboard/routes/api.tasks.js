@@ -40,6 +40,12 @@ module.exports = function registerTaskRoutes(server) {
     function withMutationOptions(req, options = {}, allowExpectedVersion = false) {
         const safeOptions = (options && typeof options === 'object') ? { ...options } : {};
         const headers = (req.headers && typeof req.headers === 'object') ? req.headers : {};
+        const decisionHeader = String(headers['x-task-decision'] || '').trim().toLowerCase();
+        const decisionMode = (decisionHeader === 'ask' || decisionHeader === 'deny' || decisionHeader === 'allow')
+            ? decisionHeader
+            : '';
+        const actorHeader = String(headers['x-task-actor'] || '').trim();
+        const sourceHeader = String(headers['x-task-source'] || '').trim();
         const idempotencyHeader = String(
             headers['x-idempotency-key']
                 || headers['idempotency-key']
@@ -58,7 +64,33 @@ module.exports = function registerTaskRoutes(server) {
             }
         }
 
+        if (!safeOptions.actor && actorHeader) {
+            safeOptions.actor = actorHeader;
+        }
+        if (!safeOptions.source && sourceHeader) {
+            safeOptions.source = sourceHeader;
+        }
+        if ((!safeOptions.decision || typeof safeOptions.decision !== 'object') && decisionMode) {
+            safeOptions.decision = {
+                mode: decisionMode,
+                reason: 'header_override',
+            };
+        }
+
         return safeOptions;
+    }
+
+    function respondTaskError(res, error) {
+        const code = String(error && error.code || '').trim();
+        const status = Number(
+            error && (error.statusCode || error.status)
+            || (code === 'TASK_NOT_FOUND' ? 404 : 500)
+        );
+        return res.status(Number.isFinite(status) && status > 0 ? status : 500).json({
+            error: error && error.message ? error.message : 'Task API failure',
+            code: code || undefined,
+            details: error && error.details ? error.details : undefined,
+        });
     }
 
     function requireRuntime(res) {
@@ -103,11 +135,31 @@ module.exports = function registerTaskRoutes(server) {
                 golemId,
                 recovery: result && result.recovery ? result.recovery : null,
                 pendingSummary: result && result.pendingSummary ? result.pendingSummary : '',
+                resumeBrief: result && result.resumeBrief ? result.resumeBrief : null,
                 metrics: result && result.metrics ? result.metrics : null,
                 integrity: result && result.integrity ? result.integrity : null,
             });
         } catch (error) {
-            return res.status(500).json({ error: error.message });
+            return respondTaskError(res, error);
+        }
+    });
+
+    router.get('/api/tasks/resume-brief', async (req, res) => {
+        try {
+            const runtime = requireRuntime(res);
+            if (!runtime) return;
+            const golemId = resolveGolemId(req);
+            const options = {
+                limit: req.query.limit ? Number(req.query.limit) : undefined,
+            };
+            const result = await runtime.getTaskResumeBrief(golemId, options);
+            return res.json({
+                success: true,
+                golemId,
+                brief: result && result.brief ? result.brief : null,
+            });
+        } catch (error) {
+            return respondTaskError(res, error);
         }
     });
 
@@ -143,7 +195,7 @@ module.exports = function registerTaskRoutes(server) {
                 metrics: result && result.metrics ? result.metrics : null,
             });
         } catch (error) {
-            return res.status(500).json({ error: error.message });
+            return respondTaskError(res, error);
         }
     });
 
@@ -162,7 +214,23 @@ module.exports = function registerTaskRoutes(server) {
                 integrity: result && result.integrity ? result.integrity : null,
             });
         } catch (error) {
-            return res.status(500).json({ error: error.message });
+            return respondTaskError(res, error);
+        }
+    });
+
+    router.get('/api/tasks/budgets', async (req, res) => {
+        try {
+            const runtime = requireRuntime(res);
+            if (!runtime) return;
+            const golemId = resolveGolemId(req);
+            const result = await runtime.getTaskBudgets(golemId);
+            return res.json({
+                success: true,
+                golemId,
+                budgets: result && result.budgets ? result.budgets : null,
+            });
+        } catch (error) {
+            return respondTaskError(res, error);
         }
     });
 
@@ -181,7 +249,7 @@ module.exports = function registerTaskRoutes(server) {
             const result = await runtime.createTask(golemId, input || {}, finalOptions);
             return res.json({ success: true, golemId, ...result });
         } catch (error) {
-            return res.status(500).json({ error: error.message });
+            return respondTaskError(res, error);
         }
     });
 
@@ -199,7 +267,23 @@ module.exports = function registerTaskRoutes(server) {
             }
             return res.json({ success: true, golemId, task: result.task });
         } catch (error) {
-            return res.status(500).json({ error: error.message });
+            return respondTaskError(res, error);
+        }
+    });
+
+    router.post('/api/tasks/resume', requireTaskMutation, async (req, res) => {
+        try {
+            const runtime = requireRuntime(res);
+            if (!runtime) return;
+            const golemId = resolveGolemId(req);
+            const options = (req.body && req.body.options && typeof req.body.options === 'object')
+                ? req.body.options
+                : req.body;
+            const finalOptions = withMutationOptions(req, options || {}, false);
+            const result = await runtime.resumeTask(golemId, finalOptions);
+            return res.json({ success: true, golemId, ...result });
+        } catch (error) {
+            return respondTaskError(res, error);
         }
     });
 
@@ -221,7 +305,7 @@ module.exports = function registerTaskRoutes(server) {
             const result = await runtime.updateTask(golemId, taskId, patch || {}, finalOptions);
             return res.json({ success: true, golemId, ...result });
         } catch (error) {
-            return res.status(500).json({ error: error.message });
+            return respondTaskError(res, error);
         }
     });
 
@@ -240,7 +324,7 @@ module.exports = function registerTaskRoutes(server) {
             const result = await runtime.stopTask(golemId, taskId, finalOptions);
             return res.json({ success: true, golemId, ...result });
         } catch (error) {
-            return res.status(500).json({ error: error.message });
+            return respondTaskError(res, error);
         }
     });
 
@@ -258,7 +342,26 @@ module.exports = function registerTaskRoutes(server) {
             const result = await runtime.todoWrite(golemId, items, finalOptions);
             return res.json({ success: true, golemId, ...result });
         } catch (error) {
-            return res.status(500).json({ error: error.message });
+            return respondTaskError(res, error);
+        }
+    });
+
+    router.post('/api/tasks/budgets', requireTaskMutation, async (req, res) => {
+        try {
+            const runtime = requireRuntime(res);
+            if (!runtime) return;
+            const golemId = resolveGolemId(req);
+            const policy = (req.body && req.body.policy && typeof req.body.policy === 'object')
+                ? req.body.policy
+                : req.body;
+            const options = (req.body && req.body.options && typeof req.body.options === 'object')
+                ? req.body.options
+                : {};
+            const finalOptions = withMutationOptions(req, options || {}, false);
+            const result = await runtime.setTaskBudgets(golemId, policy || {}, finalOptions);
+            return res.json({ success: true, golemId, ...result });
+        } catch (error) {
+            return respondTaskError(res, error);
         }
     });
 

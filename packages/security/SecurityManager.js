@@ -36,6 +36,53 @@ class SecurityManager {
         this.SAFE_COMMANDS = ['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check'];
         this.BLOCK_PATTERNS = [/rm\s+-rf\s+\//, /rd\s+\/s\s+\/q\s+[c-zC-Z]:\\$/, />\s*\/dev\/sd/, /:(){:|:&};:/, /mkfs/, /Format-Volume/, /dd\s+if=/, /chmod\s+[-]x\s+/];
     }
+
+    isReadOnlyNetworkCommand(cmd) {
+        const safeCmd = (cmd || '').trim();
+        if (!safeCmd) return false;
+        const lower = safeCmd.toLowerCase();
+        const base = lower.split(/\s+/)[0];
+
+        if (base === 'curl') {
+            // 允許 read-only curl，禁止顯式寫入/上傳/改方法
+            const denyFlags = [
+                /\s-x\s+(post|put|patch|delete)\b/i,
+                /\s--request\s+(post|put|patch|delete)\b/i,
+                /\s-d\s+/i,
+                /\s--data(?:-raw|-binary|-urlencode)?\s+/i,
+                /\s--upload-file\s+/i,
+                /\s-t\s+/i,
+            ];
+            return !denyFlags.some((rule) => rule.test(safeCmd));
+        }
+
+        if (base === 'wget') {
+            // 允許下載型讀取，禁止表單/上傳
+            const denyFlags = [
+                /\s--post-data\s+/i,
+                /\s--post-file\s+/i,
+                /\s--method\s+(post|put|patch|delete)\b/i,
+                /\s--body-data\s+/i,
+            ];
+            return !denyFlags.some((rule) => rule.test(safeCmd));
+        }
+
+        return false;
+    }
+
+    isTrustedSubCommand(cmd, userWhitelist = [], trustSystem = false) {
+        const safeCmd = (cmd || '').trim();
+        if (!safeCmd) return false;
+        const baseCmd = safeCmd.split(/\s+/)[0];
+        const trustReadOnlyNetwork = process.env.GOLEM_TRUST_READONLY_NETWORK_COMMANDS !== 'false';
+        if (baseCmd === 'echo' || baseCmd === 'printf') return true;
+        if (userWhitelist.includes(baseCmd)) return true;
+        if (trustReadOnlyNetwork && this.isReadOnlyNetworkCommand(safeCmd)) return true;
+        if (!trustSystem) return false;
+        if (this.SAFE_COMMANDS.includes(baseCmd)) return true;
+        return false;
+    }
+
     assess(cmd) {
         const safeCmd = (cmd || '').trim();
         if (this.BLOCK_PATTERNS.some(regex => regex.test(safeCmd))) return { level: 'BLOCKED', reason: '毀滅性指令' };
@@ -55,6 +102,8 @@ class SecurityManager {
             .split(',')
             .map(cmd => cmd.trim())
             .filter(cmd => cmd.length > 0);
+        const trustSystem = process.env.GOLEM_TRUST_SYSTEM_COMMANDS === 'true';
+        const trustReadOnlyNetwork = process.env.GOLEM_TRUST_READONLY_NETWORK_COMMANDS !== 'false';
 
         const safeguard = require('./CommandSafeguard');
         const dangerousOps = Array.from(new Set([
@@ -75,7 +124,7 @@ class SecurityManager {
                 if (dangerousOps.includes(subBaseCmd)) return { level: 'DANGER', reason: '高風險操作' };
 
                 // 檢查是否所有小指令都在白名單中
-                if (!userWhitelist.includes(subBaseCmd)) {
+                if (!this.isTrustedSubCommand(sub, userWhitelist, trustSystem)) {
                     allSafe = false;
                     break;
                 }
@@ -86,13 +135,14 @@ class SecurityManager {
         }
 
         const baseCmd = safeCmd.split(/\s+/)[0];
-        const trustSystem = process.env.GOLEM_TRUST_SYSTEM_COMMANDS === 'true';
 
         // 1. Check user-defined whitelist
         if (userWhitelist.includes(baseCmd)) return { level: 'SAFE' };
+        if (baseCmd === 'echo' || baseCmd === 'printf') return { level: 'SAFE' };
 
         // 2. Check system safety library (only if enabled)
         if (trustSystem && this.SAFE_COMMANDS.includes(baseCmd)) return { level: 'SAFE' };
+        if (trustReadOnlyNetwork && this.isReadOnlyNetworkCommand(safeCmd)) return { level: 'SAFE' };
 
         // 這些危險指令會直接進 DANGER
         if (dangerousOps.includes(baseCmd)) return { level: 'DANGER', reason: '高風險操作' };

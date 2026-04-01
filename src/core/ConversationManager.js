@@ -1,6 +1,7 @@
 const { randomUUID } = require('crypto');
 const ConfigManager = require('../config');
 const ConfidenceTracker = require('../managers/ConfidenceTracker');
+const PlanningModeExecutor = require('./PlanningModeExecutor');
 
 function parseRatio(value, fallback) {
     const parsed = Number(value);
@@ -32,6 +33,10 @@ class ConversationManager {
         this.DEBOUNCE_MS = 1500;
         this.autoTurnCount = 0; // 🎯 [v9.1.15] Track autonomous turns
         this.memoryPressureGuard = null;
+        this.planningExecutor = options.planningExecutor || new PlanningModeExecutor({
+            brain: this.brain,
+            controller: this.controller,
+        });
         this.heapGcWarnRatio = parseRatio(
             process.env.GOLEM_HEAP_GC_WARN_PCT,
             parseRatio(process.env.GOLEM_MEMORY_FATAL_PCT, 0.92)
@@ -293,7 +298,13 @@ class ConversationManager {
             if (this.controller && typeof this.controller.getPendingContextSummary === 'function') {
                 const pendingSummary = this.controller.getPendingContextSummary(12);
                 if (pendingSummary) {
-                    finalInput = `${finalInput}\n\n【Pending Tasks Snapshot】\n${pendingSummary}\n\n【Task Governance】\n多步任務請先更新 task list，維持一個 in_progress，其餘標記 pending/blocked。`;
+                    finalInput = `${finalInput}\n\n【Pending Tasks Snapshot】\n${pendingSummary}\n\n【Task Governance】\n有 pending snapshot 時優先 task_resume/task_get，延續既有任務；多步任務再更新 task list，維持一個 in_progress，其餘標記 pending/blocked。對使用者回覆請用自然語言，不主動拋出 taskId 或 JSON。`;
+                }
+            }
+            if (this.controller && typeof this.controller.getPendingAgentContextSummary === 'function') {
+                const pendingAgentSummary = this.controller.getPendingAgentContextSummary(8);
+                if (pendingAgentSummary) {
+                    finalInput = `${finalInput}\n\n【Pending Agent Sessions Snapshot】\n${pendingAgentSummary}\n\n【Agent Governance】\n若有 pending agent sessions，先 agent_resume/agent_get 延續既有 session，再決定是否新建 agent_session_create。對使用者回覆維持人話摘要，不展示 session/worker 內部 ID。`;
                 }
             }
             const isMentioned = task.ctx.isMentioned ? task.ctx.isMentioned(task.text) : false;
@@ -321,6 +332,21 @@ class ConversationManager {
                 attachment: task.attachment,
                 ...task.options // 🎯 [v9.1.13] 透傳來自隊列的自定義選項 (如 suppressReply)
             };
+
+            const shouldSuppressFinalReply = shouldSuppressReply || task.options.suppressReply === true;
+
+            if (task.options && task.options.executionMode === 'planning_auto' && this.planningExecutor) {
+                await this.planningExecutor.execute({
+                    ctx: task.ctx,
+                    userInput: finalInput,
+                    attachment: task.attachment,
+                    actor: task.ctx && task.ctx.senderName ? task.ctx.senderName : 'user',
+                    source: 'planning_auto',
+                    routeDecision: task.options.planningDecision || {},
+                    suppressFinalReply: shouldSuppressFinalReply,
+                });
+                return;
+            }
 
             let brainResponse = null;
             const maxAttempts = 3;

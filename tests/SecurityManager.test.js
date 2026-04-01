@@ -105,6 +105,19 @@ describe('SecurityManager', () => {
         expect(result.level).toBe('SAFE');
     });
 
+    test('assess read-only curl fallback command returns SAFE when TRUST_SYSTEM_COMMANDS is true', () => {
+        process.env.GOLEM_TRUST_SYSTEM_COMMANDS = 'true';
+        const result = sm.assess('curl -s "https://example.com/api" || echo "fallback"');
+        expect(result.level).toBe('SAFE');
+    });
+
+    test('assess read-only curl fallback command still SAFE when TRUST_SYSTEM_COMMANDS is false (network-readonly policy)', () => {
+        process.env.GOLEM_TRUST_SYSTEM_COMMANDS = 'false';
+        delete process.env.GOLEM_TRUST_READONLY_NETWORK_COMMANDS;
+        const result = sm.assess('curl -s "https://example.com/api" || echo "fallback"');
+        expect(result.level).toBe('SAFE');
+    });
+
     test('assess compound command with unknown sub-cmd returns WARNING', () => {
         process.env.COMMAND_WHITELIST = 'ls';
         const result = sm.assess('ls && node');

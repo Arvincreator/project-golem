@@ -22,6 +22,7 @@ const registerMcpRoutes = require('./routes/api.mcp');
 const registerDiaryRoutes = require('./routes/api.diary');
 const registerPromptPoolRoutes = require('./routes/api.prompt-pool');
 const registerTaskRoutes = require('./routes/api.tasks');
+const registerAgentRoutes = require('./routes/api.agents');
 
 class WebServer {
     constructor(dashboard) {
@@ -97,7 +98,15 @@ class WebServer {
         this.isBooting = true;
         this.logBuffer = [];
         this.taskEventBuffer = [];
+        this.taskViolationBuffer = [];
+        this.taskResumeBuffer = [];
         this.taskRecoveryState = {};
+        this.taskRecoveryMeta = {};
+        this.agentEventBuffer = [];
+        this.agentViolationBuffer = [];
+        this.agentResumeBuffer = [];
+        this.agentRecoveryState = {};
+        this.agentRecoveryMeta = {};
         this.chatHistory = new Map();
         installSecurityContext(this);
         this.app.use(buildApiSecurityMiddleware(this));
@@ -183,6 +192,7 @@ class WebServer {
             registerDiaryRoutes,
             registerPromptPoolRoutes,
             registerTaskRoutes,
+            registerAgentRoutes,
         ];
 
         routeFactories.forEach((factory) => {
@@ -296,14 +306,112 @@ class WebServer {
         }
         if (this.io) {
             this.io.emit('task_event', payload);
+            if (payload && payload.type === 'task.violation') {
+                this.taskViolationBuffer.push(payload);
+                if (this.taskViolationBuffer.length > 500) this.taskViolationBuffer.shift();
+                this.io.emit('task_violation', payload);
+            }
+            if (payload && payload.type === 'task.resume') {
+                this.taskResumeBuffer.push(payload);
+                if (this.taskResumeBuffer.length > 500) this.taskResumeBuffer.shift();
+                this.io.emit('task_resume', payload);
+            }
         }
     }
 
     broadcastTaskRecovery(payload = {}) {
         const golemId = payload && payload.golemId ? String(payload.golemId) : 'golem_A';
+        const dedupWindowMs = Number(process.env.GOLEM_TASK_RECOVERY_DEDUP_MS || 1500);
+        const safeWindowMs = Number.isFinite(dedupWindowMs) && dedupWindowMs >= 0 ? dedupWindowMs : 1500;
+        const seq = Number(payload && payload.seq);
+        const now = Date.now();
+        const previous = this.taskRecoveryMeta[golemId] || { seq: 0, ts: 0 };
+        if (Number.isFinite(seq) && seq > 0 && Number.isFinite(previous.seq) && seq <= previous.seq) {
+            return;
+        }
+        if (now - Number(previous.ts || 0) < safeWindowMs) {
+            const prevRecovery = this.taskRecoveryState[golemId] || {};
+            const prevType = String(prevRecovery.recoveryType || '');
+            const nextType = String(payload && payload.recoveryType || '');
+            const prevNextTask = prevRecovery.recovery && prevRecovery.recovery.nextTaskId;
+            const nextNextTask = payload && payload.recovery && payload.recovery.nextTaskId;
+            if (prevType === nextType && prevNextTask === nextNextTask) {
+                return;
+            }
+        }
+        this.taskRecoveryMeta[golemId] = {
+            seq: Number.isFinite(seq) ? seq : (Number(previous.seq || 0) + 1),
+            ts: now,
+        };
         this.taskRecoveryState[golemId] = payload;
         if (this.io) {
             this.io.emit('task_recovery', payload);
+        }
+    }
+
+    broadcastAgentEvent(payload = {}) {
+        this.agentEventBuffer.push(payload);
+        if (this.agentEventBuffer.length > 500) {
+            this.agentEventBuffer.shift();
+        }
+
+        if (!this.io) return;
+        this.io.emit('agent_event', payload);
+
+        const type = String(payload && payload.type || '').trim();
+        if (type === 'agent.violation') {
+            this.agentViolationBuffer.push(payload);
+            if (this.agentViolationBuffer.length > 500) this.agentViolationBuffer.shift();
+            this.io.emit('agent_violation', payload);
+        }
+        if (type === 'agent.resume') {
+            this.agentResumeBuffer.push(payload);
+            if (this.agentResumeBuffer.length > 500) this.agentResumeBuffer.shift();
+            this.io.emit('agent_resume', payload);
+        }
+        if (type === 'agent.session.created') {
+            this.io.emit('agent_session_created', payload);
+        }
+        if (type === 'agent.session.updated') {
+            this.io.emit('agent_session_updated', payload);
+        }
+        if (type === 'agent.worker.created' || type === 'agent.worker.updated') {
+            this.io.emit('agent_worker_updated', payload);
+        }
+        if (type === 'agent.notification') {
+            this.io.emit('agent_notification', payload);
+        }
+    }
+
+    broadcastAgentRecovery(payload = {}) {
+        const golemId = payload && payload.golemId ? String(payload.golemId) : 'golem_A';
+        const dedupWindowMs = Number(process.env.GOLEM_AGENT_RECOVERY_DEDUP_MS || 1500);
+        const safeWindowMs = Number.isFinite(dedupWindowMs) && dedupWindowMs >= 0 ? dedupWindowMs : 1500;
+        const seq = Number(payload && payload.seq);
+        const now = Date.now();
+        const previous = this.agentRecoveryMeta[golemId] || { seq: 0, ts: 0 };
+
+        if (Number.isFinite(seq) && seq > 0 && Number.isFinite(previous.seq) && seq <= previous.seq) {
+            return;
+        }
+        if (now - Number(previous.ts || 0) < safeWindowMs) {
+            const prevRecovery = this.agentRecoveryState[golemId] || {};
+            const prevType = String(prevRecovery.recoveryType || '');
+            const nextType = String(payload && payload.recoveryType || '');
+            const prevNextSession = prevRecovery.recovery && prevRecovery.recovery.nextSessionId;
+            const nextNextSession = payload && payload.recovery && payload.recovery.nextSessionId;
+            if (prevType === nextType && prevNextSession === nextNextSession) {
+                return;
+            }
+        }
+
+        this.agentRecoveryMeta[golemId] = {
+            seq: Number.isFinite(seq) ? seq : (Number(previous.seq || 0) + 1),
+            ts: now,
+        };
+        this.agentRecoveryState[golemId] = payload;
+        if (this.io) {
+            this.io.emit('agent_recovery', payload);
         }
     }
 

@@ -3,10 +3,18 @@ const path = require('path');
 const Executor = require('./Executor');
 const { SecurityManager } = require('../../packages/security');
 const ToolScanner = require('../managers/ToolScanner');
-const InteractiveMultiAgent = require('./InteractiveMultiAgent');
 const TaskKernel = require('../managers/TaskKernel');
+const AgentKernel = require('../managers/AgentKernel');
+const AgentRunner = require('./AgentRunner');
+const CoordinatorEngine = require('./CoordinatorEngine');
 
-const DEFAULT_PENDING_TASK_TTL_MS = 5 * 60 * 1000;
+const AGENT_PROTOCOL_UNSUPPORTED_MESSAGE = 'Legacy multi_agent protocol is removed. Use agent_session_create / agent_worker_spawn / agent_message / agent_wait / agent_stop / agent_list / agent_get / agent_resume / agent_focus.';
+
+const DEFAULT_PENDING_TASK_TTL_MS = (() => {
+    const raw = Number(process.env.GOLEM_PENDING_APPROVAL_TTL_MS || (5 * 60 * 1000));
+    if (Number.isFinite(raw) && raw > 0) return Math.floor(raw);
+    return 5 * 60 * 1000;
+})();
 
 function compactText(value, fallback = '') {
     const text = String(value || '').trim();
@@ -50,15 +58,18 @@ class TaskController {
         this.golemId = options.golemId || 'default';
         this.executor = new Executor();
         this.security = new SecurityManager();
-        this.multiAgent = null; // ✨ [v9.1]
         this.pendingTasks = new Map(); // Moved from global to here
         this.memoryPressureGuard = null;
         this.logDir = options.logDir || path.join(process.cwd(), 'logs');
+        this.pendingApprovalTtlMs = Number(options.pendingApprovalTtlMs || DEFAULT_PENDING_TASK_TTL_MS) || DEFAULT_PENDING_TASK_TTL_MS;
         this._onTaskEvent = typeof options.onTaskEvent === 'function' ? options.onTaskEvent : null;
+        this._onAgentEvent = typeof options.onAgentEvent === 'function' ? options.onAgentEvent : null;
         this.taskKernel = new TaskKernel({
             golemId: this.golemId,
             logDir: this.logDir,
             strictMode: options.strictTaskMode !== false,
+            defaultApprovalTtlMs: this.pendingApprovalTtlMs,
+            hooks: options.taskHooks || {},
             onEvent: (event) => {
                 if (!this._onTaskEvent) return;
                 try {
@@ -67,6 +78,29 @@ class TaskController {
                     console.error(`[TaskController:${this.golemId}] task event callback failed: ${error.message}`);
                 }
             },
+        });
+        this.agentKernel = new AgentKernel({
+            golemId: this.golemId,
+            logDir: this.logDir,
+            strictMode: options.strictAgentMode !== false,
+            maxWorkers: options.agentMaxWorkers || process.env.GOLEM_AGENT_MAX_WORKERS || 3,
+            onEvent: (event) => {
+                if (!this._onAgentEvent) return;
+                try {
+                    this._onAgentEvent(event);
+                } catch (error) {
+                    console.error(`[TaskController:${this.golemId}] agent event callback failed: ${error.message}`);
+                }
+            },
+        });
+        this.agentRunner = new AgentRunner({
+            agentKernel: this.agentKernel,
+            summaryIntervalMs: Number(process.env.GOLEM_AGENT_SUMMARY_INTERVAL_MS || 30000),
+        });
+        this.coordinator = new CoordinatorEngine({
+            agentKernel: this.agentKernel,
+            agentRunner: this.agentRunner,
+            strictMode: options.strictAgentMode !== false,
         });
         this._rehydratePendingApprovals();
 
@@ -83,6 +117,9 @@ class TaskController {
         if (this._cleanupTimer) {
             clearInterval(this._cleanupTimer);
             this._cleanupTimer = null;
+        }
+        if (this.agentRunner && typeof this.agentRunner.stopAll === 'function') {
+            this.agentRunner.stopAll();
         }
     }
 
@@ -112,7 +149,7 @@ class TaskController {
         }) || {};
         this.taskKernel.setApproval(approvalId, serialized, {
             actor: compactText(options.actor, 'system'),
-            ttlMs: Number(options.ttlMs) || DEFAULT_PENDING_TASK_TTL_MS,
+            ttlMs: Number(options.ttlMs) || this.pendingApprovalTtlMs,
         });
     }
 
@@ -157,7 +194,7 @@ class TaskController {
         return existedInMap || removedPersisted;
     }
 
-    trimPendingTasks(maxAgeMs = DEFAULT_PENDING_TASK_TTL_MS) {
+    trimPendingTasks(maxAgeMs = this.pendingApprovalTtlMs) {
         const now = Date.now();
         let removed = 0;
         for (const [id, task] of this.pendingTasks.entries()) {
@@ -168,6 +205,21 @@ class TaskController {
         }
         removed += this.taskKernel.trimExpiredApprovals(now);
         return removed;
+    }
+
+    _withMutationDefaults(options = {}, defaults = {}) {
+        const safeOptions = (options && typeof options === 'object') ? { ...options } : {};
+        const safeDefaults = (defaults && typeof defaults === 'object') ? defaults : {};
+        return {
+            ...safeDefaults,
+            ...safeOptions,
+            actor: compactText(safeOptions.actor, compactText(safeDefaults.actor, 'system')),
+            source: compactText(safeOptions.source, compactText(safeDefaults.source, 'task_action')),
+            idempotencyKey: compactText(safeOptions.idempotencyKey, ''),
+            decision: (safeOptions.decision && typeof safeOptions.decision === 'object')
+                ? safeOptions.decision
+                : (safeDefaults.decision || undefined),
+        };
     }
 
     getPendingTaskSummary(approvalId) {
@@ -191,11 +243,11 @@ class TaskController {
     }
 
     taskCreate(input = {}, options = {}) {
-        return this.taskKernel.createTask(input, {
-            actor: compactText(options.actor, 'system'),
-            source: compactText(options.source, 'task_action'),
-            idempotencyKey: compactText(options.idempotencyKey, ''),
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'task_action',
         });
+        return this.taskKernel.createTask(input, mutationOptions);
     }
 
     taskList(filters = {}) {
@@ -207,26 +259,177 @@ class TaskController {
     }
 
     taskUpdate(taskId, update = {}, options = {}) {
-        return this.taskKernel.updateTask(taskId, update, {
-            actor: compactText(options.actor, 'system'),
-            expectedVersion: options.expectedVersion,
-            idempotencyKey: compactText(options.idempotencyKey, ''),
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'task_action',
         });
+        mutationOptions.expectedVersion = options.expectedVersion;
+        return this.taskKernel.updateTask(taskId, update, mutationOptions);
     }
 
     taskStop(taskId, options = {}) {
-        return this.taskKernel.stopTask(taskId, {
-            actor: compactText(options.actor, 'system'),
-            reason: compactText(options.reason, 'manual-stop'),
-            idempotencyKey: compactText(options.idempotencyKey, ''),
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'task_action',
         });
+        mutationOptions.reason = compactText(options.reason, 'manual-stop');
+        return this.taskKernel.stopTask(taskId, mutationOptions);
     }
 
     todoWrite(items = [], options = {}) {
-        return this.taskKernel.applyTodoWrite(items, {
-            actor: compactText(options.actor, 'system'),
-            idempotencyKey: compactText(options.idempotencyKey, ''),
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'task_action',
         });
+        return this.taskKernel.applyTodoWrite(items, mutationOptions);
+    }
+
+    taskResume(options = {}) {
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'task_resume',
+        });
+        return this.taskKernel.resumeTask(mutationOptions);
+    }
+
+    taskResumeBrief(options = {}) {
+        return this.taskKernel.getResumeBrief(options);
+    }
+
+    nextRecoverySequence(options = {}) {
+        return this.taskKernel.nextRecoverySequence(options);
+    }
+
+    taskBudgetGet() {
+        return this.taskKernel.getBudgets();
+    }
+
+    taskBudgetSet(policy = {}, options = {}) {
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'task_budget',
+        });
+        return this.taskKernel.setBudgetPolicy(policy, mutationOptions);
+    }
+
+    agentSessionCreate(input = {}, options = {}) {
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'agent_action',
+        });
+        return this.coordinator.createSession(input, mutationOptions);
+    }
+
+    agentWorkerSpawn(input = {}, options = {}) {
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'agent_action',
+        });
+        return this.coordinator.spawnWorker(input, mutationOptions);
+    }
+
+    agentSessionUpdate(sessionId, patch = {}, options = {}) {
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'agent_action',
+        });
+        mutationOptions.expectedVersion = options.expectedVersion;
+        return this.coordinator.updateSession(sessionId, patch, mutationOptions);
+    }
+
+    agentWorkerUpdate(workerId, patch = {}, options = {}) {
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'agent_action',
+        });
+        mutationOptions.expectedVersion = options.expectedVersion;
+        return this.coordinator.updateWorker(workerId, patch, mutationOptions);
+    }
+
+    agentMessage(input = {}, options = {}) {
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'agent_action',
+        });
+        return this.coordinator.message(input, mutationOptions);
+    }
+
+    async agentWait(sessionId, options = {}) {
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'agent_action',
+        });
+        return this.coordinator.wait(sessionId, mutationOptions);
+    }
+
+    agentStop(input = {}, options = {}) {
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'agent_action',
+        });
+        return this.coordinator.stop(input, mutationOptions);
+    }
+
+    agentList(filters = {}) {
+        return this.coordinator.list(filters || {});
+    }
+
+    agentGetSession(sessionId) {
+        return this.coordinator.getSession(sessionId);
+    }
+
+    agentGetOrchestration(sessionId) {
+        return {
+            orchestration: this.coordinator.getOrchestrationState(sessionId),
+        };
+    }
+
+    agentGetWorker(workerId) {
+        return this.coordinator.getWorker(workerId);
+    }
+
+    agentResume(options = {}) {
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'agent_resume',
+        });
+        return this.coordinator.resume(mutationOptions);
+    }
+
+    agentResumeBrief(options = {}) {
+        return this.coordinator.getResumeBrief(options || {});
+    }
+
+    getAgentRecoverySummary() {
+        return this.coordinator.getRecoverySummary();
+    }
+
+    nextAgentRecoverySequence(options = {}) {
+        return this.coordinator.nextRecoverySequence(options || {});
+    }
+
+    agentAudit(filters = {}) {
+        return this.coordinator.getAuditEvents(filters || {});
+    }
+
+    agentMetrics() {
+        return this.coordinator.getMetrics();
+    }
+
+    agentBudgetGet() {
+        return this.coordinator.getBudgets();
+    }
+
+    agentBudgetSet(policy = {}, options = {}) {
+        const mutationOptions = this._withMutationDefaults(options, {
+            actor: 'system',
+            source: 'agent_budget',
+        });
+        return this.coordinator.setBudgets(policy || {}, mutationOptions);
+    }
+
+    getPendingAgentContextSummary(limit = 8) {
+        return this.coordinator.buildPendingSessionSummary(limit);
     }
 
     taskAudit(filters = {}) {
@@ -303,24 +506,28 @@ class TaskController {
 
     // ✨ [v9.1] 處理多 Agent 請求
     async _handleMultiAgent(ctx, action, brain) {
-        try {
-            if (!this.multiAgent) {
-                this.multiAgent = new InteractiveMultiAgent(brain);
+        const error = new AgentKernel.AgentKernelError(
+            AgentKernel.AGENT_ERROR_CODES.AGENT_PROTOCOL_UNSUPPORTED,
+            AGENT_PROTOCOL_UNSUPPORTED_MESSAGE,
+            {
+                legacyAction: 'multi_agent',
+                requiredActions: [
+                    'agent_session_create',
+                    'agent_worker_spawn',
+                    'agent_message',
+                    'agent_wait',
+                    'agent_stop',
+                    'agent_list',
+                    'agent_get',
+                    'agent_resume',
+                    'agent_focus',
+                ],
             }
-            const presetName = action.preset || 'TECH_TEAM';
-            const agentConfigs = InteractiveMultiAgent.PRESETS[presetName];
-            if (!agentConfigs) {
-                const available = Object.keys(InteractiveMultiAgent.PRESETS).join(', ');
-                await ctx.reply(`⚠️ 未知團隊: ${presetName}。可用: ${available}`);
-                return;
-            }
-            const task = action.task || '討論專案';
-            const options = { maxRounds: action.rounds || 3 };
-            await this.multiAgent.startConversation(ctx, task, agentConfigs, options);
-        } catch (e) {
-            console.error('[TaskController] MultiAgent 執行失敗:', e);
-            await ctx.reply(`❌ 執行失敗: ${e.message}`);
+        );
+        if (ctx && typeof ctx.reply === 'function') {
+            await ctx.reply(`❌ [${error.code}] ${error.message}`);
         }
+        throw error;
     }
 
     async runSequence(ctx, steps, startIndex = 0, options = {}) {
@@ -424,7 +631,7 @@ class TaskController {
                     timestamp: Date.now(),
                 }, {
                     actor,
-                    ttlMs: Number(options.approvalTtlMs) || DEFAULT_PENDING_TASK_TTL_MS,
+                    ttlMs: Number(options.approvalTtlMs) || this.pendingApprovalTtlMs,
                 });
 
                 if (trackedTaskId) {

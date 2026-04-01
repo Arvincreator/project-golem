@@ -1,8 +1,21 @@
 const ResponseParser = require('../../src/utils/ResponseParser');
-const MultiAgentHandler = require('../../src/core/action_handlers/MultiAgentHandler');
 const SkillHandler = require('../../src/core/action_handlers/SkillHandler');
 const CommandHandler = require('../../src/core/action_handlers/CommandHandler');
 const TaskActionHandler = require('../../src/core/action_handlers/TaskActionHandler');
+const AgentActionHandler = require('../../src/core/action_handlers/AgentActionHandler');
+
+function summarizeActions(actions = []) {
+    if (!Array.isArray(actions) || actions.length === 0) return '- (none)';
+    const counts = {};
+    for (const act of actions) {
+        const name = String(act && act.action ? act.action : 'unknown').trim().toLowerCase() || 'unknown';
+        counts[name] = Number(counts[name] || 0) + 1;
+    }
+    return Object.entries(counts)
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([name, count]) => `- ${name} x${count}`)
+        .join('\n');
+}
 
 // ============================================================
 // 🧬 NeuroShunter (神經分流中樞 - 核心路由器)
@@ -75,7 +88,12 @@ class NeuroShunter {
 
         // 2. 處理結構化 Action 分配 (讓批准視窗在回覆之後彈出)
         if (parsed.actions.length > 0) {
-            console.log(`[GOLEM_ACTION] (${shouldSuppressReply ? 'Silent' : 'Normal'})\n${JSON.stringify(parsed.actions, null, 2)}`);
+            const debugActionJson = String(process.env.GOLEM_DEBUG_ACTION_JSON || '').trim().toLowerCase() === 'true';
+            if (debugActionJson) {
+                console.log(`[GOLEM_ACTION] (${shouldSuppressReply ? 'Silent' : 'Normal'})\n${JSON.stringify(parsed.actions, null, 2)}`);
+            } else {
+                console.log(`[GOLEM_ACTION] (${shouldSuppressReply ? 'Silent' : 'Normal'})\n${summarizeActions(parsed.actions)}`);
+            }
             const normalActions = [];
 
             for (const act of parsed.actions) {
@@ -84,9 +102,24 @@ class NeuroShunter {
                     continue;
                 }
 
+                if (AgentActionHandler.isAgentAction(act.action)) {
+                    await AgentActionHandler.execute(ctx, act, controller);
+                    continue;
+                }
+
                 switch (act.action) {
                     case 'multi_agent':
-                        await MultiAgentHandler.execute(ctx, act, controller, brain);
+                        if (controller && typeof controller._handleMultiAgent === 'function') {
+                            try {
+                                await controller._handleMultiAgent(ctx, act, brain);
+                            } catch (legacyError) {
+                                const code = legacyError && legacyError.code ? legacyError.code : 'AGENT_PROTOCOL_UNSUPPORTED';
+                                const status = Number(legacyError && (legacyError.statusCode || legacyError.status) || 422);
+                                console.warn(`[NeuroShunter] legacy multi_agent rejected [${code}] status=${status}: ${legacyError.message}`);
+                            }
+                        } else {
+                            await ctx.reply('❌ [AGENT_PROTOCOL_UNSUPPORTED] multi_agent is removed. Use agent_session_create / agent_worker_spawn / agent_message / agent_wait / agent_stop / agent_list / agent_get / agent_resume.');
+                        }
                         break;
                     default:
                         // 檢查是否為動態擴充技能

@@ -1,27 +1,41 @@
-# Claude-Parity Phase Adoption Matrix (10/10 Phases)
+# Claude-Parity Phase Adoption Matrix (Evidence-Based)
 
-本文件作為實作前 Gate：已逐 phase 掃讀 `claude-code-research/source-code-analysis/phase-01` 到 `phase-10`，並標註本專案採納決策。
+本文件已改為「證據矩陣」：每一個 phase 必須對應程式碼與測試，而非僅文字宣告。
 
 ## Matrix
 
-| Phase | 主題 | 採納決策 | 本輪落地狀態 | 理由與範圍 |
+| Phase | 主題 | 採納決策 | 目前狀態 | 主要證據（程式碼 / 測試） |
 |---|---|---|---|---|
-| Phase 01 | System Prompt | 直接落地 | 已落地 | 將 task governance、task 狀態機規則與 action contract 寫入協議提示詞。 |
-| Phase 02 | Tool Definitions | 直接落地 | 已落地 | 新增 task actions (`task_create/list/get/update/stop/todo_write/task_metrics/task_integrity`) 並貫通 action handler。 |
-| Phase 03 | Agent Architecture | 部分落地 | 已落地 | 落地任務狀態機與單一 `in_progress` 強約束；多 agent 深層協調策略延後。 |
-| Phase 04 | Skills System | 延後 | 未落地 | 本輪焦點是 Task Kernel 與連續性，不做 skills catalog 大改。 |
-| Phase 05 | Memory & Context | 直接落地 | 已落地 | 每輪注入 Pending Tasks 摘要；重啟/換對話可透過持久層恢復任務。 |
-| Phase 06 | Security & Permissions | 直接落地 | 已落地 | 任務異動走 API 操作守門；completed 必須 verified；失敗不得偽完成。 |
-| Phase 07 | API & Model Architecture | 直接落地 | 已落地 | 新增 runtime RPC + REST task 端點，支援查詢/更新/停止/批次 todo。 |
-| Phase 08 | Special Features | 延後 | 未落地 | 彩蛋/隱藏功能不在本里程碑驗收範圍。 |
-| Phase 09 | Harness Engineering | 直接落地 | 已落地 | 建立 task event/recovery 事件流，供 dashboard/socket 即時觀測。 |
-| Phase 10 | Cost & Quota | 部分落地 | 部分落地 | 已落地每任務 token/cost estimate 聚合與任務遙測；供應商 billing 級精算仍延後。 |
+| Phase 01 | System Prompt | adopt now | partial | `src/skills/core/definition.js`、`packages/protocol/ProtocolFormatter.js`、`tests/DefinitionPrompt.test.js` |
+| Phase 02 | Tool Definitions | adopt now | partial | `src/core/action_handlers/TaskActionHandler.js`、`tests/TaskActionHandler.test.js` |
+| Phase 03 | Agent Architecture | adopt now | done (task scope) | `src/core/CoordinatorEngine.js`、`src/managers/AgentKernel.js`、`tests/CoordinatorEngine.test.js`、`tests/AgentConcurrencyMatrix.test.js` |
+| Phase 04 | Skills System | defer | partial | 既有技能市場與索引保留，未進行 Claude-style catalog 全量對齊 |
+| Phase 05 | Memory & Context | adopt now | partial | `src/core/ConversationManager.js` pending snapshot 注入、`TaskKernel` 持久化恢復 |
+| Phase 06 | Security & Permissions | adopt now | partial | `web-dashboard/server/security.js` + `TaskKernel` decision object；尚未達多層 hook + permission engine 完整度 |
+| Phase 07 | API & Model Architecture | adopt now | partial | `src/runtime/RuntimeController.js` + `apps/runtime/worker.js` + `web-dashboard/routes/api.tasks.js` |
+| Phase 08 | Special Features | defer | defer | 以核心任務連續性為主，特別功能維持延後 |
+| Phase 09 | Harness Engineering | adopt now | partial | task_event/task_recovery + dashboard socket；完整 harness/trace pipeline 尚未齊備 |
+| Phase 10 | Cost & Quota | partial | partial | `TaskKernel` usage estimate + budget policy；provider billing adapter 先以 estimate fallback |
 
-## Hard Gate 結論
+## 本輪新增證據（Task Continuity First）
 
-- 10 phase 映射完成：**達成**
-- 允許進入實作：**是**
-- 仍待後續里程碑（M3）項目：
-  - 每任務 token/cost provider billing 級精算與成本面板
-  - 多 agent 任務分派/回收策略與更完整競態測試
-  - 特殊功能 phase 的非核心能力遷移
+- `task_resume` / `task_focus` action + Resume Brief：
+  - `src/core/action_handlers/TaskActionHandler.js`
+  - `src/managers/TaskKernel.js`
+  - `web-dashboard/routes/api.tasks.js`
+- 任務預算治理與硬限制錯誤碼：
+  - `src/managers/TaskKernel.js`
+  - `src/managers/billing/ProviderBillingAdapter.js`
+- recovery 事件升級（`recoveryType` + `seq` + dedup）：
+  - `apps/runtime/worker.js`
+  - `web-dashboard/server.js`
+- 多代理 orchestration 與競態壓測矩陣：
+  - `tests/CoordinatorEngine.test.js`
+  - `tests/AgentConcurrencyMatrix.test.js`
+  - `web-dashboard/routes/api.agents.js`（orchestration endpoint）
+
+## Gate 結論（更新）
+
+- 10 phase 映射：**達成（證據化）**
+- 「全部已落地」修正：**否，現為 partial-heavy，持續分里程碑收斂**
+- 下一階段優先：**M4 成本對帳精算（provider billing adapter 實帳）**

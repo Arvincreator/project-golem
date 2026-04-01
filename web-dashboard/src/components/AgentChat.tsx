@@ -1,112 +1,193 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Bot, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { socket } from "@/lib/socket";
-import { User, Bot } from "lucide-react";
 import { apiGet } from "@/lib/api-client";
 
-interface AgentMessage {
+type AgentEventPayload = {
+    id?: string;
+    type?: string;
+    timestamp?: number;
+    golemId?: string;
+    sessionId?: string | null;
+    workerId?: string | null;
+    status?: string;
+    message?: string;
+    reason?: string;
+    source?: string;
+    actor?: string;
+    notification?: {
+        message?: string;
+        actor?: string;
+    };
+    recoveryType?: string;
+    recovery?: {
+        pendingSessions?: number;
+        runningSessions?: number;
+        blockedSessions?: number;
+        failedSessions?: number;
+        nextSessionId?: string | null;
+    };
+};
+
+type AuditResponse = {
+    success?: boolean;
+    events?: AgentEventPayload[];
+};
+
+type RecoveryResponse = {
+    success?: boolean;
+    recovery?: AgentEventPayload["recovery"];
+};
+
+type AgentMessage = {
     id: string;
     sender: string;
     content: string;
     timestamp: string;
     isSystem: boolean;
+};
+
+function formatTimestamp(value?: number): string {
+    if (!value || !Number.isFinite(value)) {
+        return new Date().toLocaleTimeString();
+    }
+    try {
+        return new Date(value).toLocaleTimeString();
+    } catch {
+        return new Date().toLocaleTimeString();
+    }
 }
 
-interface AgentLogRecord {
-    timestamp: string;
-    sender: string;
-    content: string;
-    isSystem: boolean;
+function renderEventContent(event: AgentEventPayload): string {
+    const type = String(event.type || "").trim();
+    if (type === "agent.notification") {
+        const note = event.notification && typeof event.notification.message === "string"
+            ? event.notification.message
+            : event.message || "notification";
+        return `[notification] ${note}`;
+    }
+    if (type === "agent.resume") {
+        return `[resume] sessions resumed`;
+    }
+    if (type === "agent.violation") {
+        return `[violation] ${event.reason || event.message || "policy violation"}`;
+    }
+    if (type === "agent.session.created" || type === "agent.session.updated") {
+        return `[session] ${event.sessionId || "unknown"} status=${event.status || "n/a"}`;
+    }
+    if (type === "agent.worker.created" || type === "agent.worker.updated") {
+        return `[worker] ${event.workerId || "unknown"} status=${event.status || "n/a"}`;
+    }
+    if (type === "agent.recovery") {
+        const recovery = event.recovery || {};
+        return `[recovery:${event.recoveryType || "unknown"}] pending=${recovery.pendingSessions || 0} running=${recovery.runningSessions || 0} blocked=${recovery.blockedSessions || 0} failed=${recovery.failedSessions || 0} next=${recovery.nextSessionId || "none"}`;
+    }
+    return `${type || "agent_event"} ${event.message || ""}`.trim();
 }
 
-interface SocketLogPayload {
-    type?: string;
-    msg?: string;
-    time?: string;
+function normalizeEvent(event: AgentEventPayload): AgentMessage {
+    const type = String(event.type || "").trim();
+    const sender = type.startsWith("agent.") ? "Coordinator" : "System";
+    const content = renderEventContent(event);
+    return {
+        id: String(event.id || `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`),
+        sender,
+        content,
+        timestamp: formatTimestamp(event.timestamp),
+        isSystem: true,
+    };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null;
 }
 
-function isAgentLogRecord(value: unknown): value is AgentLogRecord {
-    if (!isRecord(value)) return false;
-    return (
-        typeof value.timestamp === "string" &&
-        typeof value.sender === "string" &&
-        typeof value.content === "string" &&
-        typeof value.isSystem === "boolean"
-    );
-}
-
 export function AgentChat() {
     const [messages, setMessages] = useState<AgentMessage[]>([]);
     const scrollRef = useRef<HTMLDivElement>(null);
+    const seenIds = useRef<Set<string>>(new Set());
+
+    const appendEvent = (event: AgentEventPayload) => {
+        const message = normalizeEvent(event);
+        if (seenIds.current.has(message.id)) return;
+        seenIds.current.add(message.id);
+        setMessages((prev) => [...prev.slice(-999), message]);
+    };
 
     useEffect(() => {
-        const fetchHistory = async () => {
+        const fetchInitial = async () => {
             try {
-                const data = await apiGet<unknown>("/api/agent/logs", undefined, { profile: "none" });
-                if (Array.isArray(data)) {
-                    const logs = data.filter(isAgentLogRecord);
-                    setMessages(logs.map((log) => ({
-                        id: log.timestamp + Math.random().toString(),
-                        sender: log.sender,
-                        content: log.content,
-                        timestamp: new Date(log.timestamp).toLocaleTimeString(),
-                        isSystem: log.isSystem
-                    })));
-                }
-            } catch (err) {
-                console.error("Failed to load history:", err);
-            }
-        };
-        fetchHistory();
+                const [audit, recovery] = await Promise.all([
+                    apiGet<AuditResponse>("/api/agents/audit?limit=200"),
+                    apiGet<RecoveryResponse>("/api/agents/recovery"),
+                ]);
 
-        const handleSocketLog = (data: unknown) => {
-            if (!isRecord(data)) return;
-            const payload = data as SocketLogPayload;
-            const rawSocketMsg = typeof payload.msg === "string" ? payload.msg : "";
-            const socketType = typeof payload.type === "string" ? payload.type : "";
-
-            // Filter for agent related logs
-            if (socketType === 'agent' || rawSocketMsg.includes('[MultiAgent]')) {
-                let rawMsg = rawSocketMsg;
-
-                // Strip [MultiAgent] tag if present to clean up
-                if (rawMsg.startsWith('[MultiAgent]')) {
-                    rawMsg = rawMsg.replace('[MultiAgent]', '').trim();
+                const initialEvents = Array.isArray(audit.events) ? audit.events.slice().reverse() : [];
+                for (const event of initialEvents) {
+                    appendEvent(event);
                 }
 
-                let sender = "System";
-                let content = rawMsg;
-                let isSystem = true;
-
-                // Parse: "[AgentName] content"
-                const match = rawMsg.match(/\[(.*?)\]\s*(.*)/);
-                if (match) {
-                    sender = match[1];
-                    content = match[2];
-                    // System if sender is strictly MultiAgent or InteractiveMultiAgent
-                    isSystem = sender === "MultiAgent" || sender === "InteractiveMultiAgent";
+                if (recovery && recovery.recovery) {
+                    appendEvent({
+                        id: `agent_recovery_bootstrap_${Date.now()}`,
+                        type: "agent.recovery",
+                        timestamp: Date.now(),
+                        recoveryType: "bootstrap",
+                        recovery: recovery.recovery,
+                    });
                 }
-
-                setMessages((prev) => [...prev.slice(-1000), {
-                    id: Date.now().toString() + Math.random(),
-                    sender,
-                    content,
-                    timestamp: typeof payload.time === "string" ? payload.time : new Date().toLocaleTimeString(),
-                    isSystem
-                }]);
+            } catch (error) {
+                console.error("Failed to fetch agent audit/recovery:", error);
             }
         };
 
-        socket.on("log", handleSocketLog);
+        fetchInitial();
+
+        const onInit = (payload: unknown) => {
+            if (!isRecord(payload)) return;
+            const agentEventsRaw = payload.agentEvents;
+            const agentRecoveryRaw = payload.agentRecovery;
+            if (Array.isArray(agentEventsRaw)) {
+                for (const item of agentEventsRaw) {
+                    if (!isRecord(item)) continue;
+                    appendEvent(item as AgentEventPayload);
+                }
+            }
+            if (isRecord(agentRecoveryRaw)) {
+                for (const value of Object.values(agentRecoveryRaw)) {
+                    if (!isRecord(value)) continue;
+                    appendEvent({
+                        ...(value as AgentEventPayload),
+                        type: "agent.recovery",
+                    });
+                }
+            }
+        };
+
+        const onAgentEvent = (event: unknown) => {
+            if (!isRecord(event)) return;
+            appendEvent(event as AgentEventPayload);
+        };
+
+        const onAgentRecovery = (event: unknown) => {
+            if (!isRecord(event)) return;
+            appendEvent({
+                ...(event as AgentEventPayload),
+                type: "agent.recovery",
+            });
+        };
+
+        socket.on("init", onInit);
+        socket.on("agent_event", onAgentEvent);
+        socket.on("agent_recovery", onAgentRecovery);
 
         return () => {
-            socket.off("log", handleSocketLog);
+            socket.off("init", onInit);
+            socket.off("agent_event", onAgentEvent);
+            socket.off("agent_recovery", onAgentRecovery);
         };
     }, []);
 
@@ -116,26 +197,28 @@ export function AgentChat() {
         }
     }, [messages]);
 
+    const rendered = useMemo(() => messages.slice(-300), [messages]);
+
     return (
-        <div className="flex flex-col h-full bg-card rounded-xl border border-border p-4">
-            <div className="flex-1 overflow-y-auto space-y-4 pr-2" ref={scrollRef}>
-                {messages.map((msg) => {
-                    const isUser = msg.sender === 'User';
+        <div className="flex h-full flex-col rounded-xl border border-border bg-card p-4">
+            <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto pr-2">
+                {rendered.map((msg) => {
+                    const isUser = msg.sender === "User";
                     return (
                         <div
                             key={msg.id}
                             className={cn(
-                                "flex flex-col max-w-[80%]",
+                                "flex max-w-[90%] flex-col",
                                 msg.isSystem ? "mx-auto items-center text-center" : isUser ? "ml-auto items-end" : "mr-auto"
                             )}
                         >
                             {!msg.isSystem && (
-                                <div className={cn("flex items-center space-x-2 mb-1", isUser && "flex-row-reverse space-x-reverse")}>
+                                <div className={cn("mb-1 flex items-center space-x-2", isUser && "flex-row-reverse space-x-reverse")}>
                                     <div className={cn(
-                                        "w-6 h-6 rounded-full flex items-center justify-center border",
-                                        isUser ? "bg-primary/20 border-primary/30" : "bg-primary/10 border-primary/20"
+                                        "flex h-6 w-6 items-center justify-center rounded-full border",
+                                        isUser ? "border-primary/30 bg-primary/20" : "border-primary/20 bg-primary/10"
                                     )}>
-                                        {isUser ? <User className="w-3 h-3 text-primary" /> : <Bot className="w-3 h-3 text-primary" />}
+                                        {isUser ? <User className="h-3 w-3 text-primary" /> : <Bot className="h-3 w-3 text-primary" />}
                                     </div>
                                     <span className={cn("text-xs font-bold", isUser ? "text-primary" : "text-foreground")}>{msg.sender}</span>
                                     <span className="text-[10px] text-muted-foreground">{msg.timestamp}</span>
@@ -143,12 +226,12 @@ export function AgentChat() {
                             )}
                             <div
                                 className={cn(
-                                    "p-3 rounded-lg text-sm",
+                                    "rounded-lg border p-3 text-sm",
                                     msg.isSystem
-                                        ? "bg-muted text-muted-foreground text-xs border border-border"
+                                        ? "border-border bg-muted text-xs text-muted-foreground"
                                         : isUser
-                                            ? "bg-primary/10 text-foreground font-medium border border-primary/20 rounded-tr-none"
-                                            : "bg-secondary text-foreground font-medium border border-border rounded-tl-none"
+                                            ? "rounded-tr-none border-primary/20 bg-primary/10 font-medium text-foreground"
+                                            : "rounded-tl-none border-border bg-secondary font-medium text-foreground"
                                 )}
                             >
                                 {msg.content}
@@ -156,8 +239,8 @@ export function AgentChat() {
                         </div>
                     );
                 })}
-                {messages.length === 0 && (
-                    <div className="flex items-center justify-center h-full text-muted-foreground italic">
+                {rendered.length === 0 && (
+                    <div className="flex h-full items-center justify-center italic text-muted-foreground">
                         Waiting for agent activity...
                     </div>
                 )}

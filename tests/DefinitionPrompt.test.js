@@ -55,10 +55,18 @@ describe('CORE_DEFINITION prompt contract', () => {
         expect(prompt).toContain('task-first');
         expect(prompt).toContain('verification.status=verified');
         expect(prompt).toContain('no fake completion');
+        expect(prompt).toContain('multi_agent');
+        expect(prompt).toContain('agent_session_create');
+        expect(prompt).toContain('direct-chat auto mode');
         expect(prompt).toContain('executed');
         expect(prompt).toContain('not_executed');
         expect(prompt).toContain('failed');
         expect(prompt).toContain('Pending Tasks Snapshot');
+        expect(prompt).toContain('Pending Agent Sessions Snapshot');
+        expect(prompt).toContain('task_resume');
+        expect(prompt).toContain('agent_resume');
+        expect(prompt).toContain('strict synthesis gate');
+        expect(prompt).toContain('humanized reporting');
     });
 
     test('mcpMode=compact shows summary only without tool detail list', () => {

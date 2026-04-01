@@ -13,7 +13,13 @@ module.exports = function registerSocketHandlers(server) {
             uptime: process.uptime(),
             logs: server.logBuffer,
             taskEvents: server.taskEventBuffer || [],
+            taskViolations: server.taskViolationBuffer || [],
+            taskResumes: server.taskResumeBuffer || [],
             taskRecovery: server.taskRecoveryState || {},
+            agentEvents: server.agentEventBuffer || [],
+            agentViolations: server.agentViolationBuffer || [],
+            agentResumes: server.agentResumeBuffer || [],
+            agentRecovery: server.agentRecoveryState || {},
             golems: getGolemsData(),
             runtime: server.runtimeController ? server.runtimeController.getRuntimeSnapshot() : null,
         };
@@ -24,7 +30,13 @@ module.exports = function registerSocketHandlers(server) {
             socket.emit('init', {
                 logs: server.logBuffer,
                 taskEvents: server.taskEventBuffer || [],
+                taskViolations: server.taskViolationBuffer || [],
+                taskResumes: server.taskResumeBuffer || [],
                 taskRecovery: server.taskRecoveryState || {},
+                agentEvents: server.agentEventBuffer || [],
+                agentViolations: server.agentViolationBuffer || [],
+                agentResumes: server.agentResumeBuffer || [],
+                agentRecovery: server.agentRecoveryState || {},
                 runtime: server.runtimeController ? server.runtimeController.getRuntimeSnapshot() : null,
             });
         });

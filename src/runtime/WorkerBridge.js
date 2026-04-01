@@ -47,7 +47,11 @@ class WorkerBridge {
             this._send({
                 type: 'rpc_result',
                 id: message.id,
-                error: `Unknown RPC method: ${message.method}`,
+                error: {
+                    message: `Unknown RPC method: ${message.method}`,
+                    code: 'RPC_METHOD_NOT_FOUND',
+                    statusCode: 404,
+                },
             });
             return;
         }
@@ -63,7 +67,12 @@ class WorkerBridge {
             this._send({
                 type: 'rpc_result',
                 id: message.id,
-                error: error && error.message ? error.message : String(error),
+                error: {
+                    message: error && error.message ? error.message : String(error),
+                    code: error && error.code ? String(error.code) : '',
+                    statusCode: Number(error && (error.statusCode || error.status) || 500),
+                    details: error && error.details && typeof error.details === 'object' ? error.details : {},
+                },
             });
         }
     }

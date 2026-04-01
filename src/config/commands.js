@@ -17,6 +17,15 @@ module.exports = [
             { name: 'pro', description: '進階程式碼與數學能力 (專業優先)' }
         ]
     },
+    {
+        command: '/planning',
+        description: '切換直聊 Planning Mode（複雜任務自動多代理）。',
+        options: [
+            { name: 'on', description: '開啟：複雜任務自動走多代理' },
+            { name: 'off', description: '關閉：全部回到單代理路徑' },
+            { name: 'status', description: '查看目前 Planning Mode 狀態' }
+        ]
+    },
     { 
         command: '/enable_silent', 
         description: '開啟完全靜默模式：暫時關閉感知，且不會記錄任何對話。',

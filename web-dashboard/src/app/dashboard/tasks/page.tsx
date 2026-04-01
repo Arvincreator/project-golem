@@ -29,6 +29,16 @@ type RecoveryPayload = {
     nextTaskId: string | null;
 };
 
+type ResumeBrief = {
+    recoveredCount?: number;
+    suggestedAction?: string;
+    nextTask?: {
+        id?: string;
+        status?: string;
+        subject?: string;
+    } | null;
+};
+
 type AuditEvent = {
     id: string;
     ts: number;
@@ -137,6 +147,8 @@ export default function TasksPage() {
     const [recovery, setRecovery] = useState<RecoveryPayload | null>(null);
     const [metrics, setMetrics] = useState<TaskMetrics | null>(null);
     const [integrity, setIntegrity] = useState<IntegrityReport | null>(null);
+    const [resumeBrief, setResumeBrief] = useState<ResumeBrief | null>(null);
+    const [budgets, setBudgets] = useState<Record<string, unknown> | null>(null);
     const [pendingSummary, setPendingSummary] = useState("");
     const [auditEvents, setAuditEvents] = useState<AuditEvent[]>([]);
     const [subject, setSubject] = useState("");
@@ -149,17 +161,20 @@ export default function TasksPage() {
         if (!activeGolem) return;
         setIsLoading(true);
         try {
-            const [taskRes, recoveryRes, metricsRes, integrityRes] = await Promise.all([
+            const [taskRes, recoveryRes, metricsRes, integrityRes, budgetRes] = await Promise.all([
                 apiGet<{ success?: boolean; tasks?: TaskRecord[] }>(`/api/tasks?golemId=${encodeURIComponent(activeGolem)}&includeCompleted=true`),
-                apiGet<{ success?: boolean; recovery?: RecoveryPayload; pendingSummary?: string }>(`/api/tasks/recovery?golemId=${encodeURIComponent(activeGolem)}`),
+                apiGet<{ success?: boolean; recovery?: RecoveryPayload; pendingSummary?: string; resumeBrief?: ResumeBrief }>(`/api/tasks/recovery?golemId=${encodeURIComponent(activeGolem)}`),
                 apiGet<{ success?: boolean; metrics?: TaskMetrics }>(`/api/tasks/metrics?golemId=${encodeURIComponent(activeGolem)}`),
                 apiGet<{ success?: boolean; integrity?: IntegrityReport }>(`/api/tasks/integrity?golemId=${encodeURIComponent(activeGolem)}&limit=50`),
+                apiGet<{ success?: boolean; budgets?: Record<string, unknown> }>(`/api/tasks/budgets?golemId=${encodeURIComponent(activeGolem)}`),
             ]);
             setTasks(Array.isArray(taskRes.tasks) ? taskRes.tasks : []);
             setRecovery(recoveryRes.recovery || null);
             setPendingSummary(String(recoveryRes.pendingSummary || ""));
+            setResumeBrief(recoveryRes.resumeBrief || null);
             setMetrics(metricsRes.metrics || null);
             setIntegrity(integrityRes.integrity || null);
+            setBudgets(budgetRes.budgets || null);
         } catch (error) {
             console.error("Failed to fetch tasks:", error);
         } finally {
@@ -213,11 +228,27 @@ export default function TasksPage() {
             fetchTasks();
         };
 
+        const onTaskResume = (event: TaskEventPayload) => {
+            if (!event || (event.golemId && event.golemId !== activeGolem)) return;
+            setLiveEvents((prev) => [event, ...prev].slice(0, 40));
+            fetchTasks();
+        };
+
+        const onTaskViolation = (event: TaskEventPayload) => {
+            if (!event || (event.golemId && event.golemId !== activeGolem)) return;
+            setLiveEvents((prev) => [event, ...prev].slice(0, 40));
+            fetchTasks();
+        };
+
         socket.on("task_event", onTaskEvent);
         socket.on("task_recovery", onTaskRecovery);
+        socket.on("task_resume", onTaskResume);
+        socket.on("task_violation", onTaskViolation);
         return () => {
             socket.off("task_event", onTaskEvent);
             socket.off("task_recovery", onTaskRecovery);
+            socket.off("task_resume", onTaskResume);
+            socket.off("task_violation", onTaskViolation);
         };
     }, [activeGolem, fetchAudit, fetchTasks, selectedTaskId]);
 
@@ -426,6 +457,12 @@ export default function TasksPage() {
                             <div className="mb-1 font-medium">{t("tasks.pendingSummary")}</div>
                             {pendingSummary || "(empty)"}
                         </div>
+                        <div className="mt-3 rounded-lg border border-border bg-background p-2 text-xs">
+                            <div className="font-medium">resume brief</div>
+                            <div className="text-muted-foreground">recovered: {resumeBrief ? Number(resumeBrief.recoveredCount || 0) : 0}</div>
+                            <div className="text-muted-foreground">next: {resumeBrief && resumeBrief.nextTask && resumeBrief.nextTask.id ? resumeBrief.nextTask.id : "none"}</div>
+                            <div className="text-muted-foreground">suggested: {resumeBrief && resumeBrief.suggestedAction ? resumeBrief.suggestedAction : "task_create"}</div>
+                        </div>
                     </div>
 
                     <div className="rounded-xl border border-border bg-card p-4">
@@ -453,6 +490,12 @@ export default function TasksPage() {
                                     {integrity.truncated ? <div>...truncated</div> : null}
                                 </div>
                             ) : null}
+                        </div>
+                        <div className="mt-3 rounded-lg border border-border bg-background p-2 text-xs">
+                            <div className="font-medium">budget</div>
+                            <div className="text-muted-foreground">enabled: {budgets && typeof budgets === "object" && (budgets as { policy?: { enabled?: boolean } }).policy?.enabled === false ? "false" : "true"}</div>
+                            <div className="text-muted-foreground">sessionWarnings: {metrics && (metrics as { budget?: { sessionWarnings?: number } }).budget ? Number((metrics as { budget?: { sessionWarnings?: number } }).budget?.sessionWarnings || 0) : 0}</div>
+                            <div className="text-muted-foreground">sessionViolations: {metrics && (metrics as { budget?: { sessionViolations?: number } }).budget ? Number((metrics as { budget?: { sessionViolations?: number } }).budget?.sessionViolations || 0) : 0}</div>
                         </div>
                     </div>
 

@@ -1,5 +1,40 @@
 const fs = require('fs');
 const path = require('path');
+const { createBillingAdapter } = require('./billing/ProviderBillingAdapter');
+
+const TASK_ERROR_CODES = Object.freeze({
+    TASK_ID_REQUIRED: 'TASK_ID_REQUIRED',
+    TASK_ALREADY_EXISTS: 'TASK_ALREADY_EXISTS',
+    TASK_NOT_FOUND: 'TASK_NOT_FOUND',
+    TASK_INVALID_STATUS: 'TASK_INVALID_STATUS',
+    TASK_INVALID_TRANSITION: 'TASK_INVALID_TRANSITION',
+    TASK_MULTIPLE_IN_PROGRESS: 'TASK_MULTIPLE_IN_PROGRESS',
+    TASK_COMPLETE_REQUIRES_VERIFIED: 'TASK_COMPLETE_REQUIRES_VERIFIED',
+    TASK_COMPLETE_HAS_ERROR: 'TASK_COMPLETE_HAS_ERROR',
+    TASK_VERSION_CONFLICT: 'TASK_VERSION_CONFLICT',
+    TASK_TODO_INVALID_INPUT: 'TASK_TODO_INVALID_INPUT',
+    TASK_APPROVAL_ID_REQUIRED: 'TASK_APPROVAL_ID_REQUIRED',
+    TASK_MUTATION_DENIED: 'TASK_MUTATION_DENIED',
+    TASK_MUTATION_REQUIRES_APPROVAL: 'TASK_MUTATION_REQUIRES_APPROVAL',
+    TASK_BUDGET_HARD_LIMIT: 'TASK_BUDGET_HARD_LIMIT',
+});
+
+const TASK_ERROR_HTTP_STATUS = Object.freeze({
+    TASK_ID_REQUIRED: 400,
+    TASK_ALREADY_EXISTS: 409,
+    TASK_NOT_FOUND: 404,
+    TASK_INVALID_STATUS: 422,
+    TASK_INVALID_TRANSITION: 422,
+    TASK_MULTIPLE_IN_PROGRESS: 422,
+    TASK_COMPLETE_REQUIRES_VERIFIED: 422,
+    TASK_COMPLETE_HAS_ERROR: 422,
+    TASK_VERSION_CONFLICT: 409,
+    TASK_TODO_INVALID_INPUT: 400,
+    TASK_APPROVAL_ID_REQUIRED: 400,
+    TASK_MUTATION_DENIED: 403,
+    TASK_MUTATION_REQUIRES_APPROVAL: 403,
+    TASK_BUDGET_HARD_LIMIT: 409,
+});
 
 const VALID_STATUSES = new Set([
     'pending',
@@ -84,6 +119,16 @@ function roundNumber(value, digits = 6) {
     return Math.round(num * factor) / factor;
 }
 
+class TaskKernelError extends Error {
+    constructor(code, message, details = {}) {
+        super(message || code || 'TaskKernelError');
+        this.name = 'TaskKernelError';
+        this.code = String(code || 'TASK_KERNEL_ERROR');
+        this.statusCode = Number(TASK_ERROR_HTTP_STATUS[this.code] || 500);
+        this.details = (details && typeof details === 'object') ? clone(details) : {};
+    }
+}
+
 class TaskKernel {
     constructor(options = {}) {
         this.golemId = options.golemId || 'default';
@@ -93,6 +138,10 @@ class TaskKernel {
         this.maxIdempotencyKeys = Number(options.maxIdempotencyKeys || 500);
         this.strictMode = options.strictMode !== false;
         this.defaultApprovalTtlMs = Number(options.defaultApprovalTtlMs || (5 * 60 * 1000));
+        this.billingAdapter = createBillingAdapter(
+            options.providerBillingAdapter || process.env.GOLEM_TASK_BILLING_ADAPTER || 'estimate'
+        );
+        this.taskHooks = this._normalizeHooks(options.hooks);
         this._onEvent = typeof options.onEvent === 'function' ? options.onEvent : null;
         this._listeners = new Set();
         this._recoverySummary = {
@@ -198,11 +247,13 @@ class TaskKernel {
             version: 3,
             golemId: this.golemId,
             lastTaskSeq: 0,
+            lastRecoverySeq: 0,
             tasks: {},
             events: [],
             approvals: {},
             idempotency: {},
             telemetry: this._createInitialTelemetry(),
+            budgets: this._createDefaultBudgetPolicy(),
         };
     }
 
@@ -230,6 +281,13 @@ class TaskKernel {
             if (!this.state.events || !Array.isArray(this.state.events)) this.state.events = [];
             if (!this.state.approvals || typeof this.state.approvals !== 'object') this.state.approvals = {};
             if (!this.state.idempotency || typeof this.state.idempotency !== 'object') this.state.idempotency = {};
+            if (!Number.isFinite(Number(this.state.lastRecoverySeq))) this.state.lastRecoverySeq = 0;
+            this.state.budgets = this._normalizeBudgetPolicy(this.state.budgets);
+            this.billingAdapter = createBillingAdapter(
+                this.state.budgets && this.state.budgets.providerAdapter
+                    ? this.state.budgets.providerAdapter
+                    : (process.env.GOLEM_TASK_BILLING_ADAPTER || 'estimate')
+            );
             this._ensureTelemetry();
             this.trimExpiredApprovals();
             this._trimIdempotency();
@@ -318,6 +376,280 @@ class TaskKernel {
             telemetry.strictIntercepts[key] = 0;
         }
         telemetry.strictIntercepts[key] = normalizeNonNegativeNumber(telemetry.strictIntercepts[key]) + 1;
+        this._emit('task.violation', {
+            kind: key,
+            source: 'strict_intercept',
+            recovery: this.getRecoverySummary(),
+        });
+    }
+
+    _normalizeHooks(rawHooks = {}) {
+        const hooks = (rawHooks && typeof rawHooks === 'object') ? rawHooks : {};
+        const normalized = {
+            pre_action: [],
+            post_action: [],
+            on_error: [],
+        };
+        for (const key of Object.keys(normalized)) {
+            const list = hooks[key];
+            if (Array.isArray(list)) {
+                normalized[key] = list.filter((fn) => typeof fn === 'function');
+            } else if (typeof list === 'function') {
+                normalized[key] = [list];
+            }
+        }
+        return normalized;
+    }
+
+    _runHooks(type, payload = {}) {
+        const list = (this.taskHooks && this.taskHooks[type]) || [];
+        for (const hook of list) {
+            try {
+                hook(payload);
+            } catch (error) {
+                console.warn(`[TaskKernel:${this.golemId}] hook "${type}" failed: ${error.message}`);
+            }
+        }
+    }
+
+    _toKernelError(code, message, details = {}) {
+        return new TaskKernelError(code, message, details);
+    }
+
+    _decisionFromOptions(options = {}) {
+        const raw = options && typeof options === 'object' ? (options.decision || options.permissionDecision || {}) : {};
+        if (!raw || typeof raw !== 'object') {
+            return {
+                mode: 'allow',
+                reason: 'default',
+            };
+        }
+        const mode = compactString(raw.mode || raw.decision || raw.policy, 'allow').toLowerCase();
+        const normalizedMode = (mode === 'ask' || mode === 'deny') ? mode : 'allow';
+        return {
+            mode: normalizedMode,
+            reason: compactString(raw.reason, ''),
+            requestedBy: compactString(raw.requestedBy, ''),
+        };
+    }
+
+    _enforceDecision(actionName, options = {}, context = {}) {
+        const decision = this._decisionFromOptions(options);
+        this._appendAudit('task.decision', context.taskId || null, {
+            action: compactString(actionName, 'unknown'),
+            mode: decision.mode,
+            reason: decision.reason,
+            requestedBy: decision.requestedBy,
+        }, compactString(options.actor, 'system'));
+        if (decision.mode === 'deny') {
+            this._persist();
+            this._emit('task.violation', {
+                kind: 'mutation_denied',
+                action: compactString(actionName, 'unknown'),
+                reason: decision.reason,
+            });
+            throw this._toKernelError(
+                TASK_ERROR_CODES.TASK_MUTATION_DENIED,
+                `Task mutation denied for action "${actionName}"`,
+                { action: actionName, ...decision }
+            );
+        }
+        if (decision.mode === 'ask') {
+            this._persist();
+            this._emit('task.violation', {
+                kind: 'mutation_requires_approval',
+                action: compactString(actionName, 'unknown'),
+                reason: decision.reason,
+            });
+            throw this._toKernelError(
+                TASK_ERROR_CODES.TASK_MUTATION_REQUIRES_APPROVAL,
+                `Task mutation requires approval for action "${actionName}"`,
+                { action: actionName, ...decision }
+            );
+        }
+    }
+
+    _normalizeBudgetPolicy(input = {}) {
+        const policy = (input && typeof input === 'object') ? input : {};
+        const normalizeLimit = (value) => {
+            const num = Number(value);
+            if (!Number.isFinite(num) || num <= 0) return 0;
+            return num;
+        };
+        const normalizeNode = (node = {}) => ({
+            tokenSoftLimit: normalizeLimit(node.tokenSoftLimit ?? node.softTokens),
+            tokenHardLimit: normalizeLimit(node.tokenHardLimit ?? node.hardTokens),
+            costSoftLimitUsd: normalizeLimit(node.costSoftLimitUsd ?? node.softCostUsd),
+            costHardLimitUsd: normalizeLimit(node.costHardLimitUsd ?? node.hardCostUsd),
+        });
+        return {
+            enabled: policy.enabled !== false,
+            providerAdapter: compactString(policy.providerAdapter, 'estimate'),
+            task: normalizeNode(policy.task),
+            session: normalizeNode(policy.session),
+            updatedAt: normalizeNonNegativeNumber(policy.updatedAt || nowTs()),
+        };
+    }
+
+    _createDefaultBudgetPolicy() {
+        const envLimit = (name) => {
+            const raw = Number(process.env[name] || 0);
+            if (!Number.isFinite(raw) || raw <= 0) return 0;
+            return raw;
+        };
+        return this._normalizeBudgetPolicy({
+            enabled: true,
+            providerAdapter: this.billingAdapter && typeof this.billingAdapter.getName === 'function'
+                ? this.billingAdapter.getName()
+                : 'estimate',
+            task: {
+                tokenSoftLimit: envLimit('GOLEM_TASK_BUDGET_TASK_TOKEN_SOFT_LIMIT'),
+                tokenHardLimit: envLimit('GOLEM_TASK_BUDGET_TASK_TOKEN_HARD_LIMIT'),
+                costSoftLimitUsd: envLimit('GOLEM_TASK_BUDGET_TASK_COST_SOFT_LIMIT_USD'),
+                costHardLimitUsd: envLimit('GOLEM_TASK_BUDGET_TASK_COST_HARD_LIMIT_USD'),
+            },
+            session: {
+                tokenSoftLimit: envLimit('GOLEM_TASK_BUDGET_SESSION_TOKEN_SOFT_LIMIT'),
+                tokenHardLimit: envLimit('GOLEM_TASK_BUDGET_SESSION_TOKEN_HARD_LIMIT'),
+                costSoftLimitUsd: envLimit('GOLEM_TASK_BUDGET_SESSION_COST_SOFT_LIMIT_USD'),
+                costHardLimitUsd: envLimit('GOLEM_TASK_BUDGET_SESSION_COST_HARD_LIMIT_USD'),
+            },
+            updatedAt: nowTs(),
+        });
+    }
+
+    getBudgetPolicy() {
+        this.state.budgets = this._normalizeBudgetPolicy(this.state.budgets);
+        return clone(this.state.budgets);
+    }
+
+    setBudgetPolicy(policy = {}, options = {}) {
+        this._enforceDecision('task_budget_set', options);
+        this._runHooks('pre_action', { action: 'task_budget_set', policy, options });
+        try {
+            this.state.budgets = this._normalizeBudgetPolicy({
+                ...this.state.budgets,
+                ...(policy && typeof policy === 'object' ? policy : {}),
+                updatedAt: nowTs(),
+            });
+            const adapterName = compactString(this.state.budgets.providerAdapter, 'estimate');
+            this.billingAdapter = createBillingAdapter(adapterName);
+            const audit = this._appendAudit('task.budget.updated', null, {
+                policy: this.state.budgets,
+            }, compactString(options.actor, 'system'));
+            this._persist();
+            const result = {
+                budgets: this.getBudgets(),
+                audit,
+            };
+            this._emit('task.budget', {
+                ...result,
+            });
+            this._runHooks('post_action', { action: 'task_budget_set', result, options });
+            return result;
+        } catch (error) {
+            this._runHooks('on_error', { action: 'task_budget_set', error, options });
+            throw error;
+        }
+    }
+
+    _evaluateUsageAgainstBudget(usage = {}, limits = {}) {
+        const safeUsage = {
+            totalTokens: normalizeNonNegativeNumber(usage.totalTokens),
+            costUsd: normalizeNonNegativeNumber(usage.costUsd),
+        };
+        const safeLimits = {
+            tokenSoftLimit: normalizeNonNegativeNumber(limits.tokenSoftLimit),
+            tokenHardLimit: normalizeNonNegativeNumber(limits.tokenHardLimit),
+            costSoftLimitUsd: normalizeNonNegativeNumber(limits.costSoftLimitUsd),
+            costHardLimitUsd: normalizeNonNegativeNumber(limits.costHardLimitUsd),
+        };
+
+        const warnings = [];
+        const violations = [];
+        const addCheck = (dimension, value, softLimit, hardLimit) => {
+            if (hardLimit > 0 && value > hardLimit) {
+                violations.push({
+                    level: 'hard',
+                    dimension,
+                    value,
+                    limit: hardLimit,
+                });
+                return;
+            }
+            if (softLimit > 0 && value > softLimit) {
+                warnings.push({
+                    level: 'soft',
+                    dimension,
+                    value,
+                    limit: softLimit,
+                });
+            }
+        };
+
+        addCheck('tokens', safeUsage.totalTokens, safeLimits.tokenSoftLimit, safeLimits.tokenHardLimit);
+        addCheck('cost_usd', safeUsage.costUsd, safeLimits.costSoftLimitUsd, safeLimits.costHardLimitUsd);
+
+        return { warnings, violations };
+    }
+
+    _enforceBudgets(taskCandidate = null, options = {}) {
+        const policy = this.getBudgetPolicy();
+        if (!policy.enabled) return;
+
+        const tasks = Object.values(this.state.tasks || {});
+        const usageTotals = this._collectUsageTotals(tasks);
+        const sessionReport = this._evaluateUsageAgainstBudget(usageTotals, policy.session || {});
+        const candidateUsage = taskCandidate && taskCandidate.usage ? taskCandidate.usage : null;
+        const taskReport = this._evaluateUsageAgainstBudget(candidateUsage || {}, policy.task || {});
+        const hardViolations = [...sessionReport.violations, ...taskReport.violations];
+        const softWarnings = [...sessionReport.warnings, ...taskReport.warnings];
+
+        if (softWarnings.length > 0) {
+            const detail = {
+                type: 'budget_soft_limit',
+                taskId: taskCandidate && taskCandidate.id ? taskCandidate.id : null,
+                warnings: softWarnings,
+            };
+            this._appendAudit('task.violation', detail.taskId, detail, compactString(options.actor, 'system'));
+            this._emit('task.violation', detail);
+        }
+
+        if (hardViolations.length > 0) {
+            throw this._toKernelError(
+                TASK_ERROR_CODES.TASK_BUDGET_HARD_LIMIT,
+                'Task budget hard limit exceeded',
+                {
+                    taskId: taskCandidate && taskCandidate.id ? taskCandidate.id : null,
+                    violations: hardViolations,
+                    sessionUsage: usageTotals,
+                    policy,
+                }
+            );
+        }
+    }
+
+    getBudgets() {
+        const policy = this.getBudgetPolicy();
+        const tasks = Object.values(this.state.tasks || {});
+        const usageTotals = this._collectUsageTotals(tasks);
+        const byTask = tasks
+            .filter((task) => task && task.usage)
+            .map((task) => ({
+                taskId: task.id,
+                status: task.status,
+                usage: clone(task.usage),
+                budget: this._evaluateUsageAgainstBudget(task.usage, policy.task || {}),
+            }))
+            .filter((entry) => entry.budget.warnings.length > 0 || entry.budget.violations.length > 0);
+
+        return {
+            generatedAt: nowTs(),
+            policy,
+            sessionUsage: usageTotals,
+            sessionBudget: this._evaluateUsageAgainstBudget(usageTotals, policy.session || {}),
+            taskViolations: byTask,
+        };
     }
 
     _recordRecoveryAttempt(recoveredCount = 0) {
@@ -414,24 +746,28 @@ class TaskKernel {
 
     _normalizeUsagePatch(rawUsage) {
         if (!rawUsage || typeof rawUsage !== 'object') return null;
+        const adaptedUsage = this.billingAdapter && typeof this.billingAdapter.normalizeUsage === 'function'
+            ? this.billingAdapter.normalizeUsage(rawUsage)
+            : null;
+        const usage = (adaptedUsage && typeof adaptedUsage === 'object') ? adaptedUsage : rawUsage;
 
         const promptTokens = normalizeNonNegativeNumber(
-            rawUsage.promptTokens ?? rawUsage.prompt_tokens ?? rawUsage.inputTokens ?? rawUsage.input_tokens
+            usage.promptTokens ?? usage.prompt_tokens ?? usage.inputTokens ?? usage.input_tokens
         );
         const completionTokens = normalizeNonNegativeNumber(
-            rawUsage.completionTokens ?? rawUsage.completion_tokens ?? rawUsage.outputTokens ?? rawUsage.output_tokens
+            usage.completionTokens ?? usage.completion_tokens ?? usage.outputTokens ?? usage.output_tokens
         );
-        const explicitTotalTokens = rawUsage.totalTokens ?? rawUsage.total_tokens;
+        const explicitTotalTokens = usage.totalTokens ?? usage.total_tokens;
         let totalTokens = normalizeNonNegativeNumber(explicitTotalTokens);
         if (totalTokens <= 0) {
             totalTokens = promptTokens + completionTokens;
         }
         const costUsd = normalizeNonNegativeNumber(
-            rawUsage.costUsd ?? rawUsage.cost_usd ?? rawUsage.estimatedCostUsd ?? rawUsage.estimated_cost_usd ?? rawUsage.usd
+            usage.costUsd ?? usage.cost_usd ?? usage.estimatedCostUsd ?? usage.estimated_cost_usd ?? usage.usd
         );
-        const model = compactString(rawUsage.model || rawUsage.modelName || rawUsage.providerModel, '');
-        const mode = compactString(rawUsage.mode, '');
-        const replace = rawUsage.absolute === true || rawUsage.replace === true || mode === 'replace';
+        const model = compactString(usage.model || usage.modelName || usage.providerModel, '');
+        const mode = compactString(usage.mode, '');
+        const replace = usage.absolute === true || usage.replace === true || mode === 'replace';
 
         const hasSignal = promptTokens > 0 || completionTokens > 0 || totalTokens > 0 || costUsd > 0 || !!model;
         if (!hasSignal) return null;
@@ -527,43 +863,81 @@ class TaskKernel {
         return totals;
     }
 
-    _validateTransition(task, nextStatus, update = {}) {
+    _validateTransitionInState(stateRef, task, nextStatus, update = {}, options = {}) {
+        const state = stateRef && typeof stateRef === 'object' ? stateRef : this.state;
+        const recordIntercept = options.recordIntercept !== false;
+        const strictMode = options.strictMode !== false ? this.strictMode : false;
+
         if (!VALID_STATUSES.has(nextStatus)) {
-            this._recordStrictIntercept('invalidTransition');
-            throw new Error(`Invalid task status: ${nextStatus}`);
+            if (recordIntercept) this._recordStrictIntercept('invalidTransition');
+            throw this._toKernelError(
+                TASK_ERROR_CODES.TASK_INVALID_STATUS,
+                `Invalid task status: ${nextStatus}`,
+                { nextStatus }
+            );
         }
 
         const currentStatus = task.status;
         if (currentStatus === nextStatus) return;
         const allowed = TRANSITIONS[currentStatus] || new Set();
         if (!allowed.has(nextStatus)) {
-            this._recordStrictIntercept('invalidTransition');
-            throw new Error(`Invalid transition ${currentStatus} -> ${nextStatus}`);
+            if (recordIntercept) this._recordStrictIntercept('invalidTransition');
+            throw this._toKernelError(
+                TASK_ERROR_CODES.TASK_INVALID_TRANSITION,
+                `Invalid transition ${currentStatus} -> ${nextStatus}`,
+                { currentStatus, nextStatus, taskId: task && task.id ? task.id : '' }
+            );
         }
 
-        if (!this.strictMode) return;
+        if (!strictMode) return;
 
         if (nextStatus === 'in_progress') {
-            const otherRunning = Object.values(this.state.tasks).find((item) =>
+            const otherRunning = Object.values(state.tasks || {}).find((item) =>
                 item && item.id !== task.id && item.status === 'in_progress'
             );
             if (otherRunning) {
-                this._recordStrictIntercept('multipleInProgress');
-                throw new Error(`Strict mode: another task already in_progress (${otherRunning.id})`);
+                if (recordIntercept) this._recordStrictIntercept('multipleInProgress');
+                throw this._toKernelError(
+                    TASK_ERROR_CODES.TASK_MULTIPLE_IN_PROGRESS,
+                    `Strict mode: another task already in_progress (${otherRunning.id})`,
+                    {
+                        taskId: task && task.id ? task.id : '',
+                        existingInProgressTaskId: otherRunning.id,
+                    }
+                );
             }
         }
 
         if (nextStatus === 'completed') {
             const verification = update.verification || task.verification || {};
             if (verification.status !== 'verified') {
-                this._recordStrictIntercept('invalidCompleteNoVerification');
-                throw new Error('Strict mode: task cannot be completed before verification.status=verified');
+                if (recordIntercept) this._recordStrictIntercept('invalidCompleteNoVerification');
+                throw this._toKernelError(
+                    TASK_ERROR_CODES.TASK_COMPLETE_REQUIRES_VERIFIED,
+                    'Strict mode: task cannot be completed before verification.status=verified',
+                    {
+                        taskId: task && task.id ? task.id : '',
+                    }
+                );
             }
             if (task.lastError && !update.clearError) {
-                this._recordStrictIntercept('invalidCompleteWithError');
-                throw new Error('Strict mode: task with unresolved errors cannot be completed');
+                if (recordIntercept) this._recordStrictIntercept('invalidCompleteWithError');
+                throw this._toKernelError(
+                    TASK_ERROR_CODES.TASK_COMPLETE_HAS_ERROR,
+                    'Strict mode: task with unresolved errors cannot be completed',
+                    {
+                        taskId: task && task.id ? task.id : '',
+                    }
+                );
             }
         }
+    }
+
+    _validateTransition(task, nextStatus, update = {}) {
+        return this._validateTransitionInState(this.state, task, nextStatus, update, {
+            recordIntercept: true,
+            strictMode: this.strictMode,
+        });
     }
 
     _recomputeRecoverySummary() {
@@ -589,84 +963,225 @@ class TaskKernel {
         return clone(this._recoverySummary);
     }
 
+    getResumeBrief(options = {}) {
+        const limit = Math.max(1, Math.floor(Number(options.limit || 10)));
+        const tasks = this.listTasks({ includeCompleted: false })
+            .filter((task) => !TERMINAL_STATUSES.has(task.status))
+            .sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0));
+        const inProgressTask = tasks.find((task) => task.status === 'in_progress') || null;
+        const nextTask = inProgressTask || tasks[0] || null;
+        return {
+            generatedAt: nowTs(),
+            recoveredCount: tasks.length,
+            recovery: this.getRecoverySummary(),
+            currentInProgressTask: inProgressTask ? clone(inProgressTask) : null,
+            nextTask: nextTask ? clone(nextTask) : null,
+            pendingTasks: tasks.slice(0, limit).map((task) => clone(task)),
+            pendingSummary: this.buildPendingContextSummary(limit),
+            suggestedAction: nextTask ? 'task_resume' : 'task_create',
+        };
+    }
+
+    nextRecoverySequence(options = {}) {
+        this.state.lastRecoverySeq = normalizeNonNegativeNumber(this.state.lastRecoverySeq) + 1;
+        const seq = this.state.lastRecoverySeq;
+        if (options.persist !== false) {
+            this._persist();
+        }
+        return seq;
+    }
+
+    resumeTask(options = {}) {
+        const idempotencyResult = this._checkIdempotency(options.idempotencyKey);
+        if (idempotencyResult) return idempotencyResult;
+        this._enforceDecision('task_resume', options);
+        this._runHooks('pre_action', { action: 'task_resume', options });
+
+        try {
+            const requestedTaskId = compactString(options.taskId, '');
+            const tasks = this.listTasks({ includeCompleted: false })
+                .filter((task) => !TERMINAL_STATUSES.has(task.status))
+                .sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0));
+            const currentInProgress = tasks.find((task) => task.status === 'in_progress') || null;
+            const target = requestedTaskId
+                ? tasks.find((task) => task.id === requestedTaskId) || null
+                : (currentInProgress || tasks[0] || null);
+
+            if (!target) {
+                const emptyResult = {
+                    resumed: false,
+                    reason: 'no_pending_tasks',
+                    brief: this.getResumeBrief(),
+                };
+                this._rememberIdempotency(options.idempotencyKey, emptyResult);
+                this._runHooks('post_action', { action: 'task_resume', options, result: emptyResult });
+                return emptyResult;
+            }
+
+            let resumedTask = target;
+            let promoted = false;
+            if (target.status === 'pending' && !currentInProgress) {
+                resumedTask = this.updateTask(target.id, {
+                    status: 'in_progress',
+                    clearError: true,
+                }, {
+                    actor: compactString(options.actor, 'system'),
+                    deferPersist: true,
+                    skipHooks: true,
+                }).task;
+                promoted = true;
+            }
+
+            const brief = this.getResumeBrief(options);
+            const audit = this._appendAudit('task.resume', resumedTask.id, {
+                promoted,
+                requestedTaskId: requestedTaskId || null,
+                status: resumedTask.status,
+            }, compactString(options.actor, 'system'));
+            this._persist();
+
+            const result = {
+                resumed: true,
+                promoted,
+                task: clone(resumedTask),
+                brief,
+                audit,
+            };
+            this._rememberIdempotency(options.idempotencyKey, result);
+            this._emit('task.resume', {
+                ...result,
+                recovery: this.getRecoverySummary(),
+                metrics: this.getMetrics(),
+            });
+            this._runHooks('post_action', { action: 'task_resume', options, result });
+            return result;
+        } catch (error) {
+            this._runHooks('on_error', { action: 'task_resume', options, error });
+            throw error;
+        }
+    }
+
     createTask(input = {}, options = {}) {
         const idempotencyResult = this._checkIdempotency(options.idempotencyKey);
         if (idempotencyResult) return idempotencyResult;
+        this._enforceDecision('task_create', options);
+        const skipHooks = options.skipHooks === true;
+        const deferPersist = options.deferPersist === true;
+        if (!skipHooks) {
+            this._runHooks('pre_action', { action: 'task_create', input, options });
+        }
+        try {
+            const taskId = String(input.id || this._nextTaskId()).trim();
+            if (!taskId) {
+                throw this._toKernelError(
+                    TASK_ERROR_CODES.TASK_ID_REQUIRED,
+                    'Task ID is required'
+                );
+            }
+            if (this.state.tasks[taskId]) {
+                throw this._toKernelError(
+                    TASK_ERROR_CODES.TASK_ALREADY_EXISTS,
+                    `Task already exists: ${taskId}`,
+                    { taskId }
+                );
+            }
+            const seqMatch = taskId.match(/^task_(\d+)$/i);
+            if (seqMatch) {
+                const seq = Number(seqMatch[1]);
+                if (Number.isFinite(seq) && seq > Number(this.state.lastTaskSeq || 0)) {
+                    this.state.lastTaskSeq = seq;
+                }
+            }
 
-        const taskId = String(input.id || this._nextTaskId()).trim();
-        if (!taskId) throw new Error('Task ID is required');
-        if (this.state.tasks[taskId]) throw new Error(`Task already exists: ${taskId}`);
-
-        const ts = nowTs();
-        const createdTask = {
-            id: taskId,
-            subject: compactString(input.subject || input.content, `Task ${taskId}`),
-            description: compactString(input.description, ''),
-            activeForm: compactString(input.activeForm, ''),
-            status: VALID_STATUSES.has(input.status) ? input.status : 'pending',
-            owner: compactString(input.owner, ''),
-            blockedBy: dedupeIdList(input.blockedBy),
-            blocks: dedupeIdList(input.blocks),
-            metadata: (input.metadata && typeof input.metadata === 'object') ? clone(input.metadata) : {},
-            source: compactString(input.source, options.source || 'unknown'),
-            createdAt: ts,
-            updatedAt: ts,
-            startedAt: null,
-            completedAt: null,
-            failedAt: null,
-            killedAt: null,
-            verification: {
-                status: (input.verification && input.verification.status) || 'pending',
-                note: compactString(input.verification && input.verification.note, ''),
+            const ts = nowTs();
+            const createdTask = {
+                id: taskId,
+                subject: compactString(input.subject || input.content, `Task ${taskId}`),
+                description: compactString(input.description, ''),
+                activeForm: compactString(input.activeForm, ''),
+                status: VALID_STATUSES.has(input.status) ? input.status : 'pending',
+                owner: compactString(input.owner, ''),
+                blockedBy: dedupeIdList(input.blockedBy),
+                blocks: dedupeIdList(input.blocks),
+                metadata: (input.metadata && typeof input.metadata === 'object') ? clone(input.metadata) : {},
+                source: compactString(input.source, options.source || 'unknown'),
+                createdAt: ts,
                 updatedAt: ts,
-            },
-            lastError: '',
-            version: 1,
-        };
-        const initialUsagePatch = this._normalizeUsagePatch(
-            (input && input.usage && typeof input.usage === 'object')
-                ? input.usage
-                : (input && input.metadata && typeof input.metadata === 'object' ? input.metadata.usage : null)
-        );
-        if (initialUsagePatch) {
-            createdTask.usage = this._mergeUsage(null, initialUsagePatch, ts);
+                startedAt: null,
+                completedAt: null,
+                failedAt: null,
+                killedAt: null,
+                verification: {
+                    status: (input.verification && input.verification.status) || 'pending',
+                    note: compactString(input.verification && input.verification.note, ''),
+                    updatedAt: ts,
+                },
+                lastError: '',
+                version: 1,
+            };
+            const initialUsagePatch = this._normalizeUsagePatch(
+                (input && input.usage && typeof input.usage === 'object')
+                    ? input.usage
+                    : (input && input.metadata && typeof input.metadata === 'object' ? input.metadata.usage : null)
+            );
+            if (initialUsagePatch) {
+                createdTask.usage = this._mergeUsage(null, initialUsagePatch, ts);
+            }
+
+            if (createdTask.status === 'in_progress') {
+                this._validateTransition({ ...createdTask, status: 'pending' }, 'in_progress', createdTask);
+                createdTask.startedAt = ts;
+            }
+
+            if (createdTask.status === 'completed') {
+                this._validateTransition({ ...createdTask, status: 'in_progress' }, 'completed', createdTask);
+                createdTask.completedAt = ts;
+            }
+
+            if (createdTask.status === 'failed') createdTask.failedAt = ts;
+            if (createdTask.status === 'killed') createdTask.killedAt = ts;
+
+            this.state.tasks[taskId] = createdTask;
+            try {
+                this._enforceBudgets(createdTask, options);
+            } catch (error) {
+                delete this.state.tasks[taskId];
+                throw error;
+            }
+            this._incrementTelemetryCounter('created');
+            this._incrementTransition(createdTask.status);
+            const audit = this._appendAudit('task.created', taskId, {
+                status: createdTask.status,
+                source: createdTask.source,
+            }, options.actor || 'system');
+            this._recomputeRecoverySummary();
+            if (!deferPersist) {
+                this._persist();
+            }
+
+            const result = {
+                task: clone(createdTask),
+                audit,
+            };
+            if (!deferPersist) {
+                this._rememberIdempotency(options.idempotencyKey, result);
+                this._emit('task.update', {
+                    task: result.task,
+                    audit,
+                    recovery: this.getRecoverySummary(),
+                    telemetry: this.getTelemetrySnapshot(),
+                });
+            }
+            if (!skipHooks) {
+                this._runHooks('post_action', { action: 'task_create', input, options, result });
+            }
+            return result;
+        } catch (error) {
+            if (!skipHooks) {
+                this._runHooks('on_error', { action: 'task_create', input, options, error });
+            }
+            throw error;
         }
-
-        if (createdTask.status === 'in_progress') {
-            this._validateTransition({ ...createdTask, status: 'pending' }, 'in_progress', createdTask);
-            createdTask.startedAt = ts;
-        }
-
-        if (createdTask.status === 'completed') {
-            this._validateTransition({ ...createdTask, status: 'in_progress' }, 'completed', createdTask);
-            createdTask.completedAt = ts;
-        }
-
-        if (createdTask.status === 'failed') createdTask.failedAt = ts;
-        if (createdTask.status === 'killed') createdTask.killedAt = ts;
-
-        this.state.tasks[taskId] = createdTask;
-        this._incrementTelemetryCounter('created');
-        this._incrementTransition(createdTask.status);
-        const audit = this._appendAudit('task.created', taskId, {
-            status: createdTask.status,
-            source: createdTask.source,
-        }, options.actor || 'system');
-        this._recomputeRecoverySummary();
-        this._persist();
-
-        const result = {
-            task: clone(createdTask),
-            audit,
-        };
-        this._rememberIdempotency(options.idempotencyKey, result);
-        this._emit('task.update', {
-            task: result.task,
-            audit,
-            recovery: this.getRecoverySummary(),
-            telemetry: this.getTelemetrySnapshot(),
-        });
-        return result;
     }
 
     getTask(taskId) {
@@ -713,21 +1228,46 @@ class TaskKernel {
     updateTask(taskId, update = {}, options = {}) {
         const idempotencyResult = this._checkIdempotency(options.idempotencyKey);
         if (idempotencyResult) return idempotencyResult;
-
-        const id = String(taskId || '').trim();
-        if (!id) throw new Error('Task ID is required');
-        const task = this.state.tasks[id];
-        if (!task) throw new Error(`Task not found: ${id}`);
-
-        if (options.expectedVersion !== undefined && Number(options.expectedVersion) !== Number(task.version)) {
-            this._incrementTelemetryCounter('versionConflicts');
-            this._persist();
-            throw new Error(`Task version mismatch: expected ${options.expectedVersion}, actual ${task.version}`);
+        this._enforceDecision('task_update', options, { taskId });
+        const skipHooks = options.skipHooks === true;
+        const deferPersist = options.deferPersist === true;
+        if (!skipHooks) {
+            this._runHooks('pre_action', { action: 'task_update', taskId, update, options });
         }
+        try {
+            const id = String(taskId || '').trim();
+            if (!id) {
+                throw this._toKernelError(
+                    TASK_ERROR_CODES.TASK_ID_REQUIRED,
+                    'Task ID is required'
+                );
+            }
+            const task = this.state.tasks[id];
+            if (!task) {
+                throw this._toKernelError(
+                    TASK_ERROR_CODES.TASK_NOT_FOUND,
+                    `Task not found: ${id}`,
+                    { taskId: id }
+                );
+            }
 
-        const next = clone(task);
-        const ts = nowTs();
-        const detail = {};
+            if (options.expectedVersion !== undefined && Number(options.expectedVersion) !== Number(task.version)) {
+                this._incrementTelemetryCounter('versionConflicts');
+                if (!deferPersist) this._persist();
+                throw this._toKernelError(
+                    TASK_ERROR_CODES.TASK_VERSION_CONFLICT,
+                    `Task version mismatch: expected ${options.expectedVersion}, actual ${task.version}`,
+                    {
+                        taskId: id,
+                        expectedVersion: Number(options.expectedVersion),
+                        actualVersion: Number(task.version),
+                    }
+                );
+            }
+
+            const next = clone(task);
+            const ts = nowTs();
+            const detail = {};
 
         if (update.subject !== undefined) {
             next.subject = compactString(update.subject, next.subject);
@@ -798,151 +1338,381 @@ class TaskKernel {
             detail.lastError = next.lastError;
         }
 
-        if (update.status !== undefined) {
-            const nextStatus = String(update.status || '').trim();
-            this._validateTransition(task, nextStatus, update);
-            if (task.status !== nextStatus) {
-                detail.fromStatus = task.status;
-                detail.toStatus = nextStatus;
-                next.status = nextStatus;
+            if (update.status !== undefined) {
+                const nextStatus = String(update.status || '').trim();
+                this._validateTransition(task, nextStatus, update);
+                if (task.status !== nextStatus) {
+                    detail.fromStatus = task.status;
+                    detail.toStatus = nextStatus;
+                    next.status = nextStatus;
 
-                if (nextStatus === 'in_progress' && !next.startedAt) next.startedAt = ts;
-                if (nextStatus === 'completed') next.completedAt = ts;
-                if (nextStatus === 'failed') next.failedAt = ts;
-                if (nextStatus === 'killed') next.killedAt = ts;
-                if (!TERMINAL_STATUSES.has(nextStatus)) {
-                    next.completedAt = null;
-                    next.failedAt = null;
-                    next.killedAt = null;
+                    if (nextStatus === 'in_progress' && !next.startedAt) next.startedAt = ts;
+                    if (nextStatus === 'completed') next.completedAt = ts;
+                    if (nextStatus === 'failed') next.failedAt = ts;
+                    if (nextStatus === 'killed') next.killedAt = ts;
+                    if (!TERMINAL_STATUSES.has(nextStatus)) {
+                        next.completedAt = null;
+                        next.failedAt = null;
+                        next.killedAt = null;
+                    }
+                    this._incrementTransition(nextStatus);
                 }
-                this._incrementTransition(nextStatus);
             }
+
+            next.updatedAt = ts;
+            next.version = Number(next.version || 0) + 1;
+            this.state.tasks[id] = next;
+            try {
+                this._enforceBudgets(next, options);
+            } catch (error) {
+                this.state.tasks[id] = task;
+                throw error;
+            }
+            this._incrementTelemetryCounter('updates');
+
+            const audit = this._appendAudit('task.updated', id, detail, options.actor || 'system');
+            this._recomputeRecoverySummary();
+            if (!deferPersist) {
+                this._persist();
+            }
+            const result = { task: clone(next), audit };
+            if (!deferPersist) {
+                this._rememberIdempotency(options.idempotencyKey, result);
+                this._emit('task.update', {
+                    task: result.task,
+                    audit,
+                    recovery: this.getRecoverySummary(),
+                    telemetry: this.getTelemetrySnapshot(),
+                });
+            }
+            if (!skipHooks) {
+                this._runHooks('post_action', { action: 'task_update', taskId: id, update, options, result });
+            }
+            return result;
+        } catch (error) {
+            if (!skipHooks) {
+                this._runHooks('on_error', { action: 'task_update', taskId, update, options, error });
+            }
+            throw error;
         }
-
-        next.updatedAt = ts;
-        next.version = Number(next.version || 0) + 1;
-        this.state.tasks[id] = next;
-        this._incrementTelemetryCounter('updates');
-
-        const audit = this._appendAudit('task.updated', id, detail, options.actor || 'system');
-        this._recomputeRecoverySummary();
-        this._persist();
-        const result = { task: clone(next), audit };
-        this._rememberIdempotency(options.idempotencyKey, result);
-        this._emit('task.update', {
-            task: result.task,
-            audit,
-            recovery: this.getRecoverySummary(),
-            telemetry: this.getTelemetrySnapshot(),
-        });
-        return result;
     }
 
     stopTask(taskId, options = {}) {
         const idempotencyResult = this._checkIdempotency(options.idempotencyKey);
         if (idempotencyResult) return idempotencyResult;
+        this._enforceDecision('task_stop', options, { taskId });
+        this._runHooks('pre_action', { action: 'task_stop', taskId, options });
         this._incrementTelemetryCounter('stopCalls');
 
-        const task = this.getTask(taskId);
-        if (!task) throw new Error(`Task not found: ${taskId}`);
-        if (TERMINAL_STATUSES.has(task.status)) {
-            const noOp = {
-                task,
-                audit: this._appendAudit('task.stop.noop', task.id, { status: task.status }, options.actor || 'system'),
-            };
-            this._rememberIdempotency(options.idempotencyKey, noOp);
-            this._persist();
-            return noOp;
+        try {
+            const task = this.getTask(taskId);
+            if (!task) {
+                throw this._toKernelError(
+                    TASK_ERROR_CODES.TASK_NOT_FOUND,
+                    `Task not found: ${taskId}`,
+                    { taskId }
+                );
+            }
+            if (TERMINAL_STATUSES.has(task.status)) {
+                const noOp = {
+                    task,
+                    audit: this._appendAudit('task.stop.noop', task.id, { status: task.status }, options.actor || 'system'),
+                };
+                this._rememberIdempotency(options.idempotencyKey, noOp);
+                this._persist();
+                this._runHooks('post_action', { action: 'task_stop', taskId, options, result: noOp });
+                return noOp;
+            }
+            const result = this.updateTask(task.id, {
+                status: 'killed',
+                metadata: { stopReason: compactString(options.reason, 'manual-stop') },
+            }, {
+                actor: options.actor || 'system',
+                idempotencyKey: options.idempotencyKey,
+                skipHooks: true,
+            });
+            this._runHooks('post_action', { action: 'task_stop', taskId, options, result });
+            return result;
+        } catch (error) {
+            this._runHooks('on_error', { action: 'task_stop', taskId, options, error });
+            throw error;
         }
-        const result = this.updateTask(task.id, {
-            status: 'killed',
-            metadata: { stopReason: compactString(options.reason, 'manual-stop') },
-        }, {
-            actor: options.actor || 'system',
-            idempotencyKey: options.idempotencyKey,
-        });
-        return result;
     }
 
     applyTodoWrite(items = [], options = {}) {
         const idempotencyResult = this._checkIdempotency(options.idempotencyKey);
         if (idempotencyResult) return idempotencyResult;
+        this._enforceDecision('todo_write', options);
+        this._runHooks('pre_action', { action: 'todo_write', items, options });
         this._incrementTelemetryCounter('todoWrites');
 
-        if (!Array.isArray(items)) throw new Error('todo_write expects an array');
-        const changed = [];
-
-        for (const item of items) {
-            if (!item || typeof item !== 'object') continue;
-            const taskId = compactString(item.id || item.taskId, '');
-            const status = compactString(item.status, '');
-            const subject = compactString(item.content || item.subject, '');
-            const activeForm = compactString(item.activeForm, '');
-
-            if (taskId && this.state.tasks[taskId]) {
-                const patch = {};
-                if (subject) patch.subject = subject;
-                if (activeForm) patch.activeForm = activeForm;
-                if (status) patch.status = status;
-                if (item.description !== undefined) patch.description = compactString(item.description, '');
-                if (item.owner !== undefined) patch.owner = compactString(item.owner, '');
-                if (item.verification !== undefined) patch.verification = item.verification;
-                if (item.metadata !== undefined) patch.metadata = item.metadata;
-
-                const updated = this.updateTask(taskId, patch, {
-                    actor: options.actor || 'system',
-                });
-                changed.push(updated.task);
-                continue;
-            }
-
-            const created = this.createTask({
-                subject: subject || `Task ${changed.length + 1}`,
-                description: compactString(item.description, ''),
-                activeForm,
-                status: status && VALID_STATUSES.has(status) ? status : 'pending',
-                owner: compactString(item.owner, ''),
-                metadata: item.metadata || {},
-                source: compactString(item.source, 'todo_write'),
-            }, {
-                actor: options.actor || 'system',
-            });
-            changed.push(created.task);
+        if (!Array.isArray(items)) {
+            throw this._toKernelError(
+                TASK_ERROR_CODES.TASK_TODO_INVALID_INPUT,
+                'todo_write expects an array'
+            );
         }
+        const changed = [];
+        const beforeState = clone(this.state);
+        const beforeRecovery = clone(this._recoverySummary);
 
-        if (this.strictMode) {
-            const allTasks = this.listTasks({ includeCompleted: false });
-            const running = allTasks.filter((task) => task.status === 'in_progress');
-            if (running.length > 1) {
-                throw new Error('Strict mode: todo_write would produce multiple in_progress tasks');
+        try {
+            const preflight = this._preflightTodoWrite(items);
+            for (const item of preflight.items) {
+                if (!item || typeof item !== 'object') continue;
+                const taskId = compactString(item.id || item.taskId, '');
+                const status = compactString(item.status, '');
+                const subject = compactString(item.content || item.subject, '');
+                const activeForm = compactString(item.activeForm, '');
+
+                if (taskId && this.state.tasks[taskId]) {
+                    const patch = {};
+                    if (subject) patch.subject = subject;
+                    if (activeForm) patch.activeForm = activeForm;
+                    if (status) patch.status = status;
+                    if (item.description !== undefined) patch.description = compactString(item.description, '');
+                    if (item.owner !== undefined) patch.owner = compactString(item.owner, '');
+                    if (item.verification !== undefined) patch.verification = item.verification;
+                    if (item.metadata !== undefined) patch.metadata = item.metadata;
+
+                    const updated = this.updateTask(taskId, patch, {
+                        actor: options.actor || 'system',
+                        deferPersist: true,
+                        skipHooks: true,
+                    });
+                    changed.push(updated.task);
+                    continue;
+                }
+
+                const created = this.createTask({
+                    id: taskId || undefined,
+                    subject: subject || `Task ${changed.length + 1}`,
+                    description: compactString(item.description, ''),
+                    activeForm,
+                    status: status && VALID_STATUSES.has(status) ? status : 'pending',
+                    owner: compactString(item.owner, ''),
+                    metadata: item.metadata || {},
+                    source: compactString(item.source, 'todo_write'),
+                    verification: item.verification,
+                }, {
+                    actor: options.actor || 'system',
+                    deferPersist: true,
+                    skipHooks: true,
+                });
+                changed.push(created.task);
             }
-            if (running.length === 0) {
-                const candidate = allTasks
-                    .filter((task) => task.status === 'pending')
-                    .sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0))[0];
-                if (candidate) {
-                    const promoted = this.updateTask(candidate.id, {
+
+            if (this.strictMode) {
+                const allTasks = this.listTasks({ includeCompleted: false });
+                const running = allTasks.filter((task) => task.status === 'in_progress');
+                if (running.length > 1) {
+                    throw this._toKernelError(
+                        TASK_ERROR_CODES.TASK_MULTIPLE_IN_PROGRESS,
+                        'Strict mode: todo_write would produce multiple in_progress tasks'
+                    );
+                }
+                if (running.length === 0 && preflight.autoPromoteTaskId) {
+                    const promoted = this.updateTask(preflight.autoPromoteTaskId, {
                         status: 'in_progress',
                     }, {
                         actor: options.actor || 'system',
+                        deferPersist: true,
+                        skipHooks: true,
                     });
                     changed.push(promoted.task);
                 }
             }
+
+            this._persist();
+            const result = {
+                changed: changed.map((task) => clone(task)),
+                recovery: this.getRecoverySummary(),
+                metrics: this.getMetrics(),
+            };
+            this._rememberIdempotency(options.idempotencyKey, result);
+            this._emit('task.batch_update', {
+                changed: result.changed,
+                recovery: result.recovery,
+                metrics: result.metrics,
+            });
+            this._runHooks('post_action', { action: 'todo_write', items, options, result });
+            return result;
+        } catch (error) {
+            this.state = beforeState;
+            this._recoverySummary = beforeRecovery;
+            this._persist();
+            this._runHooks('on_error', { action: 'todo_write', items, options, error });
+            throw error;
+        }
+    }
+
+    _preflightTodoWrite(items = []) {
+        if (!Array.isArray(items)) {
+            throw this._toKernelError(
+                TASK_ERROR_CODES.TASK_TODO_INVALID_INPUT,
+                'todo_write expects an array'
+            );
         }
 
-        const result = {
-            changed: changed.map((task) => clone(task)),
-            recovery: this.getRecoverySummary(),
-            metrics: this.getMetrics(),
+        const draftTasks = clone(this.state.tasks || {});
+        let draftSeq = Number(this.state.lastTaskSeq || 0);
+        const normalizedItems = [];
+
+        for (const item of items) {
+            if (!item || typeof item !== 'object') continue;
+            const requestedTaskId = compactString(item.id || item.taskId, '');
+            const status = compactString(item.status, '');
+            const subject = compactString(item.content || item.subject, '');
+            const activeForm = compactString(item.activeForm, '');
+
+            let taskId = requestedTaskId;
+            if (!taskId) {
+                draftSeq += 1;
+                taskId = `task_${String(draftSeq).padStart(6, '0')}`;
+            }
+
+            if (draftTasks[taskId]) {
+                const current = draftTasks[taskId];
+                const next = clone(current);
+
+                if (subject) next.subject = subject;
+                if (activeForm) next.activeForm = activeForm;
+                if (item.description !== undefined) next.description = compactString(item.description, '');
+                if (item.owner !== undefined) next.owner = compactString(item.owner, '');
+                if (item.metadata !== undefined && item.metadata && typeof item.metadata === 'object') {
+                    next.metadata = {
+                        ...(next.metadata || {}),
+                        ...clone(item.metadata),
+                    };
+                }
+                if (item.verification !== undefined && item.verification && typeof item.verification === 'object') {
+                    const verificationPatch = item.verification;
+                    const currentVerification = next.verification || { status: 'pending', note: '' };
+                    const verificationStatus = verificationPatch.status
+                        || (verificationPatch.passed === true
+                            ? 'verified'
+                            : (verificationPatch.passed === false ? 'failed' : currentVerification.status));
+                    next.verification = {
+                        status: verificationStatus,
+                        note: compactString(verificationPatch.note, currentVerification.note || ''),
+                        updatedAt: nowTs(),
+                    };
+                }
+
+                if (status) {
+                    this._validateTransitionInState(
+                        { tasks: draftTasks },
+                        current,
+                        status,
+                        {
+                            status,
+                            verification: item.verification || next.verification,
+                            clearError: item.clearError === true,
+                        },
+                        {
+                            recordIntercept: false,
+                            strictMode: this.strictMode,
+                        }
+                    );
+                    next.status = status;
+                }
+
+                draftTasks[taskId] = next;
+            } else {
+                const nextTask = {
+                    id: taskId,
+                    subject: subject || `Task ${taskId}`,
+                    description: compactString(item.description, ''),
+                    activeForm,
+                    status: status && VALID_STATUSES.has(status) ? status : 'pending',
+                    owner: compactString(item.owner, ''),
+                    blockedBy: dedupeIdList(item.blockedBy),
+                    blocks: dedupeIdList(item.blocks),
+                    metadata: (item.metadata && typeof item.metadata === 'object') ? clone(item.metadata) : {},
+                    source: compactString(item.source, 'todo_write'),
+                    createdAt: nowTs(),
+                    updatedAt: nowTs(),
+                    startedAt: null,
+                    completedAt: null,
+                    failedAt: null,
+                    killedAt: null,
+                    verification: {
+                        status: (item.verification && item.verification.status) || 'pending',
+                        note: compactString(item.verification && item.verification.note, ''),
+                        updatedAt: nowTs(),
+                    },
+                    lastError: '',
+                    version: 1,
+                };
+
+                if (nextTask.status === 'in_progress') {
+                    this._validateTransitionInState(
+                        { tasks: draftTasks },
+                        { ...nextTask, status: 'pending' },
+                        'in_progress',
+                        nextTask,
+                        {
+                            recordIntercept: false,
+                            strictMode: this.strictMode,
+                        }
+                    );
+                }
+                if (nextTask.status === 'completed') {
+                    this._validateTransitionInState(
+                        { tasks: draftTasks },
+                        { ...nextTask, status: 'in_progress' },
+                        'completed',
+                        nextTask,
+                        {
+                            recordIntercept: false,
+                            strictMode: this.strictMode,
+                        }
+                    );
+                }
+                draftTasks[taskId] = nextTask;
+            }
+
+            normalizedItems.push({
+                ...item,
+                id: taskId,
+            });
+        }
+
+        let autoPromoteTaskId = null;
+        if (this.strictMode) {
+            const allTasks = Object.values(draftTasks || {});
+            const running = allTasks.filter((task) => task && task.status === 'in_progress');
+            if (running.length > 1) {
+                throw this._toKernelError(
+                    TASK_ERROR_CODES.TASK_MULTIPLE_IN_PROGRESS,
+                    'Strict mode: todo_write would produce multiple in_progress tasks',
+                    {
+                        inProgressTaskIds: running.map((task) => task.id),
+                    }
+                );
+            }
+            if (running.length === 0) {
+                const candidate = allTasks
+                    .filter((task) => task && task.status === 'pending')
+                    .sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0))[0];
+                autoPromoteTaskId = candidate ? candidate.id : null;
+            }
+        }
+
+        return {
+            items: normalizedItems,
+            autoPromoteTaskId,
         };
-        this._rememberIdempotency(options.idempotencyKey, result);
-        return result;
     }
 
     setApproval(approvalId, payload = {}, options = {}) {
         const id = String(approvalId || '').trim();
-        if (!id) throw new Error('approvalId is required');
+        if (!id) {
+            throw this._toKernelError(
+                TASK_ERROR_CODES.TASK_APPROVAL_ID_REQUIRED,
+                'approvalId is required'
+            );
+        }
         const ts = nowTs();
         const ttlMs = Number(options.ttlMs || this.defaultApprovalTtlMs);
         const expiresAt = ts + (Number.isFinite(ttlMs) && ttlMs > 0 ? ttlMs : this.defaultApprovalTtlMs);
@@ -1072,6 +1842,7 @@ class TaskKernel {
             + normalizeNonNegativeNumber(telemetry.strictIntercepts.invalidCompleteWithError);
         const usage = this._collectUsageTotals(tasks);
         const recovery = telemetry.recovery || {};
+        const budgetState = this.getBudgets();
 
         return {
             generatedAt: ts,
@@ -1104,6 +1875,14 @@ class TaskKernel {
             idempotencyHits: normalizeNonNegativeNumber(telemetry.idempotencyHits),
             transitions: clone(telemetry.transitions),
             lastUpdatedAt: normalizeNonNegativeNumber(telemetry.lastUpdatedAt),
+            budget: {
+                enabled: budgetState && budgetState.policy ? budgetState.policy.enabled !== false : true,
+                sessionWarnings: budgetState && budgetState.sessionBudget ? budgetState.sessionBudget.warnings.length : 0,
+                sessionViolations: budgetState && budgetState.sessionBudget ? budgetState.sessionBudget.violations.length : 0,
+                taskViolations: budgetState && Array.isArray(budgetState.taskViolations)
+                    ? budgetState.taskViolations.length
+                    : 0,
+            },
         };
     }
 
@@ -1239,8 +2018,12 @@ class TaskKernel {
             recovery: this._recoverySummary,
             telemetry: this.getTelemetrySnapshot(),
             metrics: this.getMetrics(),
+            resumeBrief: this.getResumeBrief({ limit: 20 }),
+            budgets: this.getBudgets(),
         });
     }
 }
 
 module.exports = TaskKernel;
+module.exports.TaskKernelError = TaskKernelError;
+module.exports.TASK_ERROR_CODES = TASK_ERROR_CODES;
