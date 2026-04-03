@@ -656,7 +656,13 @@ class RuntimeController {
         }
 
         if (name === 'agent.recovery' && this.server && typeof this.server.broadcastAgentRecovery === 'function') {
-            this.server.broadcastAgentRecovery(payload);
+            const recoveryPayload = payload && typeof payload === 'object'
+                ? { ...payload }
+                : {};
+            if (!recoveryPayload.correlationId) {
+                recoveryPayload.correlationId = `runtime:${name}:${Date.now()}`;
+            }
+            this.server.broadcastAgentRecovery(recoveryPayload);
         }
     }
 

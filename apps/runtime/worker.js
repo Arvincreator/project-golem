@@ -373,6 +373,24 @@ function getOrCreateGolem() {
             resumeBrief: controller.agentResumeBrief({ limit: 20 }),
             metrics,
         });
+        harnessRecorder.recordAgentEvent({
+            type: 'agent.recovery',
+            sessionId: recovery.nextSessionId || 'agent_session_recovery_virtual',
+            actor: 'system',
+            source: 'runtime_recovery',
+            correlationId: `agent-recovery-${seq}`,
+            session: {
+                id: recovery.nextSessionId || '',
+                status: 'running',
+                version: 0,
+                metadata: { workflow: { phase: 'research' } },
+                usage: {},
+            },
+            detail: {
+                recoveryType: 'startup',
+                summary: recovery,
+            },
+        });
         console.log(`📋 [AgentKernel:${golemId}] recovered pending=${recovery.pendingSessions}, running=${recovery.runningSessions}, blocked=${recovery.blockedSessions}, failed=${recovery.failedSessions}, next=${recovery.nextSessionId || 'none'}`);
     } catch (error) {
         console.warn(`⚠️ [AgentKernel:${golemId}] recovery summary failed: ${error.message}`);
@@ -1250,6 +1268,26 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
                         resumeBrief: controller.agentResumeBrief({ limit: 20 }),
                         metrics: controller.agentMetrics(),
                     });
+                    if (controller.harnessRecorder && typeof controller.harnessRecorder.recordAgentEvent === 'function') {
+                        controller.harnessRecorder.recordAgentEvent({
+                            type: 'agent.recovery',
+                            sessionId: agentRecovery.nextSessionId || 'agent_session_recovery_virtual',
+                            actor: 'system',
+                            source: 'runtime_recovery',
+                            correlationId: `agent-recovery-${seq}`,
+                            session: {
+                                id: agentRecovery.nextSessionId || '',
+                                status: 'running',
+                                version: 0,
+                                metadata: { workflow: { phase: 'research' } },
+                                usage: {},
+                            },
+                            detail: {
+                                recoveryType: 'chat_reset',
+                                summary: agentRecovery,
+                            },
+                        });
+                    }
                 }
                 const recoveryHint = recovery
                     ? `\n\n📋 任務恢復摘要：pending=${recovery.pendingCount}、in_progress=${recovery.inProgressCount}、blocked=${recovery.blockedCount}、next=${recovery.nextTaskId || 'none'}`
