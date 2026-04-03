@@ -45,6 +45,7 @@ describe('normalizeHarnessEvent', () => {
 
     test('produces the same payloadDigest regardless of object key order', () => {
         const first = normalizeHarnessEvent({
+            ts: '2026-04-03T00:00:00.000Z',
             golemId: 'golem-01',
             sessionId: 'session-99',
             action: 'task_create',
@@ -63,6 +64,7 @@ describe('normalizeHarnessEvent', () => {
         });
 
         const second = normalizeHarnessEvent({
+            ts: '2026-04-03T00:00:00.000Z',
             correlationId: 'corr-123',
             source: 'runtime',
             actor: 'harness',
@@ -85,6 +87,7 @@ describe('normalizeHarnessEvent', () => {
 
     test('normalizes nullable fields to null and keeps omitted and null inputs equivalent', () => {
         const omitted = normalizeHarnessEvent({
+            ts: '2026-04-03T00:00:00.000Z',
             golemId: 'golem-01',
             sessionId: 'session-99',
             action: 'task_create',
@@ -98,6 +101,7 @@ describe('normalizeHarnessEvent', () => {
         });
 
         const explicitNulls = normalizeHarnessEvent({
+            ts: '2026-04-03T00:00:00.000Z',
             golemId: 'golem-01',
             sessionId: 'session-99',
             action: 'task_create',
