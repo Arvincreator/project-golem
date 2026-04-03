@@ -139,4 +139,28 @@ describe('AgentKernel', () => {
         }
         throw new Error('Expected AGENT_MUTATION_DENIED to be thrown');
     });
+
+    test('mutation events include lineage fields for replay enforcement', () => {
+        const created = kernel.createSession({
+            objective: 'Lineage compliance',
+        }).session;
+
+        kernel.updateSession(created.id, {
+            status: 'running',
+        }, {
+            actor: 'tester',
+            source: 'agent_action',
+            correlationId: 'corr-lineage-1',
+        });
+
+        const events = kernel.getAuditEvents({ limit: 50 });
+        const updateEvent = events.find((event) => {
+            return event.type === 'agent.session.updated' && event.sessionId === created.id;
+        });
+
+        expect(updateEvent).toBeTruthy();
+        expect(updateEvent.actor).toBe('tester');
+        expect(updateEvent.source).toBe('agent_action');
+        expect(updateEvent.correlationId).toBe('corr-lineage-1');
+    });
 });

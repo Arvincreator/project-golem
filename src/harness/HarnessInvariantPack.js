@@ -31,7 +31,33 @@ function validatePhaseChain(events = []) {
     return violations;
 }
 
+function validateMutationLineage(events = []) {
+    const violations = [];
+    for (const event of events) {
+        const action = String(event && event.action ? event.action : '').trim();
+        const isMutation = action.includes('.created')
+            || action.includes('.updated')
+            || action.includes('.stopped')
+            || action.includes('.resume');
+        if (!isMutation) continue;
+
+        const actor = String(event && event.actor ? event.actor : '').trim();
+        const source = String(event && event.source ? event.source : '').trim();
+        const correlationId = String(event && event.correlationId ? event.correlationId : '').trim();
+
+        if (!actor || !source || !correlationId) {
+            violations.push({
+                code: 'MUTATION_LINEAGE_MISSING',
+                message: `lineage fields missing for ${action || 'unknown_action'}`,
+                eventId: event && event.eventId ? event.eventId : null,
+            });
+        }
+    }
+    return violations;
+}
+
 module.exports = {
     validatePhaseChain,
+    validateMutationLineage,
     PHASE_ORDER,
 };

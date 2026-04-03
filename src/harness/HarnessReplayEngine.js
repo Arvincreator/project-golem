@@ -1,4 +1,4 @@
-const { validatePhaseChain } = require('./HarnessInvariantPack');
+const { validatePhaseChain, validateMutationLineage } = require('./HarnessInvariantPack');
 
 function normalizeMode(value) {
     const mode = String(value || 'strict').trim().toLowerCase();
@@ -13,6 +13,7 @@ function replayTrace(input = {}) {
     const mode = normalizeMode(input.mode);
     const violations = [
         ...validatePhaseChain(events),
+        ...validateMutationLineage(events),
     ];
 
     if (mode === 'strict') {

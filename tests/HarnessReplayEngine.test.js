@@ -32,4 +32,22 @@ describe('HarnessReplayEngine', () => {
         expect(strict.violations.some((violation) => violation.code === 'UNKNOWN_STATUS')).toBe(true);
         expect(lenient.violations.some((violation) => violation.code === 'UNKNOWN_STATUS')).toBe(false);
     });
+
+    test('fails when mutation event lacks required lineage fields', () => {
+        const result = replayTrace({
+            mode: 'strict',
+            events: [{
+                action: 'agent.session.updated',
+                phase: 'research',
+                status: 'running',
+                sessionId: 's1',
+                actor: '',
+                source: '',
+                correlationId: '',
+            }],
+        });
+
+        expect(result.passed).toBe(false);
+        expect(result.violations.some((violation) => violation.code === 'MUTATION_LINEAGE_MISSING')).toBe(true);
+    });
 });

@@ -337,6 +337,25 @@ class AgentKernel {
         };
     }
 
+    _buildLineage(options = {}, fallbackSource = 'agent_action', context = {}) {
+        const safeContext = (context && typeof context === 'object') ? context : {};
+        const actor = compactText(options.actor, 'system');
+        const source = compactText(options.source, fallbackSource);
+        const baseKey = compactText(
+            safeContext.sessionId || safeContext.workerId || safeContext.action,
+            'agent'
+        );
+        const correlationId = compactText(options.correlationId, '') || `${baseKey}:${nowTs()}`;
+        const idempotencyKey = compactText(options.idempotencyKey, '') || null;
+        return {
+            actor,
+            source,
+            correlationId,
+            idempotencyKey,
+            decision: this._decisionFromOptions(options),
+        };
+    }
+
     _enforceDecision(actionName, options = {}, context = {}) {
         const decision = this._decisionFromOptions(options);
         if (!decision) return;
@@ -923,11 +942,14 @@ class AgentKernel {
         this._incrementTelemetryCounter('sessionsCreated', 1);
         this._recomputeRecoverySummary();
         this._persist();
+        const createLineage = this._buildLineage(options, 'agent_action', {
+            sessionId,
+            action: 'agent.session.created',
+        });
         this._emit('agent.session.created', {
             sessionId,
             session: clone(session),
-            actor: compactText(options.actor, 'system'),
-            source: compactText(options.source, 'agent_action'),
+            ...createLineage,
         });
 
         const result = { session: clone(session) };
@@ -1033,8 +1055,10 @@ class AgentKernel {
             previousStatus: previous.status,
             status: session.status,
             session: clone(session),
-            actor: compactText(options.actor, 'system'),
-            source: compactText(options.source, 'agent_action'),
+            ...this._buildLineage(options, 'agent_action', {
+                sessionId: session.id,
+                action: 'agent.session.updated',
+            }),
         };
         this._emit('agent.session.updated', eventPayload);
         if (session.status === SESSION_STATUSES.failed || session.status === SESSION_STATUSES.blocked) {
@@ -1042,7 +1066,7 @@ class AgentKernel {
                 sessionId: session.id,
                 status: session.status,
                 reason: session.lastError || 'session_transition',
-                source: compactText(options.source, 'agent_action'),
+                source: eventPayload.source,
             });
         }
 
@@ -1131,19 +1155,22 @@ class AgentKernel {
         this._incrementTelemetryCounter('workersCreated', 1);
         this._recomputeRecoverySummary();
         this._persist();
+        const spawnLineage = this._buildLineage(options, 'agent_action', {
+            sessionId: session.id,
+            workerId: worker.id,
+            action: 'agent.worker.created',
+        });
         this._emit('agent.worker.created', {
             sessionId: session.id,
             workerId: worker.id,
             worker: clone(worker),
-            actor: compactText(options.actor, 'system'),
-            source: compactText(options.source, 'agent_action'),
+            ...spawnLineage,
         });
         this._emit('agent.session.updated', {
             sessionId: session.id,
             status: session.status,
             session: clone(session),
-            source: compactText(options.source, 'agent_action'),
-            actor: compactText(options.actor, 'system'),
+            ...spawnLineage,
         });
 
         const result = {
@@ -1201,6 +1228,11 @@ class AgentKernel {
         const previousWorker = clone(worker);
         const previousSession = clone(session);
         const now = nowTs();
+        const updateLineage = this._buildLineage(options, 'agent_action', {
+            sessionId: session.id,
+            workerId: worker.id,
+            action: 'agent.worker.updated',
+        });
 
         try {
             if (patch.status !== undefined) {
@@ -1270,8 +1302,7 @@ class AgentKernel {
                 previousStatus: previousWorker.status,
                 status: worker.status,
                 worker: clone(worker),
-                actor: compactText(options.actor, 'system'),
-                source: compactText(options.source, 'agent_action'),
+                ...updateLineage,
             });
 
             if (reconcile.changed) {
@@ -1280,8 +1311,7 @@ class AgentKernel {
                     previousStatus: reconcile.from,
                     status: reconcile.to,
                     session: clone(session),
-                    actor: compactText(options.actor, 'system'),
-                    source: compactText(options.source, 'agent_action'),
+                    ...updateLineage,
                 });
             }
 
@@ -1291,7 +1321,7 @@ class AgentKernel {
                     workerId: worker.id,
                     status: worker.status,
                     reason: worker.lastError || 'worker_update',
-                    source: compactText(options.source, 'agent_action'),
+                    source: updateLineage.source,
                 });
             }
         } catch (error) {
@@ -1421,8 +1451,13 @@ class AgentKernel {
             workerId: compactText(input.workerId, ''),
         });
 
-        const actor = compactText(options.actor, 'system');
-        const source = compactText(options.source, 'agent_action');
+        const stopLineage = this._buildLineage(options, 'agent_action', {
+            sessionId: compactText(input.sessionId, ''),
+            workerId: compactText(input.workerId, ''),
+            action: 'agent.stop',
+        });
+        const actor = stopLineage.actor;
+        const source = stopLineage.source;
         const reason = compactText(input.reason || options.reason, 'manual-stop');
 
         this._incrementTelemetryCounter('stopCalls', 1);
@@ -1434,6 +1469,8 @@ class AgentKernel {
             }, {
                 actor,
                 source,
+                correlationId: stopLineage.correlationId,
+                decision: stopLineage.decision,
                 idempotencyKey: '',
             });
             const result = {
@@ -1471,8 +1508,7 @@ class AgentKernel {
                 workerId: worker.id,
                 status: worker.status,
                 worker: clone(worker),
-                actor,
-                source,
+                ...stopLineage,
             });
         }
 
@@ -1490,8 +1526,7 @@ class AgentKernel {
             sessionId: session.id,
             status: session.status,
             session: clone(session),
-            actor,
-            source,
+            ...stopLineage,
         });
 
         const result = {
@@ -1510,8 +1545,12 @@ class AgentKernel {
             sessionId: compactText(options.sessionId, ''),
         });
 
-        const actor = compactText(options.actor, 'system');
-        const source = compactText(options.source, 'agent_resume');
+        const resumeLineage = this._buildLineage(options, 'agent_resume', {
+            sessionId: compactText(options.sessionId, ''),
+            action: 'agent.resume',
+        });
+        const actor = resumeLineage.actor;
+        const source = resumeLineage.source;
         const targetSessionId = compactText(options.sessionId, '');
         const now = nowTs();
         const resumedSessions = [];
@@ -1548,8 +1587,7 @@ class AgentKernel {
                         previousStatus: beforeStatus,
                         status: worker.status,
                         worker: clone(worker),
-                        actor,
-                        source,
+                        ...resumeLineage,
                     });
                 }
             }
@@ -1563,8 +1601,7 @@ class AgentKernel {
                     previousStatus: beforeStatus,
                     status: session.status,
                     session: clone(session),
-                    actor,
-                    source,
+                    ...resumeLineage,
                 });
             } else if (RESUMABLE_SESSION_STATUSES.has(session.status)) {
                 resumedSessions.push(clone(session));
@@ -1590,8 +1627,7 @@ class AgentKernel {
             sessionIds: resumedSessions.map((session) => session.id),
             workerIds: resumedWorkers.map((worker) => worker.id),
             brief,
-            actor,
-            source,
+            ...resumeLineage,
         });
 
         this._rememberIdempotency(options.idempotencyKey, result);
@@ -1686,13 +1722,15 @@ class AgentKernel {
     setBudgetPolicy(policy = {}, options = {}) {
         this._enforceDecision('agent_budget_set', options, {});
         const normalized = this._normalizeBudgetPolicy(policy);
+        const budgetLineage = this._buildLineage(options, 'agent_budget', {
+            action: 'agent.budget',
+        });
         this.state.budgets = normalized;
         this._persist();
         this._emit('agent.session.updated', {
             sessionId: null,
             status: 'budget_policy_updated',
-            source: compactText(options.source, 'agent_budget'),
-            actor: compactText(options.actor, 'system'),
+            ...budgetLineage,
             policy: clone(normalized),
         });
         return { budgets: clone(normalized) };
