@@ -45,6 +45,7 @@ function main() {
 
     const events = readEvents(tracePath);
     const result = replayTrace({ mode, events });
+    result.successRate = result.passed ? 1 : 0;
     fs.writeFileSync(outputPath, JSON.stringify(result, null, 2), 'utf8');
 }
 

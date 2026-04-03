@@ -1,0 +1,1 @@
+{"eventId":"harness_evt_sample_1","sessionId":"agent_session_fixture","action":"agent.worker.created","phase":"research","status":"completed","actor":"system","source":"agent_action","correlationId":"fixture:1","version":1}
