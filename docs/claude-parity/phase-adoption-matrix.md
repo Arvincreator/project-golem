@@ -14,7 +14,7 @@
 | Phase 06 | Security & Permissions | adopt now | partial | `web-dashboard/server/security.js` + `TaskKernel` decision object；尚未達多層 hook + permission engine 完整度 |
 | Phase 07 | API & Model Architecture | adopt now | partial | `src/runtime/RuntimeController.js` + `apps/runtime/worker.js` + `web-dashboard/routes/api.tasks.js` |
 | Phase 08 | Special Features | defer | defer | 以核心任務連續性為主，特別功能維持延後 |
-| Phase 09 | Harness Engineering | adopt now | partial | task_event/task_recovery + dashboard socket；完整 harness/trace pipeline 尚未齊備 |
+| Phase 09 | Harness Engineering | adopt now | done (agent v1) | `src/harness/HarnessEventSchema.js`、`src/harness/HarnessTraceStore.js`、`src/harness/HarnessRecorder.js`、`src/harness/HarnessReplayEngine.js`、`scripts/harness/compare-baseline.js`、`scripts/harness/ci-gate.js`、`tests/Harness*.test.js`、`.github/workflows/ci.yml` |
 | Phase 10 | Cost & Quota | partial | partial | `TaskKernel` usage estimate + budget policy；provider billing adapter 先以 estimate fallback |
 
 ## 本輪新增證據（Task Continuity First）
@@ -33,9 +33,26 @@
   - `tests/CoordinatorEngine.test.js`
   - `tests/AgentConcurrencyMatrix.test.js`
   - `web-dashboard/routes/api.agents.js`（orchestration endpoint）
+- Agent Harness v1（event trace + replay + baseline compare + branch gate）：
+  - `src/harness/HarnessEventSchema.js`
+  - `src/harness/HarnessTraceStore.js`
+  - `src/harness/HarnessRecorder.js`
+  - `src/harness/HarnessInvariantPack.js`
+  - `src/harness/HarnessReplayEngine.js`
+  - `scripts/harness/replay-agent-trace.js`
+  - `scripts/harness/compare-baseline.js`
+  - `scripts/harness/ci-gate.js`
+  - `.github/workflows/ci.yml`
+  - `tests/HarnessEventSchema.test.js`
+  - `tests/HarnessTraceStore.test.js`
+  - `tests/HarnessRecorder.test.js`
+  - `tests/HarnessReplayEngine.test.js`
+  - `tests/HarnessBaselineCompare.test.js`
+  - `tests/HarnessCIGate.test.js`
+  - `tests/HarnessAgentIntegration.test.js`
 
 ## Gate 結論（更新）
 
 - 10 phase 映射：**達成（證據化）**
 - 「全部已落地」修正：**否，現為 partial-heavy，持續分里程碑收斂**
-- 下一階段優先：**M4 成本對帳精算（provider billing adapter 實帳）**
+- 下一階段優先：**Task-domain（`task_*`）納入同一條 harness replay/gate pipeline**
