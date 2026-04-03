@@ -17,6 +17,25 @@ function sha256(value) {
     return crypto.createHash('sha256').update(text).digest('hex');
 }
 
+function canonicalize(value) {
+    if (Array.isArray(value)) {
+        return value.map(canonicalize);
+    }
+
+    if (value && typeof value === 'object') {
+        return Object.keys(value).sort().reduce((acc, key) => {
+            acc[key] = canonicalize(value[key]);
+            return acc;
+        }, {});
+    }
+
+    return value;
+}
+
+function stableStringify(value) {
+    return JSON.stringify(canonicalize(value));
+}
+
 function normalizeHarnessEvent(event = {}) {
     const normalized = { ...event };
 
@@ -41,6 +60,7 @@ function normalizeHarnessEvent(event = {}) {
         : normalized.detail;
 
     const requiredFields = [
+        'traceId',
         'golemId',
         'sessionId',
         'action',
@@ -66,12 +86,12 @@ function normalizeHarnessEvent(event = {}) {
     delete digestBase.payloadDigest;
 
     if (!normalized.eventId) {
-        normalized.eventId = `harness_evt_${sha256({ ...digestBase, kind: 'eventId' }).slice(0, 16)}`;
+        normalized.eventId = `harness_evt_${sha256(stableStringify({ ...digestBase, kind: 'eventId' })).slice(0, 16)}`;
     } else if (!normalized.eventId.startsWith('harness_evt_')) {
         normalized.eventId = `harness_evt_${normalized.eventId}`;
     }
 
-    normalized.payloadDigest = sha256(digestBase);
+    normalized.payloadDigest = sha256(stableStringify(digestBase));
 
     return normalized;
 }
@@ -79,5 +99,7 @@ function normalizeHarnessEvent(event = {}) {
 module.exports = {
     compactText,
     sha256,
+    canonicalize,
+    stableStringify,
     normalizeHarnessEvent
 };

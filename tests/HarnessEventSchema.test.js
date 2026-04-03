@@ -3,6 +3,7 @@ const { normalizeHarnessEvent } = require('../src/harness/HarnessEventSchema');
 describe('normalizeHarnessEvent', () => {
     test('normalizes required fields, preserves lineage keys, and derives canonical digests', () => {
         const event = normalizeHarnessEvent({
+            eventId: 'evt-plain-1',
             golemId: '  golem-01  ',
             sessionId: '  session-99 ',
             action: '  task_create  ',
@@ -38,8 +39,62 @@ describe('normalizeHarnessEvent', () => {
         expect(event.detail).toBe('payload with extra spaces');
         expect(event.parentEventId).toBe('evt_parent_1');
         expect(event.rootEventId).toBe('evt_root_1');
-        expect(event.eventId).toMatch(/^harness_evt_/);
+        expect(event.eventId).toBe('harness_evt_evt-plain-1');
         expect(event.payloadDigest).toMatch(/^[a-f0-9]{64}$/);
+    });
+
+    test('produces the same payloadDigest regardless of object key order', () => {
+        const first = normalizeHarnessEvent({
+            golemId: 'golem-01',
+            sessionId: 'session-99',
+            action: 'task_create',
+            phase: 'emit',
+            status: 'ok',
+            actor: 'harness',
+            source: 'runtime',
+            version: '1.0.0',
+            correlationId: 'corr-123',
+            traceId: 'trace-abc',
+            usageSnapshot: {
+                alpha: 1,
+                beta: 2,
+                nested: { z: 3, a: 4 }
+            }
+        });
+
+        const second = normalizeHarnessEvent({
+            correlationId: 'corr-123',
+            source: 'runtime',
+            actor: 'harness',
+            status: 'ok',
+            phase: 'emit',
+            action: 'task_create',
+            sessionId: 'session-99',
+            golemId: 'golem-01',
+            traceId: 'trace-abc',
+            version: '1.0.0',
+            usageSnapshot: {
+                nested: { a: 4, z: 3 },
+                beta: 2,
+                alpha: 1
+            }
+        });
+
+        expect(first.payloadDigest).toBe(second.payloadDigest);
+    });
+
+    test('throws when traceId is missing', () => {
+        expect(() => normalizeHarnessEvent({
+            golemId: 'golem-01',
+            sessionId: 'session-99',
+            action: 'task_create',
+            phase: 'emit',
+            status: 'ok',
+            actor: 'harness',
+            source: 'runtime',
+            version: '1.0.0',
+            correlationId: 'corr-123'
+        })).toThrow(/missing required fields/i);
     });
 
     test('throws when required fields are missing', () => {
@@ -51,6 +106,7 @@ describe('normalizeHarnessEvent', () => {
             actor: 'harness',
             source: 'runtime',
             version: '1.0.0',
+            traceId: 'trace-abc',
             correlationId: 'corr-123'
         })).toThrow(/missing required fields/i);
     });
