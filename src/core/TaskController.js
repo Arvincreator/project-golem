@@ -111,6 +111,25 @@ class TaskController {
             agentKernel: this.agentKernel,
             agentRunner: this.agentRunner,
             strictMode: options.strictAgentMode !== false,
+            onOrchestrationEvent: (event) => {
+                if (this.harnessRecorder) {
+                    try {
+                        this.harnessRecorder.recordAgentEvent({
+                            ...event,
+                            actor: 'coordinator',
+                            source: compactText(event && event.source, 'agent_coordinator'),
+                        });
+                    } catch (error) {
+                        console.error(`[TaskController:${this.golemId}] orchestration harness record failed: ${error.message}`);
+                    }
+                }
+                if (!this._onAgentEvent) return;
+                try {
+                    this._onAgentEvent(event);
+                } catch (error) {
+                    console.error(`[TaskController:${this.golemId}] orchestration event callback failed: ${error.message}`);
+                }
+            },
         });
         this._rehydratePendingApprovals();
 

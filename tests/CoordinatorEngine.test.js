@@ -117,6 +117,25 @@ describe('CoordinatorEngine orchestration parity', () => {
         expect(state.nextAction.input.role).toBe('research');
     });
 
+    test('emits orchestration decision callback when evaluating next action', () => {
+        const decisions = [];
+        const callbackCoordinator = new CoordinatorEngine({
+            agentKernel: kernel,
+            strictMode: true,
+            onOrchestrationEvent: (event) => decisions.push(event),
+        });
+
+        const session = callbackCoordinator.createSession({
+            objective: 'decision event test',
+        }).session;
+
+        callbackCoordinator.getOrchestrationState(session.id);
+
+        expect(decisions.length).toBeGreaterThan(0);
+        expect(decisions[0].type).toBe('agent.orchestration.decision');
+        expect(decisions[0].sessionId).toBe(session.id);
+    });
+
     test('synthesis failure marks session failed with explicit reason', () => {
         const session = coordinator.createSession({
             objective: 'Handle synthesis failure',

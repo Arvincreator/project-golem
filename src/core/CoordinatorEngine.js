@@ -15,6 +15,14 @@ function compactText(value, fallback = '') {
     return text || fallback;
 }
 
+function clone(value) {
+    try {
+        return JSON.parse(JSON.stringify(value));
+    } catch (_error) {
+        return null;
+    }
+}
+
 function phaseIndex(phase) {
     const idx = PHASE_ORDER.indexOf(String(phase || '').trim().toLowerCase());
     return idx >= 0 ? idx : 0;
@@ -64,11 +72,27 @@ class CoordinatorEngine {
         this.agentKernel = options.agentKernel || null;
         this.agentRunner = options.agentRunner || null;
         this.strictMode = options.strictMode !== false;
+        this.onOrchestrationEvent = typeof options.onOrchestrationEvent === 'function'
+            ? options.onOrchestrationEvent
+            : null;
     }
 
     _ensureKernel() {
         if (!this.agentKernel) {
             throw new Error('CoordinatorEngine requires agentKernel');
+        }
+    }
+
+    _emitOrchestrationEvent(payload = {}) {
+        if (!this.onOrchestrationEvent) return;
+        try {
+            this.onOrchestrationEvent({
+                type: 'agent.orchestration.decision',
+                ts: Date.now(),
+                ...payload,
+            });
+        } catch (_error) {
+            // Intentionally ignore callback errors to keep orchestration resilient.
         }
     }
 
@@ -582,7 +606,17 @@ class CoordinatorEngine {
         const session = this.agentKernel.getSession(sessionId);
         if (!session) return null;
         const workers = this.agentKernel.listWorkers({ sessionId });
-        return this._buildOrchestrationState(session, workers);
+        const orchestration = this._buildOrchestrationState(session, workers);
+        if (orchestration) {
+            this._emitOrchestrationEvent({
+                sessionId: session.id,
+                phase: orchestration.currentPhase,
+                nextAction: orchestration.nextAction ? clone(orchestration.nextAction) : null,
+                blockers: Array.isArray(orchestration.blockers) ? orchestration.blockers.slice(0, 8) : [],
+                source: 'agent_coordinator',
+            });
+        }
+        return orchestration;
     }
 
     reconcileSession(sessionId, options = {}) {
