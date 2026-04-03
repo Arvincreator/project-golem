@@ -7,6 +7,8 @@
     "test": "jest",
     "test:coverage": "jest --coverage --runInBand",
     "test:security": "jest tests/safeguard.test.js",
+    "harness:replay": "node scripts/harness/replay-agent-trace.js",
+    "harness:compare": "node scripts/harness/compare-baseline.js",
     "arch:check": "node scripts/check-architecture-boundaries.js",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "build": "cd web-dashboard && npm run build",
