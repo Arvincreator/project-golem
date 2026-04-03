@@ -12,6 +12,33 @@ function compactText(value) {
     return value.trim().replace(/\s+/g, ' ');
 }
 
+function normalizeNullableText(value) {
+    const compacted = compactText(value);
+    if (compacted === undefined || compacted === null || compacted === '') {
+        return null;
+    }
+    return compacted;
+}
+
+function normalizeRequiredText(value) {
+    const compacted = compactText(value);
+    return typeof compacted === 'string' && compacted !== '' ? compacted : null;
+}
+
+function normalizeVersion(value) {
+    if (typeof value === 'number') {
+        return Number.isFinite(value) ? value : null;
+    }
+
+    const compacted = compactText(value);
+    if (typeof compacted !== 'string' || compacted === '') {
+        return null;
+    }
+
+    const parsed = Number(compacted);
+    return Number.isFinite(parsed) ? parsed : null;
+}
+
 function sha256(value) {
     const text = typeof value === 'string' ? value : JSON.stringify(value);
     return crypto.createHash('sha256').update(text).digest('hex');
@@ -41,20 +68,20 @@ function normalizeHarnessEvent(event = {}) {
 
     normalized.eventId = compactText(normalized.eventId);
     normalized.ts = compactText(normalized.ts) || new Date().toISOString();
-    normalized.traceId = compactText(normalized.traceId);
-    normalized.golemId = compactText(normalized.golemId);
-    normalized.sessionId = compactText(normalized.sessionId);
-    normalized.workerId = compactText(normalized.workerId);
-    normalized.action = compactText(normalized.action);
-    normalized.phase = compactText(normalized.phase);
-    normalized.status = compactText(normalized.status);
-    normalized.actor = compactText(normalized.actor);
-    normalized.source = compactText(normalized.source);
-    normalized.idempotencyKey = compactText(normalized.idempotencyKey);
-    normalized.version = compactText(normalized.version);
+    normalized.traceId = normalizeRequiredText(normalized.traceId);
+    normalized.golemId = normalizeRequiredText(normalized.golemId);
+    normalized.sessionId = normalizeRequiredText(normalized.sessionId);
+    normalized.workerId = normalizeNullableText(normalized.workerId);
+    normalized.action = normalizeRequiredText(normalized.action);
+    normalized.phase = normalizeRequiredText(normalized.phase);
+    normalized.status = normalizeRequiredText(normalized.status);
+    normalized.actor = normalizeRequiredText(normalized.actor);
+    normalized.source = normalizeRequiredText(normalized.source);
+    normalized.idempotencyKey = normalizeNullableText(normalized.idempotencyKey);
+    normalized.version = normalizeVersion(normalized.version);
     normalized.usageSnapshot = normalized.usageSnapshot === undefined ? null : normalized.usageSnapshot;
-    normalized.errorCode = compactText(normalized.errorCode);
-    normalized.correlationId = compactText(normalized.correlationId);
+    normalized.errorCode = normalizeNullableText(normalized.errorCode);
+    normalized.correlationId = normalizeRequiredText(normalized.correlationId);
     normalized.detail = typeof normalized.detail === 'string'
         ? compactText(normalized.detail)
         : normalized.detail;

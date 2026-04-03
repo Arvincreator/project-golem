@@ -11,7 +11,7 @@ describe('normalizeHarnessEvent', () => {
             status: '  ok  ',
             actor: '  harness ',
             source: '  runtime ',
-            version: ' 1.0.0 ',
+            version: ' 1.0 ',
             correlationId: '  corr-123 ',
             traceId: '  trace-abc ',
             workerId: '  worker-7 ',
@@ -30,7 +30,7 @@ describe('normalizeHarnessEvent', () => {
         expect(event.status).toBe('ok');
         expect(event.actor).toBe('harness');
         expect(event.source).toBe('runtime');
-        expect(event.version).toBe('1.0.0');
+        expect(event.version).toBe(1);
         expect(event.correlationId).toBe('corr-123');
         expect(event.traceId).toBe('trace-abc');
         expect(event.workerId).toBe('worker-7');
@@ -52,7 +52,7 @@ describe('normalizeHarnessEvent', () => {
             status: 'ok',
             actor: 'harness',
             source: 'runtime',
-            version: '1.0.0',
+            version: '1.0',
             correlationId: 'corr-123',
             traceId: 'trace-abc',
             usageSnapshot: {
@@ -72,7 +72,7 @@ describe('normalizeHarnessEvent', () => {
             sessionId: 'session-99',
             golemId: 'golem-01',
             traceId: 'trace-abc',
-            version: '1.0.0',
+            version: '1.0',
             usageSnapshot: {
                 nested: { a: 4, z: 3 },
                 beta: 2,
@@ -81,6 +81,77 @@ describe('normalizeHarnessEvent', () => {
         });
 
         expect(first.payloadDigest).toBe(second.payloadDigest);
+    });
+
+    test('normalizes nullable fields to null and keeps omitted and null inputs equivalent', () => {
+        const omitted = normalizeHarnessEvent({
+            golemId: 'golem-01',
+            sessionId: 'session-99',
+            action: 'task_create',
+            phase: 'emit',
+            status: 'ok',
+            actor: 'harness',
+            source: 'runtime',
+            version: '1.0',
+            correlationId: 'corr-123',
+            traceId: 'trace-abc'
+        });
+
+        const explicitNulls = normalizeHarnessEvent({
+            golemId: 'golem-01',
+            sessionId: 'session-99',
+            action: 'task_create',
+            phase: 'emit',
+            status: 'ok',
+            actor: 'harness',
+            source: 'runtime',
+            version: 1,
+            correlationId: 'corr-123',
+            traceId: 'trace-abc',
+            workerId: null,
+            idempotencyKey: null,
+            errorCode: null
+        });
+
+        expect(omitted.workerId).toBeNull();
+        expect(omitted.idempotencyKey).toBeNull();
+        expect(omitted.errorCode).toBeNull();
+        expect(explicitNulls.workerId).toBeNull();
+        expect(explicitNulls.idempotencyKey).toBeNull();
+        expect(explicitNulls.errorCode).toBeNull();
+        expect(omitted.payloadDigest).toBe(explicitNulls.payloadDigest);
+        expect(omitted.eventId).toBe(explicitNulls.eventId);
+    });
+
+    test('rejects non-string required lineage identifiers and normalizes version to a number', () => {
+        expect(() => normalizeHarnessEvent({
+            golemId: 123,
+            sessionId: 'session-99',
+            action: 'task_create',
+            phase: 'emit',
+            status: 'ok',
+            actor: 'harness',
+            source: 'runtime',
+            version: '1.0',
+            correlationId: 'corr-123',
+            traceId: 'trace-abc'
+        })).toThrow(/missing required fields/i);
+
+        const event = normalizeHarnessEvent({
+            golemId: 'golem-01',
+            sessionId: 'session-99',
+            action: 'task_create',
+            phase: 'emit',
+            status: 'ok',
+            actor: 'harness',
+            source: 'runtime',
+            version: '  2.50 ',
+            correlationId: 'corr-123',
+            traceId: 'trace-abc'
+        });
+
+        expect(event.version).toBe(2.5);
+        expect(typeof event.version).toBe('number');
     });
 
     test('throws when traceId is missing', () => {
@@ -92,7 +163,7 @@ describe('normalizeHarnessEvent', () => {
             status: 'ok',
             actor: 'harness',
             source: 'runtime',
-            version: '1.0.0',
+            version: '1.0',
             correlationId: 'corr-123'
         })).toThrow(/missing required fields/i);
     });
@@ -105,7 +176,7 @@ describe('normalizeHarnessEvent', () => {
             status: 'ok',
             actor: 'harness',
             source: 'runtime',
-            version: '1.0.0',
+            version: '1.0',
             traceId: 'trace-abc',
             correlationId: 'corr-123'
         })).toThrow(/missing required fields/i);
