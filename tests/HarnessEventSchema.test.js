@@ -127,6 +127,59 @@ describe('normalizeHarnessEvent', () => {
         expect(omitted.eventId).toBe(explicitNulls.eventId);
     });
 
+    test('treats non-string eventId as invalid input without throwing', () => {
+        const omitted = normalizeHarnessEvent({
+            ts: '2026-04-03T00:00:00.000Z',
+            golemId: 'golem-01',
+            sessionId: 'session-99',
+            action: 'task_create',
+            phase: 'emit',
+            status: 'ok',
+            actor: 'harness',
+            source: 'runtime',
+            version: '1.0',
+            correlationId: 'corr-123',
+            traceId: 'trace-abc'
+        });
+
+        const numericEventId = normalizeHarnessEvent({
+            ts: '2026-04-03T00:00:00.000Z',
+            eventId: 123,
+            golemId: 'golem-01',
+            sessionId: 'session-99',
+            action: 'task_create',
+            phase: 'emit',
+            status: 'ok',
+            actor: 'harness',
+            source: 'runtime',
+            version: '1.0',
+            correlationId: 'corr-123',
+            traceId: 'trace-abc'
+        });
+
+        const objectEventId = normalizeHarnessEvent({
+            ts: '2026-04-03T00:00:00.000Z',
+            eventId: { raw: true },
+            golemId: 'golem-01',
+            sessionId: 'session-99',
+            action: 'task_create',
+            phase: 'emit',
+            status: 'ok',
+            actor: 'harness',
+            source: 'runtime',
+            version: '1.0',
+            correlationId: 'corr-123',
+            traceId: 'trace-abc'
+        });
+
+        expect(numericEventId.eventId).toBe(omitted.eventId);
+        expect(numericEventId.payloadDigest).toBe(omitted.payloadDigest);
+        expect(objectEventId.eventId).toBe(omitted.eventId);
+        expect(objectEventId.payloadDigest).toBe(omitted.payloadDigest);
+        expect(numericEventId.eventId).toMatch(/^harness_evt_/);
+        expect(objectEventId.eventId).toMatch(/^harness_evt_/);
+    });
+
     test('rejects non-string required lineage identifiers and normalizes version to a number', () => {
         expect(() => normalizeHarnessEvent({
             golemId: 123,

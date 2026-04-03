@@ -112,10 +112,15 @@ function normalizeHarnessEvent(event = {}) {
     delete digestBase.eventId;
     delete digestBase.payloadDigest;
 
+    const rawEventId = compactText(normalized.eventId);
+    const canonicalEventId = `harness_evt_${sha256(stableStringify({ ...digestBase, kind: 'eventId' })).slice(0, 16)}`;
+
     if (!normalized.eventId) {
-        normalized.eventId = `harness_evt_${sha256(stableStringify({ ...digestBase, kind: 'eventId' })).slice(0, 16)}`;
-    } else if (!normalized.eventId.startsWith('harness_evt_')) {
-        normalized.eventId = `harness_evt_${normalized.eventId}`;
+        normalized.eventId = canonicalEventId;
+    } else if (typeof rawEventId === 'string') {
+        normalized.eventId = rawEventId.startsWith('harness_evt_') ? rawEventId : `harness_evt_${rawEventId}`;
+    } else {
+        normalized.eventId = canonicalEventId;
     }
 
     normalized.payloadDigest = sha256(stableStringify(digestBase));
