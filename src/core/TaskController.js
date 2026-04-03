@@ -64,6 +64,9 @@ class TaskController {
         this.pendingApprovalTtlMs = Number(options.pendingApprovalTtlMs || DEFAULT_PENDING_TASK_TTL_MS) || DEFAULT_PENDING_TASK_TTL_MS;
         this._onTaskEvent = typeof options.onTaskEvent === 'function' ? options.onTaskEvent : null;
         this._onAgentEvent = typeof options.onAgentEvent === 'function' ? options.onAgentEvent : null;
+        this.harnessRecorder = options.harnessRecorder && typeof options.harnessRecorder.recordAgentEvent === 'function'
+            ? options.harnessRecorder
+            : null;
         this.taskKernel = new TaskKernel({
             golemId: this.golemId,
             logDir: this.logDir,
@@ -85,6 +88,13 @@ class TaskController {
             strictMode: options.strictAgentMode !== false,
             maxWorkers: options.agentMaxWorkers || process.env.GOLEM_AGENT_MAX_WORKERS || 3,
             onEvent: (event) => {
+                if (this.harnessRecorder) {
+                    try {
+                        this.harnessRecorder.recordAgentEvent(event);
+                    } catch (error) {
+                        console.error(`[TaskController:${this.golemId}] harness record failed: ${error.message}`);
+                    }
+                }
                 if (!this._onAgentEvent) return;
                 try {
                     this._onAgentEvent(event);

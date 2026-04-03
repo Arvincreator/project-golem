@@ -74,6 +74,7 @@ const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 const GolemBrain = require('../../src/core/GolemBrain');
 const TaskController = require('../../src/core/TaskController');
+const { HarnessRecorder } = require('../../src/harness/HarnessRecorder');
 const AutonomyManager = require('../../src/managers/AutonomyManager');
 const ConversationManager = require('../../src/core/ConversationManager');
 const { NeuroShunter } = require('../../packages/protocol');
@@ -291,9 +292,14 @@ function getOrCreateGolem() {
         userDataDir: ConfigManager.MEMORY_BASE_DIR,
         logDir: ConfigManager.LOG_BASE_DIR
     });
+    const harnessRecorder = new HarnessRecorder({
+        golemId,
+        baseDir: path_sync.join(ConfigManager.LOG_BASE_DIR, 'harness', 'agent-traces'),
+    });
     const controller = new TaskController({
         golemId,
         logDir: ConfigManager.LOG_BASE_DIR,
+        harnessRecorder,
         onTaskEvent: (event) => {
             WorkerBridge.sendEvent('task.event', {
                 ...(event || {}),
