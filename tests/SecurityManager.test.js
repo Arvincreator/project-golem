@@ -81,15 +81,21 @@ describe('SecurityManager', () => {
         expect(result.level).toBe('BLOCKED');
     });
 
+    test('assess should return SAFE for baseline basic command even when TRUST_SYSTEM_COMMANDS is false', () => {
+        process.env.GOLEM_TRUST_SYSTEM_COMMANDS = 'false';
+        const result = sm.assess('ls -laG');
+        expect(result.level).toBe('SAFE');
+    });
+
     test('assess should return SAFE for system safe command when TRUST_SYSTEM_COMMANDS is true', () => {
         process.env.GOLEM_TRUST_SYSTEM_COMMANDS = 'true';
-        const result = sm.assess('ls');
+        const result = sm.assess('cat README.md');
         expect(result.level).toBe('SAFE');
     });
 
     test('assess should return WARNING for system safe command when TRUST_SYSTEM_COMMANDS is false', () => {
         process.env.GOLEM_TRUST_SYSTEM_COMMANDS = 'false';
-        const result = sm.assess('ls');
+        const result = sm.assess('cat README.md');
         expect(result.level).toBe('WARNING');
     });
 

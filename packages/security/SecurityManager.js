@@ -34,6 +34,7 @@ class SecurityManager {
             ]
         };
         this.SAFE_COMMANDS = ['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check'];
+        this.BASELINE_SAFE_COMMANDS = ['ls', 'dir', 'pwd', 'date', 'echo', 'cat', 'grep', 'find', 'whoami', 'tail', 'head', 'df', 'free', 'Get-ChildItem', 'Select-String', 'golem-check'];
         this.BLOCK_PATTERNS = [/rm\s+-rf\s+\//, /rd\s+\/s\s+\/q\s+[c-zC-Z]:\\$/, />\s*\/dev\/sd/, /:(){:|:&};:/, /mkfs/, /Format-Volume/, /dd\s+if=/, /chmod\s+[-]x\s+/];
     }
     assess(cmd) {
@@ -91,7 +92,10 @@ class SecurityManager {
         // 1. Check user-defined whitelist
         if (userWhitelist.includes(baseCmd)) return { level: 'SAFE' };
 
-        // 2. Check system safety library (only if enabled)
+        // 2. Always allow baseline read-only commands (even if trust system library is disabled)
+        if (this.BASELINE_SAFE_COMMANDS.includes(baseCmd)) return { level: 'SAFE' };
+
+        // 3. Check system safety library (only if enabled)
         if (trustSystem && this.SAFE_COMMANDS.includes(baseCmd)) return { level: 'SAFE' };
 
         // 這些危險指令會直接進 DANGER
