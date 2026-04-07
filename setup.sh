@@ -157,6 +157,8 @@ case "${1:-}" in
         echo "  2. 開啟瀏覽器 http://localhost:3000"
         echo "  3. 進入「系統設定」完成初始化即可"
         echo ""
+        echo "MemPalace 核心記憶 MCP 已內建為常駐服務，無需手動到 Dashboard 新增。"
+        echo ""
         echo "ENVIRONMENT:"
         echo "  NO_COLOR=1    停用所有顏色輸出 (適用於 CI/管線)"
         echo ""

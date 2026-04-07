@@ -52,27 +52,40 @@ module.exports = function registerMcpRoutes(server) {
         const MCPManager = require('../../src/mcp/MCPManager');
         const mgr = MCPManager.getInstance();
 
-        if (!mgr._loaded) {
-            if (!mgr._broadcastWired) {
-                mgr._broadcastWired = true;
-                mgr.on('mcpLog', (entry) => {
-                    const preview = entry.success
-                        ? JSON.stringify(entry.result || '').slice(0, 120)
-                        : `ERROR: ${entry.error}`;
+        if (!mgr._broadcastWired) {
+            mgr._broadcastWired = true;
+            mgr.on('mcpLog', (entry) => {
+                const preview = entry.success
+                    ? JSON.stringify(entry.result || '').slice(0, 120)
+                    : `ERROR: ${entry.error}`;
 
-                    server.broadcastLog({
-                        time: new Date().toLocaleTimeString('zh-TW', { hour12: false }),
-                        msg: `[MCP] ${entry.server}/${entry.tool} (${entry.durationMs}ms) ${entry.success ? '✅' : '❌'} ${preview}`,
-                        type: 'mcp',
-                        raw: JSON.stringify(entry),
-                        mcpEntry: entry
-                    });
+                server.broadcastLog({
+                    time: new Date().toLocaleTimeString('zh-TW', { hour12: false }),
+                    msg: `[MCP] ${entry.server}/${entry.tool} (${entry.durationMs}ms) ${entry.success ? '✅' : '❌'} ${preview}`,
+                    type: 'mcp',
+                    raw: JSON.stringify(entry),
+                    mcpEntry: entry
                 });
-            }
-            await mgr.load();
+            });
         }
+        await mgr.load();
 
         return mgr;
+    };
+
+    const assertMutableServer = (mgr, name) => {
+        const existing = mgr.getServer(name);
+        if (!existing) {
+            const err = new Error(`MCP server "${name}" not found`);
+            err.status = 404;
+            throw err;
+        }
+        if (existing.isCore === true) {
+            const err = new Error(`MCP core server "${name}" is managed by system and cannot be modified`);
+            err.status = 403;
+            throw err;
+        }
+        return existing;
     };
 
     router.get('/api/mcp/servers', async (req, res) => {
@@ -104,10 +117,7 @@ module.exports = function registerMcpRoutes(server) {
         try {
             const name = sanitizeServerName(req.params.name);
             const mgr = await getMCPManager();
-            const existing = mgr.getServer(name);
-            if (!existing) {
-                return res.status(404).json({ error: `MCP server "${name}" not found` });
-            }
+            const existing = assertMutableServer(mgr, name);
 
             const merged = sanitizeServerPayload({
                 ...existing,
@@ -120,7 +130,7 @@ module.exports = function registerMcpRoutes(server) {
             return res.json({ success: true, server: entry });
         } catch (e) {
             console.error('[MCP] Update server error:', e);
-            const status = /Invalid|not allowed|Missing/i.test(e.message) ? 400 : 500;
+            const status = e.status || (/Invalid|not allowed|Missing/i.test(e.message) ? 400 : 500);
             return res.status(status).json({ error: e.message });
         }
     });
@@ -129,12 +139,13 @@ module.exports = function registerMcpRoutes(server) {
         try {
             const name = sanitizeServerName(req.params.name);
             const mgr = await getMCPManager();
+            assertMutableServer(mgr, name);
             await mgr.removeServer(name);
             console.log(`[MCP] Removed server: ${name}`);
             return res.json({ success: true });
         } catch (e) {
             console.error('[MCP] Remove server error:', e);
-            const status = /Invalid/i.test(e.message) ? 400 : 500;
+            const status = e.status || (/Invalid/i.test(e.message) ? 400 : 500);
             return res.status(status).json({ error: e.message });
         }
     });
@@ -144,22 +155,43 @@ module.exports = function registerMcpRoutes(server) {
             const name = sanitizeServerName(req.params.name);
             const { enabled } = req.body;
             const mgr = await getMCPManager();
+            const existing = mgr.getServer(name);
+            if (!existing) {
+                return res.status(404).json({ error: `MCP server "${name}" not found` });
+            }
+            if (existing.isCore === true && !Boolean(enabled)) {
+                return res.status(403).json({ error: `MCP core server "${name}" must stay enabled` });
+            }
             const entry = await mgr.toggleServer(name, Boolean(enabled));
             return res.json({ success: true, server: entry });
         } catch (e) {
             console.error('[MCP] Toggle server error:', e);
-            const status = /Invalid/i.test(e.message) ? 400 : 500;
+            const status = e.status || (/Invalid/i.test(e.message) ? 400 : 500);
             return res.status(status).json({ error: e.message });
         }
     });
 
     router.get('/api/mcp/servers/:name/tools', async (req, res) => {
+        const name = sanitizeServerName(req.params.name);
         try {
-            const name = sanitizeServerName(req.params.name);
             const mgr = await getMCPManager();
             const tools = await mgr.listTools(name);
             return res.json({ tools });
         } catch (e) {
+            let current = null;
+            try {
+                const mgr = await getMCPManager();
+                current = mgr.getServer(name);
+            } catch (_) { /* noop */ }
+            if (/not connected/i.test(String(e && e.message || '')) && current) {
+                return res.json({
+                    tools: Array.isArray(current.cachedTools) ? current.cachedTools : [],
+                    stale: true,
+                    connected: false,
+                    coreStatus: current.coreStatus || null
+                });
+            }
+
             console.error('[MCP] List tools error:', e);
             const status = /Invalid/i.test(e.message) ? 400 : 500;
             return res.status(status).json({ error: e.message });

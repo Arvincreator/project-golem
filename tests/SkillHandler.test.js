@@ -1,9 +1,21 @@
-const SkillHandler = require('../src/core/action_handlers/SkillHandler');
-const SkillManager = require('../src/managers/SkillManager');
+const mockMcpManager = {
+    load: jest.fn(),
+    callTool: jest.fn(),
+    getServers: jest.fn(),
+    listTools: jest.fn()
+};
 
 jest.mock('../src/managers/SkillManager', () => ({
     getSkill: jest.fn()
 }));
+
+jest.mock('../src/mcp/MCPManager', () => ({
+    getInstance: jest.fn(() => mockMcpManager)
+}));
+
+const SkillHandler = require('../src/core/action_handlers/SkillHandler');
+const SkillManager = require('../src/managers/SkillManager');
+const MCPManager = require('../src/mcp/MCPManager');
 
 describe('SkillHandler', () => {
     let mockCtx;
@@ -37,7 +49,7 @@ describe('SkillHandler', () => {
         SkillManager.getSkill.mockReturnValue(mockSkill);
 
         const result = await SkillHandler.execute(mockCtx, mockAct, mockBrain);
-        
+
         expect(result).toBe(true);
         expect(mockCtx.reply).toHaveBeenCalledWith(expect.stringContaining('執行技能: **TestSkill**'));
         expect(mockSkill.run).toHaveBeenCalledWith(expect.objectContaining({
@@ -56,7 +68,7 @@ describe('SkillHandler', () => {
         SkillManager.getSkill.mockReturnValue(mockSkill);
 
         await SkillHandler.execute(mockCtx, mockAct, mockBrain);
-        
+
         expect(mockCtx.reply).toHaveBeenCalledWith(expect.stringContaining('...(已截斷)'));
         const lastReplyArg = mockCtx.reply.mock.calls[1][0];
         expect(lastReplyArg.length).toBeLessThan(4000);
@@ -70,7 +82,26 @@ describe('SkillHandler', () => {
         SkillManager.getSkill.mockReturnValue(mockSkill);
 
         await SkillHandler.execute(mockCtx, mockAct, mockBrain);
-        
+
         expect(mockCtx.reply).toHaveBeenCalledWith(expect.stringContaining('技能執行錯誤: Skill failed randomly'));
+    });
+
+    test('execute should auto-route MCP tool action when action equals tool name', async () => {
+        SkillManager.getSkill.mockReturnValue(null);
+        mockMcpManager.load.mockResolvedValue();
+        mockMcpManager.getServers.mockReturnValue([
+            { name: 'mempalace', enabled: true, connected: true, cachedTools: [] }
+        ]);
+        mockMcpManager.listTools.mockResolvedValue([{ name: 'mempalace_status', description: 'status' }]);
+        mockMcpManager.callTool.mockResolvedValue({
+            content: [{ type: 'text', text: 'ok' }]
+        });
+
+        const result = await SkillHandler.execute(mockCtx, { action: 'mempalace_status' }, mockBrain);
+
+        expect(result).toBe(true);
+        expect(MCPManager.getInstance).toHaveBeenCalled();
+        expect(mockMcpManager.callTool).toHaveBeenCalledWith('mempalace', 'mempalace_status', {});
+        expect(mockCtx.reply).toHaveBeenCalledWith(expect.stringContaining('[MCP:mempalace/mempalace_status]'));
     });
 });

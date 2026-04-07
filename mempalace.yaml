@@ -1,0 +1,4 @@
+wing: memplace
+rooms:
+  - name: general
+    description: General project files

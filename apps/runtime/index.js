@@ -77,6 +77,7 @@ const InteractiveMultiAgent = require('../../src/core/InteractiveMultiAgent');
 const introspection = require('../../src/services/Introspection');
 const ActionQueue = require('../../src/core/ActionQueue'); // ✨ [v9.1] Dual-Queue Architecture
 const PromptShortcutManager = require('../../src/managers/PromptShortcutManager');
+const MCPManager = require('../../src/mcp/MCPManager');
 const { normalizeShortcutKey } = PromptShortcutManager;
 
 
@@ -256,6 +257,13 @@ function getOrCreateGolem() {
 (async () => {
     if (process.env.GOLEM_TEST_MODE === 'true') { console.log('🚧 GOLEM_TEST_MODE active.'); return; }
 
+    try {
+        await MCPManager.getInstance().load();
+        console.log('🔌 [Core MCP] Always-on MCP manager bootstrapped.');
+    } catch (e) {
+        console.warn(`⚠️ [Core MCP] Boot preload failed: ${e.message}`);
+    }
+
     // 🎯 v9.1.5 解耦：啟動時不再遍歷建立 initialGolems
     // 也延後架構掃描與巡檢，直到第一個實體啟動
     let _isCoreInitialized = false;
@@ -268,6 +276,14 @@ function getOrCreateGolem() {
 
         console.log('🧠 [Introspection] Scanning project structure...');
         await introspection.getStructure().catch(e => console.warn('⚠️ Introspection failed:', e.message));
+
+        try {
+            const mcpManager = MCPManager.getInstance();
+            await mcpManager.load();
+            console.log('🔌 [Core MCP] MCP services initialized.');
+        } catch (e) {
+            console.warn(`⚠️ [Core MCP] Failed to initialize at boot: ${e.message}`);
+        }
 
         // 啟動排程器
         setInterval(runTieredCompression, 6 * 60 * 60 * 1000);

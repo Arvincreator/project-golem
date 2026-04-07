@@ -10,7 +10,7 @@ import { useI18n } from "@/components/I18nProvider";
 import {
     Plug, Plus, Trash2, RefreshCw, Zap,
     CheckCircle, XCircle, AlertCircle, ToggleLeft,
-    ToggleRight, Edit2, X, Terminal, List, Play, Cpu
+    ToggleRight, Edit2, X, Terminal, List, Play, Cpu, ShieldCheck, ShieldAlert, Lock
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -22,6 +22,11 @@ interface MCPServer {
     enabled:     boolean;
     description: string;
     connected:   boolean;
+    isCore?:     boolean;
+    coreStatus?: string;
+    coreLastError?: string | null;
+    coreReconnectAttempt?: number;
+    coreNextRetryAt?: string | null;
 }
 
 interface MCPTool {
@@ -67,9 +72,17 @@ function ServerCard({
 }) {
     const { locale } = useI18n();
     const isEnglish = locale === "en";
+    const isCore = server.isCore === true;
+    const coreStatus = String(server.coreStatus || "").toLowerCase();
+    const isCoreHealthy = !isCore || coreStatus === "ok";
     const statusColor = server.connected
         ? 'text-emerald-400' : server.enabled
         ? 'text-amber-400'   : 'text-zinc-500';
+    const coreStatusColor = isCoreHealthy
+        ? 'text-emerald-400'
+        : (coreStatus === 'bootstrapping' || coreStatus === 'reconnecting')
+            ? 'text-amber-400'
+            : 'text-red-400';
 
     return (
         <div
@@ -92,47 +105,74 @@ function ServerCard({
                     <Plug className={`w-4 h-4 ${selected ? 'text-blue-400' : 'text-muted-foreground'}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-foreground truncate">{server.name}</p>
+                    <div className="flex items-center gap-2 min-w-0">
+                        <p className="font-semibold text-sm text-foreground truncate">{server.name}</p>
+                        {isCore && (
+                            <span className="px-1.5 py-0.5 rounded border border-emerald-400/40 bg-emerald-500/10 text-emerald-300 text-[10px] font-bold tracking-wide">
+                                CORE
+                            </span>
+                        )}
+                    </div>
                     <p className="text-xs text-muted-foreground mt-0.5 font-mono truncate">
                         {server.command} {server.args?.join(' ')}
                     </p>
                     {server.description && (
                         <p className="text-xs text-muted-foreground/70 mt-1 truncate">{server.description}</p>
                     )}
-                    <p className={`text-xs mt-1.5 font-medium ${statusColor}`}>
-                        {server.connected
-                            ? (isEnglish ? "● Connected" : "● 已連線")
-                            : server.enabled
-                                ? (isEnglish ? "● Connecting..." : "● 連線中...")
-                                : (isEnglish ? "○ Disabled" : "○ 已停用")}
-                    </p>
+                    {isCore ? (
+                        <p className={`text-xs mt-1.5 font-medium ${coreStatusColor}`}>
+                            {coreStatus === 'ok' && (isEnglish ? "● Core Healthy" : "● 核心正常")}
+                            {coreStatus === 'bootstrapping' && (isEnglish ? "● Core Bootstrapping..." : "● 核心建庫中...")}
+                            {coreStatus === 'reconnecting' && (isEnglish ? "● Core Reconnecting..." : "● 核心重連中...")}
+                            {(coreStatus === 'error' || !coreStatus) && (isEnglish ? "● Core Degraded" : "● 核心異常")}
+                        </p>
+                    ) : (
+                        <p className={`text-xs mt-1.5 font-medium ${statusColor}`}>
+                            {server.connected
+                                ? (isEnglish ? "● Connected" : "● 已連線")
+                                : server.enabled
+                                    ? (isEnglish ? "● Connecting..." : "● 連線中...")
+                                    : (isEnglish ? "○ Disabled" : "○ 已停用")}
+                        </p>
+                    )}
                 </div>
             </div>
 
             {/* Action bar */}
             <div className="flex items-center gap-1 mt-3 pt-3 border-t border-border/50 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                    onClick={(e) => { e.stopPropagation(); onToggle(!server.enabled); }}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg text-xs hover:bg-secondary transition-colors"
-                    title={server.enabled ? (isEnglish ? "Disable" : "停用") : (isEnglish ? "Enable" : "啟用")}
-                >
-                    {server.enabled
-                        ? <><ToggleRight className="w-3.5 h-3.5 text-blue-400" /><span className="text-blue-400">{isEnglish ? "Enabled" : "啟用中"}</span></>
-                        : <><ToggleLeft  className="w-3.5 h-3.5 text-zinc-500" /><span className="text-zinc-500">{isEnglish ? "Disabled" : "已停用"}</span></>
-                    }
-                </button>
+                {isCore ? (
+                    <div className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">
+                        <Lock className="w-3.5 h-3.5" />
+                        <span>{isEnglish ? "System managed" : "系統核心管理"}</span>
+                    </div>
+                ) : (
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onToggle(!server.enabled); }}
+                        className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg text-xs hover:bg-secondary transition-colors"
+                        title={server.enabled ? (isEnglish ? "Disable" : "停用") : (isEnglish ? "Enable" : "啟用")}
+                    >
+                        {server.enabled
+                            ? <><ToggleRight className="w-3.5 h-3.5 text-blue-400" /><span className="text-blue-400">{isEnglish ? "Enabled" : "啟用中"}</span></>
+                            : <><ToggleLeft  className="w-3.5 h-3.5 text-zinc-500" /><span className="text-zinc-500">{isEnglish ? "Disabled" : "已停用"}</span></>
+                        }
+                    </button>
+                )}
                 <button onClick={(e) => { e.stopPropagation(); onTest(); }}
                     className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-amber-400 transition-colors" title={isEnglish ? "Test connection" : "測試連線"}>
                     <Zap className="w-3.5 h-3.5" />
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); onEdit(); }}
-                    className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-blue-400 transition-colors" title={isEnglish ? "Edit" : "編輯"}>
-                    <Edit2 className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={(e) => { e.stopPropagation(); onDelete(); }}
-                    className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-red-400 transition-colors" title={isEnglish ? "Delete" : "刪除"}>
-                    <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                {!isCore && (
+                    <>
+                        <button onClick={(e) => { e.stopPropagation(); onEdit(); }}
+                            className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-blue-400 transition-colors" title={isEnglish ? "Edit" : "編輯"}>
+                            <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button onClick={(e) => { e.stopPropagation(); onDelete(); }}
+                            className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-red-400 transition-colors" title={isEnglish ? "Delete" : "刪除"}>
+                            <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                    </>
+                )}
             </div>
         </div>
     );
@@ -195,6 +235,15 @@ function ToolInspector({ server }: { server: MCPServer | null }) {
             {!server.connected && !isLoading && (
                 <div className="m-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm flex items-center gap-2">
                     <AlertCircle className="w-4 h-4 flex-shrink-0" /> {isEnglish ? "Server is offline. Enable it first." : "Server 未連線，請先啟用"}
+                </div>
+            )}
+            {server.isCore === true && server.coreLastError && (
+                <div className="mx-4 mb-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm flex items-start gap-2">
+                    <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                    <div>
+                        <p className="font-semibold">{isEnglish ? "Core warning" : "核心告警"}</p>
+                        <p className="text-xs opacity-90 break-all">{server.coreLastError}</p>
+                    </div>
                 </div>
             )}
 
@@ -427,6 +476,19 @@ export default function MCPPage() {
     const [testResult,  setTestResult]  = useState<{ server: string; ok: boolean; msg: string } | null>(null);
     const [injecting,   setInjecting]   = useState(false);
     const [showReminder, setShowReminder] = useState(false);
+    const coreServers = useMemo(() => servers.filter((s) => s.isCore === true), [servers]);
+    const degradedCoreServers = useMemo(
+        () => coreServers.filter((s) => {
+            const status = String(s.coreStatus || '').toLowerCase();
+            if (!s.connected) return status !== 'bootstrapping';
+            return status === 'error' || status === 'reconnecting';
+        }),
+        [coreServers]
+    );
+    const bootstrappingCoreServers = useMemo(
+        () => coreServers.filter((s) => String(s.coreStatus || '').toLowerCase() === 'bootstrapping'),
+        [coreServers]
+    );
 
     const showToast = (msg: string, ok = true) => {
         if (ok) {
@@ -480,6 +542,11 @@ export default function MCPPage() {
 
     // ── Actions ───────────────────────────────────────────────────
     const handleToggle = async (name: string, enabled: boolean) => {
+        const target = servers.find((s) => s.name === name);
+        if (target?.isCore && !enabled) {
+            showToast(isEnglish ? "Core server cannot be disabled" : "核心服務不可停用", false);
+            return;
+        }
         await apiPostWrite(
             apiUrl(`/api/mcp/servers/${encodeURIComponent(name)}/toggle`),
             { enabled }
@@ -487,7 +554,7 @@ export default function MCPPage() {
         showToast(enabled
             ? (isEnglish ? `${name} enabled` : `${name} 已啟用`)
             : (isEnglish ? `${name} disabled` : `${name} 已停用`));
-        if (enabled) setShowReminder(true);
+        if (enabled && !target?.isCore) setShowReminder(true);
         await fetchServers();
     };
 
@@ -514,6 +581,11 @@ export default function MCPPage() {
     };
 
     const handleDelete = async (name: string) => {
+        const target = servers.find((s) => s.name === name);
+        if (target?.isCore) {
+            showToast(isEnglish ? "Core server cannot be deleted" : "核心服務不可刪除", false);
+            return;
+        }
         if (!confirm(isEnglish ? `Delete "${name}"?` : `確定要刪除 "${name}"？`)) return;
         await apiDeleteWrite(apiUrl(`/api/mcp/servers/${encodeURIComponent(name)}`));
         showToast(isEnglish ? `${name} deleted` : `${name} 已刪除`);
@@ -544,6 +616,10 @@ export default function MCPPage() {
 
     const handleSave = async (data: Partial<MCPServer>) => {
         const isEdit = !!dialog?.initial?.name;
+        if (isEdit && dialog?.initial?.isCore) {
+            showToast(isEnglish ? "Core server cannot be modified" : "核心服務不可修改", false);
+            return;
+        }
         const url = isEdit
             ? apiUrl(`/api/mcp/servers/${encodeURIComponent(dialog!.initial!.name!)}`)
             : apiUrl('/api/mcp/servers');
@@ -618,6 +694,32 @@ export default function MCPPage() {
                 }`}>
                     {testResult.ok ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
                     <span><strong>{testResult.server}</strong> — {testResult.msg}</span>
+                </div>
+            )}
+            {degradedCoreServers.length > 0 && (
+                <div className="mx-6 mt-3 p-3 rounded-xl border border-red-500/40 bg-red-500/10 text-red-200 flex items-start gap-3 flex-shrink-0">
+                    <ShieldAlert className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm">
+                        <p className="font-semibold">
+                            {isEnglish ? "Core MCP degraded" : "核心 MCP 服務異常"}
+                        </p>
+                        <p className="text-xs opacity-90">
+                            {isEnglish ? "MemPalace is a required core service. The system is retrying automatically." : "MemPalace 為核心服務，系統正在自動重試連線。"}
+                        </p>
+                    </div>
+                </div>
+            )}
+            {degradedCoreServers.length === 0 && bootstrappingCoreServers.length > 0 && (
+                <div className="mx-6 mt-3 p-3 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-200 flex items-start gap-3 flex-shrink-0">
+                    <ShieldCheck className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm">
+                        <p className="font-semibold">
+                            {isEnglish ? "Core bootstrapping in progress" : "核心建庫作業進行中"}
+                        </p>
+                        <p className="text-xs opacity-90">
+                            {isEnglish ? "Initial MemPalace indexing runs in background; no manual setup is required." : "MemPalace 首次建庫正在背景執行，無需手動設定。"}
+                        </p>
+                    </div>
                 </div>
             )}
 

@@ -205,7 +205,7 @@ function Start-ConfigWizard {
 # ─── Step 4: 安裝核心依賴 ────────────────────────────────
 function Step-InstallCore {
     Write-Host ''
-    Write-Host '[4/6] 正在安裝後端核心依賴...' -ForegroundColor Cyan
+    Write-Host '[4/7] 正在安裝後端核心依賴...' -ForegroundColor Cyan
     npm install
     if ($LASTEXITCODE -ne 0) {
         Write-Host '   [ERROR] npm install 失敗，請檢查網路連線。' -ForegroundColor Red
@@ -225,10 +225,98 @@ function Step-InstallCore {
     return $true
 }
 
+function Step-InstallMemPalace {
+    Write-Host ''
+    Write-Host '[5/7] 正在安裝 MemPalace 核心...' -ForegroundColor Cyan
+
+    $mempalaceEnabled = $env:GOLEM_MEMPALACE_ENABLED
+    if ([string]::IsNullOrWhiteSpace($mempalaceEnabled)) { $mempalaceEnabled = 'true' }
+    if ($mempalaceEnabled.Trim().ToLower() -in @('false', '0', 'no', 'off')) {
+        Write-Host '   [WARN] GOLEM_MEMPALACE_ENABLED=false，略過安裝。' -ForegroundColor Yellow
+        return $true
+    }
+
+    $mempalaceDir = Join-Path $PSScriptRoot 'mempalace'
+
+    $pythonCmd = $null
+    $pythonArgs = @()
+    if (Get-Command python -ErrorAction SilentlyContinue) {
+        $pythonCmd = 'python'
+    } elseif (Get-Command py -ErrorAction SilentlyContinue) {
+        $pythonCmd = 'py'
+        $pythonArgs = @('-3')
+    }
+
+    if (-not $pythonCmd) {
+        Write-Host '   [WARN] 未找到 Python 3.9+，MemPalace 會在執行時顯示核心告警並重試。' -ForegroundColor Yellow
+        return $true
+    }
+
+    & $pythonCmd @pythonArgs -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 9) else 1)"
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "   [WARN] $pythonCmd 版本低於 3.9，略過 MemPalace 安裝。" -ForegroundColor Yellow
+        return $true
+    }
+
+    $venvDir = if (Test-Path $mempalaceDir) {
+        Join-Path $mempalaceDir '.venv'
+    } else {
+        Join-Path $PSScriptRoot '.mempalace-runtime\.venv'
+    }
+    & $pythonCmd @pythonArgs -m venv $venvDir
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host '   [WARN] MemPalace venv 建立失敗，將於執行時重試。' -ForegroundColor Yellow
+        return $true
+    }
+
+    $venvPython = Join-Path $venvDir 'Scripts\python.exe'
+    if (-not (Test-Path $venvPython)) {
+        $venvPython = Join-Path $venvDir 'bin/python'
+    }
+    if (-not (Test-Path $venvPython)) {
+        Write-Host '   [WARN] MemPalace venv Python 路徑無效，將於執行時重試。' -ForegroundColor Yellow
+        return $true
+    }
+
+    & $venvPython -m pip install --upgrade pip setuptools wheel
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host '   [WARN] MemPalace pip 工具鏈升級失敗，將於執行時重試。' -ForegroundColor Yellow
+        return $true
+    }
+
+    if (Test-Path $mempalaceDir) {
+        & $venvPython -m pip install -r (Join-Path $mempalaceDir 'requirements.txt')
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host '   [WARN] MemPalace requirements 安裝失敗，將於執行時重試。' -ForegroundColor Yellow
+            return $true
+        }
+
+        & $venvPython -m pip install -e $mempalaceDir
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host '   [WARN] MemPalace 套件安裝失敗，將於執行時重試。' -ForegroundColor Yellow
+            return $true
+        }
+    } else {
+        Write-Host '   [WARN] 未偵測到本地 mempalace/ 專案，改用 PyPI 版本佈署。' -ForegroundColor Yellow
+        & $venvPython -m pip install --upgrade mempalace
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host '   [WARN] MemPalace PyPI 安裝失敗，將於執行時重試。' -ForegroundColor Yellow
+            return $true
+        }
+    }
+
+    Update-Env 'GOLEM_MEMPALACE_ENABLED' 'true'
+    Update-Env 'GOLEM_MEMPALACE_PYTHON' $venvPython
+    Update-Env 'GOLEM_MEMPALACE_BOOTSTRAP_ENABLED' 'true'
+    Update-Env 'GOLEM_MEMPALACE_BOOTSTRAP_LIMIT' '200'
+    Write-Host '   [OK] MemPalace 核心已完成安裝與預設註冊。' -ForegroundColor Green
+    return $true
+}
+
 # ─── Step 5: Web Dashboard 建置 ─────────────────────────
 function Step-InstallDashboard {
     Write-Host ''
-    Write-Host '[5/6] 正在設定 Web Dashboard...' -ForegroundColor Cyan
+    Write-Host '[6/7] 正在設定 Web Dashboard...' -ForegroundColor Cyan
     if (-not (Test-Path 'web-dashboard')) {
         Write-Host '   [WARN] 找不到 web-dashboard 目錄，跳過編譯步驟。' -ForegroundColor Yellow
         return
@@ -261,6 +349,7 @@ function Step-Final {
     Write-Host '=======================================================' -ForegroundColor Green
     Write-Host ''
     Write-Host '  系統已準備就緒。'
+    Write-Host '  MemPalace 核心 MCP 已內建並會自動常駐，無需手動新增。'
     Write-Host ''
     Write-Host '  [Y] 立即啟動系統'
     Write-Host '  [N] 返回主選單'
@@ -314,6 +403,7 @@ function Run-FullInstall {
     # Start-ConfigWizard
     
     if (-not (Step-InstallCore)) { return }
+    Step-InstallMemPalace | Out-Null
     Step-InstallDashboard
     Step-Final
 }

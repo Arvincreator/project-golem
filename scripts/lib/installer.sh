@@ -283,6 +283,94 @@ step_install_core() {
     ui_success "核心依賴安裝完成\n"
 }
 
+step_install_mempalace_runtime() {
+    echo -e "  🧠 佈署 MemPalace 核心記憶服務..."
+    log "Installing MemPalace runtime"
+
+    local mempal_enabled="${GOLEM_MEMPALACE_ENABLED:-true}"
+    mempal_enabled=$(echo "$mempal_enabled" | tr '[:upper:]' '[:lower:]')
+    if [[ "$mempal_enabled" == "false" || "$mempal_enabled" == "0" || "$mempal_enabled" == "no" || "$mempal_enabled" == "off" ]]; then
+        ui_warn "GOLEM_MEMPALACE_ENABLED=false，略過 MemPalace 佈署。"
+        echo ""
+        return
+    fi
+
+    local mempalace_dir="$SCRIPT_DIR/mempalace"
+
+    local python_cmd=""
+    if command -v python3 >/dev/null 2>&1; then
+        python_cmd="python3"
+    elif command -v python >/dev/null 2>&1; then
+        python_cmd="python"
+    fi
+
+    if [ -z "$python_cmd" ]; then
+        ui_warn "未找到 Python 3.9+，MemPalace 將於執行時顯示核心警示並重試。"
+        echo ""
+        return
+    fi
+
+    if ! "$python_cmd" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 9) else 1)' >/dev/null 2>&1; then
+        ui_warn "偵測到 $python_cmd 版本低於 3.9，MemPalace 佈署略過。"
+        echo ""
+        return
+    fi
+
+    local venv_dir=""
+    if [ -d "$mempalace_dir" ]; then
+        venv_dir="$mempalace_dir/.venv"
+    else
+        venv_dir="$SCRIPT_DIR/.mempalace-runtime/.venv"
+    fi
+    if ! run_quiet_step "建立 MemPalace Python 虛擬環境" "$python_cmd" -m venv "$venv_dir"; then
+        ui_warn "MemPalace venv 建立失敗，將於執行時重試。"
+        echo ""
+        return
+    fi
+
+    local py_bin="$venv_dir/bin/python"
+    [ ! -x "$py_bin" ] && py_bin="$venv_dir/Scripts/python.exe"
+    if [ ! -x "$py_bin" ]; then
+        ui_warn "MemPalace venv Python 路徑無效，將於執行時重試。"
+        echo ""
+        return
+    fi
+
+    if ! run_quiet_step "升級 MemPalace 安裝工具鏈" "$py_bin" -m pip install --upgrade pip setuptools wheel; then
+        ui_warn "MemPalace pip 工具鏈升級失敗，將於執行時重試。"
+        echo ""
+        return
+    fi
+
+    if [ -d "$mempalace_dir" ]; then
+        if ! run_quiet_step "安裝 MemPalace requirements" "$py_bin" -m pip install -r "$mempalace_dir/requirements.txt"; then
+            ui_warn "MemPalace requirements 安裝失敗，將於執行時重試。"
+            echo ""
+            return
+        fi
+
+        if ! run_quiet_step "安裝 MemPalace 套件 (local)" "$py_bin" -m pip install -e "$mempalace_dir"; then
+            ui_warn "MemPalace 套件安裝失敗，將於執行時重試。"
+            echo ""
+            return
+        fi
+    else
+        ui_warn "未偵測到本地 mempalace/ 專案，改用 PyPI 版本佈署。"
+        if ! run_quiet_step "安裝 MemPalace 套件 (PyPI)" "$py_bin" -m pip install --upgrade mempalace; then
+            ui_warn "MemPalace PyPI 安裝失敗，將於執行時重試。"
+            echo ""
+            return
+        fi
+    fi
+
+    update_env "GOLEM_MEMPALACE_ENABLED" "true"
+    update_env "GOLEM_MEMPALACE_PYTHON" "$py_bin"
+    update_env "GOLEM_MEMPALACE_BOOTSTRAP_ENABLED" "${GOLEM_MEMPALACE_BOOTSTRAP_ENABLED:-true}"
+    update_env "GOLEM_MEMPALACE_BOOTSTRAP_LIMIT" "${GOLEM_MEMPALACE_BOOTSTRAP_LIMIT:-200}"
+    ui_success "MemPalace 核心已完成安裝與預設註冊。"
+    echo ""
+}
+
 step_install_dashboard() {
     echo -e "  🌐 設定 Web Dashboard..."
     log "Setting up dashboard"
@@ -431,7 +519,7 @@ run_clean_init() {
 # ─── Full Install ───
 run_full_install() {
     timer_start
-    local total_steps=8
+    local total_steps=9
     log "Full install started"
 
     echo -e "  ${BOLD}${CYAN}📦 開始完整安裝流程${NC}"
@@ -469,13 +557,18 @@ run_full_install() {
     echo ""
     step_install_core
 
-    # Step 7: Install dashboard
-    progress_bar 7 $total_steps "安裝 Dashboard"
+    # Step 7: Install MemPalace runtime
+    progress_bar 7 $total_steps "安裝 MemPalace 核心"
+    echo ""
+    step_install_mempalace_runtime
+
+    # Step 8: Install dashboard
+    progress_bar 8 $total_steps "安裝 Dashboard"
     echo ""
     step_install_dashboard
 
-    # Step 8: Health check & Verification
-    progress_bar 8 $total_steps "系統健康檢查 & 驗證"
+    # Step 9: Health check & Verification
+    progress_bar 9 $total_steps "系統健康檢查 & 驗證"
     echo ""
     check_status
     run_health_check
@@ -504,6 +597,7 @@ step_final() {
     box_line_colored "  1. 🌐 開啟瀏覽器存取 ${BOLD}Dashboard${NC} 完成 API 設定 "
     box_line_colored "  2. 📝 在 Dashboard 中填入您的 ${BOLD}Gemini API Key${NC}"
     box_line_colored "  3. 🤖 新增您第一個傀儡實體並填入 ${BOLD}Bot Token${NC}"
+    box_line_colored "  4. 🧠 MemPalace 核心 MCP 已內建，無需手動新增 Server"
     box_sep
     [ -n "$elapsed" ] && box_line_colored "  ⏱️  安裝耗時: ${CYAN}${elapsed}${NC}"
     box_line_colored "  📋 安裝日誌: ${DIM}${LOG_FILE}${NC}"
