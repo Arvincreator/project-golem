@@ -38,28 +38,16 @@ process.on('unhandledRejection', (reason, promise) => {
     console.error('Reason:', reason);
 });
 
+const { shouldStartDashboard } = require('./runtimeMode');
 const ConfigManager = require('../../src/config');
 const SystemLogger = require('../../src/utils/SystemLogger');
 
 // 🚀 初始化系統日誌持久化 (必須在 Dashboard 之前，確保攔截順序正確)
 SystemLogger.init(ConfigManager.LOG_BASE_DIR);
 
-// Dashboard 強制啟用
-try {
-    require('../../dashboard');
-    const displayPort = process.env.DASHBOARD_DEV_MODE === 'true' ? 3000 : (process.env.DASHBOARD_PORT || 3000);
-    console.log('✅ Golem Web Dashboard 已啟動 → http://localhost:' + displayPort);
-} catch (e) {
-    console.error('❌ 無法載入 Dashboard:', e.message);
-}
-
 const fs = require('fs').promises;
 const path = require('path');
 const os = require('os');
-const { spawn } = require('child_process');
-// [GrammyBridge] Factory: auto-selects grammY or legacy based on env setup
-const { createTelegramBot } = require('../../src/bridges/TelegramBotFactory');
-const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 const GolemBrain = require('../../src/core/GolemBrain');
 const TaskController = require('../../src/core/TaskController');
@@ -77,8 +65,93 @@ const InteractiveMultiAgent = require('../../src/core/InteractiveMultiAgent');
 const introspection = require('../../src/services/Introspection');
 const ActionQueue = require('../../src/core/ActionQueue'); // ✨ [v9.1] Dual-Queue Architecture
 const PromptShortcutManager = require('../../src/managers/PromptShortcutManager');
-const MCPManager = require('../../src/mcp/MCPManager');
 const { normalizeShortcutKey } = PromptShortcutManager;
+
+const DASHBOARD_ENABLED = shouldStartDashboard({ env: process.env });
+let dashboardModule = null;
+let dashboardResolved = false;
+let createTelegramBotFactory = null;
+let discordSdk = null;
+let mcpManager = null;
+let dcClient = null;
+let baseDiscordHandlersBound = false;
+
+function getDashboard() {
+    if (!DASHBOARD_ENABLED) return null;
+    if (dashboardResolved) return dashboardModule;
+
+    dashboardResolved = true;
+    try {
+        dashboardModule = require('../../dashboard');
+        const displayPort = process.env.DASHBOARD_DEV_MODE === 'true' ? 3000 : (process.env.DASHBOARD_PORT || 3000);
+        console.log('✅ Golem Web Dashboard 已啟動 → http://localhost:' + displayPort);
+    } catch (e) {
+        dashboardModule = null;
+        console.error('❌ 無法載入 Dashboard:', e.message);
+    }
+    return dashboardModule;
+}
+
+function getCreateTelegramBot() {
+    if (!createTelegramBotFactory) {
+        ({ createTelegramBot: createTelegramBotFactory } = require('../../src/bridges/TelegramBotFactory'));
+    }
+    return createTelegramBotFactory;
+}
+
+function getDiscordSdk() {
+    if (!discordSdk) {
+        discordSdk = require('discord.js');
+    }
+    return discordSdk;
+}
+
+function createDiscordClient() {
+    const { Client, GatewayIntentBits, Partials } = getDiscordSdk();
+    return new Client({
+        intents: [
+            GatewayIntentBits.Guilds,
+            GatewayIntentBits.GuildMessages,
+            GatewayIntentBits.MessageContent,
+            GatewayIntentBits.DirectMessages
+        ],
+        partials: [Partials.Channel]
+    });
+}
+
+function getOrCreateBaseDiscordClient() {
+    if (!ConfigManager.CONFIG.DC_TOKEN) return null;
+    if (dcClient) return dcClient;
+    dcClient = createDiscordClient();
+    return dcClient;
+}
+
+function ensureBaseDiscordHandlers() {
+    const client = getOrCreateBaseDiscordClient();
+    if (!client || baseDiscordHandlersBound) return;
+    baseDiscordHandlersBound = true;
+
+    client.on('messageCreate', (msg) => {
+        if (!msg.author.bot) handleUnifiedMessage(new UniversalContext('discord', msg, client));
+    });
+    client.on('interactionCreate', (interaction) => {
+        if (interaction.isButton()) handleUnifiedCallback(new UniversalContext('discord', interaction, client), interaction.customId);
+    });
+}
+
+function getMCPManager() {
+    if (!mcpManager) {
+        const MCPManager = require('../../src/mcp/MCPManager');
+        mcpManager = MCPManager.getInstance();
+    }
+    return mcpManager;
+}
+
+if (DASHBOARD_ENABLED) {
+    getDashboard();
+} else {
+    console.log('📺 [Bootstrap] GOLEM_DASHBOARD_ENABLED=false，已略過 Dashboard 啟動。');
+}
 
 
 // 🎯 v9.1.5 解耦：不再於啟動時遍歷配置建立 Bot 與實體
@@ -112,16 +185,6 @@ const SYSTEM_COMMAND_KEY_SET = (() => {
 
 // ✅ [Bug #6 修復] 啟動時間戳記，用於過濾重啟前的舊訊息
 const BOOT_TIME = Date.now();
-
-const dcClient = ConfigManager.CONFIG.DC_TOKEN ? new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.DirectMessages
-    ],
-    partials: [Partials.Channel]
-}) : null;
 
 function buildTelegramCommandsMenu() {
     const unifiedCommands = require('../../src/config/commands.js');
@@ -245,10 +308,11 @@ function getOrCreateGolem() {
     });
 
     const actionQueue = new ActionQueue({ golemId });
+    const baseDcClient = getOrCreateBaseDiscordClient();
 
-    autonomy.setIntegrations(activeTgBot, activeDcBot || dcClient, convoManager);
+    autonomy.setIntegrations(activeTgBot, activeDcBot || baseDcClient, convoManager);
     brain.tgBot = activeTgBot;
-    brain.dcBot = activeDcBot || dcClient;
+    brain.dcBot = activeDcBot || baseDcClient;
 
     singleGolemInstance = { brain, controller, autonomy, convoManager, actionQueue };
     return singleGolemInstance;
@@ -258,7 +322,7 @@ function getOrCreateGolem() {
     if (process.env.GOLEM_TEST_MODE === 'true') { console.log('🚧 GOLEM_TEST_MODE active.'); return; }
 
     try {
-        await MCPManager.getInstance().load();
+        await getMCPManager().load();
         console.log('🔌 [Core MCP] Always-on MCP manager bootstrapped.');
     } catch (e) {
         console.warn(`⚠️ [Core MCP] Boot preload failed: ${e.message}`);
@@ -278,7 +342,7 @@ function getOrCreateGolem() {
         await introspection.getStructure().catch(e => console.warn('⚠️ Introspection failed:', e.message));
 
         try {
-            const mcpManager = MCPManager.getInstance();
+            const mcpManager = getMCPManager();
             await mcpManager.load();
             console.log('🔌 [Core MCP] MCP services initialized.');
         } catch (e) {
@@ -289,7 +353,15 @@ function getOrCreateGolem() {
         setInterval(runTieredCompression, 6 * 60 * 60 * 1000);
         runTieredCompression();
 
-        if (dcClient) dcClient.login(ConfigManager.CONFIG.DC_TOKEN);
+        if (!activeDcBot) {
+            const baseDcClient = getOrCreateBaseDiscordClient();
+            if (baseDcClient) {
+                ensureBaseDiscordHandlers();
+                baseDcClient.login(ConfigManager.CONFIG.DC_TOKEN).catch((err) => {
+                    console.warn(`⚠️ [Bot] Base Discord Login Failed: ${err.message}`);
+                });
+            }
+        }
 
         _isCoreInitialized = true;
     }
@@ -322,7 +394,7 @@ function getOrCreateGolem() {
         }
     });
 
-    const dashboard = require('../../dashboard');
+    const dashboard = getDashboard();
     if (dashboard && dashboard.webServer && typeof dashboard.webServer.setGolemFactory === 'function') {
         // [GrammyBridge] Use factory instead of direct TelegramBot constructor
         dashboard.webServer.setGolemFactory(async (golemConfig) => {
@@ -334,7 +406,7 @@ function getOrCreateGolem() {
                 try {
                     // [v9.1.5 修正] 先以 polling: false 建立 Bot，
                     // 再延遲啟動 Polling 並使用 restart:true 讓舊 session 自動讓步，防止 409 Conflict
-                    const bot = createTelegramBot(golemConfig.tgToken, { polling: false });
+                    const bot = getCreateTelegramBot()(golemConfig.tgToken, { polling: false });
                     bot.golemConfig = golemConfig;
                     bot.getMe().then(me => {
                         bot.username = me.username;
@@ -406,15 +478,7 @@ function getOrCreateGolem() {
 
             if (golemConfig.dcToken && !activeDcBot) {
                 try {
-                    const client = new Client({
-                        intents: [
-                            GatewayIntentBits.Guilds,
-                            GatewayIntentBits.GuildMessages,
-                            GatewayIntentBits.MessageContent,
-                            GatewayIntentBits.DirectMessages
-                        ],
-                        partials: [Partials.Channel]
-                    });
+                    const client = createDiscordClient();
                     client.golemConfig = golemConfig;
                     client.once('ready', () => {
                         console.log(`🤖 [Bot] ${golemConfig.id} Discord 已掛載 (${client.user ? client.user.tag : 'Unknown'})`);
@@ -463,6 +527,8 @@ function getOrCreateGolem() {
             return instance;
         });
         console.log('🔗 [System] golemFactory injected into WebServer.');
+    } else if (!DASHBOARD_ENABLED) {
+        console.log('ℹ️ [System] Dashboard disabled: skipped WebServer golemFactory injection.');
     }
 
     async function runTieredCompression() {
@@ -1060,11 +1126,6 @@ async function executeDrop(ctx) {
 
 // ✅ [Bug #1 修復] Bot 事件綁定已移入 golemFactory 內部動態處理。
 
-if (dcClient) {
-    dcClient.on('messageCreate', (msg) => { if (!msg.author.bot) handleUnifiedMessage(new UniversalContext('discord', msg, dcClient)); });
-    dcClient.on('interactionCreate', (interaction) => { if (interaction.isButton()) handleUnifiedCallback(new UniversalContext('discord', interaction, dcClient), interaction.customId); });
-}
-
 /**
  * 🧹 資源清理核心程序
  */
@@ -1096,7 +1157,7 @@ async function performCleanup() {
 
     // 3. 停止 Web Dashboard (釋放 Port)
     try {
-        const dashboard = require('../../dashboard');
+        const dashboard = getDashboard();
         if (dashboard && typeof dashboard.detach === 'function') {
             console.log(`🛑 [System] 正在關閉 Dashboard 服務...`);
             dashboard.detach();
@@ -1112,7 +1173,7 @@ global.stopGolem = async function (id) {
     await performCleanup();
     singleGolemInstance = null;
     
-    const dashboard = require('../../dashboard');
+    const dashboard = getDashboard();
     if (dashboard && typeof dashboard.removeContext === 'function') {
         dashboard.removeContext(id);
     }

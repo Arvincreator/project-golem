@@ -185,6 +185,23 @@ launch_system() {
 
     check_status
 
+    local system_configured
+    system_configured=$(grep "^SYSTEM_CONFIGURED=" "$DOT_ENV_PATH" 2>/dev/null | cut -d'=' -f2)
+    if [ -z "$system_configured" ]; then
+        system_configured="false"
+    fi
+
+    if [ "$IsDashEnabled" != true ] && [ "$system_configured" != "true" ]; then
+        if [ "$bg_mode" = true ]; then
+            ui_error "目前為無 Dashboard 且未初始化狀態，背景模式無法自動提問。"
+            ui_info "請先執行 ./setup.sh --install 或 ./setup.sh --config 完成 CLI 初始化。"
+            return 1
+        fi
+        ui_warn "偵測到無 Dashboard 模式且尚未初始化，將啟動 CLI 初始化精靈。"
+        step_cli_initial_wizard true
+        check_status
+    fi
+
     if [ "$bg_mode" = true ]; then
         echo -e "  ${GREEN}🚀 正在以背景模式啟動 Golem v${GOLEM_VERSION} (Single)...${NC}"
         [ -n "$auth_mode" ] && echo -e "  ${DIM}   權限: $auth_mode${NC}"
@@ -213,7 +230,12 @@ launch_system() {
     run_health_check
 
     if [ "$IsDashEnabled" = true ]; then
-        if [ "${DASHBOARD_DEV_MODE:-false}" = "true" ]; then
+        if [ ! -d "$SCRIPT_DIR/web-dashboard" ]; then
+            echo -e "  ${YELLOW}⚠️  Dashboard 已啟用但未找到 web-dashboard 目錄，將改為核心模式啟動。${NC}"
+            update_env "ENABLE_WEB_DASHBOARD" "false"
+            update_env "GOLEM_DASHBOARD_ENABLED" "false"
+            IsDashEnabled=false
+        elif [ "${DASHBOARD_DEV_MODE:-false}" = "true" ]; then
             echo -e "  ${YELLOW}🚧 Dashboard 處於開發模式 (Dev Mode)${NC}"
             echo -e "  ${DIM}   🚀 正在背景啟動 Next.js 開發伺服器...${NC}"
             

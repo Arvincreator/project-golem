@@ -21,6 +21,7 @@ source "$LIB_DIR/colors.sh"
 source "$LIB_DIR/utils.sh"
 source "$LIB_DIR/ui_components.sh"
 source "$LIB_DIR/system_check.sh"
+source "$LIB_DIR/install_profile.sh"
 source "$LIB_DIR/installer.sh"
 source "$LIB_DIR/docker_manager.sh"
 source "$LIB_DIR/headless_manager.sh"
@@ -58,6 +59,32 @@ print_status() {
 }
 
 # ─── Entry Point ────────────────────────────────────────
+# Normalize global optional flags first (so all modes can share them)
+GOLEM_INSTALL_COMPONENTS_CLI="${GOLEM_INSTALL_COMPONENTS:-}"
+PARSED_ARGS=()
+while [[ $# -gt 0 ]]; do
+    case "${1:-}" in
+        --components)
+            if [[ $# -lt 2 ]]; then
+                echo -e "${RED}❌ --components 需要帶值，例如: --components core,dashboard${NC}"
+                exit 1
+            fi
+            GOLEM_INSTALL_COMPONENTS_CLI="$2"
+            shift 2
+            ;;
+        --components=*)
+            GOLEM_INSTALL_COMPONENTS_CLI="${1#*=}"
+            shift
+            ;;
+        *)
+            PARSED_ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+set -- "${PARSED_ARGS[@]}"
+export GOLEM_INSTALL_COMPONENTS="$GOLEM_INSTALL_COMPONENTS_CLI"
+
 # Detect magic mode early to bypass prompts during check_dependencies
 if [ "${1:-}" = "--magic" ]; then
     export GOLEM_MAGIC_MODE=true
@@ -135,6 +162,9 @@ case "${1:-}" in
         echo "  --start       直接啟動系統 (跳過選單)"
         echo "  --start --bg  以背景模式啟動系統"
         echo "  --install     執行完整安裝流程"
+        echo "  --components  安裝功能清單（逗號分隔）"
+        echo "                可選: core,mempalace,dashboard,doctor"
+        echo "                例: --install --components core,dashboard"
         echo "  --init        完全初始化 (刪除資料並重新安裝)"
         echo "  --stop, --stop-all  關閉所有 Golem 與 Web Dashboard 程序"
         echo "  --config      啟動配置精靈 (Gemini Key / 系統選項)"
@@ -157,15 +187,20 @@ case "${1:-}" in
         echo "  2. 開啟瀏覽器 http://localhost:3000"
         echo "  3. 進入「系統設定」完成初始化即可"
         echo ""
+        echo "若未安裝或停用 Web Dashboard，setup.sh 會自動切換為 CLI 初始化精靈，"
+        echo "並逐步詢問人格、通訊方式、後端 provider、遠端存取等必要設定。"
+        echo ""
         echo "MemPalace 核心記憶 MCP 已內建為常駐服務，無需手動到 Dashboard 新增。"
         echo ""
         echo "ENVIRONMENT:"
         echo "  NO_COLOR=1    停用所有顏色輸出 (適用於 CI/管線)"
+        echo "  GOLEM_INSTALL_COMPONENTS=core,mempalace,dashboard,doctor"
         echo ""
         echo "EXAMPLES:"
         echo "  ./setup.sh                  # 互動式選單"
         echo "  ./setup.sh --start --bg     # 背景啟動"
         echo "  ./setup.sh --install        # 自動完整安裝"
+        echo "  ./setup.sh --install --components core,dashboard"
         echo "  ./setup.sh --stop           # 關閉所有程序"
         echo "  ./setup.sh --deploy-linux   # Linux 本機一鍵安裝部署"
         echo "  ./setup.sh --deploy-docker  # Docker 一鍵安裝部署"

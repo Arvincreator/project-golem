@@ -53,7 +53,9 @@ check_status() {
     # Web Dashboard
     IsDashEnabled=false
     local dash_env; dash_env=$(grep "^ENABLE_WEB_DASHBOARD=" "$DOT_ENV_PATH" 2>/dev/null | cut -d'=' -f2)
-    if [ "$dash_env" = "true" ] || { [ -z "$dash_env" ] && [ -d "$SCRIPT_DIR/web-dashboard" ]; }; then
+    local dashboard_dir_exists=false
+    [ -d "$SCRIPT_DIR/web-dashboard" ] && dashboard_dir_exists=true
+    if [ "$dashboard_dir_exists" = true ] && { [ "$dash_env" = "true" ] || [ -z "$dash_env" ]; }; then
         STATUS_DASH="${GREEN}✅ 啟用${NC}"
         IsDashEnabled=true
     else

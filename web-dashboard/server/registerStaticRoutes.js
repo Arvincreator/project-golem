@@ -1,6 +1,11 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const {
+    hasDashboardBuild,
+    resolveDashboardHtmlPath,
+    buildDashboardUnavailablePage,
+} = require('./staticRouteHelpers');
 
 module.exports = function registerStaticRoutes(server) {
     const projectRoot = path.resolve(__dirname, '../..');
@@ -19,16 +24,21 @@ module.exports = function registerStaticRoutes(server) {
 
     const isDevMode = process.env.DASHBOARD_DEV_MODE === 'true';
     const publicPath = path.join(__dirname, '..', 'out');
+    const hasStaticDashboard = hasDashboardBuild(publicPath, fs.existsSync);
 
     if (!isDevMode) {
-        server.app.use(express.static(publicPath, {
-            extensions: ['html'],
-            setHeaders: (res) => {
-                res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-                res.setHeader('Pragma', 'no-cache');
-                res.setHeader('Expires', '0');
-            }
-        }));
+        if (hasStaticDashboard) {
+            server.app.use(express.static(publicPath, {
+                extensions: ['html'],
+                setHeaders: (res) => {
+                    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+                    res.setHeader('Pragma', 'no-cache');
+                    res.setHeader('Expires', '0');
+                }
+            }));
+        } else {
+            console.warn(`⚠️ [WebServer] Dashboard static build not found (${path.join(publicPath, 'dashboard.html')}).`);
+        }
     } else {
         console.log('🚧 [WebServer] Dashboard Dev Mode active — skipping static file serving.');
 
@@ -48,6 +58,12 @@ module.exports = function registerStaticRoutes(server) {
     }
 
     if (isDevMode) return;
+
+    const sendDashboardPage = (req, res) => {
+        const fullPath = resolveDashboardHtmlPath(publicPath, req.path, fs.existsSync);
+        if (fullPath) return res.sendFile(fullPath);
+        return res.status(503).send(buildDashboardUnavailablePage(publicPath));
+    };
 
     server.app.get('/', (req, res) => {
         res.redirect('/dashboard');
@@ -87,24 +103,10 @@ module.exports = function registerStaticRoutes(server) {
     });
 
     dashboardRoutes.forEach((route) => {
-        server.app.get(route, (req, res) => {
-            const fileName = route === '/dashboard' ? 'dashboard.html' : `${route.replace(/^\//, '')}.html`;
-            const fullPath = path.join(publicPath, fileName);
-            if (fs.existsSync(fullPath)) {
-                return res.sendFile(fullPath);
-            }
-            return res.sendFile(path.join(publicPath, 'dashboard.html'));
-        });
+        server.app.get(route, sendDashboardPage);
     });
 
     server.app.get(/\/dashboard\/.*/, (req, res) => {
-        const normalizedPath = req.path.replace(/\/$/, '');
-        const htmlFileName = `${normalizedPath.replace(/^\//, '')}.html`;
-        const fullPath = path.join(publicPath, htmlFileName);
-
-        if (fs.existsSync(fullPath)) {
-            return res.sendFile(fullPath);
-        }
-        return res.sendFile(path.join(publicPath, 'dashboard.html'));
+        return sendDashboardPage(req, res);
     });
 };
