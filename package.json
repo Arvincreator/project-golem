@@ -35,6 +35,7 @@
   "license": "MIT",
   "dependencies": {
     "@google/generative-ai": "0.21.0",
+    "@jackwener/opencli": "^1.6.10",
     "@lancedb/lancedb": "^0.26.2",
     "@xenova/transformers": "^2.17.2",
     "adm-zip": "^0.5.16",

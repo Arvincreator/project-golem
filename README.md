@@ -118,6 +118,7 @@
 ### 環境需求
 - **Node.js** v20+
 - **Chromium / Google Chrome** (供 Playwright 自動化操控使用)
+- **OpenCLI**（本專案已內建依賴，提供搜尋能力）
 - **Telegram/Discord Bot Token** (非必填，若只需本機操作可免)
 
 ### ⚡ 最推薦：一鍵安裝與啟動模式 (Magic Mode)
@@ -174,6 +175,26 @@ GOLEM_OLLAMA_EMBEDDING_MODEL=nomic-embed-text
 ```bash
 npm run arch:check
 ```
+
+### 🔎 OpenCLI 搜尋能力初始化（必要）
+Golem 的網路搜尋已改為透過 OpenCLI 執行。首次使用請確認 Browser Bridge 已就緒：
+
+```bash
+# 1) 檢查 OpenCLI 與 Browser Bridge
+./node_modules/.bin/opencli doctor
+
+# 2) 若顯示 Extension 未連線，請安裝 OpenCLI Browser Bridge
+# 下載：https://github.com/jackwener/opencli/releases
+# 然後到 chrome://extensions 開啟 Developer Mode -> Load unpacked
+
+# 3) 再次檢查連線
+./node_modules/.bin/opencli daemon status
+./node_modules/.bin/opencli doctor
+```
+
+常見錯誤碼（OpenCLI）：
+- `69`: Browser Bridge 未連線（系統會自動降級到 public 搜尋來源）
+- `77` / `78`: 授權或設定問題（系統會自動降級，並回報診斷資訊）
 
 
 ### Windows

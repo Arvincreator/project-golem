@@ -2,13 +2,13 @@ const { CommandSafeguard: safeguard } = require('../packages/security');
 
 describe('CommandSafeguard', () => {
     test('should approve valid skill commands', () => {
-        const cmd = 'node src/skills/core/search-web.js "how to code"';
+        const cmd = 'node src/skills/core/opencli-search.js "{\\"query\\":\\"how to code\\"}"';
         const result = safeguard.validate(cmd);
         expect(result.safe).toBe(true);
     });
 
     test('should reject command with semicolons', () => {
-        const cmd = 'node src/skills/core/search-web.js "test"; rm -rf /';
+        const cmd = 'node src/skills/core/opencli-search.js "{\\"query\\":\\"test\\"}"; rm -rf /';
         const result = safeguard.validate(cmd);
         expect(result.safe).toBe(false);
         expect(result.reason).toContain('偵測到高度危險操作');
@@ -16,7 +16,7 @@ describe('CommandSafeguard', () => {
 
 
     test('should reject command with pipe', () => {
-        const cmd = 'node src/skills/core/search-web.js "test" | cat .env';
+        const cmd = 'node src/skills/core/opencli-search.js "{\\"query\\":\\"test\\"}" | cat .env';
         const result = safeguard.validate(cmd);
         expect(result.safe).toBe(false);
     });

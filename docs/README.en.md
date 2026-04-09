@@ -118,6 +118,7 @@ To help you better monitor and manage your Golem, we provide a fully functional 
 ### Prerequisites
 - **Node.js** v20+
 - **Chromium / Google Chrome** (Required for Playwright)
+- **OpenCLI** (shipped as a project dependency for web search)
 - **Telegram Bot Token** (Get from [@BotFather](https://t.me/BotFather))
 
 ### ⚡ Recommended: One-click Magic Mode
@@ -162,6 +163,26 @@ GOLEM_OLLAMA_EMBEDDING_MODEL=nomic-embed-text
 ```bash
 npm run arch:check
 ```
+
+### 🔎 OpenCLI Search Setup (Required)
+Web search now runs through OpenCLI. On first setup, verify Browser Bridge connectivity:
+
+```bash
+# 1) Verify OpenCLI and Browser Bridge status
+./node_modules/.bin/opencli doctor
+
+# 2) If extension is not connected, install Browser Bridge
+# Download: https://github.com/jackwener/opencli/releases
+# Then open chrome://extensions -> Developer Mode -> Load unpacked
+
+# 3) Re-check status
+./node_modules/.bin/opencli daemon status
+./node_modules/.bin/opencli doctor
+```
+
+Common OpenCLI exit codes:
+- `69`: Browser Bridge not connected (system auto-falls back to public sources)
+- `77` / `78`: Auth/config issue (system auto-falls back and reports diagnostics)
 
 ### Windows
 > **Tip:** For the best experience, we strongly recommend Windows users use **[Git Bash](https://git-scm.com/downloads)** to run the setup script.
