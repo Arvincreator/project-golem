@@ -15,6 +15,8 @@
     "dashboard": "node --expose-gc apps/runtime/index.js dashboard",
     "dev": "nodemon --expose-gc apps/runtime/index.js dashboard",
     "doctor": "node scripts/doctor.js",
+    "mcp:install:mempalace": "node scripts/mcp/install-mempalace.js",
+    "mcp:verify:mempalace": "node scripts/verify-mempalace-tools.js",
     "// --- 跨平台安裝指令 ---": "",
     "win:setup": "setup.bat",
     "unix:setup": "chmod +x setup.sh && ./setup.sh",

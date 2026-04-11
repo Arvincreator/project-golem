@@ -84,3 +84,4 @@ profiles
 data/temp_uploads
 notebooklm_venv
 .gemini/
+data/mcp/mempalace-runtime/.venv

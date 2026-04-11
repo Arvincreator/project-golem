@@ -64,6 +64,19 @@ Golem will automatically recognize the prompt and issue an Action like this:
 
 ## 🛠️ Management Features
 
+### MemPalace One-Click Enable (Auto Install + Verification)
+When you enable the `mempalace` server in the Dashboard, Golem now runs a built-in setup flow:
+
+1. Runs the installer script (`scripts/mcp/install-mempalace.js`) to create an isolated virtual environment at `data/mcp/mempalace-runtime/.venv` and install `mempalace` (skips if already installed).
+2. Enables the MCP server and performs a `tools/list` connection test.
+3. Executes a read-only probe tool call (for example `mempalace_search`) to verify runtime functionality.
+4. If verification fails, Golem automatically disables `mempalace` to prevent a broken enabled state.
+
+You can also run the installer manually:
+```bash
+npm run mcp:install:mempalace
+```
+
 ### Live Logs
 The log panel at the bottom of the MCP page displays real-time details:
 - Call timestamps and duration

@@ -27,6 +27,7 @@ const MANDATORY_SKILLS = [
 const OPTIONAL_SKILLS = [
     'git',
     'image-prompt',
+    'mempalace',
     'moltbot',
     'spotify',
     'youtube',

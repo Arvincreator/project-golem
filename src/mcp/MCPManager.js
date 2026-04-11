@@ -10,9 +10,38 @@ const fs    = require('fs');
 const path  = require('path');
 const { EventEmitter } = require('events');
 const MCPClient = require('./MCPClient');
+const { installMempalace } = require('./mempalaceInstaller');
 
 const CONFIG_PATH = path.resolve(process.cwd(), 'data', 'mcp-servers.json');
 const MAX_LOG     = 500;
+const MEMPALACE_SERVER_NAME = 'mempalace';
+
+function isMempalaceServer(name) {
+    return String(name || '').trim().toLowerCase() === MEMPALACE_SERVER_NAME;
+}
+
+function normalizeStringArray(values) {
+    return Array.isArray(values) ? values.map((value) => String(value)) : [];
+}
+
+function areStringArraysEqual(a = [], b = []) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i += 1) {
+        if (String(a[i]) !== String(b[i])) return false;
+    }
+    return true;
+}
+
+function normalizeEnvObject(env) {
+    const source = env && typeof env === 'object' ? env : {};
+    const entries = Object.entries(source).map(([k, v]) => [String(k), String(v)]);
+    entries.sort(([ak], [bk]) => ak.localeCompare(bk));
+    return Object.fromEntries(entries);
+}
+
+function areEnvEqual(a, b) {
+    return JSON.stringify(normalizeEnvObject(a)) === JSON.stringify(normalizeEnvObject(b));
+}
 
 class MCPManager extends EventEmitter {
     constructor() {
@@ -42,7 +71,8 @@ class MCPManager extends EventEmitter {
         const enabledServers = this._configs.filter(c => c.enabled !== false);
         for (const cfg of enabledServers) {
             try {
-                await this._startClient(cfg);
+                const prepared = await this._prepareServerForConnect(cfg, { disableOnFailure: true });
+                await this._startClient(prepared);
             } catch (e) {
                 console.warn(`[MCPManager] Auto-connect failed for "${cfg.name}": ${e.message}`);
             }
@@ -67,7 +97,8 @@ class MCPManager extends EventEmitter {
         this._saveConfig();
 
         if (entry.enabled) {
-            await this._startClient(entry);
+            const prepared = await this._prepareServerForConnect(entry);
+            await this._startClient(prepared);
         }
         return entry;
     }
@@ -83,7 +114,8 @@ class MCPManager extends EventEmitter {
         // Restart client if running
         await this._stopClient(name);
         if (entry.enabled) {
-            await this._startClient(entry);
+            const prepared = await this._prepareServerForConnect(entry);
+            await this._startClient(prepared);
         }
         return entry;
     }
@@ -102,7 +134,8 @@ class MCPManager extends EventEmitter {
         this._saveConfig();
 
         if (enabled) {
-            await this._startClient(cfg);
+            const prepared = await this._prepareServerForConnect(cfg);
+            await this._startClient(prepared);
         } else {
             await this._stopClient(name);
         }
@@ -226,6 +259,61 @@ class MCPManager extends EventEmitter {
         this._clients.set(cfg.name, client);
         console.log(`[MCPManager] ✅ Connected: "${cfg.name}" (${client.tools.length} tools)`);
         return client;
+    }
+
+    async _prepareServerForConnect(cfg, options = {}) {
+        if (!cfg || !cfg.name) return cfg;
+        if (!isMempalaceServer(cfg.name)) return cfg;
+        return await this._prepareMempalaceConfig(cfg, options);
+    }
+
+    async _prepareMempalaceConfig(cfg, options = {}) {
+        const { disableOnFailure = false } = options;
+        const preferredPython = /python/i.test(String(cfg.command || ''))
+            ? String(cfg.command || '').trim()
+            : '';
+
+        try {
+            const install = installMempalace({
+                cwd: process.cwd(),
+                preferredPython,
+            });
+            const desiredCommand = String(install.pythonBin || cfg.command || '').trim() || String(cfg.command || '').trim();
+            const desiredArgs = normalizeStringArray(cfg.args).length > 0
+                ? normalizeStringArray(cfg.args)
+                : ['-m', 'mempalace.mcp_server'];
+            const desiredEnv = {
+                ...(cfg.env && typeof cfg.env === 'object' ? cfg.env : {}),
+            };
+            if (install.palaceDir) {
+                desiredEnv.MEMPALACE_PALACE_DIR = String(install.palaceDir);
+            }
+            const desiredDescription = String(cfg.description || '');
+
+            const changed =
+                String(cfg.command || '') !== desiredCommand
+                || !areStringArraysEqual(normalizeStringArray(cfg.args), desiredArgs)
+                || !areEnvEqual(cfg.env || {}, desiredEnv)
+                || String(cfg.description || '') !== desiredDescription;
+
+            if (changed) {
+                cfg.command = desiredCommand;
+                cfg.args = desiredArgs;
+                cfg.env = desiredEnv;
+                cfg.description = desiredDescription;
+                this._saveConfig();
+                console.log(`[MCPManager] Prepared "mempalace" runtime (${install.installAction}) -> ${desiredCommand}`);
+            }
+
+            return cfg;
+        } catch (e) {
+            if (disableOnFailure && cfg.enabled !== false) {
+                cfg.enabled = false;
+                this._saveConfig();
+                console.warn(`[MCPManager] Disabled "mempalace" after setup failure: ${e.message}`);
+            }
+            throw new Error(`mempalace setup failed: ${e.message}`);
+        }
     }
 
     async _stopClient(name) {

@@ -1,5 +1,156 @@
 const express = require('express');
 const { buildOperationGuard } = require('../server/security');
+const { installMempalace } = require('../../src/mcp/mempalaceInstaller');
+
+const MEMPALACE_SERVER_NAME = 'mempalace';
+
+function isMempalaceServer(name) {
+    return String(name || '').trim().toLowerCase() === MEMPALACE_SERVER_NAME;
+}
+
+function buildMempalaceProbePlan(tools = []) {
+    const toolNames = new Set(
+        Array.isArray(tools)
+            ? tools.map((tool) => String(tool && tool.name ? tool.name : '').trim()).filter(Boolean)
+            : []
+    );
+
+    const candidates = [
+        { tool: 'mempalace_status', parameters: {} },
+        { tool: 'mempalace_health', parameters: {} },
+        { tool: 'mempalace_search', parameters: { query: 'dashboard health check', limit: 1 } },
+        { tool: 'mempalace_kg_query', parameters: { entity: 'project-golem', direction: 'both' } },
+    ];
+
+    for (const candidate of candidates) {
+        if (toolNames.has(candidate.tool)) {
+            return candidate;
+        }
+    }
+
+    return null;
+}
+
+function buildResultPreview(result) {
+    try {
+        return JSON.stringify(result).slice(0, 240);
+    } catch {
+        return String(result || '').slice(0, 240);
+    }
+}
+
+function areStringArraysEqual(a = [], b = []) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i += 1) {
+        if (String(a[i]) !== String(b[i])) return false;
+    }
+    return true;
+}
+
+function normalizeEnvObject(env) {
+    const source = env && typeof env === 'object' ? env : {};
+    const entries = Object.entries(source).map(([k, v]) => [String(k), String(v)]);
+    entries.sort(([ak], [bk]) => ak.localeCompare(bk));
+    return Object.fromEntries(entries);
+}
+
+function areEnvEqual(a, b) {
+    const left = normalizeEnvObject(a);
+    const right = normalizeEnvObject(b);
+    return JSON.stringify(left) === JSON.stringify(right);
+}
+
+async function verifyMempalaceServer(mgr, name) {
+    const connection = await mgr.testServer(name);
+    const tools = Array.isArray(connection.tools) ? connection.tools : [];
+    if (!connection.success || tools.length === 0) {
+        throw new Error('MemPalace connection test did not return any tool definitions');
+    }
+
+    const probePlan = buildMempalaceProbePlan(tools);
+    if (!probePlan) {
+        throw new Error('No supported MemPalace read-only probe tool found (expected status/search/kg_query)');
+    }
+
+    const probeResult = await mgr.callTool(name, probePlan.tool, probePlan.parameters);
+    return {
+        connection: {
+            success: true,
+            toolCount: tools.length,
+        },
+        functionality: {
+            checked: true,
+            tool: probePlan.tool,
+            preview: buildResultPreview(probeResult),
+        }
+    };
+}
+
+async function toggleServerWithMempalaceSetup(mgr, name, enabled) {
+    const shouldEnable = Boolean(enabled);
+    const existing = mgr.getServer(name);
+    if (!existing) {
+        throw new Error(`MCP server "${name}" not found`);
+    }
+
+    let install = null;
+    let verification = null;
+    let serverConfigUpdated = false;
+
+    if (shouldEnable && isMempalaceServer(name)) {
+        const preferredPython = /python/i.test(String(existing.command || ''))
+            ? String(existing.command || '').trim()
+            : '';
+        install = installMempalace({
+            cwd: process.cwd(),
+            preferredPython,
+        });
+
+        const desiredCommand = String(install.pythonBin || existing.command || '').trim() || String(existing.command || '').trim();
+        const desiredArgs = Array.isArray(existing.args) && existing.args.length > 0
+            ? existing.args.map((item) => String(item))
+            : ['-m', 'mempalace.mcp_server'];
+        const desiredEnv = {
+            ...(existing.env && typeof existing.env === 'object' ? existing.env : {}),
+        };
+        if (install.palaceDir) {
+            desiredEnv.MEMPALACE_PALACE_DIR = String(install.palaceDir);
+        }
+
+        const needsUpdate =
+            String(existing.command || '') !== desiredCommand
+            || !areStringArraysEqual(existing.args || [], desiredArgs)
+            || !areEnvEqual(existing.env || {}, desiredEnv);
+
+        if (needsUpdate && typeof mgr.updateServer === 'function') {
+            const updatePayload = {
+                name: existing.name,
+                command: desiredCommand,
+                args: desiredArgs,
+                env: desiredEnv,
+                enabled: false,
+                description: String(existing.description || ''),
+            };
+            await mgr.updateServer(name, {
+                ...updatePayload,
+            });
+            serverConfigUpdated = true;
+        }
+    }
+
+    const entry = await mgr.toggleServer(name, shouldEnable);
+
+    if (shouldEnable && isMempalaceServer(name)) {
+        try {
+            verification = await verifyMempalaceServer(mgr, name);
+        } catch (verifyErr) {
+            await mgr.toggleServer(name, false).catch(() => { });
+            throw new Error(`MemPalace 安裝後驗證失敗，已自動停用：${verifyErr.message}`);
+        }
+    }
+
+    return { entry, install, verification, serverConfigUpdated };
+}
 
 module.exports = function registerMcpRoutes(server) {
     const router = express.Router();
@@ -144,11 +295,19 @@ module.exports = function registerMcpRoutes(server) {
             const name = sanitizeServerName(req.params.name);
             const { enabled } = req.body;
             const mgr = await getMCPManager();
-            const entry = await mgr.toggleServer(name, Boolean(enabled));
-            return res.json({ success: true, server: entry });
+            const { entry, install, verification, serverConfigUpdated } = await toggleServerWithMempalaceSetup(mgr, name, enabled);
+            if (!entry) {
+                return res.status(404).json({ error: `MCP server "${name}" not found` });
+            }
+            return res.json({ success: true, server: entry, install, verification, serverConfigUpdated });
         } catch (e) {
             console.error('[MCP] Toggle server error:', e);
-            const status = /Invalid/i.test(e.message) ? 400 : 500;
+            const message = String(e && e.message ? e.message : '');
+            const status = /Invalid/i.test(message)
+                ? 400
+                : /not found/i.test(message)
+                    ? 404
+                    : 500;
             return res.status(status).json({ error: e.message });
         }
     });
@@ -191,4 +350,11 @@ module.exports = function registerMcpRoutes(server) {
     });
 
     return router;
+};
+
+module.exports.__test__ = {
+    isMempalaceServer,
+    buildMempalaceProbePlan,
+    verifyMempalaceServer,
+    toggleServerWithMempalaceSetup,
 };

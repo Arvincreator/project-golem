@@ -41,6 +41,19 @@ interface MCPLogEntry {
     durationMs: number;
 }
 
+interface MCPToggleResponse {
+    success?: boolean;
+    server?: MCPServer;
+    install?: {
+        installAction?: string;
+        mempalaceVersion?: string;
+    };
+    verification?: {
+        connection?: { success?: boolean; toolCount?: number };
+        functionality?: { checked?: boolean; tool?: string };
+    };
+}
+
 type MCPLogSocketPayload = {
     type?: string;
     mcpEntry?: MCPLogEntry;
@@ -55,10 +68,11 @@ function getErrorMessage(error: unknown, fallback = "Unknown error"): string {
 
 // ─── Server Card ──────────────────────────────────────────────────────────────
 function ServerCard({
-    server, selected, onSelect, onToggle, onDelete, onEdit, onTest
+    server, selected, testing, onSelect, onToggle, onDelete, onEdit, onTest
 }: {
     server: MCPServer;
     selected: boolean;
+    testing: boolean;
     onSelect: () => void;
     onToggle: (enabled: boolean) => void;
     onDelete: () => void;
@@ -110,29 +124,44 @@ function ServerCard({
             </div>
 
             {/* Action bar */}
-            <div className="flex items-center gap-1 mt-3 pt-3 border-t border-border/50 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                    onClick={(e) => { e.stopPropagation(); onToggle(!server.enabled); }}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg text-xs hover:bg-secondary transition-colors"
-                    title={server.enabled ? (isEnglish ? "Disable" : "停用") : (isEnglish ? "Enable" : "啟用")}
-                >
-                    {server.enabled
-                        ? <><ToggleRight className="w-3.5 h-3.5 text-blue-400" /><span className="text-blue-400">{isEnglish ? "Enabled" : "啟用中"}</span></>
-                        : <><ToggleLeft  className="w-3.5 h-3.5 text-zinc-500" /><span className="text-zinc-500">{isEnglish ? "Disabled" : "已停用"}</span></>
-                    }
-                </button>
-                <button onClick={(e) => { e.stopPropagation(); onTest(); }}
-                    className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-amber-400 transition-colors" title={isEnglish ? "Test connection" : "測試連線"}>
-                    <Zap className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={(e) => { e.stopPropagation(); onEdit(); }}
-                    className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-blue-400 transition-colors" title={isEnglish ? "Edit" : "編輯"}>
-                    <Edit2 className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={(e) => { e.stopPropagation(); onDelete(); }}
-                    className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-red-400 transition-colors" title={isEnglish ? "Delete" : "刪除"}>
-                    <Trash2 className="w-3.5 h-3.5" />
-                </button>
+            <div className="mt-3 pt-3 border-t border-border/50 space-y-2">
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onToggle(!server.enabled); }}
+                        className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg text-xs hover:bg-secondary transition-colors"
+                        title={server.enabled ? (isEnglish ? "Disable" : "停用") : (isEnglish ? "Enable" : "啟用")}
+                    >
+                        {server.enabled
+                            ? <><ToggleRight className="w-3.5 h-3.5 text-blue-400" /><span className="text-blue-400">{isEnglish ? "Enabled" : "啟用中"}</span></>
+                            : <><ToggleLeft  className="w-3.5 h-3.5 text-zinc-500" /><span className="text-zinc-500">{isEnglish ? "Disabled" : "已停用"}</span></>
+                        }
+                    </button>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onTest(); }}
+                        disabled={!server.enabled || testing}
+                        className={`flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg text-xs transition-colors border ${
+                            !server.enabled
+                                ? 'border-border/40 text-zinc-500 cursor-not-allowed'
+                                : testing
+                                    ? 'border-amber-500/40 text-amber-300 bg-amber-500/10 cursor-wait'
+                                    : 'border-amber-500/30 text-amber-300 hover:bg-amber-500/10'
+                        }`}
+                        title={isEnglish ? "Test connection" : "測試連線"}
+                    >
+                        {testing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5" />}
+                        <span>{isEnglish ? "Test" : "測試連線"}</span>
+                    </button>
+                </div>
+                <div className="flex items-center gap-1">
+                    <button onClick={(e) => { e.stopPropagation(); onEdit(); }}
+                        className="flex-1 p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-blue-400 transition-colors" title={isEnglish ? "Edit" : "編輯"}>
+                        <Edit2 className="w-3.5 h-3.5 mx-auto" />
+                    </button>
+                    <button onClick={(e) => { e.stopPropagation(); onDelete(); }}
+                        className="flex-1 p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-red-400 transition-colors" title={isEnglish ? "Delete" : "刪除"}>
+                        <Trash2 className="w-3.5 h-3.5 mx-auto" />
+                    </button>
+                </div>
             </div>
         </div>
     );
@@ -425,6 +454,7 @@ export default function MCPPage() {
     const [loading,     setLoading]     = useState(true);
     const [dialog,      setDialog]      = useState<{ mode: 'add' | 'edit'; initial: Partial<MCPServer> | null } | null>(null);
     const [testResult,  setTestResult]  = useState<{ server: string; ok: boolean; msg: string } | null>(null);
+    const [testingServer, setTestingServer] = useState<string | null>(null);
     const [injecting,   setInjecting]   = useState(false);
     const [showReminder, setShowReminder] = useState(false);
 
@@ -480,15 +510,46 @@ export default function MCPPage() {
 
     // ── Actions ───────────────────────────────────────────────────
     const handleToggle = async (name: string, enabled: boolean) => {
-        await apiPostWrite(
-            apiUrl(`/api/mcp/servers/${encodeURIComponent(name)}/toggle`),
-            { enabled }
-        );
-        showToast(enabled
-            ? (isEnglish ? `${name} enabled` : `${name} 已啟用`)
-            : (isEnglish ? `${name} disabled` : `${name} 已停用`));
-        if (enabled) setShowReminder(true);
-        await fetchServers();
+        try {
+            const response = await apiPostWrite<MCPToggleResponse>(
+                apiUrl(`/api/mcp/servers/${encodeURIComponent(name)}/toggle`),
+                { enabled }
+            );
+
+            if (enabled && name.toLowerCase() === "mempalace") {
+                const installAction = response.install?.installAction === "installed"
+                    ? (isEnglish ? "installed now" : "已自動安裝")
+                    : (isEnglish ? "already installed" : "已安裝");
+                const toolCount = response.verification?.connection?.toolCount;
+                const functional = response.verification?.functionality?.checked;
+                const functionalText = functional
+                    ? (isEnglish ? "functional probe passed" : "功能探測通過")
+                    : (isEnglish ? "connection test passed" : "連線測試通過");
+                const toolCountText = typeof toolCount === "number"
+                    ? (isEnglish ? `, ${toolCount} tools` : `，${toolCount} 個工具`)
+                    : "";
+
+                showToast(
+                    isEnglish
+                        ? `${name} enabled (${installAction}${toolCountText}, ${functionalText})`
+                        : `${name} 已啟用（${installAction}${toolCountText}，${functionalText}）`
+                );
+            } else {
+                showToast(enabled
+                    ? (isEnglish ? `${name} enabled` : `${name} 已啟用`)
+                    : (isEnglish ? `${name} disabled` : `${name} 已停用`));
+            }
+
+            if (enabled) setShowReminder(true);
+            await fetchServers();
+        } catch (e: unknown) {
+            showToast(
+                isEnglish
+                    ? `Toggle failed: ${getErrorMessage(e, "Unknown error")}`
+                    : `切換失敗: ${getErrorMessage(e, "未知錯誤")}`,
+                false
+            );
+        }
     };
 
     const handleInject = async () => {
@@ -523,6 +584,7 @@ export default function MCPPage() {
 
     const handleTest = async (name: string) => {
         setTestResult(null);
+        setTestingServer(name);
         try {
             const d = await apiPostWrite<{ success?: boolean; toolCount?: number; error?: string }>(
                 apiUrl(`/api/mcp/servers/${encodeURIComponent(name)}/test`),
@@ -539,6 +601,8 @@ export default function MCPPage() {
         } catch (e: unknown) {
             setTestResult({ server: name, ok: false, msg: getErrorMessage(e, isEnglish ? "Test failed" : "測試失敗") });
             setTimeout(() => setTestResult(null), 4000);
+        } finally {
+            setTestingServer((current) => (current === name ? null : current));
         }
     };
 
@@ -652,6 +716,7 @@ export default function MCPPage() {
                                 key={s.name}
                                 server={s}
                                 selected={selected?.name === s.name}
+                                testing={testingServer === s.name}
                                 onSelect={() => setSelected(s)}
                                 onToggle={(enabled) => handleToggle(s.name, enabled)}
                                 onDelete={() => handleDelete(s.name)}

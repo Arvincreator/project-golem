@@ -243,5 +243,96 @@
         "description": "Delete a note from a notebook."
       }
     ]
+  },
+  {
+    "name": "mempalace",
+    "command": "/Users/alan/code/contribute/project-golem/data/mcp/mempalace-runtime/.venv/bin/python",
+    "args": [
+      "-m",
+      "mempalace.mcp_server"
+    ],
+    "env": {
+      "MEMPALACE_PALACE_DIR": "/Users/alan/code/contribute/project-golem/data/mcp/mempalace-runtime/palace"
+    },
+    "enabled": true,
+    "description": "MemPalace MCP — 長期記憶檢索/知識圖譜 (Dashboard 啟用時會自動安裝與驗證)",
+    "cachedTools": [
+      {
+        "name": "mempalace_status",
+        "description": "Palace overview — total drawers, wing and room counts"
+      },
+      {
+        "name": "mempalace_list_wings",
+        "description": "List all wings with drawer counts"
+      },
+      {
+        "name": "mempalace_list_rooms",
+        "description": "List rooms within a wing (or all rooms if no wing given)"
+      },
+      {
+        "name": "mempalace_get_taxonomy",
+        "description": "Full taxonomy: wing → room → drawer count"
+      },
+      {
+        "name": "mempalace_get_aaak_spec",
+        "description": "Get the AAAK dialect specification — the compressed memory format MemPalace uses. Call this if you need to read or write AAAK-compressed memories."
+      },
+      {
+        "name": "mempalace_kg_query",
+        "description": "Query the knowledge graph for an entity's relationships. Returns typed facts with temporal validity. E.g. 'Max' → child_of Alice, loves chess, does swimming. Filter by date with as_of to see what was true at a point in time."
+      },
+      {
+        "name": "mempalace_kg_add",
+        "description": "Add a fact to the knowledge graph. Subject → predicate → object with optional time window. E.g. ('Max', 'started_school', 'Year 7', valid_from='2026-09-01')."
+      },
+      {
+        "name": "mempalace_kg_invalidate",
+        "description": "Mark a fact as no longer true. E.g. ankle injury resolved, job ended, moved house."
+      },
+      {
+        "name": "mempalace_kg_timeline",
+        "description": "Chronological timeline of facts. Shows the story of an entity (or everything) in order."
+      },
+      {
+        "name": "mempalace_kg_stats",
+        "description": "Knowledge graph overview: entities, triples, current vs expired facts, relationship types."
+      },
+      {
+        "name": "mempalace_traverse",
+        "description": "Walk the palace graph from a room. Shows connected ideas across wings — the tunnels. Like following a thread through the palace: start at 'chromadb-setup' in wing_code, discover it connects to wing_myproject (planning) and wing_user (feelings about it)."
+      },
+      {
+        "name": "mempalace_find_tunnels",
+        "description": "Find rooms that bridge two wings — the hallways connecting different domains. E.g. what topics connect wing_code to wing_team?"
+      },
+      {
+        "name": "mempalace_graph_stats",
+        "description": "Palace graph overview: total rooms, tunnel connections, edges between wings."
+      },
+      {
+        "name": "mempalace_search",
+        "description": "Semantic search. Returns verbatim drawer content with similarity scores."
+      },
+      {
+        "name": "mempalace_check_duplicate",
+        "description": "Check if content already exists in the palace before filing"
+      },
+      {
+        "name": "mempalace_add_drawer",
+        "description": "File verbatim content into the palace. Checks for duplicates first."
+      },
+      {
+        "name": "mempalace_delete_drawer",
+        "description": "Delete a drawer by ID. Irreversible."
+      },
+      {
+        "name": "mempalace_diary_write",
+        "description": "Write to your personal agent diary in AAAK format. Your observations, thoughts, what you worked on, what matters. Each agent has their own diary with full history. Write in AAAK for compression — e.g. 'SESSION:2026-04-04|built.palace.graph+diary.tools|ALC.req:agent.diaries.in.aaak|★★★'. Use entity codes from the AAAK spec."
+      },
+      {
+        "name": "mempalace_diary_read",
+        "description": "Read your recent diary entries (in AAAK). See what past versions of yourself recorded — your journal across sessions."
+      }
+    ]
   }
 ]

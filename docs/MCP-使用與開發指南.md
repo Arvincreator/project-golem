@@ -64,6 +64,19 @@ Golem 會自動識別並發出如下 Action：
 
 ## 🛠️ 管理功能說明
 
+### MemPalace 一鍵啟用（自動安裝 + 驗證）
+若你在 Dashboard 將 `mempalace` Server 切換為啟用，系統會自動執行以下流程：
+
+1. 先執行安裝器（`scripts/mcp/install-mempalace.js`），建立專案內隔離虛擬環境 `data/mcp/mempalace-runtime/.venv` 並安裝 `mempalace`（已安裝則跳過）。
+2. 啟用 MCP 連線並執行 `tools/list` 連線測試。
+3. 嘗試呼叫一個只讀 probe 工具（例如 `mempalace_search`）做功能驗證。
+4. 若驗證失敗，會自動將 `mempalace` 停用，避免留下「已啟用但不可用」狀態。
+
+你也可以手動執行安裝器：
+```bash
+npm run mcp:install:mempalace
+```
+
 ### 實時日誌 (Live Logs)
 在 MCP 頁面下方設有日誌面板，會實時顯示：
 - 調用的時間與耗時
