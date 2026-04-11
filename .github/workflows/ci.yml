@@ -18,12 +18,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node
-      - name: Refresh Lock File
-        run: bash scripts/refresh-lock.sh
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          
+
+      - name: Refresh Lock File
+        run: bash scripts/refresh-lock.sh
 
       - name: Install
         run: npm ci
