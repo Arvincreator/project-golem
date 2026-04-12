@@ -406,11 +406,15 @@ function DashboardContent({
     const pathname = usePathname();
 
     useEffect(() => {
-        if (isLoadingGolems) return;
+        // System setup has higher priority than persona setup.
+        // If system is not configured yet, keep user on /dashboard/system-setup
+        // and avoid redirect tug-of-war between /dashboard/setup <-> /dashboard/system-setup.
+        if (isLoadingGolems || isLoadingSystem) return;
+        if (!isSystemConfigured) return;
         if (activeGolemStatus === 'pending_setup' && pathname !== '/dashboard/setup') {
             router.push('/dashboard/setup');
         }
-    }, [activeGolemStatus, pathname, router, isLoadingGolems]);
+    }, [activeGolemStatus, pathname, router, isLoadingGolems, isLoadingSystem, isSystemConfigured]);
 
     // 系統設定保護：若 GEMINI_API_KEYS 未設定且不在設定頁，就導向設定向導
     useEffect(() => {

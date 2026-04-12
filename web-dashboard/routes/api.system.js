@@ -343,11 +343,10 @@ module.exports = function registerSystemRoutes(server) {
                     isLoggedIn: false,
                     checkedAt: new Date().toISOString(),
                     detectionReason: 'browser_not_initialized',
-                    message: 'Gemini 瀏覽器核心目前尚未啟動。您可以點擊下方按鈕強制啟動，或等下次對話觸發自動啟動。'
+                    message: 'Gemini 瀏覽器核心目前尚未啟動。您可以點擊下方按鈕手動開啟登入視窗。'
                 });
             }
 
-            await navigateGeminiPage(brain, ConfigManager);
             const authState = await detectGeminiLoginState(brain);
 
             return res.json({
@@ -358,7 +357,8 @@ module.exports = function registerSystemRoutes(server) {
                 primaryUrl: getPrimaryGeminiUrl(ConfigManager),
                 headlessMode,
                 checkedAt: new Date().toISOString(),
-                ...authState
+                ...authState,
+                detectionReason: authState.detectionReason || 'passive_status_check',
             });
         } catch (e) {
             console.error('[WebServer] Failed to check Gemini auth status:', e);

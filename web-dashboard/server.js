@@ -107,19 +107,21 @@ class WebServer {
 
         setTimeout(async () => {
             const ConfigManager = require('../src/config/index');
+            const EnvManager = require('../src/utils/EnvManager');
             const fs = require('fs');
             const path = require('path');
 
             const { MEMORY_BASE_DIR } = ConfigManager;
             const personaPath = path.resolve(MEMORY_BASE_DIR, 'persona.json');
+            const envVars = EnvManager.readEnv();
+            const hasPersona = fs.existsSync(personaPath);
+            const isSystemConfigured = envVars.SYSTEM_CONFIGURED === 'true';
 
             console.log('🔄 [WebServer] Scanning for persona.json to auto-start Golem...');
 
-            if (fs.existsSync(personaPath)) {
+            if (hasPersona && isSystemConfigured) {
                 console.log('🚀 [WebServer] Auto-starting Golem from saved state...');
                 try {
-                    const EnvManager = require('../src/utils/EnvManager');
-                    const envVars = EnvManager.readEnv();
                     const config = {
                         id: 'golem_A',
                         tgToken: envVars.TELEGRAM_TOKEN,
@@ -140,7 +142,10 @@ class WebServer {
                     console.log('🏁 [WebServer] Booting complete! Dashboard is now ready.');
                 }
             } else {
-                console.log('⏸️ [WebServer] Golem skipped auto-start (Missing persona.json).');
+                const reasons = [];
+                if (!hasPersona) reasons.push('Missing persona.json');
+                if (!isSystemConfigured) reasons.push('System setup not completed');
+                console.log(`⏸️ [WebServer] Golem skipped auto-start (${reasons.join(' + ')}).`);
                 this.isBooting = false;
                 console.log('🏁 [WebServer] Booting complete (No Golem to start). Dashboard is ready.');
             }

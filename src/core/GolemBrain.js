@@ -69,6 +69,8 @@ class GolemBrain {
         this.ollamaClient = this.backend === 'ollama' ? new OllamaClient() : null;
         this.isInitialized = false;
         this._ollamaBootInjected = false;
+        this._webBootInjected = false;
+        this._isInjectingSystemPrompt = false;
         
         // ── 實體生命週期追蹤 ──
         this.browserStartTime = null;
@@ -123,7 +125,15 @@ class GolemBrain {
         }
 
         if (this.context && !forceReload && this.isInitialized) {
-            console.log("✅ [Brain] 瀏覽器實體已存在且無須強制重新載入，跳過啟動。");
+            const personaManager = require('../skills/core/persona');
+            const hasPersona = personaManager.exists(this.userDataDir);
+
+            if (!skipPromptInjection && hasPersona && !this._webBootInjected && !this._isInjectingSystemPrompt) {
+                console.log(`🧩 [Brain][${this.golemId}] 偵測到已初始化但尚未注入初始提示詞，開始補注入...`);
+                await this._injectSystemPrompt(false);
+            } else {
+                console.log("✅ [Brain] 瀏覽器實體已存在且無須強制重新載入，跳過啟動。");
+            }
             return;
         }
 
@@ -181,11 +191,13 @@ class GolemBrain {
         // 4. Dashboard 整合 (可選)
         this._linkDashboard();
 
+        // 在系統提示詞注入前先標記初始化完成，避免 sendMessage() 重入 init()
+        this.isInitialized = true;
+
         // 5. 新會話: 注入系統 Prompt (僅在允許且檔案存在時注入)
-        if (!skipPromptInjection && hasPersona && (forceReload || isNewSession)) {
+        if (!skipPromptInjection && hasPersona && (forceReload || isNewSession) && !this._isInjectingSystemPrompt) {
             await this._injectSystemPrompt(forceReload);
         }
-        this.isInitialized = true;
     }
 
     /**
@@ -560,99 +572,121 @@ class GolemBrain {
      * @param {boolean} [forceRefresh=false]
      */
     async _injectSystemPrompt(forceRefresh = false) {
-        let { systemPrompt, skillMemoryText } = await ProtocolFormatter.buildSystemPrompt(forceRefresh, {
-            userDataDir: this.userDataDir,
-            golemId: this.golemId
-        });
-
-        if (skillMemoryText) {
-            await this.memorize(skillMemoryText, { type: 'system_skills', source: 'boot_init' });
-            console.log(`🧠 [Memory] 已成功將技能載入長期記憶中！`);
+        if (this._isInjectingSystemPrompt) {
+            console.log(`⏳ [Brain][${this.golemId}] 系統提示詞注入進行中，跳過重複觸發。`);
+            return;
         }
 
-        // 🚀 [第一階段] 發送底層系統協議 (不含歷史摘要)
-        const compressedPrompt = ProtocolFormatter.compress(systemPrompt);
-        await this.sendMessage(compressedPrompt, false); // ⚡ 改為 false：等待完整回應
-        console.log(`📡 [Brain] 階段一：底層協議注入完成 (${this.backend.toUpperCase()})。`);
+        this._isInjectingSystemPrompt = true;
+        const shouldTrackWebBoot = this.backend !== 'ollama';
+        let markedWebInjectedThisRound = false;
 
-        // 🧠 [第二階段] 金字塔式多層記憶注入
-        if (this.chatLogManager) {
-            try {
-                let historicalMemory = "";
+        try {
+            let { systemPrompt, skillMemoryText } = await ProtocolFormatter.buildSystemPrompt(forceRefresh, {
+                userDataDir: this.userDataDir,
+                golemId: this.golemId
+            });
 
-                // 🏛️ Tier 4: 紀元里程碑 (最近 1 個)
-                const eraSummaries = await this.chatLogManager.readTierAsync('era', 1);
-                if (eraSummaries.length > 0) {
-                    eraSummaries.forEach(s => {
-                        historicalMemory += `\n=== [紀元回憶: ${s.date}] ===\n${s.content}\n`;
-                    });
-                }
-
-                // 🏛️ Tier 3: 年度回顧 (最近 1 個)
-                const yearlySummaries = await this.chatLogManager.readTierAsync('yearly', 1);
-                if (yearlySummaries.length > 0) {
-                    yearlySummaries.forEach(s => {
-                        historicalMemory += `\n=== [年度回顧: ${s.date}] ===\n${s.content}\n`;
-                    });
-                }
-
-                // 🏛️ Tier 2: 月度精華 (最近 3 個)
-                const monthlySummaries = await this.chatLogManager.readTierAsync('monthly', 3);
-                if (monthlySummaries.length > 0) {
-                    monthlySummaries.forEach(s => {
-                        historicalMemory += `\n--- [月度精華: ${s.date}] ---\n${s.content}\n`;
-                    });
-                }
-
-                // 🏛️ Tier 1: 每日摘要 (最近 7 天)
-                const dailySummaries = await this.chatLogManager.readTierAsync('daily', 7);
-                if (dailySummaries.length > 0) {
-                    dailySummaries.forEach(s => {
-                        historicalMemory += `\n--- [${s.date} 摘要] ---\n${s.content}\n`;
-                    });
-                }
-
-                if (historicalMemory) {
-                    const tierCounts = [
-                        eraSummaries.length > 0 ? `紀元×${eraSummaries.length}` : null,
-                        yearlySummaries.length > 0 ? `年度×${yearlySummaries.length}` : null,
-                        monthlySummaries.length > 0 ? `月度×${monthlySummaries.length}` : null,
-                        dailySummaries.length > 0 ? `每日×${dailySummaries.length}` : null,
-                    ].filter(Boolean);
-
-                    // ⚡ [Fix] Token 預算保護：超過 200K 字元時，從最舊 Tier 開始截斷
-                    const MAX_MEMORY_CHARS = 200000;
-                    if (historicalMemory.length > MAX_MEMORY_CHARS) {
-                        console.warn(`⚠️ [Brain] 歷史記憶超過 Token 預算 (${historicalMemory.length} chars > ${MAX_MEMORY_CHARS})，截斷較舊 Tier...`);
-                        historicalMemory = historicalMemory.slice(-MAX_MEMORY_CHARS);
-                    }
-
-                    // ⚡ [Fix] 動態生成注入說明，只列出實際有資料的層
-                    const tierDesc = tierCounts.length > 0
-                        ? `（涵蓋：${tierCounts.join(' → ')}）`
-                        : '';
-
-                    const memoryPulse = `【指令：載入長期記憶與背景壓縮】\n以下是你過去對話的多層次彙總精華${tierDesc}。請完整閱讀並內化這些背景，將其視為你目前已知的所有先驗知識與決策紀錄：\n${historicalMemory}`;
-                    await this.sendMessage(memoryPulse, false);
-                    console.log(`🧠 [Brain] 階段二：已注入多層記憶 (${tierCounts.join(', ')})。`);
-                } else {
-                    // 🕐 Tier 0 Fallback：無任何壓縮摘要時，直接載入全部 hourly 原始對話
-                    const rawMemory = await this.chatLogManager.readRecentHourlyAsync();
-                    if (rawMemory) {
-                        const MAX_RAW_CHARS = 200000;
-                        const safeRaw = rawMemory.length > MAX_RAW_CHARS
-                            ? rawMemory.slice(-MAX_RAW_CHARS)
-                            : rawMemory;
-                        const rawPulse = `【指令：載入近期原始對話紀錄】\n目前尚無任何壓縮摘要，以下是你最近的完整對話原文。請完整閱讀並視為你已知的先驗背景：\n${safeRaw}`;
-                        await this.sendMessage(rawPulse, false);
-                        console.log(`🕐 [Brain] 階段二(Fallback)：已注入 Tier 0 原始 hourly 對話 (${safeRaw.length} chars)。`);
-                    } else {
-                        console.log(`ℹ️ [Brain] 階段二：無任何歷史記憶可注入 (全新會話)。`);
-                    }
-                }
-            } catch (e) {
-                console.warn(`⚠️ [Brain] 歷史記憶掃描或注入失敗: ${e.message}`);
+            if (skillMemoryText) {
+                await this.memorize(skillMemoryText, { type: 'system_skills', source: 'boot_init' });
+                console.log(`🧠 [Memory] 已成功將技能載入長期記憶中！`);
             }
+
+            // 🚀 [第一階段] 發送底層系統協議 (不含歷史摘要)
+            if (shouldTrackWebBoot && !this._webBootInjected) {
+                this._webBootInjected = true;
+                markedWebInjectedThisRound = true;
+            }
+            const compressedPrompt = ProtocolFormatter.compress(systemPrompt);
+            await this.sendMessage(compressedPrompt, false); // ⚡ 改為 false：等待完整回應
+            console.log(`📡 [Brain] 階段一：底層協議注入完成 (${this.backend.toUpperCase()})。`);
+
+            // 🧠 [第二階段] 金字塔式多層記憶注入
+            if (this.chatLogManager) {
+                try {
+                    let historicalMemory = "";
+
+                    // 🏛️ Tier 4: 紀元里程碑 (最近 1 個)
+                    const eraSummaries = await this.chatLogManager.readTierAsync('era', 1);
+                    if (eraSummaries.length > 0) {
+                        eraSummaries.forEach(s => {
+                            historicalMemory += `\n=== [紀元回憶: ${s.date}] ===\n${s.content}\n`;
+                        });
+                    }
+
+                    // 🏛️ Tier 3: 年度回顧 (最近 1 個)
+                    const yearlySummaries = await this.chatLogManager.readTierAsync('yearly', 1);
+                    if (yearlySummaries.length > 0) {
+                        yearlySummaries.forEach(s => {
+                            historicalMemory += `\n=== [年度回顧: ${s.date}] ===\n${s.content}\n`;
+                        });
+                    }
+
+                    // 🏛️ Tier 2: 月度精華 (最近 3 個)
+                    const monthlySummaries = await this.chatLogManager.readTierAsync('monthly', 3);
+                    if (monthlySummaries.length > 0) {
+                        monthlySummaries.forEach(s => {
+                            historicalMemory += `\n--- [月度精華: ${s.date}] ---\n${s.content}\n`;
+                        });
+                    }
+
+                    // 🏛️ Tier 1: 每日摘要 (最近 7 天)
+                    const dailySummaries = await this.chatLogManager.readTierAsync('daily', 7);
+                    if (dailySummaries.length > 0) {
+                        dailySummaries.forEach(s => {
+                            historicalMemory += `\n--- [${s.date} 摘要] ---\n${s.content}\n`;
+                        });
+                    }
+
+                    if (historicalMemory) {
+                        const tierCounts = [
+                            eraSummaries.length > 0 ? `紀元×${eraSummaries.length}` : null,
+                            yearlySummaries.length > 0 ? `年度×${yearlySummaries.length}` : null,
+                            monthlySummaries.length > 0 ? `月度×${monthlySummaries.length}` : null,
+                            dailySummaries.length > 0 ? `每日×${dailySummaries.length}` : null,
+                        ].filter(Boolean);
+
+                        // ⚡ [Fix] Token 預算保護：超過 200K 字元時，從最舊 Tier 開始截斷
+                        const MAX_MEMORY_CHARS = 200000;
+                        if (historicalMemory.length > MAX_MEMORY_CHARS) {
+                            console.warn(`⚠️ [Brain] 歷史記憶超過 Token 預算 (${historicalMemory.length} chars > ${MAX_MEMORY_CHARS})，截斷較舊 Tier...`);
+                            historicalMemory = historicalMemory.slice(-MAX_MEMORY_CHARS);
+                        }
+
+                        // ⚡ [Fix] 動態生成注入說明，只列出實際有資料的層
+                        const tierDesc = tierCounts.length > 0
+                            ? `（涵蓋：${tierCounts.join(' → ')}）`
+                            : '';
+
+                        const memoryPulse = `【指令：載入長期記憶與背景壓縮】\n以下是你過去對話的多層次彙總精華${tierDesc}。請完整閱讀並內化這些背景，將其視為你目前已知的所有先驗知識與決策紀錄：\n${historicalMemory}`;
+                        await this.sendMessage(memoryPulse, false);
+                        console.log(`🧠 [Brain] 階段二：已注入多層記憶 (${tierCounts.join(', ')})。`);
+                    } else {
+                        // 🕐 Tier 0 Fallback：無任何壓縮摘要時，直接載入全部 hourly 原始對話
+                        const rawMemory = await this.chatLogManager.readRecentHourlyAsync();
+                        if (rawMemory) {
+                            const MAX_RAW_CHARS = 200000;
+                            const safeRaw = rawMemory.length > MAX_RAW_CHARS
+                                ? rawMemory.slice(-MAX_RAW_CHARS)
+                                : rawMemory;
+                            const rawPulse = `【指令：載入近期原始對話紀錄】\n目前尚無任何壓縮摘要，以下是你最近的完整對話原文。請完整閱讀並視為你已知的先驗背景：\n${safeRaw}`;
+                            await this.sendMessage(rawPulse, false);
+                            console.log(`🕐 [Brain] 階段二(Fallback)：已注入 Tier 0 原始 hourly 對話 (${safeRaw.length} chars)。`);
+                        } else {
+                            console.log(`ℹ️ [Brain] 階段二：無任何歷史記憶可注入 (全新會話)。`);
+                        }
+                    }
+                } catch (e) {
+                    console.warn(`⚠️ [Brain] 歷史記憶掃描或注入失敗: ${e.message}`);
+                }
+            }
+        } catch (e) {
+            if (shouldTrackWebBoot && markedWebInjectedThisRound) {
+                this._webBootInjected = false;
+            }
+            throw e;
+        } finally {
+            this._isInjectingSystemPrompt = false;
         }
     }
 

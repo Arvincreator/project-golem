@@ -1001,7 +1001,7 @@ export default function UnifiedConsole({
                                             label={isEnglish ? "Start Golem" : "啟動 Golem"}
                                             description={isEnglish ? "Initialize core instance" : "初始化核心實體"}
                                             onClick={() => openConfirm("start")}
-                                            disabled={activeGolemStatus === "running" || isLoading}
+                                            disabled={activeGolemStatus === "running" || activeGolemStatus === "booting" || isLoading}
                                             color="primary"
                                         />
                                         <ActionButton

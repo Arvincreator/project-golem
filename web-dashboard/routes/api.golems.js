@@ -8,7 +8,11 @@ module.exports = function registerGolemRoutes(server) {
     router.get('/api/golems', (req, res) => {
         try {
             const EnvManager = require('../../src/utils/EnvManager');
+            const ConfigManager = require('../../src/config/index');
+            const personaManager = require('../../src/skills/core/persona');
             const envVars = EnvManager.readEnv();
+            const hasPersona = personaManager.exists(ConfigManager.MEMORY_BASE_DIR);
+            const defaultStatus = hasPersona ? 'not_started' : 'pending_setup';
 
             const golemsData = [];
             const isSingleMode = envVars.GOLEM_MODE === 'SINGLE' || !envVars.GOLEM_MODE;
@@ -17,7 +21,7 @@ module.exports = function registerGolemRoutes(server) {
             if (hasToken || isSingleMode) {
                 const id = 'golem_A';
                 const context = server.contexts.get(id);
-                let status = 'not_started';
+                let status = defaultStatus;
 
                 if (context && context.brain) {
                     status = context.brain.status || 'running';
@@ -52,6 +56,15 @@ module.exports = function registerGolemRoutes(server) {
 
             const EnvManager = require('../../src/utils/EnvManager');
             const ConfigManager = require('../../src/config/index');
+            const envVars = EnvManager.readEnv();
+            const isSystemConfigured = envVars.SYSTEM_CONFIGURED === 'true';
+
+            if (!isSystemConfigured) {
+                return res.status(409).json({
+                    error: 'system_setup_required',
+                    message: 'Please complete /dashboard/system-setup before creating golem config.',
+                });
+            }
 
             if (!id) {
                 return res.status(400).json({ error: 'Missing required fields: id' });
@@ -112,12 +125,31 @@ module.exports = function registerGolemRoutes(server) {
         try {
             const { id } = req.body;
             if (!id) return res.status(400).json({ error: 'Missing Golem ID' });
+            const EnvManager = require('../../src/utils/EnvManager');
+            const ConfigManager = require('../../src/config/index');
+            const personaManager = require('../../src/skills/core/persona');
+            const envVars = EnvManager.readEnv();
+            const isSystemConfigured = envVars.SYSTEM_CONFIGURED === 'true';
+            const hasPersona = personaManager.exists(ConfigManager.MEMORY_BASE_DIR);
+
+            if (!isSystemConfigured) {
+                return res.status(409).json({
+                    error: 'system_setup_required',
+                    message: 'System setup is required before starting Golem.',
+                });
+            }
+
+            if (!hasPersona) {
+                return res.status(409).json({
+                    error: 'persona_setup_required',
+                    message: 'Persona setup is required before starting Golem.',
+                });
+            }
 
             let instance = server.contexts.get(id);
             if (!instance) {
                 if (typeof server.golemFactory === 'function') {
                     console.log(`🧬 [WebServer] Golem '${id}' not in memory. Triggering lazy gestation (Single Mode)...`);
-                    const ConfigManager = require('../../src/config/index');
                     const targetConfig = ConfigManager.GOLEMS_CONFIG.find((g) => g.id === id);
                     if (!targetConfig) return res.status(404).json({ error: `Config for '${id}' not found in internal config.` });
 
@@ -132,6 +164,7 @@ module.exports = function registerGolemRoutes(server) {
             }
 
             console.log(`🎬 [WebServer] Explicitly starting Golem: ${id}`);
+            instance.brain.status = 'booting';
             server.isBooting = true;
             try {
                 await instance.brain.init();
@@ -189,15 +222,31 @@ module.exports = function registerGolemRoutes(server) {
     router.post('/api/golems/setup', requireGolemOps, async (req, res) => {
         const { golemId, aiName, userName, currentRole, tone, skills } = req.body;
         if (!golemId) return res.status(400).json({ error: 'Missing golemId' });
+        const EnvManager = require('../../src/utils/EnvManager');
+        const envVars = EnvManager.readEnv();
+        const isSystemConfigured = envVars.SYSTEM_CONFIGURED === 'true';
+        if (!isSystemConfigured) {
+            return res.status(409).json({
+                error: 'system_setup_required',
+                message: 'Please complete /dashboard/system-setup before persona setup.',
+            });
+        }
 
         let context = server.contexts.get(golemId);
 
         if (!context || !context.brain) {
             console.log(`🏗️ [WebServer] Golem context [${golemId}] not found for setup. Attempting on-demand initialization...`);
             const ConfigManager = require('../../src/config/index');
-            const golemConfig = ConfigManager.GOLEMS_CONFIG.find((g) => g.id === golemId);
+            const golemConfig = ConfigManager.GOLEMS_CONFIG.find((g) => g.id === golemId) || {
+                id: golemId,
+                tgToken: ConfigManager.CONFIG.TG_TOKEN,
+                tgAuthMode: ConfigManager.CONFIG.TG_AUTH_MODE,
+                adminId: ConfigManager.CONFIG.ADMIN_ID,
+                chatId: ConfigManager.CONFIG.TG_CHAT_ID,
+                dcToken: ConfigManager.CONFIG.DC_TOKEN,
+                dcAdminId: ConfigManager.CONFIG.DISCORD_ADMIN_ID,
+            };
 
-            if (!golemConfig) return res.status(404).json({ error: 'Golem configuration not found' });
             if (!server.golemFactory) return res.status(500).json({ error: 'golemFactory not available' });
 
             try {
@@ -222,12 +271,13 @@ module.exports = function registerGolemRoutes(server) {
                 isNew: false
             });
 
-            context.brain.status = 'running';
+            context.brain.status = 'booting';
             server.isBooting = true;
 
             (async () => {
                 try {
                     await context.brain.init();
+                    context.brain.status = 'running';
 
                     if (context.brain.tgBot && typeof context.brain.tgBot.startPolling === 'function') {
                         await context.brain.tgBot.startPolling();
