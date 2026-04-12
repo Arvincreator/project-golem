@@ -5,7 +5,7 @@ const path = require('path');
 const ConfigManager = require('../config');
 const DOMDoctor = require('../services/DOMDoctor');
 const OllamaClient = require('../services/OllamaClient');
-const { LanceDBProDriver, SystemNativeDriver } = require('../../packages/memory');
+const { LanceDBProDriver, SystemNativeDriver, GBrainDriver } = require('../../packages/memory');
 
 const BrowserLauncher = require('./BrowserLauncher');
 const { ProtocolFormatter } = require('../../packages/protocol');
@@ -35,15 +35,18 @@ class GolemBrain {
         this.selectors = this.doctor.loadSelectors();
 
         // ── 記憶引擎 ──
-        const requestedMode = ConfigManager.cleanEnv(process.env.GOLEM_MEMORY_MODE || 'lancedb-pro').toLowerCase() || 'lancedb-pro';
+        const requestedMode = ConfigManager.cleanEnv(process.env.GOLEM_MEMORY_MODE || 'gbrain').toLowerCase() || 'gbrain';
         const isIntelMac = process.platform === 'darwin' && process.arch === 'x64';
         let effectiveMode = requestedMode;
 
         // Intel Mac 無法使用目前的 LanceDB npm native binary，啟動時主動降級避免初始化爆炸。
-        if (requestedMode === 'native' || requestedMode === 'system') {
+        if (requestedMode === 'gbrain') {
+            effectiveMode = 'gbrain';
+            this.memoryDriver = new GBrainDriver();
+        } else if (requestedMode === 'native' || requestedMode === 'system') {
             effectiveMode = 'native';
             this.memoryDriver = new SystemNativeDriver();
-        } else if (isIntelMac) {
+        } else if (isIntelMac && requestedMode === 'lancedb-pro') {
             effectiveMode = 'native';
             console.warn('⚠️ [Memory] 偵測到 Intel Mac (darwin-x64)。LanceDB Pro 在此架構不受支援，已自動切換為 SystemNativeDriver。');
             this.memoryDriver = new SystemNativeDriver();
@@ -76,8 +79,9 @@ class GolemBrain {
     /**
      * 初始化瀏覽器、記憶引擎、注入系統 Prompt
      * @param {boolean} [forceReload=false] - 是否強制重新載入
+     * @param {boolean} [skipPromptInjection=false] - 是否跳過注入系統提示詞
      */
-    async init(forceReload = false) {
+    async init(forceReload = false, skipPromptInjection = false) {
         console.log(`🎬 [Brain] 啟動初始化程序 (forceReload: ${forceReload})...`);
         this.backend = ConfigManager.CONFIG.GOLEM_BACKEND || this.backend || 'gemini';
 
@@ -91,16 +95,17 @@ class GolemBrain {
 
             // 初始化日誌與技能索引
             await this.chatLogManager.init();
+            const personaManager = require('../skills/core/persona');
+            const hasPersona = personaManager.exists(this.userDataDir);
             try {
-                const personaManager = require('../skills/core/persona');
-                if (personaManager.exists(this.userDataDir)) {
+                if (hasPersona) {
                     const personaData = personaManager.get(this.userDataDir);
                     const personaSkills = personaData.skills || [];
                     const { resolveEnabledSkills } = require('../skills/skillsConfig');
                     const enabledSet = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', personaSkills);
                     await this.skillIndex.sync(Array.from(enabledSet));
                 } else {
-                    console.log(`⏸️ [Brain][${this.golemId}] 尚未完成設定 (Missing persona.json)，跳過技能索引同步。`);
+                    console.log(`⏸️ [Brain][${this.golemId}] 尚未完成設定 (Missing persona.json)，跳過技能索引同步與系統注入。`);
                 }
             } catch (e) {
                 console.warn('⚠️ [Brain] 技能索引同步失敗:', e.message);
@@ -110,7 +115,7 @@ class GolemBrain {
             this._linkDashboard();
             this.isInitialized = true;
 
-            if (forceReload || !this._ollamaBootInjected) {
+            if (!skipPromptInjection && hasPersona && (forceReload || !this._ollamaBootInjected)) {
                 this._ollamaBootInjected = true;
                 await this._injectSystemPrompt(forceReload);
             }
@@ -152,9 +157,10 @@ class GolemBrain {
         await this.chatLogManager.init();
 
         // 2.6 同步技能索引到 SQLite (僅在完成建立/設定後才啟動)
+        const personaManager = require('../skills/core/persona');
+        const hasPersona = personaManager.exists(this.userDataDir);
         try {
-            const personaManager = require('../skills/core/persona');
-            if (personaManager.exists(this.userDataDir)) {
+            if (hasPersona) {
                 // 獲取目前啟用的技能清單
                 const personaData = personaManager.get(this.userDataDir);
                 const personaSkills = personaData.skills || [];
@@ -163,7 +169,7 @@ class GolemBrain {
                 const enabledSet = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', personaSkills);
                 await this.skillIndex.sync(Array.from(enabledSet));
             } else {
-                console.log(`⏸️ [Brain][${this.golemId}] 尚未完成設定 (Missing persona.json)，跳過技能索引同步。`);
+                console.log(`⏸️ [Brain][${this.golemId}] 尚未完成設定 (Missing persona.json)，跳過技能索引同步與系統提示詞注入。`);
             }
         } catch (e) {
             console.warn('⚠️ [Brain] 技能索引同步失敗:', e.message);
@@ -175,8 +181,8 @@ class GolemBrain {
         // 4. Dashboard 整合 (可選)
         this._linkDashboard();
 
-        // 5. 新會話: 注入系統 Prompt
-        if (forceReload || isNewSession) {
+        // 5. 新會話: 注入系統 Prompt (僅在允許且檔案存在時注入)
+        if (!skipPromptInjection && hasPersona && (forceReload || isNewSession)) {
             await this._injectSystemPrompt(forceReload);
         }
         this.isInitialized = true;
@@ -679,7 +685,12 @@ class GolemBrain {
                 attempt++;
                 console.log(`📡 [Brain] 正在嘗試導航至: ${url}`);
                 // 等待 domcontentloaded 以確保基本結構已載入
-                await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+                const response = await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+                const status = response && typeof response.status === 'function' ? response.status() : null;
+                if (status !== null && status >= 500) {
+                    // 5xx 視為服務不可用，觸發下一個 URL failover
+                    throw new Error(`HTTP ${status}`);
+                }
                 console.log(`✅ [Brain] 成功導航至: ${url}`);
                 return; // 成功則退出
             } catch (e) {

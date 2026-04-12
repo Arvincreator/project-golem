@@ -239,19 +239,32 @@ class PageInteractor {
             const el = document.querySelector(s);
             if (!el) return;
 
-            // 針對 contenteditable 使用更強大的模擬植入
+            // 針對 contenteditable 使用更強大的模擬植入 (修復 ProseMirror injection)
             if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
                 el.value = t;
+                const events = ['input', 'change', 'keyup'];
+                events.forEach(name => {
+                    const event = new Event(name, { bubbles: true, cancelable: true });
+                    el.dispatchEvent(event);
+                });
             } else {
-                el.innerText = t;
+                el.focus();
+                const dataTransfer = new DataTransfer();
+                dataTransfer.setData('text/plain', t);
+                const pasteEvent = new ClipboardEvent('paste', {
+                    clipboardData: dataTransfer,
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                // 派發 Paste 事件，現代編輯器如 ProseMirror 會攔截並正確解析內容狀態
+                el.dispatchEvent(pasteEvent);
+                
+                // 如果編輯器沒有攔截它，則作為保險直接使用 execCommand 原生寫入 DOM
+                if (!pasteEvent.defaultPrevented) {
+                    document.execCommand('insertText', false, t);
+                }
             }
-
-            // ⚡ 強制觸發事件，讓 React/Angular/ProseMirror 知道內容變了
-            const events = ['input', 'change', 'keyup'];
-            events.forEach(name => {
-                const event = new Event(name, { bubbles: true, cancelable: true });
-                el.dispatchEvent(event);
-            });
 
             // 確保游標在最後
             try {

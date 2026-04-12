@@ -1,5 +1,15 @@
 [
   {
+    "name": "gbrain",
+    "command": "gbrain",
+    "args": [
+      "serve"
+    ],
+    "env": {},
+    "enabled": true,
+    "description": "GBrain MCP — 知識檢索與增強"
+  },
+  {
     "name": "chrome-devtools",
     "command": "npx",
     "args": [

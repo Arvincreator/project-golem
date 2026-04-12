@@ -6,6 +6,8 @@ const { execSync } = require('child_process');
 const { getLocalIp } = require('../../src/utils/HttpUtils');
 const { resolveEnabledSkills } = require('../../src/skills/skillsConfig');
 const { buildOperationGuard, auditSecurityEvent } = require('../server/security');
+const { resolveActiveContext } = require('./utils/context');
+const { URLS } = require('../../src/core/constants');
 
 function normalizeMemoryMode(modeRaw) {
     const mode = String(modeRaw || '').trim().toLowerCase();
@@ -38,6 +40,184 @@ function normalizeEmbeddingProvider(providerRaw) {
     return 'local';
 }
 
+function parseBooleanFlag(value, fallback = false) {
+    if (value === undefined || value === null || value === '') return fallback;
+    const normalized = String(value).trim().toLowerCase();
+    if (['1', 'true', 'yes', 'on', 'new'].includes(normalized)) return true;
+    if (['0', 'false', 'no', 'off'].includes(normalized)) return false;
+    return fallback;
+}
+
+function isPlaywrightHeadlessEnabled() {
+    return parseBooleanFlag(process.env.PLAYWRIGHT_HEADLESS, false);
+}
+
+function getProfileMeta(configManager, brain) {
+    const profileName = String(configManager.CONFIG.PLAYWRIGHT_PROFILE || '').trim() || 'default';
+    const userDataDir = String((brain && brain.userDataDir) || configManager.MEMORY_BASE_DIR || '').trim();
+    return { profileName, userDataDir };
+}
+
+function getPrimaryGeminiUrl(configManager) {
+    const urls = Array.isArray(configManager.CONFIG.GEMINI_URLS)
+        ? configManager.CONFIG.GEMINI_URLS.filter((url) => typeof url === 'string' && url.trim() !== '')
+        : [];
+    return urls[0] || URLS.GEMINI_APP;
+}
+
+async function ensureGeminiBrain(server) {
+    const ConfigManager = require('../../src/config/index');
+
+    let { golemId, context } = resolveActiveContext(server, 'golem_A');
+
+    if ((!context || !context.brain) && typeof server.golemFactory === 'function') {
+        const golemConfig = ConfigManager.GOLEMS_CONFIG.find((cfg) => cfg.id === 'golem_A')
+            || ConfigManager.GOLEMS_CONFIG[0]
+            || {
+                id: 'golem_A',
+                tgToken: ConfigManager.CONFIG.TG_TOKEN,
+                dcToken: ConfigManager.CONFIG.DC_TOKEN,
+                tgAuthMode: ConfigManager.CONFIG.TG_AUTH_MODE,
+                adminId: ConfigManager.CONFIG.ADMIN_ID,
+                chatId: ConfigManager.CONFIG.TG_CHAT_ID
+            };
+
+        await server.golemFactory(golemConfig);
+        ({ golemId, context } = resolveActiveContext(server, golemConfig.id || 'golem_A'));
+    }
+
+    if (!context || !context.brain) {
+        throw new Error('找不到可用的 Golem 實體。請先完成系統初始化。');
+    }
+
+    const backend = normalizeBackend((ConfigManager.CONFIG && ConfigManager.CONFIG.GOLEM_BACKEND) || context.brain.backend || 'gemini');
+    return {
+        golemId: golemId || context.brain.golemId || 'golem_A',
+        brain: context.brain,
+        backend,
+        configManager: ConfigManager
+    };
+}
+
+async function navigateGeminiPage(brain, configManager) {
+    if (!brain.context || !brain.page || !brain.isInitialized) {
+        // [Fix] 確保在登入狀態檢查、手動開啟視窗時，不會因為觸發 init() 而自動注入對話
+        await brain.init(false, true);
+    }
+    if (typeof brain._navigateToTarget === 'function') {
+        await brain._navigateToTarget('gemini');
+        return;
+    }
+    const targetUrl = getPrimaryGeminiUrl(configManager);
+    await brain.page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
+}
+
+async function detectGeminiLoginState(brain) {
+    if (!brain || !brain.page || !brain.context) {
+        throw new Error('Gemini 頁面尚未啟動。');
+    }
+
+    let pageUrl = '';
+    try { pageUrl = brain.page.url(); } catch { }
+
+    let cookies = [];
+    try {
+        cookies = await brain.context.cookies(['https://gemini.google.com', 'https://accounts.google.com']);
+    } catch { }
+
+    const AUTH_COOKIE_NAMES = new Set([
+        'SID',
+        'HSID',
+        'SSID',
+        'APISID',
+        'SAPISID',
+        '__Secure-1PSID',
+        '__Secure-3PSID'
+    ]);
+
+    const hasGoogleAuthCookie = cookies.some((cookie) => AUTH_COOKIE_NAMES.has(cookie.name));
+
+    const domSignal = { hasSignInUi: false, hasPromptInput: false, title: '' };
+    try {
+        const result = await brain.page.evaluate(() => {
+            const bodyText = String(document.body && document.body.innerText ? document.body.innerText : '').toLowerCase();
+            const loginKeywords = [
+                'sign in',
+                'log in',
+                '登入',
+                '繼續使用 google 帳戶',
+                'continue with google'
+            ];
+            const hasSignInUi = loginKeywords.some((keyword) => bodyText.includes(keyword.toLowerCase()));
+            const hasPromptInput = Boolean(
+                document.querySelector('textarea')
+                || document.querySelector('div[contenteditable="true"][role="textbox"]')
+                || document.querySelector('rich-textarea')
+            );
+            return {
+                hasSignInUi,
+                hasPromptInput,
+                title: String(document.title || '')
+            };
+        });
+        domSignal.hasSignInUi = Boolean(result.hasSignInUi);
+        domSignal.hasPromptInput = Boolean(result.hasPromptInput);
+        domSignal.title = String(result.title || '');
+    } catch { }
+
+    const redirectedToLogin = /accounts\.google\.com|servicelogin|\/signin/i.test(pageUrl);
+    const isLoggedIn = domSignal.hasPromptInput || (hasGoogleAuthCookie && !redirectedToLogin && !domSignal.hasSignInUi);
+    const detectionReason = isLoggedIn
+        ? (domSignal.hasPromptInput ? 'prompt_input_visible' : 'google_auth_cookie_detected')
+        : (redirectedToLogin ? 'redirected_to_google_login' : domSignal.hasSignInUi ? 'login_ui_detected' : 'no_auth_signal');
+
+    return {
+        isLoggedIn,
+        detectionReason,
+        pageUrl,
+        pageTitle: domSignal.title,
+        cookieCount: cookies.length
+    };
+}
+
+async function focusGeminiWindow(brain) {
+    const focusInfo = {
+        pageBroughtToFront: false,
+        osWindowActivated: false,
+        osMethod: 'none',
+        warning: ''
+    };
+
+    if (brain && brain.page && typeof brain.page.bringToFront === 'function') {
+        try {
+            await brain.page.bringToFront();
+            focusInfo.pageBroughtToFront = true;
+        } catch (e) {
+            focusInfo.warning = e.message || String(e);
+        }
+    }
+
+    if (process.platform === 'darwin') {
+        try {
+            execSync("osascript -e 'tell application \"Google Chrome\" to activate' -e 'tell application \"Google Chrome\" to set index of front window to 1'", { stdio: 'pipe' });
+            focusInfo.osWindowActivated = true;
+            focusInfo.osMethod = 'osascript:google_chrome';
+        } catch (firstError) {
+            try {
+                execSync("osascript -e 'tell application \"Google Chrome for Testing\" to activate' -e 'tell application \"Google Chrome for Testing\" to set index of front window to 1'", { stdio: 'pipe' });
+                focusInfo.osWindowActivated = true;
+                focusInfo.osMethod = 'osascript:chrome_for_testing';
+            } catch (secondError) {
+                if (!focusInfo.warning) {
+                    focusInfo.warning = secondError.message || firstError.message || 'activate_failed';
+                }
+            }
+        }
+    }
+
+    return focusInfo;
+}
+
 module.exports = function registerSystemRoutes(server) {
     const router = express.Router();
     const requireUpdateExecute = buildOperationGuard(server, 'system_update_execute');
@@ -45,6 +225,7 @@ module.exports = function registerSystemRoutes(server) {
     const requireRestart = buildOperationGuard(server, 'system_restart');
     const requireReload = buildOperationGuard(server, 'system_reload');
     const requireShutdown = buildOperationGuard(server, 'system_shutdown');
+    const requireGeminiWindowControl = buildOperationGuard(server, 'gemini_window_control');
 
     router.get('/api/system/status', (req, res) => {
         try {
@@ -121,6 +302,172 @@ module.exports = function registerSystemRoutes(server) {
         } catch (e) {
             console.error('[WebServer] Failed to get system status:', e);
             return res.status(500).json({ error: e.message });
+        }
+    });
+
+    router.get('/api/system/gemini-auth/status', async (req, res) => {
+        try {
+            const ConfigManager = require('../../src/config/index');
+            const { golemId, context } = resolveActiveContext(server, 'golem_A');
+            const brain = context ? context.brain : null;
+            const configBackend = ConfigManager.CONFIG && ConfigManager.CONFIG.GOLEM_BACKEND;
+            const backend = normalizeBackend(configBackend || (brain && brain.backend) || 'gemini');
+            
+            const profileMeta = getProfileMeta(ConfigManager, brain);
+            const headlessMode = isPlaywrightHeadlessEnabled();
+
+            if (backend !== 'gemini') {
+                return res.json({
+                    success: true,
+                    golemId: golemId || 'golem_A',
+                    backend,
+                    ...profileMeta,
+                    primaryUrl: getPrimaryGeminiUrl(ConfigManager),
+                    headlessMode,
+                    isLoggedIn: false,
+                    checkedAt: new Date().toISOString(),
+                    detectionReason: 'backend_not_gemini',
+                    message: '目前核心引擎不是 Web Gemini。請先切換 GOLEM_BACKEND=gemini 並重啟系統。'
+                });
+            }
+
+            // ⚠️ [Fix] 如果 GolemBrain 還沒啟動，就不該強制調用 ensureGeminiBrain/navigateGeminiPage，否則一進設定頁就會跳出 Chrome
+            if (!brain || !brain.page || !brain.isInitialized) {
+                return res.json({
+                    success: true,
+                    golemId: golemId || 'golem_A',
+                    backend,
+                    ...profileMeta,
+                    primaryUrl: getPrimaryGeminiUrl(ConfigManager),
+                    headlessMode,
+                    isLoggedIn: false,
+                    checkedAt: new Date().toISOString(),
+                    detectionReason: 'browser_not_initialized',
+                    message: 'Gemini 瀏覽器核心目前尚未啟動。您可以點擊下方按鈕強制啟動，或等下次對話觸發自動啟動。'
+                });
+            }
+
+            await navigateGeminiPage(brain, ConfigManager);
+            const authState = await detectGeminiLoginState(brain);
+
+            return res.json({
+                success: true,
+                golemId: golemId || 'golem_A',
+                backend,
+                ...profileMeta,
+                primaryUrl: getPrimaryGeminiUrl(ConfigManager),
+                headlessMode,
+                checkedAt: new Date().toISOString(),
+                ...authState
+            });
+        } catch (e) {
+            console.error('[WebServer] Failed to check Gemini auth status:', e);
+            const statusCode = Number.isInteger(e.httpStatus) ? e.httpStatus : 500;
+            return res.status(statusCode).json({ success: false, error: e.message });
+        }
+    });
+
+    router.post('/api/system/gemini-auth/open', requireGeminiWindowControl, async (req, res) => {
+        try {
+            const { golemId, brain, backend, configManager } = await ensureGeminiBrain(server);
+            const profileMeta = getProfileMeta(configManager, brain);
+            const headlessMode = isPlaywrightHeadlessEnabled();
+
+            if (backend !== 'gemini') {
+                return res.status(409).json({
+                    success: false,
+                    golemId,
+                    backend,
+                    ...profileMeta,
+                    headlessMode,
+                    error: '目前核心引擎不是 Web Gemini，無法開啟登入視窗。請先切換 GOLEM_BACKEND=gemini。'
+                });
+            }
+
+            if (headlessMode) {
+                return res.status(409).json({
+                    success: false,
+                    golemId,
+                    backend,
+                    ...profileMeta,
+                    headlessMode,
+                    error: '目前 PLAYWRIGHT_HEADLESS=true，請先關閉無頭模式並重啟系統，才能看到 Gemini 登入視窗。'
+                });
+            }
+
+            await navigateGeminiPage(brain, configManager);
+            const focus = await focusGeminiWindow(brain);
+            const authState = await detectGeminiLoginState(brain);
+
+            return res.json({
+                success: true,
+                golemId,
+                backend,
+                ...profileMeta,
+                primaryUrl: getPrimaryGeminiUrl(configManager),
+                headlessMode,
+                checkedAt: new Date().toISOString(),
+                message: authState.isLoggedIn
+                    ? '已開啟目前 Profile 的 Web Gemini，且目前看起來已登入。'
+                    : '已開啟目前 Profile 的 Web Gemini，請在彈出的 Chrome 視窗完成登入後再按「確認」。',
+                focus,
+                ...authState
+            });
+        } catch (e) {
+            console.error('[WebServer] Failed to open Gemini login window:', e);
+            const statusCode = Number.isInteger(e.httpStatus) ? e.httpStatus : 500;
+            return res.status(statusCode).json({ success: false, error: e.message });
+        }
+    });
+
+    router.post('/api/system/gemini-auth/focus', requireGeminiWindowControl, async (req, res) => {
+        try {
+            const { golemId, brain, backend, configManager } = await ensureGeminiBrain(server);
+            const profileMeta = getProfileMeta(configManager, brain);
+            const headlessMode = isPlaywrightHeadlessEnabled();
+
+            if (backend !== 'gemini') {
+                return res.status(409).json({
+                    success: false,
+                    golemId,
+                    backend,
+                    ...profileMeta,
+                    headlessMode,
+                    error: '目前核心引擎不是 Web Gemini，無法置頂確認視窗。'
+                });
+            }
+
+            if (headlessMode) {
+                return res.status(409).json({
+                    success: false,
+                    golemId,
+                    backend,
+                    ...profileMeta,
+                    headlessMode,
+                    error: '目前 PLAYWRIGHT_HEADLESS=true，無法把 Gemini 視窗彈到最上層。'
+                });
+            }
+
+            await navigateGeminiPage(brain, configManager);
+            const focus = await focusGeminiWindow(brain);
+            const authState = await detectGeminiLoginState(brain);
+
+            return res.json({
+                success: true,
+                golemId,
+                backend,
+                ...profileMeta,
+                primaryUrl: getPrimaryGeminiUrl(configManager),
+                headlessMode,
+                checkedAt: new Date().toISOString(),
+                message: '已嘗試將目前 Profile 的 Gemini 視窗置頂，請直接肉眼確認登入狀態。',
+                focus,
+                ...authState
+            });
+        } catch (e) {
+            console.error('[WebServer] Failed to focus Gemini window:', e);
+            const statusCode = Number.isInteger(e.httpStatus) ? e.httpStatus : 500;
+            return res.status(statusCode).json({ success: false, error: e.message });
         }
     });
 

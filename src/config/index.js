@@ -53,7 +53,7 @@ const CONFIG = {
     CB_TG_ERROR_PCT: cleanEnv(process.env.CB_TG_ERROR_PCT) || '30',
     // --- AI Backend ---
     GOLEM_BACKEND: normalizeBackend(process.env.GOLEM_BACKEND),
-    GOLEM_MEMORY_MODE: cleanEnv(process.env.GOLEM_MEMORY_MODE) || 'lancedb-pro',
+    GOLEM_MEMORY_MODE: cleanEnv(process.env.GOLEM_MEMORY_MODE) || 'gbrain',
     // --- Scheduled Tasks ---
     AWAKE_INTERVAL_MIN: Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MIN)) || 10, // 預設最小 10 分鐘
     AWAKE_INTERVAL_MAX: Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MAX)) || 60, // 預設最大 60 分鐘
@@ -175,7 +175,7 @@ const reloadConfig = () => {
     CONFIG.OLLAMA_EMBEDDING_MODEL = cleanEnv(process.env.GOLEM_OLLAMA_EMBEDDING_MODEL || process.env.OLLAMA_EMBEDDING_MODEL || 'nomic-embed-text', true);
     CONFIG.OLLAMA_RERANK_MODEL = cleanEnv(process.env.GOLEM_OLLAMA_RERANK_MODEL || process.env.OLLAMA_RERANK_MODEL || '', true);
     CONFIG.OLLAMA_TIMEOUT_MS = Number(cleanEnv(process.env.GOLEM_OLLAMA_TIMEOUT_MS || process.env.OLLAMA_TIMEOUT_MS)) || 60000;
-    CONFIG.GOLEM_MEMORY_MODE = cleanEnv(process.env.GOLEM_MEMORY_MODE) || 'lancedb-pro';
+    CONFIG.GOLEM_MEMORY_MODE = cleanEnv(process.env.GOLEM_MEMORY_MODE) || 'gbrain';
 
     const newGeminiUrls = (process.env.GEMINI_URLS || '').split(',').map(u => cleanEnv(u, true)).filter(u => u);
     CONFIG.GEMINI_URLS.length = 0;

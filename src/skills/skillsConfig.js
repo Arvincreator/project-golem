@@ -25,6 +25,9 @@ const MANDATORY_SKILLS = [
 ];
 
 const OPTIONAL_SKILLS = [
+    'gbrain-query',
+    'gbrain-ingest',
+    'gbrain-enrich',
     'git',
     'image-prompt',
     'mempalace',

@@ -27,6 +27,7 @@ import SecurityTab from "./components/tabs/SecurityTab";
 import AdvancedTab from "./components/tabs/AdvancedTab";
 import SystemHealthDashboard from "./components/SystemHealthDashboard";
 import SystemUpdateSection from "./components/SystemUpdateSection";
+import GeminiAuthCard from "./components/GeminiAuthCard";
 import UrlsTab from "./tabs/UrlsTab";
 import { ConfigData, LogInfo, SystemStatus } from "./types";
 import { useI18n } from "@/components/I18nProvider";
@@ -297,6 +298,7 @@ export default function SettingsPage() {
                 {activeTab === "overview" && (
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
                         <SystemHealthDashboard systemStatus={systemStatus} />
+                        <GeminiAuthCard />
                         <SystemUpdateSection />
                     </div>
                 )}

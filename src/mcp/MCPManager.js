@@ -15,9 +15,14 @@ const { installMempalace } = require('./mempalaceInstaller');
 const CONFIG_PATH = path.resolve(process.cwd(), 'data', 'mcp-servers.json');
 const MAX_LOG     = 500;
 const MEMPALACE_SERVER_NAME = 'mempalace';
+const GBRAIN_SERVER_NAME    = 'gbrain';
 
 function isMempalaceServer(name) {
     return String(name || '').trim().toLowerCase() === MEMPALACE_SERVER_NAME;
+}
+
+function isGBrainServer(name) {
+    return String(name || '').trim().toLowerCase() === GBRAIN_SERVER_NAME;
 }
 
 function normalizeStringArray(values) {
@@ -263,8 +268,30 @@ class MCPManager extends EventEmitter {
 
     async _prepareServerForConnect(cfg, options = {}) {
         if (!cfg || !cfg.name) return cfg;
-        if (!isMempalaceServer(cfg.name)) return cfg;
-        return await this._prepareMempalaceConfig(cfg, options);
+        if (isMempalaceServer(cfg.name)) return await this._prepareMempalaceConfig(cfg, options);
+        if (isGBrainServer(cfg.name))    return this._prepareGBrainConfig(cfg);
+        return cfg;
+    }
+
+    _prepareGBrainConfig(cfg) {
+        const os   = require('os');
+        const bunBin    = path.join(os.homedir(), '.bun', 'bin', 'bun');
+        const gbrainBin = path.join(os.homedir(), '.bun', 'bin', 'gbrain');
+
+        const desiredCommand = bunBin;
+        const desiredArgs    = [gbrainBin, 'serve'];
+
+        const changed =
+            cfg.command !== desiredCommand ||
+            !areStringArraysEqual(normalizeStringArray(cfg.args), desiredArgs);
+
+        if (changed) {
+            cfg.command = desiredCommand;
+            cfg.args    = desiredArgs;
+            this._saveConfig();
+            console.log(`[MCPManager] Prepared "gbrain" runtime -> ${bunBin}`);
+        }
+        return cfg;
     }
 
     async _prepareMempalaceConfig(cfg, options = {}) {

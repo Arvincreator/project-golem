@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/toast-provider";
 import { BrainCircuit, Cpu, Palette, Sparkles, User, Settings2, PlayCircle, Search, Tag, X, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { apiGet, apiPost } from "@/lib/api-client";
+import GeminiAuthCard from "../settings/components/GeminiAuthCard";
 
 interface Preset {
     id: string;
@@ -47,20 +48,24 @@ export default function GolemSetupPage() {
     const [tone, setTone] = useState("預設口氣，自然且友善");
     const [skills, setSkills] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isGeminiBackend, setIsGeminiBackend] = useState<boolean>(false);
 
-    // Fetch templates from backend
+    // Fetch system config and templates from backend
     useEffect(() => {
-        const fetchTemplates = async () => {
+        const fetchTemplatesAndConfig = async () => {
             try {
+                const configData = await apiGet<any>("/api/system/config");
+                setIsGeminiBackend(configData.golemBackend === "gemini");
+                
                 const data = await apiGet<{ templates?: Preset[] }>("/api/golems/templates");
                 if (data.templates && data.templates.length > 0) {
                     setTemplates(data.templates);
                 }
             } catch (e) {
-                console.error("Failed to fetch templates:", e);
+                console.error("Failed to fetch templates/config:", e);
             }
         };
-        fetchTemplates();
+        fetchTemplatesAndConfig();
     }, []);
 
     useEffect(() => {
@@ -221,6 +226,13 @@ export default function GolemSetupPage() {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Gemini Auth Check (Only if Backend is Gemini) */}
+                        {isGeminiBackend && (
+                            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <GeminiAuthCard />
+                            </div>
+                        )}
 
                         {/* Submit Button */}
                         <div className="pt-4">

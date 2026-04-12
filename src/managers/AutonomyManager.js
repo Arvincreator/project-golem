@@ -242,6 +242,9 @@ class AutonomyManager {
             morning.setHours(sleepEnd + 1, 0, 0, 0);
             if (morning < nextWakeTime) morning.setDate(morning.getDate() + 1);
             finalWait = morning.getTime() - Date.now();
+            
+            // 觸發 GBrain 夜間知識精煉
+            this.performDreamCycle().catch(e => console.error("Dream Cycle Error:", e));
         }
 
         const actualWakeTime = new Date(Date.now() + finalWait);
@@ -304,6 +307,24 @@ class AutonomyManager {
         const interests = (ConfigManager.CONFIG.USER_INTERESTS || '科技圈熱門話題,全球趣聞').split(',').map(i => i.trim()).filter(i => i);
         const selectedInterest = interests[Math.floor(Math.random() * interests.length)];
         await this.run(`主動社交，傳訊息給主人。語氣自然，符合當下時間。可以聊聊關於「${selectedInterest}」的話題。`, "SpontaneousChat");
+    }
+    async performDreamCycle() {
+        if (ConfigManager.CONFIG.GOLEM_MEMORY_MODE !== 'gbrain') return;
+        console.log(`🌙 [Autonomy][${this.golemId}] 啟動 GBrain Dream Cycle 知識發酵與 Embedding 重算...`);
+        try {
+            const { exec } = require('child_process');
+            const util = require('util');
+            const execAsync = util.promisify(exec);
+            const os = require('os');
+            const path = require('path');
+            const bunBin    = path.join(os.homedir(), '.bun', 'bin', 'bun');
+            const gbrainBin = path.join(os.homedir(), '.bun', 'bin', 'gbrain');
+            const { stdout } = await execAsync(`"${bunBin}" "${gbrainBin}" embed --stale`, { timeout: 120000 });
+            console.log(`✅ [Autonomy] Dream Cycle 完成`);
+            if (stdout && stdout.trim()) console.log(stdout.trim());
+        } catch (e) {
+            console.error(`❌ [Autonomy] Dream Cycle 執行失敗: ${e.message}`);
+        }
     }
     async performSelfReflection(triggerCtx = null) {
         console.log(`🧠 [Autonomy][${this.golemId}] 啟動自我反思程序...`);
