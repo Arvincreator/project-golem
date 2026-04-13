@@ -75,7 +75,9 @@ module.exports = function registerStaticRoutes(server) {
         }
 
         try {
-            const isConfigured = process.env.SYSTEM_CONFIGURED === 'true';
+            const EnvManager = require('../../src/utils/EnvManager');
+            const envVars = EnvManager.readEnv();
+            const isConfigured = envVars.SYSTEM_CONFIGURED === 'true';
             if (!isConfigured) {
                 console.log(`🚩 [WebServer] System NOT initialized. Redirecting ${req.path} to /dashboard/system-setup`);
                 return res.redirect('/dashboard/system-setup');

@@ -1,8 +1,9 @@
 [
   {
     "name": "gbrain",
-    "command": "gbrain",
+    "command": "/Users/alan_wang/.bun/bin/bun",
     "args": [
+      "/Users/alan_wang/.bun/bin/gbrain",
       "serve"
     ],
     "env": {},

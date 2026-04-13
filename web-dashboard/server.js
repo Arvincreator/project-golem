@@ -116,8 +116,17 @@ class WebServer {
             const envVars = EnvManager.readEnv();
             const hasPersona = fs.existsSync(personaPath);
             const isSystemConfigured = envVars.SYSTEM_CONFIGURED === 'true';
+            const autoStartFlag = String(process.env.GOLEM_AUTO_START || '').trim().toLowerCase();
+            const shouldAutoStart = ['1', 'true', 'yes', 'on'].includes(autoStartFlag);
 
             console.log('🔄 [WebServer] Scanning for persona.json to auto-start Golem...');
+
+            if (!shouldAutoStart) {
+                console.log('⏸️ [WebServer] Auto-start disabled (GOLEM_AUTO_START != true). Waiting for explicit Start action.');
+                this.isBooting = false;
+                console.log('🏁 [WebServer] Booting complete (Manual start mode). Dashboard is ready.');
+                return;
+            }
 
             if (hasPersona && isSystemConfigured) {
                 console.log('🚀 [WebServer] Auto-starting Golem from saved state...');

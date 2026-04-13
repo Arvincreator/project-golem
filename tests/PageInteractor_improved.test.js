@@ -81,4 +81,24 @@ describe('PageInteractor Improvements', () => {
         
         jest.restoreAllMocks();
     });
+
+    test('interact retry should preserve keepWindowVisible ui option', async () => {
+        const selectors = {
+            input: 'textarea',
+            send: '.send-btn',
+            response: '.response',
+        };
+
+        jest.spyOn(interactor, '_waitForReady').mockResolvedValue(undefined);
+        jest.spyOn(interactor, '_captureBaseline')
+            .mockImplementationOnce(() => { throw new Error('baseline failed'); })
+            .mockResolvedValueOnce('');
+        jest.spyOn(interactor, '_healSelector').mockResolvedValue(true);
+        jest.spyOn(interactor, '_typeInput').mockResolvedValue(undefined);
+        const clickSendSpy = jest.spyOn(interactor, '_clickSend').mockResolvedValue(undefined);
+
+        await interactor.interact('payload', selectors, true, '[START]', '[END]', 0, null, { keepWindowVisible: true });
+
+        expect(clickSendSpy).toHaveBeenCalledWith('.send-btn', { keepWindowVisible: true });
+    });
 });

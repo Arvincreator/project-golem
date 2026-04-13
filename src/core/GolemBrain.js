@@ -82,10 +82,15 @@ class GolemBrain {
      * 初始化瀏覽器、記憶引擎、注入系統 Prompt
      * @param {boolean} [forceReload=false] - 是否強制重新載入
      * @param {boolean} [skipPromptInjection=false] - 是否跳過注入系統提示詞
+     * @param {{ navigationTarget?: 'backend' | 'none', authOnly?: boolean }} [runtimeOptions={}] - 初始化策略
      */
-    async init(forceReload = false, skipPromptInjection = false) {
+    async init(forceReload = false, skipPromptInjection = false, runtimeOptions = {}) {
         console.log(`🎬 [Brain] 啟動初始化程序 (forceReload: ${forceReload})...`);
         this.backend = ConfigManager.CONFIG.GOLEM_BACKEND || this.backend || 'gemini';
+        const navigationTarget = (runtimeOptions && typeof runtimeOptions === 'object' && runtimeOptions.navigationTarget)
+            ? String(runtimeOptions.navigationTarget).trim().toLowerCase()
+            : 'backend';
+        const authOnly = Boolean(runtimeOptions && typeof runtimeOptions === 'object' && runtimeOptions.authOnly === true);
 
         // Ollama backend: 無需啟動瀏覽器
         if (this.backend === 'ollama') {
@@ -124,12 +129,27 @@ class GolemBrain {
             return;
         }
 
+        if (authOnly && this.context && this.page && !forceReload) {
+            console.log(`✅ [Brain][${this.golemId}] Auth-only 瀏覽器上下文已就緒，跳過重複初始化。`);
+            return;
+        }
+
         if (this.context && !forceReload && this.isInitialized) {
             const personaManager = require('../skills/core/persona');
             const hasPersona = personaManager.exists(this.userDataDir);
 
             if (!skipPromptInjection && hasPersona && !this._webBootInjected && !this._isInjectingSystemPrompt) {
                 console.log(`🧩 [Brain][${this.golemId}] 偵測到已初始化但尚未注入初始提示詞，開始補注入...`);
+                const switchedFromLoginPage = await this._switchToExecutionPageIfLoginFlow();
+                if (switchedFromLoginPage) {
+                    console.log(`🔀 [Brain][${this.golemId}] 已切換到新的執行頁，避免干擾使用者登入視窗。`);
+                }
+                const targetBackend = this.backend === 'perplexity' ? 'perplexity' : 'gemini';
+                if (navigationTarget !== 'none') {
+                    await this._navigateToTarget(targetBackend);
+                } else {
+                    console.log(`⏭️ [Brain][${this.golemId}] 本次初始化要求跳過導航 (navigationTarget=none)。`);
+                }
                 await this._injectSystemPrompt(false);
             } else {
                 console.log("✅ [Brain] 瀏覽器實體已存在且無須強制重新載入，跳過啟動。");
@@ -158,10 +178,27 @@ class GolemBrain {
             isNewSession = true;
         }
 
+        if (!authOnly) {
+            const switchedFromLoginPage = await this._switchToExecutionPageIfLoginFlow();
+            if (switchedFromLoginPage) {
+                isNewSession = true;
+                console.log(`🔀 [Brain][${this.golemId}] 已建立獨立執行頁，避免把提示詞注入到登入流程視窗。`);
+            }
+        }
+
         const targetBackend = this.backend === 'perplexity' ? 'perplexity' : 'gemini';
-        await this._navigateToTarget(targetBackend);
-        console.log(`🚀 [System] ${targetBackend === 'perplexity' ? 'Perplexity' : 'Gemini'} 頁面載入完成 (Golem: ${this.golemId})`);
+        if (navigationTarget !== 'none') {
+            await this._navigateToTarget(targetBackend);
+            console.log(`🚀 [System] ${targetBackend === 'perplexity' ? 'Perplexity' : 'Gemini'} 頁面載入完成 (Golem: ${this.golemId})`);
+        } else {
+            console.log(`⏭️ [System] 本次初始化僅建立瀏覽器上下文，跳過目標站導航 (Golem: ${this.golemId})`);
+        }
         // isNewSession is already set above if a new page was created.
+
+        if (authOnly) {
+            console.log(`⏸️ [Brain][${this.golemId}] Auth-only 模式：已完成登入用瀏覽器準備，延後核心初始化至顯式啟動。`);
+            return;
+        }
 
         // 2.5 初始化日誌管理員 (建立目錄)
         await this.chatLogManager.init();
@@ -213,6 +250,64 @@ class GolemBrain {
         } catch (e) {
             console.error("❌ [CDP] 連線失敗:", e.message);
         }
+    }
+
+    _isGoogleLoginUrl(url) {
+        const normalized = String(url || '').toLowerCase();
+        return /accounts\.google\.com|servicelogin|\/signin/.test(normalized);
+    }
+
+    async _switchToExecutionPageIfLoginFlow() {
+        if (!this.context || !this.page || this.backend === 'ollama') return false;
+        let currentUrl = '';
+        try {
+            currentUrl = this.page.url();
+        } catch {
+            currentUrl = '';
+        }
+
+        if (!this._isGoogleLoginUrl(currentUrl)) return false;
+
+        this.page = await this.context.newPage();
+        return true;
+    }
+
+    async _isPromptInjectionReady() {
+        if (this.backend === 'ollama') return { ready: true, reason: 'ollama_backend' };
+        if (!this.page) return { ready: false, reason: 'no_page' };
+
+        let pageUrl = '';
+        try {
+            pageUrl = this.page.url();
+        } catch {
+            pageUrl = '';
+        }
+
+        if (this._isGoogleLoginUrl(pageUrl)) {
+            return { ready: false, reason: 'google_login_flow' };
+        }
+
+        try {
+            const uiSignal = await this.page.evaluate(() => {
+                const bodyText = String(document.body && document.body.innerText ? document.body.innerText : '').toLowerCase();
+                const loginKeywords = ['sign in', 'log in', '登入', '繼續使用 google 帳戶', 'continue with google'];
+                const hasSignInUi = loginKeywords.some((keyword) => bodyText.includes(keyword));
+                const hasPromptInput = Boolean(
+                    document.querySelector('textarea')
+                    || document.querySelector('div[contenteditable="true"][role="textbox"]')
+                    || document.querySelector('rich-textarea')
+                );
+                return { hasPromptInput, hasSignInUi };
+            });
+
+            if (!uiSignal || !uiSignal.hasPromptInput || uiSignal.hasSignInUi) {
+                return { ready: false, reason: 'prompt_input_not_ready' };
+            }
+        } catch (e) {
+            return { ready: false, reason: `dom_probe_failed:${e.message}` };
+        }
+
+        return { ready: true, reason: 'prompt_input_visible' };
     }
 
     // ✨ [新增] 動態視覺腳本：針對新版 UI 切換模型 (支援中英文介面與防呆)
@@ -347,6 +442,16 @@ class GolemBrain {
 
         await this._ensureBrowserHealth();
         if (!this.context || !this.isInitialized) await this.init();
+
+        if (!this._webBootInjected && !this._isInjectingSystemPrompt) {
+            try {
+                console.log(`🧩 [Brain][${this.golemId}] 偵測到尚未完成初始提示詞注入，先執行一次補注入檢查...`);
+                await this._injectSystemPrompt(false);
+            } catch (injectErr) {
+                console.warn(`⚠️ [Brain][${this.golemId}] 補注入檢查失敗，將繼續本次訊息流程: ${injectErr.message}`);
+            }
+        }
+
         try { await this.page.bringToFront(); } catch (e) { }
         await this.setupCDP();
 
@@ -364,7 +469,9 @@ class GolemBrain {
         let result;
         try {
             result = await interactor.interact(
-                payload, this.selectors, isSystem, startTag, endTag, 0, attachment
+                payload, this.selectors, isSystem, startTag, endTag, 0, attachment, {
+                    keepWindowVisible: options.keepWindowVisible === true
+                }
             );
         } catch (e) {
             // 處理 selector 修復觸發的重試
@@ -373,7 +480,9 @@ class GolemBrain {
                 this.selectors[type] = newSelector;
                 this.doctor.saveSelectors(this.selectors);
                 result = await interactor.interact(
-                    payload, this.selectors, isSystem, startTag, endTag, 1, attachment
+                    payload, this.selectors, isSystem, startTag, endTag, 1, attachment, {
+                        keepWindowVisible: options.keepWindowVisible === true
+                    }
                 );
             } else {
                 throw e;
@@ -582,6 +691,14 @@ class GolemBrain {
         let markedWebInjectedThisRound = false;
 
         try {
+            if (shouldTrackWebBoot) {
+                const readiness = await this._isPromptInjectionReady();
+                if (!readiness.ready) {
+                    console.log(`⏸️ [Brain][${this.golemId}] 目前頁面尚未進入可注入狀態 (${readiness.reason})，略過本次系統提示詞注入。`);
+                    return;
+                }
+            }
+
             let { systemPrompt, skillMemoryText } = await ProtocolFormatter.buildSystemPrompt(forceRefresh, {
                 userDataDir: this.userDataDir,
                 golemId: this.golemId
@@ -598,7 +715,7 @@ class GolemBrain {
                 markedWebInjectedThisRound = true;
             }
             const compressedPrompt = ProtocolFormatter.compress(systemPrompt);
-            await this.sendMessage(compressedPrompt, false); // ⚡ 改為 false：等待完整回應
+            await this.sendMessage(compressedPrompt, false, { keepWindowVisible: true }); // ⚡ 改為 false：等待完整回應
             console.log(`📡 [Brain] 階段一：底層協議注入完成 (${this.backend.toUpperCase()})。`);
 
             // 🧠 [第二階段] 金字塔式多層記憶注入
@@ -659,7 +776,7 @@ class GolemBrain {
                             : '';
 
                         const memoryPulse = `【指令：載入長期記憶與背景壓縮】\n以下是你過去對話的多層次彙總精華${tierDesc}。請完整閱讀並內化這些背景，將其視為你目前已知的所有先驗知識與決策紀錄：\n${historicalMemory}`;
-                        await this.sendMessage(memoryPulse, false);
+                        await this.sendMessage(memoryPulse, false, { keepWindowVisible: true });
                         console.log(`🧠 [Brain] 階段二：已注入多層記憶 (${tierCounts.join(', ')})。`);
                     } else {
                         // 🕐 Tier 0 Fallback：無任何壓縮摘要時，直接載入全部 hourly 原始對話
@@ -670,7 +787,7 @@ class GolemBrain {
                                 ? rawMemory.slice(-MAX_RAW_CHARS)
                                 : rawMemory;
                             const rawPulse = `【指令：載入近期原始對話紀錄】\n目前尚無任何壓縮摘要，以下是你最近的完整對話原文。請完整閱讀並視為你已知的先驗背景：\n${safeRaw}`;
-                            await this.sendMessage(rawPulse, false);
+                            await this.sendMessage(rawPulse, false, { keepWindowVisible: true });
                             console.log(`🕐 [Brain] 階段二(Fallback)：已注入 Tier 0 原始 hourly 對話 (${safeRaw.length} chars)。`);
                         } else {
                             console.log(`ℹ️ [Brain] 階段二：無任何歷史記憶可注入 (全新會話)。`);

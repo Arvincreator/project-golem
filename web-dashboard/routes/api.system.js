@@ -82,7 +82,10 @@ async function ensureGeminiBrain(server) {
                 chatId: ConfigManager.CONFIG.TG_CHAT_ID
             };
 
-        await server.golemFactory(golemConfig);
+        await server.golemFactory({
+            ...golemConfig,
+            __authOnlyBootstrap: true,
+        });
         ({ golemId, context } = resolveActiveContext(server, golemConfig.id || 'golem_A'));
     }
 
@@ -99,26 +102,72 @@ async function ensureGeminiBrain(server) {
     };
 }
 
-async function navigateGeminiPage(brain, configManager) {
-    if (!brain.context || !brain.page || !brain.isInitialized) {
-        // [Fix] 確保在登入狀態檢查、手動開啟視窗時，不會因為觸發 init() 而自動注入對話
-        await brain.init(false, true);
-    }
-    if (typeof brain._navigateToTarget === 'function') {
-        await brain._navigateToTarget('gemini');
-        return;
-    }
-    const targetUrl = getPrimaryGeminiUrl(configManager);
-    await brain.page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
+function isGoogleLoginUrl(url) {
+    return /accounts\.google\.com|servicelogin|\/signin/i.test(String(url || ''));
 }
 
-async function detectGeminiLoginState(brain) {
-    if (!brain || !brain.page || !brain.context) {
+function isGeminiUrl(url) {
+    return /gemini\.google\.com/i.test(String(url || ''));
+}
+
+function getPageUrl(page) {
+    if (!page || typeof page.url !== 'function') return '';
+    try {
+        return page.url();
+    } catch {
+        return '';
+    }
+}
+
+async function ensureGeminiAuthContextReady(brain) {
+    if (!brain.context || !brain.page) {
+        // 手動登入流程只需要建立瀏覽器上下文，不該提前導航 Gemini 或注入提示詞
+        await brain.init(false, true, { navigationTarget: 'none', authOnly: true });
+    }
+}
+
+function pickInspectionPage(brain) {
+    if (!brain || !brain.context || typeof brain.context.pages !== 'function') return brain ? brain.page : null;
+    const pages = brain.context.pages();
+    if (!Array.isArray(pages) || pages.length === 0) return brain.page || null;
+
+    const geminiPage = pages.find((page) => isGeminiUrl(getPageUrl(page)));
+    if (geminiPage) return geminiPage;
+
+    const loginPage = pages.find((page) => isGoogleLoginUrl(getPageUrl(page)));
+    if (loginPage) return loginPage;
+
+    return brain.page || pages[0] || null;
+}
+
+async function ensureGoogleAuthPage(brain) {
+    await ensureGeminiAuthContextReady(brain);
+    const existing = pickInspectionPage(brain);
+    const existingUrl = getPageUrl(existing);
+    if (existing && (isGoogleLoginUrl(existingUrl) || isGeminiUrl(existingUrl))) {
+        return existing;
+    }
+    if (brain.context && typeof brain.context.newPage === 'function') {
+        return brain.context.newPage();
+    }
+    return brain.page;
+}
+
+async function navigateGoogleLoginPage(brain, configManager) {
+    const targetPage = await ensureGoogleAuthPage(brain);
+    const continueUrl = encodeURIComponent(getPrimaryGeminiUrl(configManager));
+    const loginUrl = `https://accounts.google.com/ServiceLogin?continue=${continueUrl}&hl=zh-TW`;
+    await targetPage.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    return targetPage;
+}
+
+async function detectGeminiLoginState(brain, inspectionPage = null) {
+    const page = inspectionPage || pickInspectionPage(brain);
+    if (!brain || !page || !brain.context) {
         throw new Error('Gemini 頁面尚未啟動。');
     }
 
-    let pageUrl = '';
-    try { pageUrl = brain.page.url(); } catch { }
+    const pageUrl = getPageUrl(page);
 
     let cookies = [];
     try {
@@ -139,7 +188,7 @@ async function detectGeminiLoginState(brain) {
 
     const domSignal = { hasSignInUi: false, hasPromptInput: false, title: '' };
     try {
-        const result = await brain.page.evaluate(() => {
+        const result = await page.evaluate(() => {
             const bodyText = String(document.body && document.body.innerText ? document.body.innerText : '').toLowerCase();
             const loginKeywords = [
                 'sign in',
@@ -180,7 +229,7 @@ async function detectGeminiLoginState(brain) {
     };
 }
 
-async function focusGeminiWindow(brain) {
+async function focusGeminiWindow(targetPage) {
     const focusInfo = {
         pageBroughtToFront: false,
         osWindowActivated: false,
@@ -188,9 +237,9 @@ async function focusGeminiWindow(brain) {
         warning: ''
     };
 
-    if (brain && brain.page && typeof brain.page.bringToFront === 'function') {
+    if (targetPage && typeof targetPage.bringToFront === 'function') {
         try {
-            await brain.page.bringToFront();
+            await targetPage.bringToFront();
             focusInfo.pageBroughtToFront = true;
         } catch (e) {
             focusInfo.warning = e.message || String(e);
@@ -198,19 +247,26 @@ async function focusGeminiWindow(brain) {
     }
 
     if (process.platform === 'darwin') {
+        const resolveMacBrowserAppName = () => {
+            const channel = String(process.env.PLAYWRIGHT_BROWSER_CHANNEL || '').trim().toLowerCase();
+            if (!channel) return 'Google Chrome for Testing';
+            if (channel === 'chrome') return 'Google Chrome';
+            if (channel === 'chrome-beta') return 'Google Chrome Beta';
+            if (channel === 'chrome-dev') return 'Google Chrome Dev';
+            if (channel === 'chrome-canary') return 'Google Chrome Canary';
+            // Unknown channels are most likely Chromium-family launches without a matching macOS app bundle.
+            // Fall back to Playwright's default local app name used in this project.
+            return 'Google Chrome for Testing';
+        };
+
+        const appName = resolveMacBrowserAppName();
         try {
-            execSync("osascript -e 'tell application \"Google Chrome\" to activate' -e 'tell application \"Google Chrome\" to set index of front window to 1'", { stdio: 'pipe' });
+            execSync(`osascript -e 'tell application "${appName}" to activate' -e 'tell application "${appName}" to set index of front window to 1'`, { stdio: 'pipe' });
             focusInfo.osWindowActivated = true;
-            focusInfo.osMethod = 'osascript:google_chrome';
-        } catch (firstError) {
-            try {
-                execSync("osascript -e 'tell application \"Google Chrome for Testing\" to activate' -e 'tell application \"Google Chrome for Testing\" to set index of front window to 1'", { stdio: 'pipe' });
-                focusInfo.osWindowActivated = true;
-                focusInfo.osMethod = 'osascript:chrome_for_testing';
-            } catch (secondError) {
-                if (!focusInfo.warning) {
-                    focusInfo.warning = secondError.message || firstError.message || 'activate_failed';
-                }
+            focusInfo.osMethod = `osascript:${appName}`;
+        } catch (activateError) {
+            if (!focusInfo.warning) {
+                focusInfo.warning = activateError.message || 'activate_failed';
             }
         }
     }
@@ -347,7 +403,8 @@ module.exports = function registerSystemRoutes(server) {
                 });
             }
 
-            const authState = await detectGeminiLoginState(brain);
+            const inspectionPage = pickInspectionPage(brain);
+            const authState = await detectGeminiLoginState(brain, inspectionPage);
 
             return res.json({
                 success: true,
@@ -395,9 +452,9 @@ module.exports = function registerSystemRoutes(server) {
                 });
             }
 
-            await navigateGeminiPage(brain, configManager);
-            const focus = await focusGeminiWindow(brain);
-            const authState = await detectGeminiLoginState(brain);
+            const authPage = await navigateGoogleLoginPage(brain, configManager);
+            const focus = await focusGeminiWindow(authPage);
+            const authState = await detectGeminiLoginState(brain, authPage);
 
             return res.json({
                 success: true,
@@ -408,8 +465,8 @@ module.exports = function registerSystemRoutes(server) {
                 headlessMode,
                 checkedAt: new Date().toISOString(),
                 message: authState.isLoggedIn
-                    ? '已開啟目前 Profile 的 Web Gemini，且目前看起來已登入。'
-                    : '已開啟目前 Profile 的 Web Gemini，請在彈出的 Chrome 視窗完成登入後再按「確認」。',
+                    ? '已開啟目前 Profile 的 Google 帳號頁面，且目前看起來已登入。'
+                    : '已開啟目前 Profile 的 Google 登入頁面，請完成登入後再按「確認」。',
                 focus,
                 ...authState
             });
@@ -448,9 +505,14 @@ module.exports = function registerSystemRoutes(server) {
                 });
             }
 
-            await navigateGeminiPage(brain, configManager);
-            const focus = await focusGeminiWindow(brain);
-            const authState = await detectGeminiLoginState(brain);
+            const inspectionPage = await ensureGoogleAuthPage(brain);
+            const inspectionUrl = getPageUrl(inspectionPage);
+            const targetPage = (!inspectionUrl || (!isGoogleLoginUrl(inspectionUrl) && !isGeminiUrl(inspectionUrl)))
+                ? await navigateGoogleLoginPage(brain, configManager)
+                : inspectionPage;
+
+            const focus = await focusGeminiWindow(targetPage);
+            const authState = await detectGeminiLoginState(brain, targetPage);
 
             return res.json({
                 success: true,
@@ -460,7 +522,7 @@ module.exports = function registerSystemRoutes(server) {
                 primaryUrl: getPrimaryGeminiUrl(configManager),
                 headlessMode,
                 checkedAt: new Date().toISOString(),
-                message: '已嘗試將目前 Profile 的 Gemini 視窗置頂，請直接肉眼確認登入狀態。',
+                message: '已嘗試將目前 Profile 的 Google 登入視窗置頂，請直接肉眼確認登入狀態。',
                 focus,
                 ...authState
             });

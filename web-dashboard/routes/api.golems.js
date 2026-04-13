@@ -274,29 +274,31 @@ module.exports = function registerGolemRoutes(server) {
             context.brain.status = 'booting';
             server.isBooting = true;
 
-            (async () => {
-                try {
-                    await context.brain.init();
-                    context.brain.status = 'running';
+            try {
+                await context.brain.init();
+                context.brain.status = 'running';
 
-                    if (context.brain.tgBot && typeof context.brain.tgBot.startPolling === 'function') {
-                        await context.brain.tgBot.startPolling();
-                        console.log(`🤖 [Bot] ${golemId} started polling after setup.`);
-                    }
-
-                    if (context.autonomy && typeof context.autonomy.start === 'function') {
-                        context.autonomy.start();
-                    }
-                } catch (err) {
-                    console.error(`Failed to initialize Golem [${golemId}] after setup:`, err);
-                    context.brain.status = 'error';
-                } finally {
-                    server.isBooting = false;
-                    console.log(`✅ [WebServer] Setup complete for ${golemId}. Dashboard is ready.`);
+                if (context.brain.tgBot && typeof context.brain.tgBot.startPolling === 'function') {
+                    await context.brain.tgBot.startPolling();
+                    console.log(`🤖 [Bot] ${golemId} started polling after setup.`);
                 }
-            })();
 
-            return res.json({ success: true, message: 'Golem setup initiated and starting...' });
+                if (context.autonomy && typeof context.autonomy.start === 'function') {
+                    context.autonomy.start();
+                }
+
+                console.log(`✅ [WebServer] Setup complete for ${golemId}. Dashboard is ready.`);
+                return res.json({ success: true, message: 'Golem setup completed and running.' });
+            } catch (err) {
+                console.error(`Failed to initialize Golem [${golemId}] after setup:`, err);
+                context.brain.status = 'error';
+                return res.status(500).json({
+                    error: 'golem_boot_failed',
+                    message: err && err.message ? err.message : 'Failed to initialize golem after setup',
+                });
+            } finally {
+                server.isBooting = false;
+            }
         } catch (e) {
             console.error('Setup error:', e);
             return res.status(500).json({ error: e.message });

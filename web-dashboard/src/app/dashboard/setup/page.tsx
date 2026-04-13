@@ -7,7 +7,7 @@ import { useGolem } from "@/components/GolemContext";
 import { useToast } from "@/components/ui/toast-provider";
 import { BrainCircuit, Cpu, Palette, Sparkles, User, Settings2, PlayCircle, Search, Tag, X, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { apiGet, apiPost } from "@/lib/api-client";
+import { ApiError, apiGet, apiPost } from "@/lib/api-client";
 import GeminiAuthCard from "../settings/components/GeminiAuthCard";
 
 interface Preset {
@@ -125,7 +125,20 @@ export default function GolemSetupPage() {
             } else {
                 toast.error("建立失敗", data.error || "建立失敗");
             }
-        } catch {
+        } catch (error: unknown) {
+            if (error instanceof ApiError && error.status === 409) {
+                const payload = (error.payload && typeof error.payload === "object")
+                    ? (error.payload as Record<string, unknown>)
+                    : null;
+                const errorCode = typeof payload?.error === "string" ? payload.error : "";
+
+                if (errorCode === "system_setup_required") {
+                    toast.error("請先完成系統初始化", "正在導向系統設定頁面。");
+                    router.push("/dashboard/system-setup");
+                    return;
+                }
+            }
+
             toast.error("設定失敗", "設定過程中發生錯誤，請檢查網路狀態。");
         } finally {
             setIsLoading(false);

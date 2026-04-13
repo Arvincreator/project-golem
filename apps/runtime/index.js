@@ -314,7 +314,8 @@ function getOrCreateGolem() {
                 console.log(`⚠️ [Factory] Golem already exists, skipping.`);
                 return singleGolemInstance;
             }
-            if (golemConfig.tgToken && !activeTgBot) {
+            const isAuthOnlyBootstrap = Boolean(golemConfig && golemConfig.__authOnlyBootstrap === true);
+            if (!isAuthOnlyBootstrap && golemConfig.tgToken && !activeTgBot) {
                 try {
                     // [v9.1.5 修正] 先以 polling: false 建立 Bot，
                     // 再延遲啟動 Polling 並使用 restart:true 讓舊 session 自動讓步，防止 409 Conflict
@@ -388,7 +389,7 @@ function getOrCreateGolem() {
                 }
             }
 
-            if (golemConfig.dcToken && !activeDcBot) {
+            if (!isAuthOnlyBootstrap && golemConfig.dcToken && !activeDcBot) {
                 try {
                     const client = new Client({
                         intents: [
@@ -422,28 +423,25 @@ function getOrCreateGolem() {
             }
 
             const instance = getOrCreateGolem();
-            await ensureCoreServices();
-            if (typeof instance.brain._linkDashboard === 'function') {
-                instance.brain._linkDashboard(instance.autonomy);
+            if (!isAuthOnlyBootstrap) {
+                await ensureCoreServices();
+                if (typeof instance.brain._linkDashboard === 'function') {
+                    instance.brain._linkDashboard(instance.autonomy);
+                }
+            } else {
+                console.log(`⏸️ [Factory] Auth-only bootstrap mode: skip core services until explicit start.`);
             }
 
             // [v9.1.5 Fix]: Verify persona.json to decide actual status
             const personaPath = path_sync.resolve(ConfigManager.MEMORY_BASE_DIR, 'persona.json');
 
             if (fs_sync.existsSync(personaPath)) {
-                instance.brain.status = 'running';
-                // ✅ [Fix] 確保在 polling 前 brain.init() 已經準備完畢
-                await instance.brain.init();
-                if (activeTgBot && activeTgBot.isPolling && !activeTgBot.isPolling()) {
-                    activeTgBot.startPolling({ restart: true });
-                    console.log(`✅ [Bot] ${golemConfig.id} Telegram Polling 已啟動。`);
-                }
+                instance.brain.status = 'not_started';
             } else {
                 instance.brain.status = 'pending_setup';
             }
 
-            instance.autonomy.start();
-            console.log(`✅ [Factory] Golem started via Web Dashboard.`);
+            console.log(`✅ [Factory] Golem context prepared via Web Dashboard (awaiting explicit start).`);
             return instance;
         });
         console.log('🔗 [System] golemFactory injected into WebServer.');

@@ -38,14 +38,15 @@ class PageInteractor {
     /**
      * 主互動流程：輸入文字 → 點擊發送 → 等待回應 → 🌟自動點擊按鈕 (智慧判斷)
      */
-    async interact(payload, selectors, isSystem, startTag, endTag, retryCount = 0, attachment = null) {
+    async interact(payload, selectors, isSystem, startTag, endTag, retryCount = 0, attachment = null, uiOptions = {}) {
         if (retryCount > LIMITS.MAX_INTERACT_RETRY) {
             throw new Error("🔥 DOM Doctor 修復失敗，請檢查網路或 HTML 結構大幅變更。");
         }
 
         try {
             // 🚀 利用 macOS AppleScript 將 Chrome 隱藏至背景，避免接下來的 focus() 搶走終端機焦點
-            if (process.platform === 'darwin') {
+            // 但在初始提示詞注入（keepWindowVisible）時，需保留可視以利人工確認。
+            if (process.platform === 'darwin' && !uiOptions.keepWindowVisible) {
                 const { exec } = require('child_process');
                 exec(`osascript -e 'tell application "System Events" to set visible of process "Google Chrome for Testing" to false' >/dev/null 2>&1`);
                 exec(`osascript -e 'tell application "System Events" to set visible of process "Google Chrome" to false' >/dev/null 2>&1`);
@@ -69,7 +70,7 @@ class PageInteractor {
             await new Promise(r => setTimeout(r, TIMINGS.INPUT_DELAY));
 
             // 4. 發送訊息 (使用物理 Enter 爆破法)
-            await this._clickSend(selectors.send);
+            await this._clickSend(selectors.send, uiOptions);
 
             // 5. 若為系統訊息，延遲後直接返回
             if (isSystem) {
@@ -113,7 +114,7 @@ class PageInteractor {
                 console.log('🩺 [Brain] 啟動 DOM Doctor 進行 Response 診斷...');
                 const healed = await this._healSelector('response', selectors);
                 if (healed) {
-                    return this.interact(payload, selectors, isSystem, startTag, endTag, retryCount + 1, attachment);
+                    return this.interact(payload, selectors, isSystem, startTag, endTag, retryCount + 1, attachment, uiOptions);
                 }
             }
             throw e;
@@ -284,7 +285,7 @@ class PageInteractor {
         await this.page.keyboard.press('Backspace');
     }
 
-    async _clickSend(sendSelector) {
+    async _clickSend(sendSelector, uiOptions = {}) {
         // 1. Enter 爆破 (確保焦點在輸入框，而非按鈕)
         try {
             const fallbackSelectors = [
@@ -328,7 +329,9 @@ class PageInteractor {
         }, sendSelector);
 
         // 3. 自動置底 (最小化干擾)
-        await this._moveWindowToBottom();
+        if (!uiOptions.keepWindowVisible) {
+            await this._moveWindowToBottom();
+        }
 
         await new Promise(r => setTimeout(r, 200));
     }

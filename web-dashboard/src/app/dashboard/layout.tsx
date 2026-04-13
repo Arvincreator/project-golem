@@ -404,6 +404,8 @@ function DashboardContent({
     const { activeGolemStatus, isSystemConfigured, isLoadingSystem, isLoadingGolems, hasGolems, isBooting } = useGolem();
     const router = useRouter();
     const pathname = usePathname();
+    const isOnboardingPath = ['/dashboard/system-setup', '/dashboard/agents/create', '/dashboard/setup']
+        .some(p => pathname.startsWith(p));
 
     useEffect(() => {
         // System setup has higher priority than persona setup.
@@ -411,10 +413,10 @@ function DashboardContent({
         // and avoid redirect tug-of-war between /dashboard/setup <-> /dashboard/system-setup.
         if (isLoadingGolems || isLoadingSystem) return;
         if (!isSystemConfigured) return;
-        if (activeGolemStatus === 'pending_setup' && pathname !== '/dashboard/setup') {
+        if (activeGolemStatus === 'pending_setup' && !isOnboardingPath) {
             router.push('/dashboard/setup');
         }
-    }, [activeGolemStatus, pathname, router, isLoadingGolems, isLoadingSystem, isSystemConfigured]);
+    }, [activeGolemStatus, router, isLoadingGolems, isLoadingSystem, isSystemConfigured, isOnboardingPath]);
 
     // 系統設定保護：若 GEMINI_API_KEYS 未設定且不在設定頁，就導向設定向導
     useEffect(() => {
@@ -425,8 +427,7 @@ function DashboardContent({
 
     // (移除原本強制跳轉到 agents/create 的邏輯，改由 /dashboard 自己渲染迎新畫面)
 
-    const isSetupPage = ['/dashboard/system-setup', '/dashboard/agents/create', '/dashboard/setup']
-        .some(p => pathname.startsWith(p));
+    const isSetupPage = isOnboardingPath;
 
     // 當沒有任何 Golem 時，隱藏 Sidebar，強制引導設定
     const shouldHideSidebar = isSetupPage || (!isLoadingGolems && !hasGolems);

@@ -191,7 +191,7 @@ describe('Golem setup/start setup-first gates', () => {
         httpServer = started.httpServer;
         baseUrl = started.baseUrl;
 
-        const { status, body } = await requestJson(baseUrl, '/api/golems/setup', {
+        const pendingResponse = requestJson(baseUrl, '/api/golems/setup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -201,12 +201,13 @@ describe('Golem setup/start setup-first gates', () => {
             }),
         });
 
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        expect(brain.status).toBe('booting');
+        resolveInit();
+
+        const { status, body } = await pendingResponse;
         expect(status).toBe(200);
         expect(body.success).toBe(true);
-        expect(brain.status).toBe('booting');
-
-        resolveInit();
-        await new Promise((resolve) => setTimeout(resolve, 10));
         expect(brain.init).toHaveBeenCalledTimes(1);
         expect(brain.status).toBe('running');
         expect(autonomy.start).toHaveBeenCalledTimes(1);

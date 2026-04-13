@@ -9,7 +9,7 @@ import {
     ExternalLink, Eye, EyeOff, AlertTriangle, MessageSquare, ChevronRight, ChevronLeft, CheckCircle2
 } from "lucide-react";
 import Link from "next/link";
-import { apiGet, apiPost } from "@/lib/api-client";
+import { ApiError, apiGet, apiPost } from "@/lib/api-client";
 
 type AuthMode = "ADMIN" | "CHAT";
 
@@ -133,6 +133,17 @@ export default function CreateGolemPage() {
             await refreshGolems();
             router.push("/dashboard/setup");
         } catch (err: unknown) {
+            if (err instanceof ApiError && err.status === 409) {
+                const payload = (err.payload && typeof err.payload === "object")
+                    ? (err.payload as Record<string, unknown>)
+                    : null;
+                const errorCode = typeof payload?.error === "string" ? payload.error : "";
+                if (errorCode === "system_setup_required") {
+                    router.push("/dashboard/system-setup");
+                    return;
+                }
+            }
+
             setError(err instanceof Error ? err.message : "建立失敗，請稍後再試");
         } finally {
             setIsLoading(false);

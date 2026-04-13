@@ -147,10 +147,57 @@ describe('GolemBrain Gemini URL failover', () => {
         await brain.init(false, false); // click "start golem" after persona setup
 
         expect(injectSpy).toHaveBeenCalledTimes(1);
+        expect(brain._navigateToTarget).toHaveBeenCalledTimes(2);
+    });
+
+    test('pre-auth warmup does not mark web boot injected before persona setup', async () => {
+        const fakePage = { goto: jest.fn().mockResolvedValue(undefined) };
+        const fakeContext = {
+            pages: jest.fn(() => []),
+            newPage: jest.fn().mockResolvedValue(fakePage)
+        };
+
+        BrowserLauncher.launch.mockResolvedValue(fakeContext);
+        jest.spyOn(personaManager, 'exists').mockReturnValue(false);
+
+        const brain = new GolemBrain({ golemId: 'test-golem' });
+        jest.spyOn(brain, '_navigateToTarget').mockResolvedValue();
+        const injectSpy = jest.spyOn(brain, '_injectSystemPrompt').mockResolvedValue();
+
+        await brain.init(false, true);
+
+        expect(injectSpy).not.toHaveBeenCalled();
+        expect(brain._webBootInjected).toBe(false);
+    });
+
+    test('auth-only warmup keeps brain non-initialized for later explicit start', async () => {
+        const fakePage = { goto: jest.fn().mockResolvedValue(undefined), url: jest.fn(() => 'about:blank') };
+        const fakeContext = {
+            pages: jest.fn(() => []),
+            newPage: jest.fn().mockResolvedValue(fakePage),
+        };
+        BrowserLauncher.launch.mockResolvedValue(fakeContext);
+
+        const brain = new GolemBrain({ golemId: 'test-golem' });
+        const memoryInitSpy = jest.spyOn(brain, '_initMemoryDriver').mockResolvedValue();
+        const navigateSpy = jest.spyOn(brain, '_navigateToTarget').mockResolvedValue();
+
+        await brain.init(false, true, { navigationTarget: 'none', authOnly: true });
+
+        expect(brain.isInitialized).toBe(false);
+        expect(memoryInitSpy).not.toHaveBeenCalled();
+        expect(navigateSpy).not.toHaveBeenCalled();
     });
 
     test('does not re-enter init during first system prompt injection after setup', async () => {
-        const fakePage = { goto: jest.fn().mockResolvedValue(undefined) };
+        const fakePage = {
+            goto: jest.fn().mockResolvedValue(undefined),
+            url: jest.fn(() => 'https://gemini.google.com/app'),
+            evaluate: jest.fn().mockResolvedValue({
+                hasPromptInput: true,
+                hasSignInUi: false,
+            }),
+        };
         const fakeContext = {
             pages: jest.fn(() => []),
             newPage: jest.fn().mockResolvedValue(fakePage)
@@ -176,10 +223,53 @@ describe('GolemBrain Gemini URL failover', () => {
 
     test('rolls back web injection flag when system prompt injection fails', async () => {
         const brain = new GolemBrain({ golemId: 'test-golem' });
+        brain.page = {
+            url: jest.fn(() => 'https://gemini.google.com/app'),
+            evaluate: jest.fn().mockResolvedValue({
+                hasPromptInput: true,
+                hasSignInUi: false,
+            }),
+        };
         jest.spyOn(brain, 'sendMessage').mockRejectedValue(new Error('inject failed'));
 
         await expect(brain._injectSystemPrompt(false)).rejects.toThrow('inject failed');
         expect(brain._webBootInjected).toBe(false);
         expect(brain._isInjectingSystemPrompt).toBe(false);
+    });
+
+    test('injectSystemPrompt sends with keepWindowVisible enabled', async () => {
+        const brain = new GolemBrain({ golemId: 'test-golem' });
+        brain.page = {
+            url: jest.fn(() => 'https://gemini.google.com/app'),
+            evaluate: jest.fn().mockResolvedValue({
+                hasPromptInput: true,
+                hasSignInUi: false,
+            }),
+        };
+        const sendSpy = jest.spyOn(brain, 'sendMessage').mockResolvedValue({ text: 'ok', attachments: [] });
+
+        await brain._injectSystemPrompt(false);
+
+        expect(sendSpy).toHaveBeenCalledWith(expect.any(String), false, expect.objectContaining({
+            keepWindowVisible: true,
+        }));
+    });
+
+    test('skips system prompt injection when current page is Google login flow', async () => {
+        const brain = new GolemBrain({ golemId: 'test-golem' });
+        brain.page = {
+            url: jest.fn(() => 'https://accounts.google.com/ServiceLogin'),
+            evaluate: jest.fn().mockResolvedValue({
+                hasPromptInput: false,
+                hasSignInUi: true,
+            }),
+        };
+
+        const sendSpy = jest.spyOn(brain, 'sendMessage').mockResolvedValue({ text: 'ok', attachments: [] });
+
+        await brain._injectSystemPrompt(false);
+
+        expect(sendSpy).not.toHaveBeenCalled();
+        expect(brain._webBootInjected).toBe(false);
     });
 });
