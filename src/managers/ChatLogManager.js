@@ -86,6 +86,25 @@ class ChatLogManager {
                         original_size INTEGER,
                         summary_size INTEGER
                     );
+                `);
+                this.db.run(`
+                    CREATE TABLE IF NOT EXISTS entities (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        name TEXT UNIQUE,
+                        type TEXT,
+                        description TEXT
+                    );
+                `);
+                this.db.run(`
+                    CREATE TABLE IF NOT EXISTS relationships (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        source_id INTEGER,
+                        target_id INTEGER,
+                        relation_type TEXT,
+                        weight REAL,
+                        FOREIGN KEY(source_id) REFERENCES entities(id),
+                        FOREIGN KEY(target_id) REFERENCES entities(id)
+                    );
                 `, (err) => {
                     if (err) reject(err);
                     else resolve();
@@ -367,6 +386,50 @@ class ChatLogManager {
         await this._compressAndSave(prompt, decadeString, 'era', brain, combinedContent.length);
     }
 
+    async _updateGraph(summaryText, brain) {
+        const extractionPrompt = `Extract key entities and their relationships from the following text. 
+Output ONLY a valid JSON object with two keys: "entities" (an array of objects with "name", "type", and "description") and "relationships" (an array of objects with "source", "target", and "relation").
+
+Text: ${summaryText}`;
+        try {
+            const rawResponse = await brain.sendMessage(extractionPrompt, false);
+            const parsed = ResponseParser.parse(rawResponse);
+            
+            if (!parsed.entities && !parsed.relationships) return;
+
+            await this.runAsync('BEGIN TRANSACTION');
+            
+            if (parsed.entities) {
+                for (const ent of parsed.entities) {
+                    await this.runAsync(
+                        `INSERT OR REPLACE INTO entities (name, type, description) VALUES (?, ?, ?)`,
+                        [ent.name, ent.type || 'concept', ent.description || '']
+                    );
+                }
+            }
+
+            if (parsed.relationships) {
+                for (const rel of parsed.relationships) {
+                    const source = await this.getAsync(`SELECT id FROM entities WHERE name = ?`, [rel.source]);
+                    const target = await this.getAsync(`SELECT id FROM entities WHERE name = ?`, [rel.target]);
+                    
+                    if (source && target) {
+                        await this.runAsync(
+                            `INSERT INTO relationships (source_id, target_id, relation_type) VALUES (?, ?, ?)`,
+                            [source.id, target.id, rel.relation]
+                        );
+                    }
+                }
+            }
+
+            await this.runAsync('COMMIT');
+            console.log(`🧠 [LogManager] Knowledge Graph updated from summary.`);
+        } catch (e) {
+            await this.runAsync('ROLLBACK');
+            console.error(`❌ [LogManager] Graph update failed:`, e.message);
+        }
+    }
+
     async _compressAndSave(prompt, dateString, tier, brain, originalSize = 0) {
         const startTime = Date.now();
         try {
@@ -377,9 +440,6 @@ class ChatLogManager {
 
             if (!summaryText || summaryText.trim().length === 0) return;
 
-            // Optional: for daily, we could delete the raw messages afterwards. 
-            // the legacy json logic did it. We'll rely on cleanup() to delete old messages.
-
             await this.runAsync(
                 `INSERT INTO summaries (tier, date_string, timestamp, content, original_size, summary_size) 
                  VALUES (?, ?, ?, ?, ?, ?)`,
@@ -387,6 +447,10 @@ class ChatLogManager {
             );
 
             console.log(`✅ [LogManager] ${dateString} ${tier} 產出成功！(耗時: ${duration}s, 摘要: ${summaryText.length}字)`);
+
+            // Hook for Graph-RAG: Update graph from the new summary
+            await this._updateGraph(summaryText, brain);
+
         } catch (e) {
             console.error(`❌ [LogManager] ${tier} 生成失敗 (${dateString}):`, e.message);
         }
@@ -398,7 +462,6 @@ class ChatLogManager {
     async readRecentHourlyAsync(limit = 1000, maxChars = 200000) {
         if (!this._isInitialized || !this.db) return '';
         try {
-            // Get most recent messages
             const messages = await this.allAsync(`SELECT * FROM messages ORDER BY timestamp DESC LIMIT ?`, [limit]);
             let result = '';
             for (const l of messages) {
@@ -413,8 +476,6 @@ class ChatLogManager {
             return '';
         }
     }
-
-
 
     async readTierAsync(tier, limit = 50, maxChars = 200000) {
         if (!this._isInitialized || !this.db) return [];
@@ -435,7 +496,59 @@ class ChatLogManager {
         }
     }
 
+    async queryHybridContext(queryText, brain, tier = 'daily', limit = 5) {
+        if (!this._isInitialized || !this.db) return '';
+        
+        console.log(`🔍 [LogManager] 執行 Hybrid 記憶檢索...`);
+        
+        // 1. Entity Extraction from Query
+        let graphContext = '';
+        try {
+            const entityPrompt = `Identify key entities (people, projects, concepts) mentioned in the following query. 
+Output ONLY a comma-separated list of names. If none, output 'NONE'.
+Query: ${queryText}`;
+            const rawEntities = await brain.sendMessage(entityPrompt, false);
+            const entityList = ResponseParser.parse(rawEntities).reply || 'NONE';
+            
+            if (entityList !== 'NONE') {
+                const names = entityList.split(',').map(n => n.trim());
+                const facts = [];
+                
+                for (const name of names) {
+                    const entity = await this.getAsync(`SELECT id FROM entities WHERE name = ?`, [name]);
+                    if (entity) {
+                        const relations = await this.allAsync(
+                            `SELECT e2.name as target, r.relation_type 
+                             FROM relationships r 
+                             JOIN entities e2 ON r.target_id = e2.id 
+                             WHERE r.source_id = ? 
+                             UNION 
+                             SELECT e1.name as target, r.relation_type 
+                             FROM relationships r 
+                             JOIN entities e1 ON r.source_id = e1.id 
+                             WHERE r.target_id = ?`, 
+                            [entity.id, entity.id]
+                        );
+                        
+                        relations.forEach(rel => {
+                            facts.push(`${name} ${rel.relation_type} ${rel.target}`);
+                        });
+                    }
+                }
+                if (facts.length > 0) {
+                    graphContext = `\n[知識圖譜事實]:\n${facts.join('\n')}\n`;
+                }
+            }
+        } catch (e) {
+            console.error(`⚠️ [LogManager] 圖譜檢索失敗:`, e.message);
+        }
 
+        // 2. Tiered Summary Retrieval
+        const summaries = await this.readTierAsync(tier, limit);
+        const summaryContext = summaries.map(s => `[${s.date}] ${s.content}`).join('\n\n');
+
+        return `[分層記憶摘要]:\n${summaryContext}\n${graphContext}`;
+    }
 }
 
 module.exports = ChatLogManager;
