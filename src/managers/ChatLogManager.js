@@ -62,6 +62,7 @@ class ChatLogManager {
                 this.db.run('PRAGMA journal_mode = WAL;');
                 this.db.run('PRAGMA synchronous = NORMAL;');
                 
+                // 1. Core Tables
                 this.db.run(`
                     CREATE TABLE IF NOT EXISTS messages (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -84,9 +85,12 @@ class ChatLogManager {
                         timestamp INTEGER,
                         content TEXT,
                         original_size INTEGER,
-                        summary_size INTEGER
+                        summary_size INTEGER,
+                        wing_id INTEGER,
+                        room_id INTEGER
                     );
                 `);
+                
                 this.db.run(`
                     CREATE TABLE IF NOT EXISTS entities (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -95,6 +99,7 @@ class ChatLogManager {
                         description TEXT
                     );
                 `);
+                
                 this.db.run(`
                     CREATE TABLE IF NOT EXISTS relationships (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -102,10 +107,51 @@ class ChatLogManager {
                         target_id INTEGER,
                         relation_type TEXT,
                         weight REAL,
+                        valid_from INTEGER,
+                        valid_to INTEGER,
                         FOREIGN KEY(source_id) REFERENCES entities(id),
                         FOREIGN KEY(target_id) REFERENCES entities(id)
                     );
-                `, (err) => {
+                `);
+
+                // 2. MemPalace Spatial Tables
+                this.db.run(`
+                    CREATE TABLE IF NOT EXISTS wings (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        name TEXT UNIQUE,
+                        type TEXT,
+                        description TEXT
+                    );
+                `);
+                this.db.run(`
+                    CREATE TABLE IF NOT EXISTS rooms (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        wing_id INTEGER,
+                        name TEXT,
+                        description TEXT,
+                        FOREIGN KEY(wing_id) REFERENCES wings(id),
+                        UNIQUE(wing_id, name)
+                    );
+                `);
+                this.db.run(`
+                    CREATE TABLE IF NOT EXISTS tunnels (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        room_id_1 INTEGER,
+                        room_id_2 INTEGER,
+                        description TEXT,
+                        FOREIGN KEY(room_id_1) REFERENCES rooms(id),
+                        FOREIGN KEY(room_id_2) REFERENCES rooms(id)
+                    );
+                `);
+
+                // 3. Migration for existing databases (add missing columns)
+                this.db.run(`ALTER TABLE summaries ADD COLUMN wing_id INTEGER REFERENCES wings(id);`).catch(() => {});
+                this.db.run(`ALTER TABLE summaries ADD COLUMN room_id INTEGER REFERENCES rooms(id);`).catch(() => {});
+                this.db.run(`ALTER TABLE relationships ADD COLUMN valid_from INTEGER;`).catch(() => {});
+                this.db.run(`ALTER TABLE relationships ADD COLUMN valid_to INTEGER;`).catch(() => {});
+
+                // Completion callback
+                this.db.run(`SELECT 1;`, (err) => {
                     if (err) reject(err);
                     else resolve();
                 });
@@ -118,10 +164,6 @@ class ChatLogManager {
         this._isInitialized = true;
         await this.cleanup();
     }
-
-    // ============================================================
-    // 🗂️ 遷移舊版 JSON 日誌
-    // ============================================================
     async _migrateLegacyJSON() {
         const flagFile = path.join(this.dbDir, '.legacy_migrated');
         if (fs.existsSync(flagFile)) return;
@@ -433,24 +475,67 @@ Text: ${summaryText}`;
     async _compressAndSave(prompt, dateString, tier, brain, originalSize = 0) {
         const startTime = Date.now();
         try {
+            // 1. Generate Summary
             const rawResponse = await brain.sendMessage(prompt, false);
-            const duration = ((Date.now() - startTime) / 1000).toFixed(1);
             const parsed = ResponseParser.parse(rawResponse);
             const summaryText = parsed.reply || "";
 
             if (!summaryText || summaryText.trim().length === 0) return;
 
+            // 2. Spatial Mapping (MemPalace step)
+            let wingId = null;
+            let roomId = null;
+            let wingName = 'N/A';
+            let roomName = 'N/A';
+
+            try {
+                const spatialPrompt = `Based on the following summary, identify the most appropriate 'Wing' (e.g., a person's name, a project name like 'Project-Golem', or a broad category like 'Coding') and 'Room' (a specific topic like 'Database Design', 'Python Coding', 'Meeting with Alan').
+                
+                Format your output as a JSON object: {"wing": "...", "room": "..."}
+                
+                Summary: ${summaryText}`;
+
+                const spatialResponse = await brain.sendMessage(spatialPrompt, false);
+                const spatialData = ResponseParser.parse(spatialResponse);
+                
+                if (spatialData && spatialData.wing && spatialData.room) {
+                    wingName = spatialData.wing;
+                    roomName = spatialData.room;
+
+                    // Find or Create Wing
+                    let wing = await this.getAsync(`SELECT id FROM wings WHERE name = ?`, [wingName]);
+                    if (!wing) {
+                        await this.runAsync(`INSERT INTO wings (name, type, description) VALUES (?, ?, ?)`, [wingName, 'topic', `Wing for ${wingName}`]);
+                        wing = await this.getAsync(`SELECT id FROM wings WHERE name = ?`, [wingName]);
+                    }
+
+                    // Find or Create Room
+                    let room = await this.getAsync(`SELECT id FROM rooms WHERE wing_id = ? AND name = ?`, [wing.id, roomName]);
+                    if (!room) {
+                        await this.runAsync(`INSERT INTO rooms (wing_id, name, description) VALUES (?, ?, ?)`, [wing.id, roomName, `Room for ${roomName} in ${wingName}`]);
+                        room = await this.getAsync(`SELECT id FROM rooms WHERE wing_id = ? AND name = ?`, [wing.id, roomName]);
+                    }
+
+                    wingId = wing.id;
+                    roomId = room.id;
+                }
+            } catch (spatialErr) {
+                console.warn(`⚠️ [LogManager] Spatial mapping failed: ${spatialErr.message}`);
+            }
+
+            const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+
+            // 3. Save Summary
             await this.runAsync(
-                `INSERT INTO summaries (tier, date_string, timestamp, content, original_size, summary_size) 
-                 VALUES (?, ?, ?, ?, ?, ?)`,
-                [tier, dateString, Date.now(), summaryText, originalSize, summaryText.length]
+                `INSERT INTO summaries (tier, date_string, timestamp, content, original_size, summary_size, wing_id, room_id) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                [tier, dateString, Date.now(), summaryText, originalSize, summaryText.length, wingId, roomId]
             );
 
-            console.log(`✅ [LogManager] ${dateString} ${tier} 產出成功！(耗時: ${duration}s, 摘要: ${summaryText.length}字)`);
+            console.log(`✅ [LogManager] ${dateString} ${tier} 產出成功！(耗時: ${duration}s, 摘要: ${summaryText.length}字, Wing: ${wingName}, Room: ${roomName})`);
 
             // Hook for Graph-RAG: Update graph from the new summary
             await this._updateGraph(summaryText, brain);
-
         } catch (e) {
             console.error(`❌ [LogManager] ${tier} 生成失敗 (${dateString}):`, e.message);
         }
@@ -477,10 +562,25 @@ Text: ${summaryText}`;
         }
     }
 
-    async readTierAsync(tier, limit = 50, maxChars = 200000) {
+    async readTierAsync(tier, limit = 50, maxChars = 200000, wingId = null, roomId = null) {
         if (!this._isInitialized || !this.db) return [];
         try {
-            const summaries = await this.allAsync(`SELECT * FROM summaries WHERE tier = ? ORDER BY timestamp DESC LIMIT ?`, [tier, limit]);
+            let query = `SELECT * FROM summaries WHERE tier = ?`;
+            let params = [tier];
+
+            if (wingId) {
+                query += ` AND wing_id = ?`;
+                params.push(wingId);
+            }
+            if (roomId) {
+                query += ` AND room_id = ?`;
+                params.push(roomId);
+            }
+
+            query += ` ORDER BY timestamp DESC LIMIT ?`;
+            params.push(limit);
+
+            const summaries = await this.allAsync(query, params);
             const results = [];
             let currentChars = 0;
 
@@ -496,13 +596,20 @@ Text: ${summaryText}`;
         }
     }
 
+    async readSpatialAsync(wingId, roomId, limit = 50, maxChars = 200000) {
+        return this.readTierAsync('daily', limit, maxChars, wingId, roomId);
+    }
+
+
     async queryHybridContext(queryText, brain, tier = 'daily', limit = 5) {
         if (!this._isInitialized || !this.db) return '';
         
-        console.log(`🔍 [LogManager] 執行 Hybrid 記憶檢索...`);
+        console.log(`🔍 [LogManager] 執行 Hybrid 記憶檢索 (Query: "${queryText}")`);
         
         // 1. Entity Extraction from Query
         let graphContext = '';
+        let spatialContext = '';
+        
         try {
             const entityPrompt = `Identify key entities (people, projects, concepts) mentioned in the following query. 
 Output ONLY a comma-separated list of names. If none, output 'NONE'.
@@ -514,6 +621,7 @@ Query: ${queryText}`;
                 const names = entityList.split(',').map(n => n.trim());
                 const facts = [];
                 
+                // A. Graph Context: Get relationships
                 for (const name of names) {
                     const entity = await this.getAsync(`SELECT id FROM entities WHERE name = ?`, [name]);
                     if (entity) {
@@ -536,18 +644,31 @@ Query: ${queryText}`;
                     }
                 }
                 if (facts.length > 0) {
-                    graphContext = `\n[知識圖譜事實]:\n${facts.join('\n')}\n`;
+                    graphContext = `\\n[知識圖譜事實]:\\n${facts.join('\\n')}\\n`;
+                }
+
+                // B. Spatial Context: Check if entities belong to a Wing/Room
+                for (const name of names) {
+                    // Check if entity name is a Room name or part of a Room description
+                    const room = await this.getAsync(`SELECT id, wing_id FROM rooms WHERE name = ? OR description LIKE ?`, [name, `%${name}%`]);
+                    if (room) {
+                        const roomSummaries = await this.readSpatialAsync(room.wing_id, room.id, limit);
+                        if (roomSummaries.length > 0) {
+                            spatialContext = `\\n[空間記憶 (Room: ${name})]:\\n${roomSummaries.map(s => `[${s.date}] ${s.content}`).join('\\n\\n')}\\n`;
+                            break; // Stop at first matching room
+                        }
+                    }
                 }
             }
         } catch (e) {
-            console.error(`⚠️ [LogManager] 圖譜檢索失敗:`, e.message);
+            console.error(`⚠️ [LogManager] 檢索失敗:`, e.message);
         }
 
-        // 2. Tiered Summary Retrieval
+        // 2. Tiered Summary Retrieval (Fallback or Complement)
         const summaries = await this.readTierAsync(tier, limit);
-        const summaryContext = summaries.map(s => `[${s.date}] ${s.content}`).join('\n\n');
+        const summaryContext = summaries.map(s => `[${s.date}] ${s.content}`).join('\\n\\n');
 
-        return `[分層記憶摘要]:\n${summaryContext}\n${graphContext}`;
+        return `[空間記憶]:${spatialContext}\\n[分層記憶摘要]:${summaryContext}\\n${graphContext}`;
     }
 }
 
