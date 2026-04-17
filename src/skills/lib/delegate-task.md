@@ -9,7 +9,7 @@
 
 ## 使用格式
 ```json
-{"action": "delegate_task", "subtask": "請查閱最新 React 19 的文件並總結主要變更", "toolset": "research", "context": "目前我們正在升級一個舊的 React 專案"}
+{"action": "delegate_task", "subtask": "請查閱最新 React 19 的文件並總結主要變更", "toolset": "research", "context": "目前我們正在升級一個舊的 React 專案", "verify_cmd": "npm run typecheck", "max_retries": 3}
 ```
 
 - `subtask`：必填，具體派給子智能體的任務描述。
@@ -19,6 +19,8 @@
   - `creative`：適合創意發想
   - `safe`：沒有任何修改權限的安全模式
 - `context`：選填，你需要讓子智能體知道的背景資訊，越詳細越好。
+- `verify_cmd`：選填。如果你的任務是修改程式碼或設定，給予一個終端指令（例如 `node test.js`）。如果結果失敗，系統會強迫子智能體根據錯誤日誌自我修復。
+- `max_retries`：選填。搭配 `verify_cmd` 使用，限制自動除錯的最大重試次數（預設 3 次）。
 
 ## 注意
 子智能體是全新且獨立的，它沒有你目前的上下文記憶。你必須在 `subtask` 和 `context` 中提供它完成任務所需的所有資訊。執行完畢後，它只會回傳它的最終成果給你。
