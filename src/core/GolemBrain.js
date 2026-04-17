@@ -16,6 +16,8 @@ const NodeRouter = require('./NodeRouter');
 const WikiManager = require('../managers/WikiManager');
 const { URLS } = require('./constants');
 const { withRetry } = require('../utils/RetryUtils');
+const UserProfileManager = require('../managers/UserProfileManager');
+const { toolsetManager } = require('../managers/ToolsetManager');
 
 // ============================================================
 // 🧠 Golem Brain (Gemini Web + Ollama) - Dual-Engine + Titan Protocol
@@ -75,6 +77,12 @@ class GolemBrain {
         
         // ── 實體生命週期追蹤 ──
         this.browserStartTime = null;
+
+        // ── [Phase 2] 使用者建模 (Hermes/Honcho-inspired) ──
+        this.userProfile = new UserProfileManager(this.userDataDir);
+
+        // ── [Phase 2] 場景化工具集管理 ──
+        this.toolsetManager = toolsetManager;
     }
 
     // ─── Public API (向後相容) ─────────────────────────────
@@ -833,6 +841,26 @@ class GolemBrain {
             return { compressed: false, savedChars: 0 };
         }
         return this.chatLogManager.compressCurrentSession(this, opts);
+    }
+
+    /**
+     * 👤 [Phase 2] 供給 AutonomyManager 成 ConvoManager 呼叫：
+     * 分析最近對話並自動更新使用者模型
+     * @param {string} recentConversation - 近期對話文字
+     * @returns {Promise<object>}
+     */
+    async profileUser(recentConversation) {
+        if (!this.userProfile) return {};
+        return this.userProfile.analyzeAndUpdate(this, recentConversation);
+    }
+
+    /**
+     * 👤 [Phase 2] 失證式 Prompt 注入用的使用者特徵文字
+     * @returns {string}
+     */
+    getInjectionProfile() {
+        if (!this.userProfile) return '';
+        return this.userProfile.buildInjectionPrompt();
     }
 }
 
