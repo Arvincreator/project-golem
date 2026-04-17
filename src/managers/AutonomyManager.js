@@ -73,6 +73,8 @@ class AutonomyManager {
                 { date: today, threshold: thresholdToday, label: "本日" }
             ];
 
+            let didArchive = false;
+
             for (const config of checkConfigs) {
                 const { date, threshold, label } = config;
 
@@ -96,8 +98,26 @@ class AutonomyManager {
                     if (ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS) {
                         await this.sendNotification(`✅ **【自動化日誌維護】**\n${date} (${label}) 歸檔完成！\n${result}`);
                     }
+                    didArchive = true;
                 } else {
                     console.log(`ℹ️ [Autonomy] ${date} (${label}) 目前累積 ${files.length}/${threshold} 份日誌，未達壓縮門檻。`);
+                }
+            }
+
+            // 🧠 [Phase 3.5] Idle 反思機制：若有進行過任何日誌歸檔，則一併順便進行背景使用者畫像分析
+            if (didArchive && this.brain.userProfile && this.brain.chatLogManager) {
+                console.log(`🌟 [Autonomy] 歸檔階段結束，啟動 Idle 背景反思機制 (User Profiling)...`);
+                try {
+                    const recentLogs = await this.brain.chatLogManager.readRecentHourlyAsync(200, 3000);
+                    const diffKeys = await this.brain.profileUser(recentLogs);
+                    const keys = Object.keys(diffKeys).filter(k => diffKeys[k] !== null);
+                    if (keys.length > 0) {
+                        console.log(`✅ [Autonomy] Idle 反思完成，已更新使用者特徵: ${keys.join(', ')}`);
+                    } else {
+                        console.log(`ℹ️ [Autonomy] Idle 反思完成，無新特徵發現。`);
+                    }
+                } catch (profileErr) {
+                    console.error(`❌ [Autonomy] Idle 反思與畫像更新失敗:`, profileErr.message);
                 }
             }
         } catch (e) {

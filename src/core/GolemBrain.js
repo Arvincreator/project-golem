@@ -591,6 +591,25 @@ class GolemBrain {
             console.warn(`⚠️ [Brain] Wiki 知識庫注入失敗: ${e.message}`);
         }
 
+        // 🧠 [第零階段 Phase 0.5] 顯性學習規則庫注入
+        try {
+            const learningsPath = path.join(this.userDataDir, 'learnings.json');
+            if (fs.existsSync(learningsPath)) {
+                const rawData = fs.readFileSync(learningsPath, 'utf8');
+                const learnings = JSON.parse(rawData);
+                if (learnings && learnings.length > 0) {
+                    // 取最近 15 筆重要的獨立學習紀錄
+                    const recentLearnings = learnings.slice(-15);
+                    const learningsText = recentLearnings.map(l => `- [${l.category}] ${l.content}`).join('\n');
+                    const injectionText = `【系統補充：你的自學知識庫 (提取自 learnings.json)】\n以下是你過去自我學習記錄的最佳實踐與規則，請在後續任務中嚴格遵守這些適應性學習經驗：\n${learningsText}`;
+                    await this.sendMessage(injectionText, false);
+                    console.log(`🧠 [Brain] Phase 0.5：自適應學習知識庫已注入 (${recentLearnings.length} 條規則)`);
+                }
+            }
+        } catch (e) {
+            console.warn(`⚠️ [Brain] 自適應學習知識庫注入失敗: ${e.message}`);
+        }
+
         // 🚀 [第一階段] 發送底層系統協議 (不含歷史摘要)
         const compressedPrompt = ProtocolFormatter.compress(systemPrompt);
         await this.sendMessage(compressedPrompt, false); // ⚡ 改為 false：等待完整回應
