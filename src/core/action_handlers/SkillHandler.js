@@ -41,7 +41,8 @@ class SkillHandler {
                 await ctx.reply(`❌ mcp_call 缺少必要欄位 server 或 tool`);
                 return true;
             }
-            await ctx.reply(`🔌 [MCP] 調用 **${server}** → **${tool}**...`);
+            // 🔇 MCP 調用過程只寫到 server log，不發到 chat/Telegram
+            console.log(`[MCP] ⏳ 調用 ${server} → ${tool}`, JSON.stringify(parameters).slice(0, 200));
             try {
                 const mcpManager = MCPManager.getInstance();
                 await mcpManager.load();   // 確保 servers 已連線（load 內部有冪等保護）
@@ -61,14 +62,19 @@ class SkillHandler {
                 if (displayResult.length > MAX_LEN) {
                     displayResult = displayResult.slice(0, MAX_LEN) + '\n...(已截斷)';
                 }
-                await ctx.reply(`✅ [MCP:${server}/${tool}]\n${displayResult}`);
+
+                // 🔇 結果只寫 log + 送給 LLM (sendFeedback)，不 ctx.reply
+                console.log(`[MCP] ✅ ${server}/${tool} 完成 (${displayResult.length} chars)`);
                 await sendFeedback(`[MCP Result - ${server}/${tool}]\n${displayResult}`);
             } catch (e) {
-                await ctx.reply(`❌ [MCP] 執行錯誤: ${e.message}`);
+                // ⚠️ 錯誤仍然通知用戶（靜默失敗比用戶困惑更糟）
+                console.error(`[MCP] ❌ ${server}/${tool} 執行錯誤:`, e.message);
+                await ctx.reply(`❌ [MCP] ${server}/${tool} 執行錯誤: ${e.message}`);
                 await sendFeedback(`[MCP Error - ${server}/${tool}]\n${e.message}`);
             }
             return true;
         }
+
 
         // ─── Dynamic Skills ────────────────────────────────────────────
         const skillName = act.action;
