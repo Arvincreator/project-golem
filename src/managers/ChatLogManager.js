@@ -87,6 +87,48 @@ class ChatLogManager {
                         original_size INTEGER,
                         summary_size INTEGER
                     );
+                `);
+
+                // 🔍 [Hermes-inspired] FTS5 全文搜尋虛擬表
+                // 對齊 hermes_state.py 的 messages_fts 設計
+                // content= 指定内容表，content_rowid= 指定 rowid 欄
+                // 由 Trigger 轉發漯，保持背景同步不採紏主表
+                this.db.run(`
+                    CREATE VIRTUAL TABLE IF NOT EXISTS messages_fts USING fts5(
+                        content,
+                        sender,
+                        content=messages,
+                        content_rowid=id
+                    );
+                `);
+
+                // FTS5 Trigger: INSERT
+                this.db.run(`
+                    CREATE TRIGGER IF NOT EXISTS messages_fts_insert
+                    AFTER INSERT ON messages BEGIN
+                        INSERT INTO messages_fts(rowid, content, sender)
+                        VALUES (new.id, new.content, new.sender);
+                    END;
+                `);
+
+                // FTS5 Trigger: UPDATE
+                this.db.run(`
+                    CREATE TRIGGER IF NOT EXISTS messages_fts_update
+                    AFTER UPDATE ON messages BEGIN
+                        INSERT INTO messages_fts(messages_fts, rowid, content, sender)
+                        VALUES ('delete', old.id, old.content, old.sender);
+                        INSERT INTO messages_fts(rowid, content, sender)
+                        VALUES (new.id, new.content, new.sender);
+                    END;
+                `);
+
+                // FTS5 Trigger: DELETE
+                this.db.run(`
+                    CREATE TRIGGER IF NOT EXISTS messages_fts_delete
+                    AFTER DELETE ON messages BEGIN
+                        INSERT INTO messages_fts(messages_fts, rowid, content, sender)
+                        VALUES ('delete', old.id, old.content, old.sender);
+                    END;
                 `, (err) => {
                     if (err) reject(err);
                     else resolve();
@@ -486,6 +528,67 @@ class ChatLogManager {
             await this.runAsync('ROLLBACK').catch(() => {});
             console.error(`❌ [ChatLogManager] compressCurrentSession 失敗:`, e.message);
             return { compressed: false, savedChars: 0 };
+        }
+    }
+
+    // ============================================================
+    // 🔍 [Hermes-inspired] FTS5 全文搜尋
+    // 對齊 hermes_state.py 的 session_search 工具
+    // ============================================================
+
+    /**
+     * FTS5 全文搜尋——隨最新文字搜尋 messages 表
+     * 性能詰強幸於 LIKE 搜尋 (O(log N) vs O(N))
+     * 支援 FTS5 語法：多詞、引號、前綴匹配 (keyword*)
+     *
+     * @param {string} query   - 搜尋詞強 (FTS5 語法)
+     * @param {number} [limit=20] - 最多返回比數
+     * @param {object} [opts]  - 額外選項
+     * @param {string} [opts.sinceDate] - YYYYMMDD 格式，對時間範圍層濃
+     * @returns {Promise<Array<{id,timestamp,date_string,sender,content}>>}
+     */
+    async searchFTS(query, limit = 20, opts = {}) {
+        if (!this._isInitialized || !this.db) return [];
+        if (!query || !query.trim()) return [];
+
+        try {
+            // FTS5 語法安全處理：避免特殊字符欲小搜尋崩潰
+            const safeFTSQuery = query.replace(/["()]/g, ' ').trim();
+
+            let sql, params;
+            if (opts.sinceDate) {
+                sql = `
+                    SELECT m.id, m.timestamp, m.date_string, m.sender, m.content
+                    FROM messages_fts
+                    JOIN messages m ON messages_fts.rowid = m.id
+                    WHERE messages_fts MATCH ?
+                      AND m.date_string >= ?
+                    ORDER BY rank
+                    LIMIT ?`;
+                params = [safeFTSQuery, opts.sinceDate, limit];
+            } else {
+                sql = `
+                    SELECT m.id, m.timestamp, m.date_string, m.sender, m.content
+                    FROM messages_fts
+                    JOIN messages m ON messages_fts.rowid = m.id
+                    WHERE messages_fts MATCH ?
+                    ORDER BY rank
+                    LIMIT ?`;
+                params = [safeFTSQuery, limit];
+            }
+
+            return await this.allAsync(sql, params);
+        } catch (e) {
+            // FTS5 可能不存在於舊資料庫，降級到 LIKE 匹配
+            if (e.message && e.message.includes('no such table: messages_fts')) {
+                console.warn('⚠️ [ChatLogManager] messages_fts 表不存在，降級到 LIKE 搜尋。');
+                return await this.allAsync(
+                    `SELECT id, timestamp, date_string, sender, content FROM messages WHERE content LIKE ? LIMIT ?`,
+                    [`%${query}%`, limit]
+                );
+            }
+            console.error('❌ [ChatLogManager] FTS5 搜尋失敗:', e.message);
+            return [];
         }
     }
 

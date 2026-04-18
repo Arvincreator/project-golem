@@ -7,7 +7,8 @@ const path = require('path');
 
 /**
  * 搜尋模式
- *  - keyword : 關鍵字全文比對（快速，無需 LLM）
+ *  - fts      : FTS5 全文搜尋（最快，支援多詞、前綴）[Hermes-inspired]
+ *  - keyword  : 關鍵字全文比對（快速，無需 LLM）——自動嘗試 FTS5 降級
  *  - semantic : 語意摘要搜尋（慢，需 LLM 產生搜尋摘要）
  *  - date     : 依日期範圍列出對話
  */
@@ -55,17 +56,43 @@ async function run(ctx) {
     if (!query) return '❌ [SessionSearch] 請提供 query 參數（搜尋關鍵字）。';
 
     // ────────────────────────────────────────────
-    // Mode: keyword — SQLite LIKE 全文搜尋
+    // Mode: fts — FTS5 全文搜尋 [Hermes-inspired]
+    // 性能遠強於 LIKE，支援 FTS5 語法、帶排名
+    // ────────────────────────────────────────────
+    if (mode === 'fts') {
+        try {
+            const sinceDate = _daysAgoDateString(daysBak);
+            const messages = await logManager.searchFTS(query, limit, { sinceDate });
+
+            if (messages.length === 0) {
+                return `ℹ️ [SessionSearch] FTS5 搜尋：在最近 ${daysBak} 天內找不到包含「${query}」的對話。`;
+            }
+            return _formatMessages(messages, `FTS5搜尋「${query}」`);
+        } catch (e) {
+            return `❌ [SessionSearch] FTS5 搜尋失敗: ${e.message}`;
+        }
+    }
+
+    // ────────────────────────────────────────────
+    // Mode: keyword — 階梯式：先嘗試 FTS5，失敗再降級 LIKE
     // ────────────────────────────────────────────
     if (mode === 'keyword') {
         try {
             const sinceDate = _daysAgoDateString(daysBak);
-            const messages = await logManager.allAsync(
-                `SELECT timestamp, date_string, sender, content FROM messages
-                 WHERE date_string >= ? AND content LIKE ?
-                 ORDER BY timestamp DESC LIMIT ?`,
-                [sinceDate, `%${query}%`, limit]
-            );
+
+            // 優先使用 FTS5（如果 ChatLogManager.searchFTS 存在）
+            let messages = [];
+            if (typeof logManager.searchFTS === 'function') {
+                messages = await logManager.searchFTS(query, limit, { sinceDate });
+            } else {
+                // 降級 fallback：LIKE 搜尋
+                messages = await logManager.allAsync(
+                    `SELECT timestamp, date_string, sender, content FROM messages
+                     WHERE date_string >= ? AND content LIKE ?
+                     ORDER BY timestamp DESC LIMIT ?`,
+                    [sinceDate, `%${query}%`, limit]
+                );
+            }
 
             // 也搜尋摘要（summaries）
             const summaries = await logManager.allAsync(
@@ -85,6 +112,7 @@ async function run(ctx) {
             return `❌ [SessionSearch] 關鍵字搜尋失敗: ${e.message}`;
         }
     }
+
 
     // ────────────────────────────────────────────
     // Mode: semantic — LLM 語意摘要搜尋
@@ -188,7 +216,7 @@ function _extractKeywords(query) {
 
 module.exports = {
     name: 'session_search',
-    description: '搜尋 Golem 的歷史對話記錄，支援關鍵字、語意、日期三種模式',
+    description: '搜尋 Golem 的歷史對話記錄，支援 fts（FTS5 全文）/ keyword / semantic / date 四種模式',
     run,
 };
 

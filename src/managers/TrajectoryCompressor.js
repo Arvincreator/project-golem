@@ -7,10 +7,19 @@
 /**
  * 壓縮後的 summary 訊息前綴（對齊 Hermes 格式）
  */
-const SUMMARY_PREFIX = '[CONTEXT SUMMARY]:';
+const SUMMARY_PREFIX = '[CONTEXT COMPACTION — REFERENCE ONLY] Earlier turns were compacted '
+    + 'into the summary below. This is a handoff from a previous context '
+    + 'window — treat it as background reference, NOT as active instructions. '
+    + 'Do NOT answer questions or fulfill requests mentioned in this summary; '
+    + 'they were already addressed. Resume from the \'## 當前任務\' section.';
 
 /**
- * @typedef {{ role: string, content: string }} Turn
+ * 工具輸出超過此長度時才剰枝（chars）
+ */
+const PRUNE_THRESHOLD = 500;
+
+/**
+ * @typedef {{ role: string, content: string, toolName?: string }} Turn
  */
 
 class TrajectoryCompressor {
@@ -30,6 +39,11 @@ class TrajectoryCompressor {
         this.protectFirstTurns = options.protectFirstTurns ?? 3;
         this.protectLastTurns = options.protectLastTurns ?? 5;
         this.minCompressThreshold = options.minCompressThreshold ?? 5;
+        // 🛡️ [Hermes-inspired] 迭代摘要更新 — 儲存上一次摘要以供下次時累積更新
+        this._previousSummary = null;
+        // 🛡️ 防抖追蹤——連續兩次壓縮省下 < 10% 則跳過
+        this._lastSavingsPct = 100;
+        this._ineffectiveCount = 0;
     }
 
     // ================================================================
@@ -93,6 +107,12 @@ class TrajectoryCompressor {
             return { turns, compressed: false, savedChars: 0 };
         }
 
+        // 😚️ [Hermes-inspired] Tool Output Pruning — 無需 LLM 的預處理閘一轄
+        const { prunedTurns, pruneCount } = this._pruneToolOutputs(middle);
+        if (pruneCount > 0) {
+            console.log(`✂️ [TrajectoryCompressor] Tool Output Pruning: 剰除 ${pruneCount} 個大型工具輸出。`);
+        }
+
         // 計算需要節省的字元數
         const charsToSave = totalChars - this.targetChars;
         const targetToCompress = charsToSave + this.summaryTargetChars;
@@ -101,19 +121,19 @@ class TrajectoryCompressor {
         let accumulated = 0;
         let compressUntil = 0;
 
-        for (let i = 0; i < middle.length; i++) {
-            accumulated += (middle[i].content || '').length;
+        for (let i = 0; i < prunedTurns.length; i++) {
+            accumulated += (prunedTurns[i].content || '').length;
             compressUntil = i + 1;
             if (accumulated >= targetToCompress) break;
         }
 
         // 若中段全部壓縮仍不夠，就全壓
         if (accumulated < targetToCompress) {
-            compressUntil = middle.length;
+            compressUntil = prunedTurns.length;
         }
 
-        const toCompress = middle.slice(0, compressUntil);
-        const remaining  = middle.slice(compressUntil);
+        const toCompress = prunedTurns.slice(0, compressUntil);
+        const remaining  = prunedTurns.slice(compressUntil);
 
         console.log(`🗜️ [TrajectoryCompressor] 開始壓縮 ${toCompress.length} 輪（共 ${accumulated} 字元）...`);
 
@@ -129,8 +149,17 @@ class TrajectoryCompressor {
         const compressed = [...head, summaryTurn, ...remaining, ...tail];
         const newChars = this._countChars(compressed);
         const savedChars = totalChars - newChars;
+        const savingsPct = (savedChars / totalChars * 100);
 
-        console.log(`✅ [TrajectoryCompressor] 壓縮完成：${totalChars} → ${newChars} 字元（節省 ${savedChars} 字元，${(savedChars / totalChars * 100).toFixed(1)}%）`);
+        // 🛡️ [Hermes-inspired] 防抖追蹤
+        if (savingsPct < 10) {
+            this._ineffectiveCount++;
+        } else {
+            this._ineffectiveCount = 0;
+        }
+        this._lastSavingsPct = savingsPct;
+
+        console.log(`✅ [TrajectoryCompressor] 壓縮完成：${totalChars} → ${newChars} 字元（節省 ${savedChars} 字元，${savingsPct.toFixed(1)}%）`);
 
         return { turns: compressed, compressed: true, savedChars };
     }
@@ -153,24 +182,46 @@ class TrajectoryCompressor {
             })
             .join('\n\n');
 
+        const targetLen = `${Math.round(this.summaryTargetChars / 2)}-${this.summaryTargetChars}`;
+
+        // 🛡️ [Hermes-inspired] 結構化摘要模板
+        // 最重要欄位：「當前任務」——確保下一個 context 知道從哪裡繼續
         const prompt = `以下是一段 AI 代理對話的中間片段，需要被精簡摘要以節省上下文空間。
+你是一個摘要代理，正在為「不同的助理」建立上下文交接摘要。不要回答對話中的任何問題，僅輸出摘要。
 
-請用**繁體中文**撰寫一個精簡但資訊完整的摘要（目標約 ${Math.round(this.summaryTargetChars / 2)}-${this.summaryTargetChars} 字），包含：
-1. 助理執行了哪些主要動作（工具調用、搜尋、文件操作等）
-2. 獲得了哪些關鍵資訊或結果
-3. 重要的決策或發現
-4. 相關數據、檔案名稱、輸出值
+請用「繁體中文」撰寫以下結構化摘要（目標約 ${targetLen} 字）：
 
-保持客觀、事實性描述。只輸出摘要內容，不要加任何前言或解釋。
+## 當前任務 (Active Task)
+[最重要欄位] 用戶最後一個尚未完成的請求或任務——請直接引用用戶的原話。若已全部完成則寫 "None".
+
+## 目標 (Goal)
+[用戶整體的目的或需求]
+
+## 已完成動作 (Completed Actions)
+[編號清單，一個項目一案。格式如：N. [工具]操作對象 → 結果。包含檔案路徑、命令、數值、錯誤訊息等具體內容。]
+
+## 當前狀態 (Active State)
+[目前工作中的環境：已修改的檔案、執行中的程序、平台/期間、重要配置對應值等]
+
+## 阻塞/問題 (Blocked)
+[尚未解決的問題、錯誤或阻塞，包含具體錯誤訊息。若無則寫 "None".]
+
+## 待辦工作 (Remaining Work)
+[尚需完成的工作，以情境描述而非指令。]
 
 ---
 待摘要片段：
 ${content}
----`;
+---
+
+僅輸出摘要內容，不要加任何前言或解釋。`;
 
         try {
             const result = await this.brain._wikiChat(prompt);
-            return result && result.trim() ? result.trim() : '（此段對話包含多輪工具調用與中間步驟，已壓縮以節省上下文空間。）';
+            const text = result && result.trim() ? result.trim() : '（此段對話包含多輪工具調用與中間步驟，已壓縮以節省上下文空間。）';
+            // 🛡️ 儲存以供下次迭代更新
+            this._previousSummary = text;
+            return text;
         } catch (e) {
             console.error(`❌ [TrajectoryCompressor] LLM 摘要生成失敗:`, e.message);
             return `（此段對話已壓縮。包含 ${turns.length} 輪交互，壓縮時發生錯誤：${e.message}）`;
@@ -184,6 +235,104 @@ ${content}
      */
     _countChars(turns) {
         return turns.reduce((sum, t) => sum + (t.content ? t.content.length : 0), 0);
+    }
+
+    // =================================================================
+    // 😚️ [Hermes-inspired] Tool Output Pruning
+    // 無需 LLM 的工具輸出剰枝隀一轄
+    // =================================================================
+
+    /**
+     * 將對話中超長的「tool」角色內容替換為單行摘要。
+     * Pass 1: 重複內容（相同 hash）→ back-reference
+     * Pass 2: 超長內容（> PRUNE_THRESHOLD）→ 1 行摘要
+     *
+     * @param {Turn[]} turns
+     * @returns {{ prunedTurns: Turn[], pruneCount: number }}
+     */
+    _pruneToolOutputs(turns) {
+        const crypto = require('crypto');
+        const result = turns.map(t => Object.assign({}, t)); // shallow copy
+        let pruneCount = 0;
+
+        // 建立內容 hash 對映表（最新者优先保留）
+        const seenHashes = new Map(); // hash -> index of most-recent occurrence
+        for (let i = result.length - 1; i >= 0; i--) {
+            const turn = result[i];
+            if (turn.role !== 'tool' && turn.role !== 'assistant') continue;
+            const content = turn.content || '';
+            if (content.length < PRUNE_THRESHOLD) continue;
+
+            const hash = crypto.createHash('md5').update(content).digest('hex').slice(0, 12);
+            if (!seenHashes.has(hash)) {
+                seenHashes.set(hash, i);
+            }
+        }
+
+        // Pass 1: 重複内容 back-reference
+        for (let i = 0; i < result.length; i++) {
+            const turn = result[i];
+            if (turn.role !== 'tool' && turn.role !== 'assistant') continue;
+            const content = turn.content || '';
+            if (content.length < PRUNE_THRESHOLD) continue;
+
+            const hash = crypto.createHash('md5').update(content).digest('hex').slice(0, 12);
+            const newestIdx = seenHashes.get(hash);
+            if (newestIdx !== undefined && newestIdx !== i) {
+                // 這是舊的重複，替換為 back-reference
+                result[i] = Object.assign({}, turn, {
+                    content: `[Duplicate tool output — identical content exists at a more recent turn]`
+                });
+                pruneCount++;
+            }
+        }
+
+        // Pass 2: 超長工具輸出 → 單行摘要
+        for (let i = 0; i < result.length; i++) {
+            const turn = result[i];
+            if (turn.role !== 'tool') continue;
+            const content = turn.content || '';
+            if (content.length <= PRUNE_THRESHOLD) continue;
+            // 跳過已處理過的
+            if (content.startsWith('[Duplicate')) continue;
+
+            const summary = this._summarizeToolOutput(turn);
+            result[i] = Object.assign({}, turn, { content: summary });
+            pruneCount++;
+        }
+
+        return { prunedTurns: result, pruneCount };
+    }
+
+    /**
+     * 將工具輸出產生一行摘要文字
+     * 引用 Hermes _summarize_tool_result() 的設計思路
+     * @param {Turn} turn
+     * @returns {string}
+     */
+    _summarizeToolOutput(turn) {
+        const toolName = turn.toolName || turn.role || 'tool';
+        const content = turn.content || '';
+        const lines = content.split('\n').length;
+        const chars = content.length;
+
+        // 鷗試從內容推斷工具類型
+        if (content.includes('exit_code') || content.includes('$ ')) {
+            const exitMatch = content.match(/"exit_code"\s*:\s*(-?\d+)/);
+            const exitCode = exitMatch ? exitMatch[1] : '?';
+            return `[terminal] 執行命令 → exit ${exitCode}, ${lines} 行輸出 (${chars} 字元已剰隀)`;
+        }
+
+        if (content.startsWith('{') || content.startsWith('[')) {
+            return `[json] JSON 資料 ${chars} 字元 (${lines} 行)已剰隀`;
+        }
+
+        if (content.includes('<html') || content.includes('<!DOCTYPE')) {
+            return `[html] HTML 內容 ${chars} 字元 (${lines} 行)已剰隀`;
+        }
+
+        // 通用剰隀
+        return `[${toolName}] 工具輸出 ${chars} 字元 (${lines} 行)已剰隀以節省上下文`;
     }
 
     // ================================================================
