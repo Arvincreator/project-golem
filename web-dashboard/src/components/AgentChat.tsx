@@ -93,7 +93,7 @@ export function AgentChat() {
                     isSystem = sender === "MultiAgent" || sender === "InteractiveMultiAgent";
                 }
 
-                setMessages((prev) => [...prev.slice(-1000), {
+                setMessages((prev) => [...prev.slice(-499), {
                     id: Date.now().toString() + Math.random(),
                     sender,
                     content,

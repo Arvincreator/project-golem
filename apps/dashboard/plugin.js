@@ -159,6 +159,10 @@ class DashboardPlugin {
     detach() {
         this.manager.state.isDetached = true;
         ConsoleInterceptor.restore();
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
         if (this.view) this.view.destroy();
 
         if (this.webServer) {
