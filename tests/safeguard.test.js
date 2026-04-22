@@ -7,13 +7,13 @@ describe('CommandSafeguard', () => {
         expect(result.safe).toBe(true);
     });
 
-    test('should reject command with semicolons', () => {
+    test('should reject command with semicolons and rm -rf /', () => {
         const cmd = 'node src/skills/core/search-web.js "test"; rm -rf /';
         const result = safeguard.validate(cmd);
         expect(result.safe).toBe(false);
-        expect(result.reason).toContain('偵測到高度危險操作');
+        // absoluteBlockPatterns fires before dangerousOps — stronger guarantee
+        expect(result.reason).toContain('絕對阻擋操作');
     });
-
 
     test('should reject command with pipe', () => {
         const cmd = 'node src/skills/core/search-web.js "test" | cat .env';

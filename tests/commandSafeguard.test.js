@@ -6,57 +6,114 @@ describe('CommandSafeguard', () => {
         delete process.env.GOLEM_STRICT_SAFEGUARD;
     });
 
-    test('should allow dangerous operations if skipWhitelist is true', () => {
+    // Absolute block patterns (cannot be bypassed by skipWhitelist)
+    test('should block rm -rf / even if skipWhitelist is true', () => {
         const result = safeguard.validate('ls ; rm -rf /', true);
+        expect(result.safe).toBe(false);
+        expect(result.reason).toContain('絕對阻擋操作');
+    });
+
+    test('should block rm -rf / inside bash -c wrapper even with skipWhitelist', () => {
+        const result = safeguard.validate('bash -c "rm -rf /"', true);
+        expect(result.safe).toBe(false);
+        expect(result.reason).toContain('絕對阻擋操作');
+    });
+
+    test('should block dd disk-wipe even with skipWhitelist', () => {
+        const result = safeguard.validate('dd if=/dev/zero of=/dev/sda', true);
+        expect(result.safe).toBe(false);
+        expect(result.reason).toContain('絕對阻擋操作');
+    });
+
+    test('should block mkfs commands even with skipWhitelist', () => {
+        const result = safeguard.validate('mkfs.ext4 /dev/sdb', true);
+        expect(result.safe).toBe(false);
+        expect(result.reason).toContain('絕對阻擋操作');
+    });
+
+    // Hard-coded whitelist
+    test('should allow hard-coded whitelist commands (ls with args)', () => {
+        expect(safeguard.validate('ls -la').safe).toBe(true);
+    });
+
+    test('should allow bare ls without arguments', () => {
+        expect(safeguard.validate('ls').safe).toBe(true);
+    });
+
+    // Options object format
+    test('should allow manually approved dangerous command with options object', () => {
+        const result = safeguard.validate('sudo ls', {
+            skipWhitelist: true,
+            allowSensitiveSyntax: true,
+            allowDangerousOps: true,
+        });
         expect(result.safe).toBe(true);
     });
 
-    test('should allow hard-coded whitelist commands', () => {
-        const result = safeguard.validate('ls -la');
-        expect(result.safe).toBe(true);
+    test('should treat boolean true as all-options-enabled', () => {
+        expect(safeguard.validate('sudo ls', true).safe).toBe(true);
     });
 
-    test('should allow dynamic whitelist via process.env', () => {
-        process.env.COMMAND_WHITELIST = 'date,docker';
-        const resultDate = safeguard.validate('date');
-        const resultDocker = safeguard.validate('docker ps');
-        
-        expect(resultDate.safe).toBe(true);
-        expect(resultDocker.safe).toBe(true);
+    // Sensitive symbol blocking
+    test('should block pipe unless allowSensitiveSyntax is set', () => {
+        const blocked = safeguard.validate('pwd | grep a');
+        expect(blocked.safe).toBe(false);
+        expect(blocked.reason).toContain('偵測到敏感關鍵字');
     });
 
-    test('should allow non-whitelisted command if skipWhitelist is true', () => {
-        const result = safeguard.validate('unknown-cmd', true);
-        expect(result.safe).toBe(true);
+    test('should allow pipe when allowSensitiveSyntax and skipWhitelist are set', () => {
+        const allowed = safeguard.validate('pwd | grep a', { skipWhitelist: true, allowSensitiveSyntax: true });
+        expect(allowed.safe).toBe(true);
     });
 
-    test('should allow pipe operator if skipWhitelist is true', () => {
-        const result = safeguard.validate('pwd | grep a', true);
-        expect(result.safe).toBe(true);
-    });
-
-    test('should allow dangerous keywords if skipWhitelist is true', () => {
-        const result = safeguard.validate('date ; rm -rf /', true);
-        expect(result.safe).toBe(true);
-    });
-
-    test('should block dangerous operations if skipWhitelist is false (default strict)', () => {
+    // Strict mode
+    test('should block dangerous ops when GOLEM_STRICT_SAFEGUARD is true', () => {
         process.env.GOLEM_STRICT_SAFEGUARD = 'true';
-        const result = safeguard.validate('rm -rf /');
+        const result = safeguard.validate('rm -rf temp_dir');
         expect(result.safe).toBe(false);
         expect(result.reason).toContain('偵測到高度危險操作');
     });
 
-    test('should allow dangerous operations if GOLEM_STRICT_SAFEGUARD is false', () => {
+    test('should skip strict dangerous-op check when GOLEM_STRICT_SAFEGUARD is false', () => {
         process.env.GOLEM_STRICT_SAFEGUARD = 'false';
-        const result = safeguard.validate('rm -rf /');
+        const result = safeguard.validate('rm -rf temp_dir');
         expect(result.safe).toBe(false);
         expect(result.reason).not.toContain('偵測到高度危險操作');
-        expect(result.reason).toMatch(/指令風險等級|指令未列於白名單中/);
+    });
 
-        // But it still blocks sensitive symbols because whitelist check is still there
-        const resultWithSymbol = safeguard.validate('ls ; rm -rf /');
-        expect(resultWithSymbol.safe).toBe(false);
-        expect(resultWithSymbol.reason).toContain('偵測到敏感關鍵字');
+    // Dynamic COMMAND_WHITELIST
+    test('should allow commands in COMMAND_WHITELIST env var', () => {
+        process.env.COMMAND_WHITELIST = 'date,docker';
+        expect(safeguard.validate('date').safe).toBe(true);
+        expect(safeguard.validate('docker ps').safe).toBe(true);
+    });
+
+    test('should support wildcard entries in COMMAND_WHITELIST', () => {
+        process.env.COMMAND_WHITELIST = 'npm run *';
+        expect(safeguard.validate('npm run build').safe).toBe(true);
+        expect(safeguard.validate('npm run test').safe).toBe(true);
+    });
+
+    test('should support exact multi-word entries in COMMAND_WHITELIST', () => {
+        process.env.COMMAND_WHITELIST = 'git status';
+        expect(safeguard.validate('git status').safe).toBe(true);
+        expect(safeguard.validate('git pull').safe).toBe(false);
+    });
+
+    test('should silently drop COMMAND_WHITELIST entries with shell metacharacters', () => {
+        process.env.COMMAND_WHITELIST = 'safe-cmd,evil;cmd';
+        expect(safeguard.validate('safe-cmd').safe).toBe(true);
+        expect(safeguard.validate('evil;cmd').safe).toBe(false);
+    });
+
+    // Invalid input
+    test('should return safe: false for null/undefined/non-string input', () => {
+        expect(safeguard.validate(null).safe).toBe(false);
+        expect(safeguard.validate(undefined).safe).toBe(false);
+        expect(safeguard.validate(42).safe).toBe(false);
+    });
+
+    test('should return safe: false for empty string', () => {
+        expect(safeguard.validate('').safe).toBe(false);
     });
 });
