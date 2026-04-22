@@ -15,6 +15,8 @@ class AutonomyManager {
         this.tgBot = null;
         this.dcClient = null;
         this.convoManager = null;
+        this._timeWatcherTimer = null;
+        this._timeWatcherTimer = null;
         this.pendingPatch = null;
     }
 
@@ -33,10 +35,23 @@ class AutonomyManager {
         }
         console.log(`🚀 [Autonomy][${this.golemId}] Starting autonomy services...`);
         this.resumeOrScheduleAwakening();
-        setInterval(() => this.timeWatcher(), 60000);
+        if (this._timeWatcherTimer) clearInterval(this._timeWatcherTimer);
+        this._timeWatcherTimer = if (this._timeWatcherTimer) clearInterval(this._timeWatcherTimer);
+        this._timeWatcherTimer = setInterval(() => this.timeWatcher(), 60000);
+        if (typeof this._timeWatcherTimer.unref === 'function') this._timeWatcherTimer.unref();
+        if (typeof this._timeWatcherTimer.unref === 'function') this._timeWatcherTimer.unref();
         // ✨ [v9.1.5] 定時自動檢查一次日誌狀態 (改為動態排程，支援熱重載)
         this.archiveTimer = null;
         this.scheduleNextArchive();
+
+    stop() {
+        if (this._timeWatcherTimer) {
+            clearInterval(this._timeWatcherTimer);
+            this._timeWatcherTimer = null;
+        }
+        if (this.archiveTimer) clearTimeout(this.archiveTimer);
+        if (this.awakeTimer) clearTimeout(this.awakeTimer);
+    }
     }
 
     /**
@@ -49,6 +64,15 @@ class AutonomyManager {
         this.archiveTimer = setTimeout(async () => {
             await this.checkArchiveStatus();
             this.scheduleNextArchive(); // 遞迴排定下一次
+
+    stop() {
+        if (this._timeWatcherTimer) {
+            clearInterval(this._timeWatcherTimer);
+            this._timeWatcherTimer = null;
+        }
+        if (this.archiveTimer) clearTimeout(this.archiveTimer);
+        if (this.awakeTimer) clearTimeout(this.awakeTimer);
+    }
         }, intervalMin * 60000);
     }
 

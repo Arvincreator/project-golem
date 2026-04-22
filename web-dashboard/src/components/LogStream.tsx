@@ -49,7 +49,7 @@ export function LogStream({
 
         const handleLog = (payload: unknown) => {
             if (!isLogMessage(payload)) return;
-            setLogs((prev) => [...prev.slice(-199), payload]); // Keep last 200 logs
+            setLogs((prev) => [...prev.slice(-149), payload]); // Keep last 150 logs
         };
 
         socket.on("init", handleInit);
