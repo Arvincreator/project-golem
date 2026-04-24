@@ -106,5 +106,9 @@ describe('GolemBrain lmstudio backend', () => {
         const client = LMStudioClient.mock.results[0].value;
         const payloads = client.chat.mock.calls.map(call => call[0]);
         expect(payloads.some(payload => String(payload).includes('hello lmstudio'))).toBe(true);
+
+        if (brain._backgroundMemoryInjectionTask) {
+            await brain._backgroundMemoryInjectionTask;
+        }
     });
 });

@@ -16,11 +16,19 @@ jest.mock('../src/managers/SkillManager', () => ({
 }));
 jest.mock('../src/managers/SkillIndexManager', () => {
     return jest.fn().mockImplementation(() => ({
-        getEnabledSkills: jest.fn().mockResolvedValue([{ id: 'actor', content: 'actor guide' }]),
+        getEnabledSkills: jest.fn().mockImplementation(async (ids = []) => (
+            ids.map(id => ({ id, content: `${id} guide` }))
+        )),
         init: jest.fn().mockResolvedValue(),
         close: jest.fn().mockResolvedValue()
     }));
 });
+jest.mock('../src/managers/ToolsetManager', () => ({
+    toolsetManager: {
+        getActiveTools: jest.fn().mockReturnValue(['actor']),
+        getActiveScene: jest.fn().mockReturnValue('assistant')
+    }
+}));
 jest.mock('../src/skills/skillsConfig', () => ({
     resolveEnabledSkills: jest.fn().mockReturnValue(new Set(['actor'])),
     OPTIONAL_SKILLS: ['git']
@@ -107,9 +115,7 @@ describe('ProtocolFormatter', () => {
     test('buildSystemPrompt loads markdown skills, handles optionally active/deactivated skills', async () => {
         const fs = require('fs');
         const { ProtocolFormatter } = require('../packages/protocol');
-        const skillIndexManager = require('../src/managers/SkillIndexManager');
         const personaManager = require('../src/skills/core/persona');
-        const { resolveEnabledSkills, OPTIONAL_SKILLS } = require('../src/skills/skillsConfig');
 
         // Mock readdir to return some .md files
         fs.promises.readdir.mockResolvedValue(['actor.md', 'git.md', 'not-a-skill.txt']);
@@ -123,5 +129,27 @@ describe('ProtocolFormatter', () => {
         // It should inject knowledge about activated skills and deactivated ones
         expect(result.systemPrompt).toContain('SKILL: ACTOR'); // It injects the loaded skill contents
         expect(result.systemPrompt).toContain('DEACTIVATED SERVICES:');
+    });
+
+    test('buildSystemPrompt filters enabled skills by active toolset scene', async () => {
+        const fs = require('fs');
+        const personaManager = require('../src/skills/core/persona');
+        const SkillIndexManager = require('../src/managers/SkillIndexManager');
+        const { toolsetManager } = require('../src/managers/ToolsetManager');
+        const { resolveEnabledSkills } = require('../src/skills/skillsConfig');
+
+        fs.promises.readdir.mockResolvedValue(['actor.md', 'code-wizard.md']);
+        personaManager.get = jest.fn().mockReturnValue({ skills: ['actor', 'code-wizard'] });
+        resolveEnabledSkills.mockReturnValue(new Set(['actor', 'code-wizard']));
+        toolsetManager.getActiveTools.mockReturnValue(['actor']);
+        toolsetManager.getActiveScene.mockReturnValue('safe');
+
+        const result = await ProtocolFormatter.buildSystemPrompt(true, { userDataDir: '/tmp/toolset-filter' });
+        const instance = SkillIndexManager.mock.results[SkillIndexManager.mock.results.length - 1].value;
+
+        expect(instance.getEnabledSkills).toHaveBeenCalledWith(['actor']);
+        expect(result.systemPrompt).toContain('SKILL: ACTOR');
+        expect(result.systemPrompt).toContain('TOOLSET-DISABLED SERVICES');
+        expect(result.systemPrompt).not.toContain('SKILL: CODE-WIZARD');
     });
 });

@@ -88,6 +88,8 @@ class GolemBrain {
 
         // ── [Phase 2] 場景化工具集管理 ──
         this.toolsetManager = toolsetManager;
+        this._backgroundMemoryInjectionTask = null;
+        this._transportQueue = Promise.resolve();
 
         // ── [OpenHarness-inspired] Hook System ──────────────────
         // 全域單例，各模組可透過 brain.hookSystem 掛載 pre/post_tool_use handler
@@ -499,38 +501,37 @@ class GolemBrain {
 
         await this._ensureBrowserHealth();
         if (!this.context || !this.isInitialized) await this.init();
-        try { await this.page.bringToFront(); } catch (e) { }
-        await this.setupCDP();
+        const result = await this._withTransportLock(async () => {
+            try { await this.page.bringToFront(); } catch (e) { }
+            await this.setupCDP();
 
-        const attachment = options.attachment || null;
+            const attachment = options.attachment || null;
+            const reqId = ProtocolFormatter.generateReqId();
+            const startTag = ProtocolFormatter.buildStartTag(reqId);
+            const endTag = ProtocolFormatter.buildEndTag(reqId);
+            const payload = ProtocolFormatter.buildEnvelope(text, reqId, options);
 
-        const reqId = ProtocolFormatter.generateReqId();
-        const startTag = ProtocolFormatter.buildStartTag(reqId);
-        const endTag = ProtocolFormatter.buildEndTag(reqId);
-        const payload = ProtocolFormatter.buildEnvelope(text, reqId, options);
+            console.log(`📡 [Brain] 發送訊號: ${reqId} (含每回合強制洗腦引擎)${attachment ? ' 📎 含有附件' : ''}`);
 
-        console.log(`📡 [Brain] 發送訊號: ${reqId} (含每回合強制洗腦引擎)${attachment ? ' 📎 含有附件' : ''}`);
+            const interactor = new PageInteractor(this.page, this.doctor);
 
-        const interactor = new PageInteractor(this.page, this.doctor);
-
-        let result;
-        try {
-            result = await interactor.interact(
-                payload, this.selectors, isSystem, startTag, endTag, 0, attachment
-            );
-        } catch (e) {
-            // 處理 selector 修復觸發的重試
-            if (e.message && e.message.startsWith('SELECTOR_HEALED:')) {
-                const [, type, newSelector] = e.message.split(':');
-                this.selectors[type] = newSelector;
-                this.doctor.saveSelectors(this.selectors);
-                result = await interactor.interact(
-                    payload, this.selectors, isSystem, startTag, endTag, 1, attachment
+            try {
+                return await interactor.interact(
+                    payload, this.selectors, isSystem, startTag, endTag, 0, attachment
                 );
-            } else {
+            } catch (e) {
+                // 處理 selector 修復觸發的重試
+                if (e.message && e.message.startsWith('SELECTOR_HEALED:')) {
+                    const [, type, newSelector] = e.message.split(':');
+                    this.selectors[type] = newSelector;
+                    this.doctor.saveSelectors(this.selectors);
+                    return await interactor.interact(
+                        payload, this.selectors, isSystem, startTag, endTag, 1, attachment
+                    );
+                }
                 throw e;
             }
-        }
+        });
 
         // 📥 [v9.1.10] 處理 Gemini 回傳的附件，下載至本地伺服器
         if (result.attachments && result.attachments.length > 0) {
@@ -580,13 +581,15 @@ class GolemBrain {
             console.warn('⚠️ [Brain] Ollama backend currently ignores browser attachments.');
         }
 
-        const reqId = ProtocolFormatter.generateReqId();
-        const payload = ProtocolFormatter.buildEnvelope(text, reqId, options);
-        console.log(`📡 [Brain][Ollama] 發送訊號: ${reqId}`);
+        const responseText = await this._withTransportLock(async () => {
+            const reqId = ProtocolFormatter.generateReqId();
+            const payload = ProtocolFormatter.buildEnvelope(text, reqId, options);
+            console.log(`📡 [Brain][Ollama] 發送訊號: ${reqId}`);
 
-        const responseText = await client.chat(payload, {
-            model: ConfigManager.CONFIG.OLLAMA_BRAIN_MODEL,
-            system: isSystem ? '你正在接收系統層訊息，請嚴格遵守。' : undefined
+            return client.chat(payload, {
+                model: ConfigManager.CONFIG.OLLAMA_BRAIN_MODEL,
+                system: isSystem ? '你正在接收系統層訊息，請嚴格遵守。' : undefined
+            });
         });
 
         return {
@@ -602,13 +605,15 @@ class GolemBrain {
             console.warn('⚠️ [Brain] LM Studio backend currently ignores browser attachments.');
         }
 
-        const reqId = ProtocolFormatter.generateReqId();
-        const payload = ProtocolFormatter.buildEnvelope(text, reqId, options);
-        console.log(`📡 [Brain][LMStudio] 發送訊號: ${reqId}`);
+        const responseText = await this._withTransportLock(async () => {
+            const reqId = ProtocolFormatter.generateReqId();
+            const payload = ProtocolFormatter.buildEnvelope(text, reqId, options);
+            console.log(`📡 [Brain][LMStudio] 發送訊號: ${reqId}`);
 
-        const responseText = await client.chat(payload, {
-            model: ConfigManager.CONFIG.LMSTUDIO_BRAIN_MODEL,
-            system: isSystem ? '你正在接收系統層訊息，請嚴格遵守。' : undefined
+            return client.chat(payload, {
+                model: ConfigManager.CONFIG.LMSTUDIO_BRAIN_MODEL,
+                system: isSystem ? '你正在接收系統層訊息，請嚴格遵守。' : undefined
+            });
         });
 
         return {
@@ -656,6 +661,16 @@ class GolemBrain {
                 console.error(`❌ [Brain][${this.golemId}] appendedChatLog error:`, err);
             });
         }
+    }
+
+    async _withTransportLock(taskFn) {
+        const queued = this._transportQueue
+            .catch(() => {})
+            .then(() => taskFn());
+
+        // Keep queue alive even when current task fails.
+        this._transportQueue = queued.catch(() => {});
+        return queued;
     }
 
     // ─── Private Methods ─────────────────────────────────────
@@ -793,7 +808,29 @@ class GolemBrain {
         await this.sendMessage(compressedPrompt, false); // ⚡ 改為 false：等待完整回應
         console.log(`📡 [Brain] 階段一：底層協議注入完成 (${this.backend.toUpperCase()})。`);
 
-        // 🧠 [第二階段] 金字塔式多層記憶注入
+        // 🧠 [第二階段] 金字塔式多層記憶注入（改為背景排程，不阻塞 init）
+        this._scheduleHistoricalMemoryInjection();
+    }
+
+    _scheduleHistoricalMemoryInjection() {
+        if (!this.chatLogManager) return;
+        if (this._backgroundMemoryInjectionTask) {
+            console.log(`⏳ [Brain] 階段二背景記憶注入已在進行中，略過重複排程。`);
+            return;
+        }
+
+        console.log(`🧠 [Brain] 階段二：已排程背景記憶注入（非阻塞初始化）。`);
+        this._backgroundMemoryInjectionTask = new Promise((resolve) => setImmediate(resolve))
+            .then(() => this._injectHistoricalMemoryPhase())
+            .catch((e) => {
+                console.warn(`⚠️ [Brain] 背景記憶注入失敗: ${e.message}`);
+            })
+            .finally(() => {
+                this._backgroundMemoryInjectionTask = null;
+            });
+    }
+
+    async _injectHistoricalMemoryPhase() {
         if (this.chatLogManager) {
             try {
                 let historicalMemory = "";
@@ -992,9 +1029,9 @@ class GolemBrain {
         // API 後端：直接呼叫本地客戶端，完全不涉及頁面
         if (this._isApiBackend()) {
             const client = this._ensureApiClient();
-            const text = await client.chat(prompt, {
+            const text = await this._withTransportLock(() => client.chat(prompt, {
                 model: this._getApiBrainModel(),
-            });
+            }));
             return text || '';
         }
 
@@ -1003,33 +1040,35 @@ class GolemBrain {
         // 若不包裝，Gemini 會用自己產生的 reqId，導致標籤不符、PageInteractor 掛起。
         await this._ensureBrowserHealth();
         if (!this.context || !this.isInitialized) await this.init();
-        try { await this.page.bringToFront(); } catch (e) { }
-        await this.setupCDP();
+        return this._withTransportLock(async () => {
+            try { await this.page.bringToFront(); } catch (e) { }
+            await this.setupCDP();
 
-        const reqId    = ProtocolFormatter.generateReqId();
-        const startTag = ProtocolFormatter.buildStartTag(reqId);
-        const endTag   = ProtocolFormatter.buildEndTag(reqId);
-        // buildEnvelope 讓 Gemini 在回應裡回顯相同 reqId，PageInteractor 才能找到邊界
-        const payload  = ProtocolFormatter.buildEnvelope(prompt, reqId, {});
+            const reqId    = ProtocolFormatter.generateReqId();
+            const startTag = ProtocolFormatter.buildStartTag(reqId);
+            const endTag   = ProtocolFormatter.buildEndTag(reqId);
+            // buildEnvelope 讓 Gemini 在回應裡回顯相同 reqId，PageInteractor 才能找到邊界
+            const payload  = ProtocolFormatter.buildEnvelope(prompt, reqId, {});
 
-        const interactor = new PageInteractor(this.page, this.doctor);
-        try {
-            const result = await interactor.interact(
-                payload, this.selectors, false, startTag, endTag, 0, null
-            );
-            return typeof result === 'string' ? result : (result.text || '');
-        } catch (e) {
-            if (e.message && e.message.startsWith('SELECTOR_HEALED:')) {
-                const [, type, newSelector] = e.message.split(':');
-                this.selectors[type] = newSelector;
-                this.doctor.saveSelectors(this.selectors);
-                const result2 = await interactor.interact(
-                    payload, this.selectors, false, startTag, endTag, 1, null
+            const interactor = new PageInteractor(this.page, this.doctor);
+            try {
+                const result = await interactor.interact(
+                    payload, this.selectors, false, startTag, endTag, 0, null
                 );
-                return typeof result2 === 'string' ? result2 : (result2.text || '');
+                return typeof result === 'string' ? result : (result.text || '');
+            } catch (e) {
+                if (e.message && e.message.startsWith('SELECTOR_HEALED:')) {
+                    const [, type, newSelector] = e.message.split(':');
+                    this.selectors[type] = newSelector;
+                    this.doctor.saveSelectors(this.selectors);
+                    const result2 = await interactor.interact(
+                        payload, this.selectors, false, startTag, endTag, 1, null
+                    );
+                    return typeof result2 === 'string' ? result2 : (result2.text || '');
+                }
+                throw e;
             }
-            throw e;
-        }
+        });
     }
     /**
      * 🗜️ 壓縮目前會話的確認歷史訊息（公開方法）

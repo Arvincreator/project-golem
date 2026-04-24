@@ -7,6 +7,7 @@ const { getSystemFingerprint } = require('../../src/utils/system');
 const skills = require('../../src/skills');
 const skillManager = require('../../src/managers/SkillManager');
 const skillIndexManager = require('../../src/managers/SkillIndexManager');
+const { toolsetManager } = require('../../src/managers/ToolsetManager');
 const { resolveEnabledSkills, OPTIONAL_SKILLS } = require('../../src/skills/skillsConfig');
 const ConfigManager = require('../../src/config');
 
@@ -162,11 +163,11 @@ ${text}`;
                 }
 
                 const enabledSkills = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', personaSkills);
-
-                const filteredSkillIds = mdFiles.filter(file => {
-                    const baseName = file.replace('.md', '').toLowerCase();
-                    return enabledSkills.has(baseName);
-                }).map(file => file.replace('.md', '').toLowerCase());
+                const activeTools = new Set(toolsetManager.getActiveTools());
+                const mdSkillIds = mdFiles.map(file => file.replace('.md', '').toLowerCase());
+                const enabledMdSkillIds = mdSkillIds.filter(id => enabledSkills.has(id));
+                const filteredSkillIds = enabledMdSkillIds.filter(id => activeTools.has(id));
+                const toolsetDisabledSkills = enabledMdSkillIds.filter(id => !activeTools.has(id));
 
                 const golemId = golemContext.golemId || 'golem_A';
                 const dbRelativePath = 'golem_memory/skills.db';
@@ -189,6 +190,13 @@ ${text}`;
                     systemPrompt += `\n\n### 🚫 DEACTIVATED SERVICES:\n`;
                     for (const s of deactivatedSkills) {
                         systemPrompt += `- **${s.toUpperCase()}**: 你已關閉此技能，暫時無法使用此技能服務。即使你的歷史記憶中曾有相關操作紀錄，也請無視並告知使用者該功能目前已停用。\n`;
+                    }
+                }
+
+                if (toolsetDisabledSkills.length > 0) {
+                    systemPrompt += `\n\n### 🧰 TOOLSET-DISABLED SERVICES (Scene: ${toolsetManager.getActiveScene()}):\n`;
+                    for (const s of toolsetDisabledSkills) {
+                        systemPrompt += `- **${s.toUpperCase()}**: 此技能已被目前工具場景暫時停用。若使用者需要，請引導使用 \`/toolset\` 切換場景後再使用。\n`;
                     }
                 }
             }

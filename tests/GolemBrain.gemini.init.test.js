@@ -137,4 +137,34 @@ describe('GolemBrain gemini bootstrap init', () => {
             })
         }));
     });
+
+    test('phase 2 memory injection is deferred to background after init', async () => {
+        const cdpSession = { send: jest.fn().mockResolvedValue() };
+        const page = {
+            goto: jest.fn().mockResolvedValue(),
+            bringToFront: jest.fn().mockResolvedValue(),
+            evaluate: jest.fn().mockResolvedValue(1),
+            context: jest.fn(() => ({
+                newCDPSession: jest.fn().mockResolvedValue(cdpSession)
+            }))
+        };
+
+        const context = {
+            pages: jest.fn(() => [page]),
+            newPage: jest.fn().mockResolvedValue(page),
+            browser: jest.fn(() => ({
+                isConnected: () => true
+            }))
+        };
+        BrowserLauncher.launch.mockResolvedValue(context);
+
+        const brain = new GolemBrain({ golemId: 'gemini-test-bg-memory' });
+        const memoryPhaseSpy = jest.spyOn(brain, '_injectHistoricalMemoryPhase').mockResolvedValue();
+
+        await brain.init();
+        expect(memoryPhaseSpy).not.toHaveBeenCalled();
+
+        await new Promise(resolve => setImmediate(resolve));
+        expect(memoryPhaseSpy).toHaveBeenCalledTimes(1);
+    });
 });

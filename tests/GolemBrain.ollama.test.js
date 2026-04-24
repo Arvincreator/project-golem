@@ -106,5 +106,9 @@ describe('GolemBrain ollama backend', () => {
         const client = OllamaClient.mock.results[0].value;
         const payloads = client.chat.mock.calls.map(call => call[0]);
         expect(payloads.some(payload => String(payload).includes('hello ollama'))).toBe(true);
+
+        if (brain._backgroundMemoryInjectionTask) {
+            await brain._backgroundMemoryInjectionTask;
+        }
     });
 });
