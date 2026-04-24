@@ -39,14 +39,14 @@
 
 ## ✨ 這是什麼？
 
-**Project Golem** 不是一個普通的聊天機器人。它是一個可選擇 **Web Gemini（Browser-in-the-Loop）** 或 **Ollama（本地/私有部署）** 作為大腦的自主 AI 代理系統。
+**Project Golem** 不是一個普通的聊天機器人。它是一個可選擇 **Web Gemini（Browser-in-the-Loop）**、**Ollama（本地/私有部署）** 或 **LM Studio（本地 OpenAI 相容 API）** 作為大腦的自主 AI 代理系統。
 
 - 🧠 **記住你** — 金字塔式 5 層記憶壓縮，理論上可保存 **50 年**的對話精華。
 - 🤖 **自主行動** — 當你不在時，它會主動瀏覽新聞、自省思考、發送消息給你。
 - 🎭 **召喚 AI 團隊** — 一個指令生成多個 AI 專家進行圓桌討論，產出共識摘要。
 - 🔧 **動態擴充** — 支援熱載入技能模組 (Skills)，甚至能讓 AI 在沙盒中寫扣自學新技能。
 
-> **雙後端架構**：預設可使用 Browser-in-the-Loop 直接操控 Web Gemini；也可切換到 Ollama API 走本地模型與私有部署路線。
+> **多後端架構**：預設可使用 Browser-in-the-Loop 直接操控 Web Gemini；也可切換到 Ollama API 或 LM Studio API 走本地模型與私有部署路線。
 
 ---
 
@@ -168,6 +168,14 @@ GOLEM_OLLAMA_BRAIN_MODEL=llama3.1:8b
 GOLEM_EMBEDDING_PROVIDER=ollama
 GOLEM_OLLAMA_EMBEDDING_MODEL=nomic-embed-text
 # 選填：GOLEM_OLLAMA_RERANK_MODEL=bge-reranker-v2-m3
+```
+
+**🧪 LM Studio 私有化範例**
+```env
+GOLEM_BACKEND=lmstudio
+GOLEM_LMSTUDIO_BASE_URL=http://127.0.0.1:1234/v1
+GOLEM_LMSTUDIO_BRAIN_MODEL=local-model
+# 選填：GOLEM_LMSTUDIO_API_KEY=your-api-key
 ```
 
 **🏗️ 架構治理檢查**

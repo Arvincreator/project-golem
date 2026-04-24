@@ -21,7 +21,7 @@ const isPlaceholder = (str) => {
 
 const normalizeBackend = (value) => {
     const backend = cleanEnv(value).toLowerCase();
-    if (backend === 'gemini' || backend === 'ollama' || backend === 'perplexity') return backend;
+    if (backend === 'gemini' || backend === 'ollama' || backend === 'lmstudio' || backend === 'perplexity') return backend;
     return 'gemini';
 };
 
@@ -72,6 +72,10 @@ const CONFIG = {
     OLLAMA_EMBEDDING_MODEL: cleanEnv(process.env.GOLEM_OLLAMA_EMBEDDING_MODEL || process.env.OLLAMA_EMBEDDING_MODEL || 'nomic-embed-text', true),
     OLLAMA_RERANK_MODEL: cleanEnv(process.env.GOLEM_OLLAMA_RERANK_MODEL || process.env.OLLAMA_RERANK_MODEL || '', true),
     OLLAMA_TIMEOUT_MS: Number(cleanEnv(process.env.GOLEM_OLLAMA_TIMEOUT_MS || process.env.OLLAMA_TIMEOUT_MS)) || 60000,
+    LMSTUDIO_BASE_URL: cleanEnv(process.env.GOLEM_LMSTUDIO_BASE_URL || process.env.LMSTUDIO_BASE_URL || 'http://127.0.0.1:1234/v1', true),
+    LMSTUDIO_BRAIN_MODEL: cleanEnv(process.env.GOLEM_LMSTUDIO_BRAIN_MODEL || process.env.LMSTUDIO_BRAIN_MODEL || '', true),
+    LMSTUDIO_TIMEOUT_MS: Number(cleanEnv(process.env.GOLEM_LMSTUDIO_TIMEOUT_MS || process.env.LMSTUDIO_TIMEOUT_MS)) || 60000,
+    LMSTUDIO_API_KEY: cleanEnv(process.env.GOLEM_LMSTUDIO_API_KEY || process.env.LMSTUDIO_API_KEY || '', true),
     GEMINI_URLS: (process.env.GEMINI_URLS || '').split(',').map(u => cleanEnv(u, true)).filter(u => u),
     MAX_AUTO_TURNS: Number(cleanEnv(process.env.GOLEM_MAX_AUTO_TURNS)) || 5,
     MAX_RESPONSE_WORDS: Number(cleanEnv(process.env.GOLEM_MAX_RESPONSE_WORDS)) || 0,
@@ -175,6 +179,10 @@ const reloadConfig = () => {
     CONFIG.OLLAMA_EMBEDDING_MODEL = cleanEnv(process.env.GOLEM_OLLAMA_EMBEDDING_MODEL || process.env.OLLAMA_EMBEDDING_MODEL || 'nomic-embed-text', true);
     CONFIG.OLLAMA_RERANK_MODEL = cleanEnv(process.env.GOLEM_OLLAMA_RERANK_MODEL || process.env.OLLAMA_RERANK_MODEL || '', true);
     CONFIG.OLLAMA_TIMEOUT_MS = Number(cleanEnv(process.env.GOLEM_OLLAMA_TIMEOUT_MS || process.env.OLLAMA_TIMEOUT_MS)) || 60000;
+    CONFIG.LMSTUDIO_BASE_URL = cleanEnv(process.env.GOLEM_LMSTUDIO_BASE_URL || process.env.LMSTUDIO_BASE_URL || 'http://127.0.0.1:1234/v1', true);
+    CONFIG.LMSTUDIO_BRAIN_MODEL = cleanEnv(process.env.GOLEM_LMSTUDIO_BRAIN_MODEL || process.env.LMSTUDIO_BRAIN_MODEL || '', true);
+    CONFIG.LMSTUDIO_TIMEOUT_MS = Number(cleanEnv(process.env.GOLEM_LMSTUDIO_TIMEOUT_MS || process.env.LMSTUDIO_TIMEOUT_MS)) || 60000;
+    CONFIG.LMSTUDIO_API_KEY = cleanEnv(process.env.GOLEM_LMSTUDIO_API_KEY || process.env.LMSTUDIO_API_KEY || '', true);
     CONFIG.GOLEM_MEMORY_MODE = cleanEnv(process.env.GOLEM_MEMORY_MODE) || 'lancedb-pro';
 
     const newGeminiUrls = (process.env.GEMINI_URLS || '').split(',').map(u => cleanEnv(u, true)).filter(u => u);

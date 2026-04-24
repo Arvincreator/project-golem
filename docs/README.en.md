@@ -39,14 +39,14 @@
 
 ## ✨ What is this?
 
-**Project Golem** is not just another chatbot. It is an autonomous AI agent that can use either **Web Gemini (Browser-in-the-Loop)** or **Ollama (local/self-hosted)** as its brain backend.
+**Project Golem** is not just another chatbot. It is an autonomous AI agent that can use **Web Gemini (Browser-in-the-Loop)**, **Ollama (local/self-hosted)**, or **LM Studio (local OpenAI-compatible API)** as its brain backend.
 
 - 🧠 **Remember You** — Pyramidal 5-tier memory compression, theoretically preserving **50 years** of conversational essence.
 - 🤖 **Autonomous Action** — While you're away, it proactively browses news, introspects, and sends messages to you.
 - 🎭 **Summon AI Team** — A single command generates multiple AI experts for roundtable discussions and consensus summaries.
 - 🔧 **Dynamic Expansion** — Supports hot-loading skill modules (Skills), and even allows AI to code and learn new skills in a sandbox.
 
-> **Dual-backend Architecture**: Use Browser-in-the-Loop with Web Gemini by default, or switch to Ollama API for local/private deployment workflows.
+> **Multi-backend Architecture**: Use Browser-in-the-Loop with Web Gemini by default, or switch to Ollama API / LM Studio API for local/private deployment workflows.
 
 ---
 
@@ -156,6 +156,14 @@ GOLEM_OLLAMA_BRAIN_MODEL=llama3.1:8b
 GOLEM_EMBEDDING_PROVIDER=ollama
 GOLEM_OLLAMA_EMBEDDING_MODEL=nomic-embed-text
 # Optional: GOLEM_OLLAMA_RERANK_MODEL=bge-reranker-v2-m3
+```
+
+**🧪 LM Studio private deployment example**
+```env
+GOLEM_BACKEND=lmstudio
+GOLEM_LMSTUDIO_BASE_URL=http://127.0.0.1:1234/v1
+GOLEM_LMSTUDIO_BRAIN_MODEL=local-model
+# Optional: GOLEM_LMSTUDIO_API_KEY=your-api-key
 ```
 
 **🏗️ Architecture boundary check**

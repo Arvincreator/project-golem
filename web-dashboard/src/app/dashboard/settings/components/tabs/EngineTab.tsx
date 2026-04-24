@@ -1,13 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { Sparkles } from "lucide-react";
 import { LOCAL_MODELS, SettingField, SettingSelectField } from "../SettingFields";
 import { useI18n } from "@/components/I18nProvider";
+import { apiPostWrite } from "@/lib/api-client";
+import { useToast } from "@/components/ui/toast-provider";
 
 type EngineTabProps = {
     env: Record<string, string>;
     onChangeEnv: (key: string, value: string) => void;
 };
+
+type BackendKind = "ollama" | "lmstudio";
+type TestScope = "backend-ollama" | "backend-lmstudio" | "embedding-ollama";
 
 const getEmbeddingProvider = (provider?: string) => {
     if (provider === "local" || provider === "ollama") {
@@ -26,6 +32,9 @@ const getMemoryMode = (mode?: string) => {
 
 export default function EngineTab({ env, onChangeEnv }: EngineTabProps) {
     const { t } = useI18n();
+    const toast = useToast();
+    const [activeTestScope, setActiveTestScope] = useState<TestScope | null>(null);
+    const [testErrorDetail, setTestErrorDetail] = useState<{ scope: TestScope; detail: string } | null>(null);
     const localizedModels = LOCAL_MODELS.map((model) => {
         if (model.id === "Xenova/bge-small-zh-v1.5") {
             return {
@@ -71,6 +80,128 @@ export default function EngineTab({ env, onChangeEnv }: EngineTabProps) {
     });
     const memoryMode = getMemoryMode(env.GOLEM_MEMORY_MODE);
 
+    const copyErrorDetail = async () => {
+        if (!testErrorDetail?.detail) return;
+        try {
+            if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
+                throw new Error("Clipboard API is not available.");
+            }
+            await navigator.clipboard.writeText(testErrorDetail.detail);
+            toast.success(t("settings.engine.connectionTest.copySuccess"));
+        } catch {
+            toast.error(t("settings.engine.connectionTest.copyFailed"));
+        }
+    };
+
+    const runConnectionTest = async (
+        scope: TestScope,
+        payload: Record<string, unknown>,
+        successTitle: string,
+        failTitle: string
+    ) => {
+        setActiveTestScope(scope);
+        setTestErrorDetail(null);
+
+        try {
+            const data = await apiPostWrite<{
+                success?: boolean;
+                backend?: string;
+                purpose?: string;
+                baseUrl?: string;
+                model?: string;
+                embeddingModel?: string;
+                message?: string;
+                error?: string;
+                latencyMs?: number;
+                preview?: string;
+                dimension?: number;
+            }>("/api/system/backend/test", payload);
+
+            if (!data.success) {
+                throw new Error(data.error || data.message || t("settings.engine.connectionTest.failed"));
+            }
+
+            const metaParts: string[] = [];
+            if (data.backend && data.purpose) metaParts.push(`${data.backend}/${data.purpose}`);
+            if (data.baseUrl) metaParts.push(`url=${data.baseUrl}`);
+            if (data.model) metaParts.push(`model=${data.model}`);
+            if (data.embeddingModel) metaParts.push(`embeddingModel=${data.embeddingModel}`);
+            if (typeof data.latencyMs === "number") metaParts.push(`${data.latencyMs}ms`);
+            if (typeof data.dimension === "number") metaParts.push(`dim=${data.dimension}`);
+            if (data.preview) metaParts.push(data.preview);
+            toast.success(successTitle, metaParts.join(" · "));
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : t("settings.engine.connectionTest.failed");
+            const detailPayload = { ...payload, apiKey: payload.apiKey ? "***" : payload.apiKey };
+            const detail = [
+                `time=${new Date().toISOString()}`,
+                `scope=${scope}`,
+                `message=${message}`,
+                `payload=${JSON.stringify(detailPayload)}`
+            ].join("\n");
+            setTestErrorDetail({
+                scope,
+                detail
+            });
+            toast.error(failTitle, message);
+        } finally {
+            setActiveTestScope(null);
+        }
+    };
+
+    const testBackendConnection = async (backend: BackendKind) => {
+        const timeoutRaw = backend === "ollama" ? env.GOLEM_OLLAMA_TIMEOUT_MS : env.GOLEM_LMSTUDIO_TIMEOUT_MS;
+        const parsedTimeout = Number(timeoutRaw);
+        const timeoutMs = Number.isFinite(parsedTimeout) && parsedTimeout > 0 ? parsedTimeout : 60000;
+
+        if (backend === "ollama") {
+            await runConnectionTest(
+                "backend-ollama",
+                {
+                    backend: "ollama",
+                    purpose: "brain",
+                    baseUrl: env.GOLEM_OLLAMA_BASE_URL || "http://127.0.0.1:11434",
+                    model: env.GOLEM_OLLAMA_BRAIN_MODEL || "",
+                    timeoutMs
+                },
+                t("settings.engine.connectionTest.success"),
+                t("settings.engine.connectionTest.failed")
+            );
+            return;
+        }
+
+        await runConnectionTest(
+            "backend-lmstudio",
+            {
+                backend: "lmstudio",
+                purpose: "brain",
+                baseUrl: env.GOLEM_LMSTUDIO_BASE_URL || "http://127.0.0.1:1234/v1",
+                model: env.GOLEM_LMSTUDIO_BRAIN_MODEL || "",
+                timeoutMs,
+                apiKey: env.GOLEM_LMSTUDIO_API_KEY || ""
+            },
+            t("settings.engine.connectionTest.success"),
+            t("settings.engine.connectionTest.failed")
+        );
+    };
+
+    const testOllamaEmbeddingConnection = async () => {
+        const parsedTimeout = Number(env.GOLEM_OLLAMA_TIMEOUT_MS);
+        const timeoutMs = Number.isFinite(parsedTimeout) && parsedTimeout > 0 ? parsedTimeout : 60000;
+        await runConnectionTest(
+            "embedding-ollama",
+            {
+                backend: "ollama",
+                purpose: "embedding",
+                baseUrl: env.GOLEM_OLLAMA_BASE_URL || "http://127.0.0.1:11434",
+                embeddingModel: env.GOLEM_OLLAMA_EMBEDDING_MODEL || "",
+                timeoutMs
+            },
+            t("settings.engine.connectionTest.embeddingSuccess"),
+            t("settings.engine.connectionTest.embeddingFailed")
+        );
+    };
+
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -90,6 +221,7 @@ export default function EngineTab({ env, onChangeEnv }: EngineTabProps) {
                             >
                                 <option value="gemini">{t("settings.engine.backend.gemini")}</option>
                                 <option value="ollama">{t("settings.engine.backend.ollama")}</option>
+                                <option value="lmstudio">{t("settings.engine.backend.lmstudio")}</option>
                             </select>
                         </div>
 
@@ -119,6 +251,106 @@ export default function EngineTab({ env, onChangeEnv }: EngineTabProps) {
                                     value={env.GOLEM_OLLAMA_TIMEOUT_MS || ""}
                                     onChange={(val) => onChangeEnv("GOLEM_OLLAMA_TIMEOUT_MS", val)}
                                 />
+                                <div className="pt-1 space-y-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => testBackendConnection("ollama")}
+                                        disabled={activeTestScope !== null}
+                                        className={`px-3 py-2 rounded-lg text-xs font-semibold border transition-colors ${
+                                            activeTestScope !== null
+                                                ? "bg-muted text-muted-foreground border-border cursor-not-allowed"
+                                                : "bg-primary/15 text-primary border-primary/40 hover:bg-primary/25"
+                                        }`}
+                                    >
+                                        {activeTestScope !== null ? t("settings.engine.connectionTest.testing") : t("settings.engine.connectionTest.button")}
+                                    </button>
+                                    {testErrorDetail?.scope === "backend-ollama" && (
+                                        <div className="space-y-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3">
+                                            <p className="text-xs text-red-300 font-semibold">{t("settings.engine.connectionTest.errorDetails")}</p>
+                                            <textarea
+                                                readOnly
+                                                value={testErrorDetail.detail}
+                                                className="w-full h-24 resize-y bg-background/70 border border-border rounded-md px-2 py-1 text-[11px] text-foreground font-mono"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={copyErrorDetail}
+                                                className="px-2 py-1 rounded border border-red-400/40 text-red-200 text-[11px] hover:bg-red-500/20 transition-colors"
+                                            >
+                                                {t("settings.engine.connectionTest.copyError")}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {env.GOLEM_BACKEND === "lmstudio" && (
+                            <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 space-y-4 animate-in zoom-in-95">
+                                <SettingField
+                                    label="LM Studio Base URL"
+                                    keyName="GOLEM_LMSTUDIO_BASE_URL"
+                                    placeholder="http://127.0.0.1:1234/v1"
+                                    desc={t("settings.engine.lmstudio.baseUrl.desc")}
+                                    value={env.GOLEM_LMSTUDIO_BASE_URL || ""}
+                                    onChange={(val) => onChangeEnv("GOLEM_LMSTUDIO_BASE_URL", val)}
+                                />
+                                <SettingField
+                                    label="LM Studio Brain Model"
+                                    keyName="GOLEM_LMSTUDIO_BRAIN_MODEL"
+                                    placeholder="local-model"
+                                    desc={t("settings.engine.lmstudio.brainModel.desc")}
+                                    value={env.GOLEM_LMSTUDIO_BRAIN_MODEL || ""}
+                                    onChange={(val) => onChangeEnv("GOLEM_LMSTUDIO_BRAIN_MODEL", val)}
+                                />
+                                <SettingField
+                                    label="LM Studio Timeout (ms)"
+                                    keyName="GOLEM_LMSTUDIO_TIMEOUT_MS"
+                                    placeholder="60000"
+                                    desc={t("settings.engine.lmstudio.timeout.desc")}
+                                    value={env.GOLEM_LMSTUDIO_TIMEOUT_MS || ""}
+                                    onChange={(val) => onChangeEnv("GOLEM_LMSTUDIO_TIMEOUT_MS", val)}
+                                />
+                                <SettingField
+                                    label="LM Studio API Key (Optional)"
+                                    keyName="GOLEM_LMSTUDIO_API_KEY"
+                                    isSecret
+                                    placeholder="lm-studio-api-key"
+                                    desc={t("settings.engine.lmstudio.apiKey.desc")}
+                                    value={env.GOLEM_LMSTUDIO_API_KEY || ""}
+                                    onChange={(val) => onChangeEnv("GOLEM_LMSTUDIO_API_KEY", val)}
+                                />
+                                <div className="pt-1 space-y-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => testBackendConnection("lmstudio")}
+                                        disabled={activeTestScope !== null}
+                                        className={`px-3 py-2 rounded-lg text-xs font-semibold border transition-colors ${
+                                            activeTestScope !== null
+                                                ? "bg-muted text-muted-foreground border-border cursor-not-allowed"
+                                                : "bg-primary/15 text-primary border-primary/40 hover:bg-primary/25"
+                                        }`}
+                                    >
+                                        {activeTestScope !== null ? t("settings.engine.connectionTest.testing") : t("settings.engine.connectionTest.button")}
+                                    </button>
+                                    {testErrorDetail?.scope === "backend-lmstudio" && (
+                                        <div className="space-y-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3">
+                                            <p className="text-xs text-red-300 font-semibold">{t("settings.engine.connectionTest.errorDetails")}</p>
+                                            <textarea
+                                                readOnly
+                                                value={testErrorDetail.detail}
+                                                className="w-full h-24 resize-y bg-background/70 border border-border rounded-md px-2 py-1 text-[11px] text-foreground font-mono"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={copyErrorDetail}
+                                                className="px-2 py-1 rounded border border-red-400/40 text-red-200 text-[11px] hover:bg-red-500/20 transition-colors"
+                                            >
+                                                {t("settings.engine.connectionTest.copyError")}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>
@@ -225,6 +457,37 @@ export default function EngineTab({ env, onChangeEnv }: EngineTabProps) {
                                                 value={env.GOLEM_OLLAMA_RERANK_MODEL || ""}
                                                 onChange={(val) => onChangeEnv("GOLEM_OLLAMA_RERANK_MODEL", val)}
                                             />
+                                            <div className="pt-1 space-y-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={testOllamaEmbeddingConnection}
+                                                    disabled={activeTestScope !== null}
+                                                    className={`px-3 py-2 rounded-lg text-xs font-semibold border transition-colors ${
+                                                        activeTestScope !== null
+                                                            ? "bg-muted text-muted-foreground border-border cursor-not-allowed"
+                                                            : "bg-cyan-500/15 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/25"
+                                                    }`}
+                                                >
+                                                    {activeTestScope !== null ? t("settings.engine.connectionTest.testing") : t("settings.engine.connectionTest.embeddingButton")}
+                                                </button>
+                                                {testErrorDetail?.scope === "embedding-ollama" && (
+                                                    <div className="space-y-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3">
+                                                        <p className="text-xs text-red-300 font-semibold">{t("settings.engine.connectionTest.errorDetails")}</p>
+                                                        <textarea
+                                                            readOnly
+                                                            value={testErrorDetail.detail}
+                                                            className="w-full h-24 resize-y bg-background/70 border border-border rounded-md px-2 py-1 text-[11px] text-foreground font-mono"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={copyErrorDetail}
+                                                            className="px-2 py-1 rounded border border-red-400/40 text-red-200 text-[11px] hover:bg-red-500/20 transition-colors"
+                                                        >
+                                                            {t("settings.engine.connectionTest.copyError")}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     )}
                                 </div>

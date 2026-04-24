@@ -8,10 +8,12 @@ import {
 } from "lucide-react";
 import { useGolem } from "@/components/GolemContext";
 import { apiGet, apiPostWrite } from "@/lib/api-client";
+import { useToast } from "@/components/ui/toast-provider";
 
 type MemoryMode = "lancedb-pro" | "native";
-type BackendMode = "gemini" | "ollama";
+type BackendMode = "gemini" | "ollama" | "lmstudio";
 type EmbeddingProvider = "local" | "ollama";
+type SetupTestScope = "backend-ollama" | "backend-lmstudio" | "embedding-ollama";
 type SystemConfigResponse = {
     userDataDir?: string;
     golemMemoryMode?: string;
@@ -24,6 +26,10 @@ type SystemConfigResponse = {
     golemOllamaEmbeddingModel?: string;
     golemOllamaRerankModel?: string;
     golemOllamaTimeoutMs?: string | number;
+    golemLmstudioBaseUrl?: string;
+    golemLmstudioBrainModel?: string;
+    golemLmstudioTimeoutMs?: string | number;
+    golemLmstudioApiKey?: string;
     allowRemoteAccess?: boolean | string;
 };
 type SystemStatusResponse = {
@@ -89,6 +95,7 @@ const LOCAL_MODELS = [
 
 export default function SystemSetupPage() {
     const { isSystemConfigured } = useGolem();
+    const toast = useToast();
 
     const [userDataDir, setUserDataDir] = useState("./golem_memory");
     const [memoryMode, setMemoryMode] = useState<MemoryMode>("lancedb-pro");
@@ -101,12 +108,18 @@ export default function SystemSetupPage() {
     const [ollamaEmbeddingModel, setOllamaEmbeddingModel] = useState("nomic-embed-text");
     const [ollamaRerankModel, setOllamaRerankModel] = useState("");
     const [ollamaTimeoutMs, setOllamaTimeoutMs] = useState("60000");
+    const [lmstudioBaseUrl, setLmstudioBaseUrl] = useState("http://127.0.0.1:1234/v1");
+    const [lmstudioBrainModel, setLmstudioBrainModel] = useState("");
+    const [lmstudioTimeoutMs, setLmstudioTimeoutMs] = useState("60000");
+    const [lmstudioApiKey, setLmstudioApiKey] = useState("");
     const [allowRemoteAccess, setAllowRemoteAccess] = useState(false);
     const [remoteAccessPassword, setRemoteAccessPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isIntelMacRuntime, setIsIntelMacRuntime] = useState(false);
+    const [activeTestScope, setActiveTestScope] = useState<SetupTestScope | null>(null);
+    const [testErrorDetail, setTestErrorDetail] = useState<{ scope: SetupTestScope; detail: string } | null>(null);
 
     const activeModelInfo = LOCAL_MODELS.find(m => m.id === localEmbeddingModel);
 
@@ -131,7 +144,9 @@ export default function SystemSetupPage() {
                     && data.hasCustomMemoryMode !== true;
                 setMemoryMode(shouldAutoPreferNative ? "native" : normalizedMode);
 
-                setBackend(data.golemBackend === "ollama" ? "ollama" : "gemini");
+                if (data.golemBackend === "ollama") setBackend("ollama");
+                else if (data.golemBackend === "lmstudio") setBackend("lmstudio");
+                else setBackend("gemini");
                 if (data.golemEmbeddingProvider === "ollama") setEmbeddingProvider("ollama");
                 else setEmbeddingProvider("local");
                 setLocalEmbeddingModel(data.golemLocalEmbeddingModel || "Xenova/bge-small-zh-v1.5");
@@ -140,6 +155,10 @@ export default function SystemSetupPage() {
                 setOllamaEmbeddingModel(data.golemOllamaEmbeddingModel || "nomic-embed-text");
                 setOllamaRerankModel(data.golemOllamaRerankModel || "");
                 setOllamaTimeoutMs(String(data.golemOllamaTimeoutMs || "60000"));
+                setLmstudioBaseUrl(data.golemLmstudioBaseUrl || "http://127.0.0.1:1234/v1");
+                setLmstudioBrainModel(data.golemLmstudioBrainModel || "");
+                setLmstudioTimeoutMs(String(data.golemLmstudioTimeoutMs || "60000"));
+                setLmstudioApiKey(data.golemLmstudioApiKey || "");
                 setAllowRemoteAccess(data.allowRemoteAccess === true || data.allowRemoteAccess === "true");
             } catch (fetchError) {
                 console.error(fetchError);
@@ -150,6 +169,127 @@ export default function SystemSetupPage() {
 
         loadConfig();
     }, []);
+
+    const parseTimeout = (value: string) => {
+        const parsed = Number(value);
+        return Number.isFinite(parsed) && parsed > 0 ? parsed : 60000;
+    };
+
+    const copyErrorDetail = async () => {
+        if (!testErrorDetail?.detail) return;
+        try {
+            if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
+                throw new Error("Clipboard API is not available.");
+            }
+            await navigator.clipboard.writeText(testErrorDetail.detail);
+            toast.success("已複製錯誤詳情");
+        } catch {
+            toast.error("複製失敗");
+        }
+    };
+
+    const runConnectionTest = async (
+        scope: SetupTestScope,
+        payload: Record<string, unknown>,
+        successTitle: string,
+        failedTitle: string
+    ) => {
+        setActiveTestScope(scope);
+        setTestErrorDetail(null);
+
+        try {
+            const data = await apiPostWrite<{
+                success?: boolean;
+                backend?: string;
+                purpose?: string;
+                baseUrl?: string;
+                model?: string;
+                embeddingModel?: string;
+                message?: string;
+                error?: string;
+                latencyMs?: number;
+                preview?: string;
+                dimension?: number;
+            }>("/api/system/backend/test", payload);
+
+            if (!data.success) {
+                throw new Error(data.error || data.message || "連線測試失敗");
+            }
+
+            const metaParts: string[] = [];
+            if (data.backend && data.purpose) metaParts.push(`${data.backend}/${data.purpose}`);
+            if (data.baseUrl) metaParts.push(`url=${data.baseUrl}`);
+            if (data.model) metaParts.push(`model=${data.model}`);
+            if (data.embeddingModel) metaParts.push(`embeddingModel=${data.embeddingModel}`);
+            if (typeof data.latencyMs === "number") metaParts.push(`${data.latencyMs}ms`);
+            if (typeof data.dimension === "number") metaParts.push(`dim=${data.dimension}`);
+            if (data.preview) metaParts.push(data.preview);
+
+            toast.success(successTitle, metaParts.join(" · "));
+        } catch (testError: unknown) {
+            const message = testError instanceof Error ? testError.message : "連線測試失敗";
+            const detailPayload = { ...payload, apiKey: payload.apiKey ? "***" : payload.apiKey };
+            const detail = [
+                `time=${new Date().toISOString()}`,
+                `scope=${scope}`,
+                `message=${message}`,
+                `payload=${JSON.stringify(detailPayload)}`
+            ].join("\n");
+            setTestErrorDetail({ scope, detail });
+            toast.error(failedTitle, message);
+        } finally {
+            setActiveTestScope(null);
+        }
+    };
+
+    const testBackendConnection = async (target: BackendMode) => {
+        if (target === "ollama") {
+            await runConnectionTest(
+                "backend-ollama",
+                {
+                    backend: "ollama",
+                    purpose: "brain",
+                    baseUrl: ollamaBaseUrl.trim(),
+                    model: ollamaBrainModel.trim(),
+                    timeoutMs: parseTimeout(ollamaTimeoutMs)
+                },
+                "Ollama 連線測試成功",
+                "Ollama 連線測試失敗"
+            );
+            return;
+        }
+
+        if (target === "lmstudio") {
+            await runConnectionTest(
+                "backend-lmstudio",
+                {
+                    backend: "lmstudio",
+                    purpose: "brain",
+                    baseUrl: lmstudioBaseUrl.trim(),
+                    model: lmstudioBrainModel.trim(),
+                    timeoutMs: parseTimeout(lmstudioTimeoutMs),
+                    apiKey: lmstudioApiKey.trim()
+                },
+                "LM Studio 連線測試成功",
+                "LM Studio 連線測試失敗"
+            );
+        }
+    };
+
+    const testOllamaEmbeddingConnection = async () => {
+        await runConnectionTest(
+            "embedding-ollama",
+            {
+                backend: "ollama",
+                purpose: "embedding",
+                baseUrl: ollamaBaseUrl.trim(),
+                embeddingModel: ollamaEmbeddingModel.trim(),
+                timeoutMs: parseTimeout(ollamaTimeoutMs)
+            },
+            "Ollama Embedding 測試成功",
+            "Ollama Embedding 測試失敗"
+        );
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -177,6 +317,10 @@ export default function SystemSetupPage() {
                 golemOllamaEmbeddingModel: ollamaEmbeddingModel.trim(),
                 golemOllamaRerankModel: ollamaRerankModel.trim(),
                 golemOllamaTimeoutMs: ollamaTimeoutMs.trim(),
+                golemLmstudioBaseUrl: lmstudioBaseUrl.trim(),
+                golemLmstudioBrainModel: lmstudioBrainModel.trim(),
+                golemLmstudioTimeoutMs: lmstudioTimeoutMs.trim(),
+                golemLmstudioApiKey: lmstudioApiKey.trim(),
                 golemMode: golemMode,
                 allowRemoteAccess: allowRemoteAccess,
                 remoteAccessPassword: remoteAccessPassword
@@ -248,9 +392,10 @@ export default function SystemSetupPage() {
                             >
                                 <option value="gemini">Web Gemini (Playwright Browser)</option>
                                 <option value="ollama">Ollama API (Local / Self-hosted)</option>
+                                <option value="lmstudio">LM Studio API (Local OpenAI-compatible)</option>
                             </select>
                             <p className="text-xs text-muted-foreground/60 mt-1.5">
-                                Ollama 模式不需瀏覽器登入，適合私有化部署；Gemini 模式保留 Browser-in-the-Loop。
+                                Ollama / LM Studio 模式不需瀏覽器登入，適合私有化部署；Gemini 模式保留 Browser-in-the-Loop。
                             </p>
                         </div>
 
@@ -286,6 +431,115 @@ export default function SystemSetupPage() {
                                         className="w-full bg-secondary/40 border border-border rounded-lg px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-all"
                                         placeholder="60000"
                                     />
+                                </div>
+                                <div className="pt-1 space-y-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => testBackendConnection("ollama")}
+                                        disabled={activeTestScope !== null}
+                                        className={`px-3 py-2 rounded-lg text-xs font-semibold border transition-colors ${
+                                            activeTestScope !== null
+                                                ? "bg-muted text-muted-foreground border-border cursor-not-allowed"
+                                                : "bg-primary/15 text-primary border-primary/40 hover:bg-primary/25"
+                                        }`}
+                                    >
+                                        {activeTestScope !== null ? "測試中..." : "測試連線"}
+                                    </button>
+                                    {testErrorDetail?.scope === "backend-ollama" && (
+                                        <div className="space-y-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3">
+                                            <p className="text-xs text-red-300 font-semibold">錯誤詳情（可複製）</p>
+                                            <textarea
+                                                readOnly
+                                                value={testErrorDetail.detail}
+                                                className="w-full h-24 resize-y bg-background/70 border border-border rounded-md px-2 py-1 text-[11px] text-foreground font-mono"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={copyErrorDetail}
+                                                className="px-2 py-1 rounded border border-red-400/40 text-red-200 text-[11px] hover:bg-red-500/20 transition-colors"
+                                            >
+                                                複製錯誤詳情
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {backend === "lmstudio" && (
+                            <div className="mb-5 bg-primary/5 border border-primary/20 rounded-xl p-4 space-y-3">
+                                <div>
+                                    <label className="block text-xs font-medium text-muted-foreground mb-1.5">LM Studio Base URL</label>
+                                    <input
+                                        type="text"
+                                        value={lmstudioBaseUrl}
+                                        onChange={e => setLmstudioBaseUrl(e.target.value)}
+                                        className="w-full bg-secondary/40 border border-border rounded-lg px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-all"
+                                        placeholder="http://127.0.0.1:1234/v1"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-muted-foreground mb-1.5">LM Studio Brain Model</label>
+                                    <input
+                                        type="text"
+                                        value={lmstudioBrainModel}
+                                        onChange={e => setLmstudioBrainModel(e.target.value)}
+                                        className="w-full bg-secondary/40 border border-border rounded-lg px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-all"
+                                        placeholder="local-model"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-muted-foreground mb-1.5">LM Studio Timeout (ms)</label>
+                                    <input
+                                        type="number"
+                                        min={1000}
+                                        value={lmstudioTimeoutMs}
+                                        onChange={e => setLmstudioTimeoutMs(e.target.value)}
+                                        className="w-full bg-secondary/40 border border-border rounded-lg px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-all"
+                                        placeholder="60000"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-muted-foreground mb-1.5">LM Studio API Key (選填)</label>
+                                    <input
+                                        type="password"
+                                        value={lmstudioApiKey}
+                                        onChange={e => setLmstudioApiKey(e.target.value)}
+                                        className="w-full bg-secondary/40 border border-border rounded-lg px-3 py-2 text-foreground font-mono text-xs focus:outline-none focus:border-primary transition-all"
+                                        placeholder="lm-studio-api-key"
+                                        autoComplete="new-password"
+                                    />
+                                </div>
+                                <div className="pt-1 space-y-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => testBackendConnection("lmstudio")}
+                                        disabled={activeTestScope !== null}
+                                        className={`px-3 py-2 rounded-lg text-xs font-semibold border transition-colors ${
+                                            activeTestScope !== null
+                                                ? "bg-muted text-muted-foreground border-border cursor-not-allowed"
+                                                : "bg-primary/15 text-primary border-primary/40 hover:bg-primary/25"
+                                        }`}
+                                    >
+                                        {activeTestScope !== null ? "測試中..." : "測試連線"}
+                                    </button>
+                                    {testErrorDetail?.scope === "backend-lmstudio" && (
+                                        <div className="space-y-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3">
+                                            <p className="text-xs text-red-300 font-semibold">錯誤詳情（可複製）</p>
+                                            <textarea
+                                                readOnly
+                                                value={testErrorDetail.detail}
+                                                className="w-full h-24 resize-y bg-background/70 border border-border rounded-md px-2 py-1 text-[11px] text-foreground font-mono"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={copyErrorDetail}
+                                                className="px-2 py-1 rounded border border-red-400/40 text-red-200 text-[11px] hover:bg-red-500/20 transition-colors"
+                                            >
+                                                複製錯誤詳情
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -422,6 +676,37 @@ export default function SystemSetupPage() {
                                             <p className="text-[10px] text-muted-foreground/70 leading-relaxed">
                                                 若填寫 rerank 模型，查詢結果會在向量召回後再重排；若空白則維持原始 hybrid ranking。
                                             </p>
+                                            <div className="pt-1 space-y-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={testOllamaEmbeddingConnection}
+                                                    disabled={activeTestScope !== null}
+                                                    className={`px-3 py-2 rounded-lg text-xs font-semibold border transition-colors ${
+                                                        activeTestScope !== null
+                                                            ? "bg-muted text-muted-foreground border-border cursor-not-allowed"
+                                                            : "bg-cyan-500/15 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/25"
+                                                    }`}
+                                                >
+                                                    {activeTestScope !== null ? "測試中..." : "測試 Embedding 連線"}
+                                                </button>
+                                                {testErrorDetail?.scope === "embedding-ollama" && (
+                                                    <div className="space-y-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3">
+                                                        <p className="text-xs text-red-300 font-semibold">錯誤詳情（可複製）</p>
+                                                        <textarea
+                                                            readOnly
+                                                            value={testErrorDetail.detail}
+                                                            className="w-full h-24 resize-y bg-background/70 border border-border rounded-md px-2 py-1 text-[11px] text-foreground font-mono"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={copyErrorDetail}
+                                                            className="px-2 py-1 rounded border border-red-400/40 text-red-200 text-[11px] hover:bg-red-500/20 transition-colors"
+                                                        >
+                                                            複製錯誤詳情
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     )}
 

@@ -14,7 +14,11 @@ describe('Config reload for Ollama settings', () => {
         'GOLEM_OLLAMA_BRAIN_MODEL',
         'GOLEM_OLLAMA_EMBEDDING_MODEL',
         'GOLEM_OLLAMA_RERANK_MODEL',
-        'GOLEM_OLLAMA_TIMEOUT_MS'
+        'GOLEM_OLLAMA_TIMEOUT_MS',
+        'GOLEM_LMSTUDIO_BASE_URL',
+        'GOLEM_LMSTUDIO_BRAIN_MODEL',
+        'GOLEM_LMSTUDIO_TIMEOUT_MS',
+        'GOLEM_LMSTUDIO_API_KEY'
     ];
 
     beforeEach(() => {
@@ -51,6 +55,24 @@ describe('Config reload for Ollama settings', () => {
         expect(ConfigManager.CONFIG.OLLAMA_EMBEDDING_MODEL).toBe('nomic-embed-text');
         expect(ConfigManager.CONFIG.OLLAMA_RERANK_MODEL).toBe('bge-reranker-v2-m3');
         expect(ConfigManager.CONFIG.OLLAMA_TIMEOUT_MS).toBe(45000);
+    });
+
+    test('reloadConfig applies LM Studio backend settings', () => {
+        EnvManager.readEnv.mockReturnValue({
+            GOLEM_BACKEND: 'lmstudio',
+            GOLEM_LMSTUDIO_BASE_URL: 'http://127.0.0.1:1234/v1',
+            GOLEM_LMSTUDIO_BRAIN_MODEL: 'qwen2.5-14b-instruct',
+            GOLEM_LMSTUDIO_TIMEOUT_MS: '55000',
+            GOLEM_LMSTUDIO_API_KEY: 'sk-lmstudio-test'
+        });
+
+        ConfigManager.reloadConfig();
+
+        expect(ConfigManager.CONFIG.GOLEM_BACKEND).toBe('lmstudio');
+        expect(ConfigManager.CONFIG.LMSTUDIO_BASE_URL).toBe('http://127.0.0.1:1234/v1');
+        expect(ConfigManager.CONFIG.LMSTUDIO_BRAIN_MODEL).toBe('qwen2.5-14b-instruct');
+        expect(ConfigManager.CONFIG.LMSTUDIO_TIMEOUT_MS).toBe(55000);
+        expect(ConfigManager.CONFIG.LMSTUDIO_API_KEY).toBe('sk-lmstudio-test');
     });
 
     test('reloadConfig normalizes invalid backend and provider', () => {

@@ -68,43 +68,43 @@ jest.mock('../packages/protocol', () => ({
     }
 }));
 
-jest.mock('../src/services/OllamaClient', () => {
+jest.mock('../src/services/LMStudioClient', () => {
     return jest.fn().mockImplementation(() => ({
-        chat: jest.fn().mockResolvedValue('OLLAMA_REPLY')
+        chat: jest.fn().mockResolvedValue('LMSTUDIO_REPLY')
     }));
 });
 
 const ConfigManager = require('../src/config');
 const BrowserLauncher = require('../src/core/BrowserLauncher');
-const OllamaClient = require('../src/services/OllamaClient');
+const LMStudioClient = require('../src/services/LMStudioClient');
 const GolemBrain = require('../src/core/GolemBrain');
 
-describe('GolemBrain ollama backend', () => {
+describe('GolemBrain lmstudio backend', () => {
     const snapshot = {};
 
     beforeEach(() => {
         snapshot.backend = ConfigManager.CONFIG.GOLEM_BACKEND;
-        snapshot.ollamaModel = ConfigManager.CONFIG.OLLAMA_BRAIN_MODEL;
-        ConfigManager.CONFIG.GOLEM_BACKEND = 'ollama';
-        ConfigManager.CONFIG.OLLAMA_BRAIN_MODEL = 'llama3.1:8b';
+        snapshot.lmstudioModel = ConfigManager.CONFIG.LMSTUDIO_BRAIN_MODEL;
+        ConfigManager.CONFIG.GOLEM_BACKEND = 'lmstudio';
+        ConfigManager.CONFIG.LMSTUDIO_BRAIN_MODEL = 'qwen2.5-14b-instruct';
         jest.clearAllMocks();
     });
 
     afterEach(() => {
         ConfigManager.CONFIG.GOLEM_BACKEND = snapshot.backend;
-        ConfigManager.CONFIG.OLLAMA_BRAIN_MODEL = snapshot.ollamaModel;
+        ConfigManager.CONFIG.LMSTUDIO_BRAIN_MODEL = snapshot.lmstudioModel;
     });
 
-    test('sendMessage routes through Ollama without launching Playwright', async () => {
+    test('sendMessage routes through LM Studio without launching Playwright', async () => {
         const brain = new GolemBrain({ golemId: 'test-golem' });
-        const result = await brain.sendMessage('hello ollama');
+        const result = await brain.sendMessage('hello lmstudio');
 
-        expect(result).toEqual({ text: 'OLLAMA_REPLY', attachments: [] });
+        expect(result).toEqual({ text: 'LMSTUDIO_REPLY', attachments: [] });
         expect(BrowserLauncher.launch).not.toHaveBeenCalled();
-        expect(OllamaClient).toHaveBeenCalled();
+        expect(LMStudioClient).toHaveBeenCalled();
 
-        const client = OllamaClient.mock.results[0].value;
+        const client = LMStudioClient.mock.results[0].value;
         const payloads = client.chat.mock.calls.map(call => call[0]);
-        expect(payloads.some(payload => String(payload).includes('hello ollama'))).toBe(true);
+        expect(payloads.some(payload => String(payload).includes('hello lmstudio'))).toBe(true);
     });
 });

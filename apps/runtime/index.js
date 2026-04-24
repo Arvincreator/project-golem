@@ -220,8 +220,24 @@ function trackPromptShortcutUsage(shortcut, source = 'telegram') {
 // ==========================================
 // 🧠 雙子管弦樂團 (Golem Orchestrator)
 // ==========================================
+function refreshInstanceIntegrations(instance) {
+    if (!instance) return;
+    const targetDc = activeDcBot || dcClient;
+
+    if (instance.autonomy && typeof instance.autonomy.setIntegrations === 'function') {
+        instance.autonomy.setIntegrations(activeTgBot, targetDc, instance.convoManager);
+    }
+    if (instance.brain) {
+        instance.brain.tgBot = activeTgBot;
+        instance.brain.dcBot = targetDc;
+    }
+}
+
 function getOrCreateGolem() {
-    if (singleGolemInstance) return singleGolemInstance;
+    if (singleGolemInstance) {
+        refreshInstanceIntegrations(singleGolemInstance);
+        return singleGolemInstance;
+    }
 
     const golemId = 'golem_A';
     console.log(`\n================================`);
@@ -245,11 +261,8 @@ function getOrCreateGolem() {
 
     const actionQueue = new ActionQueue({ golemId });
 
-    autonomy.setIntegrations(activeTgBot, activeDcBot || dcClient, convoManager);
-    brain.tgBot = activeTgBot;
-    brain.dcBot = activeDcBot || dcClient;
-
     singleGolemInstance = { brain, controller, autonomy, convoManager, actionQueue };
+    refreshInstanceIntegrations(singleGolemInstance);
     return singleGolemInstance;
 }
 
@@ -276,6 +289,44 @@ function getOrCreateGolem() {
         if (dcClient) dcClient.login(ConfigManager.CONFIG.DC_TOKEN);
 
         _isCoreInitialized = true;
+    }
+
+    async function prewarmGolemOnBoot() {
+        const prewarmEnabled = String(process.env.GOLEM_PREWARM_ON_BOOT || 'true').toLowerCase() !== 'false';
+        if (!prewarmEnabled) {
+            console.log('⏸️ [Prewarm] GOLEM_PREWARM_ON_BOOT=false，略過啟動預熱。');
+            return;
+        }
+
+        const personaPath = path_sync.resolve(ConfigManager.MEMORY_BASE_DIR, 'persona.json');
+        if (!fs_sync.existsSync(personaPath)) {
+            console.log('⏸️ [Prewarm] 偵測不到 persona.json，略過啟動預熱。');
+            return;
+        }
+
+        const startAt = Date.now();
+        try {
+            await ensureCoreServices();
+            const instance = getOrCreateGolem();
+            refreshInstanceIntegrations(instance);
+
+            if (typeof instance.brain._linkDashboard === 'function') {
+                instance.brain._linkDashboard(instance.autonomy);
+            }
+
+            instance.brain.status = 'warming_up';
+            await instance.brain.init();
+            instance.brain.status = 'running';
+
+            const totalMs = Date.now() - startAt;
+            const metrics = instance.brain.lastInitMetrics || null;
+            console.log(`✅ [Prewarm] 啟動預熱完成 (${totalMs}ms)。`);
+            if (metrics) {
+                console.log(`⏱️ [Prewarm] Init metrics: ${JSON.stringify(metrics)}`);
+            }
+        } catch (e) {
+            console.error(`❌ [Prewarm] 啟動預熱失敗: ${e.message}`);
+        }
     }
     // [H-6, S-5] Clean up redundant requires, handle watch race condition gracefully
     fs_sync.watch(process.cwd(), async (eventType, filename) => {
@@ -311,8 +362,7 @@ function getOrCreateGolem() {
         // [GrammyBridge] Use factory instead of direct TelegramBot constructor
         dashboard.webServer.setGolemFactory(async (golemConfig) => {
             if (singleGolemInstance) {
-                console.log(`⚠️ [Factory] Golem already exists, skipping.`);
-                return singleGolemInstance;
+                console.log(`♻️ [Factory] Golem already exists, reusing and refreshing integrations.`);
             }
             if (golemConfig.tgToken && !activeTgBot) {
                 try {
@@ -422,6 +472,7 @@ function getOrCreateGolem() {
             }
 
             const instance = getOrCreateGolem();
+            refreshInstanceIntegrations(instance);
             await ensureCoreServices();
             if (typeof instance.brain._linkDashboard === 'function') {
                 instance.brain._linkDashboard(instance.autonomy);
@@ -447,6 +498,11 @@ function getOrCreateGolem() {
             return instance;
         });
         console.log('🔗 [System] golemFactory injected into WebServer.');
+
+        // 啟動時預熱：在使用者第一句之前完成 Browser/Memory/Skill 注入初始化
+        prewarmGolemOnBoot().catch((e) => {
+            console.error(`❌ [Prewarm] unexpected error: ${e.message}`);
+        });
     }
 
     async function runTieredCompression() {
@@ -566,11 +622,12 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
     if (ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase() === '/new') {
         await ctx.reply("🔄 收到 /new 指令！正在為您開啟全新的大腦對話神經元...");
         try {
-            const isOllamaBackend = brain.backend === 'ollama';
-            if (brain.page || isOllamaBackend) {
+            const isApiBackend = brain.backend === 'ollama' || brain.backend === 'lmstudio';
+            const apiBackendLabel = brain.backend === 'lmstudio' ? 'LM Studio' : 'Ollama';
+            if (brain.page || isApiBackend) {
                 await brain.init(true);
-                await ctx.reply(isOllamaBackend
-                    ? "✅ Ollama 對話狀態已重置完成！目前大腦記憶脈絡已重新注入。"
+                await ctx.reply(isApiBackend
+                    ? `✅ ${apiBackendLabel} 對話狀態已重置完成！目前大腦記憶脈絡已重新注入。`
                     : "✅ 物理重置完成！已經為您切斷舊有記憶，現在這是一個全新且乾淨的 Golem 實體。");
             } else {
                 await ctx.reply("⚠️ 找不到活躍的網頁視窗，無法執行物理重置。");
@@ -587,11 +644,12 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
             if (brain.memoryDriver && typeof brain.memoryDriver.clearMemory === 'function') {
                 await brain.memoryDriver.clearMemory();
             }
-            const isOllamaBackend = brain.backend === 'ollama';
-            if (brain.page || isOllamaBackend) {
+            const isApiBackend = brain.backend === 'ollama' || brain.backend === 'lmstudio';
+            const apiBackendLabel = brain.backend === 'lmstudio' ? 'LM Studio' : 'Ollama';
+            if (brain.page || isApiBackend) {
                 await brain.init(true);
-                await ctx.reply(isOllamaBackend
-                    ? "✅ 記憶庫 DB 已清空，且 Ollama 大腦脈絡已重新初始化完成。"
+                await ctx.reply(isApiBackend
+                    ? `✅ 記憶庫 DB 已清空，且 ${apiBackendLabel} 大腦脈絡已重新初始化完成。`
                     : "✅ 記憶庫 DB 已徹底清空格式化！網頁也已重置，這是一個 100% 空白、無任何歷史包袱的 Golem 實體。");
             } else {
                 await ctx.reply("⚠️ 找不到活躍的網頁視窗。");

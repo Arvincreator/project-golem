@@ -14,12 +14,21 @@ jest.mock('../src/core/BrowserLauncher', () => ({
 }));
 
 jest.mock('../src/core/PageInteractor', () => {
-    return jest.fn();
+    return jest.fn().mockImplementation(() => ({
+        interact: jest.fn().mockResolvedValue({ text: 'BOOT_OK', attachments: [] })
+    }));
 });
 
 jest.mock('../src/core/NodeRouter', () => ({
     handle: jest.fn().mockResolvedValue(null)
 }));
+
+jest.mock('../src/managers/WikiManager', () => {
+    return jest.fn().mockImplementation(() => ({
+        init: jest.fn(),
+        getInjectionContext: jest.fn(() => '')
+    }));
+});
 
 jest.mock('../src/managers/ChatLogManager', () => {
     return jest.fn().mockImplementation(() => ({
@@ -68,43 +77,64 @@ jest.mock('../packages/protocol', () => ({
     }
 }));
 
-jest.mock('../src/services/OllamaClient', () => {
-    return jest.fn().mockImplementation(() => ({
-        chat: jest.fn().mockResolvedValue('OLLAMA_REPLY')
-    }));
-});
-
 const ConfigManager = require('../src/config');
 const BrowserLauncher = require('../src/core/BrowserLauncher');
-const OllamaClient = require('../src/services/OllamaClient');
+const PageInteractor = require('../src/core/PageInteractor');
 const GolemBrain = require('../src/core/GolemBrain');
 
-describe('GolemBrain ollama backend', () => {
+describe('GolemBrain gemini bootstrap init', () => {
     const snapshot = {};
 
     beforeEach(() => {
         snapshot.backend = ConfigManager.CONFIG.GOLEM_BACKEND;
-        snapshot.ollamaModel = ConfigManager.CONFIG.OLLAMA_BRAIN_MODEL;
-        ConfigManager.CONFIG.GOLEM_BACKEND = 'ollama';
-        ConfigManager.CONFIG.OLLAMA_BRAIN_MODEL = 'llama3.1:8b';
+        ConfigManager.CONFIG.GOLEM_BACKEND = 'gemini';
         jest.clearAllMocks();
     });
 
     afterEach(() => {
         ConfigManager.CONFIG.GOLEM_BACKEND = snapshot.backend;
-        ConfigManager.CONFIG.OLLAMA_BRAIN_MODEL = snapshot.ollamaModel;
     });
 
-    test('sendMessage routes through Ollama without launching Playwright', async () => {
-        const brain = new GolemBrain({ golemId: 'test-golem' });
-        const result = await brain.sendMessage('hello ollama');
+    test('init does not re-enter while injecting system prompt', async () => {
+        const cdpSession = { send: jest.fn().mockResolvedValue() };
+        const page = {
+            goto: jest.fn().mockResolvedValue(),
+            bringToFront: jest.fn().mockResolvedValue(),
+            evaluate: jest.fn().mockResolvedValue(1),
+            context: jest.fn(() => ({
+                newCDPSession: jest.fn().mockResolvedValue(cdpSession)
+            }))
+        };
 
-        expect(result).toEqual({ text: 'OLLAMA_REPLY', attachments: [] });
-        expect(BrowserLauncher.launch).not.toHaveBeenCalled();
-        expect(OllamaClient).toHaveBeenCalled();
+        const context = {
+            pages: jest.fn(() => [page]),
+            newPage: jest.fn().mockResolvedValue(page),
+            browser: jest.fn(() => ({
+                isConnected: () => true
+            }))
+        };
+        BrowserLauncher.launch.mockResolvedValue(context);
 
-        const client = OllamaClient.mock.results[0].value;
-        const payloads = client.chat.mock.calls.map(call => call[0]);
-        expect(payloads.some(payload => String(payload).includes('hello ollama'))).toBe(true);
+        const brain = new GolemBrain({ golemId: 'gemini-test' });
+        const navigateSpy = jest.spyOn(brain, '_navigateToTarget');
+
+        await brain.init();
+
+        expect(brain.isInitialized).toBe(true);
+        expect(navigateSpy).toHaveBeenCalledTimes(1);
+        expect(PageInteractor).toHaveBeenCalledTimes(1);
+        expect(brain.lastInitMetrics).toEqual(expect.objectContaining({
+            backend: 'gemini',
+            status: 'ok',
+            totalMs: expect.any(Number),
+            segments: expect.objectContaining({
+                browser_launch: expect.any(Number),
+                page_prepare: expect.any(Number),
+                navigate_target: expect.any(Number),
+                chatlog_init: expect.any(Number),
+                memory_driver_init: expect.any(Number),
+                system_prompt_injection: expect.any(Number)
+            })
+        }));
     });
 });

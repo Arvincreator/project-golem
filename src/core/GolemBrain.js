@@ -2,9 +2,11 @@
 // 🧠 Golem Brain (Multi-Backend) - Clean Architecture Facade
 // ============================================================
 const path = require('path');
+const fs = require('fs');
 const ConfigManager = require('../config');
 const DOMDoctor = require('../services/DOMDoctor');
 const OllamaClient = require('../services/OllamaClient');
+const LMStudioClient = require('../services/LMStudioClient');
 const { LanceDBProDriver, SystemNativeDriver } = require('../../packages/memory');
 
 const BrowserLauncher = require('./BrowserLauncher');
@@ -22,7 +24,7 @@ const { hookSystem } = require('./HookSystem'); // ⚡ [OpenHarness-inspired] Gl
 
 
 // ============================================================
-// 🧠 Golem Brain (Gemini Web + Ollama) - Dual-Engine + Titan Protocol
+// 🧠 Golem Brain (Gemini Web + Ollama + LM Studio) - Multi-Engine + Titan Protocol
 // ============================================================
 class GolemBrain {
     constructor(options = {}) {
@@ -74,8 +76,9 @@ class GolemBrain {
         // ── Backend Selection ──
         this.backend = ConfigManager.CONFIG.GOLEM_BACKEND || 'gemini';
         this.ollamaClient = this.backend === 'ollama' ? new OllamaClient() : null;
+        this.lmStudioClient = this.backend === 'lmstudio' ? new LMStudioClient() : null;
         this.isInitialized = false;
-        this._ollamaBootInjected = false;
+        this._apiBootInjected = { ollama: false, lmstudio: false };
         
         // ── 實體生命週期追蹤 ──
         this.browserStartTime = null;
@@ -91,6 +94,76 @@ class GolemBrain {
         this.hookSystem = hookSystem;
     }
 
+    _isApiBackend(backend = this.backend) {
+        return backend === 'ollama' || backend === 'lmstudio';
+    }
+
+    _getApiBackendLabel(backend = this.backend) {
+        if (backend === 'ollama') return 'Ollama';
+        if (backend === 'lmstudio') return 'LM Studio';
+        return 'API';
+    }
+
+    _ensureApiClient(backend = this.backend) {
+        if (backend === 'ollama') {
+            if (!this.ollamaClient) this.ollamaClient = new OllamaClient();
+            return this.ollamaClient;
+        }
+        if (backend === 'lmstudio') {
+            if (!this.lmStudioClient) this.lmStudioClient = new LMStudioClient();
+            return this.lmStudioClient;
+        }
+        return null;
+    }
+
+    _getApiBrainModel(backend = this.backend) {
+        if (backend === 'ollama') return ConfigManager.CONFIG.OLLAMA_BRAIN_MODEL;
+        if (backend === 'lmstudio') return ConfigManager.CONFIG.LMSTUDIO_BRAIN_MODEL;
+        return '';
+    }
+
+    _createInitMetrics(forceReload = false) {
+        return {
+            backend: this.backend,
+            forceReload: !!forceReload,
+            startedAt: Date.now(),
+            segments: {}
+        };
+    }
+
+    _markInitSegment(metrics, key, startMs) {
+        if (!metrics || !key) return;
+        metrics.segments[key] = Math.max(0, Date.now() - startMs);
+    }
+
+    _finalizeInitMetrics(metrics, status = 'ok', error = null, extra = {}) {
+        if (!metrics) return null;
+        const payload = {
+            backend: metrics.backend,
+            forceReload: metrics.forceReload,
+            status,
+            totalMs: Math.max(0, Date.now() - metrics.startedAt),
+            segments: metrics.segments,
+            ...extra
+        };
+
+        if (error) {
+            payload.error = error.message || String(error);
+        }
+
+        this.lastInitMetrics = payload;
+
+        if (status === 'ok') {
+            console.log(`⏱️ [InitMetrics][${this.golemId}] ${JSON.stringify(payload)}`);
+        } else if (status === 'skip') {
+            console.log(`⏱️ [InitMetrics][${this.golemId}] skip: ${JSON.stringify(payload)}`);
+        } else {
+            console.warn(`⏱️ [InitMetrics][${this.golemId}] fail: ${JSON.stringify(payload)}`);
+        }
+
+        return payload;
+    }
+
     // ─── Public API (向後相容) ─────────────────────────────
 
     /**
@@ -100,106 +173,180 @@ class GolemBrain {
     async init(forceReload = false) {
         console.log(`🎬 [Brain] 啟動初始化程序 (forceReload: ${forceReload})...`);
         this.backend = ConfigManager.CONFIG.GOLEM_BACKEND || this.backend || 'gemini';
+        const metrics = this._createInitMetrics(forceReload);
 
-        // Ollama backend: 無需啟動瀏覽器
-        if (this.backend === 'ollama') {
-            if (this.isInitialized && !forceReload) {
-                console.log("✅ [Brain] Ollama 實體已就緒，跳過重複初始化。");
+        try {
+            // API backend (Ollama / LM Studio): 無需啟動瀏覽器
+            if (this._isApiBackend()) {
+                const backendLabel = this._getApiBackendLabel();
+                const bootInjected = !!this._apiBootInjected[this.backend];
+                if (this.isInitialized && !forceReload && bootInjected) {
+                    console.log(`✅ [Brain] ${backendLabel} 實體已就緒，跳過重複初始化。`);
+                    this._finalizeInitMetrics(metrics, 'skip', null, { reason: 'already_initialized' });
+                    return;
+                }
+                this._ensureApiClient();
+
+                // 初始化日誌與技能索引
+                {
+                    const stageStart = Date.now();
+                    await this.chatLogManager.init();
+                    this._markInitSegment(metrics, 'chatlog_init', stageStart);
+                }
+
+                {
+                    const stageStart = Date.now();
+                    try {
+                        const personaManager = require('../skills/core/persona');
+                        if (personaManager.exists(this.userDataDir)) {
+                            const personaData = personaManager.get(this.userDataDir);
+                            const personaSkills = personaData.skills || [];
+                            const { resolveEnabledSkills } = require('../skills/skillsConfig');
+                            const enabledSet = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', personaSkills);
+                            await this.skillIndex.sync(Array.from(enabledSet));
+                        } else {
+                            console.log(`⏸️ [Brain][${this.golemId}] 尚未完成設定 (Missing persona.json)，跳過技能索引同步。`);
+                        }
+                    } catch (e) {
+                        console.warn('⚠️ [Brain] 技能索引同步失敗:', e.message);
+                    } finally {
+                        this._markInitSegment(metrics, 'skill_index_sync', stageStart);
+                    }
+                }
+
+                {
+                    const stageStart = Date.now();
+                    await this._initMemoryDriver();
+                    this._markInitSegment(metrics, 'memory_driver_init', stageStart);
+                }
+
+                {
+                    const stageStart = Date.now();
+                    this._linkDashboard();
+                    this._markInitSegment(metrics, 'dashboard_link', stageStart);
+                }
+
+                this.isInitialized = true;
+
+                if (forceReload || !bootInjected) {
+                    const stageStart = Date.now();
+                    this._apiBootInjected[this.backend] = true;
+                    await this._injectSystemPrompt(forceReload);
+                    this._markInitSegment(metrics, 'system_prompt_injection', stageStart);
+                } else {
+                    metrics.segments.system_prompt_injection = 0;
+                }
+
+                this._finalizeInitMetrics(metrics, 'ok');
                 return;
             }
-            if (!this.ollamaClient) this.ollamaClient = new OllamaClient();
 
-            // 初始化日誌與技能索引
-            await this.chatLogManager.init();
-            try {
-                const personaManager = require('../skills/core/persona');
-                if (personaManager.exists(this.userDataDir)) {
-                    const personaData = personaManager.get(this.userDataDir);
-                    const personaSkills = personaData.skills || [];
-                    const { resolveEnabledSkills } = require('../skills/skillsConfig');
-                    const enabledSet = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', personaSkills);
-                    await this.skillIndex.sync(Array.from(enabledSet));
-                } else {
-                    console.log(`⏸️ [Brain][${this.golemId}] 尚未完成設定 (Missing persona.json)，跳過技能索引同步。`);
-                }
-            } catch (e) {
-                console.warn('⚠️ [Brain] 技能索引同步失敗:', e.message);
+            if (this.context && !forceReload && this.isInitialized) {
+                console.log("✅ [Brain] 瀏覽器實體已存在且無須強制重新載入，跳過啟動。");
+                this._finalizeInitMetrics(metrics, 'skip', null, { reason: 'already_initialized' });
+                return;
             }
 
-            await this._initMemoryDriver();
-            this._linkDashboard();
+            let isNewSession = false;
+
+            // 1. 啟動 / 連線瀏覽器 (Playwright 回傳 Context)
+            if (!this.context) {
+                const stageStart = Date.now();
+                console.log(`📂 [System] Browser User Data Dir: ${this.userDataDir} (Golem: ${this.golemId})`);
+
+                this.context = await BrowserLauncher.launch({
+                    userDataDir: this.userDataDir,
+                    headless: process.env.PLAYWRIGHT_HEADLESS,
+                });
+                this.browserStartTime = Date.now();
+                this._markInitSegment(metrics, 'browser_launch', stageStart);
+            } else {
+                metrics.segments.browser_launch = 0;
+            }
+
+            // 2. 取得或建立頁面
+            if (!this.page) {
+                const stageStart = Date.now();
+                console.log(`🚀 [System] 正在建立瀏覽子頁面...`);
+                const pages = this.context.pages();
+                this.page = pages.length > 0 ? pages[0] : await this.context.newPage();
+                isNewSession = true;
+                this._markInitSegment(metrics, 'page_prepare', stageStart);
+            } else {
+                metrics.segments.page_prepare = 0;
+            }
+
+            {
+                const stageStart = Date.now();
+                const targetBackend = this.backend === 'perplexity' ? 'perplexity' : 'gemini';
+                await this._navigateToTarget(targetBackend);
+                console.log(`🚀 [System] ${targetBackend === 'perplexity' ? 'Perplexity' : 'Gemini'} 頁面載入完成 (Golem: ${this.golemId})`);
+                this._markInitSegment(metrics, 'navigate_target', stageStart);
+            }
+
+            // 2.5 初始化日誌管理員 (建立目錄)
+            {
+                const stageStart = Date.now();
+                await this.chatLogManager.init();
+                this._markInitSegment(metrics, 'chatlog_init', stageStart);
+            }
+
+            // 2.6 同步技能索引到 SQLite (僅在完成建立/設定後才啟動)
+            {
+                const stageStart = Date.now();
+                try {
+                    const personaManager = require('../skills/core/persona');
+                    if (personaManager.exists(this.userDataDir)) {
+                        // 獲取目前啟用的技能清單
+                        const personaData = personaManager.get(this.userDataDir);
+                        const personaSkills = personaData.skills || [];
+                        const { resolveEnabledSkills } = require('../skills/skillsConfig');
+
+                        const enabledSet = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', personaSkills);
+                        await this.skillIndex.sync(Array.from(enabledSet));
+                    } else {
+                        console.log(`⏸️ [Brain][${this.golemId}] 尚未完成設定 (Missing persona.json)，跳過技能索引同步。`);
+                    }
+                } catch (e) {
+                    console.warn('⚠️ [Brain] 技能索引同步失敗:', e.message);
+                } finally {
+                    this._markInitSegment(metrics, 'skill_index_sync', stageStart);
+                }
+            }
+
+            // 3. 初始化記憶引擎 (含降級策略)
+            {
+                const stageStart = Date.now();
+                await this._initMemoryDriver();
+                this._markInitSegment(metrics, 'memory_driver_init', stageStart);
+            }
+
+            // 4. Dashboard 整合 (可選)
+            {
+                const stageStart = Date.now();
+                this._linkDashboard();
+                this._markInitSegment(metrics, 'dashboard_link', stageStart);
+            }
+
+            // 5. 標記初始化完成後再進行 Boot 注入，避免 sendMessage() 在注入期間重入 init()
             this.isInitialized = true;
 
-            if (forceReload || !this._ollamaBootInjected) {
-                this._ollamaBootInjected = true;
+            // 6. 新會話: 注入系統 Prompt
+            if (forceReload || isNewSession) {
+                const stageStart = Date.now();
                 await this._injectSystemPrompt(forceReload);
-            }
-            return;
-        }
-
-        if (this.context && !forceReload && this.isInitialized) {
-            console.log("✅ [Brain] 瀏覽器實體已存在且無須強制重新載入，跳過啟動。");
-            return;
-        }
-
-        let isNewSession = false;
-
-        // 1. 啟動 / 連線瀏覽器 (Playwright 回傳 Context)
-        if (!this.context) {
-            console.log(`📂 [System] Browser User Data Dir: ${this.userDataDir} (Golem: ${this.golemId})`);
-
-            this.context = await BrowserLauncher.launch({
-                userDataDir: this.userDataDir,
-                headless: process.env.PLAYWRIGHT_HEADLESS,
-            });
-            this.browserStartTime = Date.now();
-        }
-
-        // 2. 取得或建立頁面
-        if (!this.page) {
-            console.log(`🚀 [System] 正在建立瀏覽子頁面...`);
-            const pages = this.context.pages();
-            this.page = pages.length > 0 ? pages[0] : await this.context.newPage();
-            isNewSession = true;
-        }
-
-        const targetBackend = this.backend === 'perplexity' ? 'perplexity' : 'gemini';
-        await this._navigateToTarget(targetBackend);
-        console.log(`🚀 [System] ${targetBackend === 'perplexity' ? 'Perplexity' : 'Gemini'} 頁面載入完成 (Golem: ${this.golemId})`);
-        // isNewSession is already set above if a new page was created.
-
-        // 2.5 初始化日誌管理員 (建立目錄)
-        await this.chatLogManager.init();
-
-        // 2.6 同步技能索引到 SQLite (僅在完成建立/設定後才啟動)
-        try {
-            const personaManager = require('../skills/core/persona');
-            if (personaManager.exists(this.userDataDir)) {
-                // 獲取目前啟用的技能清單
-                const personaData = personaManager.get(this.userDataDir);
-                const personaSkills = personaData.skills || [];
-                const { resolveEnabledSkills } = require('../skills/skillsConfig');
-
-                const enabledSet = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', personaSkills);
-                await this.skillIndex.sync(Array.from(enabledSet));
+                this._markInitSegment(metrics, 'system_prompt_injection', stageStart);
             } else {
-                console.log(`⏸️ [Brain][${this.golemId}] 尚未完成設定 (Missing persona.json)，跳過技能索引同步。`);
+                metrics.segments.system_prompt_injection = 0;
             }
+
+            this._finalizeInitMetrics(metrics, 'ok');
         } catch (e) {
-            console.warn('⚠️ [Brain] 技能索引同步失敗:', e.message);
+            // 注入失敗時回復狀態，讓後續流程可安全重試 init
+            this.isInitialized = false;
+            this._finalizeInitMetrics(metrics, 'error', e);
+            throw e;
         }
-
-        // 3. 初始化記憶引擎 (含降級策略)
-        await this._initMemoryDriver();
-
-        // 4. Dashboard 整合 (可選)
-        this._linkDashboard();
-
-        // 5. 新會話: 注入系統 Prompt
-        if (forceReload || isNewSession) {
-            await this._injectSystemPrompt(forceReload);
-        }
-        this.isInitialized = true;
     }
 
     /**
@@ -219,8 +366,8 @@ class GolemBrain {
 
     // ✨ [新增] 動態視覺腳本：針對新版 UI 切換模型 (支援中英文介面與防呆)
     async switchModel(targetMode) {
-        if (this.backend === 'ollama') {
-            return '⚠️ 目前使用 Ollama 後端，/model 視覺切換僅適用於 Gemini Web。';
+        if (this._isApiBackend()) {
+            return `⚠️ 目前使用 ${this._getApiBackendLabel()} 後端，/model 視覺切換僅適用於 Gemini Web。`;
         }
         if (!this.page) throw new Error("大腦尚未啟動。");
         try {
@@ -342,8 +489,11 @@ class GolemBrain {
             }
         }
 
-        if (this.backend === 'ollama') {
+        if (this._isApiBackend()) {
             if (!this.isInitialized) await this.init();
+            if (this.backend === 'lmstudio') {
+                return this._sendMessageViaLMStudio(text, isSystem, options);
+            }
             return this._sendMessageViaOllama(text, isSystem, options);
         }
 
@@ -424,7 +574,7 @@ class GolemBrain {
     }
 
     async _sendMessageViaOllama(text, isSystem = false, options = {}) {
-        if (!this.ollamaClient) this.ollamaClient = new OllamaClient();
+        const client = this._ensureApiClient('ollama');
         const attachment = options.attachment || null;
         if (attachment) {
             console.warn('⚠️ [Brain] Ollama backend currently ignores browser attachments.');
@@ -434,8 +584,30 @@ class GolemBrain {
         const payload = ProtocolFormatter.buildEnvelope(text, reqId, options);
         console.log(`📡 [Brain][Ollama] 發送訊號: ${reqId}`);
 
-        const responseText = await this.ollamaClient.chat(payload, {
+        const responseText = await client.chat(payload, {
             model: ConfigManager.CONFIG.OLLAMA_BRAIN_MODEL,
+            system: isSystem ? '你正在接收系統層訊息，請嚴格遵守。' : undefined
+        });
+
+        return {
+            text: responseText,
+            attachments: []
+        };
+    }
+
+    async _sendMessageViaLMStudio(text, isSystem = false, options = {}) {
+        const client = this._ensureApiClient('lmstudio');
+        const attachment = options.attachment || null;
+        if (attachment) {
+            console.warn('⚠️ [Brain] LM Studio backend currently ignores browser attachments.');
+        }
+
+        const reqId = ProtocolFormatter.generateReqId();
+        const payload = ProtocolFormatter.buildEnvelope(text, reqId, options);
+        console.log(`📡 [Brain][LMStudio] 發送訊號: ${reqId}`);
+
+        const responseText = await client.chat(payload, {
+            model: ConfigManager.CONFIG.LMSTUDIO_BRAIN_MODEL,
             system: isSystem ? '你正在接收系統層訊息，請嚴格遵守。' : undefined
         });
 
@@ -525,8 +697,8 @@ class GolemBrain {
         console.log(`🔄 [Brain][${this.golemId}] 正在執行設定熱重載 (Config Reload)...`);
         ConfigManager.reloadConfig();
         this.backend = ConfigManager.CONFIG.GOLEM_BACKEND || this.backend || 'gemini';
-        if (this.backend === 'ollama' && !this.ollamaClient) {
-            this.ollamaClient = new OllamaClient();
+        if (this._isApiBackend()) {
+            this._ensureApiClient();
         }
 
         // 2. 技能同步：依據最新設定同步 SQLite 索引
@@ -548,9 +720,9 @@ class GolemBrain {
         ProtocolFormatter._lastScanTime = 0;
         console.log(`🔄 [Brain][${this.golemId}] 協議快取已清除，開始重新開啟對話視窗並注入...`);
 
-        if (this.backend === 'ollama') {
+        if (this._isApiBackend()) {
             await this._injectSystemPrompt(true);
-            console.log(`✅ [Brain][${this.golemId}] Ollama 技能注入流程完成。`);
+            console.log(`✅ [Brain][${this.golemId}] ${this._getApiBackendLabel()} 技能注入流程完成。`);
             return;
         }
 
@@ -748,7 +920,7 @@ class GolemBrain {
      * 🛡️ 瀏覽器健康檢查與自癒機制
      */
     async _ensureBrowserHealth(forceRestart = false) {
-        if (this.backend === 'ollama') return;
+        if (this._isApiBackend()) return;
         let isHealthy = !forceRestart;
         if (!forceRestart) {
             try {
@@ -817,11 +989,11 @@ class GolemBrain {
     async _wikiChat(prompt) {
         this.backend = ConfigManager.CONFIG.GOLEM_BACKEND || this.backend || 'gemini';
 
-        // Ollama 後端：直接呼叫 ollamaClient，完全不涉及頁面
-        if (this.backend === 'ollama') {
-            if (!this.ollamaClient) this.ollamaClient = new OllamaClient();
-            const text = await this.ollamaClient.chat(prompt, {
-                model: ConfigManager.CONFIG.OLLAMA_BRAIN_MODEL,
+        // API 後端：直接呼叫本地客戶端，完全不涉及頁面
+        if (this._isApiBackend()) {
+            const client = this._ensureApiClient();
+            const text = await client.chat(prompt, {
+                model: this._getApiBrainModel(),
             });
             return text || '';
         }

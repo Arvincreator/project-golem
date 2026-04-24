@@ -5,6 +5,8 @@ const os = require('os');
 const { execSync } = require('child_process');
 const { getLocalIp } = require('../../src/utils/HttpUtils');
 const { resolveEnabledSkills } = require('../../src/skills/skillsConfig');
+const OllamaClient = require('../../src/services/OllamaClient');
+const LMStudioClient = require('../../src/services/LMStudioClient');
 const { buildOperationGuard, auditSecurityEvent } = require('../server/security');
 
 function normalizeMemoryMode(modeRaw) {
@@ -24,7 +26,7 @@ function normalizeMemoryMode(modeRaw) {
 
 function normalizeBackend(backendRaw) {
     const backend = String(backendRaw || '').trim().toLowerCase();
-    if (backend === 'gemini' || backend === 'ollama' || backend === 'perplexity') {
+    if (backend === 'gemini' || backend === 'ollama' || backend === 'lmstudio' || backend === 'perplexity') {
         return backend;
     }
     return 'gemini';
@@ -36,6 +38,11 @@ function normalizeEmbeddingProvider(providerRaw) {
         return provider;
     }
     return 'local';
+}
+
+function parsePositiveInt(value, fallback) {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
 module.exports = function registerSystemRoutes(server) {
@@ -151,6 +158,10 @@ module.exports = function registerSystemRoutes(server) {
                 golemOllamaEmbeddingModel: envVars.GOLEM_OLLAMA_EMBEDDING_MODEL || envVars.OLLAMA_EMBEDDING_MODEL || 'nomic-embed-text',
                 golemOllamaRerankModel: envVars.GOLEM_OLLAMA_RERANK_MODEL || envVars.OLLAMA_RERANK_MODEL || '',
                 golemOllamaTimeoutMs: envVars.GOLEM_OLLAMA_TIMEOUT_MS || envVars.OLLAMA_TIMEOUT_MS || '60000',
+                golemLmstudioBaseUrl: envVars.GOLEM_LMSTUDIO_BASE_URL || envVars.LMSTUDIO_BASE_URL || 'http://127.0.0.1:1234/v1',
+                golemLmstudioBrainModel: envVars.GOLEM_LMSTUDIO_BRAIN_MODEL || envVars.LMSTUDIO_BRAIN_MODEL || '',
+                golemLmstudioTimeoutMs: envVars.GOLEM_LMSTUDIO_TIMEOUT_MS || envVars.LMSTUDIO_TIMEOUT_MS || '60000',
+                golemLmstudioApiKey: envVars.GOLEM_LMSTUDIO_API_KEY || envVars.LMSTUDIO_API_KEY || '',
                 golemMode: 'SINGLE',
                 allowRemoteAccess: server.allowRemote,
                 hasRemotePassword: !!(envVars.REMOTE_ACCESS_PASSWORD && envVars.REMOTE_ACCESS_PASSWORD.trim() !== '')
@@ -175,6 +186,10 @@ module.exports = function registerSystemRoutes(server) {
                 golemOllamaEmbeddingModel,
                 golemOllamaRerankModel,
                 golemOllamaTimeoutMs,
+                golemLmstudioBaseUrl,
+                golemLmstudioBrainModel,
+                golemLmstudioTimeoutMs,
+                golemLmstudioApiKey,
                 allowRemoteAccess,
                 remoteAccessPassword
             } = req.body;
@@ -194,6 +209,10 @@ module.exports = function registerSystemRoutes(server) {
             if (golemOllamaEmbeddingModel !== undefined) updates.GOLEM_OLLAMA_EMBEDDING_MODEL = String(golemOllamaEmbeddingModel).trim();
             if (golemOllamaRerankModel !== undefined) updates.GOLEM_OLLAMA_RERANK_MODEL = String(golemOllamaRerankModel).trim();
             if (golemOllamaTimeoutMs !== undefined) updates.GOLEM_OLLAMA_TIMEOUT_MS = String(golemOllamaTimeoutMs).trim();
+            if (golemLmstudioBaseUrl !== undefined) updates.GOLEM_LMSTUDIO_BASE_URL = String(golemLmstudioBaseUrl).trim();
+            if (golemLmstudioBrainModel !== undefined) updates.GOLEM_LMSTUDIO_BRAIN_MODEL = String(golemLmstudioBrainModel).trim();
+            if (golemLmstudioTimeoutMs !== undefined) updates.GOLEM_LMSTUDIO_TIMEOUT_MS = String(golemLmstudioTimeoutMs).trim();
+            if (golemLmstudioApiKey !== undefined) updates.GOLEM_LMSTUDIO_API_KEY = String(golemLmstudioApiKey).trim();
             if (allowRemoteAccess !== undefined) updates.ALLOW_REMOTE_ACCESS = String(allowRemoteAccess);
             if (remoteAccessPassword !== undefined) updates.REMOTE_ACCESS_PASSWORD = String(remoteAccessPassword).trim();
             updates.GOLEM_MODE = 'SINGLE';
@@ -222,6 +241,139 @@ module.exports = function registerSystemRoutes(server) {
         } catch (e) {
             console.error('[WebServer] Failed to update system config:', e);
             return res.status(500).json({ error: e.message });
+        }
+    });
+
+    router.post('/api/system/backend/test', requireSystemConfigUpdate, async (req, res) => {
+        try {
+            const EnvManager = require('../../src/utils/EnvManager');
+            const envVars = EnvManager.readEnv();
+            const backend = normalizeBackend(req.body?.backend || envVars.GOLEM_BACKEND);
+            const purpose = String(req.body?.purpose || 'brain').trim().toLowerCase() === 'embedding'
+                ? 'embedding'
+                : 'brain';
+            const startedAt = Date.now();
+
+            if (backend === 'ollama') {
+                const baseUrl = String(
+                    req.body?.baseUrl
+                    || envVars.GOLEM_OLLAMA_BASE_URL
+                    || envVars.OLLAMA_BASE_URL
+                    || 'http://127.0.0.1:11434'
+                ).trim();
+                const timeoutMs = parsePositiveInt(
+                    req.body?.timeoutMs || envVars.GOLEM_OLLAMA_TIMEOUT_MS || envVars.OLLAMA_TIMEOUT_MS,
+                    60000
+                );
+                const client = new OllamaClient({ baseUrl, timeoutMs });
+
+                if (purpose === 'embedding') {
+                    const embeddingModel = String(
+                        req.body?.embeddingModel
+                        || req.body?.model
+                        || envVars.GOLEM_OLLAMA_EMBEDDING_MODEL
+                        || envVars.OLLAMA_EMBEDDING_MODEL
+                        || ''
+                    ).trim();
+
+                    if (!embeddingModel) {
+                        return res.status(400).json({ success: false, error: 'Ollama embedding model is required for embedding test.' });
+                    }
+
+                    const vector = await client.embed('ping', { model: embeddingModel });
+                    const dimension = Array.isArray(vector) ? vector.length : 0;
+                    return res.json({
+                        success: true,
+                        backend: 'ollama',
+                        purpose: 'embedding',
+                        baseUrl,
+                        embeddingModel,
+                        latencyMs: Math.max(0, Date.now() - startedAt),
+                        message: 'Ollama embedding connection test passed.',
+                        dimension
+                    });
+                }
+
+                const model = String(
+                    req.body?.model
+                    || envVars.GOLEM_OLLAMA_BRAIN_MODEL
+                    || envVars.OLLAMA_BRAIN_MODEL
+                    || ''
+                ).trim();
+
+                if (!model) {
+                    return res.status(400).json({ success: false, error: 'Ollama model is required for connection test.' });
+                }
+
+                const reply = await client.chat('Reply with exactly: OK', { model });
+                return res.json({
+                    success: true,
+                    backend: 'ollama',
+                    purpose: 'brain',
+                    baseUrl,
+                    model,
+                    latencyMs: Math.max(0, Date.now() - startedAt),
+                    message: 'Ollama connection test passed.',
+                    preview: String(reply || '').slice(0, 120)
+                });
+            }
+
+            if (backend === 'lmstudio') {
+                if (purpose === 'embedding') {
+                    return res.status(400).json({
+                        success: false,
+                        error: 'LM Studio embedding test is not supported in this route. Please use Ollama embedding provider for embedding tests.'
+                    });
+                }
+
+                const baseUrl = String(
+                    req.body?.baseUrl
+                    || envVars.GOLEM_LMSTUDIO_BASE_URL
+                    || envVars.LMSTUDIO_BASE_URL
+                    || 'http://127.0.0.1:1234/v1'
+                ).trim();
+                const model = String(
+                    req.body?.model
+                    || envVars.GOLEM_LMSTUDIO_BRAIN_MODEL
+                    || envVars.LMSTUDIO_BRAIN_MODEL
+                    || ''
+                ).trim();
+                const timeoutMs = parsePositiveInt(
+                    req.body?.timeoutMs || envVars.GOLEM_LMSTUDIO_TIMEOUT_MS || envVars.LMSTUDIO_TIMEOUT_MS,
+                    60000
+                );
+                const apiKey = String(
+                    req.body?.apiKey
+                    || envVars.GOLEM_LMSTUDIO_API_KEY
+                    || envVars.LMSTUDIO_API_KEY
+                    || ''
+                ).trim();
+
+                if (!model) {
+                    return res.status(400).json({ success: false, error: 'LM Studio model is required for connection test.' });
+                }
+
+                const client = new LMStudioClient({ baseUrl, timeoutMs, apiKey });
+                const reply = await client.chat('Reply with exactly: OK', { model });
+                return res.json({
+                    success: true,
+                    backend: 'lmstudio',
+                    purpose: 'brain',
+                    baseUrl,
+                    model,
+                    latencyMs: Math.max(0, Date.now() - startedAt),
+                    message: 'LM Studio connection test passed.',
+                    preview: String(reply || '').slice(0, 120)
+                });
+            }
+
+            return res.status(400).json({
+                success: false,
+                error: 'Connection test currently supports only ollama and lmstudio backends.'
+            });
+        } catch (e) {
+            console.error('[WebServer] Backend connection test failed:', e);
+            return res.status(500).json({ success: false, error: e.message });
         }
     });
 
