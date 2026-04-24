@@ -56,7 +56,12 @@ class TaskController {
                 return;
             }
             const task = action.task || '討論專案';
-            const options = { maxRounds: action.rounds || 3 };
+            const options = {
+                maxRounds: action.rounds || 3,
+                toolset: action.toolset || 'assistant',
+                agentToolsets: action.agentToolsets || action.agent_toolsets || {},
+                workerTimeoutMs: action.workerTimeoutMs || action.worker_timeout_ms,
+            };
             await this.multiAgent.startConversation(ctx, task, agentConfigs, options);
         } catch (e) {
             console.error('[TaskController] MultiAgent 執行失敗:', e);

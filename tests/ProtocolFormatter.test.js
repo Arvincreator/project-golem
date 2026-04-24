@@ -152,4 +152,29 @@ describe('ProtocolFormatter', () => {
         expect(result.systemPrompt).toContain('TOOLSET-DISABLED SERVICES');
         expect(result.systemPrompt).not.toContain('SKILL: CODE-WIZARD');
     });
+
+    test('buildSystemPrompt uses golemContext activeTools override', async () => {
+        const fs = require('fs');
+        const personaManager = require('../src/skills/core/persona');
+        const SkillIndexManager = require('../src/managers/SkillIndexManager');
+        const { toolsetManager } = require('../src/managers/ToolsetManager');
+        const { resolveEnabledSkills } = require('../src/skills/skillsConfig');
+
+        fs.promises.readdir.mockResolvedValue(['actor.md', 'code-wizard.md']);
+        personaManager.get = jest.fn().mockReturnValue({ skills: ['actor', 'code-wizard'] });
+        resolveEnabledSkills.mockReturnValue(new Set(['actor', 'code-wizard']));
+        toolsetManager.getActiveTools.mockReturnValue(['code-wizard']);
+
+        const result = await ProtocolFormatter.buildSystemPrompt(true, {
+            userDataDir: '/tmp/toolset-override',
+            activeScene: 'research',
+            activeTools: ['actor']
+        });
+        const instance = SkillIndexManager.mock.results[SkillIndexManager.mock.results.length - 1].value;
+
+        expect(instance.getEnabledSkills).toHaveBeenCalledWith(['actor']);
+        expect(result.systemPrompt).toContain('SKILL: ACTOR');
+        expect(result.systemPrompt).toContain('Scene: research');
+        expect(result.systemPrompt).not.toContain('SKILL: CODE-WIZARD');
+    });
 });

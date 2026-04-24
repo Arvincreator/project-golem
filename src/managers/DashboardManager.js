@@ -6,8 +6,12 @@ class DashboardManager {
         this.state = {
             queueCount: 0,
             lastSchedule: "無排程",
-            isDetached: false
+            isDetached: false,
+            agentWorkersActive: 0,
+            agentWorkerTimeouts: 0,
+            lastAgentWorkerEvent: "無事件"
         };
+        this._agentWorkerRegistry = new Set();
         // 4. 資料初始化
         this.metrics = {
             title: 'Memory (MB)',
@@ -51,6 +55,7 @@ class DashboardManager {
         } else if (cleanMsg.includes('[MultiAgent]') || cleanMsg.includes('[InteractiveMultiAgent]')) {
             // v9.1 新增：捕捉 MultiAgent 會議紀錄
             type = 'agent';
+            this._handleAgentWorkerLifecycle(cleanMsg);
         } else if (cleanMsg.includes('[Queue]') || cleanMsg.includes('隊列')) {
             // 處理隊列流量監控
             type = 'queue';
@@ -61,6 +66,42 @@ class DashboardManager {
         }
 
         return { type, msg, cleanMsg, raw: msg };
+    }
+
+    _handleAgentWorkerLifecycle(cleanMsg) {
+        const match = cleanMsg.match(/\[InteractiveMultiAgent\]\[WorkerLifecycle\]\s+(.+)$/);
+        if (!match) return;
+
+        const kvRaw = match[1].trim().split(/\s+/);
+        const kv = {};
+        kvRaw.forEach(part => {
+            const idx = part.indexOf('=');
+            if (idx <= 0) return;
+            const key = part.slice(0, idx);
+            const value = part.slice(idx + 1);
+            kv[key] = value;
+        });
+
+        const event = String(kv.event || '').toLowerCase();
+        const agentKey = String(kv.agentKey || kv.agent || '').toLowerCase();
+
+        if (!event) return;
+
+        if (['spawned', 'recreated', 'recovered', 'on_demand'].includes(event) && agentKey) {
+            this._agentWorkerRegistry.add(agentKey);
+        }
+
+        if (['disposed', 'idle_timeout', 'timeout', 'fallback_main', 'spawn_failed', 'timeout_after_recovery'].includes(event) && agentKey) {
+            this._agentWorkerRegistry.delete(agentKey);
+        }
+
+        if (['timeout', 'timeout_after_recovery', 'idle_timeout'].includes(event)) {
+            this.state.agentWorkerTimeouts += 1;
+        }
+
+        this.state.agentWorkersActive = this._agentWorkerRegistry.size;
+        const at = new Date().toLocaleTimeString();
+        this.state.lastAgentWorkerEvent = `${event}${agentKey ? `(${agentKey})` : ''} @ ${at}`;
     }
 
     updateMetrics(value) {
@@ -82,6 +123,8 @@ class DashboardManager {
 - **狀態**: 🟢 Online
 - **隊列**: ${this.state.queueCount}
 - **排程**: ${this.state.lastSchedule}
+- **Agent Workers**: ${this.state.agentWorkersActive} active / ${this.state.agentWorkerTimeouts} timeout
+- **Agent Worker Last**: ${this.state.lastAgentWorkerEvent}
 `;
     }
 }

@@ -81,7 +81,10 @@ class DashboardPlugin {
             this.webServer.broadcastLog({ time, msg: cleanMsg, type, raw, attachment });
             this.webServer.broadcastState({
                 queueCount: this.manager.state.queueCount,
-                lastSchedule: this.manager.state.lastSchedule
+                lastSchedule: this.manager.state.lastSchedule,
+                agentWorkersActive: this.manager.state.agentWorkersActive,
+                agentWorkerTimeouts: this.manager.state.agentWorkerTimeouts,
+                lastAgentWorkerEvent: this.manager.state.lastAgentWorkerEvent
             });
         }
     }

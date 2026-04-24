@@ -8,6 +8,9 @@ const DEFAULT_METRICS: DashboardMetrics = {
     uptime: "0h 0m",
     queueCount: 0,
     lastSchedule: "無排程",
+    agentWorkersActive: 0,
+    agentWorkerTimeouts: 0,
+    lastAgentWorkerEvent: "無事件",
     memUsage: 0,
 };
 
@@ -35,13 +38,19 @@ function mergeMetrics(prev: DashboardMetrics, payload: unknown): DashboardMetric
 
     const uptime = parseString(payload.uptime);
     const lastSchedule = parseString(payload.lastSchedule);
+    const lastAgentWorkerEvent = parseString(payload.lastAgentWorkerEvent);
     const queueCount = parseNumber(payload.queueCount);
+    const agentWorkersActive = parseNumber(payload.agentWorkersActive);
+    const agentWorkerTimeouts = parseNumber(payload.agentWorkerTimeouts);
     const memUsage = parseNumber(payload.memUsage);
 
     return {
         uptime: uptime ?? prev.uptime,
         lastSchedule: lastSchedule ?? prev.lastSchedule,
+        lastAgentWorkerEvent: lastAgentWorkerEvent ?? prev.lastAgentWorkerEvent,
         queueCount: queueCount ?? prev.queueCount,
+        agentWorkersActive: agentWorkersActive ?? prev.agentWorkersActive,
+        agentWorkerTimeouts: agentWorkerTimeouts ?? prev.agentWorkerTimeouts,
         memUsage: memUsage ?? prev.memUsage,
     };
 }

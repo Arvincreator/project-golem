@@ -123,8 +123,18 @@ ${text}`;
     static async buildSystemPrompt(forceRefresh = false, golemContext = {}) {
         const now = Date.now();
         const maxResponseWords = getMaxResponseWords();
-        // 如果有 specific user data dir，我們可能不想使用全域 cache，或是將 cache key 改為含 userDataDir
-        const cacheKey = golemContext.userDataDir || 'global';
+        const overrideActiveTools = Array.isArray(golemContext.activeTools)
+            ? [...new Set(golemContext.activeTools
+                .map(s => String(s || '').trim().toLowerCase())
+                .filter(Boolean))]
+            : null;
+        const activeScene = String(golemContext.activeScene || toolsetManager.getActiveScene() || 'assistant');
+        const toolsetKey = overrideActiveTools
+            ? `tools:${overrideActiveTools.slice().sort().join(',')}`
+            : `scene:${activeScene}`;
+
+        // Cache key 需包含 toolset 維度，避免不同場景共用到錯誤 prompt
+        const cacheKey = `${golemContext.userDataDir || 'global'}::${toolsetKey}`;
 
         if (!ProtocolFormatter._promptCache) {
             ProtocolFormatter._promptCache = {};
@@ -163,7 +173,7 @@ ${text}`;
                 }
 
                 const enabledSkills = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', personaSkills);
-                const activeTools = new Set(toolsetManager.getActiveTools());
+                const activeTools = new Set(overrideActiveTools || toolsetManager.getActiveTools());
                 const mdSkillIds = mdFiles.map(file => file.replace('.md', '').toLowerCase());
                 const enabledMdSkillIds = mdSkillIds.filter(id => enabledSkills.has(id));
                 const filteredSkillIds = enabledMdSkillIds.filter(id => activeTools.has(id));
@@ -194,7 +204,7 @@ ${text}`;
                 }
 
                 if (toolsetDisabledSkills.length > 0) {
-                    systemPrompt += `\n\n### 🧰 TOOLSET-DISABLED SERVICES (Scene: ${toolsetManager.getActiveScene()}):\n`;
+                    systemPrompt += `\n\n### 🧰 TOOLSET-DISABLED SERVICES (Scene: ${activeScene}):\n`;
                     for (const s of toolsetDisabledSkills) {
                         systemPrompt += `- **${s.toUpperCase()}**: 此技能已被目前工具場景暫時停用。若使用者需要，請引導使用 \`/toolset\` 切換場景後再使用。\n`;
                     }

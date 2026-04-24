@@ -19,7 +19,7 @@ const WikiManager = require('../managers/WikiManager');
 const { URLS } = require('./constants');
 const { withRetry } = require('../utils/RetryUtils');
 const UserProfileManager = require('../managers/UserProfileManager');
-const { toolsetManager } = require('../managers/ToolsetManager');
+const { toolsetManager, SCENE_TOOLSETS } = require('../managers/ToolsetManager');
 const { hookSystem } = require('./HookSystem'); // ⚡ [OpenHarness-inspired] Global Hook System
 
 
@@ -33,9 +33,23 @@ class GolemBrain {
         this.userDataDir = options.userDataDir || path.resolve(ConfigManager.CONFIG.USER_DATA_DIR || './golem_memory');
         this.skillIndex = new SkillIndexManager(this.userDataDir);
 
+        this._isSharedSessionWorker = !!options.sharedSessionWorker;
+        this._ownsBrowserContext = !this._isSharedSessionWorker;
+        this._toolsetOverrideScene = options.toolsetScene || null;
+        this._toolsetOverrideTools = Array.isArray(options.toolsetTools)
+            ? options.toolsetTools.map(s => String(s || '').toLowerCase()).filter(Boolean)
+            : null;
+        if (!this._toolsetOverrideTools && this._toolsetOverrideScene && toolsetManager.resolveToolsForScene) {
+            const resolved = toolsetManager.resolveToolsForScene(String(this._toolsetOverrideScene).toLowerCase());
+            if (resolved) {
+                this._toolsetOverrideTools = resolved.map(s => String(s || '').toLowerCase()).filter(Boolean);
+            }
+        }
+        this._disableHistoricalMemoryInjection = !!options.disableHistoricalMemoryInjection;
+
         // ── 瀏覽器狀態 ──
-        this.context = null; // Playwright BrowserContext
-        this.page = null;
+        this.context = options.context || null; // Playwright BrowserContext
+        this.page = options.page || null;
         this.cdpSession = null;
 
         // ── DOM 修復服務 ──
@@ -89,7 +103,7 @@ class GolemBrain {
         // ── [Phase 2] 場景化工具集管理 ──
         this.toolsetManager = toolsetManager;
         this._backgroundMemoryInjectionTask = null;
-        this._transportQueue = Promise.resolve();
+        this._transportState = options.transportState || { queue: Promise.resolve() };
 
         // ── [OpenHarness-inspired] Hook System ──────────────────
         // 全域單例，各模組可透過 brain.hookSystem 掛載 pre/post_tool_use handler
@@ -348,6 +362,76 @@ class GolemBrain {
             this.isInitialized = false;
             this._finalizeInitMetrics(metrics, 'error', e);
             throw e;
+        }
+    }
+
+    /**
+     * 建立短生命週期子代理（同一登入狀態、獨立新分頁）
+     * @param {{ golemId?: string, toolset?: string }} [options]
+     * @returns {Promise<GolemBrain>}
+     */
+    async createEphemeralWorker(options = {}) {
+        const requestedToolset = String(options.toolset || 'assistant').toLowerCase();
+        const toolsetTools = this.toolsetManager.resolveToolsForScene(requestedToolset);
+        if (!toolsetTools) {
+            const scenes = Object.keys(SCENE_TOOLSETS).join(', ');
+            throw new Error(`未知的 toolset「${requestedToolset}」，可用: ${scenes}`);
+        }
+
+        const workerId = options.golemId || `delegate_${Date.now().toString().slice(-6)}`;
+
+        if (this._isApiBackend()) {
+            return new GolemBrain({
+                golemId: workerId,
+                userDataDir: this.userDataDir,
+                toolsetScene: requestedToolset,
+                toolsetTools,
+                disableHistoricalMemoryInjection: true,
+                transportState: this._transportState
+            });
+        }
+
+        await this._ensureBrowserHealth();
+        if (!this.context || !this.isInitialized) await this.init();
+
+        const workerPage = await this.context.newPage();
+        return new GolemBrain({
+            golemId: workerId,
+            userDataDir: this.userDataDir,
+            context: this.context,
+            page: workerPage,
+            sharedSessionWorker: true,
+            toolsetScene: requestedToolset,
+            toolsetTools,
+            disableHistoricalMemoryInjection: true,
+            transportState: this._transportState
+        });
+    }
+
+    /**
+     * 釋放大腦資源（子代理預設只關閉 page，不關閉共用 context）
+     * @param {{ closeContext?: boolean }} [options]
+     */
+    async dispose(options = {}) {
+        const closeContext = typeof options.closeContext === 'boolean'
+            ? options.closeContext
+            : this._ownsBrowserContext;
+
+        try {
+            if (this.page && typeof this.page.isClosed === 'function' && !this.page.isClosed()) {
+                await this.page.close().catch(() => {});
+            }
+        } catch (_) { }
+
+        this.page = null;
+        this.cdpSession = null;
+        this.isInitialized = false;
+
+        if (closeContext && this.context) {
+            try {
+                await this.context.close().catch(() => {});
+            } catch (_) { }
+            this.context = null;
         }
     }
 
@@ -664,13 +748,27 @@ class GolemBrain {
     }
 
     async _withTransportLock(taskFn) {
-        const queued = this._transportQueue
+        const queued = this._transportState.queue
             .catch(() => {})
             .then(() => taskFn());
 
         // Keep queue alive even when current task fails.
-        this._transportQueue = queued.catch(() => {});
+        this._transportState.queue = queued.catch(() => {});
         return queued;
+    }
+
+    _resolveToolsetContext() {
+        const activeTools = this._toolsetOverrideTools
+            || (this.toolsetManager && typeof this.toolsetManager.getActiveTools === 'function'
+                ? this.toolsetManager.getActiveTools()
+                : []);
+
+        const activeScene = this._toolsetOverrideScene
+            || (this.toolsetManager && typeof this.toolsetManager.getActiveScene === 'function'
+                ? this.toolsetManager.getActiveScene()
+                : 'assistant');
+
+        return { activeScene: String(activeScene || 'assistant').toLowerCase(), activeTools };
     }
 
     // ─── Private Methods ─────────────────────────────────────
@@ -761,9 +859,12 @@ class GolemBrain {
      * @param {boolean} [forceRefresh=false]
      */
     async _injectSystemPrompt(forceRefresh = false) {
+        const toolsetContext = this._resolveToolsetContext();
         let { systemPrompt, skillMemoryText } = await ProtocolFormatter.buildSystemPrompt(forceRefresh, {
             userDataDir: this.userDataDir,
-            golemId: this.golemId
+            golemId: this.golemId,
+            activeScene: toolsetContext.activeScene,
+            activeTools: toolsetContext.activeTools
         });
 
         if (skillMemoryText) {
@@ -807,6 +908,11 @@ class GolemBrain {
         const compressedPrompt = ProtocolFormatter.compress(systemPrompt);
         await this.sendMessage(compressedPrompt, false); // ⚡ 改為 false：等待完整回應
         console.log(`📡 [Brain] 階段一：底層協議注入完成 (${this.backend.toUpperCase()})。`);
+
+        if (this._disableHistoricalMemoryInjection) {
+            console.log(`⏭️ [Brain] 階段二：此代理設定為短生命週期，略過歷史記憶注入。`);
+            return;
+        }
 
         // 🧠 [第二階段] 金字塔式多層記憶注入（改為背景排程，不阻塞 init）
         this._scheduleHistoricalMemoryInjection();
@@ -987,6 +1093,9 @@ class GolemBrain {
         } // Close if (!forceRestart)
 
         if (!isHealthy) {
+            if (!this._ownsBrowserContext) {
+                throw new Error('Shared-session worker page is unhealthy; aborting restart to protect shared browser context.');
+            }
             console.warn(`🩹 [Brain] 偵測到失效狀態或強制重啟 (forceRestart=${forceRestart})，正在執行物理清理並重新初始化...`);
             // 清理舊實體 (確保清理乾淨，防止殘留 Lock)
             try {

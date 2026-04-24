@@ -22,7 +22,11 @@ class InteractiveMultiAgent {
             sharedMemory: [],
             status: 'active',
             waitingForUser: false,
-            interruptRequested: false
+            interruptRequested: false,
+            options: options || {},
+            agentWorkers: new Map(), // name(lowercase) -> { brain, toolset }
+            workerTimeoutMs: this._resolveWorkerTimeoutMs(options),
+            workerWatchdogTimer: null,
         };
 
         const teamIntro = agentConfigs.map((agent, idx) =>
@@ -43,16 +47,19 @@ class InteractiveMultiAgent {
             `━━━━━━━━━━━━━━━━━━━━━━━━━━━━`
         );
 
+        this._startWorkerWatchdog();
+        await this._ensureAgentWorkers();
         await this._interactiveLoop(ctx);
 
         if (this.activeConversation.status !== 'interrupted') {
             await this._generateSummary(ctx);
         }
-        this._cleanup();
+        await this._cleanup();
     }
 
     async _interactiveLoop(ctx) {
         const conv = this.activeConversation;
+        await this._ensureAgentWorkers();
         conv.context = `【團隊任務】${conv.task}\n【成員】${conv.agents.map(a => a.name).join('、')}\n\n【對話記錄】\n`;
 
         for (let round = 1; round <= conv.maxRounds; round++) {
@@ -100,7 +107,7 @@ class InteractiveMultiAgent {
         try {
             await ctx.sendTyping();
             const rolePrompt = this._buildProtocolPrompt(agent, round);
-            const rawResponse = await this.brain.sendMessage(rolePrompt);
+            const rawResponse = await this._sendViaAgent(agent, rolePrompt, 'round_speak');
             const parsed = await this._parseAgentOutput(rawResponse, agent);
 
             if (parsed.memories.length > 0) {
@@ -250,7 +257,7 @@ ${userMessage}
 （直接回應用戶的問題，保持你的角色性格，2-3句話）
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `;
-            const rawResponse = await this.brain.sendMessage(prompt);
+            const rawResponse = await this._sendViaAgent(agent, prompt, 'user_reply');
             const parsed = await this._parseAgentOutput(rawResponse, agent);
             if (parsed.memories.length > 0) {
                 for (const memory of parsed.memories) {
@@ -357,17 +364,29 @@ ${userMessage}
         const instance = new InteractiveMultiAgent(brain);
         instance.activeConversation = savedConv;
         instance.activeConversation.status = 'active';
+        if (!instance.activeConversation.agentWorkers) {
+            instance.activeConversation.agentWorkers = new Map();
+        }
+        if (!instance.activeConversation.workerTimeoutMs) {
+            instance.activeConversation.workerTimeoutMs = instance._resolveWorkerTimeoutMs(instance.activeConversation.options || {});
+        }
+        instance._startWorkerWatchdog();
         await instance._interactiveLoop(ctx);
         await instance._generateSummary(ctx);
-        instance._cleanup();
+        await instance._cleanup();
     }
 
-    _cleanup() {
+    async _cleanup() {
         const conv = this.activeConversation;
+        if (!conv) return;
         if (conv && conv.userInputTimeout) {
             clearTimeout(conv.userInputTimeout);
             conv.userInputTimeout = null;
         }
+
+        this._stopWorkerWatchdog();
+
+        await this._disposeAgentWorkers(conv);
 
         if (conv.status === 'interrupted') {
             if (!InteractiveMultiAgent.pausedConversations) InteractiveMultiAgent.pausedConversations = new Map();
@@ -376,6 +395,282 @@ ${userMessage}
         }
         this._removeInputListener(conv.chatId);
         this.activeConversation = null;
+    }
+
+    async _ensureAgentWorkers() {
+        const conv = this.activeConversation;
+        if (!conv || !Array.isArray(conv.agents) || conv.agents.length === 0) return;
+        if (typeof this.brain.createEphemeralWorker !== 'function') return;
+
+        for (const agent of conv.agents) {
+            const key = String(agent.name || '').toLowerCase();
+            if (!key || conv.agentWorkers.has(key)) continue;
+            await this._spawnAgentWorker(agent, { reason: 'startup' });
+        }
+    }
+
+    _resolveWorkerTimeoutMs(options = {}) {
+        const candidate = Number(
+            options.workerTimeoutMs
+            || options.worker_timeout_ms
+            || process.env.MULTI_AGENT_WORKER_TIMEOUT_MS
+            || 90000
+        );
+        if (!Number.isFinite(candidate) || candidate < 5000) return 90000;
+        return Math.floor(candidate);
+    }
+
+    _startWorkerWatchdog() {
+        const conv = this.activeConversation;
+        if (!conv) return;
+        this._stopWorkerWatchdog();
+        const intervalMs = Math.max(5000, Math.floor(conv.workerTimeoutMs / 3));
+        conv.workerWatchdogTimer = setInterval(() => {
+            this._reapIdleWorkers().catch((e) => {
+                console.warn(`[InteractiveMultiAgent] Worker watchdog error: ${e.message}`);
+            });
+        }, intervalMs);
+    }
+
+    _stopWorkerWatchdog() {
+        const conv = this.activeConversation;
+        if (!conv || !conv.workerWatchdogTimer) return;
+        clearInterval(conv.workerWatchdogTimer);
+        conv.workerWatchdogTimer = null;
+    }
+
+    async _reapIdleWorkers() {
+        const conv = this.activeConversation;
+        if (!conv || !conv.agentWorkers || conv.agentWorkers.size === 0) return;
+        const timeoutMs = conv.workerTimeoutMs;
+        const now = Date.now();
+        for (const [key, workerState] of conv.agentWorkers.entries()) {
+            if (!workerState || workerState.busy) continue;
+            const lastUsedAt = Number(workerState.lastUsedAt || workerState.createdAt || 0);
+            if (!lastUsedAt) continue;
+            if (now - lastUsedAt < timeoutMs) continue;
+            this._emitWorkerLifecycle('idle_timeout', {
+                agentKey: key,
+                toolset: workerState.toolset,
+                timeoutMs
+            });
+            await this._disposeSingleWorker(key, workerState, 'idle_timeout');
+        }
+    }
+
+    async _spawnAgentWorker(agent, { reason = 'runtime' } = {}) {
+        const conv = this.activeConversation;
+        if (!conv || typeof this.brain.createEphemeralWorker !== 'function') return null;
+
+        const key = String(agent.name || '').toLowerCase();
+        if (!key) return null;
+        const toolset = this._resolveAgentToolset(agent);
+
+        try {
+            const worker = await this.brain.createEphemeralWorker({
+                golemId: `ma_${conv.id}_${key}`,
+                toolset
+            });
+            await this._runWithTimeout(
+                () => worker.init(true),
+                conv.workerTimeoutMs,
+                `init timeout for ${agent.name}`
+            );
+
+            const state = {
+                brain: worker,
+                toolset,
+                createdAt: Date.now(),
+                lastUsedAt: Date.now(),
+                busy: false
+            };
+            conv.agentWorkers.set(key, state);
+            this._emitWorkerLifecycle(reason === 'timeout_recovery' ? 'recreated' : 'spawned', {
+                agentKey: key,
+                toolset,
+                reason
+            });
+            return state;
+        } catch (e) {
+            this._emitWorkerLifecycle('spawn_failed', {
+                agentKey: key,
+                toolset,
+                reason,
+                error: e.message
+            });
+            console.warn(`[InteractiveMultiAgent] 建立 ${agent.name} 子代理分頁失敗，改用主代理: ${e.message}`);
+            return null;
+        }
+    }
+
+    _resolveAgentToolset(agent) {
+        const conv = this.activeConversation;
+        const opts = conv && conv.options ? conv.options : {};
+        const agentToolsets = opts.agentToolsets || {};
+        const byExactName = agentToolsets[agent.name];
+        const byLowerName = agentToolsets[String(agent.name || '').toLowerCase()];
+        const inferred = this._inferDefaultToolset(agent);
+        const requested = byExactName || byLowerName || agent.toolset || opts.toolset || inferred || 'assistant';
+        return String(requested || 'assistant').toLowerCase();
+    }
+
+    _inferDefaultToolset(agent) {
+        const role = String(agent.role || '').toLowerCase();
+        const expertise = Array.isArray(agent.expertise) ? agent.expertise.join(' ').toLowerCase() : '';
+        const combined = `${role} ${expertise}`;
+
+        if (/前端|frontend|front-end|ui|ux|設計|designer|writer|文案|creative/.test(combined)) {
+            return 'creative';
+        }
+        if (/後端|backend|back-end|api|database|devops|security|系統|工程|finance|operations/.test(combined)) {
+            return 'coding';
+        }
+        if (/產品|pm|marketing|strategy|research|顧問|judge|analyst|市場|規劃/.test(combined)) {
+            return 'research';
+        }
+        return null;
+    }
+
+    _getAgentWorkerState(agent) {
+        const conv = this.activeConversation;
+        if (!conv || !conv.agentWorkers) return null;
+        const key = String(agent.name || '').toLowerCase();
+        return conv.agentWorkers.get(key) || null;
+    }
+
+    _getAgentBrain(agent) {
+        const workerState = this._getAgentWorkerState(agent);
+        return workerState && workerState.brain ? workerState.brain : this.brain;
+    }
+
+    async _sendViaAgent(agent, prompt, source = 'agent') {
+        let workerState = this._getAgentWorkerState(agent);
+        const conv = this.activeConversation;
+        const key = String(agent.name || '').toLowerCase();
+
+        if (!workerState && typeof this.brain.createEphemeralWorker === 'function') {
+            workerState = await this._spawnAgentWorker(agent, { reason: 'on_demand' });
+        }
+
+        if (!workerState || !workerState.brain) {
+            return this.brain.sendMessage(prompt);
+        }
+
+        workerState.busy = true;
+        workerState.lastUsedAt = Date.now();
+        const timeoutMs = conv ? conv.workerTimeoutMs : 90000;
+
+        try {
+            const response = await this._runWithTimeout(
+                () => workerState.brain.sendMessage(prompt),
+                timeoutMs,
+                `worker timeout (${source}) for ${agent.name}`
+            );
+            workerState.lastUsedAt = Date.now();
+            return response;
+        } catch (e) {
+            if (e && e.code === 'WORKER_TIMEOUT') {
+                this._emitWorkerLifecycle('timeout', { agentKey: key, toolset: workerState.toolset, source, timeoutMs });
+                await this._disposeSingleWorker(key, workerState, 'timeout');
+
+                const recovered = await this._spawnAgentWorker(agent, { reason: 'timeout_recovery' });
+                if (recovered && recovered.brain) {
+                    recovered.busy = true;
+                    recovered.lastUsedAt = Date.now();
+                    try {
+                        const response = await this._runWithTimeout(
+                            () => recovered.brain.sendMessage(prompt),
+                            timeoutMs,
+                            `worker timeout after recovery (${source}) for ${agent.name}`
+                        );
+                        recovered.lastUsedAt = Date.now();
+                        this._emitWorkerLifecycle('recovered', { agentKey: key, toolset: recovered.toolset, source });
+                        return response;
+                    } catch (retryErr) {
+                        if (retryErr && retryErr.code === 'WORKER_TIMEOUT') {
+                            this._emitWorkerLifecycle('timeout_after_recovery', {
+                                agentKey: key,
+                                toolset: recovered.toolset,
+                                source,
+                                timeoutMs
+                            });
+                            await this._disposeSingleWorker(key, recovered, 'timeout_after_recovery');
+                        } else {
+                            throw retryErr;
+                        }
+                    } finally {
+                        recovered.busy = false;
+                    }
+                }
+
+                this._emitWorkerLifecycle('fallback_main', { agentKey: key, source });
+                return this.brain.sendMessage(prompt);
+            }
+            throw e;
+        } finally {
+            if (workerState) workerState.busy = false;
+        }
+    }
+
+    async _runWithTimeout(taskFn, timeoutMs, label) {
+        if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
+            return taskFn();
+        }
+        let timer = null;
+        try {
+            return await Promise.race([
+                Promise.resolve().then(() => taskFn()),
+                new Promise((_, reject) => {
+                    timer = setTimeout(() => {
+                        const err = new Error(label || 'timeout');
+                        err.code = 'WORKER_TIMEOUT';
+                        reject(err);
+                    }, timeoutMs);
+                })
+            ]);
+        } finally {
+            if (timer) clearTimeout(timer);
+        }
+    }
+
+    _emitWorkerLifecycle(event, fields = {}) {
+        const fragments = [`event=${event}`];
+        Object.entries(fields).forEach(([k, v]) => {
+            if (v === undefined || v === null || v === '') return;
+            const normalized = String(v).replace(/\s+/g, '_');
+            fragments.push(`${k}=${normalized}`);
+        });
+        console.log(`[InteractiveMultiAgent][WorkerLifecycle] ${fragments.join(' ')}`);
+    }
+
+    async _disposeSingleWorker(key, workerState, reason = 'dispose') {
+        const conv = this.activeConversation;
+        const state = workerState || (conv && conv.agentWorkers ? conv.agentWorkers.get(key) : null);
+        if (!state) return;
+        const workerBrain = state && state.brain ? state.brain : state;
+        try {
+            if (workerBrain && typeof workerBrain.dispose === 'function') {
+                await workerBrain.dispose({ closeContext: false });
+            } else if (workerBrain && workerBrain.page && typeof workerBrain.page.close === 'function') {
+                await workerBrain.page.close().catch(() => {});
+            }
+        } catch (e) {
+            console.warn(`[InteractiveMultiAgent] 關閉子代理分頁失敗 (${key}): ${e.message}`);
+        } finally {
+            if (conv && conv.agentWorkers) {
+                conv.agentWorkers.delete(key);
+            }
+            this._emitWorkerLifecycle('disposed', { agentKey: key, reason });
+        }
+    }
+
+    async _disposeAgentWorkers(conv) {
+        if (!conv || !conv.agentWorkers || conv.agentWorkers.size === 0) return;
+
+        const entries = Array.from(conv.agentWorkers.entries());
+        for (const [key, workerState] of entries) {
+            await this._disposeSingleWorker(key, workerState, 'conversation_end');
+        }
     }
 
     _buildProtocolPrompt(agent, round) {

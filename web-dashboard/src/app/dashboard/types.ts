@@ -2,6 +2,9 @@ export type DashboardMetrics = {
     uptime: string;
     queueCount: number;
     lastSchedule: string;
+    agentWorkersActive: number;
+    agentWorkerTimeouts: number;
+    lastAgentWorkerEvent: string;
     memUsage: number;
 };
 

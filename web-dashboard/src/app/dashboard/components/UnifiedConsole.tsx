@@ -20,6 +20,9 @@ type MetricsState = {
     uptime: string;
     queueCount: number;
     lastSchedule: string;
+    agentWorkersActive: number;
+    agentWorkerTimeouts: number;
+    lastAgentWorkerEvent: string;
     memUsage: number;
     cpuUsage: number;
 };
@@ -52,7 +55,7 @@ type SystemStatusData = {
     };
 };
 
-type MetricsUpdatePayload = Partial<Pick<MetricsState, "uptime" | "queueCount" | "lastSchedule" | "memUsage" | "cpuUsage">>;
+type MetricsUpdatePayload = Partial<Pick<MetricsState, "uptime" | "queueCount" | "lastSchedule" | "agentWorkersActive" | "agentWorkerTimeouts" | "lastAgentWorkerEvent" | "memUsage" | "cpuUsage">>;
 
 type HeartbeatPayload = {
     uptime?: string;
@@ -155,9 +158,14 @@ function parseMetricsUpdate(payload: unknown): MetricsUpdatePayload | null {
 
     if (typeof payload.uptime === "string") patch.uptime = payload.uptime;
     if (typeof payload.lastSchedule === "string") patch.lastSchedule = payload.lastSchedule;
+    if (typeof payload.lastAgentWorkerEvent === "string") patch.lastAgentWorkerEvent = payload.lastAgentWorkerEvent;
 
     const queueCount = parseNumber(payload.queueCount);
     if (queueCount !== null) patch.queueCount = queueCount;
+    const agentWorkersActive = parseNumber(payload.agentWorkersActive);
+    if (agentWorkersActive !== null) patch.agentWorkersActive = agentWorkersActive;
+    const agentWorkerTimeouts = parseNumber(payload.agentWorkerTimeouts);
+    if (agentWorkerTimeouts !== null) patch.agentWorkerTimeouts = agentWorkerTimeouts;
 
     const memUsage = parseNumber(payload.memUsage);
     if (memUsage !== null) patch.memUsage = memUsage;
@@ -225,6 +233,9 @@ export default function UnifiedConsole({
         uptime: "0h 0m",
         queueCount: 0,
         lastSchedule: "N/A",
+        agentWorkersActive: 0,
+        agentWorkerTimeouts: 0,
+        lastAgentWorkerEvent: "N/A",
         memUsage: 0,
         cpuUsage: 0,
     });
@@ -988,6 +999,9 @@ export default function UnifiedConsole({
                                             <StatusItem label={isEnglish ? "Core Service" : "核心服務"} value={systemStatus?.health?.core ? (isEnglish ? "Online" : "在線") : (isEnglish ? "Offline" : "離線")} color={systemStatus?.health?.core ? "primary" : "destructive"} />
                                             <StatusItem label={isEnglish ? "Disk Space" : "磁碟空間"} value={systemStatus?.system?.diskAvail || "N/A"} />
                                             <StatusItem label={isEnglish ? "Queue Agent" : "佇列代理"} value={isEnglish ? `Ready (${metrics.queueCount})` : `就緒 (${metrics.queueCount})`} color="primary" />
+                                            <StatusItem label={isEnglish ? "Worker Tabs" : "子代理分頁"} value={String(metrics.agentWorkersActive)} color="primary" />
+                                            <StatusItem label={isEnglish ? "Worker Timeouts" : "子代理逾時"} value={String(metrics.agentWorkerTimeouts)} color={metrics.agentWorkerTimeouts > 0 ? "destructive" : "primary"} />
+                                            <StatusItem label={isEnglish ? "Worker Last Event" : "子代理最後事件"} value={metrics.lastAgentWorkerEvent || "N/A"} />
                                             <StatusItem label={isEnglish ? "Health Score" : "健康分數"} value={healthScore.value} color={healthScore.total > 0 && healthScore.passed === healthScore.total ? "primary" : "destructive"} />
                                         </ul>
                                     </div>

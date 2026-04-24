@@ -167,4 +167,47 @@ describe('GolemBrain gemini bootstrap init', () => {
         await new Promise(resolve => setImmediate(resolve));
         expect(memoryPhaseSpy).toHaveBeenCalledTimes(1);
     });
+
+    test('createEphemeralWorker reuses parent context and creates a new worker tab', async () => {
+        const workerPage = { close: jest.fn(), isClosed: jest.fn(() => false) };
+        const parent = new GolemBrain({ golemId: 'parent' });
+        parent.context = {
+            newPage: jest.fn().mockResolvedValue(workerPage)
+        };
+        parent.isInitialized = true;
+        jest.spyOn(parent, '_ensureBrowserHealth').mockResolvedValue();
+
+        const worker = await parent.createEphemeralWorker({
+            golemId: 'child',
+            toolset: 'research'
+        });
+
+        expect(parent.context.newPage).toHaveBeenCalledTimes(1);
+        expect(worker.context).toBe(parent.context);
+        expect(worker.page).toBe(workerPage);
+        expect(worker._isSharedSessionWorker).toBe(true);
+        expect(worker._disableHistoricalMemoryInjection).toBe(true);
+        expect(worker._toolsetOverrideScene).toBe('research');
+    });
+
+    test('shared-session worker dispose only closes page by default', async () => {
+        const page = {
+            isClosed: jest.fn(() => false),
+            close: jest.fn().mockResolvedValue()
+        };
+        const context = {
+            close: jest.fn().mockResolvedValue()
+        };
+        const worker = new GolemBrain({
+            golemId: 'child',
+            context,
+            page,
+            sharedSessionWorker: true
+        });
+
+        await worker.dispose();
+
+        expect(page.close).toHaveBeenCalledTimes(1);
+        expect(context.close).not.toHaveBeenCalled();
+    });
 });

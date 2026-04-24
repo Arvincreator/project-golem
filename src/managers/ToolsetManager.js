@@ -209,6 +209,22 @@ class ToolsetManager {
     }
 
     /**
+     * 解析指定場景的工具清單（不修改目前 active scene）
+     * @param {string} sceneName
+     * @returns {string[] | null}
+     */
+    resolveToolsForScene(sceneName) {
+        const scene = SCENE_TOOLSETS[sceneName];
+        if (!scene) return null;
+
+        const tools = new Set(scene.includes || []);
+        if (scene.excludes) {
+            scene.excludes.forEach(t => tools.delete(t));
+        }
+        return [...tools];
+    }
+
+    /**
      * 判斷特定工具是否在目前工具集中
      * @param {string} toolId
      * @returns {boolean}

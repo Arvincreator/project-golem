@@ -1,5 +1,9 @@
 module.exports = function registerSocketHandlers(server) {
     server.io.on('connection', (socket) => {
+        const dashboardState = server.dashboard && server.dashboard.manager && server.dashboard.manager.state
+            ? server.dashboard.manager.state
+            : {};
+
         const getGolemsData = () => {
             return Array.from(server.contexts.entries()).map(([id, context]) => {
                 const status = (context.brain && context.brain.status) || 'running';
@@ -8,8 +12,11 @@ module.exports = function registerSocketHandlers(server) {
         };
 
         const payload = {
-            queueCount: server.dashboard ? server.dashboard.queueCount : 0,
-            lastSchedule: server.dashboard ? server.dashboard.lastSchedule : 'N/A',
+            queueCount: dashboardState.queueCount || 0,
+            lastSchedule: dashboardState.lastSchedule || 'N/A',
+            agentWorkersActive: dashboardState.agentWorkersActive || 0,
+            agentWorkerTimeouts: dashboardState.agentWorkerTimeouts || 0,
+            lastAgentWorkerEvent: dashboardState.lastAgentWorkerEvent || 'N/A',
             uptime: process.uptime(),
             logs: server.logBuffer,
             golems: getGolemsData()
