@@ -9,6 +9,9 @@ class DashboardManager {
             isDetached: false,
             agentWorkersActive: 0,
             agentWorkerTimeouts: 0,
+            agentWorkerSendTimeouts: 0,
+            agentWorkerIdleTimeouts: 0,
+            agentWorkerDraftPendingChecks: 0,
             lastAgentWorkerEvent: "無事件"
         };
         this._agentWorkerRegistry = new Set();
@@ -84,6 +87,7 @@ class DashboardManager {
 
         const event = String(kv.event || '').toLowerCase();
         const agentKey = String(kv.agentKey || kv.agent || '').toLowerCase();
+        const timeoutKind = String(kv.timeoutKind || '').toLowerCase();
 
         if (!event) return;
 
@@ -95,8 +99,23 @@ class DashboardManager {
             this._agentWorkerRegistry.delete(agentKey);
         }
 
-        if (['timeout', 'timeout_after_recovery', 'idle_timeout'].includes(event)) {
+        const isSendTimeout = event === 'timeout'
+            || event === 'timeout_after_recovery'
+            || timeoutKind === 'send';
+        const isIdleTimeout = event === 'idle_timeout'
+            || timeoutKind === 'idle';
+
+        if (isSendTimeout || isIdleTimeout) {
             this.state.agentWorkerTimeouts += 1;
+        }
+        if (isSendTimeout) {
+            this.state.agentWorkerSendTimeouts += 1;
+        }
+        if (isIdleTimeout) {
+            this.state.agentWorkerIdleTimeouts += 1;
+        }
+        if (event === 'draft_pending') {
+            this.state.agentWorkerDraftPendingChecks += 1;
         }
 
         this.state.agentWorkersActive = this._agentWorkerRegistry.size;
@@ -124,6 +143,9 @@ class DashboardManager {
 - **隊列**: ${this.state.queueCount}
 - **排程**: ${this.state.lastSchedule}
 - **Agent Workers**: ${this.state.agentWorkersActive} active / ${this.state.agentWorkerTimeouts} timeout
+- **Agent Worker Send Timeout**: ${this.state.agentWorkerSendTimeouts}
+- **Agent Worker Idle Timeout**: ${this.state.agentWorkerIdleTimeouts}
+- **Agent Worker Draft Pending**: ${this.state.agentWorkerDraftPendingChecks}
 - **Agent Worker Last**: ${this.state.lastAgentWorkerEvent}
 `;
     }

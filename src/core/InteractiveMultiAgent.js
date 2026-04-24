@@ -25,7 +25,9 @@ class InteractiveMultiAgent {
             interruptRequested: false,
             options: options || {},
             agentWorkers: new Map(), // name(lowercase) -> { brain, toolset }
-            workerTimeoutMs: this._resolveWorkerTimeoutMs(options),
+            workerSendTimeoutMs: this._resolveWorkerSendTimeoutMs(options),
+            workerIdleTimeoutMs: this._resolveWorkerIdleTimeoutMs(options),
+            workerDraftCheckIntervalMs: this._resolveWorkerDraftCheckIntervalMs(options),
             workerWatchdogTimer: null,
         };
 
@@ -367,8 +369,14 @@ ${userMessage}
         if (!instance.activeConversation.agentWorkers) {
             instance.activeConversation.agentWorkers = new Map();
         }
-        if (!instance.activeConversation.workerTimeoutMs) {
-            instance.activeConversation.workerTimeoutMs = instance._resolveWorkerTimeoutMs(instance.activeConversation.options || {});
+        if (!instance.activeConversation.workerSendTimeoutMs) {
+            instance.activeConversation.workerSendTimeoutMs = instance._resolveWorkerSendTimeoutMs(instance.activeConversation.options || {});
+        }
+        if (!instance.activeConversation.workerIdleTimeoutMs) {
+            instance.activeConversation.workerIdleTimeoutMs = instance._resolveWorkerIdleTimeoutMs(instance.activeConversation.options || {});
+        }
+        if (!instance.activeConversation.workerDraftCheckIntervalMs) {
+            instance.activeConversation.workerDraftCheckIntervalMs = instance._resolveWorkerDraftCheckIntervalMs(instance.activeConversation.options || {});
         }
         instance._startWorkerWatchdog();
         await instance._interactiveLoop(ctx);
@@ -409,10 +417,13 @@ ${userMessage}
         }
     }
 
-    _resolveWorkerTimeoutMs(options = {}) {
+    _resolveWorkerSendTimeoutMs(options = {}) {
         const candidate = Number(
-            options.workerTimeoutMs
+            options.workerSendTimeoutMs
+            || options.worker_send_timeout_ms
+            || options.workerTimeoutMs
             || options.worker_timeout_ms
+            || process.env.MULTI_AGENT_WORKER_SEND_TIMEOUT_MS
             || process.env.MULTI_AGENT_WORKER_TIMEOUT_MS
             || 90000
         );
@@ -420,11 +431,38 @@ ${userMessage}
         return Math.floor(candidate);
     }
 
+    _resolveWorkerIdleTimeoutMs(options = {}) {
+        const sendFallback = this._resolveWorkerSendTimeoutMs(options);
+        const candidate = Number(
+            options.workerIdleTimeoutMs
+            || options.worker_idle_timeout_ms
+            || process.env.MULTI_AGENT_WORKER_IDLE_TIMEOUT_MS
+            || sendFallback
+        );
+        if (!Number.isFinite(candidate) || candidate < 5000) return sendFallback;
+        return Math.floor(candidate);
+    }
+
+    _resolveWorkerDraftCheckIntervalMs(options = {}) {
+        const candidate = Number(
+            options.workerDraftCheckIntervalMs
+            || options.worker_draft_check_interval_ms
+            || process.env.MULTI_AGENT_WORKER_DRAFT_CHECK_INTERVAL_MS
+            || 10000
+        );
+        if (!Number.isFinite(candidate) || candidate < 1000) return 10000;
+        return Math.floor(candidate);
+    }
+
     _startWorkerWatchdog() {
         const conv = this.activeConversation;
         if (!conv) return;
         this._stopWorkerWatchdog();
-        const intervalMs = Math.max(5000, Math.floor(conv.workerTimeoutMs / 3));
+        const idleTimeoutMs = Number.isFinite(conv.workerIdleTimeoutMs)
+            ? conv.workerIdleTimeoutMs
+            : this._resolveWorkerIdleTimeoutMs(conv.options || {});
+        conv.workerIdleTimeoutMs = idleTimeoutMs;
+        const intervalMs = Math.max(5000, Math.floor(idleTimeoutMs / 3));
         conv.workerWatchdogTimer = setInterval(() => {
             this._reapIdleWorkers().catch((e) => {
                 console.warn(`[InteractiveMultiAgent] Worker watchdog error: ${e.message}`);
@@ -442,17 +480,21 @@ ${userMessage}
     async _reapIdleWorkers() {
         const conv = this.activeConversation;
         if (!conv || !conv.agentWorkers || conv.agentWorkers.size === 0) return;
-        const timeoutMs = conv.workerTimeoutMs;
+        const idleTimeoutMs = Number.isFinite(conv.workerIdleTimeoutMs)
+            ? conv.workerIdleTimeoutMs
+            : this._resolveWorkerIdleTimeoutMs(conv.options || {});
+        conv.workerIdleTimeoutMs = idleTimeoutMs;
         const now = Date.now();
         for (const [key, workerState] of conv.agentWorkers.entries()) {
             if (!workerState || workerState.busy) continue;
             const lastUsedAt = Number(workerState.lastUsedAt || workerState.createdAt || 0);
             if (!lastUsedAt) continue;
-            if (now - lastUsedAt < timeoutMs) continue;
+            if (now - lastUsedAt < idleTimeoutMs) continue;
             this._emitWorkerLifecycle('idle_timeout', {
                 agentKey: key,
                 toolset: workerState.toolset,
-                timeoutMs
+                idleTimeoutMs,
+                timeoutKind: 'idle'
             });
             await this._disposeSingleWorker(key, workerState, 'idle_timeout');
         }
@@ -471,9 +513,13 @@ ${userMessage}
                 golemId: `ma_${conv.id}_${key}`,
                 toolset
             });
+            const sendTimeoutMs = Number.isFinite(conv.workerSendTimeoutMs)
+                ? conv.workerSendTimeoutMs
+                : this._resolveWorkerSendTimeoutMs(conv.options || {});
+            conv.workerSendTimeoutMs = sendTimeoutMs;
             await this._runWithTimeout(
                 () => worker.init(true),
-                conv.workerTimeoutMs,
+                sendTimeoutMs,
                 `init timeout for ${agent.name}`
             );
 
@@ -558,19 +604,38 @@ ${userMessage}
 
         workerState.busy = true;
         workerState.lastUsedAt = Date.now();
-        const timeoutMs = conv ? conv.workerTimeoutMs : 90000;
+        const sendTimeoutMs = conv && Number.isFinite(conv.workerSendTimeoutMs)
+            ? conv.workerSendTimeoutMs
+            : this._resolveWorkerSendTimeoutMs(conv && conv.options ? conv.options : {});
+        const draftCheckIntervalMs = conv && Number.isFinite(conv.workerDraftCheckIntervalMs)
+            ? conv.workerDraftCheckIntervalMs
+            : this._resolveWorkerDraftCheckIntervalMs(conv && conv.options ? conv.options : {});
+        if (conv) {
+            conv.workerSendTimeoutMs = sendTimeoutMs;
+            conv.workerDraftCheckIntervalMs = draftCheckIntervalMs;
+        }
 
         try {
-            const response = await this._runWithTimeout(
-                () => workerState.brain.sendMessage(prompt),
-                timeoutMs,
-                `worker timeout (${source}) for ${agent.name}`
-            );
+            const response = await this._sendWithDraftMonitoring({
+                agentKey: key,
+                agentName: agent.name,
+                workerState,
+                prompt,
+                source,
+                sendTimeoutMs,
+                draftCheckIntervalMs,
+            });
             workerState.lastUsedAt = Date.now();
             return response;
         } catch (e) {
             if (e && e.code === 'WORKER_TIMEOUT') {
-                this._emitWorkerLifecycle('timeout', { agentKey: key, toolset: workerState.toolset, source, timeoutMs });
+                this._emitWorkerLifecycle('timeout', {
+                    agentKey: key,
+                    toolset: workerState.toolset,
+                    source,
+                    sendTimeoutMs,
+                    timeoutKind: 'send'
+                });
                 await this._disposeSingleWorker(key, workerState, 'timeout');
 
                 const recovered = await this._spawnAgentWorker(agent, { reason: 'timeout_recovery' });
@@ -578,11 +643,15 @@ ${userMessage}
                     recovered.busy = true;
                     recovered.lastUsedAt = Date.now();
                     try {
-                        const response = await this._runWithTimeout(
-                            () => recovered.brain.sendMessage(prompt),
-                            timeoutMs,
-                            `worker timeout after recovery (${source}) for ${agent.name}`
-                        );
+                        const response = await this._sendWithDraftMonitoring({
+                            agentKey: key,
+                            agentName: agent.name,
+                            workerState: recovered,
+                            prompt,
+                            source: `${source}_recovery`,
+                            sendTimeoutMs,
+                            draftCheckIntervalMs,
+                        });
                         recovered.lastUsedAt = Date.now();
                         this._emitWorkerLifecycle('recovered', { agentKey: key, toolset: recovered.toolset, source });
                         return response;
@@ -592,7 +661,8 @@ ${userMessage}
                                 agentKey: key,
                                 toolset: recovered.toolset,
                                 source,
-                                timeoutMs
+                                sendTimeoutMs,
+                                timeoutKind: 'send'
                             });
                             await this._disposeSingleWorker(key, recovered, 'timeout_after_recovery');
                         } else {
@@ -609,6 +679,123 @@ ${userMessage}
             throw e;
         } finally {
             if (workerState) workerState.busy = false;
+        }
+    }
+
+    async _sendWithDraftMonitoring({
+        agentKey,
+        agentName,
+        workerState,
+        prompt,
+        source,
+        sendTimeoutMs,
+        draftCheckIntervalMs
+    }) {
+        const workerBrain = workerState && workerState.brain ? workerState.brain : null;
+        if (!workerBrain || typeof workerBrain.sendMessage !== 'function') {
+            throw new Error(`worker unavailable for ${agentName}`);
+        }
+
+        let probeTimer = null;
+        let probing = false;
+        const effectiveIntervalMs = Number.isFinite(draftCheckIntervalMs) && draftCheckIntervalMs > 0
+            ? draftCheckIntervalMs
+            : 10000;
+
+        if (effectiveIntervalMs > 0) {
+            probeTimer = setInterval(async () => {
+                if (probing) return;
+                probing = true;
+                try {
+                    const draft = await this._checkPendingDraft(workerBrain);
+                    if (draft.hasDraft) {
+                        this._emitWorkerLifecycle('draft_pending', {
+                            agentKey,
+                            source,
+                            draftChars: draft.length,
+                            sendTimeoutMs
+                        });
+                    }
+                } catch (probeErr) {
+                    this._emitWorkerLifecycle('draft_probe_error', {
+                        agentKey,
+                        source,
+                        error: probeErr.message
+                    });
+                } finally {
+                    probing = false;
+                }
+            }, effectiveIntervalMs);
+        }
+
+        try {
+            return await this._runWithTimeout(
+                () => workerBrain.sendMessage(prompt),
+                sendTimeoutMs,
+                `worker timeout (${source}) for ${agentName}`
+            );
+        } finally {
+            if (probeTimer) {
+                clearInterval(probeTimer);
+                probeTimer = null;
+            }
+        }
+    }
+
+    async _checkPendingDraft(workerBrain) {
+        const page = workerBrain && workerBrain.page ? workerBrain.page : null;
+        if (!page) {
+            return { hasDraft: false, length: 0 };
+        }
+        if (typeof page.isClosed === 'function' && page.isClosed()) {
+            return { hasDraft: false, length: 0 };
+        }
+
+        try {
+            const result = await page.evaluate(() => {
+                const isVisible = (el) => {
+                    if (!el) return false;
+                    const style = window.getComputedStyle(el);
+                    if (!style) return false;
+                    if (style.display === 'none' || style.visibility === 'hidden') return false;
+                    if (Number(style.opacity) === 0) return false;
+                    const rect = el.getBoundingClientRect();
+                    return rect.width > 0 && rect.height > 0;
+                };
+
+                const readText = (el) => {
+                    if (!el) return '';
+                    if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+                        return (el.value || '').trim();
+                    }
+                    if (el.isContentEditable) {
+                        return (el.innerText || '').trim();
+                    }
+                    return '';
+                };
+
+                let maxLen = 0;
+                const candidates = [
+                    ...Array.from(document.querySelectorAll('textarea')),
+                    ...Array.from(document.querySelectorAll('input[type="text"]')),
+                    ...Array.from(document.querySelectorAll('[contenteditable="true"]')),
+                    ...Array.from(document.querySelectorAll('[role="textbox"]')),
+                ];
+
+                for (const el of candidates) {
+                    if (!isVisible(el)) continue;
+                    const text = readText(el);
+                    if (!text) continue;
+                    if (text.length > maxLen) maxLen = text.length;
+                }
+
+                return { hasDraft: maxLen > 0, length: maxLen };
+            });
+            return result && typeof result === 'object'
+                ? { hasDraft: !!result.hasDraft, length: Number(result.length || 0) }
+                : { hasDraft: false, length: 0 };
+        } catch (_) {
+            return { hasDraft: false, length: 0 };
         }
     }
 

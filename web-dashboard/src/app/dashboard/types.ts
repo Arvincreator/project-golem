@@ -4,6 +4,9 @@ export type DashboardMetrics = {
     lastSchedule: string;
     agentWorkersActive: number;
     agentWorkerTimeouts: number;
+    agentWorkerSendTimeouts: number;
+    agentWorkerIdleTimeouts: number;
+    agentWorkerDraftPendingChecks: number;
     lastAgentWorkerEvent: string;
     memUsage: number;
 };

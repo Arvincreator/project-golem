@@ -3,6 +3,7 @@ const InteractiveMultiAgent = require('../src/core/InteractiveMultiAgent');
 describe('InteractiveMultiAgent worker tabs', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        jest.useRealTimers();
     });
 
     test('startConversation creates per-agent workers and disposes them on cleanup', async () => {
@@ -92,6 +93,7 @@ describe('InteractiveMultiAgent worker tabs', () => {
     });
 
     test('worker timeout triggers recovery and retries once on a new tab', async () => {
+        jest.useFakeTimers();
         const staleWorker = {
             sendMessage: jest.fn(() => new Promise(() => {})),
             dispose: jest.fn().mockResolvedValue()
@@ -110,8 +112,9 @@ describe('InteractiveMultiAgent worker tabs', () => {
         const agent = { name: 'Alex', role: '前端工程師', expertise: ['React'] };
         multi.activeConversation = {
             id: 'conv_test',
-            options: { workerTimeoutMs: 20 },
-            workerTimeoutMs: 20,
+            options: { workerSendTimeoutMs: 1200, workerDraftCheckIntervalMs: 10000 },
+            workerSendTimeoutMs: 1200,
+            workerDraftCheckIntervalMs: 10000,
             agentWorkers: new Map([[
                 'alex',
                 {
@@ -124,13 +127,69 @@ describe('InteractiveMultiAgent worker tabs', () => {
             ]])
         };
 
-        const response = await multi._sendViaAgent(agent, 'prompt', 'round_speak');
+        const pending = multi._sendViaAgent(agent, 'prompt', 'round_speak');
+        jest.advanceTimersByTime(1300);
+        await Promise.resolve();
+        const response = await pending;
 
         expect(staleWorker.dispose).toHaveBeenCalledWith({ closeContext: false });
         expect(brain.createEphemeralWorker).toHaveBeenCalledTimes(1);
         expect(recoveredWorker.init).toHaveBeenCalledWith(true);
         expect(recoveredWorker.sendMessage).toHaveBeenCalledTimes(1);
         expect(response).toBe('[GOLEM_REPLY] recovered');
+        expect(brain.sendMessage).not.toHaveBeenCalled();
+    });
+
+    test('supports split send timeout and idle timeout values', () => {
+        const multi = new InteractiveMultiAgent({ sendMessage: jest.fn() });
+        const options = {
+            workerSendTimeoutMs: 30000,
+            workerIdleTimeoutMs: 180000,
+            workerDraftCheckIntervalMs: 10000,
+        };
+        expect(multi._resolveWorkerSendTimeoutMs(options)).toBe(30000);
+        expect(multi._resolveWorkerIdleTimeoutMs(options)).toBe(180000);
+        expect(multi._resolveWorkerDraftCheckIntervalMs(options)).toBe(10000);
+    });
+
+    test('checks pending draft while sending message on interval', async () => {
+        const workerBrain = {
+            sendMessage: jest.fn(() => new Promise(resolve => setTimeout(() => resolve('[GOLEM_REPLY] ok'), 80))),
+            page: {
+                isClosed: jest.fn(() => false),
+                evaluate: jest.fn().mockResolvedValue({ hasDraft: true, length: 12 })
+            }
+        };
+        const brain = {
+            sendMessage: jest.fn(),
+            _appendChatLog: jest.fn()
+        };
+        const multi = new InteractiveMultiAgent(brain);
+        const agent = { name: 'Alex', role: 'FE', personality: 'p', expertise: ['react'] };
+        const draftSpy = jest.spyOn(multi, '_checkPendingDraft');
+
+        multi.activeConversation = {
+            options: { workerSendTimeoutMs: 5000, workerDraftCheckIntervalMs: 10 },
+            workerSendTimeoutMs: 5000,
+            workerDraftCheckIntervalMs: 10,
+            agentWorkers: new Map([[
+                'alex',
+                {
+                    brain: workerBrain,
+                    toolset: 'creative',
+                    createdAt: Date.now(),
+                    lastUsedAt: Date.now(),
+                    busy: false
+                }
+            ]])
+        };
+
+        const pending = multi._sendViaAgent(agent, 'prompt', 'round_speak');
+        const response = await pending;
+
+        expect(workerBrain.sendMessage).toHaveBeenCalledTimes(1);
+        expect(draftSpy).toHaveBeenCalled();
+        expect(response).toBe('[GOLEM_REPLY] ok');
         expect(brain.sendMessage).not.toHaveBeenCalled();
     });
 });

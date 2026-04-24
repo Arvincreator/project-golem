@@ -10,6 +10,9 @@ const DEFAULT_METRICS: DashboardMetrics = {
     lastSchedule: "無排程",
     agentWorkersActive: 0,
     agentWorkerTimeouts: 0,
+    agentWorkerSendTimeouts: 0,
+    agentWorkerIdleTimeouts: 0,
+    agentWorkerDraftPendingChecks: 0,
     lastAgentWorkerEvent: "無事件",
     memUsage: 0,
 };
@@ -42,6 +45,9 @@ function mergeMetrics(prev: DashboardMetrics, payload: unknown): DashboardMetric
     const queueCount = parseNumber(payload.queueCount);
     const agentWorkersActive = parseNumber(payload.agentWorkersActive);
     const agentWorkerTimeouts = parseNumber(payload.agentWorkerTimeouts);
+    const agentWorkerSendTimeouts = parseNumber(payload.agentWorkerSendTimeouts);
+    const agentWorkerIdleTimeouts = parseNumber(payload.agentWorkerIdleTimeouts);
+    const agentWorkerDraftPendingChecks = parseNumber(payload.agentWorkerDraftPendingChecks);
     const memUsage = parseNumber(payload.memUsage);
 
     return {
@@ -51,6 +57,9 @@ function mergeMetrics(prev: DashboardMetrics, payload: unknown): DashboardMetric
         queueCount: queueCount ?? prev.queueCount,
         agentWorkersActive: agentWorkersActive ?? prev.agentWorkersActive,
         agentWorkerTimeouts: agentWorkerTimeouts ?? prev.agentWorkerTimeouts,
+        agentWorkerSendTimeouts: agentWorkerSendTimeouts ?? prev.agentWorkerSendTimeouts,
+        agentWorkerIdleTimeouts: agentWorkerIdleTimeouts ?? prev.agentWorkerIdleTimeouts,
+        agentWorkerDraftPendingChecks: agentWorkerDraftPendingChecks ?? prev.agentWorkerDraftPendingChecks,
         memUsage: memUsage ?? prev.memUsage,
     };
 }

@@ -7,16 +7,32 @@ describe('DashboardManager worker lifecycle state', () => {
         manager.dispatchLog(['[InteractiveMultiAgent][WorkerLifecycle] event=spawned agentKey=alex toolset=creative']);
         expect(manager.state.agentWorkersActive).toBe(1);
         expect(manager.state.agentWorkerTimeouts).toBe(0);
+        expect(manager.state.agentWorkerSendTimeouts).toBe(0);
+        expect(manager.state.agentWorkerIdleTimeouts).toBe(0);
+        expect(manager.state.agentWorkerDraftPendingChecks).toBe(0);
         expect(manager.state.lastAgentWorkerEvent).toContain('spawned');
 
-        manager.dispatchLog(['[InteractiveMultiAgent][WorkerLifecycle] event=timeout agentKey=alex toolset=creative']);
+        manager.dispatchLog(['[InteractiveMultiAgent][WorkerLifecycle] event=timeout agentKey=alex toolset=creative timeoutKind=send']);
         expect(manager.state.agentWorkersActive).toBe(0);
         expect(manager.state.agentWorkerTimeouts).toBe(1);
+        expect(manager.state.agentWorkerSendTimeouts).toBe(1);
+        expect(manager.state.agentWorkerIdleTimeouts).toBe(0);
         expect(manager.state.lastAgentWorkerEvent).toContain('timeout');
 
         manager.dispatchLog(['[InteractiveMultiAgent][WorkerLifecycle] event=spawned agentKey=bob toolset=coding']);
-        manager.dispatchLog(['[InteractiveMultiAgent][WorkerLifecycle] event=disposed agentKey=bob reason=conversation_end']);
+        manager.dispatchLog(['[InteractiveMultiAgent][WorkerLifecycle] event=idle_timeout agentKey=bob toolset=coding timeoutKind=idle']);
         expect(manager.state.agentWorkersActive).toBe(0);
+        expect(manager.state.agentWorkerTimeouts).toBe(2);
+        expect(manager.state.agentWorkerSendTimeouts).toBe(1);
+        expect(manager.state.agentWorkerIdleTimeouts).toBe(1);
+
+        manager.dispatchLog(['[InteractiveMultiAgent][WorkerLifecycle] event=draft_pending agentKey=bob draftChars=42']);
+        expect(manager.state.agentWorkerDraftPendingChecks).toBe(1);
+
+        manager.dispatchLog(['[InteractiveMultiAgent][WorkerLifecycle] event=spawned agentKey=carol toolset=research']);
+        expect(manager.state.agentWorkersActive).toBe(1);
+        manager.dispatchLog(['[InteractiveMultiAgent][WorkerLifecycle] event=disposed agentKey=bob reason=conversation_end']);
+        expect(manager.state.agentWorkersActive).toBe(1);
         expect(manager.state.lastAgentWorkerEvent).toContain('disposed');
     });
 });

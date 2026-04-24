@@ -84,6 +84,9 @@ class DashboardPlugin {
                 lastSchedule: this.manager.state.lastSchedule,
                 agentWorkersActive: this.manager.state.agentWorkersActive,
                 agentWorkerTimeouts: this.manager.state.agentWorkerTimeouts,
+                agentWorkerSendTimeouts: this.manager.state.agentWorkerSendTimeouts,
+                agentWorkerIdleTimeouts: this.manager.state.agentWorkerIdleTimeouts,
+                agentWorkerDraftPendingChecks: this.manager.state.agentWorkerDraftPendingChecks,
                 lastAgentWorkerEvent: this.manager.state.lastAgentWorkerEvent
             });
         }

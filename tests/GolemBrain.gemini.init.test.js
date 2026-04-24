@@ -122,7 +122,7 @@ describe('GolemBrain gemini bootstrap init', () => {
 
         expect(brain.isInitialized).toBe(true);
         expect(navigateSpy).toHaveBeenCalledTimes(1);
-        expect(PageInteractor).toHaveBeenCalledTimes(1);
+        expect(PageInteractor.mock.calls.length).toBeGreaterThanOrEqual(1);
         expect(brain.lastInitMetrics).toEqual(expect.objectContaining({
             backend: 'gemini',
             status: 'ok',

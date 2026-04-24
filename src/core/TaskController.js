@@ -60,7 +60,9 @@ class TaskController {
                 maxRounds: action.rounds || 3,
                 toolset: action.toolset || 'assistant',
                 agentToolsets: action.agentToolsets || action.agent_toolsets || {},
-                workerTimeoutMs: action.workerTimeoutMs || action.worker_timeout_ms,
+                workerSendTimeoutMs: action.workerSendTimeoutMs || action.worker_send_timeout_ms || action.workerTimeoutMs || action.worker_timeout_ms,
+                workerIdleTimeoutMs: action.workerIdleTimeoutMs || action.worker_idle_timeout_ms || action.workerTimeoutMs || action.worker_timeout_ms,
+                workerDraftCheckIntervalMs: action.workerDraftCheckIntervalMs || action.worker_draft_check_interval_ms,
             };
             await this.multiAgent.startConversation(ctx, task, agentConfigs, options);
         } catch (e) {

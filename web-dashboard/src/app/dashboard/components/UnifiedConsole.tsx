@@ -22,6 +22,9 @@ type MetricsState = {
     lastSchedule: string;
     agentWorkersActive: number;
     agentWorkerTimeouts: number;
+    agentWorkerSendTimeouts: number;
+    agentWorkerIdleTimeouts: number;
+    agentWorkerDraftPendingChecks: number;
     lastAgentWorkerEvent: string;
     memUsage: number;
     cpuUsage: number;
@@ -55,7 +58,7 @@ type SystemStatusData = {
     };
 };
 
-type MetricsUpdatePayload = Partial<Pick<MetricsState, "uptime" | "queueCount" | "lastSchedule" | "agentWorkersActive" | "agentWorkerTimeouts" | "lastAgentWorkerEvent" | "memUsage" | "cpuUsage">>;
+type MetricsUpdatePayload = Partial<Pick<MetricsState, "uptime" | "queueCount" | "lastSchedule" | "agentWorkersActive" | "agentWorkerTimeouts" | "agentWorkerSendTimeouts" | "agentWorkerIdleTimeouts" | "agentWorkerDraftPendingChecks" | "lastAgentWorkerEvent" | "memUsage" | "cpuUsage">>;
 
 type HeartbeatPayload = {
     uptime?: string;
@@ -166,6 +169,12 @@ function parseMetricsUpdate(payload: unknown): MetricsUpdatePayload | null {
     if (agentWorkersActive !== null) patch.agentWorkersActive = agentWorkersActive;
     const agentWorkerTimeouts = parseNumber(payload.agentWorkerTimeouts);
     if (agentWorkerTimeouts !== null) patch.agentWorkerTimeouts = agentWorkerTimeouts;
+    const agentWorkerSendTimeouts = parseNumber(payload.agentWorkerSendTimeouts);
+    if (agentWorkerSendTimeouts !== null) patch.agentWorkerSendTimeouts = agentWorkerSendTimeouts;
+    const agentWorkerIdleTimeouts = parseNumber(payload.agentWorkerIdleTimeouts);
+    if (agentWorkerIdleTimeouts !== null) patch.agentWorkerIdleTimeouts = agentWorkerIdleTimeouts;
+    const agentWorkerDraftPendingChecks = parseNumber(payload.agentWorkerDraftPendingChecks);
+    if (agentWorkerDraftPendingChecks !== null) patch.agentWorkerDraftPendingChecks = agentWorkerDraftPendingChecks;
 
     const memUsage = parseNumber(payload.memUsage);
     if (memUsage !== null) patch.memUsage = memUsage;
@@ -235,6 +244,9 @@ export default function UnifiedConsole({
         lastSchedule: "N/A",
         agentWorkersActive: 0,
         agentWorkerTimeouts: 0,
+        agentWorkerSendTimeouts: 0,
+        agentWorkerIdleTimeouts: 0,
+        agentWorkerDraftPendingChecks: 0,
         lastAgentWorkerEvent: "N/A",
         memUsage: 0,
         cpuUsage: 0,
@@ -1001,6 +1013,9 @@ export default function UnifiedConsole({
                                             <StatusItem label={isEnglish ? "Queue Agent" : "佇列代理"} value={isEnglish ? `Ready (${metrics.queueCount})` : `就緒 (${metrics.queueCount})`} color="primary" />
                                             <StatusItem label={isEnglish ? "Worker Tabs" : "子代理分頁"} value={String(metrics.agentWorkersActive)} color="primary" />
                                             <StatusItem label={isEnglish ? "Worker Timeouts" : "子代理逾時"} value={String(metrics.agentWorkerTimeouts)} color={metrics.agentWorkerTimeouts > 0 ? "destructive" : "primary"} />
+                                            <StatusItem label={isEnglish ? "Send Timeouts" : "發訊逾時"} value={String(metrics.agentWorkerSendTimeouts)} color={metrics.agentWorkerSendTimeouts > 0 ? "destructive" : "primary"} />
+                                            <StatusItem label={isEnglish ? "Idle Timeouts" : "閒置逾時"} value={String(metrics.agentWorkerIdleTimeouts)} color={metrics.agentWorkerIdleTimeouts > 0 ? "destructive" : "primary"} />
+                                            <StatusItem label={isEnglish ? "Draft Pending Checks" : "未送出訊息檢查"} value={String(metrics.agentWorkerDraftPendingChecks)} color={metrics.agentWorkerDraftPendingChecks > 0 ? "primary" : undefined} />
                                             <StatusItem label={isEnglish ? "Worker Last Event" : "子代理最後事件"} value={metrics.lastAgentWorkerEvent || "N/A"} />
                                             <StatusItem label={isEnglish ? "Health Score" : "健康分數"} value={healthScore.value} color={healthScore.total > 0 && healthScore.passed === healthScore.total ? "primary" : "destructive"} />
                                         </ul>

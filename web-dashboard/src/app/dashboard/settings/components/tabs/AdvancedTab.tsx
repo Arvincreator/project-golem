@@ -25,7 +25,8 @@ const EDITABLE_KEYS = new Set([
     "DIARY_RAW_RETENTION_DAYS", "DIARY_WEEKLY_RETENTION_DAYS", "DIARY_MONTHLY_RETENTION_DAYS", "DIARY_ROTATE_MIN_INTERVAL_MS",
     "DIARY_BACKUP_MAX_FILES", "DIARY_BACKUP_RETENTION_DAYS",
     "GOLEM_INTERVENTION_LEVEL", "GOLEM_MAX_AUTO_TURNS", "GOLEM_MAX_RESPONSE_WORDS",
-    "TG_ENGINE", "CB_TG_TIMEOUT_MS", "CB_TG_RESET_MS", "CB_TG_ERROR_PCT"
+    "TG_ENGINE", "CB_TG_TIMEOUT_MS", "CB_TG_RESET_MS", "CB_TG_ERROR_PCT",
+    "MULTI_AGENT_WORKER_SEND_TIMEOUT_MS", "MULTI_AGENT_WORKER_IDLE_TIMEOUT_MS", "MULTI_AGENT_WORKER_DRAFT_CHECK_INTERVAL_MS"
 ]);
 
 export default function AdvancedTab({ env, logInfo, onChangeEnv }: AdvancedTabProps) {
@@ -63,6 +64,33 @@ export default function AdvancedTab({ env, logInfo, onChangeEnv }: AdvancedTabPr
                             value={env.ARCHIVE_CHECK_INTERVAL || ""}
                             onChange={(val) => onChangeEnv("ARCHIVE_CHECK_INTERVAL", val)}
                         />
+                        <div className="rounded-lg border border-border/70 bg-secondary/20 p-3 space-y-3">
+                            <h4 className="text-sm font-semibold text-foreground">{t("settings.advanced.multiAgentTimeout.title")}</h4>
+                            <SettingField
+                                label={t("settings.advanced.multiAgentTimeout.send.label")}
+                                keyName="MULTI_AGENT_WORKER_SEND_TIMEOUT_MS"
+                                desc={t("settings.advanced.multiAgentTimeout.send.desc")}
+                                placeholder="90000"
+                                value={env.MULTI_AGENT_WORKER_SEND_TIMEOUT_MS || ""}
+                                onChange={(val) => onChangeEnv("MULTI_AGENT_WORKER_SEND_TIMEOUT_MS", val)}
+                            />
+                            <SettingField
+                                label={t("settings.advanced.multiAgentTimeout.idle.label")}
+                                keyName="MULTI_AGENT_WORKER_IDLE_TIMEOUT_MS"
+                                desc={t("settings.advanced.multiAgentTimeout.idle.desc")}
+                                placeholder="90000"
+                                value={env.MULTI_AGENT_WORKER_IDLE_TIMEOUT_MS || ""}
+                                onChange={(val) => onChangeEnv("MULTI_AGENT_WORKER_IDLE_TIMEOUT_MS", val)}
+                            />
+                            <SettingField
+                                label={t("settings.advanced.multiAgentTimeout.draft.label")}
+                                keyName="MULTI_AGENT_WORKER_DRAFT_CHECK_INTERVAL_MS"
+                                desc={t("settings.advanced.multiAgentTimeout.draft.desc")}
+                                placeholder="10000"
+                                value={env.MULTI_AGENT_WORKER_DRAFT_CHECK_INTERVAL_MS || ""}
+                                onChange={(val) => onChangeEnv("MULTI_AGENT_WORKER_DRAFT_CHECK_INTERVAL_MS", val)}
+                            />
+                        </div>
                         <SettingField
                             label={t("settings.advanced.userDataDir.label")}
                             keyName="USER_DATA_DIR"
