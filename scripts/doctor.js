@@ -69,15 +69,14 @@ const testPort = (port) => {
 
 // 5b. Check Playwright Chromium binary
 try {
-    const { execSync } = require('child_process');
-    // npx playwright install chromium --dry-run exits 0 only if already installed
-    const result = execSync('npx playwright install chromium --dry-run 2>&1', { stdio: 'pipe' }).toString();
-    // If the output says it would download, the browser is NOT installed
-    const needsDownload = result.includes('Download url');
+    const { chromium } = require('playwright');
+    const executablePath = chromium.executablePath();
+    const isInstalled = Boolean(executablePath) && fs.existsSync(executablePath);
+
     check(
         'Playwright Chromium',
-        !needsDownload,
-        'Installed',
+        isInstalled,
+        `Installed (${executablePath})`,
         'Not installed - Playwright browser binary is missing.',
         'Run `npx playwright install chromium` (and on Linux: `sudo npx playwright install-deps chromium`)',
         false

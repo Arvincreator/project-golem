@@ -138,7 +138,13 @@ module.exports = function registerStaticRoutes(server) {
 
     server.app.get(/\/dashboard.*/, (req, res, next) => {
         const normalizedPath = req.path.replace(/\/$/, '');
-        if (normalizedPath === '/dashboard/system-setup' || normalizedPath === '/dashboard/login' || req.path.startsWith('/api/')) {
+        if (
+            normalizedPath === '/dashboard/system-setup' ||
+            normalizedPath === '/dashboard/system-setup.html' ||
+            normalizedPath === '/dashboard/login' ||
+            normalizedPath === '/dashboard/login.html' ||
+            req.path.startsWith('/api/')
+        ) {
             return next();
         }
 
@@ -151,8 +157,8 @@ module.exports = function registerStaticRoutes(server) {
         try {
             const isConfigured = process.env.SYSTEM_CONFIGURED === 'true';
             if (!isConfigured) {
-                console.log(`🚩 [WebServer] System NOT initialized. Redirecting ${req.path} to /dashboard/system-setup`);
-                return res.redirect('/dashboard/system-setup');
+                console.log(`🚩 [WebServer] System NOT initialized. Redirecting ${req.path} to /dashboard/system-setup.html`);
+                return res.redirect('/dashboard/system-setup.html');
             }
         } catch (e) {
             console.error('Failed to check config during redirect:', e.message);
@@ -162,17 +168,17 @@ module.exports = function registerStaticRoutes(server) {
 
     dashboardRoutes.forEach((route) => {
         server.app.get(route, (req, res) => {
-            const fileName = route === '/dashboard' ? 'dashboard.html' : `${route.replace(/^\//, '')}.html`;
-            const fullPath = path.join(publicPath, fileName);
-            return sendDashboardFile(res, fullPath);
+            const htmlPath = route === '/dashboard' ? '/dashboard.html' : `${route}.html`;
+            return res.redirect(htmlPath);
         });
     });
 
     server.app.get(/\/dashboard\/.*/, (req, res) => {
         const normalizedPath = req.path.replace(/\/$/, '');
-        const htmlFileName = `${normalizedPath.replace(/^\//, '')}.html`;
-        const fullPath = path.join(publicPath, htmlFileName);
+        const htmlPath = normalizedPath.endsWith('.html')
+            ? normalizedPath
+            : `${normalizedPath}.html`;
 
-        return sendDashboardFile(res, fullPath);
+        return res.redirect(htmlPath);
     });
 };
