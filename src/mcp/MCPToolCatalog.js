@@ -61,6 +61,7 @@ function normalizeTool(server, tool) {
     const inputSchema = tool.inputSchema || tool.schema || null;
     return {
         server: server.name,
+        name: tool.name,
         tool: tool.name,
         id: `${server.name}/${tool.name}`,
         description: tool.description || '',
