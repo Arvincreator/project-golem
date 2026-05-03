@@ -88,6 +88,10 @@ class SkillHandler {
 
         // ─── Dynamic Skills ────────────────────────────────────────────
         const skillName = act.action;
+        const normalizedSkillName = String(skillName || '').toLowerCase().replace(/_/g, '-');
+        if (normalizedSkillName === 'sys-admin') {
+            return false;
+        }
         const dynamicSkill = skillManager.getSkill(skillName);
 
         if (dynamicSkill) {

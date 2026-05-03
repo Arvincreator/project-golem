@@ -86,6 +86,10 @@ class SecurityManager {
             return { level: 'WARNING', reason: '複合指令中包含非信任授權的指令，需確認' };
         }
 
+        if (/^node\s+(src\/skills\/core\/[a-zA-Z0-9_-]+\.js|src\/skills\/modules\/[a-zA-Z0-9_-]+\/index\.js|golem_memory\/skills\/[a-zA-Z0-9_-]+\/index\.js)(\s|$)/.test(safeCmd)) {
+            return { level: 'SAFE' };
+        }
+
         const baseCmd = safeCmd.split(/\s+/)[0];
         const trustSystem = process.env.GOLEM_TRUST_SYSTEM_COMMANDS === 'true';
 

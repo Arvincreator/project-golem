@@ -7,9 +7,9 @@ class CommandSafeguard {
     constructor() {
         // 基礎白名單指令格式 (Regex)
         this.whitelist = [
-            /^node src\/skills\/core\/[a-zA-Z0-9_-]+\.js\s+".*"$/,
-            /^node src\/skills\/modules\/[a-zA-Z0-9_-]+\/index\.js\s+".*"$/,
-            /^node golem_memory\/skills\/[a-zA-Z0-9_-]+\/index\.js\s+".*"$/,
+            /^node src\/skills\/core\/[a-zA-Z0-9_-]+\.js\s+(['"]).*\1$/,
+            /^node src\/skills\/modules\/[a-zA-Z0-9_-]+\/index\.js\s+(['"]).*\1$/,
+            /^node golem_memory\/skills\/[a-zA-Z0-9_-]+\/index\.js\s+(['"]).*\1$/,
             /^node scripts\/doctor\.js$/,
             /^ls\s+.*$/,
             /^cat\s+.*$/

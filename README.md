@@ -4,7 +4,7 @@
   <p><strong>可長期陪跑的自主 AI 代理系統：Web Gemini、Ollama、LM Studio、多代理、技能、記憶與 Web Dashboard。</strong></p>
 
   <p>
-    <img src="https://img.shields.io/badge/Version-9.5.1-blue?style=for-the-badge" alt="Version">
+    <img src="https://img.shields.io/badge/Version-9.5.2-blue?style=for-the-badge" alt="Version">
     <img src="https://img.shields.io/badge/Node.js-20--22-green?style=for-the-badge&logo=nodedotjs" alt="Node.js">
     <img src="https://img.shields.io/badge/Backend-Gemini%20Web%20%7C%20Ollama%20%7C%20LM%20Studio-orange?style=for-the-badge" alt="Backends">
     <img src="https://img.shields.io/badge/Dashboard-Next.js%2016-black?style=for-the-badge&logo=nextdotjs" alt="Dashboard">

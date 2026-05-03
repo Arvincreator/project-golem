@@ -90,7 +90,7 @@ class AutonomyManager {
                         await this.sendNotification(`📦 **【自動化日誌維護】**\n偵測到${label} (${date}) 已累積達 ${files.length} 小時對話，目前將進行記憶彙整，請稍等...`);
                     }
 
-                    const logArchiveSkill = require('../skills/core/log-archive');
+                    const logArchiveSkill = require('../skills/modules/log-archive/index.js');
                     const result = await logArchiveSkill.run({
                         brain: this.brain,
                         args: { date: date }

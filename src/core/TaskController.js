@@ -13,6 +13,10 @@ const GOLEM_SLASH_PREFIXES = [
     '/model', '/reload', '/patch', '/project',
 ];
 
+function shellQuote(value) {
+    return `'${String(value).replace(/'/g, `'\\''`)}'`;
+}
+
 // ============================================================
 // ⚡ Task Controller (閉環回饋版)
 // ============================================================
@@ -79,36 +83,32 @@ class TaskController {
 
             // ✨ [v9.1 Hybrid Object Fix] 如果 cmd 為空但 action 存在，則自動組裝
             if (!cmdToRun && step.action && step.action !== 'command') {
-                if (step.parameters && step.parameters.command) {
-                    cmdToRun = step.parameters.command;
-                } else if (step.parameters && typeof step.parameters === 'string') {
-                    cmdToRun = step.parameters;
-                } else {
-                    const actionName = String(step.action).toLowerCase().replace(/_/g, '-');
-                    const { action, ...params } = step;
+                const actionName = String(step.action).toLowerCase().replace(/_/g, '-');
+                const { action, ...params } = step;
 
-                    const fs = require('fs');
-                    const path = require('path');
-                    const SkillPackageRegistry = require('../managers/SkillPackageRegistry');
-                    const skillPackage = SkillPackageRegistry.listSkillPackages()
-                        .find(pkg => pkg.id === actionName || pkg.action === actionName);
-                    const skillPath = skillPackage && fs.existsSync(skillPackage.indexPath)
-                        ? skillPackage.indexPath
-                        : path.join(process.cwd(), 'src/skills/core', `${actionName}.js`);
+                const fs = require('fs');
+                const path = require('path');
+                const SkillPackageRegistry = require('../managers/SkillPackageRegistry');
+                const skillPackage = SkillPackageRegistry.listSkillPackages()
+                    .find(pkg => pkg.id === actionName || pkg.action === actionName);
+                const skillPath = skillPackage && fs.existsSync(skillPackage.indexPath)
+                    ? skillPackage.indexPath
+                    : path.join(process.cwd(), 'src/skills/core', `${actionName}.js`);
 
-                    if (fs.existsSync(skillPath)) {
-                        let payloadObj = params;
-                        if (params.parameters && typeof params.parameters === 'object') {
-                            payloadObj = params.parameters; // 去除多層嵌套，方便腳本解析
-                        }
-                        const payload = JSON.stringify(payloadObj).replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
-                        const relativeSkillPath = path.relative(process.cwd(), skillPath);
-                        cmdToRun = `node ${relativeSkillPath} "${payload}"`;
-                        console.log(`🔧 [TaskController] 自動組裝技能指令: ${cmdToRun}`);
-                    } else {
-                        console.warn(`⚠️ [TaskController] 找不到實體技能檔: ${skillPath}`);
-                        cmdToRun = `echo "⛔ [系統攔截] 找不到實體技能檔: ${skillPath} (可能為虛擬技能)。請改用 {\\\"action\\\": \\\"command\\\", \\\"command\\\": \\\"你的 shell 指令\\\"}。"`;
+                if (fs.existsSync(skillPath)) {
+                    let payloadObj = params;
+                    if (params.parameters && typeof params.parameters === 'object') {
+                        payloadObj = params.parameters; // 去除多層嵌套，方便腳本解析
+                    } else if (typeof params.parameters === 'string') {
+                        payloadObj = { command: params.parameters };
                     }
+                    const payload = shellQuote(JSON.stringify(payloadObj));
+                    const relativeSkillPath = path.relative(process.cwd(), skillPath);
+                    cmdToRun = `node ${relativeSkillPath} ${payload}`;
+                    console.log(`🔧 [TaskController] 自動組裝技能指令: ${cmdToRun}`);
+                } else {
+                    console.warn(`⚠️ [TaskController] 找不到實體技能檔: ${skillPath}`);
+                    cmdToRun = `echo "⛔ [系統攔截] 找不到實體技能檔: ${skillPath} (可能為虛擬技能)。請改用 {\\\"action\\\": \\\"command\\\", \\\"command\\\": \\\"你的 shell 指令\\\"}。"`;
                 }
             }
             // ── Golem 內建斜線指令攔截 ──────────────────────────────

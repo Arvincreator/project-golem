@@ -73,4 +73,17 @@ describe('SkillHandler', () => {
         
         expect(mockCtx.reply).toHaveBeenCalledWith(expect.stringContaining('技能執行錯誤: Skill failed randomly'));
     });
+
+    test('execute should leave sys-admin actions to TaskController approval flow', async () => {
+        SkillManager.getSkill.mockReturnValue({
+            name: 'sys-admin',
+            run: jest.fn().mockResolvedValue('should not run directly')
+        });
+
+        const result = await SkillHandler.execute(mockCtx, { action: 'sys_admin', parameters: { command: 'echo hello' } }, mockBrain);
+
+        expect(result).toBe(false);
+        expect(SkillManager.getSkill).not.toHaveBeenCalled();
+        expect(mockCtx.reply).not.toHaveBeenCalled();
+    });
 });

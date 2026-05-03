@@ -4,7 +4,7 @@ const HelpManager = require('../managers/HelpManager');
 const skills = require('../skills');
 const skillManager = require('../managers/SkillManager');
 const SkillArchitect = require('../managers/SkillArchitect');
-const wikiSkill = require('../skills/core/wiki');
+const wikiSkill = require('../skills/modules/wiki/index.js');
 const { toolsetManager, SCENE_TOOLSETS } = require('../managers/ToolsetManager');
 const { hookSystem } = require('./HookSystem'); // ⚡ [OpenHarness-inspired]
 const { buildFreshStockSnapshotInjection } = require('../services/StockDashboardSnapshot');
@@ -506,7 +506,7 @@ class NodeRouter {
             const hookCtx = { type: 'skill', name: 'session-search', trigger: text, _startMs: Date.now() };
             await hookSystem.emit('pre_tool_use', hookCtx);
             try {
-                const searchSkill = require('../skills/core/session-search');
+                const searchSkill = require('../skills/modules/session-search/index.js');
                 const result = await searchSkill.run({
                     args: { query: cleanQuery, mode: 'keyword', days },
                     brain

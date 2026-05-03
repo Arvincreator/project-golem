@@ -4,7 +4,7 @@ import path from "path";
 
 // 讀取根目錄的 package.json 以獲取版本號
 const packageJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../package.json"), "utf8"));
-const version = packageJson.version || "9.5.1";
+const version = packageJson.version || "9.5.2";
 const staticExportEnabled = process.env.NEXT_STATIC_EXPORT !== "false" && process.env.NODE_ENV === "production";
 
 const nextConfig: NextConfig = {
