@@ -976,8 +976,8 @@ async function handleUnifiedCallback(ctx, actionData) {
 
             let cmd = "";
 
-            if (approvedStep.action === 'command' || approvedStep.cmd || approvedStep.parameter || approvedStep.command) {
-                cmd = approvedStep.cmd || approvedStep.parameter || approvedStep.command || "";
+            if (approvedStep.action === 'command' || approvedStep.cmd || approvedStep.parameter || approvedStep.command || approvedStep.parameters?.command) {
+                cmd = approvedStep.cmd || approvedStep.parameter || approvedStep.command || approvedStep.parameters?.command || "";
             }
             else if (approvedStep.action && approvedStep.action !== 'command') {
                 const actionName = String(approvedStep.action).toLowerCase().replace(/_/g, '-');

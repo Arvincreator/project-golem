@@ -71,7 +71,7 @@
       {
         "source": "Google News RSS",
         "status": "ok",
-        "count": 60
+        "count": 61
       },
       {
         "source": "DuckDuckGo HTML search",
@@ -79,7 +79,7 @@
         "count": 6
       }
     ],
-    "fetchedAt": "2026-05-02T19:08:42.149Z",
+    "fetchedAt": "2026-05-03T01:39:55.621Z",
     "results": [
       {
         "title": "0056躍永豐金最大單一股東 - 經濟日報",
@@ -369,6 +369,6 @@
     "count": 9
   },
   "quoteErrors": [],
-  "generatedAt": "2026-05-02T19:08:42.151Z",
-  "savedAt": "2026-05-02T19:08:42.669Z"
+  "generatedAt": "2026-05-03T01:40:53.828Z",
+  "savedAt": "2026-05-03T01:40:54.341Z"
 }

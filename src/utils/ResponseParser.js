@@ -56,6 +56,12 @@ class ResponseParser {
                     steps = steps.map(act => {
                         if (!act) return act;
 
+                        if (!act.action && act.parameters && act.parameters.command) {
+                            act.action = 'command';
+                            act.parameter = act.parameters.command;
+                            console.log(`🔧 [Parser] 自動補齊缺漏 action: parameters.command -> command`);
+                        }
+
                         // 矯正 action 名稱 (AI 常犯錯寫成 run_command)
                         if (act.action === 'run_command' || act.action === 'execute') {
                             act.action = 'command';
@@ -82,6 +88,10 @@ class ResponseParser {
 
                             steps = steps.map(act => {
                                 if (!act) return act;
+                                if (!act.action && act.parameters && act.parameters.command) {
+                                    act.action = 'command';
+                                    act.parameter = act.parameters.command;
+                                }
                                 if (act.action === 'run_command' || act.action === 'execute') act.action = 'command';
                                 if (act.action === 'command' && !act.parameter && !act.cmd && !act.command) {
                                     if (act.params && act.params.command) act.parameter = act.params.command;

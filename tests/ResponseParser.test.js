@@ -33,6 +33,15 @@ describe('ResponseParser', () => {
             expect(result.actions[0].action).toBe('command');
         });
 
+        test('repairs action that only contains parameters.command', () => {
+            const actions = JSON.stringify([{ parameters: { command: 'pwd' } }]);
+            const raw = `[GOLEM_ACTION]${actions}[GOLEM_REPLY]done`;
+            const result = ResponseParser.parse(raw);
+            expect(result.actions).toHaveLength(1);
+            expect(result.actions[0].action).toBe('command');
+            expect(result.actions[0].parameter).toBe('pwd');
+        });
+
         test('auto-wraps single JSON object into array', () => {
             const action = JSON.stringify({ action: 'command', parameter: 'pwd' });
             const raw = `[GOLEM_ACTION]${action}[GOLEM_REPLY]done`;

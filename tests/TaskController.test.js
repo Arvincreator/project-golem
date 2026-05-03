@@ -35,6 +35,21 @@ describe('TaskController', () => {
         expect(controller.pendingTasks.size).toBe(0);
     });
 
+    test('runSequence should execute command from parameters.command even when action is missing', async () => {
+        const controller = new TaskController({ golemId: 'test-golem' });
+        const ctx = { reply: jest.fn().mockResolvedValue(undefined) };
+
+        const result = await controller.runSequence(ctx, [
+            { parameters: { command: 'pwd' } }
+        ]);
+
+        controller.destroy();
+
+        expect(result).toContain('[Step 1 Success]');
+        expect(result).toContain('cmd: pwd');
+        expect(ctx.reply).not.toHaveBeenCalled();
+    });
+
     test('runSequence should still require approval for complex command', async () => {
         const controller = new TaskController({ golemId: 'test-golem' });
         const ctx = { reply: jest.fn().mockResolvedValue(undefined) };

@@ -79,10 +79,11 @@ class TaskController {
         let reportBuffer = [];
         for (let i = startIndex; i < steps.length; i++) {
             const step = steps[i];
-            let cmdToRun = step.cmd || step.parameter || step.command || "";
+            const shouldAssembleSkill = step.action && step.action !== 'command';
+            let cmdToRun = step.cmd || step.parameter || step.command || (shouldAssembleSkill ? '' : step.parameters?.command) || "";
 
             // ✨ [v9.1 Hybrid Object Fix] 如果 cmd 為空但 action 存在，則自動組裝
-            if (!cmdToRun && step.action && step.action !== 'command') {
+            if (!cmdToRun && shouldAssembleSkill) {
                 const actionName = String(step.action).toLowerCase().replace(/_/g, '-');
                 const { action, ...params } = step;
 
