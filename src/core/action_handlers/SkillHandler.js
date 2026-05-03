@@ -1,5 +1,6 @@
 const skillManager = require('../../managers/SkillManager');
 const MCPManager   = require('../../mcp/MCPManager');
+const MCPCallValidator = require('../../mcp/MCPCallValidator');
 
 class SkillHandler {
     static async execute(ctx, act, brain, controller, dispatchOptions = {}) {
@@ -56,6 +57,19 @@ class SkillHandler {
             try {
                 const mcpManager = MCPManager.getInstance();
                 await mcpManager.load();   // 確保 servers 已連線（load 內部有冪等保護）
+                const validation = MCPCallValidator.validateMcpCall({
+                    server,
+                    tool,
+                    parameters,
+                }, {
+                    servers: mcpManager.getServers(),
+                });
+                if (!validation.ok) {
+                    const message = MCPCallValidator.formatValidationError(validation);
+                    await ctx.reply(`❌ [MCP] 呼叫格式錯誤：${validation.errors.join('; ')}`);
+                    await sendFeedback(message);
+                    return true;
+                }
                 const result     = await mcpManager.callTool(server, tool, parameters);
 
                 // 格式化結果

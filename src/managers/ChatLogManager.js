@@ -47,16 +47,18 @@ class ChatLogManager {
 
     async init() {
         if (this._isInitialized) return;
+        if (this._initPromise) return this._initPromise;
         
-        if (!fs.existsSync(this.dbDir)) {
-            fs.mkdirSync(this.dbDir, { recursive: true });
-        }
+        this._initPromise = (async () => {
+            if (!fs.existsSync(this.dbDir)) {
+                fs.mkdirSync(this.dbDir, { recursive: true });
+            }
 
-        const sqlite3 = getSqlite3();
-        this.db = new sqlite3.Database(this.dbPath);
-        this.runAsync = util.promisify(this.db.run.bind(this.db));
-        this.allAsync = util.promisify(this.db.all.bind(this.db));
-        this.getAsync = util.promisify(this.db.get.bind(this.db));
+            const sqlite3 = getSqlite3();
+            this.db = new sqlite3.Database(this.dbPath);
+            this.runAsync = util.promisify(this.db.run.bind(this.db));
+            this.allAsync = util.promisify(this.db.all.bind(this.db));
+            this.getAsync = util.promisify(this.db.get.bind(this.db));
 
         await new Promise((resolve, reject) => {
             this.db.serialize(() => {
@@ -141,6 +143,8 @@ class ChatLogManager {
         
         this._isInitialized = true;
         await this.cleanup();
+        })();
+        return this._initPromise;
     }
 
     // ============================================================
@@ -273,19 +277,16 @@ class ChatLogManager {
         const now = Date.now();
 
         try {
-            await this.runAsync('BEGIN TRANSACTION');
             // Tier 0: 原則保留 72 小時
             await this.runAsync(`DELETE FROM messages WHERE timestamp < ?`, [now - MEMORY_TIERS.HOURLY_RETENTION_MS]);
             // Tier 1: daily 摘要 → 90 天
             await this.runAsync(`DELETE FROM summaries WHERE tier = 'daily' AND timestamp < ?`, [now - MEMORY_TIERS.DAILY_RETENTION_MS]);
             // Tier 2: monthly 精華 → 5 年
             await this.runAsync(`DELETE FROM summaries WHERE tier = 'monthly' AND timestamp < ?`, [now - MEMORY_TIERS.MONTHLY_RETENTION_MS]);
-            await this.runAsync('COMMIT');
             
             // VACUUM 釋放空間 (可選，防止檔案無限增長)
             // this.db.run('VACUUM;'); 
         } catch (e) {
-            await this.runAsync('ROLLBACK');
             console.error(`❌ [LogManager] 清理失敗:`, e.message);
         }
     }

@@ -28,6 +28,12 @@ interface MCPTool {
     name:        string;
     description: string;
     inputSchema: { type: string; properties?: Record<string, unknown>; required?: string[] };
+    example?: {
+        action: string;
+        server: string;
+        tool: string;
+        parameters: Record<string, unknown>;
+    };
 }
 
 interface MCPLogEntry {
@@ -49,6 +55,43 @@ type MCPLogSocketPayload = {
 function getErrorMessage(error: unknown, fallback = "Unknown error"): string {
     if (error instanceof Error && error.message) return error.message;
     return fallback;
+}
+
+function exampleValue(schema: Record<string, unknown> = {}, name: string): unknown {
+    if (schema.default !== undefined) return schema.default;
+    if (Array.isArray(schema.enum) && schema.enum.length > 0) return schema.enum[0];
+    const type = Array.isArray(schema.type) ? schema.type[0] : schema.type;
+    if (type === "boolean") return false;
+    if (type === "number" || type === "integer") return 1;
+    if (type === "array") return ["value"];
+    if (type === "object") return {};
+    if (/repo|repository/i.test(name)) return "owner/repo";
+    if (/url/i.test(name)) return "https://example.com";
+    if (/path/i.test(name)) return "path/to/file";
+    if (/title/i.test(name)) return "Title";
+    if (/query|search/i.test(name)) return "search query";
+    if (/body|content|message|text/i.test(name)) return "Text content";
+    return `<${name}>`;
+}
+
+function buildToolExample(serverName: string, tool: MCPTool): Record<string, unknown> {
+    if (tool.example) return tool.example;
+    const properties = tool.inputSchema?.properties || {};
+    const required = tool.inputSchema?.required || [];
+    const keys = required.length > 0 ? required : Object.keys(properties).slice(0, 3);
+    const parameters: Record<string, unknown> = {};
+    for (const key of keys) {
+        const schema = typeof properties[key] === "object" && properties[key] !== null
+            ? properties[key] as Record<string, unknown>
+            : {};
+        parameters[key] = exampleValue(schema, key);
+    }
+    return {
+        action: "mcp_call",
+        server: serverName,
+        tool: tool.name,
+        parameters,
+    };
 }
 
 // useApiBase 已移除，改用 @/lib/api 的 apiUrl()
@@ -260,12 +303,7 @@ function ToolInspector({ server }: { server: MCPServer | null }) {
                             <div className="text-xs text-muted-foreground/60 pt-2 border-t border-border">
                                 <p>{isEnglish ? "Action format (for Golem chat):" : "Action 格式 (用於 Golem 對話):"}</p>
                                 <pre className="mt-1 bg-background p-2 rounded-lg text-[11px] text-emerald-300 overflow-x-auto whitespace-pre-wrap">{
-                                    JSON.stringify({
-                                        action: "mcp_call",
-                                        server: server.name,
-                                        tool:   selected.name,
-                                        parameters: {}
-                                    }, null, 2)
+                                    JSON.stringify(buildToolExample(server.name, selected), null, 2)
                                 }</pre>
                             </div>
                         </div>

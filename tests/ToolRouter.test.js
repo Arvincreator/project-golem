@@ -20,6 +20,8 @@ describe('ToolRouter', () => {
         const hint = router.buildRoutingHint('幫我打開網頁並點擊按鈕，順便看 console error');
         expect(hint).toContain('<tool-routing>');
         expect(hint).toContain('mcp_call server="chrome-devtools"');
+        expect(hint).toContain('"action": "mcp_call"');
+        expect(hint).toContain('"parameters"');
     });
 
     test('returns empty hint for unrelated casual chat', () => {

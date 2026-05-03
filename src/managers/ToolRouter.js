@@ -3,6 +3,7 @@ const path = require('path');
 const SkillPackageRegistry = require('./SkillPackageRegistry');
 const { toolsetManager } = require('./ToolsetManager');
 const ToolUsePolicy = require('./ToolUsePolicy');
+const MCPToolCatalog = require('../mcp/MCPToolCatalog');
 
 const MCP_CONFIG_PATH = path.resolve(process.cwd(), 'data', 'mcp-servers.json');
 const STOPWORDS = new Set([
@@ -104,6 +105,10 @@ function summarizeSchema(schema) {
     return bits.join('; ');
 }
 
+function compactJson(value) {
+    return JSON.stringify(value, null, 2).replace(/\n/g, '\n  ');
+}
+
 class ToolRouter {
     constructor(options = {}) {
         this.userDataDir = options.userDataDir || null;
@@ -149,6 +154,7 @@ class ToolRouter {
         for (const server of loadMcpServers()) {
             const serverDesc = String(server.description || '').trim();
             for (const tool of server.cachedTools || []) {
+                const catalogTool = MCPToolCatalog.findTool(server.name, tool.name, [server]);
                 const candidate = {
                     kind: 'mcp',
                     server: server.name,
@@ -156,6 +162,7 @@ class ToolRouter {
                     name: tool.name,
                     description: tool.description || '',
                     inputSchema: tool.inputSchema || tool.schema || null,
+                    example: catalogTool?.example || MCPToolCatalog.buildActionExample(server.name, tool.name, tool.inputSchema || tool.schema || {}),
                     content: `${server.name} ${serverDesc} ${tool.name} ${tool.description || ''}`,
                     score: 0,
                 };
@@ -199,6 +206,7 @@ class ToolRouter {
                 const schemaSummary = summarizeSchema(tool.inputSchema);
                 const policy = tool.policy ? ` [${tool.policy.strength}; risk=${tool.policy.risk}${tool.policy.requiresConfirmation ? '; confirm first' : ''}]` : '';
                 lines.push(`- mcp_call server="${tool.server}" tool="${tool.name}": ${tool.description || 'no description'}${schemaSummary ? ` (${schemaSummary})` : ''}${policy}`);
+                lines.push(`  Use this exact action shape:\n  ${compactJson(tool.example)}`);
             }
         }
 

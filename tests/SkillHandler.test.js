@@ -5,6 +5,10 @@ jest.mock('../src/managers/SkillManager', () => ({
     getSkill: jest.fn()
 }));
 
+jest.mock('../src/mcp/MCPManager', () => ({
+    getInstance: jest.fn()
+}));
+
 describe('SkillHandler', () => {
     let mockCtx;
     let mockBrain;
@@ -85,5 +89,46 @@ describe('SkillHandler', () => {
         expect(result).toBe(false);
         expect(SkillManager.getSkill).not.toHaveBeenCalled();
         expect(mockCtx.reply).not.toHaveBeenCalled();
+    });
+
+    test('execute should validate mcp_call before calling tool', async () => {
+        const MCPManager = require('../src/mcp/MCPManager');
+        const callTool = jest.fn();
+        MCPManager.getInstance.mockReturnValue({
+            load: jest.fn().mockResolvedValue(undefined),
+            getServers: jest.fn().mockReturnValue([
+                {
+                    name: 'github',
+                    enabled: true,
+                    connected: true,
+                    cachedTools: [
+                        {
+                            name: 'create_issue',
+                            inputSchema: {
+                                type: 'object',
+                                required: ['repository_full_name', 'title'],
+                                properties: {
+                                    repository_full_name: { type: 'string' },
+                                    title: { type: 'string' },
+                                },
+                                additionalProperties: false,
+                            },
+                        },
+                    ],
+                },
+            ]),
+            callTool,
+        });
+
+        const result = await SkillHandler.execute(mockCtx, {
+            action: 'mcp_call',
+            server: 'github',
+            tool: 'create_issue',
+            parameters: { title: 'Bug' },
+        }, mockBrain);
+
+        expect(result).toBe(true);
+        expect(callTool).not.toHaveBeenCalled();
+        expect(mockCtx.reply).toHaveBeenCalledWith(expect.stringContaining('呼叫格式錯誤'));
     });
 });

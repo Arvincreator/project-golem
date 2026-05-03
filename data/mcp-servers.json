@@ -4,7 +4,8 @@
     "command": "npx",
     "args": [
       "-y",
-      "chrome-devtools-mcp@latest"
+      "chrome-devtools-mcp@latest",
+      "--user-data-dir=/Users/arvin/.cache/chrome-devtools-mcp/chrome-profile-v2"
     ],
     "env": {},
     "enabled": true,
@@ -34,6 +35,14 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "click",
+          "parameters": {
+            "uid": "<uid>"
+          }
         }
       },
       {
@@ -52,6 +61,14 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "close_page",
+          "parameters": {
+            "pageId": 1
+          }
         }
       },
       {
@@ -79,6 +96,15 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "drag",
+          "parameters": {
+            "from_uid": "<from_uid>",
+            "to_uid": "<to_uid>"
+          }
         }
       },
       {
@@ -128,6 +154,16 @@
           },
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "emulate",
+          "parameters": {
+            "networkConditions": "Offline",
+            "cpuThrottlingRate": 1,
+            "geolocation": "<geolocation>"
+          }
         }
       },
       {
@@ -158,6 +194,14 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "evaluate_script",
+          "parameters": {
+            "function": "<function>"
+          }
         }
       },
       {
@@ -185,6 +229,15 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "fill",
+          "parameters": {
+            "uid": "<uid>",
+            "value": "<value>"
+          }
         }
       },
       {
@@ -225,6 +278,19 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "fill_form",
+          "parameters": {
+            "elements": [
+              {
+                "uid": "<uid>",
+                "value": "<value>"
+              }
+            ]
+          }
         }
       },
       {
@@ -243,6 +309,14 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "get_console_message",
+          "parameters": {
+            "msgid": 1
+          }
         }
       },
       {
@@ -266,6 +340,16 @@
           },
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "get_network_request",
+          "parameters": {
+            "reqid": 1,
+            "requestFilePath": "path/to/file",
+            "responseFilePath": "path/to/file"
+          }
         }
       },
       {
@@ -292,6 +376,14 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "handle_dialog",
+          "parameters": {
+            "action": "accept"
+          }
         }
       },
       {
@@ -314,6 +406,14 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "hover",
+          "parameters": {
+            "uid": "<uid>"
+          }
         }
       },
       {
@@ -347,6 +447,16 @@
           },
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "lighthouse_audit",
+          "parameters": {
+            "mode": "navigation",
+            "device": "desktop",
+            "outputDirPath": "path/to/file"
+          }
         }
       },
       {
@@ -402,6 +512,18 @@
           },
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "list_console_messages",
+          "parameters": {
+            "pageSize": 1,
+            "pageIdx": 1,
+            "types": [
+              "log"
+            ]
+          }
         }
       },
       {
@@ -456,6 +578,18 @@
           },
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "list_network_requests",
+          "parameters": {
+            "pageSize": 1,
+            "pageIdx": 1,
+            "resourceTypes": [
+              "document"
+            ]
+          }
         }
       },
       {
@@ -465,6 +599,12 @@
           "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
           "properties": {}
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "list_pages",
+          "parameters": {}
         }
       },
       {
@@ -510,6 +650,16 @@
           },
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "navigate_page",
+          "parameters": {
+            "type": "url",
+            "url": "https://example.com",
+            "ignoreCache": false
+          }
         }
       },
       {
@@ -540,6 +690,14 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "new_page",
+          "parameters": {
+            "url": "https://example.com"
+          }
         }
       },
       {
@@ -563,6 +721,15 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "performance_analyze_insight",
+          "parameters": {
+            "insightSetId": "<insightSetId>",
+            "insightName": "<insightName>"
+          }
         }
       },
       {
@@ -588,6 +755,16 @@
           },
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "performance_start_trace",
+          "parameters": {
+            "reload": true,
+            "autoStop": true,
+            "filePath": "path/to/file"
+          }
         }
       },
       {
@@ -603,6 +780,14 @@
           },
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "performance_stop_trace",
+          "parameters": {
+            "filePath": "path/to/file"
+          }
         }
       },
       {
@@ -625,6 +810,14 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "press_key",
+          "parameters": {
+            "key": "<key>"
+          }
         }
       },
       {
@@ -648,6 +841,15 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "resize_page",
+          "parameters": {
+            "width": 1,
+            "height": 1
+          }
         }
       },
       {
@@ -670,6 +872,14 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "select_page",
+          "parameters": {
+            "pageId": 1
+          }
         }
       },
       {
@@ -688,6 +898,14 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "take_memory_snapshot",
+          "parameters": {
+            "filePath": "path/to/file"
+          }
         }
       },
       {
@@ -727,6 +945,16 @@
           },
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "take_screenshot",
+          "parameters": {
+            "format": "png",
+            "quality": 1,
+            "uid": "<uid>"
+          }
         }
       },
       {
@@ -746,6 +974,15 @@
           },
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "take_snapshot",
+          "parameters": {
+            "verbose": false,
+            "filePath": "path/to/file"
+          }
         }
       },
       {
@@ -768,6 +1005,14 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "type_text",
+          "parameters": {
+            "text": "Text content"
+          }
         }
       },
       {
@@ -795,6 +1040,15 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "upload_file",
+          "parameters": {
+            "uid": "<uid>",
+            "filePath": "path/to/file"
+          }
         }
       },
       {
@@ -821,6 +1075,16 @@
           ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "example": {
+          "action": "mcp_call",
+          "server": "chrome-devtools",
+          "tool": "wait_for",
+          "parameters": {
+            "text": [
+              "Text content"
+            ]
+          }
         }
       }
     ]

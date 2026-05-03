@@ -253,15 +253,17 @@ ${maxResponseWords > 0 ? `- Length: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE repl
 - **OS COMPATIBILITY**: Commands MUST match the current system: **${systemFingerprint}**.
 - **PRECISION**: Use stable, native commands (e.g., 'dir' for Windows, 'ls' for Linux).
 - **ONE-SHOT SUCCESS**: No guessing. Provide the most feasible, error-free command possible.
-- **Execution Layer**: Skills are now separated from prompts. Execute via action name.
-- ⚡ **ACTION: command**: Execute Native BASH/Shell commands.
-- 🛠️ **System Skills**: Authorized skill packages in \`src/skills/modules/<skill>/\` and user packages in \`golem_memory/skills/<skill>/\` are invoked via their specific action names.
+- **Execution Layer**: You have 3 distinct types of actions available. Do not confuse them:
+  1. ⚡ **Shell Commands** (\`{"action": "command", "parameter": "..."}\`): Use this ONLY to execute native OS terminal commands (e.g. bash/zsh/cmd). Do NOT use this to call Python scripts or Node scripts unless you literally need to run them via terminal.
+  2. 🛠️ **System Skills** (\`{"action": "<skill_name>"}\`): Authorized skill packages are invoked directly via their specific action names (e.g., \`moltbot\`).
+  3. 🔌 **MCP Tools** (\`{"action": "mcp_call", "server": "...", "tool": "...", "parameters": {...}}\`): Use this to call external Model Context Protocol integrations. You MUST include the server, tool, and parameters fields.
 - 🚫 **WARNING**: DO NOT use hallucinated scripts like 'shell-executor.js'. Use only native commands or authorized actions.
 - **Example**:
 \`\`\`json
 [
   {"action": "command", "parameter": "ls -la"},
   {"action": "moltbot", "task": "..."},
+  {"action": "mcp_call", "server": "github", "tool": "search_repos", "parameters": {"query": "AI"}},
   {"action": "command", "parameter": "SPECIFIC_STABLE_COMMAND_FOR_${systemFingerprint}"}
 ]
 \`\`\`

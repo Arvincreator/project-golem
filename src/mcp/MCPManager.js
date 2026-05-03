@@ -10,6 +10,7 @@ const fs    = require('fs');
 const path  = require('path');
 const { EventEmitter } = require('events');
 const MCPClient = require('./MCPClient');
+const MCPToolCatalog = require('./MCPToolCatalog');
 
 const CONFIG_PATH = path.resolve(process.cwd(), 'data', 'mcp-servers.json');
 const MAX_LOG     = 500;
@@ -113,7 +114,9 @@ class MCPManager extends EventEmitter {
     async listTools(serverName) {
         const client = this._clients.get(serverName);
         if (!client) throw new Error(`MCP server "${serverName}" not connected`);
-        return await client.listTools();
+        const tools = await client.listTools();
+        this._cacheTools(serverName, tools);
+        return this.getCachedTools(serverName);
     }
 
     /**
@@ -177,6 +180,23 @@ class MCPManager extends EventEmitter {
         return this._logs.slice(-limit);
     }
 
+    getCachedTools(serverName = null) {
+        const servers = serverName
+            ? this._configs.filter(cfg => cfg.name === serverName)
+            : this._configs;
+        const tools = [];
+        for (const server of servers.filter(cfg => cfg.enabled !== false)) {
+            for (const tool of server.cachedTools || []) {
+                tools.push(MCPToolCatalog.findTool(server.name, tool.name, this._configs));
+            }
+        }
+        return tools.filter(Boolean);
+    }
+
+    getToolCatalog() {
+        return MCPToolCatalog.buildCatalog(this._configs);
+    }
+
     /** 測試連線（嘗試 listTools，成功後斷線） */
     async testServer(name) {
         const cfg = this._configs.find(c => c.name === name);
@@ -186,10 +206,26 @@ class MCPManager extends EventEmitter {
         try {
             await testClient.connect();
             const tools = await testClient.listTools();
-            return { success: true, toolCount: tools.length, tools };
+            const normalizedTools = tools
+                .map(tool => MCPToolCatalog.findTool(name, tool.name, [{ ...cfg, enabled: true, cachedTools: tools }]))
+                .filter(Boolean);
+            return { success: true, toolCount: normalizedTools.length, tools: normalizedTools };
         } finally {
             await testClient.disconnect();
         }
+    }
+
+    _cacheTools(serverName, tools) {
+        const cfgEntry = this._configs.find(c => c.name === serverName);
+        if (!cfgEntry) return;
+        cfgEntry.cachedTools = (tools || []).map(t => ({
+            name:        t.name,
+            description: t.description || '',
+            inputSchema: t.inputSchema || t.schema || null,
+            example:     MCPToolCatalog.buildActionExample(serverName, t.name, t.inputSchema || t.schema || {}),
+        }));
+        this._saveConfig();
+        MCPToolCatalog.writeCatalog(this._configs);
     }
 
     // ─── Private ───────────────────────────────────────────────────
@@ -212,17 +248,8 @@ class MCPManager extends EventEmitter {
         await client.connect();
         // Pre-fetch tools and persist to config for definition.js to read at startup
         try {
-            await client.listTools();
-            // Cache tools into the config entry so definition.js can read them from disk
-            const cfgEntry = this._configs.find(c => c.name === cfg.name);
-            if (cfgEntry && client.tools.length > 0) {
-                cfgEntry.cachedTools = client.tools.map(t => ({
-                    name:        t.name,
-                    description: t.description || '',
-                    inputSchema: t.inputSchema || t.schema || null
-                }));
-                this._saveConfig();
-            }
+            const tools = await client.listTools();
+            this._cacheTools(cfg.name, tools);
         } catch (_) { /* optional */ }
         this._clients.set(cfg.name, client);
         console.log(`[MCPManager] ✅ Connected: "${cfg.name}" (${client.tools.length} tools)`);

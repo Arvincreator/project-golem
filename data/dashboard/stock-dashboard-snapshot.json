@@ -60,8 +60,8 @@
     "sourceStatus": [
       {
         "source": "Yahoo 股市 RSS",
-        "status": "ok",
-        "count": 0
+        "status": "error",
+        "error": "fetch failed"
       },
       {
         "source": "Yahoo Finance news",
@@ -79,14 +79,28 @@
         "count": 6
       }
     ],
-    "fetchedAt": "2026-05-03T01:39:55.621Z",
+    "fetchedAt": "2026-05-03T14:11:29.959Z",
     "results": [
+      {
+        "title": "0056 元大高股息- 00403A今天淨值是不是已經開始計算了-股市爆料同學會 - CMoney",
+        "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE9Qdk43YmIwZjVEY2JUSS1aWGF4c1lUeFdhRHhwN1lWZGNydDZoa1IyX1RzaElBd2VIOVpXMnB6R0c3SWZMVU10Zk03ZHZPT0lxS0QyT0NJUmk?oc=5",
+        "snippet": "0056 元大高股息- 00403A今天淨值是不是已經開始計算了-股市爆料同學會&nbsp;&nbsp;CMoney",
+        "source": "Google News RSS",
+        "publishedAt": "2026-05-03T00:38:53.000Z"
+      },
       {
         "title": "0056躍永豐金最大單一股東 - 經濟日報",
         "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5IbkoxLV9yWDQxdURaWWJZT1FCSEk0eXg2Rm1kZXhhYVhxX2NtcDYzRGlKSUJMOTJwM2YxQnJiRHhZcVRVeDRVdTc0LUp2NHprRkxwcklkSTNWQdIBX0FVX3lxTE1kZlV4bVVvcERobVIwa29vTFlMYjF3NzlPQnJiUzlqU3pPYmxVQ1NxZWhHRTdSbkpPMFlZM1N4a3VWaTNrX3ZjYW5zdWxHY1dzZE1vMEF1QU95bjNFVWJJ?oc=5",
         "snippet": "0056躍永豐金最大單一股東&nbsp;&nbsp;經濟日報",
         "source": "Google News RSS",
-        "publishedAt": "2026-05-01T09:00:00.000Z"
+        "publishedAt": "2026-05-02T09:00:00.000Z"
+      },
+      {
+        "title": "4月台股ETF績效榜！00981A單月奪冠00878、0056僅排第6、12...最強高股息ETF是「它」 - 基金 - 旺得富理財網",
+        "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE83a2dHaG9SOTN6ZTJEVm1kUHRpbVRsUnB6SWZ3RTFKRkJ3bEFWVkdOYkxabFBIWERKU09pTVVYSkt1SlNSc0Fma3lGZXY4eUsyUDZzOEtmdlRKUlJjdjh0RVNxRTVKMjViVVE?oc=5",
+        "snippet": "4月台股ETF績效榜！00981A單月奪冠00878、0056僅排第6、12...最強高股息ETF是「它」 - 基金&nbsp;&nbsp;旺得富理財網",
+        "source": "Google News RSS",
+        "publishedAt": "2026-05-01T22:28:01.000Z"
       },
       {
         "title": "0056 元大高股息- 好股票不一定漲但5%剛性底應該還是有的，-股市爆料同學會 - CMoney",
@@ -108,20 +122,6 @@
         "snippet": "0056 元大高股息- 存股30年，你是哪一型ETF人生步調？-股市爆料同學會&nbsp;&nbsp;CMoney",
         "source": "Google News RSS",
         "publishedAt": "2026-04-30T09:02:14.000Z"
-      },
-      {
-        "title": "小資族別買0056？買0050不如直接買台積電（2330）…陳重銘揭ETF致命傷 | 存股族愛ETF | 股市 - 聯合新聞網",
-        "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE5ZdEYzYjVuMXJ3OUJUbGx5SWFSZUFZVlJMM0xrRG5Vb2J4ZXhzRFhCR0FzdmplaGd4Q3FtWm1MU0NnQ09jOWdIMTN3MUNRRlVZcFI0?oc=5",
-        "snippet": "小資族別買0056？買0050不如直接買台積電（2330）…陳重銘揭ETF致命傷 | 存股族愛ETF | 股市&nbsp;&nbsp;聯合新聞網",
-        "source": "Google News RSS",
-        "publishedAt": "2026-04-30T01:39:51.000Z"
-      },
-      {
-        "title": "0056 元大高股息- 震盪的四月終於結束了😂（雲霄飛車🎢+大怒神）bye~-股市爆料同學會 - CMoney",
-        "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE40Q19Zd1pCaVFudXhyakhlRmE1SkJ3ak5HU3U4bllZbXA2T3NyUGItTXBTeHNZUUtyWUxEa05VZ19TZ1lDQldkUGV2T3FEVjFOd3VfbGRzQjI?oc=5",
-        "snippet": "0056 元大高股息- 震盪的四月終於結束了😂（雲霄飛車🎢+大怒神）bye~-股市爆料同學會&nbsp;&nbsp;CMoney",
-        "source": "Google News RSS",
-        "publishedAt": "2026-04-29T16:58:59.000Z"
       }
     ]
   },
@@ -369,6 +369,6 @@
     "count": 9
   },
   "quoteErrors": [],
-  "generatedAt": "2026-05-03T01:40:53.828Z",
-  "savedAt": "2026-05-03T01:40:54.341Z"
+  "generatedAt": "2026-05-03T14:12:37.107Z",
+  "savedAt": "2026-05-03T14:12:37.624Z"
 }

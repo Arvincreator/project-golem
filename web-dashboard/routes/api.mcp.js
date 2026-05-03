@@ -166,6 +166,16 @@ module.exports = function registerMcpRoutes(server) {
         }
     });
 
+    router.get('/api/mcp/catalog', async (req, res) => {
+        try {
+            const mgr = await getMCPManager();
+            return res.json(mgr.getToolCatalog());
+        } catch (e) {
+            console.error('[MCP] Catalog error:', e);
+            return res.status(500).json({ error: e.message });
+        }
+    });
+
     router.post('/api/mcp/servers/:name/test', requireMcpWrite, async (req, res) => {
         try {
             const name = sanitizeServerName(req.params.name);
