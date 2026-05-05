@@ -107,6 +107,7 @@ class GolemBrain {
         this.toolsetManager = toolsetManager;
         this.projectContextService = new ProjectContextService();
         this._backgroundMemoryInjectionTask = null;
+        this._initPromise = null;
         this._transportState = options.transportState || { queue: Promise.resolve() };
 
         // ── [OpenHarness-inspired] Hook System ──────────────────
@@ -191,6 +192,28 @@ class GolemBrain {
      * @param {boolean} [forceReload=false] - 是否強制重新載入
      */
     async init(forceReload = false) {
+        if (this._initPromise) {
+            console.log(`⏳ [Brain][${this.golemId}] 初始化已在進行中，等待現有流程完成${forceReload ? ' 後再強制重載' : ''}...`);
+            try {
+                await this._initPromise;
+            } catch (e) {
+                if (!forceReload) throw e;
+            }
+            if (!forceReload) return;
+        }
+
+        const initPromise = this._initUnsafe(forceReload);
+        this._initPromise = initPromise;
+        try {
+            return await initPromise;
+        } finally {
+            if (this._initPromise === initPromise) {
+                this._initPromise = null;
+            }
+        }
+    }
+
+    async _initUnsafe(forceReload = false) {
         console.log(`🎬 [Brain] 啟動初始化程序 (forceReload: ${forceReload})...`);
         this.backend = ConfigManager.CONFIG.GOLEM_BACKEND || this.backend || 'gemini';
         const metrics = this._createInitMetrics(forceReload);
@@ -606,7 +629,7 @@ class GolemBrain {
 
             try {
                 return await interactor.interact(
-                    payload, this.selectors, isSystem, startTag, endTag, 0, attachment
+                    payload, this.selectors, isSystem, startTag, endTag, 0, attachment, options
                 );
             } catch (e) {
                 // 處理 selector 修復觸發的重試
@@ -615,7 +638,7 @@ class GolemBrain {
                     this.selectors[type] = newSelector;
                     this.doctor.saveSelectors(this.selectors);
                     return await interactor.interact(
-                        payload, this.selectors, isSystem, startTag, endTag, 1, attachment
+                        payload, this.selectors, isSystem, startTag, endTag, 1, attachment, options
                     );
                 }
                 throw e;
@@ -1304,7 +1327,7 @@ class GolemBrain {
      * @param {string} prompt - 純文字提示詞
      * @returns {Promise<string>} LLM 原始回應文字
      */
-    async _wikiChat(prompt) {
+    async _wikiChat(prompt, options = {}) {
         this.backend = ConfigManager.CONFIG.GOLEM_BACKEND || this.backend || 'gemini';
 
         // API 後端：直接呼叫本地客戶端，完全不涉及頁面
@@ -1334,7 +1357,7 @@ class GolemBrain {
             const interactor = new PageInteractor(this.page, this.doctor);
             try {
                 const result = await interactor.interact(
-                    payload, this.selectors, false, startTag, endTag, 0, null
+                    payload, this.selectors, false, startTag, endTag, 0, null, options
                 );
                 return typeof result === 'string' ? result : (result.text || '');
             } catch (e) {
@@ -1343,7 +1366,7 @@ class GolemBrain {
                     this.selectors[type] = newSelector;
                     this.doctor.saveSelectors(this.selectors);
                     const result2 = await interactor.interact(
-                        payload, this.selectors, false, startTag, endTag, 1, null
+                        payload, this.selectors, false, startTag, endTag, 1, null, options
                     );
                     return typeof result2 === 'string' ? result2 : (result2.text || '');
                 }

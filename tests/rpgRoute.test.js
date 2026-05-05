@@ -77,6 +77,28 @@ describe('RPG generateContent route helpers', () => {
         expect(JSON.parse(output).player_status.name).toBe('梵恩');
     });
 
+    test('normalizeRpgOutput accepts complete RPG JSON when the END tag is missing', () => {
+        const { normalizeRpgOutput } = require('../web-dashboard/routes/lib/rpgOutputNormalizer');
+
+        const raw = `[[BEGIN:mbpu]]
+[GOLEM_MEMORY]
+- Mode: Text RPG Web App Service.
+[GOLEM_REPLY]
+[
+  {
+    "id": "frozen-echo-ark",
+    "genre": "末日生存",
+    "title": { "zh-TW": "冰封回聲方舟", "en": "Frozen Echo Ark", "ja": "凍てつく反響の箱舟" }
+  }
+]`;
+
+        const output = normalizeRpgOutput(raw);
+
+        expect(output.trim().startsWith('[')).toBe(true);
+        expect(output).not.toContain('[GOLEM_MEMORY]');
+        expect(JSON.parse(output)[0].id).toBe('frozen-echo-ark');
+    });
+
     test('buildRpgPrompt adds a hard boundary against normal chat protocol', () => {
         const { _private } = require('../web-dashboard/routes/api.rpg');
 

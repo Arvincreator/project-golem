@@ -32,12 +32,22 @@ function getActiveBrain(server, requestedGolemId) {
 }
 
 async function generateWithBrain(brain, prompt) {
+    const configuredTimeoutMs = Number(process.env.GOLEM_RPG_RESPONSE_TIMEOUT_MS);
+    const responseTimeoutMs = Number.isFinite(configuredTimeoutMs) && configuredTimeoutMs > 0
+        ? configuredTimeoutMs
+        : 900000;
+    const generationOptions = {
+        responseTimeoutMs,
+        allowPartialOnTimeout: true,
+        _rpgBypass: true,
+    };
+
     if (typeof brain._wikiChat === 'function') {
-        return brain._wikiChat(prompt);
+        return brain._wikiChat(prompt, generationOptions);
     }
 
     if (typeof brain.sendMessage === 'function') {
-        const result = await brain.sendMessage(prompt, false, { _rpgBypass: true });
+        const result = await brain.sendMessage(prompt, false, generationOptions);
         return typeof result === 'string' ? result : (result && result.text) || '';
     }
 

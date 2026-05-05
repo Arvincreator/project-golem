@@ -1,4 +1,5 @@
 const PageInteractor = require('../src/core/PageInteractor');
+const { ResponseExtractor } = require('../packages/protocol');
 
 describe('PageInteractor Improvements', () => {
     let mockPage;
@@ -80,5 +81,68 @@ describe('PageInteractor Improvements', () => {
         expect(mockPage.evaluate).toHaveBeenCalledTimes(2);
         
         jest.restoreAllMocks();
+    });
+
+    test('interact should allow RPG partial envelope on timeout', async () => {
+        interactor._waitForReady = jest.fn().mockResolvedValue(undefined);
+        interactor._captureBaseline = jest.fn().mockResolvedValue('old');
+        interactor._typeInput = jest.fn().mockResolvedValue(undefined);
+        interactor._clickSend = jest.fn().mockResolvedValue(undefined);
+        interactor._autoClickWorkspaceButtons = jest.fn().mockResolvedValue(undefined);
+        interactor._pruneDOM = jest.fn().mockResolvedValue(undefined);
+
+        const waitSpy = jest.spyOn(ResponseExtractor, 'waitForResponse').mockResolvedValue({
+            status: 'TIMEOUT',
+            text: '[[BEGIN:test]]\n[GOLEM_REPLY]\n[{ "id": "rpg-card" }]',
+            attachments: [],
+        });
+
+        const result = await interactor.interact(
+            'payload',
+            { send: '.send', response: '.response', input: '.input' },
+            false,
+            '[[BEGIN:test]]',
+            '[[END:test]]',
+            0,
+            null,
+            { allowPartialOnTimeout: true, responseTimeoutMs: 900000 }
+        );
+
+        expect(waitSpy).toHaveBeenCalledWith(
+            mockPage,
+            '.response',
+            '[[BEGIN:test]]',
+            '[[END:test]]',
+            'old',
+            { timeoutMs: 900000 }
+        );
+        expect(result.status).toBe('ENVELOPE_TIMEOUT_PARTIAL');
+        expect(result.text).toContain('[GOLEM_REPLY]');
+
+        waitSpy.mockRestore();
+    });
+
+    test('interact should keep normal timeout strict without a partial envelope option', async () => {
+        interactor._waitForReady = jest.fn().mockResolvedValue(undefined);
+        interactor._captureBaseline = jest.fn().mockResolvedValue('old');
+        interactor._typeInput = jest.fn().mockResolvedValue(undefined);
+        interactor._clickSend = jest.fn().mockResolvedValue(undefined);
+        interactor._healSelector = jest.fn().mockResolvedValue(false);
+
+        const waitSpy = jest.spyOn(ResponseExtractor, 'waitForResponse').mockResolvedValue({
+            status: 'TIMEOUT',
+            text: '[[BEGIN:test]]\n[GOLEM_REPLY]\nstill streaming',
+            attachments: [],
+        });
+
+        await expect(interactor.interact(
+            'payload',
+            { send: '.send', response: '.response', input: '.input' },
+            false,
+            '[[BEGIN:test]]',
+            '[[END:test]]'
+        )).rejects.toThrow('等待回應超時');
+
+        waitSpy.mockRestore();
     });
 });

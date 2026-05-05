@@ -33,11 +33,27 @@ class AutonomyManager {
             return;
         }
         console.log(`🚀 [Autonomy][${this.golemId}] Starting autonomy services...`);
-        this.resumeOrScheduleAwakening();
+        if (this.isAutonomousAwakeningEnabled()) {
+            this.resumeOrScheduleAwakening();
+        } else {
+            this.clearAwakeTimer();
+            console.log(`⏸️ [Autonomy][${this.golemId}] Autonomous awakening and proactive chat are disabled.`);
+        }
         setInterval(() => this.timeWatcher(), 60000);
         // ✨ [v9.1.5] 定時自動檢查一次日誌狀態 (改為動態排程，支援熱重載)
         this.archiveTimer = null;
         this.scheduleNextArchive();
+    }
+
+    isAutonomousAwakeningEnabled() {
+        return ConfigManager.CONFIG.AUTONOMY_ENABLED !== false;
+    }
+
+    clearAwakeTimer() {
+        if (this.awakeTimer) {
+            clearTimeout(this.awakeTimer);
+            this.awakeTimer = null;
+        }
     }
 
     /**
@@ -205,6 +221,10 @@ class AutonomyManager {
     }
 
     resumeOrScheduleAwakening() {
+        if (!this.isAutonomousAwakeningEnabled()) {
+            this.clearAwakeTimer();
+            return;
+        }
         const logDir = ConfigManager.LOG_BASE_DIR;
         const stateFile = path.join(logDir, 'awake_state.json');
 
@@ -233,6 +253,10 @@ class AutonomyManager {
     }
 
     scheduleNextAwakening() {
+        if (!this.isAutonomousAwakeningEnabled()) {
+            this.clearAwakeTimer();
+            return;
+        }
         const minMinutes = ConfigManager.CONFIG.AWAKE_INTERVAL_MIN || 10;
         const maxMinutes = ConfigManager.CONFIG.AWAKE_INTERVAL_MAX || 60;
         const randomMinutes = minMinutes + Math.random() * (maxMinutes - minMinutes);
@@ -280,6 +304,10 @@ class AutonomyManager {
 
         if (this.awakeTimer) clearTimeout(this.awakeTimer);
         this.awakeTimer = setTimeout(() => { 
+            if (!this.isAutonomousAwakeningEnabled()) {
+                this.clearAwakeTimer();
+                return;
+            }
             this.manifestFreeWill(); 
             this.scheduleNextAwakening(); 
         }, finalWait);
@@ -293,6 +321,7 @@ class AutonomyManager {
         return Number(val);
     }
     async manifestFreeWill() {
+        if (!this.isAutonomousAwakeningEnabled()) return;
         try {
             const roll = Math.random();
             if (roll < 0.2) await this.performSelfReflection();

@@ -38,7 +38,7 @@ class PageInteractor {
     /**
      * 主互動流程：輸入文字 → 點擊發送 → 等待回應 → 🌟自動點擊按鈕 (智慧判斷)
      */
-    async interact(payload, selectors, isSystem, startTag, endTag, retryCount = 0, attachment = null) {
+    async interact(payload, selectors, isSystem, startTag, endTag, retryCount = 0, attachment = null, options = {}) {
         if (retryCount > LIMITS.MAX_INTERACT_RETRY) {
             throw new Error("🔥 DOM Doctor 修復失敗，請檢查網路或 HTML 結構大幅變更。");
         }
@@ -80,10 +80,23 @@ class PageInteractor {
             // 6. 等待信封回應
             console.log(`⚡ [Brain] 等待信封完整性 (${startTag} ... ${endTag})...`);
             const finalResponse = await ResponseExtractor.waitForResponse(
-                this.page, selectors.response, startTag, endTag, baseline
+                this.page,
+                selectors.response,
+                startTag,
+                endTag,
+                baseline,
+                { timeoutMs: options.responseTimeoutMs || options.timeoutMs }
             );
 
-            if (finalResponse.status === 'TIMEOUT') throw new Error("等待回應超時");
+            if (finalResponse.status === 'TIMEOUT') {
+                const timedOutText = String(finalResponse.text || '').trim();
+                const hasStartedEnvelope = timedOutText.includes(startTag) || /\[\[?BEGIN\s*:/i.test(timedOutText);
+                if (!options.allowPartialOnTimeout || !hasStartedEnvelope) {
+                    throw new Error("等待回應超時");
+                }
+                finalResponse.status = 'ENVELOPE_TIMEOUT_PARTIAL';
+                console.warn(`⏳ [PageInteractor] 回應逾時但已捕獲部分內容，將交由上層解析 (${timedOutText.length} chars)。`);
+            }
 
             // 💡 效能優化：判斷這回合有沒有使用 /@ 擴充功能指令
             const hasExtensionCommand = /\/@(Gmail|Google Calendar|Google Keep|Google Tasks|Google 文件|Google 雲端硬碟|Workspace|YouTube Music|YouTube|Google Maps|Google 航班|Google 飯店|Spotify|Google Home|SynthID)/i.test(payload);
@@ -113,7 +126,7 @@ class PageInteractor {
                 console.log('🩺 [Brain] 啟動 DOM Doctor 進行 Response 診斷...');
                 const healed = await this._healSelector('response', selectors);
                 if (healed) {
-                    return this.interact(payload, selectors, isSystem, startTag, endTag, retryCount + 1, attachment);
+                    return this.interact(payload, selectors, isSystem, startTag, endTag, retryCount + 1, attachment, options);
                 }
             }
             throw e;
@@ -242,12 +255,23 @@ class PageInteractor {
             // 針對 contenteditable 使用更強大的模擬植入
             if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
                 el.value = t;
+                const valueSetter = Object.getOwnPropertyDescriptor(el.constructor.prototype, 'value')?.set;
+                if (valueSetter) valueSetter.call(el, t);
             } else {
                 el.innerText = t;
+                el.textContent = t;
             }
 
             // ⚡ 強制觸發事件，讓 React/Angular/ProseMirror 知道內容變了
-            const events = ['input', 'change', 'keyup'];
+            const inputEvent = new InputEvent('input', {
+                bubbles: true,
+                cancelable: true,
+                inputType: 'insertText',
+                data: t
+            });
+            el.dispatchEvent(inputEvent);
+
+            const events = ['beforeinput', 'change', 'keyup'];
             events.forEach(name => {
                 const event = new Event(name, { bubbles: true, cancelable: true });
                 el.dispatchEvent(event);
@@ -292,27 +316,77 @@ class PageInteractor {
         await new Promise(r => setTimeout(r, 500));
         await this.page.keyboard.press('Enter');
 
-        // 2. 實體按鈕補強 (優先使用 ARIA Label 狙擊)
-        await this.page.evaluate((s) => {
-            const btn = document.querySelector('button[aria-label*="發送"], button[aria-label*="Send"], button[aria-label*="傳送"]') ||
-                document.querySelector(s);
-            
-            if (btn) {
-                // [強化] 檢查是否真的可見
-                const style = window.getComputedStyle(btn);
-                const isVisible = btn.offsetHeight > 0 && style.display !== 'none' && style.visibility !== 'hidden';
-                
-                // 🛡️ 防禦：避免點到「停止」按鈕 (如果是忙碌中，直接退出)
-                const txt = (btn.innerText || btn.textContent || "").trim();
-                if (['停止', 'Stop', '中斷'].includes(txt)) return;
+        // 2. 實體按鈕補強：Gemini 的送出按鈕 label 會隨語系和 UI 版本改動。
+        const sendTarget = await this.page.evaluate((s) => {
+            const stopWords = ['停止', 'Stop', '中斷', 'キャンセル', '停止生成'];
+            const sendWords = ['發送', '傳送', '送出', '提交', 'Send', 'Submit', '送信', '送る'];
+            const visible = (el) => {
+                const style = window.getComputedStyle(el);
+                const rect = el.getBoundingClientRect();
+                return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+            };
+            const scoreButton = (btn) => {
+                if (!btn || btn.disabled || btn.getAttribute('aria-disabled') === 'true' || !visible(btn)) return -1;
+                const label = [
+                    btn.getAttribute('aria-label'),
+                    btn.getAttribute('title'),
+                    btn.innerText,
+                    btn.textContent,
+                    btn.getAttribute('data-tooltip')
+                ].filter(Boolean).join(' ').trim();
+                if (stopWords.some(word => label.includes(word))) return -1;
+                if (sendWords.some(word => label.includes(word))) return 100;
 
-                if (isVisible) {
-                    btn.scrollIntoView({ block: "center" });
-                    btn.focus();
-                    btn.click();
+                const rect = btn.getBoundingClientRect();
+                const textbox = document.querySelector('.ProseMirror, rich-textarea, div[role="textbox"][contenteditable="true"], div[contenteditable="true"], textarea');
+                if (textbox) {
+                    const inputRect = textbox.getBoundingClientRect();
+                    const nearInput = Math.abs(rect.bottom - inputRect.bottom) < 140 && rect.left > inputRect.left;
+                    const iconOnly = label.length <= 20 && rect.width <= 72 && rect.height <= 72;
+                    if (nearInput && iconOnly) return 50;
+                }
+
+                return -1;
+            };
+
+            const explicit = document.querySelector('button[aria-label*="發送"], button[aria-label*="傳送"], button[aria-label*="送出"], button[aria-label*="提交"], button[aria-label*="Send"], button[aria-label*="Submit"], button[aria-label*="送信"]')
+                || (s ? document.querySelector(s) : null);
+            const candidates = [
+                explicit,
+                ...Array.from(document.querySelectorAll('button'))
+            ].filter(Boolean);
+
+            let best = null;
+            let bestScore = -1;
+            for (const btn of candidates) {
+                const score = scoreButton(btn);
+                if (score > bestScore) {
+                    best = btn;
+                    bestScore = score;
                 }
             }
+
+            if (!best || bestScore < 0) return { clicked: false };
+            best.scrollIntoView({ block: 'center', inline: 'center' });
+            const rect = best.getBoundingClientRect();
+            best.focus();
+            best.click();
+            return {
+                clicked: true,
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2
+            };
         }, sendSelector);
+
+        if (sendTarget && sendTarget.clicked && Number.isFinite(sendTarget.x) && Number.isFinite(sendTarget.y)) {
+            try {
+                await this.page.mouse.click(sendTarget.x, sendTarget.y);
+            } catch (e) {
+                console.warn(`⚠️ [PageInteractor] 滑鼠點擊送出按鈕失敗: ${e.message}`);
+            }
+        } else {
+            console.warn("⚠️ [PageInteractor] 找不到可點擊的送出按鈕，已嘗試 Enter 送出。");
+        }
 
         // 3. 自動置底 (最小化干擾)
         await this._moveWindowToBottom();

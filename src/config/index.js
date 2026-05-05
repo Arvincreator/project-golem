@@ -31,6 +31,11 @@ const normalizeEmbeddingProvider = (value) => {
     return 'local';
 };
 
+const parseBooleanEnv = (value, defaultValue = true) => {
+    if (value === undefined) return defaultValue;
+    return !['false', '0', 'off', 'no'].includes(cleanEnv(value).toLowerCase());
+};
+
 const CONFIG = {
     TG_TOKEN: cleanEnv(process.env.TELEGRAM_TOKEN),
     TG_AUTH_MODE: cleanEnv(process.env.TG_AUTH_MODE) || 'ADMIN',
@@ -55,6 +60,7 @@ const CONFIG = {
     GOLEM_BACKEND: normalizeBackend(process.env.GOLEM_BACKEND),
     GOLEM_MEMORY_MODE: cleanEnv(process.env.GOLEM_MEMORY_MODE) || 'lancedb-pro',
     // --- Scheduled Tasks ---
+    AUTONOMY_ENABLED: parseBooleanEnv(process.env.GOLEM_AUTONOMY_ENABLED, true),
     AWAKE_INTERVAL_MIN: Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MIN)) || 10, // 預設最小 10 分鐘
     AWAKE_INTERVAL_MAX: Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MAX)) || 60, // 預設最大 60 分鐘
     SLEEP_START: process.env.GOLEM_SLEEP_START !== undefined ? Number(cleanEnv(process.env.GOLEM_SLEEP_START)) : 1, // 預設凌晨 1 點
@@ -163,6 +169,7 @@ const reloadConfig = () => {
     CONFIG.CB_TG_RESET_MS = cleanEnv(process.env.CB_TG_RESET_MS) || '15000';
     CONFIG.CB_TG_ERROR_PCT = cleanEnv(process.env.CB_TG_ERROR_PCT) || '30';
     CONFIG.GOLEM_BACKEND = normalizeBackend(process.env.GOLEM_BACKEND);
+    CONFIG.AUTONOMY_ENABLED = parseBooleanEnv(process.env.GOLEM_AUTONOMY_ENABLED, true);
     CONFIG.AWAKE_INTERVAL_MIN = Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MIN)) || 10;
     CONFIG.AWAKE_INTERVAL_MAX = Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MAX)) || 60;
     CONFIG.SLEEP_START = process.env.GOLEM_SLEEP_START !== undefined ? Number(cleanEnv(process.env.GOLEM_SLEEP_START)) : 1;
@@ -216,6 +223,7 @@ module.exports = {
     isPlaceholder,
     normalizeBackend,
     normalizeEmbeddingProvider,
+    parseBooleanEnv,
     CONFIG,
     GOLEMS_CONFIG,
     GOLEM_MODE,

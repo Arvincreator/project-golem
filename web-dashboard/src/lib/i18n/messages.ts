@@ -263,6 +263,10 @@ const zhTWMessages = {
     "settings.messaging.moltbookAgent.placeholder": "Golem",
 
     "settings.schedule.title": "⏳ 自動化與作息設定",
+    "settings.schedule.autonomyEnabled.label": "自主喚醒與主動聊天",
+    "settings.schedule.autonomyEnabled.desc": "關閉後，Golem 不會自行醒來、主動搜尋或主動聊天；手動建立的提醒排程仍會照常檢查。",
+    "settings.schedule.autonomyEnabled.on": "已開啟自主作息",
+    "settings.schedule.autonomyEnabled.off": "已關閉自主喚醒",
     "settings.schedule.awakeMin.label": "喚醒間隔 (最小)",
     "settings.schedule.awakeMin.desc": "分鐘 (最小 1)",
     "settings.schedule.awakeMax.label": "喚醒間隔 (最大)",
@@ -647,6 +651,10 @@ const enMessages: Record<MessageKey, string> = {
     "settings.messaging.moltbookAgent.placeholder": "Golem",
 
     "settings.schedule.title": "Automation & Routine Settings",
+    "settings.schedule.autonomyEnabled.label": "Autonomous Wakeups & Proactive Chat",
+    "settings.schedule.autonomyEnabled.desc": "When disabled, Golem will not wake itself, search proactively, or start proactive chats. Manually scheduled reminders still run.",
+    "settings.schedule.autonomyEnabled.on": "Autonomous routine enabled",
+    "settings.schedule.autonomyEnabled.off": "Autonomous wakeups disabled",
     "settings.schedule.awakeMin.label": "Wake Interval (Min)",
     "settings.schedule.awakeMin.desc": "minutes (minimum 1)",
     "settings.schedule.awakeMax.label": "Wake Interval (Max)",
