@@ -70,7 +70,7 @@ chmod +x setup.sh
 ./setup.sh --start
 ```
 
-也可以雙擊根目錄的 `Start-Golem.command`。Windows 使用者可用 `Start-Golem.bat`、`setup.bat`，或在 Git Bash 裡執行 `./setup.sh --magic`。
+Windows 使用者可用 `Start-Golem.bat`、`setup.bat`，或在 Git Bash 裡執行 `./setup.sh --magic`。
 
 ### 手動模式
 
