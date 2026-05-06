@@ -2,10 +2,8 @@ export const i18nData = {
                 'zh-TW': {
                     title: '文字冒險遊戲產生器', subtitle: '定義你的主角，開啟一場充滿策略的敘事冒險',
                     'nav.about': '關於網站', 'nav.sponsor': '贊助開發者', 'nav.benefits': '會員福利',
-                    'settings.title': '遊戲設定', 'settings.language': '介面語言', 'settings.model': 'AI 模型', 'settings.save': '儲存設定',
-                    'settings.golemBackend.desc': '本遊戲由目前啟動的 Project Golem 擔任 AI GM，不需要玩家輸入 API Key。請先在 Golem Plus 啟動至少一個 Golem，再開始冒險。',
-                    'settings.nsfw.desc': '此開關會要求 Golem 在文字 RPG 模式使用較寬鬆的成人內容設定；實際輸出仍受目前 Golem 模型、系統提示與安全限制影響。',
-                    'key.modalPaste': 'Project Golem 後端', 'key.placeholder': '由 Golem 自動處理', 'key.modalGetLink': '由 Project Golem 內建後端處理',
+                    'settings.title': '設定', 'settings.language': '介面語言', 'settings.model': 'AI 模型', 'settings.save': '儲存設定',
+                    'key.modalPaste': 'API 金鑰', 'key.placeholder': '請在此貼上您的金鑰', 'key.modalGetLink': '在 Google AI Studio 免費獲取 Gemini API 金鑰 ↗',
                     'form.genre': '遊戲世界觀', 'form.character': '你的角色設定', 'form.characterPlaceholder': '例如：我是一位軍人，全世界遭受病毒侵襲，部隊只剩我一人，我想前往世界尋找解藥及倖存者。', 'form.start': '開始新冒險', 'form.load': '載入進度', 'form.starting': '建立世界中...',
                     'game.title': '冒險日誌', 'game.saveTooltip': '儲存進度', 'game.hudButton': '角色狀態', 'game.processing': '處理中...', 'game.gameOver': '遊戲結束', 'game.continue': '...繼續',
                     'game.endingSuccess': '(你已破關，請回主畫面建立新冒險)', 'game.endingFailureDeath': '(你已死亡，請回主畫面重新來過)', 'game.endingFailureMission': '(任務失敗，請回主畫面重新來過)',
@@ -18,23 +16,23 @@ export const i18nData = {
 'stats.atk': '攻擊力', 'stats.def': '防禦力',
 'info.title': '關於本網站',
                     'info.tab.about': '網站詳細說明', 'info.tab.howToPlay': '使用說明', 'info.tab.howItWorks': '遊戲運作說明', 'info.tab.privacy': '隱私權及版權',
-                    'info.about.p1': '這是 Project Golem Plus 內建的動態文字冒險遊戲。它由目前啟動的 Golem 擔任 AI GM，讓玩家可以透過簡單的文字描述，創造出獨一無二的角色，並在 AI 即時生成的世界中展開冒險。',
+                    'info.about.p1': '本網站是一個使用 Google Gemini 大型語言模型驅動的動態文字冒險遊戲產生器。它旨在提供一個無窮盡的故事平台，讓玩家可以透過簡單的文字描述，創造出獨一無二的角色，並在 AI 即時生成的世界中展開冒險。',
                     'info.about.p2': '與傳統的遊戲不同，這裡沒有固定的劇本。您所做的每一個選擇，都會被 AI 理解並用來推動一個專屬於您的故事。從奇幻的王國到反烏托邦的未來，您的想像力是唯一的極限。',
                     'info.howToPlay.h3': '如何開始一場冒險：',
-                    'info.howToPlay.li1': '<strong>確認 Golem：</strong>本遊戲不需要玩家輸入 API Key。請先在 Project Golem Plus 啟動可用的 Golem，遊戲會自動交給它擔任 AI GM。',
+                    'info.howToPlay.li1': '<strong>設定金鑰：</strong>點擊右上角齒輪圖示 (⚙️)，貼上您的 Google Gemini API 金鑰。這是驅動遊戲 AI 的必要步驟，您可以從 Google AI Studio 免費獲取。',
                     'info.howToPlay.li2': '<strong>創造角色：</strong>選擇您喜歡的「遊戲世界觀」，並在「角色設定」中詳細描述您想扮演的英雄。描述越詳細，AI 生成的開場就越貼近您的想像。',
                     'info.howToPlay.li3': '<strong>開始冒險：</strong>點擊「開始新冒險」，AI 將為您生成開場故事、開場角色狀態以及最初的動作選項。',
                     'info.howToPlay.li4': '<strong>做出選擇：</strong>點擊下方的動作按鈕來推動故事。點擊遊戲視窗右上角的「角色狀態」按鈕，可以隨時查看您的詳細狀態，包括多重狀態條、裝備和技能。',
                     'info.howItWorks.h3': '核心技術',
-                    'info.howItWorks.p1': '本遊戲的核心是 Project Golem 的後端生成流程。當您輸入角色設定並開始遊戲時，前端會將請求打包成結構化提示，送到目前啟動的 Golem brain，由它生成故事與遊戲狀態。',
+                    'info.howItWorks.p1': '本遊戲的核心是 Google 的 Gemini 模型。當您輸入角色設定並開始遊戲時，前端應用會將您的請求打包成一個結構化的「提示」(Prompt)，並發送給 Gemini API。',
                     'info.howItWorks.p2': 'AI 會解析這個提示，理解您的世界觀、角色設定以及您做出的選擇，然後生成一段新的故事 narrative，以及更新後的遊戲狀態（如生命值變化、獲得新物品等）。',
                     'info.howItWorks.p3': '視窗上會呈現新的故事情節和選項給您，如此循環，構成整個遊戲流程。這種動態生成的方式確保了每一場遊戲都是獨一無二的。',
                     'info.privacy.h3': '隱私權政策',
-                    'info.privacy.p1': '本站高度重視您的隱私。會員資料：若您選擇註冊會員，您的姓名、暱稱、Email、手機號碼與贊助Email將會被加密儲存於 Firebase，用於驗證贊助資格與帳戶管理。您的密碼由 Firebase 驗證服務處理，我們無法得知其內容。文字 RPG 不再要求玩家輸入 API Key；所有遊戲進度都以檔案形式由您自行下載保存在本機，本站不保留任何遊戲存檔。',
+                    'info.privacy.p1': '本站高度重視您的隱私。我們不會收集、儲存或傳輸您的任何個人資訊。除會員資料：若您選擇註冊會員，您的姓名、暱稱、Email、手機號碼與贊助Email將會被加密儲存於我們的資料庫中，用於驗證您的贊助資格與帳戶管理。您的密碼會經過高強度加密，我們無法得知其內容。您的 Google Gemini API 金鑰只會被儲存在您自己瀏覽器的本機儲存空間 (Local Storage) 中，不會被上傳到我們的伺服器。所有遊戲進度都以檔案形式由您自行下載保存在本機，本站不保留任何遊戲資料。',
                     'info.privacy.h3_copyright': '版權聲明',
-                    'info.privacy.p_copyright': '本網站的遊戲概念、介面設計及程式碼版權為開發者@Arvin所有。由 AI 生成的遊戲內容（文字、故事）依目前 Project Golem 所使用的模型與服務條款處理。使用者應對其輸入的內容負責。 © 2025 Project Golem Text RPG. All Rights Reserved.',
+                    'info.privacy.p_copyright': '本網站的遊戲概念、介面設計及程式碼版權為開發者@Arvin所有。而由 AI 生成的遊戲內容（文字、故事）的版權歸屬，遵循 Google Gemini API 的使用條款。使用者應對其輸入的內容負責。 © 2025 AI RPG Generator. All Rights Reserved.',
                     'copyright.footer': '© 2025 AI RPG Generator. All Rights Reserved.',
-                    'notification.noApiKey': '請先確認 Project Golem 後端已啟動。', 'notification.noCharacter': '請先描述你的角色！',
+                    'notification.noApiKey': '請點擊右上角「設定」以輸入您的 API 金鑰。', 'notification.noCharacter': '請先描述你的角色！',
                     'notification.gameStartFail': '遊戲世界建立失敗！', 'notification.actionFail': '動作處理失敗！',
                     'notification.loadFail': '讀取失敗！檔案格式不正確或已損毀。', 'notification.loadSuccess': '進度已成功載入！', 'notification.saveSuccess': '遊戲進度已儲存！',
                     'error.parseJSON': 'AI 回應格式錯誤，無法解析遊戲狀態。',
@@ -52,12 +50,11 @@ export const i18nData = {
                     'auth.register.success': '註冊成功！歡迎加入。', 'auth.error.emailInUse': '這個 Email 已經被註冊了。', 'auth.error.weakPassword': '密碼強度不足，請至少設定 6 個字元。', 'auth.error.invalidEmail': 'Email 格式不正確。', 'auth.error.unknown': '發生未知錯誤，請稍後再試。',
                     'account.title': '我的帳戶', 'account.greeting': '{nickname} 您好', 'account.prompt': '您贊助了嗎？填寫下方資訊，即可升級為贊助會員！', 'account.form.transactionId': '☝🏻填寫贊助email;👇🏻填寫贊助交易 ID (選填)', 'account.button.logout': '登出', 'account.button.save': '儲存變更', 'account.button.sponsorLink': '點此前往贊助頁面取得交易ID',
                     'benefits.title': '會員等級福利表', 'benefits.header.feature': '功能權限', 'benefits.header.visitor': '訪客', 'benefits.header.general': '一般會員', 'benefits.header.sponsor': '贊助會員（需$5美金以上）',
-                    'benefits.feature.actions': '行動次數', 'benefits.feature.inventory': '使用物品/技能', 'benefits.feature.saveLoad': '儲存/載入進度', 'benefits.feature.customAction': '自訂動作 DLC',
-                    'benefits.value.visitor_actions': '5 次', 'benefits.value.general_actions': '20 次', 'benefits.value.sponsor_actions': '無限', 'benefits.value.enabled': '可使用', 'benefits.value.locked': '不可使用', 'benefits.value.dlcOnly': '需另開通 DLC',
+                    'benefits.feature.actions': '行動次數', 'benefits.feature.inventory': '使用物品/技能', 'benefits.feature.saveLoad': '儲存/載入進度',
+                    'benefits.value.visitor_actions': '5 次', 'benefits.value.general_actions': '20 次', 'benefits.value.sponsor_actions': '無限',
                     'notification.actionLimitReached': '行動次數已達上限！', 'notification.featureLocked': '此功能為會員專屬，請註冊或升級。',
                     'notification.logoutSuccess': '您已成功登出。', 'notification.logoutError': '登出時發生錯誤。', 'confirm.logout': '您確定要登出嗎？',
 'confirm.exitGame': '您確定要離開目前的冒險嗎？任何未儲存的進度將會遺失。',
-'confirm.generationStillRunning': 'Golem 還在生成回應，這可能需要比較久。要繼續等待嗎？按「取消」會停止這次生成，您可以稍後重新點選生成。',
                     'notification.loginSuccess': '登入成功！', 'notification.loginError': 'Email 或密碼錯誤，請重試。', 'notification.profileUpdateSuccess': '個人資料更新成功！',
 'notification.profilePendingReview': '您的贊助資訊已提交，管理員將在 24 小時內審核並為您開通權限。',
                     'notification.profileUpdateError': '資料儲存失敗，請稍後再試。', 'notification.verificationError': '驗證時發生錯誤，請稍後再試。',
@@ -74,17 +71,15 @@ export const i18nData = {
                     'dlc.li3': '完成贊助後，管理員會在 24 小時內為您的帳戶手動開通權限。',
                     'dlc.li4': '開通後，您只需重新登入，主畫面的「自訂動作」開關即可正常使用。',
                     'dlc.p2': '您的支持是本專案持續開發與維護的最大動力，感謝您的慷慨！', 'dlc.button': '前往加值DLC贊助頁面',
-                    'error.apiKeyInvalid': 'Project Golem 後端拒絕了這次請求，請確認目前有可用的 Golem。',
-                    'error.badRequest': 'RPG 請求格式不完整，請重新送出。',
-                    'error.rateLimitExceeded': '請求頻率過高 (429)。請稍候再試。',
-                    'error.serverError': 'Project Golem 後端暫時無法連線，請確認 Golem 已啟動後再試。',
+                    'error.apiKeyInvalid': 'API 金鑰無效或已過期，請點擊右上角「設定」檢查您的金鑰。',
+                    'error.rateLimitExceeded': '請求頻率過高 (429)。請稍候再試。若問題持續，可能您已超過 API 當日免費使用額度，請前往 Google AI Studio 官方網頁查看您的 Key 使用狀況。',
+                    'error.serverError': 'Google AI 伺服器暫時無法連線，請稍後再試。',
                     'error.contentBlocked': 'AI 因內容審核或安全設定而拒絕回應。請嘗試修改您的角色描述或選擇其他動作。',
                     'error.unknownApiError': '與 AI 連線時發生未知錯誤，請稍後再試。',
-                    'error.generationCancelled': '已停止等待這次生成，您可以重新點選生成再試一次。',
                     'form.cartridge.button': '選擇遊戲卡帶(詳見會員福利)', 'cartridge.modal.title': '遊戲卡帶庫', 'cartridge.modal.play_btn': '使用此設定',
 'cartridge.modal.generate_btn': '生成劇本',
 'cartridge.modal.prompt': '請選擇類型並點擊「生成劇本」。',
-                    'notification.cartridgeLoaded': '卡帶設定已成功載入！', 'benefits.feature.cartridge': '遊戲卡帶 DLC',
+                    'notification.cartridgeLoaded': '卡帶設定已成功載入！', 'benefits.feature.cartridge': ' DLC(需另開通)',
                     'benefits.cartridge_dlc.link': '如何啟用「遊戲卡帶」DLC？',                     'cartridge_dlc.title': '啟用「遊戲卡帶」DLC',
                     'cartridge_dlc.p1': '「遊戲卡帶」是為進階贊助者設計的專屬功能，它提供一系列精心設計的劇本，讓您一鍵載入即可開始一場精彩的冒險。🌟重要‼️啟用此功能，您需要先成為「贊助會員」>$5+DLC$10總共贊助會大於$15美金。',
                     'cartridge_dlc.h3': '啟用步驟：',
@@ -127,17 +122,17 @@ export const i18nData = {
 'game.resurrect.log': '✨ 奇蹟發生了！女神回應了你的祈禱，金色的光芒將你完全治癒！ ✨',
 'game.resurrect.action_prompt': '（玩家使用了復活奇蹟）我向女神祈禱，金色的聖光從天而降，將我的傷勢完全治癒並復活了我。請描述這個神蹟，並讓我繼續剛才的冒險。',
 'form.customAction.placeholder_gameover': '冒險已結束',
-'assistant.api_notice': '冒險嚮導會透過 Project Golem 回答。',
+'assistant.api_notice': 'AI 客服會使用您的 API 金鑰。',
 'assistant.thinking': '思考中...',
 'assistant.error.generic': '抱歉，我暫時無法回答，請稍後再試。',
-'assistant.error.connection': '連線時發生錯誤，請確認 Project Golem 後端是否正在運作。',
-'assistant.error.no_api_key': '請先確認 Project Golem 後端已啟動，冒險嚮導會透過 Golem 回答，不需要另外輸入 API Key。',
+'assistant.error.connection': '連線時發生錯誤，請檢查您的API金鑰或網路連線。',
+'assistant.error.no_api_key': '請先在「設定」中輸入您的 API 金鑰才能使用此詢問功能。如何設定：主畫面右上角齒輪圖案開啟設定，API輸入框下面有API key免費獲取連結，獲取後貼到輸入框，接下來儲存設定即可。',
 'assistantKnowledgeBase': `
     ## 關於本網站
-    這是 Project Golem Plus 內建的動態文字冒險遊戲。玩家可以透過簡單的文字描述，創造出獨一無二的角色，並由目前啟動的 Golem 擔任 AI GM，在即時生成的世界中展開冒險。
+    這是一個使用 Google Gemini 大型語言模型驅動的動態文字冒險遊戲產生器。玩家可以透過簡單的文字描述，創造出獨一無二的角色，並在 AI 即時生成的世界中展開冒險。
 
     ## 如何開始一場冒險
-    1.  **確認 Golem**：本遊戲由 Project Golem 後端生成，不需要玩家輸入 API Key。請先確認 Golem Plus 已啟動可用的 Golem。
+    1.  **設定金鑰**：點擊右上角齒輪圖示 (⚙️)，貼上您的 Google Gemini API 金鑰。這是驅動遊戲 AI 的必要步驟，您可以從 Google AI Studio 免費獲取。
     2.  **創造角色**：選擇您喜歡的「遊戲世界觀」，並在「角色設定」中詳細描述您想扮演的英雄。
     3.  **開始冒險**：點擊「開始新冒險」，AI 將為您生成開場故事與動作選項。
     4.  **做出選擇**：點擊下方的動作按鈕來推動故事。點擊遊戲視窗右上角的「角色狀態」按鈕，可以隨時查看您的詳細狀態。
@@ -157,17 +152,19 @@ export const i18nData = {
     - **「遊戲卡帶」DLC 加值頁面**： https://buymeacoffee.com/arvincreator/e/456331
 
     ## 常見錯誤與解決方法
-    - **如果看到「Project Golem 後端暫時無法連線」**：請確認 Golem Plus 已啟動，且目前至少有一個可用的 Golem brain。
-    - **如果看到「請求頻率過高 (429)」**：請暫停操作稍候 30 秒再試。
-    - **如果看到「AI 因內容審核而拒絕回應」**：這可能是因為您的角色描述或輸入的自訂動作包含了目前模型或系統安全設定認為敏感的內容。請調整描述後再試。
+    - **如果看到「API 金鑰無效或已過期」**：這代表您的 API 金鑰不正確。請點擊右上角的齒輪「設定」圖示，檢查並重新貼上您從 Google AI Studio 獲取的金鑰。
+ - **如果看到「請求頻率過高 (429)」**：這有兩種可能： 1. **點擊太快**：觸發了每分鐘請求限制。請暫停操作稍候 30 秒再試。 2. **額度耗盡**：您可能已超過 Google API 的「每日免費使用額度」。請前往 Google AI Studio 官方網頁查看您的 Quota 使用量，若已滿則需等待隔日重置。 - **如果看到「AI 因內容審核而拒絕回應」**：這可能是因為您的角色描述或輸入的自訂動作包含了 AI 認為敏感的內容。請參考下方的 Google API 政策說明。
+    - **如果看到「AI 因內容審核而拒絕回應」**：這可能是因為您的角色描述或輸入的自訂動作包含了 AI 認為敏感的內容。請參考下方的 Google API 政策說明。
+    - **如果看到「Google AI 伺服器暫時無法連線」**：這代表 Google 的服務暫時出現問題，通常很快就會恢復。請稍後再試。
 
     ## 網站聲明與版權
-    - **版權**：本網站的遊戲概念、介面設計及程式碼版權為開發者 @Arvin 所有。由 AI 生成的遊戲內容（文字、故事）依目前 Project Golem 所使用的模型與服務條款處理。
+    - **版權**：本網站的遊戲概念、介面設計及程式碼版權為開發者 @Arvin 所有。由 AI 生成的遊戲內容（文字、故事）的版權歸屬，遵循 Google Gemini API 的使用條款。
     - **免責聲明**：使用者應對其輸入的內容（角色描述、自訂動作）負全部責任。本網站不對 AI 生成內容的準確性、合適性或任何可能引起的後果負責。所有 AI 生成內容均為虛構，不應視為事實或專業建議。
 
-    ## Golem 安全設定
-    文字 RPG 會透過 Project Golem 後端生成內容。實際可生成範圍會受目前模型、Golem 系統提示、NSFW 開關與安全限制共同影響。
-    - **什麼是敏感內容**：依目前模型與安全設定，可能被阻擋的內容主要包含以下幾類：
+    ## Google API 政策
+    本網站使用 Google Gemini API，所有使用者輸入的內容和 AI 生成的內容都必須遵守 Google 的「生成式 AI 禁止使用政策」。
+    - **政策連結**：https://policies.google.com/terms/generative-ai/use-policy
+    - **什麼是敏感內容**：根據 Google 的政策和本網站的安全設定，會被阻擋的內容主要包含以下幾類：
         - **騷擾 (Harassment)**：針對個人的辱罵、霸凌或威脅性言論。
         - **仇恨言論 (Hate Speech)**：基於種族、族裔、宗教、性別等特徵，攻擊或貶低特定群體的言論。
         - **露骨色情 (Sexually Explicit)**：描述詳細性行為或色情內容。
@@ -196,9 +193,8 @@ export const i18nData = {
 'genre.western_magic': '西方魔法 (Western Magic)',
 'genre.transmigration': '穿越 (Transmigration)',
 'genre.tribute_rpg': '致敬經典RPG (Tribute)',
-'model.flash_lite': 'Project Golem',
-'model.flash': 'Project Golem',
-'model.golem': 'Project Golem（目前啟動的 Golem）',
+'model.flash_lite': 'Gemini 2.5 Flash lite (推薦)',
+'model.flash': 'Gemini 2.5 flash (較強大)',
 'combat.attack': '打擊',
 'combat.useSkill': '使用技能',
 'combat.useItem': '使用道具',
@@ -226,18 +222,18 @@ export const i18nData = {
 'game.fleeSuccess': '你成功逃離了戰鬥！',
 'meta.title': 'AI 文字冒險遊戲產生器 | 專注於故事的互動小說',
 'meta.description': '專注於故事的純文字冒險遊戲。定義你的英雄，進入由 AI 動態生成的文字世界。你的每一個選擇，都將塑造獨一無二的史詩冒險。',
-'meta.keywords': 'TRPG, 文字冒險遊戲, 互動小說, RPG, AI Game Master, 角色扮演, Project Golem',
+'meta.keywords': 'TRPG, 文字冒險遊戲, 互動小說, RPG, AI Game Master, 角色扮演, Gemini API',
 'meta.og.title': 'AI 文字冒險遊戲產生器 | 互動式小說 | AI 跑團',
 'meta.og.description': '專注於故事的純文字冒險遊戲。定義你的英雄，進入由 AI 動態生成的文字世界。支援奇幻、武俠、克蘇魯神話、賽博龐克等題材。',
 'hud.questFocusAction': '我想專注於任務：{questName}', 'ai.questFocusPattern': '我想專注於任務：',
 'seo.h1': 'AI 文字冒險遊戲產生器',
 'seo.h2.what': '這是一個什麼網站？',
-'seo.p1': '本網站是 Project Golem Plus 內建的動態文字冒險遊戲產生器。它旨在提供一個無窮盡的故事平台，讓玩家可以透過簡單的文字描述，創造出獨一無二的角色，並由 Golem 在即時生成的世界中主持冒險。',
+'seo.p1': '本網站是一個使用 Google Gemini 大型語言模型驅動的動態文字冒險遊戲產生器。它旨在提供一個無窮盡的故事平台，讓玩家可以透過簡單的文字描述，創造出獨一無二的角色，並在 AI 即時生成的世界中展開冒險。',
 'seo.p2': '與傳統的遊戲不同，這裡沒有固定的劇本。您所做的每一個選擇，都會被 AI 理解並用來推動一個專屬於您的故事。從奇幻的王國到反烏托邦的未來，您的想像力是唯一的極限。',
 'seo.h2.trpg': 'AI 跑團與互動式小說',
 'seo.p3': '本平台支援 AI 跑團 (AI Game Master) 功能，讓您體驗最自由的互動式小說 (Interactive Fiction)。玩家可以自訂角色，選擇奇幻、科幻、武俠、仙俠、克蘇魯神話、宮鬥、賽博龐克、末日生存或懸疑偵探等世界觀。',
 'seo.h2.how': '如何開始一場冒險',
-'seo.li1': '<strong>確認 Golem：</strong>本遊戲由 Project Golem 後端生成，不需要玩家輸入 API Key。',
+'seo.li1': '<strong>設定金鑰：</strong>點擊右上角齒輪圖示 (⚙️)，貼上您的 Google Gemini API 金鑰。',
 'seo.li2': '<strong>創造角色：</strong>選擇您喜歡的「遊戲世界觀」，並在「角色設定」中詳細描述您想扮演的英雄。',
 'seo.li3': '<strong>開始冒險：</strong>點擊「開始新冒險」，AI 將為您生成開場故事、開場角色狀態以及最初的動作選項。',
 'seo.li4': '<strong>做出選擇：</strong>點擊下方的動作按鈕来推動故事。',
@@ -289,11 +285,11 @@ export const i18nData = {
 'notification.verifyError': '驗證失敗，請確認網路連線或登入狀態。',
 'settings.nsfw': '解除內容過濾 (NSFW)',
 'nsfw.modal.title': '⚠️ 高風險警告：解除過濾',
-'nsfw.modal.content': '您即將在文字 RPG 模式啟用較寬鬆的成人內容設定 (NSFW)。<br><br>1. <strong>適用範圍：</strong>此設定只會隨 RPG 請求傳送給 Project Golem 後端。<br>2. <strong>自行負責：</strong>開啟此選項代表您願意自行承擔生成內容的風險。<br>3. <strong>底層限制：</strong>實際輸出仍受目前 Golem 模型、系統提示與安全限制影響，極端非法或有害內容仍可能被拒絕。<br><br>您確定要開啟嗎？',
+'nsfw.modal.content': '您即將解除 AI 的安全過濾機制 (NSFW)。<br><br>1. <strong>帳號風險：</strong>生成過度露骨或暴力內容可能違反 Google API 使用政策，導致您的 API Key 被封鎖。<br>2. <strong>自行負責：</strong>開啟此選項代表您願意自行承擔所有風險。<br>3. <strong>底層限制：</strong>Google 模型本身 (Gemini) 仍然有核心的安全層，對於極端的非法內容（如兒童色情、極端仇恨言論等）仍然會拒絕生成，這是無法繞過的底層限制。<br><br>您確定要開啟嗎？',
 'nsfw.modal.agree': '我了解風險並開啟',
 'nsfw.modal.cancel': '取消，保持安全',
 'shop.combat_lock': '戰鬥中無法開啟商店',
-'info.privacy.h3_google': 'Project Golem 後端聲明', 'info.privacy.p_google': '本平台的文字 RPG 由 Project Golem 後端生成內容，不再要求玩家輸入 API Key。實際模型、額度與安全規範依目前 Golem Plus 的系統設定為準。',
+'info.privacy.h3_google': 'Google API 免責聲明', 'info.privacy.p_google': '本平台僅提供驅動 Google Gemini 模型之介面功能。使用者提供的 API Key 之任何使用狀況（包含但不限於額度消耗、帳號權限狀態）須由使用者自行監控與承擔。本站無法干涉亦不負責 Google 官方政策的任何調整，一切服務規範請以 Google 官方公告為主。',
 'hud.transactionLog': '交易紀錄',
 'shop.title': '商店',
 'shop.openBtn': '開啟商店',
@@ -311,8 +307,8 @@ export const i18nData = {
 'shop.notification.equip': '已裝備 {item}！',
 'shop.notification.unequip': '已卸下 {item} 並放入物品欄',
 'shop.combat_lock': '戰鬥中無法開啟商店',
-'error.allKeysInvalid': 'Project Golem 後端拒絕了這次請求，請確認目前有可用的 Golem。',
-'error.allKeysExhausted': '⚠️ Project Golem 後端目前無法處理更多請求，請稍候再試。',
+'error.allKeysInvalid': '所有 API Key 皆無效或格式錯誤，請檢查您的金鑰設定。',
+'error.allKeysExhausted': '⚠️ 嚴重錯誤：您當前所有的 API 金鑰額度已全數消耗殆盡！請前往設定「新增金鑰」或至 Google AI Studio 官網查看金鑰使用狀況。',
 'minigame.defaultTitle': '挑戰環節', 'minigame.defaultDesc': '請完成目標以繼續...', 'minigame.dice.ready': '準備擲骰...','minigame.dice.rolling': '骰子滾動中...', 'minigame.dice.low': '點數過低... 再試一次？', 'minigame.code.instruction': '請輸入正確序列解鎖', 'minigame.code.hint': '請輸入 4 位數密碼', 'minigame.code.error_len': '長度錯誤！需 4 位數','minigame.code.error_wrong': '密碼錯誤！警報響起...', 'minigame.reflex.instruction': '目標：在黃色游標進入<span class="text-green-400">綠色區域</span>時按下！', 'minigame.result.win': '🏆 挑戰成功 (SUCCESS)','minigame.result.lose': '💀 挑戰失敗 (FAILURE)', 'minigame.btn.roll': '🎲 擲骰子 (Roll)', 'minigame.btn.giveup': '🏳️ 放棄嘗試 (Give Up)', 'minigame.btn.strike': '🔴 鎖定 (STRIKE!)', 'minigame.btn.input': '輸入代碼 (Input)',
 'minigame.rps.rock': '👊 強攻 (Rock)',
 'minigame.rps.paper': '✋ 化解 (Paper)',
@@ -325,10 +321,8 @@ export const i18nData = {
                 'en': {
                     title: 'Text Adventure RPG Generator', subtitle: 'Define your hero and start a strategic narrative adventure',
                     'nav.about': 'About', 'nav.sponsor': 'Sponsor', 'nav.benefits': 'Benefits',
-                    'settings.title': 'Game Settings', 'settings.language': 'Interface Language', 'settings.model': 'AI Model', 'settings.save': 'Save Settings',
-                    'settings.golemBackend.desc': 'This game is powered by the active Project Golem backend. Players do not need to enter an API key.',
-                    'settings.nsfw.desc': 'This asks Golem to use a looser adult-content setting for Text RPG mode. Output still depends on the active model, system prompt, and safety limits.',
-                    'key.modalPaste': 'Project Golem Backend', 'key.placeholder': 'Handled by Golem', 'key.modalGetLink': 'Handled by Project Golem',
+                    'settings.title': 'Settings', 'settings.language': 'Interface Language', 'settings.model': 'AI Model', 'settings.save': 'Save Settings',
+                    'key.modalPaste': 'API Key', 'key.placeholder': 'Paste your key here', 'key.modalGetLink': 'Get a key here for free ↗',
                     'form.genre': 'Game World', 'form.character': 'Your Character Profile', 'form.characterPlaceholder': 'e.g., I am a skilled swordsman who has entered the martial world to find my master\'s killer.', 'form.start': 'Start New Adventure', 'form.load': 'Load Game', 'form.starting': 'Building world...',
                     'game.title': 'Adventure Log', 'game.saveTooltip': 'Save Progress', 'game.hudButton': 'Character Status', 'game.processing': 'Processing...', 'game.gameOver': 'Game Over', 'game.continue': '...Continue',
                     'game.endingSuccess': '(You have cleared the game. Please return to the main screen to start a new adventure)',
@@ -343,21 +337,21 @@ export const i18nData = {
 'stats.atk': 'ATK', 'stats.def': 'DEF',
 'info.title': 'About This Site',
                     'info.tab.about': 'About', 'info.tab.howToPlay': 'How to Play', 'info.tab.howItWorks': 'How It Works', 'info.tab.privacy': 'Privacy & Copyright',
-                    'info.about.p1': 'This is the built-in Project Golem Plus text adventure game. The active Golem acts as the AI GM, generating a unique adventure from your character description.',
+                    'info.about.p1': 'This site is a dynamic text adventure game generator powered by the Google Gemini large language model. It aims to provide an endless storytelling platform where players can create unique characters through simple text descriptions and embark on adventures in a world generated in real-time by AI.',
                     'info.about.p2': 'Unlike traditional games, there is no fixed script here. Every choice you make is understood by the AI and used to advance a story that is uniquely yours. From fantasy kingdoms to dystopian futures, your imagination is the only limit.',
                     'info.howToPlay.h3': 'How to start an adventure:',
-                    'info.howToPlay.li1': '<strong>Check Golem:</strong> No player API key is required. Make sure Project Golem Plus has an active Golem before starting.',
+                    'info.howToPlay.li1': '<strong>Set API Key:</strong> Click the gear icon (⚙️) and paste your Google Gemini API Key. This is necessary to power the game\'s AI, and you can get one for free from Google AI Studio.',
                     'info.howToPlay.li2': '<strong>Create Character:</strong> Choose your preferred "Game World" and describe the hero you want to play in "Your Character Profile". The more detailed your description, the more tailored the opening scene will be.',
                     'info.howToPlay.li3': '<strong>Start Adventure:</strong> Click "Start New Adventure". The AI will generate the opening story, your character\'s status, and your initial action choices.',
                     'info.howToPlay.li4': '<strong>Make Choices:</strong> Click the action buttons at the bottom to advance the story. Click the "Character Status" button in the top right of the game window to view your detailed status at any time, including multiple status bars, equipment, and skills.',
                     'info.howItWorks.h3': 'Core Technology',
-                    'info.howItWorks.p1': 'The game is powered by Project Golem. The frontend packages your character setup into a structured prompt and sends it to the active Golem brain.',
+                    'info.howItWorks.p1': 'The core of this game is Google\'s Gemini model. When you enter a character profile and start the game, the front-end application packages your request into a structured "Prompt" and sends it to the Gemini API.',
                     'info.howItWorks.p2': 'The AI parses this prompt, understands your world setting, character profile, and the choices you make, then generates a new story narrative and updated game state (like health changes, new items), returning it in JSON format.',
                     'info.howItWorks.p3': 'Upon receiving the JSON, the front-end application parses it and updates the screen, presenting the new plot and choices to you. This cycle constitutes the entire game flow, and this dynamic generation ensures that every game is unique.',
-                    'info.privacy.h3': 'Privacy Policy', 'info.privacy.p1': 'Member data is still verified through Firebase for account and sponsorship features. Text RPG no longer asks players to enter an API key. Game progress is saved locally as downloaded files.',
-                    'info.privacy.h3_copyright': 'Copyright Notice', 'info.privacy.p_copyright': 'The game concept, interface design, and source code are copyrighted by developer @Arvin. AI-generated game content follows the terms of the model/service currently used by Project Golem. © 2025 Project Golem Text RPG. All Rights Reserved.',
+                    'info.privacy.h3': 'Privacy Policy', 'info.privacy.p1': 'This site takes your privacy seriously. We do not collect, store, or transmit any of your personal information. Member Data: If you choose to register, your name, nickname, email, phone number, and sponsorship email will be securely stored in our database for verifying your sponsorship status and account management. Your password will be strongly encrypted, and we cannot see it. Your Google Gemini API Key is stored only in your browser\'s Local Storage and is never uploaded to our servers. All game progress is saved locally by you as a downloaded file; this site does not retain any game data.',
+                    'info.privacy.h3_copyright': 'Copyright Notice', 'info.privacy.p_copyright': 'The game concept, interface design, and source code of this website are copyrighted by developer @Arvin. The copyright for AI-generated game content (text, stories) adheres to the Google Gemini API Terms of Service. Users are responsible for the content they input. © 2025 AI RPG Generator. All Rights Reserved.',
                     'copyright.footer': '© 2025 AI RPG Generator. All Rights Reserved.',
-                    'notification.noApiKey': 'Please make sure the Project Golem backend is running.', 'notification.noCharacter': 'Please describe your character first!',
+                    'notification.noApiKey': 'Please enter your API key in the Settings menu.', 'notification.noCharacter': 'Please describe your character first!',
                     'notification.gameStartFail': 'Failed to create the game world!', 'notification.actionFail': 'Failed to process the action!',
                     'notification.loadFail': 'Load failed! Invalid or corrupted file format.', 'notification.loadSuccess': 'Game loaded successfully!', 'notification.saveSuccess': 'Game progress saved!',
                     'error.parseJSON': 'Invalid format from AI, could not parse game state.',
@@ -376,12 +370,11 @@ export const i18nData = {
                     'auth.register.success': 'Registration successful! Welcome.', 'auth.error.emailInUse': 'This email is already registered.', 'auth.error.weakPassword': 'Password is too weak. Please use at least 6 characters.', 'auth.error.invalidEmail': 'Invalid email format.', 'auth.error.unknown': 'An unknown error occurred. Please try again later.',
                     'account.title': 'My Account', 'account.greeting': 'Hello, {nickname}', 'account.prompt': 'Are you a sponsor? Fill in the info below to upgrade to Sponsor Member!', 'account.form.transactionId': '☝🏻Input your email;👇🏻Input Sponsor Transaction ID (Optional)', 'account.button.logout': 'Logout', 'account.button.save': 'Save Changes', 'account.button.sponsorLink': 'Go to Sponsor Page to get Transaction ID',
                     'benefits.title': 'Membership Tier Benefits', 'benefits.header.feature': 'Feature', 'benefits.header.visitor': 'Visitor', 'benefits.header.general': 'General Member', 'benefits.header.sponsor': 'Sponsor Member(>USD$5)',
-                    'benefits.feature.actions': 'Action Turns', 'benefits.feature.inventory': 'Use Items/Skills', 'benefits.feature.saveLoad': 'Save/Load Game', 'benefits.feature.customAction': 'Custom Action DLC',
-                    'benefits.value.visitor_actions': '5 turns', 'benefits.value.general_actions': '20 turns', 'benefits.value.sponsor_actions': 'Unlimited', 'benefits.value.enabled': 'Enabled', 'benefits.value.locked': 'Locked', 'benefits.value.dlcOnly': 'DLC activation required',
+                    'benefits.feature.actions': 'Action Turns', 'benefits.feature.inventory': 'Use Items/Skills', 'benefits.feature.saveLoad': 'Save/Load Game',
+                    'benefits.value.visitor_actions': '5 turns', 'benefits.value.general_actions': '20 turns', 'benefits.value.sponsor_actions': 'Unlimited',
                     'notification.actionLimitReached': 'Action turn limit reached!', 'notification.featureLocked': 'This feature is exclusive to members. Please register or upgrade.',
                     'notification.logoutSuccess': 'You have successfully logged out.', 'notification.logoutError': 'An error occurred while signing out.', 'confirm.logout': 'Are you sure you want to log out?',
 'confirm.exitGame': 'Are you sure you want to exit the current adventure? Any unsaved progress will be lost.',
-'confirm.generationStillRunning': 'Golem is still generating. This can take a little longer than usual. Keep waiting? Choose Cancel to stop this attempt and try generating again later.',
                     'notification.loginSuccess': 'Login successful!', 'notification.loginError': 'Incorrect email or password, please try again.',
                     'notification.profileUpdateSuccess': 'Profile updated successfully!', 
 'notification.profilePendingReview': 'Your sponsor info has been submitted. An administrator will review it and activate your permissions within 24 hours.',
@@ -400,19 +393,17 @@ export const i18nData = {
                     'dlc.li4': 'Once activated, simply log in again, and the "Custom Action" switch on the main screen will be functional.',
                     'dlc.p2': 'Your support is the greatest motivation for the continued development and maintenance of this project. Thank you for your generosity!',
                     'dlc.button': 'Go to DLC Sponsorship Page',
-                    'error.apiKeyInvalid': 'Project Golem rejected this request. Please make sure an active Golem is available.',
-                    'error.badRequest': 'The RPG request was incomplete. Please try again.',
-                    'error.rateLimitExceeded': 'Too many requests (429). Please wait a moment.',
-                    'error.serverError': 'Project Golem is temporarily unavailable. Please make sure Golem is running.',
+                    'error.apiKeyInvalid': 'The API key is invalid or has expired. Please check your key in the Settings menu.',
+                    'error.rateLimitExceeded': 'Too many requests (429). Please wait a moment. If this persists, you may have exceeded your daily API quota. Please check your usage on the Google AI Studio dashboard.',
+                    'error.serverError': 'The Google AI server is temporarily unavailable. Please try again later.',
                     'error.contentBlocked': 'The AI refused to respond due to content safety filters. Please try modifying your character description or choosing a different action.',
                     'error.unknownApiError': 'An unknown error occurred while connecting to the AI. Please try again later.',
-                    'error.generationCancelled': 'Stopped waiting for this generation. You can click generate again whenever you are ready.',
                     'form.cartridge.button': 'Select Game Cartridge (Details in Benefits)', 'cartridge.modal.title': 'Game Cartridge Library',
                     'cartridge.modal.play_btn': 'Use This Setup', 
 'cartridge.modal.generate_btn': 'Generate Scripts',
 'cartridge.modal.prompt': 'Please select a genre and click "Generate Scripts".',
 'notification.cartridgeLoaded': 'Cartridge setup loaded successfully!',
-                    'benefits.feature.cartridge': 'Game Cartridge DLC', 'benefits.cartridge_dlc.link': 'How to enable "Game Cartridge" DLC?',
+                    'benefits.feature.cartridge': 'Game  DLC(Need active)', 'benefits.cartridge_dlc.link': 'How to enable "Game Cartridge" DLC?',
                    
                     'cartridge_dlc.title': 'Enable "Game Cartridge" DLC',
                     'cartridge_dlc.p1': 'The "Game Cartridge" is an exclusive feature for advanced sponsors, providing a series of well-designed scenarios for you to load and start an exciting adventure with one click. To enable this feature, you must first be a "Sponsor Member".',
@@ -464,10 +455,10 @@ export const i18nData = {
 'assistant.error.no_api_key': 'Please enter your API key in Settings to use this AI bot ask feature. How to set up: Click the gear icon in the top right of the main screen to open settings. Below the API input box, there is a link to get a free API key. After obtaining it, paste it into the input box and then save the settings.',
 'assistantKnowledgeBase': `
     ## About This Site
-    This is the built-in Project Golem Plus text adventure game. Players create unique characters and the active Golem acts as the AI GM.
+    This is a dynamic text adventure game generator powered by the Google Gemini large language model. Players can create unique characters and embark on adventures in an AI-generated world.
 
     ## How to Start an Adventure
-    1.  **Check Golem**: No player API key is required. Make sure Project Golem Plus has an active Golem.
+    1.  **Set API Key**: Click the gear icon (⚙️) to paste your Google Gemini API Key. It's required to power the AI. You can get one for free from Google AI Studio.
     2.  **Create Character**: Choose a "Game World" and describe your hero in "Your Character Profile".
     3.  **Start Adventure**: Click "Start New Adventure" for the AI to generate the opening scene and choices.
     4.  **Make Choices**: Click the action buttons to advance the story. You can check your status anytime via the "Character Status" button in the game window.
@@ -490,14 +481,14 @@ export const i18nData = {
     - **If you see "The API key is invalid or has expired"**: This means your API key is incorrect. Please click the gear "Settings" icon in the top right, check your key, and paste it again.
     - **If you see "Too many requests"**: You are clicking actions too quickly. Please wait a few seconds before trying again. It is recommended to wait 4-6 seconds between actions.
     - **If you see "The AI refused to respond due to content safety filters"**: Your input may contain content deemed sensitive by the AI. Please refer to the Google API Policy section below for more details.
-    - **If you see "Project Golem is temporarily unavailable"**: Make sure Golem Plus is running and has an active Golem brain.
+    - **If you see "The Google AI server is temporarily unavailable"**: This is a temporary issue with Google's service. It usually resolves itself quickly. Please try again in a few moments.
 
     ## Disclaimers & Copyright
-    - **Copyright**: The game concept, interface design, and code are copyrighted by developer @Arvin. AI-generated content follows the terms of the model/service currently used by Project Golem.
+    - **Copyright**: The game concept, interface design, and code of this website are copyrighted by the developer @Arvin. The copyright for AI-generated content (text, stories) adheres to the Google Gemini API Terms of Service.
     - **Disclaimer**: Users are solely responsible for the content they input (character descriptions, custom actions). This site is not liable for the accuracy, suitability, or any consequences arising from the AI-generated content. All AI-generated content is fictional and should not be taken as factual or professional advice.
 
     ## Google API Policy
-    Text RPG content is generated through Project Golem. Actual output depends on the active model, system prompt, NSFW switch, and safety limits.
+    This site uses the Google Gemini API, and all user inputs and AI-generated content must comply with Google's "Generative AI Prohibited Use Policy".
     - **Policy Link**: https://policies.google.com/terms/generative-ai/use-policy
     - **What is sensitive content?**: Based on Google's policy and the safety settings of this site, content that will be blocked falls into these main categories:
         - **Harassment**: Abusive, bullying, or threatening comments targeting an individual.
@@ -528,9 +519,8 @@ export const i18nData = {
 'genre.western_magic': 'Western Magic',
 'genre.transmigration': 'Transmigration',
 'genre.tribute_rpg': 'Tribute to Classics (RPG)',
-'model.flash_lite': 'Project Golem',
-'model.flash': 'Project Golem',
-'model.golem': 'Project Golem (active Golem)',
+'model.flash_lite': 'Gemini 2.5 Flash lite (Recommended)',
+'model.flash': 'Gemini 2.5 flash (More powerful)',
 'combat.attack': 'Attack',
 'combat.useSkill': 'Use Skill',
 'combat.useItem': 'Use Item',
@@ -558,17 +548,17 @@ export const i18nData = {
 'game.fleeSuccess': 'You successfully fled from combat!',
 'meta.title': 'AI Text Adventure RPG Generator | Story-Focused Interactive Fiction',
 'meta.description': 'A story-focused text adventure game. Define your hero, enter a world dynamically generated by AI. Every choice you make shapes a unique epic adventure.',
-'meta.keywords': 'TRPG, Text Adventure, Interactive Fiction, RPG, AI Game Master, Role-playing, Project Golem',
+'meta.keywords': 'TRPG, Text Adventure, Interactive Fiction, RPG, AI Game Master, Role-playing, Gemini API',
 'meta.og.title': 'AI Text Adventure RPG Generator | Interactive Fiction | AI GM',
 'meta.og.description': 'Define your hero and enter an AI-generated world. Supports Fantasy, Wuxia, Cthulhu Mythos, Cyberpunk, and more.',
 'seo.h1': 'AI Text Adventure Game Generator',
 'seo.h2.what': 'What is this website?',
-'seo.p1': 'This website is a Project Golem Plus text adventure generator. It provides an endless storytelling platform hosted by the active Golem AI GM.',
+'seo.p1': 'This website is a dynamic text adventure game generator powered by the Google Gemini large language model. It aims to provide an endless storytelling platform where players can create unique characters and embark on adventures in a world generated in real-time by AI.',
 'seo.p2': 'Unlike traditional games, there is no fixed script. Every choice you make is understood by the AI and used to advance a story that is uniquely yours. From fantasy kingdoms to dystopian futures, your imagination is the only limit.',
 'seo.h2.trpg': 'AI GM & Interactive Fiction',
 'seo.p3': 'This platform supports AI Game Master (AI GM) functionality, allowing you to experience the most flexible interactive fiction. Players can customize characters and choose worldviews like Fantasy, Sci-Fi, Wuxia, Cthulhu Mythos, Cyberpunk, Post-Apocalyptic, or Mystery.',
 'seo.h2.how': 'How to Start an Adventure',
-'seo.li1': '<strong>Check Golem:</strong> No player API key is required; the Project Golem backend handles generation.',
+'seo.li1': '<strong>Set Key:</strong> Click the gear icon (⚙️) and paste your Google Gemini API Key.',
 'seo.li2': '<strong>Create Character:</strong> Choose your preferred "Game World" and describe your hero in "Character Profile".',
 'seo.li3': '<strong>Start Adventure:</strong> Click "Start New Adventure", and the AI will generate your opening story, status, and choices.',
 'seo.li4': '<strong>Make Choices:</strong> Click the action buttons at the bottom to advance the story.',
@@ -621,11 +611,11 @@ export const i18nData = {
 'notification.verifyError': 'Verification failed. Check network or login status.',
 'settings.nsfw': 'Unfilter Content (NSFW)',
 'nsfw.modal.title': '⚠️ High Risk Warning',
-'nsfw.modal.content': 'You are about to enable a looser adult-content setting for Text RPG mode (NSFW).<br><br>1. <strong>Scope:</strong> This is sent only with RPG requests to the Project Golem backend.<br>2. <strong>Your Responsibility:</strong> You agree to assume the risks of generated content.<br>3. <strong>Core Limits:</strong> Output still depends on the active Golem model, system prompt, and safety limits. Extreme illegal or harmful content may still be refused.<br><br>Are you sure?',
+'nsfw.modal.content': 'You are about to disable the AI safety filters (NSFW).<br><br>1. <strong>Account Risk:</strong> Generating explicit content may violate Google API policies and ban your Key.<br>2. <strong>Your Responsibility:</strong> You agree to assume all risks.<br>3. <strong>Core Limits:</strong> The Gemini model has hard-coded safety layers. It will still refuse to generate extreme illegal content (e.g., CSAM, hate speech). This cannot be bypassed.<br><br>Are you sure?',
 'nsfw.modal.agree': 'I Agree & Enable',
 'nsfw.modal.cancel': 'Cancel',
 'shop.combat_lock': 'Cannot open shop during combat',
-'info.privacy.h3_google': 'Project Golem Backend Notice', 'info.privacy.p_google': 'Text RPG content is generated by the Project Golem backend and no longer asks players for API keys. Model, quota, and safety behavior follow the current Golem Plus configuration.',
+'info.privacy.h3_google': 'Google API Disclaimer', 'info.privacy.p_google': 'This platform serves solely as an interface to drive the Google Gemini model. Users are fully responsible for the usage of their provided API Keys (including quota consumption). We are not responsible for any changes in Google\'s official policies; please refer to Google\'s official announcements.',
 'hud.transactionLog': 'Transaction Log',
 'shop.title': 'Shop',
 'shop.openBtn': 'Open Shop',
@@ -643,8 +633,8 @@ export const i18nData = {
 'shop.notification.equip': 'Equipped {item}!',
 'shop.notification.unequip': 'Unequipped {item} to inventory',
 'shop.combat_lock': 'Cannot open shop during combat',
-'error.allKeysInvalid': 'Project Golem rejected this request. Please make sure an active Golem is available.',
-'error.allKeysExhausted': '⚠️ Project Golem cannot handle more RPG requests right now. Please wait and try again.',
+'error.allKeysInvalid': 'All API Keys are invalid or malformed. Please check your settings.',
+'error.allKeysExhausted': '⚠️ Critical Error: All API Key quotas exhausted! Please add new keys in Settings or check usage on Google AI Studio.',
 'minigame.defaultTitle': 'Challenge Event', 'minigame.defaultDesc': 'Complete the objective to proceed...','minigame.dice.ready': 'Ready to roll...', 'minigame.dice.rolling': 'Rolling...', 'minigame.dice.low': 'Rolled too low... Try again?', 'minigame.code.instruction': 'Enter sequence to unlock', 'minigame.code.hint': 'Enter 4-digit code','minigame.code.error_len': 'Error! Need 4 digits', 'minigame.code.error_wrong': 'Wrong Code! Alarm triggered...','minigame.reflex.instruction': 'Target: Hit when yellow cursor is in the <span class="text-green-400">Green Zone</span>!', 'minigame.result.win': '🏆 Challenge Success', 'minigame.result.lose': '💀 Challenge Failed','minigame.btn.roll': '🎲 Roll Dice', 'minigame.btn.giveup': '🏳️ Give Up', 'minigame.btn.strike': '🔴 STRIKE!','minigame.btn.input': 'Input Code',
 'minigame.rps.rock': '👊 Attack (Rock)',
 'minigame.rps.paper': '✋ Defend (Paper)',
@@ -664,11 +654,9 @@ export const i18nData = {
     'settings.language': 'インターフェース言語',
     'settings.model': 'AIモデル',
     'settings.save': '保存',
-    'settings.golemBackend.desc': 'このゲームは起動中の Project Golem バックエンドを使用します。プレイヤーが API Key を入力する必要はありません。',
-    'settings.nsfw.desc': 'この設定は Text RPG モードで Golem により緩い成人向けコンテンツ設定を要求します。実際の出力は現在のモデル、システムプロンプト、安全制限に従います。',
-    'key.modalPaste': 'Project Golem バックエンド',
-    'key.placeholder': 'Golem が処理します',
-    'key.modalGetLink': 'Project Golem が処理します',
+    'key.modalPaste': 'APIキー',
+    'key.placeholder': 'ここにキーを貼り付け',
+    'key.modalGetLink': 'Google AI Studioで無料キーを取得 ↗',
     'form.genre': 'ゲームの世界観',
     'form.character': 'あなたのキャラクター設定',
     'form.characterPlaceholder': '例：私は熟練した剣士で、師匠の仇を討つために武侠の世界に入りました。',
@@ -704,23 +692,23 @@ export const i18nData = {
     'info.tab.howToPlay': '遊び方',
     'info.tab.howItWorks': '仕組み',
     'info.tab.privacy': 'プライバシーと著作権',
-    'info.about.p1': 'これは Project Golem Plus に内蔵されたテキストアドベンチャーゲームです。起動中の Golem が AI GM として物語を生成します。',
+    'info.about.p1': 'このサイトは、Google Gemini 大規模言語モデルを搭載した、ダイナミックなテキストアドベンチャーゲームジェネレーターです。プレイヤーが簡単なテキスト記述でユニークなキャラクターを作成し、AIがリアルタイムで生成する世界で冒険できる、無限のストーリーテリングプラットフォームを提供することを目的としています。',
     'info.about.p2': '従来のゲームとは異なり、固定された脚本はありません。あなたが行うすべての選択がAIに理解され、あなただけのユニークな物語を推進するために使用されます。ファンタジーの王国からディストピアの未来まで、あなたの想像力だけが限界です。',
     'info.howToPlay.h3': '冒険の始め方：',
-    'info.howToPlay.li1': '<strong>Golem の確認：</strong>プレイヤーが API Key を入力する必要はありません。Project Golem Plus で利用可能な Golem が起動していることを確認してください。',
+    'info.howToPlay.li1': '<strong>キーの設定：</strong>歯車アイコン（⚙️）をクリックし、お持ちの Google Gemini API キーを貼り付けます。これはゲームのAIを動かすために必要で、Google AI Studio から無料で取得できます。',
     'info.howToPlay.li2': '<strong>キャラクター作成：</strong>お好みの「ゲームの世界観」を選び、「あなたのキャラクター設定」で演じたいヒーローを詳しく説明します。説明が詳細であるほど、AIが生成するオープニングはあなたの想像に近くなります。',
     'info.howToPlay.li3': '<strong>冒険開始：</strong>「新しい冒険を始める」をクリックすると、AIがオープニングストーリー、初期ステータス、最初の行動選択肢を生成します。',
     'info.howToPlay.li4': '<strong>選択：</strong>下の行動ボタンをクリックして物語を進めます。ゲームウィンドウ右上の「キャラクターステータス」ボタンで、詳細なステータス（複数のステータスバー、装備、スキルなど）をいつでも確認できます。',
     'info.howItWorks.h3': 'コア技術',
-    'info.howItWorks.p1': 'このゲームは Project Golem バックエンドで動作します。フロントエンドはキャラクター設定を構造化プロンプトにまとめ、起動中の Golem brain に送信します。',
+    'info.howItWorks.p1': 'このゲームの中核は Google の Gemini モデルです。キャラクター設定を入力してゲームを開始すると、フロントエンドアプリケーションがリクエストを構造化された「プロンプト」にパッケージ化し、Gemini API に送信します。',
     'info.howItWorks.p2': 'AIはこのプロンプトを解析し、世界観、キャラクター設定、あなたの選択を理解し、新しい物語（narrative）と更新されたゲーム状態（HPの変化、新しいアイテムの入手など）を生成します。',
     'info.howItWorks.p3': '新しいストーリーと選択肢が画面に表示され、このサイクルがゲームフロー全体を構成します。この動的生成方式により、すべてのゲームがユニークなものになります。',
     'info.privacy.h3': 'プライバシーポリシー',
-    'info.privacy.p1': '会員データは引き続き Firebase で認証・管理されます。Text RPG はプレイヤーに API Key 入力を求めません。ゲーム進行状況はローカルファイルとして保存されます。',
+    'info.privacy.p1': '当サイトはあなたのプライバシーを尊重します。会員データ：会員登録を選択した場合、あなたの氏名、ニックネーム、Eメール、電話番号、支援者Eメールは、支援資格の確認とアカウント管理のため、暗号化されてデータベースに保存されます。パスワードは高強度で暗号化され、私たちが内容を知ることはできません。あなたの Google Gemini API キーは、あなた自身のブラウザのローカルストレージにのみ保存され、当サイトのサーバーにアップロードされることはありません。すべてのゲーム進行状況は、あなた自身がローカルにダウンロード・保存するファイル形式であり、当サイトはゲームデータを一切保持しません。',
     'info.privacy.h3_copyright': '著作権表示',
-    'info.privacy.p_copyright': 'ゲームコンセプト、インターフェースデザイン、プログラムコードの著作権は開発者 @Arvin に帰属します。AI 生成コンテンツは Project Golem が現在使用するモデル/サービスの規約に従います。© 2025 Project Golem Text RPG. All Rights Reserved.',
+    'info.privacy.p_copyright': '当サイトのゲームコンセプト、インターフェースデザイン、プログラムコードの著作権は開発者@Arvinに帰属します。AIによって生成されたゲームコンテンツ（テキスト、ストーリー）の著作権は、Google Gemini API の利用規約に従います。ユーザーは自身が入力したコンテンツに責任を負うものとします。 © 2025 AI RPG Generator. All Rights Reserved.',
     'copyright.footer': '© 2025 AI RPG Generator. All Rights Reserved.',
-    'notification.noApiKey': 'Project Golem バックエンドが起動していることを確認してください。',
+    'notification.noApiKey': '右上の「設定」をクリックしてAPIキーを入力してください。',
     'notification.noCharacter': 'まずあなたのキャラクターを説明してください！',
     'notification.gameStartFail': 'ゲーム世界の作成に失敗しました！',
     'notification.actionFail': 'アクションの処理に失敗しました！',
@@ -775,20 +763,15 @@ export const i18nData = {
     'benefits.feature.actions': '行動回数',
     'benefits.feature.inventory': 'アイテム/スキル使用',
     'benefits.feature.saveLoad': 'セーブ/ロード',
-    'benefits.feature.customAction': 'カスタムアクションDLC',
     'benefits.value.visitor_actions': '5回',
     'benefits.value.general_actions': '20回',
     'benefits.value.sponsor_actions': '無制限',
-    'benefits.value.enabled': '利用可能',
-    'benefits.value.locked': '利用不可',
-    'benefits.value.dlcOnly': 'DLC有効化が必要',
     'notification.actionLimitReached': '行動回数制限に達しました！',
     'notification.featureLocked': 'この機能は会員専用です。登録またはアップグレードしてください。',
     'notification.logoutSuccess': '正常にログアウトしました。',
     'notification.logoutError': 'ログアウト中にエラーが発生しました。',
     'confirm.logout': '本当にログアウトしますか？',
     'confirm.exitGame': '現在の冒険を終了しますか？保存されていない進行状況は失われます。',
-    'confirm.generationStillRunning': 'Golem はまだ生成中です。通常より時間がかかっています。待ち続けますか？キャンセルすると今回の生成を停止し、後でもう一度生成できます。',
     'notification.loginSuccess': 'ログインしました！',
     'notification.loginError': 'Eメールまたはパスワードが間違っています。',
     'notification.profileUpdateSuccess': 'プロフィールが更新されました！',
@@ -816,13 +799,11 @@ export const i18nData = {
     'dlc.li4': '有効化後、再ログインするだけで、メイン画面の「カスタムアクション」スイッチが使用可能になります。',
     'dlc.p2': '皆様のご支援が、このプロジェクトの継続的な開発とメンテナンスの最大の原動力です。ありがとうございます！',
     'dlc.button': 'DLC支援ページへ',
-    'error.apiKeyInvalid': 'Project Golem がこのリクエストを拒否しました。利用可能な Golem が起動しているか確認してください。',
-    'error.badRequest': 'RPG リクエストが不完全です。もう一度お試しください。',
-    'error.rateLimitExceeded': 'リクエストが多すぎます (429)。しばらく待ってからお試しください。',
-    'error.serverError': 'Project Golem バックエンドに一時的に接続できません。Golem が起動しているか確認してください。',
+    'error.apiKeyInvalid': 'APIキーが無効か期限切れです。右上の「設定」でキーを確認してください。',
+    'error.rateLimitExceeded': 'リクエストが多すぎます (429)。しばらく待つか、Google AI Studioで1日のAPI使用制限（クォータ）を超えていないか確認してください。',
+    'error.serverError': 'Google AI サーバーが一時的に利用できません。後でもう一度お試しください。',
     'error.contentBlocked': 'AIがコンテンツ審査または安全設定により応答を拒否しました。キャラクター設定を変更するか、別のアクションを選択してみてください。',
     'error.unknownApiError': 'AIとの接続中に不明なエラーが発生しました。後でもう一度お試しください。',
-    'error.generationCancelled': '今回の生成待機を停止しました。必要なときにもう一度生成できます。',
     'form.cartridge.button': 'ゲームカートリッジを選択（詳細は特典にて）',
     'cartridge.modal.title': 'ゲームカートリッジ ライブラリ',
     'cartridge.modal.play_btn': 'この設定を使用',
@@ -874,17 +855,17 @@ export const i18nData = {
 'game.resurrect.log': '✨ 奇跡だ！女神が祈りに応え、金色の光があなたを完全に癒した！ ✨',
 'game.resurrect.action_prompt': '（復活の奇跡を使用）女神に祈ると、聖なる光が降り注ぎ、傷が癒えた。この奇跡を描写し、冒険を続けさせてください。',
 'form.customAction.placeholder_gameover': '冒険は終了しました',
-    'assistant.api_notice': 'アドベンチャーガイドは Project Golem を通じて回答します。',
+    'assistant.api_notice': 'AIアシスタントはあなたのAPIキーを使用します。',
     'assistant.thinking': '考え中...',
     'assistant.error.generic': '申し訳ありません、現在お答えできません。後でもう一度お試しください。',
-    'assistant.error.connection': '接続中にエラーが発生しました。Project Golem バックエンドが動作しているか確認してください。',
-    'assistant.error.no_api_key': 'Project Golem バックエンドが起動していることを確認してください。API Key を入力する必要はありません。',
+    'assistant.error.connection': '接続中にエラーが発生しました。APIキーまたはネットワーク接続を確認してください。',
+    'assistant.error.no_api_key': 'この質問機能を使用するには、まず「設定」でAPIキーを入力してください。設定方法：メイン画面右上の歯車アイコンから設定を開き、APIキー入力欄の下にある無料取得リンクからキーを取得し、入力欄に貼り付けて設定を保存してください。',
     'assistantKnowledgeBase': `
         ## このサイトについて
-        これは Project Golem Plus 内蔵のテキストアドベンチャーゲームです。起動中の Golem が AI GM として物語を生成します。
+        これは、Google Gemini 大規模言語モデルを使用したダイナミックなテキストアドベンチャーゲームジェネレーターです。プレイヤーは簡単なテキスト記述でユニークなキャラクターを作成し、AIがリアルタイムで生成する世界で冒険できます。
 
         ## 冒険の始め方
-        1.  **Golem の確認**：プレイヤーが API Key を入力する必要はありません。Project Golem Plus で利用可能な Golem が起動していることを確認してください。
+        1.  **キーの設定**：右上の歯車アイコン（⚙️）をクリックし、Google Gemini API キーを貼り付けます。これはゲームのAIを動かすために必要で、Google AI Studio から無料で取得できます。
         2.  **キャラクター作成**：お好みの「ゲームの世界観」を選び、「あなたのキャラクター設定」で演じたいヒーローを詳しく説明します。
         3.  **冒険開始**：「新しい冒険を始める」をクリックすると、AIがオープニングストーリーと行動選択肢を生成します。
         4.  **選択**：下の行動ボタンをクリックして物語を進めます。ゲームウィンドウ右上の「キャラクターステータス」ボタンで、いつでも詳細なステータスを確認できます。
@@ -904,17 +885,17 @@ export const i18nData = {
         - **「ゲームカートリッジ」DLC 追加支援ページ**： https://buymeacoffee.com/arvincreator/e/456331
 
         ## よくあるエラーと解決策
-        - **Project Golem に接続できない場合**：Golem Plus が起動しており、利用可能な Golem brain があるか確認してください。
+        - **「APIキーが無効か期限切れです」と表示された場合**：APIキーが正しくありません。右上の歯車「設定」アイコンをクリックし、Google AI Studio から取得したキーを確認して再度貼り付けてください。
         - **「リクエストが多すぎます」と表示された場合**：行動をクリックする速度が速すぎ、AIのリクエスト頻度制限に達しました。数秒待ってからもう一度お試しください。各アクションの間隔を 4～6 秒あけることをお勧めします。
         - **「AIがコンテンツ審査により応答を拒否しました」と表示された場合**：キャラクター設定や入力したカスタムアクションに、AIが敏感だと判断する内容が含まれている可能性があります。下記の Google API ポリシー説明を参照してください。
-        - **「Project Golem バックエンドに接続できません」と表示された場合**：Golem Plus を確認してからもう一度お試しください。
+        - **「Google AI サーバーが一時的に利用できません」と表示された場合**：Google のサービスが一時的に問題を起こしています。通常すぐに回復しますので、後でもう一度お試しください。
 
         ## サイトの声明と著作権
-        - **著作権**：ゲームコンセプト、インターフェースデザイン、プログラムコードの著作権は開発者 @Arvin に帰属します。AI 生成コンテンツは Project Golem が現在使用するモデル/サービスの規約に従います。
+        - **著作権**：当サイトのゲームコンセプト、インターフェースデザイン、プログラムコードの著作権は開発者 @Arvin に帰属します。AIによって生成されたゲームコンテンツ（テキスト、ストーリー）の著作権は、Google Gemini API の利用規約に従います。
         - **免責事項**：ユーザーは自身が入力したコンテンツ（キャラクター設定、カスタムアクション）に全責任を負うものとします。当サイトは、AIが生成したコンテンツの正確性、適切性、またはそれによって生じたいかなる結果についても責任を負いません。すべてのAI生成コンテンツはフィクションであり、事実や専門的なアドバイスと見なされるべきではありません。
 
         ## Google API ポリシー
-        Text RPG は Project Golem バックエンドで生成されます。実際の出力は現在のモデル、システムプロンプト、NSFW 設定、安全制限に従います。
+        当サイトは Google Gemini API を使用しており、すべてのユーザー入力コンテンツとAI生成コンテンツは、Google の「生成AI禁止利用ポリシー」を遵守する必要があります。
         - **ポリシーリンク**：https://policies.google.com/terms/generative-ai/use-policy
         - **センシティブなコンテンツとは**：Google のポリシーと当サイトの安全設定に基づき、主に以下のカテゴリーに該当するコンテンツがブロックされます：
             - **ハラスメント (Harassment)**：個人を対象とした罵倒、いじめ、脅迫的な言論。
@@ -945,9 +926,8 @@ export const i18nData = {
     'genre.western_magic': '西洋魔法 (Western Magic)',
     'genre.transmigration': '転生・穿越 (Transmigration)',
 'genre.tribute_rpg': '名作RPGトリビュート (Tribute)',
-    'model.flash_lite': 'Project Golem',
-    'model.flash': 'Project Golem',
-    'model.golem': 'Project Golem（起動中の Golem）',
+    'model.flash_lite': 'Gemini 2.5 Flash lite (推奨)',
+    'model.flash': 'Gemini 2.5 flash (より強力)',
     'combat.attack': '攻撃',
     'combat.useSkill': 'スキル使用',
     'combat.useItem': 'アイテム使用',
@@ -975,17 +955,17 @@ export const i18nData = {
     'game.fleeSuccess': '戦闘からの逃走に成功しました！',
     'meta.title': 'AIテキストアドベンチャーRPGジェネレーター | ストーリー重視のインタラクティブ・フィクション',
     'meta.description': 'ストーリー重視の純粋なテキストアドベンチャーゲーム。ヒーローを定義し、AIが動的に生成するテキストの世界へ。あなたの一つ一つの選択が、ユニークな壮大な冒険を形作ります。',
-    'meta.keywords': 'TRPG, テキストアドベンチャー, インタラクティブ・フィクション, RPG, AIゲームマスター, ロールプレイング, Project Golem',
+    'meta.keywords': 'TRPG, テキストアドベンチャー, インタラクティブ・フィクション, RPG, AIゲームマスター, ロールプレイング, Gemini API',
     'meta.og.title': 'AIテキストアドベンチャーRPGジェネレーター | インタラクティブ・フィクション | AI GM',
     'meta.og.description': 'ヒーローを定義し、AIが生成する世界へ。ファンタジー、武侠、クトゥルフ神話、サイバーパンクなどのジャンルをサポート。',
     'seo.h1': 'AIテキストアドベンチャーゲームジェネレーター',
     'seo.h2.what': 'これはどんなサイトですか？',
-    'seo.p1': '当サイトは Project Golem Plus 内蔵のテキストアドベンチャーゲームジェネレーターです。起動中の Golem が AI GM として冒険を生成します。',
+    'seo.p1': '当サイトは、Google Gemini 大規模言語モデルを使用したダイナミックなテキストアドベンチャーゲームジェネレーターです。プレイヤーが簡単なテキスト記述でユニークなキャラクターを作成し、AIがリアルタイムで生成する世界で冒険できる、無限のストーリーテリングプラットフォームを提供することを目的としています。',
     'seo.p2': '従来のゲームとは異なり、固定された脚本はありません。あなたが行うすべての選択がAIに理解され、あなただけのユニークな物語を推進するために使用されます。ファンタジーの王国からディストピアの未来まで、あなたの想像力だけが限界です。',
     'seo.h2.trpg': 'AI GM と インタラクティブ・フィクション',
     'seo.p3': '当プラットフォームは AI ゲームマスター (AI GM) 機能をサポートしており、最も自由度の高いインタラクティブ・フィクションを体験できます。プレイヤーはキャラクターをカスタマイズし、ファンタジー、SF、武侠、クトゥルフ神話、サイバーパンク、世紀末サバイバル、ミステリー探偵などの世界観を選択できます。',
     'seo.h2.how': '冒険の始め方',
-    'seo.li1': '<strong>Golem の確認：</strong>プレイヤーが API Key を入力する必要はありません。',
+    'seo.li1': '<strong>キーの設定：</strong>右上の歯車アイコン（⚙️）をクリックし、Google Gemini API キーを貼り付けます。',
     'seo.li2': '<strong>キャラクター作成：</strong>お好みの「ゲームの世界観」を選び、「キャラクター設定」で演じたいヒーローを詳しく説明します。',
     'seo.li3': '<strong>冒険開始：</strong>「新しい冒険を始める」をクリックすると、AIがオープニングストーリー、ステータス、最初の選択肢を生成します。',
     'seo.li4': '<strong>選択：</strong>下の行動ボタンをクリックして物語を進めます。',
@@ -1038,11 +1018,11 @@ export const i18nData = {
 'notification.verifyError': '認証に失敗しました。通信環境を確認してください。',
 'settings.nsfw': 'コンテンツフィルター解除 (NSFW)',
 'nsfw.modal.title': '⚠️ 高リスク警告',
-'nsfw.modal.content': 'Text RPG モードでより緩い成人向けコンテンツ設定 (NSFW) を有効にします。<br><br>1. <strong>適用範囲：</strong>この設定は RPG リクエストとともに Project Golem バックエンドへ送信されます。<br>2. <strong>自己責任：</strong>生成内容に関するリスクを理解したうえで有効にしてください。<br>3. <strong>基本制限：</strong>実際の出力は現在の Golem モデル、システムプロンプト、安全制限に従い、極端な違法・有害コンテンツは拒否される場合があります。<br><br>本当に有効にしますか？',
+'nsfw.modal.content': 'AIのセーフティフィルター(NSFW)を解除しようとしています。<br><br>1. <strong>アカウントリスク：</strong>過激なコンテンツ生成はGoogle APIポリシー違反のリスクがあります。<br>2. <strong>自己責任：</strong>すべてのリスクを負うことに同意したものとみなされます。<br>3. <strong>基本制限：</strong>Googleモデル(Gemini)には核心的な安全層があり、極端な違法コンテンツ（児童ポルノ、ヘイトスピーチ等）の生成は拒否されます。これは回避できません。<br><br>本当に有効にしますか？',
 'nsfw.modal.agree': 'リスクを承諾して有効化',
 'nsfw.modal.cancel': 'キャンセル',
 'shop.combat_lock': '戦闘中は商店を開けません',
-'info.privacy.h3_google': 'Project Golem バックエンドについて', 'info.privacy.p_google': 'Text RPG は Project Golem バックエンドで生成され、プレイヤーに API Key 入力を求めません。モデル、利用量、安全動作は現在の Golem Plus 設定に従います。',
+'info.privacy.h3_google': 'Google API 免責事項', 'info.privacy.p_google': '本プラットフォームは、Google Geminiモデルを駆動するためのインターフェース機能のみを提供します。提供されたAPIキーの使用状況（クォータ消費などを含む）については、ユーザー自身が責任を負うものとします。当サイトはGoogleの公式ポリシーの変更について責任を負いません。公式の発表に従ってください。',
 'hud.transactionLog': '取引履歴',
 'shop.title': '商店',
 'shop.openBtn': '商店を開く',
@@ -1060,8 +1040,8 @@ export const i18nData = {
 'shop.notification.equip': '{item} を装備しました！',
 'shop.notification.unequip': '{item} を外してインベントリに戻しました',
 'shop.combat_lock': '戦闘中は商店を開けません',
-'error.allKeysInvalid': 'Project Golem がこのリクエストを拒否しました。利用可能な Golem が起動しているか確認してください。',
-'error.allKeysExhausted': '⚠️ Project Golem は現在これ以上の RPG リクエストを処理できません。しばらく待ってから再試行してください。',
+'error.allKeysInvalid': 'すべてのAPIキーが無効、または形式が正しくありません。設定を確認してください。',
+'error.allKeysExhausted': '⚠️ 重大エラー：すべてのAPIキーの割り当てを使い果たしました！設定で新しいキーを追加するか、Google AI Studioで使用状況を確認してください。',
 'minigame.defaultTitle': 'チャレンジイベント', 'minigame.defaultDesc': '目標を達成して先へ進もう...','minigame.dice.ready': 'サイコロの準備...', 'minigame.dice.rolling': 'ロール中...', 'minigame.dice.low': '出目が低い... もう一度？', 'minigame.code.instruction': '正解のコードを入力して解除', 'minigame.code.hint': '4桁のコードを入力','minigame.code.error_len': 'エラー！4桁必要です', 'minigame.code.error_wrong': 'コードが違います！警報作動...','minigame.reflex.instruction': '目標：カーソルが<span class="text-green-400">緑のエリア</span>に入った瞬間に押せ！', 'minigame.result.win': '🏆 チャレンジ成功', 'minigame.result.lose': '💀 チャレンジ失敗', 'minigame.btn.roll': '🎲 サイコロを振る', 'minigame.btn.giveup': '🏳️ 諦める', 'minigame.btn.strike': '🔴 ストライク！','minigame.btn.input': 'コード入力',
 'minigame.rps.rock': '👊 攻撃 (グー)',
 'minigame.rps.paper': '✋ 防御 (パー)',

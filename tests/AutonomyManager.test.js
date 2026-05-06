@@ -51,7 +51,6 @@ describe('AutonomyManager', () => {
 
         ConfigManager.CONFIG.TG_TOKEN = 'test_token';
         ConfigManager.CONFIG.DC_TOKEN = '';
-        ConfigManager.CONFIG.AUTONOMY_ENABLED = true;
         ConfigManager.CONFIG.ADMIN_IDS = ['123'];
         ConfigManager.CONFIG.TG_AUTH_MODE = 'ADMIN';
         ConfigManager.CONFIG.DISCORD_ADMIN_ID = '999';
@@ -83,21 +82,6 @@ describe('AutonomyManager', () => {
         manager.start();
 
         expect(resumeSpy).toHaveBeenCalled();
-        expect(archiveSpy).toHaveBeenCalled();
-        expect(intervalSpy).toHaveBeenCalled();
-
-        intervalSpy.mockRestore();
-    });
-
-    test('start keeps reminders running when autonomous awakening is disabled', () => {
-        ConfigManager.CONFIG.AUTONOMY_ENABLED = false;
-        const resumeSpy = jest.spyOn(manager, 'resumeOrScheduleAwakening').mockImplementation(() => {});
-        const archiveSpy = jest.spyOn(manager, 'scheduleNextArchive').mockImplementation(() => {});
-        const intervalSpy = jest.spyOn(global, 'setInterval').mockReturnValue(1);
-
-        manager.start();
-
-        expect(resumeSpy).not.toHaveBeenCalled();
         expect(archiveSpy).toHaveBeenCalled();
         expect(intervalSpy).toHaveBeenCalled();
 

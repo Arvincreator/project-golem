@@ -13,16 +13,13 @@ class ResponseExtractor {
      * @param {string} startTag - 信封開始標籤
      * @param {string} endTag - 信封結束標籤
      * @param {string} baseline - 發送前的基準文字 (用於排除舊回應)
-     * @param {{timeoutMs?: number}} [options]
-     * @returns {Promise<{status: string, text: string, attachments?: Array}>}
+     * @returns {Promise<{status: string, text: string}>}
      */
-    static async waitForResponse(page, selector, startTag, endTag, baseline, options = {}) {
+    static async waitForResponse(page, selector, startTag, endTag, baseline) {
         const stableComplete = LIMITS.STABLE_THRESHOLD_COMPLETE;
         const stableThinking = LIMITS.STABLE_THRESHOLD_THINKING;
         const pollInterval = TIMINGS.POLL_INTERVAL;
-        const timeout = Number.isFinite(options.timeoutMs) && options.timeoutMs > 0
-            ? options.timeoutMs
-            : TIMINGS.TIMEOUT;
+        const timeout = TIMINGS.TIMEOUT;
 
         return page.evaluate(
             async ({ sel, sTag, eTag, oldText, _stableComplete, _stableThinking, _pollInterval, _timeout }) => {
@@ -30,8 +27,6 @@ class ResponseExtractor {
                     const startTime = Date.now();
                     let stableCount = 0;
                     let lastCheckText = "";
-                    let lastResponseText = "";
-                    let lastAttachments = [];
 
                     const check = () => {
                         const bubbles = document.querySelectorAll(sel);
@@ -45,7 +40,6 @@ class ResponseExtractor {
                             currentLastBubble;
 
                         const rawText = container.innerText || "";
-                        lastResponseText = rawText;
                         const startIndex = rawText.indexOf(sTag);
                         const endIndex = rawText.indexOf(eTag);
 
@@ -80,7 +74,6 @@ class ResponseExtractor {
                                 attachments.push({ url: href, mimeType: mime });
                             }
                         });
-                        lastAttachments = attachments;
 
                         // ✨ [條件 1：完美信封] 看到 END 標籤，瞬間打包回傳
                         if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
@@ -126,13 +119,9 @@ class ResponseExtractor {
                             }
                         }
 
-                        // 總超時時間上限，預設 5 分鐘，可由特定呼叫延長。
+                        // 總超時時間上限 5 分鐘 (300,000 ms)
                         if (Date.now() - startTime > _timeout) {
-                            resolve({
-                                status: 'TIMEOUT',
-                                text: lastResponseText,
-                                attachments: lastAttachments
-                            });
+                            resolve({ status: 'TIMEOUT', text: '', attachments: [] });
                             return;
                         }
                         setTimeout(check, _pollInterval);

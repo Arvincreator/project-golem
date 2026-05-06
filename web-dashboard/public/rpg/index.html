@@ -6,7 +6,7 @@
     <title>AI 文字冒險遊戲產生器</title>
 
     <meta name="description" content="專注於故事的純文字冒險遊戲。定義你的英雄，進入由 AI 動態生成的文字世界。你的每一個選擇，都將塑造獨一無二的史詩冒險。">
-    <meta name="keywords" content="TRPG, 文字冒險遊戲, 互動小說, RPG, AI Game Master, 角色扮演, Project Golem">
+    <meta name="keywords" content="TRPG, 文字冒險遊戲, 互動小說, RPG, AI Game Master, 角色扮演, Gemini API">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,7 +29,7 @@
 <title id="meta-title">AI 文字冒險遊戲產生器</title>
 
 <meta name="description" id="meta-description" content="專注於故事的純文字冒險遊戲。定義你的英雄，進入由 AI 動態生成的文字世界。你的每一個選擇，都將塑造獨一無二的史詩冒險。">
-<meta name="keywords" id="meta-keywords" content="TRPG, 文字冒險遊戲, 互動小說, RPG, AI Game Master, 角色扮演, Project Golem">
+<meta name="keywords" id="meta-keywords" content="TRPG, 文字冒險遊戲, 互動小說, RPG, AI Game Master, 角色扮演, Gemini API">
 <meta property="og:title" id="meta-og-title" content="AI 文字冒險遊戲產生器 | 互動式小說 | AI 跑團">
 <meta property="og:description" id="meta-og-description" content="專注於故事的純文字冒險遊戲。定義你的英雄，進入由 AI 動態生成的文字世界。支援奇幻、武俠、克蘇魯神話、賽博龐克等題材。">
 <meta name="twitter:title" id="meta-twitter-title" content="AI 文字冒險遊戲產生器 | 互動式文字冒險 | AI 跑團">
@@ -94,9 +94,6 @@
                 <button type="button" data-modal-target="benefits-modal" class="inline-flex items-center gap-1.5 rounded-lg theme-bg-input theme-border border px-3 py-2 text-xs font-bold theme-text transition-colors hover:theme-bg-primary hover:text-white">
                     <i class="ph-bold ph-star text-base"></i><span>會員福利</span>
                 </button>
-                <button type="button" data-modal-target="settings-modal" class="inline-flex items-center gap-1.5 rounded-lg theme-bg-input theme-border border px-3 py-2 text-xs font-bold theme-text transition-colors hover:theme-bg-primary hover:text-white">
-                    <i class="ph-bold ph-gear text-base"></i><span>遊戲設定</span>
-                </button>
             </div>
         </div>
         <form id="game-setup-form" class="space-y-4">
@@ -157,15 +154,18 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block mb-2 text-sm font-medium theme-text" data-i18n="key.modalPaste">Project Golem 後端</label>
-                    <div id="golem-backend-status" class="rounded-lg theme-bg-input theme-border border p-3 text-sm theme-text-light leading-relaxed" data-i18n="settings.golemBackend.desc">
-                        本遊戲由目前啟動的 Project Golem 擔任 AI GM，不需要玩家輸入 API Key。
-                    </div>
+                    <label class="block mb-2 text-sm font-medium theme-text" data-i18n="key.modalPaste">Golem 後端（無需 API Key）</label>
+<div id="api-key-list" class="space-y-3"></div>
+<button type="button" id="add-api-key-btn" class="mt-2 text-sm theme-bg-primary theme-bg-primary-hover text-white py-1 px-3 rounded flex items-center gap-1 transition-colors">
+    <i class="ph-bold ph-plus"></i> 新增金鑰
+</button>
+<a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-xs font-medium theme-text-light hover:theme-text transition-colors mt-2 inline-block
+" data-i18n="key.modalGetLink">-點此前往 Google AI Studio 免費獲取 ↗</a>
+<a href="https://gemini.google.com/gem/16h5GWHLEx6s2MP5vDdRzEe5v9gos1GjV?usp=sharing" target="_blank" class="text-xs font-medium theme-text-light hover:theme-text transition-colors mt-2 inline-block" >-無法獲得API key？這裡有教學</a>
                 </div>
-                <div class="hidden">
+                <div>
                     <label for="modal-model-selector" class="block mb-2 text-sm font-medium theme-text" data-i18n="settings.model">AI 模型</label>
                     <select id="modal-model-selector" class="theme-bg-input theme-border theme-text text-base rounded-lg focus:ring-2 theme-ring-focus focus:border-transparent block w-full p-3">
-                        <option value="golem">Project Golem</option>
 </select>
                 </div>
 <div class="flex items-center justify-between p-3 rounded-lg border border-red-500/30 bg-red-900/10 mt-4">
@@ -177,7 +177,6 @@
         <span id="nsfw-toggle-dot" class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform translate-x-1"></span>
     </button>
 </div>
-<p class="text-xs theme-text-light leading-relaxed" data-i18n="settings.nsfw.desc">此開關會要求 Golem 在文字 RPG 模式使用較寬鬆的成人內容設定；實際輸出仍受目前 Golem 模型、系統提示與安全限制影響。</p>
                 <button id="save-settings-btn" class="w-full theme-bg-primary theme-bg-primary-hover text-white font-bold py-2 px-4 rounded-lg transition-colors" data-i18n="settings.save">儲存設定</button>
             </div>
         </div>
@@ -379,10 +378,9 @@
                         </thead>
                         <tbody class="divide-y theme-border">
                             <tr><td class="p-3 font-semibold" data-i18n="benefits.feature.actions"></td><td class="p-3 text-center" data-i18n="benefits.value.visitor_actions"></td><td class="p-3 text-center" data-i18n="benefits.value.general_actions"></td><td class="p-3 text-center" data-i18n="benefits.value.sponsor_actions"></td></tr>
-                            <tr><td class="p-3 font-semibold" data-i18n="benefits.feature.inventory"></td><td class="p-3 text-center" data-i18n="benefits.value.locked"></td><td class="p-3 text-center" data-i18n="benefits.value.enabled"></td><td class="p-3 text-center" data-i18n="benefits.value.enabled"></td></tr>
-                            <tr><td class="p-3 font-semibold" data-i18n="benefits.feature.saveLoad"></td><td class="p-3 text-center" data-i18n="benefits.value.locked"></td><td class="p-3 text-center" data-i18n="benefits.value.locked"></td><td class="p-3 text-center" data-i18n="benefits.value.enabled"></td></tr>
-                            <tr><td class="p-3 font-semibold" data-i18n="benefits.feature.customAction"></td><td class="p-3 text-center" data-i18n="benefits.value.locked"></td><td class="p-3 text-center" data-i18n="benefits.value.dlcOnly"></td><td class="p-3 text-center" data-i18n="benefits.value.dlcOnly"></td></tr>
-                            <tr><td class="p-3 font-semibold" data-i18n="benefits.feature.cartridge"></td><td class="p-3 text-center" data-i18n="benefits.value.locked"></td><td class="p-3 text-center" data-i18n="benefits.value.dlcOnly"></td><td class="p-3 text-center" data-i18n="benefits.value.dlcOnly"></td></tr>
+                            <tr><td class="p-3 font-semibold" data-i18n="benefits.feature.inventory"></td><td class="p-3 text-center"><i class="ph-fill ph-x-circle text-xl text-slate-500"></i></td><td class="p-3 text-center"><i class="ph-fill ph-check-circle text-xl text-green-400"></i></td><td class="p-3 text-center"><i class="ph-fill ph-check-circle text-xl text-green-400"></i></td></tr>
+                            <tr><td class="p-3 font-semibold" data-i18n="benefits.feature.saveLoad"></td><td class="p-3 text-center"><i class="ph-fill ph-x-circle text-xl text-slate-500"></i></td><td class="p-3 text-center"><i class="ph-fill ph-x-circle text-xl text-slate-500"></i></td><td class="p-3 text-center"><i class="ph-fill ph-check-circle text-xl text-green-400"></i></td></tr>
+                            <tr><td class="p-3 font-semibold" data-i18n="benefits.feature.cartridge"></td><td class="p-3 text-center"><i class="ph-fill ph-x-circle text-xl text-slate-500"></i></td><td class="p-3 text-center"><i class="ph-fill ph-x-circle text-xl text-slate-500"></i></td><td class="p-3 text-center"><i class="ph-fill ph-check-circle text-xl text-green-400"></i></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -583,10 +581,10 @@ import {
             let app = null;
             let auth = null;
             let db = null;
-            let apiKeys = ['project-golem'];
+            let apiKeys = []; 
 let currentKeyIndex = 0;
             let currentLang = 'zh-TW';
-            let selectedModel = 'golem';
+            let selectedModel = 'gemini-2.5-flash-lite';
             let adventureLog = [];
             let playerState = {};
             let lastPlayerAction = '';
@@ -951,13 +949,14 @@ function populateDropdowns(lang) {
 "tribute_rpg": t['genre.tribute_rpg']
     };
     const models = {
-        "golem": t['model.golem'] || 'Project Golem'
+        "gemini-2.5-flash-lite": t['model.flash_lite'],
+        "gemini-2.5-flash": t['model.flash']
     };
 
     const genreSelect = document.getElementById('game-genre');
     const modelSelect = document.getElementById('modal-model-selector');
     const currentGenre = genreSelect.value || '奇幻';
-    const currentModel = modelSelect ? modelSelect.value || 'golem' : 'golem';
+    const currentModel = modelSelect.value || 'gemini-2.5-flash-lite';
 
     genreSelect.innerHTML = '';
     for (const [value, text] of Object.entries(genres)) {
@@ -965,13 +964,11 @@ function populateDropdowns(lang) {
     }
     genreSelect.value = currentGenre;
 
-    if (modelSelect) {
-        modelSelect.innerHTML = '';
-        for (const [value, text] of Object.entries(models)) {
-            modelSelect.innerHTML += `<option value="${value}">${text}</option>`;
-        }
-        modelSelect.value = currentModel;
+    modelSelect.innerHTML = '';
+    for (const [value, text] of Object.entries(models)) {
+        modelSelect.innerHTML += `<option value="${value}">${text}</option>`;
     }
+    modelSelect.value = currentModel;
 }
 
 function fixAndMergeSkills(skills) {
@@ -1020,6 +1017,11 @@ async function handlePreviewRequest(isReroll = false) {
     const localText = uiText[currentLang] || uiText['en'];
 
     // 1. 基礎檢查
+    if (!getCurrentApiKey()) {
+        showNotification(t['notification.noApiKey'], 'warning');
+        openModal(document.getElementById('settings-modal'));
+        return;
+    }
     const characterDesc = document.getElementById('character-description').value.trim();
     if (!characterDesc) {
         showNotification(t['notification.noCharacter'], 'warning');
@@ -1259,16 +1261,37 @@ function renderCharacterPreview(data) {
 }
 
 function initialize() {
-    apiKeys = ['project-golem'];
+    const storedKey = localStorage.getItem('userApiKey');
+    if (storedKey) {
+        try {
+            const parsed = JSON.parse(storedKey);
+            if (Array.isArray(parsed)) {
+                apiKeys = parsed;
+            } else {
+                apiKeys = [storedKey];
+            }
+        } catch (e) {
+            apiKeys = [storedKey];
+        }
+    } else {
+        apiKeys = [''];
+    }
 
     currentLang = localStorage.getItem('userLanguage') || 'zh-TW';
-    selectedModel = 'golem';
+    selectedModel = localStorage.getItem('userSelectedModel') || 'gemini-2.5-flash-lite';
 
-    currentKeyIndex = 0;
-    localStorage.removeItem('userApiKey');
-    localStorage.removeItem('rpgCurrentKeyIndex');
-    localStorage.setItem('userSelectedModel', selectedModel);
-    console.log('[System] RPG generation is routed through Project Golem.');
+    // --- API Key 負載平衡與持久化 (隨機冷啟動) ---
+    const savedIndex = localStorage.getItem('rpgCurrentKeyIndex');
+    if (savedIndex !== null) {
+        currentKeyIndex = parseInt(savedIndex, 10);
+        // 防呆：確保索引不超出範圍
+        if (currentKeyIndex >= apiKeys.length) currentKeyIndex = 0;
+    } else {
+        // 無存檔：隨機選一個開始，分散流量
+        currentKeyIndex = Math.floor(Math.random() * apiKeys.length);
+        localStorage.setItem('rpgCurrentKeyIndex', currentKeyIndex);
+    }
+    console.log(`[System] Initialized API Key Index: ${currentKeyIndex}/${apiKeys.length - 1}`);
 
     isNSFWEnabled = false;
     updateNSFWToggleUI();
@@ -1286,6 +1309,40 @@ function renderApiKeyInputs() {
     const container = document.getElementById('api-key-list');
     if (!container) return;
     container.innerHTML = '';
+
+    apiKeys.forEach((key, index) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-2';
+        
+        const input = document.createElement('input');
+        input.type = 'password';
+        input.value = key;
+        input.className = 'api-key-input theme-bg-input theme-border theme-text text-base rounded-lg focus:ring-2 theme-ring-focus focus:border-transparent block w-full p-3';
+        input.placeholder = '請在此貼上您的金鑰';
+        input.dataset.index = index;
+        
+        input.addEventListener('input', (e) => {
+            apiKeys[index] = e.target.value.trim();
+        });
+
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'text-red-500 hover:text-red-400 p-2';
+        delBtn.innerHTML = '<i class="ph-bold ph-trash text-xl"></i>';
+        delBtn.onclick = () => {
+            if (apiKeys.length > 1) {
+                apiKeys.splice(index, 1);
+                renderApiKeyInputs();
+            } else {
+                apiKeys[0] = '';
+                renderApiKeyInputs();
+            }
+        };
+
+        row.appendChild(input);
+        row.appendChild(delBtn);
+        container.appendChild(row);
+    });
 }
 
 function getCurrentApiKey() {
@@ -1293,8 +1350,16 @@ function getCurrentApiKey() {
 }
 
 function rotateApiKey(reason = "Auto-Rotation") {
-    console.log(`[System] Project Golem handles RPG routing directly (${reason}).`);
-    return false;
+    if (apiKeys.length <= 1) return false;
+    
+    // 循環遞增：0 -> 1 -> 2 -> 3 -> 0
+    currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+    
+    // 持久化儲存
+    localStorage.setItem('rpgCurrentKeyIndex', currentKeyIndex);
+    
+    console.log(`[System] Key Rotated [${reason}] -> Now using Key #${currentKeyIndex}`);
+    return true;
 }
 
 function updateNSFWToggleUI() {
@@ -1541,14 +1606,14 @@ dom.gameGenreSelect.addEventListener('input', (e) => applyTheme(e.target.value))
     dom.openSettingsModalBtn.addEventListener('click', () => {
         dom.languageSelector.value = currentLang;
         renderApiKeyInputs();
-        if (dom.modalModelSelector) dom.modalModelSelector.value = selectedModel;
+        dom.modalModelSelector.value = selectedModel;
         openModal(document.getElementById('settings-modal'));
     });
     if (dom.inGameSettingsBtn) {
         dom.inGameSettingsBtn.addEventListener('click', () => {
             dom.languageSelector.value = currentLang;
             renderApiKeyInputs();
-            if (dom.modalModelSelector) dom.modalModelSelector.value = selectedModel;
+            dom.modalModelSelector.value = selectedModel;
             openModal(document.getElementById('settings-modal'));
         });
     }
@@ -1561,15 +1626,18 @@ dom.gameGenreSelect.addEventListener('input', (e) => applyTheme(e.target.value))
     dom.languageSelector.addEventListener('change', (e) => updateUI(e.target.value));
 
     dom.saveSettingsBtn.addEventListener('click', () => {
-        apiKeys = ['project-golem'];
-        selectedModel = 'golem';
+        const validKeys = apiKeys.filter(k => k.trim() !== '');
+        apiKeys = validKeys.length > 0 ? validKeys : [''];
+        localStorage.setItem('userApiKey', JSON.stringify(apiKeys));
+        selectedModel = dom.modalModelSelector.value;
         localStorage.setItem('userLanguage', currentLang);
         localStorage.setItem('userSelectedModel', selectedModel);
-        localStorage.removeItem('userApiKey');
-        localStorage.removeItem('rpgCurrentKeyIndex');
         closeModal(document.getElementById('settings-modal'));
         renderApiKeyInputs();
-        currentKeyIndex = 0;
+        
+        // 重設時隨機選一個，避免大家都從 #0 開始擠
+        currentKeyIndex = Math.floor(Math.random() * apiKeys.length);
+        localStorage.setItem('rpgCurrentKeyIndex', currentKeyIndex);
     });
 
     // [修改] 表單提交改為呼叫預覽
@@ -3394,60 +3462,26 @@ function normalizeInitialGameData(rawGameData) {
     return gameData;
 }
 
-const RPG_WAIT_CONFIRM_MS = 90000;
-const RPG_WAIT_REPEAT_MS = 120000;
-
-async function fetchRpgGeneration(body, options = {}) {
-    const t = i18nData[currentLang];
-    const controller = new AbortController();
-    const firstPromptMs = options.firstPromptMs || RPG_WAIT_CONFIRM_MS;
-    const repeatPromptMs = options.repeatPromptMs || RPG_WAIT_REPEAT_MS;
-    let finished = false;
-    let timerId = null;
-
-    const scheduleWaitPrompt = (delayMs) => {
-        if (timerId) clearTimeout(timerId);
-        timerId = setTimeout(() => {
-            if (finished) return;
-            const shouldContinue = confirm(t['confirm.generationStillRunning']);
-            if (shouldContinue) {
-                scheduleWaitPrompt(repeatPromptMs);
-                return;
-            }
-            controller.abort();
-        }, delayMs);
-    };
-
-    scheduleWaitPrompt(firstPromptMs);
-
-    try {
-        return await fetch(`/api/rpg/generateContent?model=${encodeURIComponent(selectedModel)}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
-            signal: controller.signal
-        });
-    } catch (error) {
-        if (error && error.name === 'AbortError') {
-            throw new Error(t['error.generationCancelled']);
-        }
-        throw error;
-    } finally {
-        finished = true;
-        if (timerId) clearTimeout(timerId);
-    }
-}
-
-// ✅ Project Golem 整合版：所有生成請求都交給目前啟動的 Golem brain。
+// ✅ 修改後的 callTextAPI (報錯時顯示 Key 編號)
 async function callTextAPI(prompt, parseJson = true, retryCount = 0) {
     const t = i18nData[currentLang];
+    
+    const activeKey = getCurrentApiKey();
+    if (!activeKey) {
+        throw new Error(t['error.apiKeyInvalid']);
+    }
 
     const defaultThreshold = "BLOCK_ONLY_HIGH";
     const strictThreshold = "BLOCK_MEDIUM_AND_ABOVE";
     const violenceThreshold = isNSFWEnabled ? "BLOCK_NONE" : defaultThreshold;
     const sexualThreshold = isNSFWEnabled ? "BLOCK_NONE" : strictThreshold;
 
-    const response = await fetchRpgGeneration({
+    const response = await fetch(`/api/rpg/generateContent?model=${encodeURIComponent(selectedModel)}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
             contents: [{
                 parts: [{
                     text: prompt
@@ -3470,19 +3504,32 @@ async function callTextAPI(prompt, parseJson = true, retryCount = 0) {
                     threshold: violenceThreshold
                 },
             ]
+        })
     });
 
 if (!response.ok) {
+        const keyLabel = ` (Key #${currentKeyIndex + 1})`;
+        const rotatableStatus = [400, 403, 429, 503];
+
+        if (rotatableStatus.includes(response.status)) {
+            // 還有救：嘗試切換到下一個 Key
+            if (retryCount < apiKeys.length && rotateApiKey(`Error ${response.status}`)) {
+                console.warn(`API Error ${response.status} on Key #${currentKeyIndex}. Rotating & Retrying...`);
+                return callTextAPI(prompt, parseJson, retryCount + 1);
+            }
+        }
+
+        // 沒救了：所有 Key 都試過了，拋出最終錯誤 (使用 i18n 語言包)
         switch (response.status) {
             case 400:
-                throw new Error(t['error.badRequest']);
+                throw new Error(t['error.allKeysInvalid']);
             case 429:
-                throw new Error(t['error.rateLimitExceeded']);
+                throw new Error(t['error.allKeysExhausted']);
             case 500:
             case 503:
                 throw new Error(t['error.serverError']);
             default:
-                throw new Error(t['error.unknownApiError']);
+                throw new Error(t['error.unknownApiError'] + keyLabel);
         }
     }
 
@@ -3490,6 +3537,8 @@ if (!response.ok) {
     if (!result.candidates || result.candidates.length === 0) throw new Error(t['error.contentBlocked']);
     const content = result.candidates[0]?.content?.parts[0]?.text;
     if (!content) throw new Error(t['error.unknownApiError']);
+
+    rotateApiKey("Success - Next Turn Pre-load");
 
     return parseJson ? parseAIResponse(content) : content;
 }
@@ -3516,6 +3565,11 @@ const response = await fetch(`/api/rpg/generateContent?model=${encodeURIComponen
     resetNovelSystem();
     turnSummariesForMemory = [];
     const t = i18nData[currentLang];
+    if (!getCurrentApiKey()) {
+        showNotification(t['notification.noApiKey'], 'warning');
+        openModal(document.getElementById('settings-modal'));
+        return;
+    }
     const characterDesc = document.getElementById('character-description').value.trim();
     if (!characterDesc) {
         showNotification(t['notification.noCharacter'], 'warning');
@@ -6367,6 +6421,10 @@ function triggerVisualEffect(effectName) {
 // ✅ 修改後的 callAICustomerServiceAPI
 async function callAICustomerServiceAPI(question) {
     const t = i18nData[currentLang];
+    if (!getCurrentApiKey()) {
+        showNotification(t['notification.noApiKey'], 'warning');
+        return t['assistant.error.no_api_key'];
+    }
 
     const assistantPrompt = `
     You are an expert customer service assistant named "冒險嚮導" (Adventure Guide) for a text-based RPG website.
@@ -6388,7 +6446,10 @@ async function callAICustomerServiceAPI(question) {
     `;
 
     try {
-        const response = await fetchRpgGeneration({
+        const response = await fetch(`/api/rpg/generateContent?model=${encodeURIComponent(selectedModel)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
                 contents: [{ parts: [{ text: assistantPrompt }] }],
                 safetySettings: [
                     { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
@@ -6396,13 +6457,16 @@ async function callAICustomerServiceAPI(question) {
                     { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
                     { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
                 ]
+            })
         });
 
         if (!response.ok) {
+            // 加入錯誤識別
+            const keyLabel = ` (Key #${currentKeyIndex + 1})`;
             if (response.status === 400) {
-                return t['error.badRequest'] || t['error.apiKeyInvalid'];
+                return t['error.apiKeyInvalid'] + keyLabel;
             }
-            throw new Error('Project Golem request failed');
+            throw new Error('API request failed' + keyLabel);
         }
 
         const result = await response.json();
@@ -6415,7 +6479,6 @@ async function callAICustomerServiceAPI(question) {
 
     } catch (error) {
         console.error("AI Assistant API Call Failed:", error);
-        if (error && error.message === t['error.generationCancelled']) return error.message;
         return t['assistant.error.connection'];
     }
 }
@@ -6468,7 +6531,13 @@ async function fetchGameCartridges() {
     const genIcon = document.getElementById('generate-cartridges-btn-icon');
     const genText = document.getElementById('generate-cartridges-btn-text');
 
-    // 2. 設定按鈕讀取狀態
+    // 2. 檢查 API Key
+    if (!getCurrentApiKey()) {
+        showNotification(t['notification.noApiKey'], 'warning');
+        return;
+    }
+
+    // 3. 設定按鈕讀取狀態
     genButton.disabled = true;
     genIcon.className = 'loader-spinner animate-spin-fast w-5 h-5 border-2 rounded-full';
     genText.textContent = t['cartridge.generating'];
@@ -6517,7 +6586,7 @@ async function fetchGameCartridges() {
 
             // 建構提示詞 (Prompt)
             prompt = `CRITICAL GOAL: Your entire response must be a single, valid JSON array.
-TASK: 你現在必須從 ${exampleQueries} 中挑選 3 款「不同」的經典 RPG 遊戲，根據你已知的原作劇情與角色設定改寫開局。不要呼叫工具、不要搜尋網路、不要解釋資料來源。
+TASK: 你現在必須隨機在 ${exampleQueries}挑選 3 款「不同」的經典RPG遊戲**使用你的網路搜尋工具**來查找遊戲劇情。
 ${negativeExamplesPrompt}
 請根據你搜尋到的劇情結果，標題必須符合原作，並根據原作將它們的劇情改寫成 100-150 字的、適合玩家開局的「第一人稱角色設定」，並且開頭也要寫作品名稱，然後要寫出主角名字。
 REQUIRED JSON STRUCTURE FOR EACH OBJECT:
@@ -6559,13 +6628,18 @@ ADDITIONAL RULES:
 GENERATE THE JSON ARRAY NOW.`;
         }
 
-        // 6. 發送 Golem 請求
-        const response = await fetchRpgGeneration({ contents: [{ parts: [{ text: prompt }] }] });
+        // 6. 發送 API 請求
+        const response = await fetch(`/api/rpg/generateContent?model=${encodeURIComponent(selectedModel)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
 
         if (!response.ok) {
-            if (response.status === 400) throw new Error(t['error.badRequest'] || t['error.apiKeyInvalid']);
-            if (response.status === 429) throw new Error(t['error.rateLimitExceeded']);
-            throw new Error(t['error.serverError']);
+            const keyLabel = ` (Key #${currentKeyIndex + 1})`;
+            if (response.status === 400) throw new Error(t['error.apiKeyInvalid'] + keyLabel);
+            if (response.status === 429) throw new Error(t['error.rateLimitExceeded'] + keyLabel);
+            throw new Error('API request failed' + keyLabel);
         }
 
         const result = await response.json();
@@ -6589,11 +6663,6 @@ GENERATE THE JSON ARRAY NOW.`;
 
     } catch (error) {
         console.error("Cartridge generation failed:", error);
-        if (error && error.message === t['error.generationCancelled']) {
-            showNotification(error.message, 'info');
-            dom.cartridgeList.innerHTML = `<div class="col-span-full text-center p-8 theme-text-light">${error.message}</div>`;
-            return;
-        }
         showNotification(t['notification.generateFailed'].replace('{error}', error.message), 'error');
         dom.cartridgeList.innerHTML = `<div class="col-span-full text-center p-8 text-red-400">${t['cartridge.generateFail'].replace('{error}', error.message)}</div>`;
     } finally {
