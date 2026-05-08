@@ -182,6 +182,11 @@ class MCPManager extends EventEmitter {
         const cfg = this._configs.find(c => c.name === name);
         if (!cfg) throw new Error(`MCP server "${name}" not found`);
 
+        const resolvedCommand = this._resolveCommandPath(cfg.command);
+        if (resolvedCommand && !fs.existsSync(resolvedCommand)) {
+            throw new Error(`MCP server executable not found: ${resolvedCommand}`);
+        }
+
         const testClient = new MCPClient({ ...cfg, timeout: 10000 });
         try {
             await testClient.connect();
@@ -239,6 +244,15 @@ class MCPManager extends EventEmitter {
     _appendLog(entry) {
         this._logs.push(entry);
         if (this._logs.length > MAX_LOG) this._logs.shift();
+    }
+
+    _resolveCommandPath(command) {
+        if (!command) return null;
+        if (path.isAbsolute(command)) return command;
+        if (command.startsWith('./') || command.startsWith('../')) {
+            return path.resolve(process.cwd(), command);
+        }
+        return null;
     }
 
     _readConfig() {
