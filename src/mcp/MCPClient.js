@@ -5,6 +5,8 @@
  * 實作 initialize handshake、tools/list、tools/call。
  */
 
+const fs = require('fs');
+const path = require('path');
 const { spawn } = require('child_process');
 const { EventEmitter } = require('events');
 
@@ -37,6 +39,13 @@ class MCPClient extends EventEmitter {
     // ─── Public API ────────────────────────────────────────────────
     async connect() {
         if (this._connected) return;
+
+        const resolvedCommand = this._resolveCommandPath();
+        if (resolvedCommand && !fs.existsSync(resolvedCommand)) {
+            const err = new Error(`MCP server executable not found: ${resolvedCommand}`);
+            console.error(`[MCPClient:${this.name}] ${err.message}`);
+            throw err;
+        }
 
         return new Promise((resolve, reject) => {
             const env = { ...process.env, ...this.env };
@@ -150,6 +159,15 @@ class MCPClient extends EventEmitter {
         if (!this._process || !this._process.stdin.writable) return;
         const msg = JSON.stringify({ jsonrpc: '2.0', method, params }) + '\n';
         this._process.stdin.write(msg);
+    }
+
+    _resolveCommandPath() {
+        if (!this.command) return null;
+        if (path.isAbsolute(this.command)) return this.command;
+        if (this.command.startsWith('./') || this.command.startsWith('../')) {
+            return path.resolve(process.cwd(), this.command);
+        }
+        return null;
     }
 
     _onData(chunk) {
