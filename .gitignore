@@ -90,8 +90,10 @@ data/dashboard/reference-files.json
 data/dashboard/reference-file-index.json
 data/dashboard/collab-calendar.json
 data/dashboard/google-oauth-token.json
+data/dashboard/stock-dashboard-snapshot.json
 data/rpg-memberships.json
 data/rpg-mobile-link-requests.json
+WFGY-3.0_Singularity.txt
 notebooklm_venv
 .gemini/
 .golem/
