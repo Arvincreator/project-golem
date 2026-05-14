@@ -46,6 +46,7 @@ function inferIntentBoosts(text) {
 
     add(/(log|logs|error|錯誤|報錯|日誌|紀錄|debug|除錯)/i, ['log-reader', 'log-archive']);
     add(/(browser|chrome|devtools|網頁|頁面|點擊|輸入|表單|console|network|lighthouse|截圖|瀏覽器)/i, ['chrome-devtools']);
+    add(/(searx|searxng|搜尋引擎|meta search|metasearch|網路搜尋)/i, ['searxng']);
     add(/(git|commit|branch|diff|pull request|pr|版本|分支)/i, ['git']);
     add(/(記憶|memory|回憶|以前|之前|歷史|找對話|搜尋對話)/i, ['memory', 'session-search']);
     add(/(排程|提醒|schedule|定時|每天|明天|下週|cron)/i, ['chronos', 'collab-calendar']);
@@ -290,6 +291,8 @@ class ToolRouter {
         lines.push('Decision rules:');
         lines.push('- Route priority: local OS/repo work => command; packaged capability => skill action; external integration/service/browser connector => mcp_call.');
         lines.push('- Never use mcp_call for pure local shell tasks. Never use command for external connector tasks that already have MCP tools.');
+        lines.push('- For public web search tasks, prefer mcp_call with server="searxng" tool="web_search"; fallback to chrome-devtools DuckDuckGo HTML only when SearXNG is unavailable.');
+        lines.push('- For browse-and-read tasks, prefer a 2-step MCP action array: (1) navigate_page/new_page, then (2) take_snapshot, and summarize from snapshot.');
         lines.push(...this.policy.buildRules());
         if (result.slashCommands.length > 0) {
             lines.push('Core slash commands (can be triggered directly when user asks):');

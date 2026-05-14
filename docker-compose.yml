@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+  searxng:
+    image: searxng/searxng:latest
+    container_name: golem-searxng
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - BASE_URL=http://localhost:8080/
+      - INSTANCE_NAME=ProjectGolem-SearXNG
+    networks:
+      - golem-net
+
   golem:
     build:
       context: .
@@ -16,6 +28,8 @@ services:
       # Optional: Mount .env to allow configuration changes without rebuild
       # Using a relative path that works across environments
       - ./.env:/app/.env:ro
+    depends_on:
+      - searxng
     environment:
       - ENABLE_WEB_DASHBOARD=true
       - NODE_ENV=production
@@ -30,6 +44,7 @@ services:
       # Use host values if provided, otherwise leave empty
       - PLAYWRIGHT_REMOTE_DEBUGGING_PORT=${PLAYWRIGHT_REMOTE_DEBUGGING_PORT:-}
       - HOST_PROJECT_DIR=${PWD}
+      - SEARXNG_BASE_URLS=http://searxng:8080,http://127.0.0.1:8080,http://localhost:8080,https://searx.be
     extra_hosts:
       - "host.docker.internal:host-gateway"
     # TTY and Stdin are useful for interactive sessions or maintaining terminal-based processes

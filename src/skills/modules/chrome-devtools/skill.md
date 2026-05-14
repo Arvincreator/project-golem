@@ -19,6 +19,27 @@
 ### MCP 工作流：把 DuckDuckGo HTML 整合進 Chrome DevTools
 系統已盡量以 Chrome 啟動參數設定 `Accept-Language`。`Referer` 屬於請求上下文，瀏覽器導航不一定能手動指定；若目標站仍擋瀏覽器自動化，改用下方 shell 後備探測模板。
 
+先記住「瀏覽任務」的預設複合指令（先導頁、再快照）：
+```json
+[
+  {
+    "action": "mcp_call",
+    "server": "chrome-devtools",
+    "tool": "navigate_page",
+    "parameters": {
+      "url": "https://example.com",
+      "timeout": 60000
+    }
+  },
+  {
+    "action": "mcp_call",
+    "server": "chrome-devtools",
+    "tool": "take_snapshot",
+    "parameters": {}
+  }
+]
+```
+
 搜尋任務優先用以下 MCP 流程：
 1. `new_page` 或 `navigate_page` 到 `https://html.duckduckgo.com/html/?q={URL_ENCODED_KEYWORD}&kl=tw-tzh`，建議帶 `timeout: 60000`。
 2. `wait_for` 等待 `["DuckDuckGo", "No results"]`，建議帶 `timeout: 30000`。不要等待 CSS class 名稱，`wait_for` 只看頁面可見文字。

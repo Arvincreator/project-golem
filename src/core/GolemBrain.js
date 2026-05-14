@@ -23,6 +23,7 @@ const { withRetry } = require('../utils/RetryUtils');
 const UserProfileManager = require('../managers/UserProfileManager');
 const { toolsetManager, SCENE_TOOLSETS } = require('../managers/ToolsetManager');
 const { hookSystem } = require('./HookSystem'); // ⚡ [OpenHarness-inspired] Global Hook System
+const MCPToolCatalog = require('../mcp/MCPToolCatalog');
 
 
 // ============================================================
@@ -110,6 +111,8 @@ class GolemBrain {
         this._backgroundMemoryInjectionTask = null;
         this._initPromise = null;
         this._transportState = options.transportState || { queue: Promise.resolve() };
+        this._toolVectorSyncPromise = null;
+        this._toolVectorSyncQueued = false;
 
         // ── [OpenHarness-inspired] Hook System ──────────────────
         // 全域單例，各模組可透過 brain.hookSystem 掛載 pre/post_tool_use handler
@@ -711,6 +714,14 @@ class GolemBrain {
         if (hiddenCount > 0) {
             lines.push(`active_tools_hidden_count=${hiddenCount}`);
         }
+        try {
+            const enabledServers = MCPToolCatalog.getEnabledServers()
+                .map((s) => String(s && s.name ? s.name : '').trim())
+                .filter(Boolean);
+            lines.push(`enabled_mcp_servers=${enabledServers.length > 0 ? enabledServers.join(', ') : '(none)'}`);
+        } catch (_) {
+            lines.push('enabled_mcp_servers=(unknown)');
+        }
 
         if (options.isAdmin === true) {
             lines.push('admin_session=true');
@@ -1131,6 +1142,12 @@ class GolemBrain {
      * 非阻塞：失敗不影響主流程。
      */
     async _syncToolVectorIndex() {
+        if (this._toolVectorSyncPromise) {
+            this._toolVectorSyncQueued = true;
+            return this._toolVectorSyncPromise;
+        }
+
+        this._toolVectorSyncPromise = (async () => {
         // 不論是否有 embedder，都先同步 package 技能到 toolsetManager（讓 ActionGate 放行）
         try {
             const { toolsetManager } = require('../managers/ToolsetManager');
@@ -1145,7 +1162,7 @@ class GolemBrain {
             return;
         }
         try {
-            const ToolVectorIndex = require('./ToolVectorIndex');
+            const ToolVectorIndex = require('../managers/ToolVectorIndex');
             if (!this.toolVectorIndex) {
                 this.toolVectorIndex = new ToolVectorIndex(this.userDataDir, this.memoryDriver.embedder);
             }
@@ -1202,7 +1219,24 @@ class GolemBrain {
 
             console.log(`✅ [ToolVectorIndex] 向量索引同步完成 (skills=${skillItems.length}, mcp=${mcpItems.length})`);
         } catch (e) {
-            console.warn(`⚠️ [ToolVectorIndex] 向量索引同步失敗（不影響主流程）: ${e.message}`);
+            const hint = (e && (e.code === 'EACCES' || /permission denied/i.test(String(e.message || ''))))
+                ? ' | Hint: 檢查 golem_memory 權限，需可寫入 tool-vector-index 目錄'
+                : '';
+            console.warn(`⚠️ [ToolVectorIndex] 向量索引同步失敗（不影響主流程）: ${e.message}${hint}`);
+        }
+        })();
+
+        try {
+            await this._toolVectorSyncPromise;
+        } finally {
+            this._toolVectorSyncPromise = null;
+            if (this._toolVectorSyncQueued) {
+                this._toolVectorSyncQueued = false;
+                // 合併多次重入請求，只補跑一次
+                void this._syncToolVectorIndex().catch((e) => {
+                    console.warn(`[ToolVectorIndex] 佇列補跑失敗: ${e.message}`);
+                });
+            }
         }
     }
 

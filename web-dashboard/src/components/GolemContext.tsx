@@ -46,7 +46,7 @@ const GolemContext = createContext<GolemContextType>({
     isBooting: false,
     isLoadingSystem: true,
     isSingleNode: true,
-    version: `v${process.env.NEXT_PUBLIC_GOLEM_VERSION || "9.6.8"}`,
+    version: `v${process.env.NEXT_PUBLIC_GOLEM_VERSION || "9.6.9"}`,
     allowRemote: false,
     localIp: "127.0.0.1",
     dashboardPort: 3000,
@@ -62,7 +62,7 @@ export function GolemProvider({ children }: { children: React.ReactNode }) {
     const [isBooting, setIsBooting] = useState(false);
     const [isLoadingSystem, setIsLoadingSystem] = useState(true);
     const [isSingleNode] = useState(true);
-    const [version, setVersion] = useState(`v${process.env.NEXT_PUBLIC_GOLEM_VERSION || "9.6.8"}`);
+    const [version, setVersion] = useState(`v${process.env.NEXT_PUBLIC_GOLEM_VERSION || "9.6.9"}`);
     const [allowRemote, setAllowRemote] = useState(false);
     const [localIp, setLocalIp] = useState("127.0.0.1");
     const [dashboardPort, setDashboardPort] = useState(3000);

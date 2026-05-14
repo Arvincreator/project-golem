@@ -293,6 +293,14 @@ class NeuroShunter {
             for (const originalAct of parsed.actions) {
                 let act = originalAct;
 
+                if (!ActionExecutionGate.validate(act).ok) {
+                    const slashRecovery = this._tryRecoverSlashAction(act);
+                    if (slashRecovery && slashRecovery.action) {
+                        console.log(slashRecovery.note);
+                        act = slashRecovery.action;
+                    }
+                }
+
                 const gate = ActionExecutionGate.validate(act);
                 if (!gate.ok) {
                     rejectedActions.push({ action: act, error: gate.error, code: gate.code });
@@ -350,8 +358,13 @@ class NeuroShunter {
                         observationLines.push(`   ⚡ 修正方式: 此技能存在但目前場景未啟用。請告知使用者需要切換場景，或直接輸出 /toolset <場景名稱> 指令。`);
                     } else if (item.code === 'UNKNOWN_ACTION') {
                         observationLines.push(`   ⚡ 修正方式: 此 action 不存在。請改用 command / mcp_call / 已安裝技能的 action 名稱。`);
+                        observationLines.push(`   ✅ MCP 複合指令範例(先瀏覽再快照): [{"action":"mcp_call","server":"chrome-devtools","tool":"navigate_page","parameters":{"url":"https://example.com","timeout":60000}},{"action":"mcp_call","server":"chrome-devtools","tool":"take_snapshot","parameters":{}}]`);
+                        observationLines.push(`   ✅ MCP 正確範例(搜尋): {"action":"mcp_call","server":"chrome-devtools","tool":"navigate_page","parameters":{"url":"https://html.duckduckgo.com/html/?q=%E9%97%9C%E9%8D%B5%E5%AD%97&kl=tw-tzh","timeout":60000}}`);
+                        observationLines.push(`   ✅ MCP 正確範例(抽結果): {"action":"mcp_call","server":"chrome-devtools","tool":"evaluate_script","parameters":{"function":"() => Array.from(document.querySelectorAll('a.result__a')).slice(0, 10).map(a => ({ title: a.textContent.trim(), url: a.href }))"}}`);
                     } else if (item.code === 'INVALID_MCP_CALL') {
                         observationLines.push(`   ⚡ 修正方式: mcp_call 必須包含 server 和 tool 欄位。`);
+                        observationLines.push(`   ✅ 格式模板: {"action":"mcp_call","server":"<server>","tool":"<tool>","parameters":{...}}`);
+                        observationLines.push(`   ✅ 瀏覽模板(兩步): [{"action":"mcp_call","server":"chrome-devtools","tool":"navigate_page","parameters":{"url":"https://example.com","timeout":60000}},{"action":"mcp_call","server":"chrome-devtools","tool":"take_snapshot","parameters":{}}]`);
                     }
                     observationLines.push('');
                 }

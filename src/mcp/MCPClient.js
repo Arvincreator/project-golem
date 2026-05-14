@@ -8,6 +8,30 @@
 const { spawn } = require('child_process');
 const { EventEmitter } = require('events');
 
+function shouldRetryViaWindowsCmd(command, error) {
+    if (process.platform !== 'win32') return false;
+    if (!error || error.code !== 'ENOENT') return false;
+    const cmd = String(command || '').trim().toLowerCase();
+    return cmd === 'npx' || cmd === 'npm';
+}
+
+function quoteForWindowsCmd(value) {
+    const text = String(value ?? '');
+    if (text.length === 0) return '""';
+    if (!/[\s"&|<>^()]/.test(text)) return text;
+    return `"${text.replace(/"/g, '""')}"`;
+}
+
+function buildWindowsCmdFallback(command, args = []) {
+    const raw = [command, ...(Array.isArray(args) ? args : [])]
+        .map((part) => quoteForWindowsCmd(part))
+        .join(' ');
+    return {
+        command: 'cmd.exe',
+        args: ['/d', '/s', '/c', raw]
+    };
+}
+
 class MCPClient extends EventEmitter {
     /**
      * @param {Object} config
@@ -41,6 +65,7 @@ class MCPClient extends EventEmitter {
 
         return new Promise((resolve, reject) => {
             let settled = false;
+            let retriedViaCmd = false;
             const safeResolve = (value) => {
                 if (settled) return;
                 settled = true;
@@ -52,53 +77,70 @@ class MCPClient extends EventEmitter {
                 reject(error);
             };
             const env = { ...process.env, ...this.env };
+            const bindProcessHandlers = () => {
+                if (!this._process) return;
+                this._process.stdout.on('data', (chunk) => this._onData(chunk));
+                this._process.stderr.on('data', (chunk) => {
+                    const text = chunk.toString();
+                    const lines = text
+                        .split(/\r?\n/)
+                        .map((line) => line.trim())
+                        .filter(Boolean);
+                    for (const line of lines) {
+                        this._pushStderr(line);
+                        console.warn(`[MCPClient:${this.name}] stderr: ${line}`);
+                    }
+                });
+
+                this._process.on('error', (err) => {
+                    if (!retriedViaCmd && shouldRetryViaWindowsCmd(this.command, err)) {
+                        retriedViaCmd = true;
+                        const fallback = buildWindowsCmdFallback(this.command, this.args);
+                        console.warn(
+                            `[MCPClient:${this.name}] spawn ${this.command} ENOENT on Windows, retrying via cmd.exe`
+                        );
+                        this._process = spawn(fallback.command, fallback.args, {
+                            stdio: ['pipe', 'pipe', 'pipe'],
+                            env
+                        });
+                        bindProcessHandlers();
+                        return;
+                    }
+
+                    console.error(`[MCPClient:${this.name}] Process error:`, err.message);
+                    this._connected = false;
+                    this.emit('error', err);
+                    safeReject(err);
+                });
+
+                this._process.on('exit', (code, signal) => {
+                    console.log(`[MCPClient:${this.name}] Process exited (code=${code}, signal=${signal})`);
+                    this._connected = false;
+                    this.emit('disconnected', { code, signal });
+                    // Reject all pending requests
+                    for (const [id, { reject: rej, timer }] of this._pending.entries()) {
+                        clearTimeout(timer);
+                        rej(new Error(`MCP Server "${this.name}" disconnected`));
+                        this._pending.delete(id);
+                    }
+
+                    if (!this._connected) {
+                        const stderrHint = this.getStderrTail();
+                        const detail = stderrHint ? ` | stderr: ${stderrHint}` : '';
+                        const err = new Error(`MCP server "${this.name}" exited before ready (code=${code}, signal=${signal})${detail}`);
+                        err.code = 'MCP_PROCESS_EXIT';
+                        err.exitCode = code;
+                        err.signal = signal;
+                        safeReject(err);
+                    }
+                });
+            };
 
             this._process = spawn(this.command, this.args, {
                 stdio: ['pipe', 'pipe', 'pipe'],
                 env
             });
-
-            this._process.stdout.on('data', (chunk) => this._onData(chunk));
-            this._process.stderr.on('data', (chunk) => {
-                const text = chunk.toString();
-                const lines = text
-                    .split(/\r?\n/)
-                    .map((line) => line.trim())
-                    .filter(Boolean);
-                for (const line of lines) {
-                    this._pushStderr(line);
-                    console.warn(`[MCPClient:${this.name}] stderr: ${line}`);
-                }
-            });
-
-            this._process.on('error', (err) => {
-                console.error(`[MCPClient:${this.name}] Process error:`, err.message);
-                this._connected = false;
-                this.emit('error', err);
-                safeReject(err);
-            });
-
-            this._process.on('exit', (code, signal) => {
-                console.log(`[MCPClient:${this.name}] Process exited (code=${code}, signal=${signal})`);
-                this._connected = false;
-                this.emit('disconnected', { code, signal });
-                // Reject all pending requests
-                for (const [id, { reject: rej, timer }] of this._pending.entries()) {
-                    clearTimeout(timer);
-                    rej(new Error(`MCP Server "${this.name}" disconnected`));
-                    this._pending.delete(id);
-                }
-
-                if (!this._connected) {
-                    const stderrHint = this.getStderrTail();
-                    const detail = stderrHint ? ` | stderr: ${stderrHint}` : '';
-                    const err = new Error(`MCP server "${this.name}" exited before ready (code=${code}, signal=${signal})${detail}`);
-                    err.code = 'MCP_PROCESS_EXIT';
-                    err.exitCode = code;
-                    err.signal = signal;
-                    safeReject(err);
-                }
-            });
+            bindProcessHandlers();
 
             // Wait for initialize to complete
             this._initialize().then((caps) => {

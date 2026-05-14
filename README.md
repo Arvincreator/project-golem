@@ -4,7 +4,7 @@
   <p><strong>可長期陪跑的自主 AI 代理系統：Web Gemini、Ollama、LM Studio、多代理、技能、記憶與 Web Dashboard。</strong></p>
 
   <p>
-    <img src="https://img.shields.io/badge/Version-9.6.8-blue?style=for-the-badge" alt="Version">
+    <img src="https://img.shields.io/badge/Version-9.6.9-blue?style=for-the-badge" alt="Version">
     <img src="https://img.shields.io/badge/Node.js-20--22-green?style=for-the-badge&logo=nodedotjs" alt="Node.js">
     <img src="https://img.shields.io/badge/Backend-Gemini%20Web%20%7C%20Ollama%20%7C%20LM%20Studio-orange?style=for-the-badge" alt="Backends">
     <img src="https://img.shields.io/badge/Dashboard-Next.js%2016-black?style=for-the-badge&logo=nextdotjs" alt="Dashboard">
@@ -146,6 +146,17 @@ ALLOW_REMOTE_ACCESS=false
 REMOTE_ACCESS_PASSWORD=
 SYSTEM_OP_TOKEN=
 ```
+
+### 內建 SearXNG 搜尋 MCP
+
+專案已內建 `searxng` MCP server（`src/mcp/searxng_stdio.js`），安裝完成即可在 Dashboard 的 MCP 頁看到並啟用。
+
+```env
+SEARXNG_BASE_URLS=http://127.0.0.1:8080,http://localhost:8080,https://searx.be
+```
+
+- 建議把你自架的 SearXNG 放在最前面（優先嘗試）。
+- Docker Compose 模式預設會啟動 `searxng` service（port `8080`），Golem 會自動帶入 `http://searxng:8080`。
 
 若把 `ALLOW_REMOTE_ACCESS` 設為 `true`，請務必設定強密碼，並搭配防火牆、VPN 或反向代理權限控管。
 

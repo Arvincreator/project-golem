@@ -505,13 +505,14 @@ export default function MCPPage() {
     };
 
     // ── Fetch servers ─────────────────────────────────────────────
-    const fetchServers = useCallback(async () => {
-        setLoading(true);
+    const fetchServers = useCallback(async (opts?: { silent?: boolean }) => {
+        const silent = Boolean(opts?.silent);
+        if (!silent) setLoading(true);
         try {
             const d = await apiGet<{ servers?: MCPServer[] }>(apiUrl("/api/mcp/servers"));
             setServers(d.servers || []);
         } finally {
-            setLoading(false);
+            if (!silent) setLoading(false);
         }
     }, []);
 
@@ -524,6 +525,19 @@ export default function MCPPage() {
     }, []);
 
     useEffect(() => { fetchServers(); fetchLogs(); }, [fetchServers, fetchLogs]);
+
+    // ── Auto-refresh while servers are still connecting ───────────
+    useEffect(() => {
+        const hasPendingConnection = servers.some((s) => s.enabled && !s.connected);
+        if (!hasPendingConnection) return;
+
+        const intervalId = window.setInterval(() => {
+            if (document.visibilityState !== 'visible') return;
+            void fetchServers({ silent: true });
+        }, 2000);
+
+        return () => window.clearInterval(intervalId);
+    }, [servers, fetchServers]);
 
     // ── Socket — real-time MCP logs ───────────────────────────────
     useEffect(() => {
@@ -648,7 +662,7 @@ export default function MCPPage() {
                     </div>
                 <div className="flex items-center gap-2">
                     <button
-                        onClick={fetchServers}
+                        onClick={() => { void fetchServers(); }}
                         className="p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                         title={isEnglish ? "Refresh" : "重新整理"}
                     >

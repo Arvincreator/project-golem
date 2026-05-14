@@ -14,8 +14,11 @@ module.exports = function registerMcpRoutes(server) {
     };
 
     const sanitizeServerPayload = (payload = {}) => {
+        const defaultAllowed = process.platform === 'win32'
+            ? 'npx,node,codex,uv,python3,python,bash,sh,cmd,cmd.exe'
+            : 'npx,node,codex,uv,python3,python,bash,sh';
         const allowedCmdsRaw = String(
-            process.env.MCP_ALLOWED_COMMANDS || 'npx,node,codex,uv,python3,python,bash,sh'
+            process.env.MCP_ALLOWED_COMMANDS || defaultAllowed
         );
         const allowedCmds = new Set(
             allowedCmdsRaw
@@ -81,6 +84,40 @@ module.exports = function registerMcpRoutes(server) {
         return mgr;
     };
 
+    const triggerToolVectorSync = async () => {
+        const jobs = [];
+        const seen = new Set();
+        const enqueue = (brain) => {
+            if (!brain || typeof brain._syncToolVectorIndex !== 'function') return;
+            if (seen.has(brain)) return;
+            seen.add(brain);
+            jobs.push(
+                Promise.resolve()
+                    .then(() => brain._syncToolVectorIndex())
+                    .catch((e) => console.warn('[MCP] ToolVector sync failed:', e.message))
+            );
+        };
+
+        // Dashboard-managed contexts
+        if (server && server.contexts && typeof server.contexts.values === 'function') {
+            for (const instance of server.contexts.values()) {
+                enqueue(instance && instance.brain ? instance.brain : null);
+            }
+        }
+
+        // Runtime singleton (single-golem edition)
+        try {
+            const getOrCreate = (typeof global.getOrCreateGolem === 'function')
+                ? global.getOrCreateGolem
+                : require('../../apps/runtime/index').getOrCreateGolem;
+            const singleton = typeof getOrCreate === 'function' ? getOrCreate() : null;
+            enqueue(singleton && singleton.brain ? singleton.brain : null);
+        } catch (_) { /* optional */ }
+
+        await Promise.allSettled(jobs);
+        return jobs.length;
+    };
+
     router.get('/api/mcp/servers', async (req, res) => {
         try {
             const mgr = await getMCPManager();
@@ -97,6 +134,7 @@ module.exports = function registerMcpRoutes(server) {
 
             const mgr = await getMCPManager();
             const entry = await mgr.addServer(payload);
+            void triggerToolVectorSync();
             console.log(`[MCP] Added server: ${payload.name}`);
             return res.json({ success: true, server: entry });
         } catch (e) {
@@ -122,6 +160,7 @@ module.exports = function registerMcpRoutes(server) {
             });
 
             const entry = await mgr.updateServer(name, merged);
+            void triggerToolVectorSync();
             console.log(`[MCP] Updated server: ${name}`);
             return res.json({ success: true, server: entry });
         } catch (e) {
@@ -136,6 +175,7 @@ module.exports = function registerMcpRoutes(server) {
             const name = sanitizeServerName(req.params.name);
             const mgr = await getMCPManager();
             await mgr.removeServer(name);
+            void triggerToolVectorSync();
             console.log(`[MCP] Removed server: ${name}`);
             return res.json({ success: true });
         } catch (e) {
@@ -151,6 +191,7 @@ module.exports = function registerMcpRoutes(server) {
             const { enabled } = req.body;
             const mgr = await getMCPManager();
             const entry = await mgr.toggleServer(name, Boolean(enabled));
+            void triggerToolVectorSync();
             return res.json({ success: true, server: entry });
         } catch (e) {
             console.error('[MCP] Toggle server error:', e);

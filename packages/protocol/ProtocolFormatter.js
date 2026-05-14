@@ -361,6 +361,9 @@ ${maxResponseWords > 0 ? `- Length: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE repl
 - Prefer \`command\` for local OS/repo/file operations.
 - Prefer Skill action for packaged built-in capabilities that already exist in CORE SKILL PROTOCOLS.
 - Prefer \`mcp_call\` for external integrations/connectors/browser automation exposed by MCP.
+- Web routing default:
+  - Query/search tasks (e.g. "查一下", "搜尋", "news about"): prefer \`mcp_call\` with \`server="searxng"\` and \`tool="web_search"\`.
+  - Direct URL tasks (user gives URL): prefer a 2-step MCP action array: \`navigate_page/new_page\` then \`take_snapshot\` on \`server="chrome-devtools"\`.
 - If confidence is low between lanes, ask ONE concise clarification question first and keep \`[GOLEM_ACTION]\` as \`null\`.
 - Never invent unknown action/server/tool names.
 <END_TAG>

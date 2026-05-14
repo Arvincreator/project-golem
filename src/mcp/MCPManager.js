@@ -18,6 +18,7 @@ const DEFAULT_TIMEOUT_MS = 30000;
 const CHROME_PROFILE_LOCK_RE = /(browser is already running|user.?data.?dir(?:ectory)?.*in use|processsingleton|singletonlock|profile.*in use|opening in existing browser session)/i;
 const CHROME_REMOTE_DEFAULT_URLS = ['http://127.0.0.1:9222', 'http://127.0.0.1:9223'];
 const CHROME_PROFILE_LOCK_FILES = ['SingletonLock', 'SingletonSocket', 'SingletonCookie', 'RunningChromeVersion'];
+const CHROME_MCP_PKG_RE = /^chrome-devtools-mcp(?:@[\w.\-+]+)?$/i;
 
 function normalizeTimeout(value, fallback = DEFAULT_TIMEOUT_MS) {
     const parsed = Number(value);
@@ -129,6 +130,68 @@ function replaceUserDataDirArg(args = [], nextDir = '') {
 function isChromeDevtoolsServer(cfg) {
     if (!cfg || !cfg.name) return false;
     return String(cfg.name).trim().toLowerCase() === 'chrome-devtools';
+}
+
+function stripChromeDevtoolsPkgArgs(args = []) {
+    const list = Array.isArray(args) ? [...args] : [];
+    const output = [];
+    for (let i = 0; i < list.length; i += 1) {
+        const cur = String(list[i] || '').trim();
+        if (!cur) continue;
+        if (cur === '-y' || cur === '--yes') continue;
+        if (CHROME_MCP_PKG_RE.test(cur)) continue;
+        output.push(cur);
+    }
+    return output;
+}
+
+function resolveLocalChromeMcpCli() {
+    try {
+        const pkgJsonPath = require.resolve('chrome-devtools-mcp/package.json', {
+            paths: [process.cwd()]
+        });
+        const pkgDir = path.dirname(pkgJsonPath);
+        const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8'));
+        let rel = '';
+        if (typeof pkg.bin === 'string') rel = pkg.bin;
+        else if (pkg.bin && typeof pkg.bin === 'object') rel = pkg.bin['chrome-devtools-mcp'] || '';
+        if (!rel) return '';
+        const cliPath = path.resolve(pkgDir, rel);
+        return fs.existsSync(cliPath) ? cliPath : '';
+    } catch (_) {
+        return '';
+    }
+}
+
+function buildLaunchCandidates(cfg) {
+    const base = [{ ...cfg, args: Array.isArray(cfg.args) ? [...cfg.args] : [] }];
+    if (!isChromeDevtoolsServer(cfg)) return base;
+
+    const sharedArgs = stripChromeDevtoolsPkgArgs(cfg.args || []);
+    const localCli = resolveLocalChromeMcpCli();
+    const candidates = [];
+
+    if (localCli) {
+        candidates.push({
+            ...cfg,
+            command: process.execPath || 'node',
+            args: [localCli, ...sharedArgs],
+            _launchMode: 'local_node_modules'
+        });
+    }
+
+    candidates.push({
+        ...cfg,
+        _launchMode: 'configured'
+    });
+
+    const seen = new Set();
+    return candidates.filter((item) => {
+        const key = `${item.command}::${JSON.stringify(item.args || [])}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
 }
 
 function resolveNodeEntryArg(args = []) {
@@ -299,6 +362,7 @@ class MCPManager extends EventEmitter {
         this._configs = [];         // persisted server configs
         this._logs    = [];         // recent call logs
         this._loaded  = false;
+        this._loadingPromise = null;
     }
 
     // ─── Singleton ─────────────────────────────────────────────────
@@ -313,19 +377,32 @@ class MCPManager extends EventEmitter {
     /** 載入配置並啟動所有啟用的 server */
     async load() {
         if (this._loaded) return;
-        this._configs = this._readConfig();
-        this._loaded  = true;
-
-        // Auto-connect enabled servers
-        const enabledServers = this._configs.filter(c => c.enabled !== false);
-        for (const cfg of enabledServers) {
-            try {
-                await this._startClient(cfg);
-            } catch (e) {
-                console.warn(`[MCPManager] Auto-connect failed for "${cfg.name}": ${e.message}`);
-            }
+        if (this._loadingPromise) {
+            await this._loadingPromise;
+            return;
         }
-        console.log(`[MCPManager] Loaded ${this._configs.length} servers, ${this._clients.size} connected.`);
+
+        this._loadingPromise = (async () => {
+            this._configs = this._readConfig();
+
+            // Auto-connect enabled servers
+            const enabledServers = this._configs.filter(c => c.enabled !== false);
+            for (const cfg of enabledServers) {
+                try {
+                    await this._startClient(cfg);
+                } catch (e) {
+                    console.warn(`[MCPManager] Auto-connect failed for "${cfg.name}": ${e.message}`);
+                }
+            }
+            this._loaded  = true;
+            console.log(`[MCPManager] Loaded ${this._configs.length} servers, ${this._clients.size} connected.`);
+        })();
+
+        try {
+            await this._loadingPromise;
+        } finally {
+            this._loadingPromise = null;
+        }
     }
 
     // ─── Server CRUD ───────────────────────────────────────────────
@@ -521,13 +598,31 @@ class MCPManager extends EventEmitter {
     async _startClient(cfg) {
         // Stop existing client if any
         await this._stopClient(cfg.name);
-        ensureLaunchConfigHealthy(cfg);
-        if (isChromeDevtoolsServer(cfg)) {
-            const userDataDir = extractUserDataDirArg(cfg.args || []);
-            await normalizeChromeProfileBeforeLaunch(userDataDir);
+        const launchCandidates = buildLaunchCandidates(cfg);
+        let lastErr = null;
+        for (const launchCfg of launchCandidates) {
+            try {
+                ensureLaunchConfigHealthy(launchCfg);
+                if (isChromeDevtoolsServer(launchCfg)) {
+                    const userDataDir = extractUserDataDirArg(launchCfg.args || []);
+                    await normalizeChromeProfileBeforeLaunch(userDataDir);
+                }
+                return await this._startClientWithFallbacks(launchCfg, {
+                    mode: launchCfg._launchMode || 'primary'
+                });
+            } catch (err) {
+                lastErr = err;
+                console.warn(
+                    `[MCPManager] Launch candidate failed for "${cfg.name}" (${launchCfg.command} ${JSON.stringify(launchCfg.args || [])}): ${err.message}`
+                );
+            }
         }
+        throw lastErr || new Error(`MCP server "${cfg.name}" failed to launch`);
+    }
+
+    async _startClientWithFallbacks(cfg, meta = {}) {
         try {
-            return await this._startClientWithConfig(cfg, { mode: 'primary' });
+            return await this._startClientWithConfig(cfg, meta);
         } catch (err) {
             if (shouldRetryWithBrowserBridge(cfg, err)) {
                 const bridgeUrls = resolveBridgeUrls(cfg);
@@ -542,6 +637,7 @@ class MCPManager extends EventEmitter {
                             `Retrying via browser bridge: ${bridgeUrl}`
                         );
                         return await this._startClientWithConfig(bridgeCfg, {
+                            ...meta,
                             mode: 'bridge_browser_url',
                             bridgeUrl
                         });
@@ -567,6 +663,7 @@ class MCPManager extends EventEmitter {
             );
 
             return this._startClientWithConfig(fallbackCfg, {
+                ...meta,
                 mode: 'fallback_profile',
                 originalDir,
                 fallbackDir
