@@ -1,0 +1,21 @@
+{
+  "id": "notebooklm-studio",
+  "name": "NotebookLM Studio",
+  "description": "Operate NotebookLM research workflow, source ingestion, artifact generation, and local handoff analysis.",
+  "type": "optional",
+  "enabled": true,
+  "action": "notebooklm-studio",
+  "entry": "index.js",
+  "prompt": "skill.md",
+  "toolsets": [],
+  "triggers": [
+    "notebooklm",
+    "studio",
+    "research notebook",
+    "study pack",
+    "slide deck",
+    "mind map",
+    "audio overview"
+  ],
+  "version": "1.0.0"
+}

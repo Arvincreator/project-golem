@@ -26,7 +26,8 @@ const EDITABLE_KEYS = new Set([
     "DIARY_BACKUP_MAX_FILES", "DIARY_BACKUP_RETENTION_DAYS",
     "GOLEM_INTERVENTION_LEVEL", "GOLEM_MAX_AUTO_TURNS", "GOLEM_MAX_RESPONSE_WORDS",
     "TG_ENGINE", "CB_TG_TIMEOUT_MS", "CB_TG_RESET_MS", "CB_TG_ERROR_PCT",
-    "MULTI_AGENT_WORKER_SEND_TIMEOUT_MS", "MULTI_AGENT_WORKER_IDLE_TIMEOUT_MS", "MULTI_AGENT_WORKER_DRAFT_CHECK_INTERVAL_MS"
+    "MULTI_AGENT_WORKER_SEND_TIMEOUT_MS", "MULTI_AGENT_WORKER_IDLE_TIMEOUT_MS", "MULTI_AGENT_WORKER_DRAFT_CHECK_INTERVAL_MS",
+    "NOTEBOOKLM_PROFILE", "NOTEBOOKLM_HOME", "NOTEBOOKLM_AUTH_JSON"
 ]);
 
 export default function AdvancedTab({ env, logInfo, onChangeEnv }: AdvancedTabProps) {
@@ -135,6 +136,40 @@ export default function AdvancedTab({ env, logInfo, onChangeEnv }: AdvancedTabPr
                                 />
                             </div>
                         )}
+
+                        <div className="rounded-lg border border-border/70 bg-secondary/20 p-3 space-y-3">
+                            <h4 className="text-sm font-semibold text-foreground">NotebookLM Studio 授權設定</h4>
+                            <SettingField
+                                label="NotebookLM Profile"
+                                keyName="NOTEBOOKLM_PROFILE"
+                                desc="預設使用 default。登入與授權狀態會綁定這個 profile。"
+                                placeholder="default"
+                                value={env.NOTEBOOKLM_PROFILE || ""}
+                                onChange={(val) => onChangeEnv("NOTEBOOKLM_PROFILE", val)}
+                            />
+                            <SettingField
+                                label="NotebookLM Home (可選)"
+                                keyName="NOTEBOOKLM_HOME"
+                                desc="可指定授權檔路徑根目錄；留空則使用 ~/.notebooklm。"
+                                placeholder="/Users/yourname/.notebooklm"
+                                value={env.NOTEBOOKLM_HOME || ""}
+                                onChange={(val) => onChangeEnv("NOTEBOOKLM_HOME", val)}
+                            />
+                            <SettingField
+                                label="NOTEBOOKLM_AUTH_JSON"
+                                keyName="NOTEBOOKLM_AUTH_JSON"
+                                isSecret
+                                desc="可直接貼入 notebooklm 的授權 JSON 字串。若留空，系統會改讀 ~/.notebooklm 下的 storage_state.json。"
+                                placeholder='{"cookies":[...],"origins":[...]}'
+                                value={env.NOTEBOOKLM_AUTH_JSON || ""}
+                                onChange={(val) => onChangeEnv("NOTEBOOKLM_AUTH_JSON", val)}
+                            />
+                            <div className="text-xs text-muted-foreground space-y-1 leading-relaxed">
+                                <p>首次授權建議在終端機執行：</p>
+                                <p><code className="bg-secondary px-1.5 py-0.5 rounded">python3 tools/notebooklm-studio/scripts/bootstrap_notebooklm.py --login --auth-test --print-guide</code></p>
+                                <p>登入與 MFA 必須由使用者在瀏覽器手動完成。</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="pt-4 border-t border-border">

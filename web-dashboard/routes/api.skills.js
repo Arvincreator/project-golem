@@ -154,6 +154,45 @@ function parseImportedSkillsFromMarkdown(markdown) {
     return single ? [single] : [];
 }
 
+function buildLiveSkillInjectionText(skillEntries = []) {
+    const rows = Array.isArray(skillEntries) ? skillEntries : [];
+    const header = [
+        '【系統技能熱注入】',
+        `本次僅注入目前已啟用的選用技能，共 ${rows.length} 個。`,
+        '請立即在本輪與後續回合使用這些技能規則。',
+        '',
+    ];
+    const body = rows.map((item, index) => {
+        const title = String(item.name || item.id || `skill_${index + 1}`).trim();
+        const id = String(item.id || '').trim();
+        const content = String(item.content || '').trim();
+        return [
+            `--- Skill ${index + 1}/${rows.length}: ${title} (${id}) ---`,
+            content,
+            '',
+        ].join('\n');
+    });
+    return [...header, ...body].join('\n');
+}
+
+function buildLiveSkillDisableText(skillId) {
+    const safeId = String(skillId || '').trim();
+    return [
+        '【系統技能停用同步】',
+        `技能 "${safeId}" 已由使用者停用。`,
+        '從現在起，請不要再呼叫或依賴此技能的規則與 action。',
+        '若使用者要求此能力，請先告知技能已停用，並請使用者重新啟用後再執行。',
+    ].join('\n');
+}
+
+function hasExampleSection(promptText) {
+    const text = String(promptText || '');
+    if (!text.trim()) return false;
+    if (/Action 格式|Runtime Action|連續操作範例|範例/i.test(text)) return true;
+    if (/\{\s*"action"\s*:\s*"/.test(text)) return true;
+    return false;
+}
+
 async function resolveSkillUserDataDir(server, golemIdQuery) {
     const { context } = resolveActiveContext(server, golemIdQuery);
     const { MEMORY_BASE_DIR } = require('../../src/config');
@@ -480,6 +519,91 @@ module.exports = function(server) {
         }
     });
 
+    router.get('/api/skills/check', requireSkillAdmin, async (req, res) => {
+        try {
+            const userDataDir = await resolveSkillUserDataDir(server, req.query.golemId);
+            const packages = SkillPackageRegistry.listSkillPackages({ userDataDir });
+            const packageMap = new Map(packages.map((pkg) => [pkg.id, pkg]));
+            const mandatorySet = new Set(MANDATORY_SKILLS);
+
+            const requested = String(req.query.ids || '')
+                .split(',')
+                .map((id) => safeSkillId(id, ''))
+                .filter(Boolean);
+
+            const idsToCheck = requested.length > 0
+                ? [...new Set(requested)]
+                : [...new Set([...MANDATORY_SKILLS, ...OPTIONAL_SKILL_LIST, ...packages.map((pkg) => pkg.id)])];
+
+            const checks = idsToCheck.map((id) => {
+                const pkg = packageMap.get(id) || null;
+                const isRegistered = Boolean(pkg);
+                const isCore = mandatorySet.has(id);
+                const enabled = Boolean(pkg && pkg.enabled !== false);
+
+                let isLoadable = false;
+                let loadError = '';
+                if (pkg && pkg.indexPath) {
+                    try {
+                        if (fs.existsSync(pkg.indexPath)) {
+                            delete require.cache[require.resolve(pkg.indexPath)];
+                            const mod = require(pkg.indexPath);
+                            isLoadable = Boolean(mod && typeof mod.run === 'function');
+                            if (!isLoadable) loadError = 'module loaded but missing run()';
+                        } else {
+                            loadError = 'index.js not found';
+                        }
+                    } catch (error) {
+                        loadError = error && error.message ? error.message : String(error);
+                    }
+                } else if (pkg) {
+                    loadError = 'missing indexPath';
+                } else {
+                    loadError = 'package not registered';
+                }
+
+                let hasExamples = false;
+                if (pkg && pkg.promptPath && fs.existsSync(pkg.promptPath)) {
+                    try {
+                        const promptText = fs.readFileSync(pkg.promptPath, 'utf8');
+                        hasExamples = hasExampleSection(promptText);
+                    } catch (_) {
+                        hasExamples = false;
+                    }
+                }
+
+                return {
+                    id,
+                    isCore,
+                    isRegistered,
+                    enabled,
+                    isLoadable,
+                    hasExamples,
+                    promptPath: pkg ? pkg.promptPath : '',
+                    indexPath: pkg ? pkg.indexPath : '',
+                    loadError: isLoadable ? '' : loadError,
+                };
+            });
+
+            const summary = {
+                total: checks.length,
+                registered: checks.filter((item) => item.isRegistered).length,
+                loadable: checks.filter((item) => item.isLoadable).length,
+                withExamples: checks.filter((item) => item.hasExamples).length,
+            };
+
+            return res.json({
+                success: true,
+                checkedIds: idsToCheck,
+                summary,
+                checks,
+            });
+        } catch (e) {
+            console.error('Failed to check skills:', e);
+            return res.status(500).json({ success: false, error: e.message });
+        }
+    });
+
     router.get('/api/skills/export', async (req, res) => {
         try {
             const requestedId = String(req.query.id || '').trim().toLowerCase();
@@ -769,7 +893,46 @@ module.exports = function(server) {
             }
             await idx.close();
 
-            return res.json({ success: true, enabled, skillsStr: newSkillsStr });
+            // 熱刷新 SkillManager，讓 runtime skill map 立即反映 manifest.enabled 變更
+            try {
+                const skillManager = require('../../src/managers/SkillManager');
+                skillManager.refresh();
+            } catch (refreshError) {
+                console.warn(`⚠️ [WebServer] SkillManager refresh failed after toggle (${safeId}): ${refreshError.message}`);
+            }
+
+            let liveSessionRemoved = false;
+            const liveSyncResults = [];
+            if (!enabled) {
+                const disableText = buildLiveSkillDisableText(safeId);
+                for (const [ctxId, ctx] of server.contexts.entries()) {
+                    const brain = ctx && ctx.brain;
+                    if (!brain) {
+                        liveSyncResults.push({ id: ctxId, status: 'skipped', error: 'Brain not ready' });
+                        continue;
+                    }
+                    try {
+                        if (brain.skillIndex && typeof brain.skillIndex.removeSkill === 'function') {
+                            await brain.skillIndex.removeSkill(safeId).catch(() => {});
+                        }
+                        if (typeof brain.sendMessage === 'function') {
+                            await brain.sendMessage(disableText, false, { disableToolRouting: true });
+                        }
+                        liveSyncResults.push({ id: ctxId, status: 'success' });
+                        liveSessionRemoved = true;
+                    } catch (syncError) {
+                        liveSyncResults.push({ id: ctxId, status: 'error', error: syncError.message });
+                    }
+                }
+            }
+
+            return res.json({
+                success: true,
+                enabled,
+                skillsStr: newSkillsStr,
+                liveSessionRemoved,
+                liveSyncResults,
+            });
         } catch (e) {
             console.error("Failed to toggle skill:", e);
             return res.status(500).json({ error: e.message });
@@ -957,33 +1120,60 @@ module.exports = function(server) {
     router.post('/api/skills/inject', requireSkillAdmin, async (req, res) => {
         try {
             ProtocolFormatter._lastScanTime = 0;
+            const incomingIds = Array.isArray(req.body?.enabledSkillIds) ? req.body.enabledSkillIds : [];
+            const sanitizedEnabledIds = [...new Set(
+                incomingIds.map((id) => safeSkillId(id, '')).filter(Boolean)
+            )];
 
             const results = [];
             for (const [id, context] of server.contexts.entries()) {
-                if (context.brain && typeof context.brain.reloadSkills === 'function') {
+                if (context.brain) {
                     try {
-                        console.log(`🚀 [WebServer] 啟動 [${id}] 完整重啟程序...`);
-                        await context.brain.reloadSkills();
+                        const brain = context.brain;
+                        const skillIds = sanitizedEnabledIds.length > 0
+                            ? sanitizedEnabledIds
+                            : (() => {
+                                const enabledSkills = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', []);
+                                return OPTIONAL_SKILL_LIST.filter((skillId) => enabledSkills.has(skillId));
+                            })();
+
+                        if (skillIds.length === 0) {
+                            results.push({ id, status: 'skipped', error: 'No enabled optional skills to inject' });
+                            continue;
+                        }
+
+                        const skillRows = await brain.skillIndex.getEnabledSkills(skillIds);
+                        if (!Array.isArray(skillRows) || skillRows.length === 0) {
+                            results.push({ id, status: 'skipped', error: 'Enabled skills not found in skill index' });
+                            continue;
+                        }
+
+                        const injectionText = buildLiveSkillInjectionText(skillRows);
+                        if (typeof brain.sendMessageSegmented === 'function' && injectionText.length > 12000) {
+                            await brain.sendMessageSegmented(injectionText, false, {
+                                disableToolRouting: true,
+                                maxSegmentChars: 10000,
+                            });
+                        } else if (typeof brain.sendMessage === 'function') {
+                            await brain.sendMessage(injectionText, false, { disableToolRouting: true });
+                        } else {
+                            throw new Error('Brain sendMessage API unavailable');
+                        }
+
+                        console.log(`⚡ [WebServer] Live skill injection complete [${id}] optional_count=${skillRows.length}`);
                         results.push({ id, status: 'success' });
 
-                        const tgBot = context.brain.tgBot;
+                        const tgBot = brain.tgBot;
                         if (tgBot) {
-                            const enabledSkills = resolveEnabledSkills(process.env.OPTIONAL_SKILLS || '', []);
-                            const enabledOptional = OPTIONAL_SKILL_LIST.filter(s => enabledSkills.has(s));
-                            const disabledOptional = OPTIONAL_SKILL_LIST.filter(s => !enabledSkills.has(s));
-
-                            const mandatoryList = MANDATORY_SKILLS.map(s => `• ${s}`).join('\n');
-                            const optionalList = enabledOptional.length > 0 ? enabledOptional.map(s => `• ${s}`).join('\n') : '（無）';
-                            const disabledList = disabledOptional.length > 0 ? disabledOptional.map(s => `• ${s}`).join('\n') : '（無）';
-
-                            const msg = `⚡ *[${id}] 技能書已重新注入*\n\n🔒 *必要技能（永久啟用）:*\n${mandatoryList}\n\n✅ *已啟用選用技能:*\n${optionalList}\n\n⛔ *未啟用選用技能:*\n${disabledList}`;
+                            const optionalList = skillRows.map((s) => `• ${s.id}`).join('\n');
+                            const msg = `⚡ *[${id}] 技能已即時注入*\n\n✅ *本次注入選用技能:*\n${optionalList}`;
 
                             const gCfg = tgBot.golemConfig || {};
                             const targetId = gCfg.adminId || gCfg.chatId;
                             if (targetId) {
                                 tgBot.sendMessage(targetId, msg, { parse_mode: 'Markdown' })
                                     .catch(e => console.warn(`⚠️ [WebServer] TG skill notify failed [${id}]:`, e.message));
-                                tgBot.sendMessage(targetId, `🔄 *[${id}] 技能書注入完成*\n已為您重新開啟全新的 Gemini 對話視窗並注入技能，人格設定與歷史記憶已完整保留，不需重新設定。`, { parse_mode: 'Markdown' })
+                                tgBot.sendMessage(targetId, `✅ *[${id}] 技能即時注入完成*\n未重啟 Gemini 視窗，當前對話上下文已保留。`, { parse_mode: 'Markdown' })
                                     .catch(e => console.warn(`⚠️ [WebServer] TG inject notify failed [${id}]:`, e.message));
                             }
                         }
@@ -992,7 +1182,7 @@ module.exports = function(server) {
                         results.push({ id, status: 'error', error: e.message });
                     }
                 } else {
-                    results.push({ id, status: 'skipped', error: 'Brain not ready or reloadSkills not available' });
+                    results.push({ id, status: 'skipped', error: 'Brain not ready' });
                 }
             }
 
@@ -1003,7 +1193,7 @@ module.exports = function(server) {
             const allSuccess = results.every(r => r.status === 'success');
             return res.json({
                 success: allSuccess,
-                message: allSuccess ? `技能書已成功注入 ${results.length} 個 Golem 實體` : `部分注入失敗`,
+                message: allSuccess ? `已即時注入 ${results.length} 個 Golem 實體` : `部分注入失敗`,
                 results
             });
         } catch (e) {

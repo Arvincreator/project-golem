@@ -65,6 +65,18 @@ function sanitizeReply(text) {
         .trim();
 }
 
+function hasMarkdownHttpLink(text) {
+    return /\[[^\]\n]+\]\(https?:\/\/[^\s)]+\)/.test(String(text || ''));
+}
+
+function buildReplyOptions(ctx, finalReply, extra = {}) {
+    const options = { ...extra };
+    if (ctx.platform === 'telegram' && hasMarkdownHttpLink(finalReply)) {
+        options._telegramHtmlLinks = true;
+    }
+    return options;
+}
+
 // ============================================================
 // 🧬 NeuroShunter (神經分流中樞 - 核心路由器)
 // ============================================================
@@ -258,9 +270,14 @@ class NeuroShunter {
 
             // 附件處理：若無附件則維持單參數呼叫，相容既有上下文與測試
             if (attachments.length > 0) {
-                await ctx.reply(finalReply, { attachments: attachments });
+                await ctx.reply(finalReply, buildReplyOptions(ctx, finalReply, { attachments: attachments }));
             } else {
-                await ctx.reply(finalReply);
+                const replyOptions = buildReplyOptions(ctx, finalReply);
+                if (Object.keys(replyOptions).length > 0) {
+                    await ctx.reply(finalReply, replyOptions);
+                } else {
+                    await ctx.reply(finalReply);
+                }
             }
         } else if (parsed.reply && shouldSuppressReply) {
             console.log(`🤫 [NeuroShunter] 檢測到靜默模式，已攔截回覆內容。`);

@@ -1,7 +1,7 @@
 {
   "id": "youtube",
   "name": "Youtube",
-  "description": "",
+  "description": "YouTube HTML parser via ytInitialPlayerResponse extraction",
   "type": "optional",
   "enabled": true,
   "action": "youtube",
@@ -9,5 +9,5 @@
   "prompt": "skill.md",
   "toolsets": [],
   "triggers": [],
-  "version": "1.0.0"
+  "version": "1.1.0"
 }

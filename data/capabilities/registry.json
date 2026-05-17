@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-16T14:43:00.680Z",
+  "generatedAt": "2026-05-17T11:49:54.873Z",
   "summary": {
-    "skills": 28,
+    "skills": 30,
     "mcpTools": 29,
-    "total": 57,
-    "coveredExamples": 57
+    "total": 59,
+    "coveredExamples": 58
   },
   "capabilities": [
     {
@@ -97,6 +97,28 @@
       "exampleCovered": true
     },
     {
+      "id": "duckduckgo-devtools-bridge",
+      "lane": "skill",
+      "action": "duckduckgo-devtools-bridge",
+      "name": "DuckDuckGo + DevTools Bridge",
+      "description": "Chain public search from DuckDuckGo with follow-up deep page inspection via chrome-devtools MCP.",
+      "type": "core",
+      "promptPath": "/Users/arvin/Desktop/project-golem-plus/src/skills/modules/duckduckgo-devtools-bridge/skill.md",
+      "target": "duckduckgo-devtools-bridge",
+      "exampleCovered": true
+    },
+    {
+      "id": "duckduckgo-search",
+      "lane": "skill",
+      "action": "duckduckgo-search",
+      "name": "DuckDuckGo HTML Search",
+      "description": "Public web search through html.duckduckgo.com with browser-like headers, used when browser automation search is blocked.",
+      "type": "core",
+      "promptPath": "/Users/arvin/Desktop/project-golem-plus/src/skills/modules/duckduckgo-search/skill.md",
+      "target": "duckduckgo-search",
+      "exampleCovered": true
+    },
+    {
       "id": "evolution",
       "lane": "skill",
       "action": "evolution",
@@ -183,6 +205,17 @@
       "promptPath": "/Users/arvin/Desktop/project-golem-plus/src/skills/modules/multi-agent/skill.md",
       "target": "multi-agent",
       "exampleCovered": true
+    },
+    {
+      "id": "notebooklm-studio",
+      "lane": "skill",
+      "action": "notebooklm-studio",
+      "name": "NotebookLM Studio",
+      "description": "Operate NotebookLM research workflow, source ingestion, artifact generation, and local handoff analysis.",
+      "type": "optional",
+      "promptPath": "/Users/arvin/Desktop/project-golem-plus/src/skills/modules/notebooklm-studio/skill.md",
+      "target": "notebooklm-studio",
+      "exampleCovered": false
     },
     {
       "id": "optic-nerve",
@@ -299,21 +332,10 @@
       "lane": "skill",
       "action": "youtube",
       "name": "Youtube",
-      "description": "你能「閱讀」YouTube 影片。當使用者要求「總結這部影片」或「這影片在講什麼」時使用。",
+      "description": "YouTube HTML parser via ytInitialPlayerResponse extraction",
       "type": "optional",
       "promptPath": "/Users/arvin/Desktop/project-golem-plus/src/skills/modules/youtube/skill.md",
       "target": "youtube",
-      "exampleCovered": true
-    },
-    {
-      "id": "stock-checker",
-      "lane": "skill",
-      "action": "stock-checker",
-      "name": "stock-checker",
-      "description": "實時查詢台股與美股報價，採用 Yahoo Finance v8 API 接口。",
-      "type": "user_generated",
-      "promptPath": "/Users/arvin/Desktop/project-golem-plus/golem_memory/skills/stock-checker/skill.md",
-      "target": "stock-checker",
       "exampleCovered": true
     },
     {

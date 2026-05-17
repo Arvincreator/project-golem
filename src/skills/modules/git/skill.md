@@ -21,4 +21,7 @@
 
 4. **安全守則**：
    - 嚴禁主動執行 `git clean`、`git reset --hard`，除非使用者明確要求「強制重置」。
+
+Action 格式 (用於 Golem 對話):
+{"action":"git","task":"status_and_push","branch":"main","message":"feat: update"}
 </SkillModule>

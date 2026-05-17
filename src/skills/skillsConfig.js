@@ -27,12 +27,15 @@ const MANDATORY_SKILLS = [
     'stock-dashboard',
     'collab-calendar',
     'chrome-devtools',
+    'duckduckgo-search',
+    'duckduckgo-devtools-bridge',
 ];
 
 const OPTIONAL_SKILLS = [
     'git',
     'image-prompt',
     'moltbot',
+    'notebooklm-studio',
     'spotify',
     'youtube',
     // ── 其他選用技能 ──────────────────────────────────────────

@@ -77,6 +77,23 @@ describe('NeuroShunter', () => {
         expect(mockCtx.reply).toHaveBeenCalledWith('@user Hello');
     });
 
+    test('dispatch enables Telegram HTML link conversion for markdown links', async () => {
+        mockCtx.platform = 'telegram';
+        mockCtx.shouldMentionSender = false;
+
+        ResponseParser.parse.mockReturnValue({
+            reply: '參考：[Example](https://example.com)',
+            actions: []
+        });
+
+        await NeuroShunter.dispatch(mockCtx, 'raw', mockBrain, mockController);
+
+        expect(mockCtx.reply).toHaveBeenCalledWith(
+            '參考：[Example](https://example.com)',
+            { _telegramHtmlLinks: true }
+        );
+    });
+
     test('dispatch handles multi_agent action', async () => {
         ResponseParser.parse.mockReturnValue({
             reply: '',

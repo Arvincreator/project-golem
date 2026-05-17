@@ -8,6 +8,11 @@
 const fs   = require('fs');
 const path = require('path');
 
+async function run() {
+    return null;
+}
+
 module.exports = {
+    run,
     PROMPT: fs.readFileSync(path.join(__dirname, 'skill.md'), 'utf8'),
 };

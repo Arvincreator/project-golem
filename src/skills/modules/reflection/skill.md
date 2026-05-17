@@ -17,4 +17,7 @@
 3. **觸發時機**：
    - 當系統要求你進行「自我檢視」或「反思」時。
    - 在長時間運作後，主動評估系統穩定性。
+
+Action 格式 (用於 Golem 對話):
+{"action":"reflection","scope":"recent_sessions","output":"improvement_plan"}
 </SkillModule>

@@ -28,6 +28,20 @@ type InstalledSkill = {
     isEnabled: boolean;
 };
 
+type SkillCheckItem = {
+    id: string;
+    isRegistered: boolean;
+    isLoadable: boolean;
+    hasExamples: boolean;
+};
+
+type SkillCheckSummary = {
+    total: number;
+    registered: number;
+    loadable: number;
+    withExamples: number;
+};
+
 type MarketplaceSkill = {
     id: string;
     title: string;
@@ -295,20 +309,20 @@ function InjectConfirmDialog({
                     </div>
                     <DialogTitle className="text-foreground text-base">注入技能書？</DialogTitle>
                     <DialogDescription className="text-muted-foreground text-sm leading-relaxed">
-                        系統將依據目前配置，重新開啟全新的 Gemini 對話視窗進行注入。過往設定的人格與歷史記憶將會完整保留。
+                        系統將在當前 Gemini 對話中即時注入目前啟用的選用技能，不會重啟視窗或中斷上下文。
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-2">
                     <div className="flex items-start gap-2 rounded-lg bg-secondary/60 border border-border/50 px-3 py-2.5">
                         <TriangleAlert className="w-3.5 h-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                        <p className="text-xs text-muted-foreground">此動作將暫時開新視窗中斷目前對話，但人格設定與長期記憶不受影響。</p>
+                        <p className="text-xs text-muted-foreground">此動作只會同步技能規則，不會清空或切換目前對話視窗。</p>
                     </div>
                     <div className="rounded-lg bg-secondary/40 border border-border/30 px-3 py-2">
                         <p className="text-[11px] text-muted-foreground mb-1 font-medium">確認後將自動執行：</p>
                         <ol className="text-[11px] text-muted-foreground/80 space-y-0.5 list-decimal list-inside">
-                            <li>清除技能快取</li>
-                            <li>重新開啟 Gemini 通訊視窗</li>
-                            <li>自存檔載入人格，並注入所有技能記憶</li>
+                            <li>讀取目前啟用的選用技能</li>
+                            <li>在當前 Gemini 對話即時注入技能規則</li>
+                            <li>保留現有人格與對話上下文</li>
                         </ol>
                     </div>
                 </div>
@@ -339,7 +353,7 @@ function InjectDoneDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
                     </div>
                     <DialogTitle className="text-foreground text-base">技能注入完成 ✅</DialogTitle>
                     <DialogDescription className="text-muted-foreground text-sm">
-                        已於新的 Gemini 對話視窗中完成注入。人格設定與歷史記憶已從存檔完整還原，3 秒後自動關閉。
+                        已在目前 Gemini 對話中完成即時注入，對話上下文未中斷，3 秒後自動關閉。
                     </DialogDescription>
                 </DialogHeader>
             </DialogContent>
@@ -773,6 +787,9 @@ export default function SkillsPage() {
 
     // Marketplace
     const [marketSkills, setMarketSkills] = useState<MarketplaceSkill[]>([]);
+    const [skillCheckMap, setSkillCheckMap] = useState<Record<string, SkillCheckItem>>({});
+    const [skillCheckSummary, setSkillCheckSummary] = useState<SkillCheckSummary | null>(null);
+    const [isCheckingSkills, setIsCheckingSkills] = useState(false);
     const [selectedMarketSkill, setSelectedMarketSkill] = useState<MarketplaceSkill | null>(null);
     const [marketTotal, setMarketTotal] = useState(0);
     const [marketPage, setMarketPage] = useState(1);
@@ -786,6 +803,7 @@ export default function SkillsPage() {
     const [isInjecting, setIsInjecting] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     const [showDone, setShowDone] = useState(false);
+    const [lastInjectedOptionalIds, setLastInjectedOptionalIds] = useState<string[]>([]);
 
     // Editor state
     const [showEditor, setShowEditor] = useState(false);
@@ -819,6 +837,12 @@ export default function SkillsPage() {
             .then((data) => {
                 if (Array.isArray(data)) {
                     setSkills(data);
+                    setLastInjectedOptionalIds((prev) => {
+                        if (prev.length > 0) return prev;
+                        return data
+                            .filter((skill) => skill.isOptional && skill.isEnabled)
+                            .map((skill) => skill.id);
+                    });
                     setSelectedSkill((previousSelected) => {
                         const fallback = data[0] ?? null;
                         if (!previousSelected) return fallback;
@@ -834,6 +858,30 @@ export default function SkillsPage() {
             })
             .catch((err) => console.error(err));
     }, []);
+
+    const loadSkillChecks = useCallback(async (ids?: string[]) => {
+        setIsCheckingSkills(true);
+        try {
+            const query = ids && ids.length > 0 ? `?ids=${encodeURIComponent(ids.join(","))}` : "";
+            const data = await apiGet<{
+                success?: boolean;
+                summary?: SkillCheckSummary;
+                checks?: SkillCheckItem[];
+            }>(`/api/skills/check${query}`);
+            if (data.success) {
+                const nextMap: Record<string, SkillCheckItem> = {};
+                (data.checks || []).forEach((item) => {
+                    nextMap[item.id] = item;
+                });
+                setSkillCheckMap(nextMap);
+                setSkillCheckSummary(data.summary || null);
+            }
+        } catch (error: unknown) {
+            toast.error("技能健康檢查失敗", getErrorMessage(error, "無法取得 /api/skills/check 結果"));
+        } finally {
+            setIsCheckingSkills(false);
+        }
+    }, [toast]);
 
     const loadMarketplace = useCallback(async (page: number, search: string, category: string) => {
         setIsMarketLoading(true);
@@ -862,6 +910,11 @@ export default function SkillsPage() {
         loadSkills();
     }, [loadSkills]);
 
+    useEffect(() => {
+        if (skills.length === 0) return;
+        loadSkillChecks(skills.map((skill) => skill.id));
+    }, [skills, loadSkillChecks]);
+
     // Re-fetch marketplace when page or search query changes
     useEffect(() => {
         loadMarketplace(marketPage, marketSearchQuery, marketCategory);
@@ -880,7 +933,12 @@ export default function SkillsPage() {
 
     const toggleSkill = async (id: string, enabled: boolean) => {
         try {
-            const data = await apiPostWrite<{ success?: boolean; error?: string }>("/api/skills/toggle", {
+            const data = await apiPostWrite<{
+                success?: boolean;
+                error?: string;
+                liveSessionRemoved?: boolean;
+                liveSyncResults?: Array<{ id?: string; status?: string; error?: string }>;
+            }>("/api/skills/toggle", {
                 id,
                 enabled,
             });
@@ -894,8 +952,20 @@ export default function SkillsPage() {
                 if (enabled) {
                     setSyncHintType("enable");
                     setShowSyncHint(true);
+                    setHasUnsyncedChanges(true);
                 }
-                setHasUnsyncedChanges(true);
+                if (!enabled) {
+                    setLastInjectedOptionalIds((prev) => prev.filter((skillId) => skillId !== id));
+                    const syncRows = Array.isArray(data.liveSyncResults) ? data.liveSyncResults : [];
+                    const failed = syncRows.filter((row) => row.status === "error");
+                    if (data.liveSessionRemoved && failed.length === 0) {
+                        toast.success("技能已停用", "已從目前會話即時移除技能規則。");
+                    } else if (data.liveSessionRemoved && failed.length > 0) {
+                        toast.info("技能已停用", `部分節點同步失敗 (${failed.length})，建議稍後按一次注入技能書。`);
+                    } else {
+                        toast.info("技能已停用", "目前沒有活躍會話可同步，將於下次對話生效。");
+                    }
+                }
             }
         } catch (err) {
             console.error(err);
@@ -929,11 +999,27 @@ export default function SkillsPage() {
     const handleInject = async () => {
         setIsInjecting(true);
         try {
-            const data = await apiPost<{ success?: boolean; message?: string; error?: string }>("/api/skills/inject");
+            const currentlyEnabledOptionalIds = skills
+                .filter((skill) => skill.isOptional && skill.isEnabled)
+                .map((skill) => skill.id);
+            const injectedSet = new Set(lastInjectedOptionalIds);
+            const enabledSkillIds = currentlyEnabledOptionalIds.filter((id) => !injectedSet.has(id));
+
+            if (enabledSkillIds.length === 0) {
+                toast.info("沒有新技能", "目前沒有新啟用且尚未注入的選用技能。");
+                setIsInjecting(false);
+                setShowConfirm(false);
+                return;
+            }
+
+            const data = await apiPost<{ success?: boolean; message?: string; error?: string }>("/api/skills/inject", {
+                enabledSkillIds,
+            });
 
             if (data.success) {
                 setShowConfirm(false);
                 setHasUnsyncedChanges(false);
+                setLastInjectedOptionalIds((prev) => [...new Set([...prev, ...enabledSkillIds])]);
                 setShowDone(true);
                 setTimeout(() => {
                     setShowDone(false);
@@ -1322,6 +1408,21 @@ export default function SkillsPage() {
                                 )}
                                 {activeTab === "installed" && (
                                     <button
+                                        onClick={() => loadSkillChecks(skills.map((skill) => skill.id))}
+                                        disabled={isCheckingSkills || skills.length === 0}
+                                        className={`px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2 transition-all bg-secondary text-muted-foreground border border-border hover:bg-accent hover:text-foreground ${isCheckingSkills || skills.length === 0 ? "opacity-60 cursor-not-allowed" : ""}`}
+                                    >
+                                        <Activity className={`w-4 h-4 ${isCheckingSkills ? "animate-pulse" : ""}`} />
+                                        {isCheckingSkills ? "檢查中..." : "技能健康標示"}
+                                    </button>
+                                )}
+                                {activeTab === "installed" && skillCheckSummary && (
+                                    <span className="text-xs text-muted-foreground px-2 py-1 rounded-md bg-secondary/40 border border-border/60">
+                                        {`登錄 ${skillCheckSummary.registered}/${skillCheckSummary.total} · 載入 ${skillCheckSummary.loadable}/${skillCheckSummary.total} · 範例 ${skillCheckSummary.withExamples}/${skillCheckSummary.total}`}
+                                    </span>
+                                )}
+                                {activeTab === "installed" && (
+                                    <button
                                         onClick={() => setShowConfirm(true)}
                                         disabled={isInjecting || exportingTarget !== null || isImporting || isPreparingImport}
                                         className={`px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2 transition-all ${hasUnsyncedChanges
@@ -1486,6 +1587,13 @@ export default function SkillsPage() {
                                                                     </span>
                                                                 ) : (
                                                                     <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">{isEnglish ? "Disabled" : "未啟用"}</span>
+                                                                )}
+                                                                {skillCheckMap[skill.id] && (
+                                                                    <span className="flex items-center gap-1 text-[10px] text-muted-foreground font-medium">
+                                                                        <span className={`inline-block h-1.5 w-1.5 rounded-full ${skillCheckMap[skill.id].isRegistered ? "bg-emerald-500" : "bg-red-500"}`} title="是否登錄" />
+                                                                        <span className={`inline-block h-1.5 w-1.5 rounded-full ${skillCheckMap[skill.id].isLoadable ? "bg-emerald-500" : "bg-red-500"}`} title="是否可載入" />
+                                                                        <span className={`inline-block h-1.5 w-1.5 rounded-full ${skillCheckMap[skill.id].hasExamples ? "bg-emerald-500" : "bg-amber-500"}`} title="是否有範例段落" />
+                                                                    </span>
                                                                 )}
                                                             </div>
                                                         </div>

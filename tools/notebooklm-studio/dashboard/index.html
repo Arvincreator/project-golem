@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NotebookLM Studio Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body data-theme="obsidian">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="grain"></div>
+
+    <main class="app-shell">
+      <header class="topbar">
+        <button class="brand" id="homeButton" type="button" aria-label="Back to library">
+          <span class="brand-mark">
+            <img src="/assets/NotebookLM_logo.png" alt="" />
+          </span>
+          <span>
+            <strong>NotebookLM Studio</strong>
+            <small>Research control room</small>
+          </span>
+        </button>
+        <div class="top-actions">
+          <button class="ghost-button" id="commandButton" type="button">
+            <span class="icon-search"></span>
+            Command
+            <kbd>⌘K</kbd>
+          </button>
+          <div class="theme-switcher" aria-label="Design variants">
+            <button type="button" data-theme-choice="obsidian" class="active">Obsidian</button>
+            <button type="button" data-theme-choice="pearl">Pearl</button>
+            <button type="button" data-theme-choice="signal">Signal</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="library-view view active" id="libraryView">
+        <div class="hero-panel">
+          <div>
+            <p class="section-label">Library Dashboard</p>
+            <h1>NotebookLM Studio by Prompt Case</h1>
+          </div>
+          <div class="hero-stats">
+            <div><strong id="totalNotebooks">—</strong><span>Notebooks</span></div>
+            <div><strong id="readyCount">—</strong><span>Ready</span></div>
+            <div><strong id="needsReviewCount">—</strong><span>Needs review</span></div>
+          </div>
+        </div>
+
+        <div class="library-toolbar">
+          <label class="search-box">
+            <span class="icon-search"></span>
+            <input id="librarySearch" placeholder="Search notebooks, IDs, topics..." />
+          </label>
+          <div class="filter-pills" id="filterPills">
+            <button class="active" data-filter="all">All</button>
+            <button data-filter="ready">Ready</button>
+            <button data-filter="warning">Warnings</button>
+            <button data-filter="empty">Untitled</button>
+          </div>
+        </div>
+
+        <div class="notebook-grid" id="notebookGrid"></div>
+      </section>
+
+      <section class="detail-view view" id="detailView">
+        <div class="detail-header">
+          <button class="back-button" id="backButton" type="button">
+            <span class="icon-arrow icon-arrow-left"></span>
+            Library
+          </button>
+          <div>
+            <p class="section-label">Notebook Data Room</p>
+            <h2 id="detailTitle">Notebook</h2>
+            <p id="detailMeta" class="muted">Loading notebook metadata...</p>
+          </div>
+          <div class="runner-card">
+            <span class="pulse-dot"></span>
+            <div>
+              <strong>Real Runner</strong>
+              <small id="runnerStatus">Ready · submits jobs through NotebookLM CLI</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="data-room">
+          <aside class="sources-panel panel">
+            <div class="panel-head">
+              <div>
+                <p class="section-label">Left rail</p>
+                <h3>Sources</h3>
+              </div>
+              <span id="sourceCountBadge" class="count-badge">—</span>
+            </div>
+            <div id="sourceList" class="source-list"></div>
+          </aside>
+
+          <section class="recipes-panel panel">
+            <div class="panel-head">
+              <div>
+                <p class="section-label">One-click Recipes</p>
+                <h3>Goal-Based Workflows</h3>
+              </div>
+              <button class="tiny-button" id="recipeHelpButton" type="button">Runner guide</button>
+            </div>
+            <div id="recipeList" class="recipe-list"></div>
+          </section>
+
+          <aside class="studio-panel panel">
+            <div class="panel-head">
+              <div>
+                <p class="section-label">Native Studio</p>
+                <h3>NotebookLM Native Tools</h3>
+              </div>
+              <span class="count-badge" id="artifactCountBadge">—</span>
+            </div>
+            <div id="studioGrid" class="studio-grid"></div>
+          </aside>
+        </div>
+
+        <section class="timeline-panel panel">
+          <div class="panel-head">
+            <div>
+              <p class="section-label">Status Timeline</p>
+              <h3>Generation Status and Output Files</h3>
+            </div>
+            <button class="tiny-button" id="clearJobsButton" type="button">Clear completed jobs</button>
+          </div>
+          <div id="timeline" class="timeline"></div>
+        </section>
+      </section>
+    </main>
+
+    <div class="command-overlay" id="commandOverlay" aria-hidden="true">
+      <div class="command-palette">
+        <div class="command-input">
+          <span class="icon-search"></span>
+          <input id="commandInput" placeholder="Search notebooks or type: untitled / video / 2026-03 / AI Agent" />
+        </div>
+        <div id="commandResults" class="command-results"></div>
+      </div>
+    </div>
+
+    <template id="notebookCardTemplate">
+      <button class="notebook-card" type="button">
+        <div class="card-topline">
+          <span class="status-badge">Ready</span>
+          <span class="date-chip"></span>
+        </div>
+        <h3></h3>
+        <p class="id-line"></p>
+        <div class="card-metrics">
+          <span><strong data-field="source-count">—</strong> sources</span>
+          <span><strong data-field="artifact-count">—</strong> artifacts</span>
+          <span><strong data-field="last-activity">—</strong> activity</span>
+        </div>
+        <div class="artifact-strip"></div>
+        <div class="card-actions">
+          <span>Open Data Room</span>
+          <span class="icon-arrow"></span>
+        </div>
+      </button>
+    </template>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

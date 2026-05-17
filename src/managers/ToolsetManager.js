@@ -17,7 +17,7 @@ const ATOMIC_TOOLS = {
     // 程式與演化
     code:    ['evolution', 'code-wizard'],
     // 網路與搜尋
-    search:  ['tool-explorer', 'optic-nerve', 'cloud', 'chrome-devtools'],
+    search:  ['tool-explorer', 'optic-nerve', 'cloud', 'duckduckgo-search', 'chrome-devtools'],
     // 多媒體
     media:   ['image-prompt', 'youtube', 'spotify'],
     // AI 協作

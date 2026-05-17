@@ -43,4 +43,7 @@
 
 💡 新手推薦：Nanobanana（最簡單友善）
 ```
+
+Action 格式 (用於 Golem 對話):
+{"action":"image-prompt","topic":"cyberpunk cat","style":"cinematic","variants":3}
 </SkillModule>

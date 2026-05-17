@@ -1,23 +1,37 @@
 <SkillModule path="src/skills/modules/youtube/skill.md">
-【已載入技能：YouTube 影片分析師】
-你能「閱讀」YouTube 影片。當使用者要求「總結這部影片」或「這影片在講什麼」時使用。
+【已載入技能：YouTube HTML 深度解析器】
+你可以直接從 YouTube 頁面 HTML 萃取 `ytInitialPlayerResponse`，用於影片資訊、章節、描述、字幕軌資訊與摘要分析。
 
-🛠️ **核心依賴 (Dependency)**: `yt-dlp-wrap` (自動管理 yt-dlp 執行檔)
+🎯 **適用場景**
+1. 使用者要快速了解影片內容重點。
+2. 舊版 `yt-dlp` 流程失敗或環境依賴不穩定。
+3. 需要先拿到結構化 JSON，再做後續分析。
 
-📜 **執行協定 (Protocol)**:
-1. **依賴檢查**：
-   - 若未安裝，請詢問：「為了讀取影片字幕，我需要安裝 `yt-dlp-wrap`，請問允許安裝嗎？」
-   - 同意後安裝：`{"action": "command", "parameter": "npm install yt-dlp-wrap"}`
-2. **執行流程 (SOP)**：
-   - **步驟 A (下載字幕)**：不要下載整個影片（太慢），只下載字幕。請使用 `Code Wizard` 撰寫並執行以下腳本：
-     ```javascript
-     const YTDlpWrap = require('yt-dlp-wrap').default;
-     const exec = new YTDlpWrap();
-     // 下載自動字幕，跳過影片，存為 transcript
-     exec.execPromise(['https://youtu.be/影片ID', '--write-auto-sub', '--skip-download', '--sub-lang', 'en,zh-Hant,zh-Hans', '-o', 'transcript']).then(() => console.log('字幕下載完成'));
-     ```
-   - **步驟 B (讀取內容)**：
-     執行指令 `cat transcript.zh-Hant.vtt` (或對應語言)。
-   - **步驟 C (分析回應)**：
-     讀取到文字後，整理並總結重點給使用者。
+📜 **執行協定 (Protocol)**
+1. **輸入網址**
+   - 接受 `youtube.com/watch?v=...` 或 `youtu.be/...`。
+   - 若缺網址，先向使用者索取影片連結。
+
+2. **抓取原始 HTML**
+   - 以瀏覽器 UA 抓取頁面並落地成檔案，避免 shell buffer 問題：
+   - `{"action":"command","parameter":"curl -s -L -A \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36\" \"<YOUTUBE_URL>\" > raw.html"}`
+
+3. **切出 `ytInitialPlayerResponse`**
+   - 使用 Node.js 邊界切片（比 regex 穩定）：
+   - `{"action":"command","parameter":"node -e \"const fs=require('fs');const h=fs.readFileSync('raw.html','utf8');const s='ytInitialPlayerResponse = ';const i=h.indexOf(s);if(i===-1){console.error('ytInitialPlayerResponse not found');process.exit(1);}const r=h.substring(i+s.length);const e=r.indexOf('};');if(e===-1){console.error('json end not found');process.exit(1);}fs.writeFileSync('result.json',r.substring(0,e+1));console.log('ok');\""}`
+
+4. **JSON 驗證與淨化**
+   - `{"action":"command","parameter":"node -e \"const fs=require('fs');const obj=JSON.parse(fs.readFileSync('result.json','utf8'));fs.writeFileSync('final_capsule.json',JSON.stringify(obj));console.log('valid json');\""}`
+
+5. **分析輸出**
+   - 從 `final_capsule.json` 提取並回報：
+     - 影片標題
+     - 描述摘要
+     - 關鍵章節/段落
+     - 可用字幕語系（若存在）
+     - 3~8 點重點整理
+
+⚠️ **失敗處理**
+1. 若 `ytInitialPlayerResponse` 不存在，回報頁面結構變動，改走 Chrome DevTools MCP（開頁、點擊、滾動、讀 DOM）做備援。
+2. 若 JSON 解析失敗，先回報錯誤片段與可能原因，再嘗試重新抓取一次。
 </SkillModule>

@@ -8,4 +8,7 @@
    - **程式碼截圖**：不要只描述「這裡有程式碼」，請直接提供 OCR 轉錄出的代碼並修復錯誤。
    - **UI 截圖**：請分析版面佈局、配色與使用者體驗問題。
    - **文件照片**：請總結文件內容與關鍵數據。
+
+Action 格式 (用於 Golem 對話):
+{"action":"optic-nerve","input":"image_or_flash_report","task":"extract_and_analyze"}
 </SkillModule>

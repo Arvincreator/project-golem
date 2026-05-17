@@ -8,4 +8,7 @@
    - 殺: `pkill name` (Linux), `Stop-Process -Name name` (Win)
 3. **資源監控**: top, free -h, Get-PSDrive.
 4. **網路工具**: curl, ping, ipconfig/ifconfig.
+
+Action 格式 (用於 Golem 對話):
+{"action":"sys-admin","task":"check_process","name":"node"}
 </SkillModule>

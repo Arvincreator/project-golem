@@ -189,3 +189,8 @@ if (require.main === module) {
         execute(JSON.parse(rawArgs).args || JSON.parse(rawArgs)).then(console.log).catch(e => console.error(e.message));
     } catch (e) { console.error(`❌ Parse Error: ${e.message}`); }
 }
+
+module.exports = {
+    run: execute,
+    execute,
+};

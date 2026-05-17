@@ -895,6 +895,55 @@
       ],
       "example": "{\"action\":\"mcp_call\",\"server\":\"chrome-devtools\",\"tool\":\"wait_for\",\"parameters\":{\"text\":[\"Text content\"]}}",
       "anti_pattern": "mcp_call 必須同時包含 server、tool、parameters。"
+    },
+    {
+      "id": "example:skill:duckduckgo-devtools-bridge:core-detailed",
+      "lane": "skill",
+      "target": "duckduckgo-devtools-bridge",
+      "intent_tags": [
+        "skill",
+        "core",
+        "duckduckgo-devtools-bridge"
+      ],
+      "error_tags": [
+        "invalid_field",
+        "missing_required",
+        "invalid_json_shape"
+      ],
+      "example": "{\"action\":\"duckduckgo-search\",\"args\":{\"query\":\"台灣 AI 代理 最新政策\",\"limit\":5}}\n[\n  {\n    \"action\": \"mcp_call\",\n    \"server\": \"chrome-devtools\",\n    \"tool\": \"navigate_page\",\n    \"parameters\": {\n      \"url\": \"https://example.com/article\",\n      \"timeout\": 60000\n    }\n  },\n  {\n    \"action\": \"mcp_call\",\n    \"server\": \"chrome-devtools\",\n    \"tool\": \"take_snapshot\",\n    \"parameters\": {}\n  }\n]\n{\n  \"action\": \"mcp_call\",\n  \"server\": \"chrome-devtools\",\n  \"tool\": \"evaluate_script\",\n  \"parameters\": {\n    \"function\": \"() => Array.from(document.querySelectorAll('a')).map(a => ({ title: (a.textContent||'').trim(), url: a.href||'' })).filter(x => x.title && x.url).slice(0, 30)\"\n  }\n}",
+      "anti_pattern": "請優先遵循技能內建協議；勿混用 parameters.command，並避免自行發明欄位名稱。"
+    },
+    {
+      "id": "example:skill:duckduckgo-search:core-detailed",
+      "lane": "skill",
+      "target": "duckduckgo-search",
+      "intent_tags": [
+        "skill",
+        "core",
+        "duckduckgo-search"
+      ],
+      "error_tags": [
+        "invalid_field",
+        "missing_required",
+        "invalid_json_shape"
+      ],
+      "example": "{\"action\":\"duckduckgo-search\",\"args\":{\"query\":\"2026 台灣 AI 新聞\",\"limit\":8}}",
+      "anti_pattern": "請優先遵循技能內建協議；勿混用 parameters.command，並避免自行發明欄位名稱。"
+    },
+    {
+      "id": "example:skill:notebooklm-studio",
+      "lane": "skill",
+      "target": "notebooklm-studio",
+      "intent_tags": [
+        "skill",
+        "notebooklm-studio"
+      ],
+      "error_tags": [
+        "invalid_field",
+        "missing_required"
+      ],
+      "example": "{\"action\":\"notebooklm-studio\",\"args\":{\"input\":\"...\"}}",
+      "anti_pattern": "請使用 args 物件，避免把參數塞在 parameters.command 或自創欄位。"
     }
   ]
 }

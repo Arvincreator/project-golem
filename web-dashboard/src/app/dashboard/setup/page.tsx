@@ -134,7 +134,7 @@ const SKILL_META: Record<string, { label: string; desc: string; icon: React.Comp
     "spotify": { label: "Spotify", desc: "音樂搜尋與播放清單管理", icon: Moon },
     "image-prompt": { label: "圖像 Prompt", desc: "生成 AI 繪圖提示詞", icon: Palette },
     "wiki": { label: "Wikipedia", desc: "查詢維基百科知識庫", icon: BookOpen },
-    "notebooklm": { label: "NotebookLM", desc: "Google NotebookLM 整合", icon: BrainCircuit },
+    "notebooklm-studio": { label: "NotebookLM Studio", desc: "NotebookLM 研究工作流與產物交付", icon: BrainCircuit },
 };
 
 function SkillBadge({

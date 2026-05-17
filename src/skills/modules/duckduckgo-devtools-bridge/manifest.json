@@ -1,0 +1,20 @@
+{
+  "id": "duckduckgo-devtools-bridge",
+  "name": "DuckDuckGo + DevTools Bridge",
+  "description": "Chain public search from DuckDuckGo with follow-up deep page inspection via chrome-devtools MCP.",
+  "type": "core",
+  "enabled": true,
+  "action": "duckduckgo-devtools-bridge",
+  "entry": "index.js",
+  "prompt": "skill.md",
+  "toolsets": [],
+  "triggers": [
+    "duckduckgo",
+    "chrome-devtools",
+    "搜尋後深入",
+    "深入網頁",
+    "follow-up crawl",
+    "web deep dive"
+  ],
+  "version": "1.0.0"
+}
