@@ -90,6 +90,7 @@ const NativeRpgService = require('../../src/services/NativeRpgService');
 let activeTgBot = null;
 let activeDcBot = null;
 let singleGolemInstance = null;
+let restartInProgress = false;
 let promptPoolWatcherTimer = null;
 let lastPromptPoolMtimeMs = Number.NaN;
 let lastTelegramCommandsSignature = '';
@@ -1459,17 +1460,36 @@ global.stopGolem = async function (id) {
 };
 
 global.gracefulRestart = async function () {
+    if (restartInProgress) {
+        console.warn('⚠️ [System] gracefulRestart already in progress, ignoring duplicate request.');
+        return;
+    }
+    restartInProgress = true;
+
     await performCleanup();
 
-    // 3. 生成子程序並安全退出
+    // 3. 生成子程序並安全退出（若已有外部程序管理，交給外部重啟）
     const { spawn } = require('child_process');
     const env = Object.assign({}, process.env, { SKIP_BROWSER: '1' });
-    const subprocess = spawn(process.argv[0], process.argv.slice(1), {
-        detached: true,
-        stdio: 'ignore',
-        env: env
-    });
-    subprocess.unref();
+    const isManagedBySupervisor = Boolean(
+        process.env.pm_id ||
+        process.env.PM2_HOME ||
+        process.env.npm_config_user_agent?.toLowerCase().includes('nodemon') ||
+        process.env.__daemon
+    );
+
+    if (!isManagedBySupervisor) {
+        const subprocess = spawn(process.argv[0], process.argv.slice(1), {
+            detached: true,
+            stdio: 'ignore',
+            windowsHide: true,
+            env: env
+        });
+        subprocess.unref();
+    } else {
+        console.log('ℹ️ [System] External supervisor detected, skipping self-spawn and exiting for supervisor restart.');
+    }
+
     process.exit(0);
 };
 

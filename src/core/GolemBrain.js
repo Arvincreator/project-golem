@@ -699,6 +699,19 @@ class GolemBrain {
     }
 
     _buildRuntimeTurnContext(options = {}) {
+        const toBool = (v) => String(v || '').trim().toLowerCase() === 'true';
+        const inferAutomationMode = () => {
+            const autoApprove = toBool(process.env.GOLEM_AUTO_APPROVE_ALL);
+            const silent = toBool(process.env.GOLEM_SILENT_AUTO_APPROVE);
+            const trustLibrary = toBool(process.env.GOLEM_TRUST_SYSTEM_COMMANDS);
+            const maxTurns = Number(process.env.GOLEM_MAX_AUTO_TURNS || ConfigManager.CONFIG.MAX_AUTO_TURNS || 5);
+            const level = Number(process.env.AUTONOMY_LEVEL || 2);
+            if (level <= 0) return 'lockdown';
+            if (autoApprove && silent) return 'silent';
+            if (autoApprove) return 'autopilot';
+            if (!autoApprove && trustLibrary && maxTurns >= 2) return 'balanced';
+            return 'guided';
+        };
         const toolsetContext = this._resolveToolsetContext();
         const activeTools = Array.isArray(toolsetContext.activeTools)
             ? toolsetContext.activeTools.map((item) => String(item || '').trim()).filter(Boolean)
@@ -711,6 +724,8 @@ class GolemBrain {
             `[System note: 你是本機執行代理 (local execution agent)，需依當前場景選擇正確行動通道。]`,
             `backend=${String(this.backend || 'gemini')}`,
             `scene=${String(toolsetContext.activeScene || 'assistant')}`,
+            `automation_mode=${inferAutomationMode()}`,
+            `autonomy_level=${String(process.env.AUTONOMY_LEVEL || '2')}`,
             `action_lanes=command|skill|mcp_call`,
             `active_tools=${shownTools.length > 0 ? shownTools.join(', ') : '(none)'}`,
         ];

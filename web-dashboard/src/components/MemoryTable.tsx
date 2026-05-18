@@ -208,21 +208,35 @@ export function MemoryTable() {
     }, [memories, searchQuery, filterType]);
 
     const patchMemory = async (memory: MemoryItem, patch: Record<string, unknown>) => {
-        if (!activeGolem || !memory.id) return;
-        await apiWrite(`/api/memory/${encodeURIComponent(memory.id)}?golemId=${encodeURIComponent(activeGolem)}`, {
-            method: "PATCH",
-            body: patch,
-            retry: { profile: "write" }
-        });
-        await fetchMemories();
+        if (!activeGolem || !memory.id) {
+            toast.error(isEnglish ? "Action unavailable" : "操作不可用", isEnglish ? "This memory item has no stable ID yet. Please refresh and retry." : "此記憶尚未有可操作 ID，請重新整理後重試。");
+            return;
+        }
+        try {
+            await apiWrite(`/api/memory/${encodeURIComponent(memory.id)}?golemId=${encodeURIComponent(activeGolem)}`, {
+                method: "PATCH",
+                body: patch,
+                retry: { profile: "write" }
+            });
+            await fetchMemories();
+        } catch (e: unknown) {
+            toast.error(isEnglish ? "Update failed" : "更新失敗", getErrorMessage(e, locale));
+        }
     };
 
     const deleteMemory = async (memory: MemoryItem) => {
-        if (!activeGolem || !memory.id) return;
+        if (!activeGolem || !memory.id) {
+            toast.error(isEnglish ? "Action unavailable" : "操作不可用", isEnglish ? "This memory item has no stable ID yet. Please refresh and retry." : "此記憶尚未有可操作 ID，請重新整理後重試。");
+            return;
+        }
         const ok = confirm(isEnglish ? "Delete this memory?" : "確定刪除此記憶？");
         if (!ok) return;
-        await apiDeleteWrite(`/api/memory/${encodeURIComponent(memory.id)}?golemId=${encodeURIComponent(activeGolem)}`);
-        await fetchMemories();
+        try {
+            await apiDeleteWrite(`/api/memory/${encodeURIComponent(memory.id)}?golemId=${encodeURIComponent(activeGolem)}`);
+            await fetchMemories();
+        } catch (e: unknown) {
+            toast.error(isEnglish ? "Delete failed" : "刪除失敗", getErrorMessage(e, locale));
+        }
     };
 
     const editMemory = async (memory: MemoryItem) => {

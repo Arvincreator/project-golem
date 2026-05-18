@@ -148,14 +148,15 @@ module.exports = [
     },
     { command: '/patch', description: '執行自我反思與代碼優化。' },
     { command: '/dashboard', description: '顯示控制台連線網址：包含本地 (Local) 與遠端 (Remote) 存取網址。' },
-    { 
-        command: '/level', 
-        description: '熱切換安全自主等級 (0-3)。',
+    {
+        command: '/level',
+        description: '切換自動化安全等級（0-4，與 Dashboard 安全與指令同步）。',
         options: [
-            { name: '0', description: 'Level 0 (最安全，唯讀)' },
-            { name: '1', description: 'Level 1 (低風險)' },
-            { name: '2', description: 'Level 2 (中風險，預設)' },
-            { name: '3', description: 'Level 3 (最高權限)' }
+            { name: '0', description: 'Lockdown：最保守（只允許最低風險）' },
+            { name: '1', description: 'Guided：保守確認' },
+            { name: '2', description: 'Balanced：平衡模式（推薦）' },
+            { name: '3', description: 'Autopilot：高自動化' },
+            { name: '4', description: 'Silent：最高自動化且隱藏中間訊息' }
         ]
     },
     { command: '/@Gmail', description: '讀取、搜尋您的個人電子郵件。' },

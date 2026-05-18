@@ -23,6 +23,10 @@ class ResponseExtractor {
         const timeout = Number.isFinite(options.timeoutMs) && options.timeoutMs > 0
             ? options.timeoutMs
             : TIMINGS.TIMEOUT;
+        const graceMultiplier = Number.isFinite(Number(options.stableGraceMultiplier)) && Number(options.stableGraceMultiplier) > 0
+            ? Number(options.stableGraceMultiplier)
+            : 1.5;
+        const stableThinkingThreshold = Math.max(stableThinking, Math.ceil(stableThinking * graceMultiplier));
 
         return page.evaluate(
             async ({ sel, sTag, eTag, oldText, _stableComplete, _stableThinking, _pollInterval, _timeout }) => {
@@ -101,6 +105,12 @@ class ResponseExtractor {
                         }
                         lastCheckText = rawText;
 
+                        // 嘗試判斷目前是否仍在生成（避免慢回應被誤判截斷）
+                        const pageText = document.body ? (document.body.innerText || '') : '';
+                        const isLikelyGenerating =
+                            /(?:thinking|generating|processing|停止|停止生成|Stop generating|Continue generating)/i.test(pageText) ||
+                            !!document.querySelector('button[aria-label*=\"Stop\" i], button[aria-label*=\"停止\" i], [data-testid*=\"stop\" i]');
+
                         if (startIndex !== -1) {
                             // ✨ [條件 2：已經開始回答] 看到 BEGIN，但遲遲沒看到 END (AI 忘記寫)
                             // 只要畫面停頓超過 5 秒 (10 次檢查) 沒動靜，就強制截斷回傳，不等 30 秒！
@@ -113,10 +123,10 @@ class ResponseExtractor {
                                 });
                                 return;
                             }
-                        } else if (rawText !== oldText && !rawText.includes('SYSTEM: Please WRAP')) {
+                        } else if (rawText !== oldText) {
                             // ✨ [條件 3：Thinking Mode] 還沒看到 BEGIN，可能在深思
-                            // 給予最高 30 秒 (60 次檢查) 的容忍度，等它想完
-                            if (stableCount > _stableThinking) {
+                            // 若偵測仍在生成，延長容忍，避免慢回應被誤截斷
+                            if (stableCount > _stableThinking && !isLikelyGenerating) {
                                 resolve({ 
                                     status: 'FALLBACK_DIFF', 
                                     text: rawText,
@@ -146,7 +156,7 @@ class ResponseExtractor {
                 eTag: endTag,
                 oldText: baseline,
                 _stableComplete: stableComplete,
-                _stableThinking: stableThinking,
+                _stableThinking: stableThinkingThreshold,
                 _pollInterval: pollInterval,
                 _timeout: timeout
             }

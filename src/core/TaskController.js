@@ -10,7 +10,7 @@ const NodeRouter = require('./NodeRouter');
 const GOLEM_SLASH_PREFIXES = [
     '/wiki', '/learn', '/skills', '/callme', '/help', '/menu',
     '/export', '/donate', '/support', '/update', '/reset',
-    '/model', '/reload', '/patch', '/project', '/new', '/new_memory',
+    '/model', '/level', '/reload', '/patch', '/project', '/new', '/new_memory',
     '/toolset', '/search', '/compress', '/profile', '/api', '/feedback',
 ];
 
@@ -182,7 +182,7 @@ class TaskController {
             const evaluatedLevel = this.security.evaluateCommandLevel(cmdToRun);
             if (evaluatedLevel > SecurityManager.currentLevel) {
                 console.log(`⛔ [TaskController] 指令風險等級 (L${evaluatedLevel}) 大於當前安全設定 (L${SecurityManager.currentLevel}): ${cmdToRun}`);
-                return `⛔ 安全攔截：該指令風險等級為 L${evaluatedLevel}，但系統目前僅允許執行 L${SecurityManager.currentLevel} (含) 以下的指令。\n請管理員使用 \`/level ${evaluatedLevel}\` 暫時調高權限後重試。`;
+                return `⛔ 安全攔截：該指令風險等級為 L${evaluatedLevel}，但系統目前僅允許執行 L${SecurityManager.currentLevel} (含) 以下的指令。\n請管理員使用 \`/level\` 調整後重試。`;
             }
             if (risk.level === 'BLOCKED') {
                 console.log(`⛔ [TaskController] 指令被系統攔截: ${cmdToRun}`);

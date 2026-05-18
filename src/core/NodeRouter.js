@@ -138,6 +138,77 @@ class NodeRouter {
                 console.warn(`[NodeRouter] learn outcome sync failed: ${err.message}`);
             }
         };
+        const inferAutomationModeFromEnv = (env = {}) => {
+            const asBool = (v) => String(v || '').trim().toLowerCase() === 'true';
+            const autoApprove = asBool(env.GOLEM_AUTO_APPROVE_ALL);
+            const silent = asBool(env.GOLEM_SILENT_AUTO_APPROVE);
+            const trustLibrary = asBool(env.GOLEM_TRUST_SYSTEM_COMMANDS);
+            const maxTurns = Number(env.GOLEM_MAX_AUTO_TURNS || 5);
+            const level = Number(env.AUTONOMY_LEVEL || 2);
+            if (level <= 0) return 'lockdown';
+            if (autoApprove && silent) return 'silent';
+            if (autoApprove) return 'autopilot';
+            if (!autoApprove && trustLibrary && maxTurns >= 2) return 'balanced';
+            return 'guided';
+        };
+        const applyAutomationMode = async (mode) => {
+            const EnvManager = require('../utils/EnvManager');
+            const SecurityManager = require('../../packages/security/SecurityManager');
+            const ConfigManager = require('../config');
+            const presets = {
+                lockdown: {
+                    GOLEM_AUTO_APPROVE_ALL: 'false',
+                    GOLEM_SILENT_AUTO_APPROVE: 'false',
+                    GOLEM_TRUST_SYSTEM_COMMANDS: 'false',
+                    GOLEM_STRICT_SAFEGUARD: 'true',
+                    GOLEM_MAX_AUTO_TURNS: '1',
+                    GOLEM_INTERVENTION_LEVEL: 'CONSERVATIVE',
+                    AUTONOMY_LEVEL: '0',
+                },
+                guided: {
+                    GOLEM_AUTO_APPROVE_ALL: 'false',
+                    GOLEM_SILENT_AUTO_APPROVE: 'false',
+                    GOLEM_TRUST_SYSTEM_COMMANDS: 'false',
+                    GOLEM_STRICT_SAFEGUARD: 'true',
+                    GOLEM_MAX_AUTO_TURNS: '1',
+                    GOLEM_INTERVENTION_LEVEL: 'CONSERVATIVE',
+                    AUTONOMY_LEVEL: '0',
+                },
+                balanced: {
+                    GOLEM_AUTO_APPROVE_ALL: 'false',
+                    GOLEM_SILENT_AUTO_APPROVE: 'false',
+                    GOLEM_TRUST_SYSTEM_COMMANDS: 'true',
+                    GOLEM_STRICT_SAFEGUARD: 'true',
+                    GOLEM_MAX_AUTO_TURNS: '2',
+                    GOLEM_INTERVENTION_LEVEL: 'NORMAL',
+                    AUTONOMY_LEVEL: '1',
+                },
+                autopilot: {
+                    GOLEM_AUTO_APPROVE_ALL: 'true',
+                    GOLEM_SILENT_AUTO_APPROVE: 'false',
+                    GOLEM_TRUST_SYSTEM_COMMANDS: 'true',
+                    GOLEM_STRICT_SAFEGUARD: 'true',
+                    GOLEM_MAX_AUTO_TURNS: '4',
+                    GOLEM_INTERVENTION_LEVEL: 'NORMAL',
+                    AUTONOMY_LEVEL: '2',
+                },
+                silent: {
+                    GOLEM_AUTO_APPROVE_ALL: 'true',
+                    GOLEM_SILENT_AUTO_APPROVE: 'true',
+                    GOLEM_TRUST_SYSTEM_COMMANDS: 'true',
+                    GOLEM_STRICT_SAFEGUARD: 'true',
+                    GOLEM_MAX_AUTO_TURNS: '4',
+                    GOLEM_INTERVENTION_LEVEL: 'PROACTIVE',
+                    AUTONOMY_LEVEL: '3',
+                }
+            };
+            const payload = presets[mode];
+            if (!payload) throw new Error(`unknown automation mode: ${mode}`);
+            EnvManager.updateEnv(payload);
+            ConfigManager.reloadConfig();
+            SecurityManager.currentLevel = Number(payload.AUTONOMY_LEVEL || '2');
+            return payload;
+        };
 
         if (text.match(/^\/(help|menu|指令|功能)/)) {
             return await reply(await HelpManager.getManual(), { parse_mode: 'Markdown' });
@@ -222,6 +293,63 @@ class NodeRouter {
                 reply_markup: { inline_keyboard: [[{ text: '🔥 確認', callback_data: 'SYSTEM_FORCE_UPDATE' }, { text: '❌ 取消', callback_data: 'SYSTEM_UPDATE_CANCEL' }]] }
             });
             return true;
+        }
+
+        if (text === '/level' || text.startsWith('/level ')) {
+            if (ctx.isAdmin !== true) {
+                return await reply('⛔ 權限不足：/level 僅限管理員使用。');
+            }
+            const arg = text.replace(/^\/level\s*/i, '').trim().toLowerCase();
+            const argToMode = {
+                '0': 'lockdown',
+                '1': 'guided',
+                '2': 'balanced',
+                '3': 'autopilot',
+                '4': 'silent',
+                lockdown: 'lockdown',
+                guided: 'guided',
+                balanced: 'balanced',
+                autopilot: 'autopilot',
+                silent: 'silent',
+            };
+            if (!arg) {
+                const EnvManager = require('../utils/EnvManager');
+                const env = EnvManager.readEnv();
+                const mode = inferAutomationModeFromEnv(env);
+                const currentLevel = String(env.AUTONOMY_LEVEL || '2');
+                return await reply(
+                    `🛡️ /level 說明（目前模式：\`${mode}\`）\n` +
+                    `- \`/level 0\` Lockdown：最保守（只允許最低風險）\n` +
+                    `- \`/level 1\` Guided：保守確認\n` +
+                    `- \`/level 2\` Balanced：平衡模式（推薦）\n` +
+                    `- \`/level 3\` Autopilot：高自動化\n` +
+                    `- \`/level 4\` Silent：最高自動化 + 靜默\n` +
+                    `- AUTONOMY_LEVEL: \`${currentLevel}\`\n` +
+                    `- GOLEM_INTERVENTION_LEVEL: \`${env.GOLEM_INTERVENTION_LEVEL || 'NORMAL'}\`\n` +
+                    `- GOLEM_AUTO_APPROVE_ALL: \`${env.GOLEM_AUTO_APPROVE_ALL || 'false'}\`\n` +
+                    `- GOLEM_SILENT_AUTO_APPROVE: \`${env.GOLEM_SILENT_AUTO_APPROVE || 'false'}\``
+                );
+            }
+
+            const nextMode = argToMode[arg];
+            if (!nextMode) {
+                return await reply('⚠️ 用法：`/level 0|1|2|3|4`（只輸入 `/level` 可查看說明）');
+            }
+
+            try {
+                const payload = await applyAutomationMode(nextMode);
+                await notifyBrainSystemChange(
+                    '安全與自動化模式已更新',
+                    `mode=${nextMode}\nAUTONOMY_LEVEL=${payload.AUTONOMY_LEVEL}\nGOLEM_INTERVENTION_LEVEL=${payload.GOLEM_INTERVENTION_LEVEL}`
+                );
+                return await reply(
+                    `✅ 已切換至 \`${nextMode}\` 模式（已同步 Dashboard 安全與指令設定）。\n` +
+                    `- AUTONOMY_LEVEL=${payload.AUTONOMY_LEVEL}\n` +
+                    `- GOLEM_INTERVENTION_LEVEL=${payload.GOLEM_INTERVENTION_LEVEL}`
+                );
+            } catch (e) {
+                return await reply(`❌ 模式切換失敗: ${e.message}`);
+            }
         }
 
         if (text.startsWith('/callme')) {

@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const crypto = require('crypto');
 const { resolveActiveContext } = require('./utils/context');
 const { buildOperationGuard } = require('../server/security');
 
@@ -13,6 +14,24 @@ module.exports = function registerMemoryRoutes(server) {
         if (['true', '1', 'yes', 'on'].includes(s)) return true;
         if (['false', '0', 'no', 'off'].includes(s)) return false;
         return undefined;
+    };
+    const ensureMemoryId = (item, index = 0) => {
+        const metadata = (item && typeof item.metadata === 'object' && item.metadata) ? item.metadata : {};
+        const existing = typeof item?.id === 'string' && item.id.trim()
+            ? item.id.trim()
+            : (typeof metadata.id === 'string' && metadata.id.trim() ? metadata.id.trim() : '');
+        const text = typeof item?.text === 'string' ? item.text : '';
+        const fallbackId = crypto.createHash('sha1').update(`${index}:${text}`).digest('hex').slice(0, 16);
+        const id = existing || fallbackId;
+        return {
+            ...item,
+            id,
+            visible: item?.visible !== false && metadata.visible !== false,
+            metadata: {
+                ...metadata,
+                id
+            }
+        };
     };
 
     router.get('/api/memory', async (req, res) => {
@@ -40,12 +59,15 @@ module.exports = function registerMemoryRoutes(server) {
                 const filtered = visible === undefined
                     ? results
                     : results.filter((item) => (item.visible !== false) === visible);
-                return res.json(filtered);
+                return res.json(filtered.map((item, index) => ensureMemoryId(item, index)));
             }
 
-            if (context.memory.data) return res.json(context.memory.data);
+            if (context.memory.data) {
+                const base = Array.isArray(context.memory.data) ? context.memory.data : [];
+                return res.json(base.map((item, index) => ensureMemoryId(item, index)));
+            }
             const results = await context.memory.recall(q || '');
-            return res.json(results);
+            return res.json((Array.isArray(results) ? results : []).map((item, index) => ensureMemoryId(item, index)));
         } catch (e) {
             return res.status(500).json({ error: e.message });
         }

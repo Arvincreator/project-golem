@@ -641,6 +641,27 @@ class ChatLogManager {
     }
 
     /**
+     * 取得指定日期的原始對話筆數（SQLite messages）
+     * @param {string} dateString - YYYYMMDD
+     * @returns {Promise<number>}
+     */
+    async countMessagesByDate(dateString) {
+        if (!this._isInitialized || !this.db) return 0;
+        if (!dateString) return 0;
+
+        try {
+            const row = await this.getAsync(
+                `SELECT COUNT(*) AS count FROM messages WHERE date_string = ?`,
+                [dateString]
+            );
+            return Number(row && row.count) || 0;
+        } catch (e) {
+            console.error(`❌ [LogManager] 統計 ${dateString} 訊息筆數失敗:`, e.message);
+            return 0;
+        }
+    }
+
+    /**
      * 🧨 Deep wipe chat logs and summaries for current golem.
      * Used by /new_memory to prevent historical re-injection.
      * @returns {Promise<{messages:number,summaries:number}>}

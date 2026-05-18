@@ -48,6 +48,7 @@ function parsePositiveInt(value, fallback) {
 
 module.exports = function registerSystemRoutes(server) {
     const router = express.Router();
+    let restartRequestInFlight = false;
     const requireUpdateExecute = buildOperationGuard(server, 'system_update_execute');
     const requireSystemConfigUpdate = buildOperationGuard(server, 'system_config_update');
     const requireRestart = buildOperationGuard(server, 'system_restart');
@@ -535,6 +536,14 @@ module.exports = function registerSystemRoutes(server) {
 
     router.post('/api/system/restart', requireRestart, (req, res) => {
         try {
+            if (restartRequestInFlight) {
+                return res.status(409).json({
+                    success: false,
+                    error: 'restart_in_progress',
+                    message: 'Restart already in progress. Please wait.'
+                });
+            }
+            restartRequestInFlight = true;
             console.log('🔄 [System] Restart requested by user. Triggering hard restart...');
             res.json({ success: true, message: 'Restarting system... Full re-initialization in progress.' });
 
@@ -542,17 +551,28 @@ module.exports = function registerSystemRoutes(server) {
                 setTimeout(() => {
                     global.gracefulRestart().catch((err) => {
                         console.error('❌ [System] Restart error:', err);
+                        restartRequestInFlight = false;
                     });
                 }, 1000);
             } else {
                 console.warn('⚠️ [System] global.gracefulRestart not found, skipping forced process exit');
+                restartRequestInFlight = false;
             }
         } catch (e) {
+            restartRequestInFlight = false;
             return res.status(500).json({ error: e.message });
         }
     });
 
     router.post('/api/system/reload', requireReload, (req, res) => {
+        if (restartRequestInFlight) {
+            return res.status(409).json({
+                success: false,
+                error: 'restart_in_progress',
+                message: 'Restart already in progress. Please wait.'
+            });
+        }
+        restartRequestInFlight = true;
         console.log('🔄 [WebServer] Received reload request. Restarting system...');
         res.json({ success: true, message: 'System is restarting with full re-initialization...' });
 
@@ -560,10 +580,12 @@ module.exports = function registerSystemRoutes(server) {
             setTimeout(() => {
                 global.gracefulRestart().catch((err) => {
                     console.error('❌ [System] Reload error:', err);
+                    restartRequestInFlight = false;
                 });
             }, 1000);
         } else {
             console.warn('⚠️ [System] global.gracefulRestart not found, skipping forced process exit');
+            restartRequestInFlight = false;
         }
     });
 

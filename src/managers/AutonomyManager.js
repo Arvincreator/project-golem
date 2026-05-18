@@ -74,7 +74,6 @@ class AutonomyManager {
         try {
             const logManager = this.brain.chatLogManager;
             if (!logManager) return;
-            const logDir = logManager.dirs.hourly;
 
             const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
             const yesterday = logManager._getYesterdayDateString();
@@ -95,15 +94,14 @@ class AutonomyManager {
             for (const config of checkConfigs) {
                 const { date, threshold, label } = config;
 
-                // 掃描指定日期的每小時日誌
-                const files = fs.readdirSync(logDir)
-                    .filter(f => f.startsWith(date) && f.length === 14 && f.endsWith('.log'));
+                // 以 SQLite 訊息筆數作為門檻依據（取代舊版 .log 檔案數）
+                const messageCount = await logManager.countMessagesByDate(date);
 
-                if (files.length >= threshold) {
-                    console.log(`📦 [Autonomy] 門檻達成：${date} (${label}) 已累積 ${files.length} 個時段日誌，啟動自動歸檔程序...`);
+                if (messageCount >= threshold) {
+                    console.log(`📦 [Autonomy] 門檻達成：${date} (${label}) 已累積 ${messageCount} 筆對話，啟動自動歸檔程序...`);
 
                     if (ConfigManager.CONFIG.ENABLE_LOG_NOTIFICATIONS) {
-                        await this.sendNotification(`📦 **【自動化日誌維護】**\n偵測到${label} (${date}) 已累積達 ${files.length} 小時對話，目前將進行記憶彙整，請稍等...`);
+                        await this.sendNotification(`📦 **【自動化日誌維護】**\n偵測到${label} (${date}) 已累積達 ${messageCount} 筆對話，目前將進行記憶彙整，請稍等...`);
                     }
 
                     const logArchiveSkill = require('../skills/modules/log-archive/index.js');
@@ -117,7 +115,7 @@ class AutonomyManager {
                     }
                     didArchive = true;
                 } else {
-                    console.log(`ℹ️ [Autonomy] ${date} (${label}) 目前累積 ${files.length}/${threshold} 份日誌，未達壓縮門檻。`);
+                    console.log(`ℹ️ [Autonomy] ${date} (${label}) 目前累積 ${messageCount}/${threshold} 筆對話，未達壓縮門檻。`);
                 }
             }
 

@@ -45,6 +45,7 @@ show_menu() {
     show_menu_tools # Call the new function for the tools header
     
     options+=("Doctor|🏥 深度系統診斷 (Run Diagnostics)")
+    options+=("RuntimeCheck|🧭 Runtime 跨平台檢查 (Doctor/Repair/Smoke)")
     options+=("RebuildDash|🧱 重建 Dashboard (Clean + Build)")
     options+=("Clean|🧹 清除依賴 (Clean node_modules)")
     options+=("Init|🧨 完全初始化系統 (Factory Reset - ${RED}DANGER${NC})")
@@ -68,12 +69,65 @@ show_menu() {
         "DesktopStatus") headless_status_local_desktop; echo ""; read -r -p "  按 Enter 返回主選單..."; show_menu ;;
         "HeadlessStop") headless_one_click_stop; echo ""; read -r -p "  按 Enter 返回主選單..."; show_menu ;;
         "Doctor")  run_health_check; echo ""; read -r -p "  按 Enter 返回主選單..."; show_menu ;;
+        "RuntimeCheck") show_runtime_check_menu; show_menu ;;
         "RebuildDash") run_rebuild_dashboard; echo ""; read -r -p "  按 Enter 返回主選單..."; show_menu ;;
         "Clean")   run_clean_dependencies; show_menu ;;
         "Init")    run_clean_init; show_menu ;;
         "Quit")    echo -e "  ${GREEN}👋 關閉連線，再見！${NC}"; exit 0 ;;
         *)         show_menu ;;
     esac
+}
+
+show_runtime_check_menu() {
+    echo ""
+    echo -e "  ${CYAN}🧭 Runtime Check 子選單${NC}"
+    echo -e "  ${DIM}  適用 macOS / Linux / Windows，支援有頭與無頭診斷${NC}"
+    echo ""
+
+    local options=(
+        "Doctor|🔎 只檢查 (doctor:runtime)"
+        "Repair|🩹 自動修復 (repair:runtime)"
+        "Smoke|🧪 冒煙測試 (smoke:runtime)"
+        "SmokeStart|🚀 冒煙測試含暫時啟動 (smoke:runtime:start)"
+        "All|📦 全流程 (runtime:all)"
+        "Back|↩ 返回主選單"
+    )
+
+    prompt_singleselect "  請選擇 Runtime 檢查模式：" "${options[@]}"
+    local choice="$SINGLESELECT_RESULT"
+    echo ""
+
+    case "$choice" in
+        "Doctor")
+            npm run doctor:runtime || true
+            ;;
+        "Repair")
+            npm run repair:runtime || true
+            ;;
+        "Smoke")
+            npm run smoke:runtime || true
+            ;;
+        "SmokeStart")
+            npm run smoke:runtime:start || true
+            ;;
+        "All")
+            npm run runtime:all || true
+            ;;
+        "Back")
+            return
+            ;;
+        *)
+            return
+            ;;
+    esac
+
+    echo ""
+    if [ -f "$SCRIPT_DIR/data/dashboard/runtime-report.md" ]; then
+        echo -e "  ${GREEN}📄 報告輸出：${NC}$SCRIPT_DIR/data/dashboard/runtime-report.md"
+    elif [ -f "$SCRIPT_DIR/logs/runtime-report.md" ]; then
+        echo -e "  ${GREEN}📄 報告輸出：${NC}$SCRIPT_DIR/logs/runtime-report.md"
+    fi
+    read -r -p "  按 Enter 返回主選單..."
 }
 
 show_menu_tools() {

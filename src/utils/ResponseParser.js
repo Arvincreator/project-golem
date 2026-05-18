@@ -39,15 +39,18 @@ class ResponseParser {
 
     static parse(raw) {
         const parsed = { memory: null, avoidMemory: null, actions: [], reply: "" };
-
         if (!raw) return parsed;
+        const rawText = typeof raw === 'string'
+            ? raw
+            : (raw && typeof raw.text === 'string' ? raw.text : String(raw));
+        if (!rawText) return parsed;
 
         // ✨ [升級：穿透 Thinking Mode] 
         // 許多時候 AI 的回覆會混雜 "Assessing My Capabilities" 等系統提示音。
         // 我們改用更具彈性的獨立擷取方式，無視前面的廢話。
 
         // 1. 獨立擷取 MEMORY
-        const memoryBlock = ResponseParser._extractProtocolBlock(raw, 'GOLEM_MEMORY');
+        const memoryBlock = ResponseParser._extractProtocolBlock(rawText, 'GOLEM_MEMORY');
         if (memoryBlock) {
             const content = ResponseParser.sanitizeProtocolTags(memoryBlock);
             if (content && content !== 'null' && content !== '(無)') {
@@ -55,7 +58,7 @@ class ResponseParser {
             }
         }
 
-        const avoidBlock = ResponseParser._extractProtocolBlock(raw, 'AVOID_MEMORY');
+        const avoidBlock = ResponseParser._extractProtocolBlock(rawText, 'AVOID_MEMORY');
         if (avoidBlock) {
             const content = ResponseParser.sanitizeProtocolTags(avoidBlock);
             if (content && content !== 'null' && content !== '(無)') {
@@ -64,7 +67,7 @@ class ResponseParser {
         }
 
         // 2. 獨立擷取 ACTION，並執行終極矯正
-        const actionBlock = ResponseParser._extractProtocolBlock(raw, 'GOLEM_ACTION');
+        const actionBlock = ResponseParser._extractProtocolBlock(rawText, 'GOLEM_ACTION');
         if (actionBlock) {
             // 暴力脫去所有 Markdown 外衣
             let jsonCandidate = actionBlock.replace(/```[a-zA-Z]*\s*/gi, '').replace(/```/g, '').trim();
@@ -166,7 +169,7 @@ class ResponseParser {
         }
 
         // 3. 獨立擷取 REPLY (✅ Fix: 遇到其他標籤或結尾時即停止，避免抓到 GOLEM_ACTION)
-        const replyBlock = ResponseParser._extractProtocolBlock(raw, 'GOLEM_REPLY');
+        const replyBlock = ResponseParser._extractProtocolBlock(rawText, 'GOLEM_REPLY');
         if (replyBlock) {
             parsed.reply = ResponseParser.sanitizeProtocolTags(replyBlock);
         }
@@ -174,7 +177,7 @@ class ResponseParser {
         // ✨ [防呆機制] 如果完全沒有抓到任何結構化標籤，就把整段文字 (過濾掉雜訊) 當作 Reply
         if (!parsed.memory && !parsed.avoidMemory && parsed.actions.length === 0 && !parsed.reply) {
             // 濾掉 Thinking Mode 常見的雜訊字眼
-            let cleanRaw = raw
+            let cleanRaw = rawText
                 .replace(/Assessing My Capabilities/gi, '')
                 .replace(/Answer now/gi, '')
                 .replace(/Gemini said/gi, '')
