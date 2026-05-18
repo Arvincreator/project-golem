@@ -6,14 +6,45 @@ const { buildOperationGuard } = require('../server/security');
 module.exports = function registerMemoryRoutes(server) {
     const router = express.Router();
     const requireMemoryAdmin = buildOperationGuard(server, 'memory_mutation');
+    const toBool = (value) => {
+        if (value === undefined) return undefined;
+        if (typeof value === 'boolean') return value;
+        const s = String(value).trim().toLowerCase();
+        if (['true', '1', 'yes', 'on'].includes(s)) return true;
+        if (['false', '0', 'no', 'off'].includes(s)) return false;
+        return undefined;
+    };
 
     router.get('/api/memory', async (req, res) => {
         const { context } = resolveActiveContext(server, req.query.golemId);
         if (!context || !context.memory) return res.status(503).json({ error: 'Memory not engaged' });
 
         try {
+            const q = typeof req.query.q === 'string' ? req.query.q : '';
+            const type = typeof req.query.type === 'string' ? req.query.type : '';
+            const source = typeof req.query.source === 'string' ? req.query.source : '';
+            const includeHidden = toBool(req.query.includeHidden) === true;
+            const visible = toBool(req.query.visible);
+            const limit = Number(req.query.limit || 500);
+            const offset = Number(req.query.offset || 0);
+
+            if (typeof context.memory.listMemories === 'function') {
+                const results = await context.memory.listMemories({
+                    q,
+                    type,
+                    source,
+                    includeHidden,
+                    limit,
+                    offset
+                });
+                const filtered = visible === undefined
+                    ? results
+                    : results.filter((item) => (item.visible !== false) === visible);
+                return res.json(filtered);
+            }
+
             if (context.memory.data) return res.json(context.memory.data);
-            const results = await context.memory.recall('');
+            const results = await context.memory.recall(q || '');
             return res.json(results);
         } catch (e) {
             return res.status(500).json({ error: e.message });
@@ -79,6 +110,46 @@ module.exports = function registerMemoryRoutes(server) {
             await context.memory.memorize(text, metadata || {});
             server.io.emit('memory_update', { action: 'add', text, metadata, golemId });
             return res.json({ success: true });
+        } catch (e) {
+            return res.status(500).json({ error: e.message });
+        }
+    });
+
+    router.patch('/api/memory/:id', requireMemoryAdmin, async (req, res) => {
+        const { context } = resolveActiveContext(server, req.query.golemId);
+        if (!context || !context.memory) return res.status(503).json({ error: 'Memory not engaged' });
+        const id = String(req.params.id || '').trim();
+        if (!id) return res.status(400).json({ error: 'id is required' });
+
+        try {
+            if (typeof context.memory.updateMemory !== 'function') {
+                return res.status(501).json({ error: 'Update memory not supported by this driver' });
+            }
+            const patch = {};
+            if (typeof req.body.text === 'string') patch.text = req.body.text;
+            if (req.body.metadata && typeof req.body.metadata === 'object') patch.metadata = req.body.metadata;
+            if (req.body.visible !== undefined) patch.visible = req.body.visible !== false;
+            const result = await context.memory.updateMemory(id, patch);
+            if (result && result.success === false) return res.status(400).json(result);
+            return res.json({ success: true, ...result });
+        } catch (e) {
+            return res.status(500).json({ error: e.message });
+        }
+    });
+
+    router.delete('/api/memory/:id', requireMemoryAdmin, async (req, res) => {
+        const { context } = resolveActiveContext(server, req.query.golemId);
+        if (!context || !context.memory) return res.status(503).json({ error: 'Memory not engaged' });
+        const id = String(req.params.id || '').trim();
+        if (!id) return res.status(400).json({ error: 'id is required' });
+
+        try {
+            if (typeof context.memory.deleteMemory !== 'function') {
+                return res.status(501).json({ error: 'Delete memory not supported by this driver' });
+            }
+            const result = await context.memory.deleteMemory(id);
+            if (result && result.success === false) return res.status(400).json(result);
+            return res.json({ success: true, ...result });
         } catch (e) {
             return res.status(500).json({ error: e.message });
         }

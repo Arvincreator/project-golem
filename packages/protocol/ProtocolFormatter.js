@@ -12,6 +12,7 @@ const { resolveEnabledSkills, OPTIONAL_SKILLS } = require('../../src/skills/skil
 const SkillPackageRegistry = require('../../src/managers/SkillPackageRegistry');
 const ConfigManager = require('../../src/config');
 const COMMAND_DEFS = require('../../src/config/commands');
+const { getMemoryFirewallService } = require('../../src/services/MemoryFirewallService');
 
 function getMaxResponseWords() {
     return Number(ConfigManager?.CONFIG?.MAX_RESPONSE_WORDS) || 0;
@@ -110,13 +111,27 @@ ${selectedPrompt}
 - Otherwise, output null or a minimal confirmation within [GOLEM_REPLY].\n`;
         }
 
+        let firewallEnabled = false;
+        try {
+            const firewall = getMemoryFirewallService();
+            firewallEnabled = !!(firewall && firewall.isEnabled());
+        } catch (_) {
+            firewallEnabled = false;
+        }
+        const tagsLine = firewallEnabled
+            ? '2. TAGS: Use [GOLEM_MEMORY], [AVOID_MEMORY], [GOLEM_ACTION], and [GOLEM_REPLY]. Do not output raw text outside tags.'
+            : '2. TAGS: Use [GOLEM_MEMORY], [GOLEM_ACTION], and [GOLEM_REPLY]. Do not output raw text outside tags.';
+        const firewallRuleLine = firewallEnabled
+            ? '- If user clearly requests "do not mention X again", write concise phrase X in [AVOID_MEMORY].'
+            : '';
+
         return `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
 1. ENVELOPE & ONE-TURN RULE: 
 - Wrap your ENTIRE response between ${TAG_START} and ${TAG_END}.
 - 🚨 FATAL RULE: You MUST ONLY generate exactly ONE [[BEGIN]] and ONE [[END]] per response. 
 - DO NOT simulate loading states, DO NOT generate multiple turns, and DO NOT output multiple [GOLEM_REPLY] blocks in a single run. 
 - Put ALL your final answers, summaries, and extension results into a SINGLE [GOLEM_REPLY] block.
-2. TAGS: Use [GOLEM_MEMORY], [GOLEM_ACTION], and [GOLEM_REPLY]. Do not output raw text outside tags.
+${tagsLine}
 3. ACTION FORMAT: [GOLEM_ACTION] MUST wrap JSON inside Markdown code blocks! (e.g., \`\`\`json [JSON_HERE] \`\`\`).
 4. OS ADAPTATION: Current OS is [${systemFingerprint}]. You MUST provide syntax optimized for THIS OS.
 5. FEASIBILITY: ZERO TRIAL-AND-ERROR. Provide the most stable, one-shot successful command.
@@ -132,6 +147,7 @@ ${selectedPrompt}
 - Do NOT output fake placeholders like \`{"action":"none"}\`, \`noop\`, or unknown action names.
 - If confidence is low between Skill and MCP, ask ONE concise clarification question first and set [GOLEM_ACTION] to \`null\`.
 - Never invent action names, server names, or tool names.
+${firewallRuleLine}
 11. COMMAND RECALL:
 - Built-in slash commands are available and valid. Remember these frequently used commands:
 - ${summarizeCoreCommands().map((cmd) => `\`${cmd}\``).join(', ') || '`/skills`, `/learn`, `/new`, `/new_memory`, `/toolset`, `/search`, `/project`'}

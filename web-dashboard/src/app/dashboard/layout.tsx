@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, Globe, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, GripVertical, Terminal, BrainCircuit, BookOpen, Settings, User, MessageSquare, Plug, BookHeart, Library, Activity, Gamepad2, LineChart, Database, CalendarDays, Eye, EyeOff } from "lucide-react";
+import { LayoutDashboard, Users, Globe, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, GripVertical, Terminal, BrainCircuit, BookOpen, Settings, User, MessageSquare, Plug, BookHeart, Library, Activity, Gamepad2, LineChart, Database, CalendarDays, Eye, EyeOff, Shield } from "lucide-react";
 import { GolemProvider, useGolem } from "@/components/GolemContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BootScreen } from "@/components/BootScreen";
@@ -31,6 +31,7 @@ const NAV_ITEMS = [
     { labelKey: "sidebar.nav.agents", href: "/dashboard/agents", icon: Users },
     { labelKey: "sidebar.nav.office", href: "/dashboard/office", icon: Users },
     { labelKey: "sidebar.nav.memory", href: "/dashboard/memory", icon: BrainCircuit },
+    { labelKey: "sidebar.nav.memoryFirewall", href: "/dashboard/memory-firewall", icon: Shield },
     { labelKey: "sidebar.nav.referenceFiles", href: "/dashboard/reference-files", icon: Database },
     { labelKey: "sidebar.nav.settingsSummary", href: "/dashboard/settings", icon: Settings },
 ] as const;

@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { MemoryTable } from "@/components/MemoryTable";
+import { MemoryFirewallPanel } from "@/components/MemoryFirewallPanel";
 import { useGolem } from "@/components/GolemContext";
-import { BrainCircuit, Cpu, Database, Activity, type LucideIcon } from "lucide-react";
+import { BrainCircuit, Cpu, Database, Activity, Shield, type LucideIcon } from "lucide-react";
 import { LogStream } from "@/components/LogStream";
 import { cn } from "@/lib/utils";
 import { apiGet } from "@/lib/api-client";
@@ -22,6 +23,7 @@ export default function MemoryPage() {
     const { t } = useI18n();
     const [status, setStatus] = useState("initializing");
     const { data: config } = useQuery<MemoryConfig>(() => apiGet<MemoryConfig>("/api/system/config"), []);
+    const [activeTab, setActiveTab] = useState<"memory" | "firewall">("memory");
 
     useEffect(() => {
         if (activeGolem) {
@@ -128,9 +130,30 @@ export default function MemoryPage() {
                                         <Database className="w-5 h-5 mr-2 text-primary" />
                                         {t("memory.recordsTitle")}
                                     </h2>
+                                    <div className="inline-flex rounded-lg border border-border bg-secondary/30 p-1">
+                                        <button
+                                            onClick={() => setActiveTab("memory")}
+                                            className={cn(
+                                                "px-3 py-1.5 rounded-md text-xs font-semibold transition-colors",
+                                                activeTab === "memory" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"
+                                            )}
+                                        >
+                                            記憶列表
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab("firewall")}
+                                            className={cn(
+                                                "px-3 py-1.5 rounded-md text-xs font-semibold transition-colors inline-flex items-center gap-1",
+                                                activeTab === "firewall" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"
+                                            )}
+                                        >
+                                            <Shield className="w-3.5 h-3.5" />
+                                            記憶防火牆
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="flex-1">
-                                    <MemoryTable />
+                                    {activeTab === "memory" ? <MemoryTable /> : <MemoryFirewallPanel embedded />}
                                 </div>
                             </div>
                         </div>

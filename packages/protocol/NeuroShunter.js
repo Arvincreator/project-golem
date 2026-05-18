@@ -1,4 +1,5 @@
 const ResponseParser = require('../../src/utils/ResponseParser');
+const { getMemoryFirewallService } = require('../../src/services/MemoryFirewallService');
 const MultiAgentHandler = require('../../src/core/action_handlers/MultiAgentHandler');
 const SkillHandler = require('../../src/core/action_handlers/SkillHandler');
 const CommandHandler = require('../../src/core/action_handlers/CommandHandler');
@@ -246,6 +247,33 @@ class NeuroShunter {
         if (parsed.memory) {
             console.log(`[GOLEM_MEMORY]\n${parsed.memory}`);
             await brain.memorize(parsed.memory, { type: 'fact', timestamp: Date.now() });
+        }
+
+        // 1b. 處理記憶防火牆標籤（僅在服務啟用時）
+        if (parsed.avoidMemory) {
+            const firewall = getMemoryFirewallService();
+            if (firewall && firewall.isEnabled()) {
+                const pattern = String(parsed.avoidMemory || '').trim();
+                if (pattern) {
+                    console.log(`[AVOID_MEMORY]\n${pattern}`);
+                    await brain.memorize(pattern, {
+                        type: 'avoid_memory',
+                        source: 'memory_firewall',
+                        timestamp: Date.now(),
+                        visible: true
+                    });
+                    const scope = `golem:${(controller && controller.convoManager && controller.convoManager.golemId) || 'default'}`;
+                    const addResult = firewall.addRule({
+                        pattern,
+                        scope,
+                        matchMode: 'contains',
+                        enabled: true
+                    });
+                    if (addResult && addResult.success) {
+                        console.log(`🛡️ [MemoryFirewall] 已自動建立規則: ${pattern}`);
+                    }
+                }
+            }
         }
 
         // 1. 處理直接回覆 (讓 AI 的解說文字在行動之前出現)

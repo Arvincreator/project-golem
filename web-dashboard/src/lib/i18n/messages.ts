@@ -38,6 +38,7 @@ const zhTWMessages = {
     "sidebar.nav.agents": "Agent 會議室",
     "sidebar.nav.office": "辦公室模式",
     "sidebar.nav.memory": "記憶核心",
+    "sidebar.nav.memoryFirewall": "記憶防火牆",
     "sidebar.nav.referenceFiles": "參考文件",
     "sidebar.nav.settingsSummary": "設定總表",
 
@@ -431,6 +432,7 @@ const enMessages: Record<MessageKey, string> = {
     "sidebar.nav.agents": "Agents",
     "sidebar.nav.office": "Office Mode",
     "sidebar.nav.memory": "Memory Core",
+    "sidebar.nav.memoryFirewall": "Memory Firewall",
     "sidebar.nav.referenceFiles": "Reference Files",
     "sidebar.nav.settingsSummary": "Settings Overview",
 

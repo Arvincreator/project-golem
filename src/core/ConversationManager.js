@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 const ConfigManager = require('../config');
 const ConfidenceTracker = require('../managers/ConfidenceTracker');
 const ReferenceFileService = require('../services/ReferenceFileService');
+const { getMemoryFirewallService } = require('../services/MemoryFirewallService');
 
 // ============================================================
 // 🚦 Conversation Manager (隊列與防抖系統 - 多用戶隔離版)
@@ -23,6 +24,7 @@ class ConversationManager {
 
         // 初始化信心追蹤器
         this.confidenceTracker = new ConfidenceTracker(this.brain.chatLogManager);
+        this.memoryFirewall = getMemoryFirewallService();
 
         // 🔄 [Instance Pooling] 背景監控與定時重啟定時器
         this.UPTIME_LIMIT_MS = 24 * 60 * 60 * 1000; // 24H
@@ -236,7 +238,14 @@ class ConversationManager {
             }
 
             await task.ctx.sendTyping();
-            const memories = isSystemFeedback ? [] : await this.brain.recall(task.text);
+            const recalled = isSystemFeedback ? [] : await this.brain.recall(task.text);
+            let memories = Array.isArray(recalled)
+                ? recalled.filter((item) => !(item && item.metadata && item.metadata.visible === false))
+                : [];
+            if (!isSystemFeedback && this.memoryFirewall && this.memoryFirewall.isEnabled()) {
+                const guarded = this.memoryFirewall.filterMemories(memories, { golemId: this.golemId });
+                memories = Array.isArray(guarded.memories) ? guarded.memories : memories;
+            }
             let referenceContext = '';
             if (!isSystemFeedback) {
                 try {
@@ -280,6 +289,12 @@ class ConversationManager {
             });
 
             let { text: raw, attachments: responseAttachments, status: extractorStatus } = brainResponse;
+            if (!isSystemFeedback && this.memoryFirewall && this.memoryFirewall.isEnabled()) {
+                const inspected = this.memoryFirewall.inspectResponse(raw, { golemId: this.golemId });
+                if (inspected && inspected.blocked && typeof inspected.text === 'string') {
+                    raw = inspected.text;
+                }
+            }
 
             // ✨ [Metacognition] AUQ 信心評分與標記
             const evaluation = this.confidenceTracker.evaluate(raw, extractorStatus, task.text);

@@ -12,7 +12,7 @@ class ResponseParser {
         if (!start) return "";
         const from = start.index + start[0].length;
         const rest = text.slice(from);
-        const endRe = /\n\[(?:\/?GOLEM_(?:MEMORY|ACTION|REPLY))\]|\n\[\[?\s*END\s*:[^\]\n\r]+?\]?\]?/i;
+        const endRe = /\n\[(?:\/?(?:GOLEM_(?:MEMORY|ACTION|REPLY)|AVOID_MEMORY))\]|\n\[\[?\s*END\s*:[^\]\n\r]+?\]?\]?/i;
         const end = endRe.exec(rest);
         return (end ? rest.slice(0, end.index) : rest).trim();
     }
@@ -32,13 +32,13 @@ class ResponseParser {
             .replace(/\[\[\s*END\s*:[^\]\n\r]+?\]/gi, '')
             .replace(/\[\s*BEGIN\s*:[^\]\n\r]+?\]\]/gi, '')
             .replace(/\[\s*END\s*:[^\]\n\r]+?\]\]/gi, '')
-            .replace(/(?:^|\n)\s*\[\/?GOLEM_(?:MEMORY|ACTION|REPLY)\]\s*(?=\n|$)/gi, '\n')
+            .replace(/(?:^|\n)\s*\[(?:\/?GOLEM_(?:MEMORY|ACTION|REPLY)|\/?AVOID_MEMORY)\]\s*(?=\n|$)/gi, '\n')
             .replace(/^\s*null\s*$/i, '')
             .trim();
     }
 
     static parse(raw) {
-        const parsed = { memory: null, actions: [], reply: "" };
+        const parsed = { memory: null, avoidMemory: null, actions: [], reply: "" };
 
         if (!raw) return parsed;
 
@@ -52,6 +52,14 @@ class ResponseParser {
             const content = ResponseParser.sanitizeProtocolTags(memoryBlock);
             if (content && content !== 'null' && content !== '(無)') {
                 parsed.memory = content;
+            }
+        }
+
+        const avoidBlock = ResponseParser._extractProtocolBlock(raw, 'AVOID_MEMORY');
+        if (avoidBlock) {
+            const content = ResponseParser.sanitizeProtocolTags(avoidBlock);
+            if (content && content !== 'null' && content !== '(無)') {
+                parsed.avoidMemory = content;
             }
         }
 
@@ -164,7 +172,7 @@ class ResponseParser {
         }
 
         // ✨ [防呆機制] 如果完全沒有抓到任何結構化標籤，就把整段文字 (過濾掉雜訊) 當作 Reply
-        if (!parsed.memory && parsed.actions.length === 0 && !parsed.reply) {
+        if (!parsed.memory && !parsed.avoidMemory && parsed.actions.length === 0 && !parsed.reply) {
             // 濾掉 Thinking Mode 常見的雜訊字眼
             let cleanRaw = raw
                 .replace(/Assessing My Capabilities/gi, '')

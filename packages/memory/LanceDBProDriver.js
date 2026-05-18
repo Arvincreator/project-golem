@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { randomUUID } = require('crypto');
 const KeyChain = require('../../src/services/KeyChain');
 const OllamaClient = require('../../src/services/OllamaClient');
 const { CONFIG, KNOWLEDGE_BASE_DIR } = require('../../src/config');
@@ -21,6 +22,8 @@ class LanceDBProDriver {
         this.retriever = null;
         this.embedder = null;
         this.ollamaClient = null;
+        this.statePath = path.join(this.baseDir, 'lancedb-pro', 'memory-state.json');
+        this.state = { hiddenIds: [], deletedIds: [] };
     }
 
     async init() {
@@ -34,6 +37,7 @@ class LanceDBProDriver {
 
     async _doInit() {
         if (!fs.existsSync(this.baseDir)) fs.mkdirSync(this.baseDir, { recursive: true });
+        this._loadState();
 
         // Use jiti to load memory-lancedb-pro components from sub-modules
         if (!cachedJiti) {
@@ -98,8 +102,10 @@ class LanceDBProDriver {
                 metadata: this._safeParseMetadata(r.entry.metadata),
                 timestamp: r.entry.timestamp
             }));
-
-            return await this._maybeRerank(query, normalized, limit);
+            const withVisibility = await this._applyVisibilityAndCanonicalize(normalized);
+            const visible = withVisibility.filter((item) => item.visible !== false);
+            const reranked = await this._maybeRerank(query, visible, limit);
+            return reranked.slice(0, limit);
         } catch (e) {
             console.warn("⚠️ [Memory:Pro] Recall error:", e.message);
             return [];
@@ -109,14 +115,15 @@ class LanceDBProDriver {
     async memorize(text, metadata = {}) {
         if (!this.store) await this.init();
         try {
+            const normalizedMetadata = this._normalizeMetadata(metadata);
             const vector = await this.embedder.embedPassage(text);
             await this.store.store({
                 text,
                 vector,
-                category: metadata.category || "other",
-                scope: metadata.scope || "global",
-                importance: metadata.importance || 0.5,
-                metadata: JSON.stringify(metadata)
+                category: normalizedMetadata.category || "other",
+                scope: normalizedMetadata.scope || "global",
+                importance: normalizedMetadata.importance || 0.5,
+                metadata: JSON.stringify(normalizedMetadata)
             });
             console.log(`🧠 [Memory:Pro] 已紀錄記憶 (${text.substring(0, 20)}...)`);
         } catch (e) {
@@ -151,6 +158,7 @@ class LanceDBProDriver {
             this.retriever = null;
             this.embedder = null;
             this._initPromise = null;
+            this.state = { hiddenIds: [], deletedIds: [] };
 
             console.log(`🗑️ [Memory:Pro] Memory cleared at ${rootDir} (entries=${removedEntries}, bytes=${removedBytes})`);
             return { cleared: removedEntries, bytes: removedBytes };
@@ -162,7 +170,7 @@ class LanceDBProDriver {
 
     async exportMemory() {
         if (!this.store) return JSON.stringify([]);
-        const all = await this.store.list([], undefined, 1000);
+        const all = await this.listMemories({ includeHidden: true, includeDeleted: false, limit: 5000 });
         return JSON.stringify(all, null, 2);
     }
 
@@ -171,12 +179,92 @@ class LanceDBProDriver {
             const list = JSON.parse(jsonData);
             if (!Array.isArray(list)) return { success: false, error: "Must be an array" };
             for (const item of list) {
-                await this.memorize(item.text, item.metadata || item);
+                const sourceMetadata = item.metadata || item;
+                const normalized = this._normalizeMetadata(sourceMetadata);
+                if (item.id && !normalized.id) normalized.id = String(item.id);
+                if (item.visible === false) normalized.visible = false;
+                await this.memorize(item.text, normalized);
             }
             return { success: true, count: list.length };
         } catch (e) {
             return { success: false, error: e.message };
         }
+    }
+
+    async listMemories(options = {}) {
+        if (!this.store) await this.init();
+        const includeHidden = options.includeHidden === true;
+        const includeDeleted = options.includeDeleted === true;
+        const q = String(options.q || '').trim().toLowerCase();
+        const type = String(options.type || '').trim().toLowerCase();
+        const source = String(options.source || '').trim().toLowerCase();
+        const limit = Number.isFinite(Number(options.limit)) ? Number(options.limit) : 200;
+        const offset = Number.isFinite(Number(options.offset)) ? Number(options.offset) : 0;
+        const allRows = await this.store.list([], undefined, 10000);
+        const canonicalMap = new Map();
+
+        for (const row of allRows) {
+            const metadata = this._normalizeMetadata(this._safeParseMetadata(row.metadata), row.timestamp);
+            const id = metadata.id;
+            const next = {
+                id,
+                text: row.text,
+                score: row.score,
+                metadata,
+                visible: metadata.visible !== false && !this._isHiddenOrDeleted(id),
+                createdAt: metadata.createdAt || row.timestamp || null,
+                updatedAt: metadata.updatedAt || row.timestamp || null,
+                timestamp: row.timestamp || metadata.updatedAt || metadata.createdAt || null
+            };
+            const prev = canonicalMap.get(id);
+            if (!prev || this._toTime(next.updatedAt) >= this._toTime(prev.updatedAt)) {
+                canonicalMap.set(id, next);
+            }
+        }
+
+        let list = Array.from(canonicalMap.values()).map((item) => ({
+            ...item,
+            metadata: { ...item.metadata, visible: item.visible }
+        }));
+
+        if (!includeDeleted) list = list.filter((item) => !this._isDeleted(item.id));
+        if (!includeHidden) list = list.filter((item) => item.visible !== false);
+        if (q) list = list.filter((item) => `${item.text}\n${JSON.stringify(item.metadata || {})}`.toLowerCase().includes(q));
+        if (type) list = list.filter((item) => String(item.metadata?.type || '').toLowerCase() === type);
+        if (source) list = list.filter((item) => String(item.metadata?.source || '').toLowerCase() === source);
+
+        list.sort((a, b) => this._toTime(b.updatedAt || b.createdAt) - this._toTime(a.updatedAt || a.createdAt));
+        return list.slice(offset, offset + Math.max(1, Math.min(limit, 5000)));
+    }
+
+    async updateMemory(id, patch = {}) {
+        const targetId = String(id || '').trim();
+        if (!targetId) return { success: false, error: 'id is required' };
+        const list = await this.listMemories({ includeHidden: true, includeDeleted: false, limit: 10000 });
+        const current = list.find((item) => item.id === targetId);
+        if (!current) return { success: false, error: 'Memory not found' };
+        if (this._isDeleted(targetId)) return { success: false, error: 'Memory already deleted' };
+        const nextVisible = patch.visible === undefined ? current.visible !== false : patch.visible !== false;
+        const nextText = typeof patch.text === 'string' ? patch.text : current.text;
+        const nextMetadata = {
+            ...current.metadata,
+            ...(patch.metadata && typeof patch.metadata === 'object' ? patch.metadata : {}),
+            id: targetId,
+            visible: nextVisible,
+            createdAt: current.createdAt || current.metadata.createdAt || new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        this._setHidden(targetId, !nextVisible);
+        await this.memorize(nextText, nextMetadata);
+        return { success: true };
+    }
+
+    async deleteMemory(id) {
+        const targetId = String(id || '').trim();
+        if (!targetId) return { success: false, error: 'id is required' };
+        this._setDeleted(targetId, true);
+        this._setHidden(targetId, true);
+        return { success: true };
     }
 
     _safeParseMetadata(raw) {
@@ -187,6 +275,105 @@ class LanceDBProDriver {
         } catch (e) {
             return {};
         }
+    }
+
+    _normalizeMetadata(metadata = {}, fallbackTimestamp = null) {
+        const raw = (metadata && typeof metadata === 'object') ? metadata : {};
+        const nowIso = new Date().toISOString();
+        const createdAt = raw.createdAt || fallbackTimestamp || nowIso;
+        return {
+            ...raw,
+            id: String(raw.id || randomUUID()),
+            type: typeof raw.type === 'string' && raw.type.trim() ? raw.type : 'general',
+            source: typeof raw.source === 'string' && raw.source.trim() ? raw.source : 'memory',
+            visible: raw.visible !== false,
+            createdAt,
+            updatedAt: raw.updatedAt || nowIso
+        };
+    }
+
+    async _applyVisibilityAndCanonicalize(items) {
+        const canonicalList = await this.listMemories({ includeHidden: true, includeDeleted: false, limit: 10000 });
+        const canonicalMap = new Map(canonicalList.map((item) => [item.id, item]));
+        const resolved = [];
+        const seen = new Set();
+
+        for (const item of items) {
+            const metadata = this._normalizeMetadata(item.metadata, item.timestamp);
+            const canonical = canonicalMap.get(metadata.id);
+            const merged = canonical || {
+                id: metadata.id,
+                text: item.text,
+                score: item.score,
+                metadata,
+                visible: metadata.visible !== false && !this._isHiddenOrDeleted(metadata.id),
+                createdAt: metadata.createdAt,
+                updatedAt: metadata.updatedAt,
+                timestamp: item.timestamp || metadata.updatedAt
+            };
+            if (seen.has(merged.id)) continue;
+            seen.add(merged.id);
+            resolved.push(merged);
+        }
+        return resolved;
+    }
+
+    _toTime(value) {
+        if (!value) return 0;
+        const n = Date.parse(value);
+        return Number.isFinite(n) ? n : 0;
+    }
+
+    _loadState() {
+        try {
+            const parent = path.dirname(this.statePath);
+            if (!fs.existsSync(parent)) fs.mkdirSync(parent, { recursive: true });
+            if (!fs.existsSync(this.statePath)) {
+                this._saveState();
+                return;
+            }
+            const raw = JSON.parse(fs.readFileSync(this.statePath, 'utf8'));
+            this.state = {
+                hiddenIds: Array.isArray(raw.hiddenIds) ? raw.hiddenIds.map(String) : [],
+                deletedIds: Array.isArray(raw.deletedIds) ? raw.deletedIds.map(String) : []
+            };
+        } catch (_) {
+            this.state = { hiddenIds: [], deletedIds: [] };
+        }
+    }
+
+    _saveState() {
+        try {
+            const parent = path.dirname(this.statePath);
+            if (!fs.existsSync(parent)) fs.mkdirSync(parent, { recursive: true });
+            fs.writeFileSync(this.statePath, JSON.stringify(this.state, null, 2), 'utf8');
+        } catch (_) { }
+    }
+
+    _isHiddenOrDeleted(id) {
+        return this._isHidden(id) || this._isDeleted(id);
+    }
+
+    _isHidden(id) {
+        return this.state.hiddenIds.includes(String(id));
+    }
+
+    _isDeleted(id) {
+        return this.state.deletedIds.includes(String(id));
+    }
+
+    _setHidden(id, hidden) {
+        const key = String(id);
+        this.state.hiddenIds = this.state.hiddenIds.filter((x) => x !== key);
+        if (hidden) this.state.hiddenIds.push(key);
+        this._saveState();
+    }
+
+    _setDeleted(id, deleted) {
+        const key = String(id);
+        this.state.deletedIds = this.state.deletedIds.filter((x) => x !== key);
+        if (deleted) this.state.deletedIds.push(key);
+        this._saveState();
     }
 
     _getOllamaClient() {
