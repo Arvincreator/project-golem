@@ -21,7 +21,11 @@ module.exports = function registerMemoryRoutes(server) {
             ? item.id.trim()
             : (typeof metadata.id === 'string' && metadata.id.trim() ? metadata.id.trim() : '');
         const text = typeof item?.text === 'string' ? item.text : '';
-        const fallbackId = crypto.createHash('sha1').update(`${index}:${text}`).digest('hex').slice(0, 16);
+        const createdAt = String(item?.createdAt || metadata.createdAt || item?.timestamp || '').trim();
+        const type = String(metadata.type || '').trim();
+        const source = String(metadata.source || '').trim();
+        const fallbackSeed = `${createdAt}|${type}|${source}|${text}` || `${index}:${text}`;
+        const fallbackId = crypto.createHash('sha1').update(fallbackSeed).digest('hex').slice(0, 24);
         const id = existing || fallbackId;
         return {
             ...item,

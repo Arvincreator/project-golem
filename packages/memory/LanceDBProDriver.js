@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const { randomUUID } = require('crypto');
 const KeyChain = require('../../src/services/KeyChain');
 const OllamaClient = require('../../src/services/OllamaClient');
@@ -204,7 +205,11 @@ class LanceDBProDriver {
         const canonicalMap = new Map();
 
         for (const row of allRows) {
-            const metadata = this._normalizeMetadata(this._safeParseMetadata(row.metadata), row.timestamp);
+            const metadata = this._normalizeMetadata(
+                this._safeParseMetadata(row.metadata),
+                row.timestamp,
+                { text: row.text, timestamp: row.timestamp }
+            );
             const id = metadata.id;
             const next = {
                 id,
@@ -277,13 +282,14 @@ class LanceDBProDriver {
         }
     }
 
-    _normalizeMetadata(metadata = {}, fallbackTimestamp = null) {
+    _normalizeMetadata(metadata = {}, fallbackTimestamp = null, hints = {}) {
         const raw = (metadata && typeof metadata === 'object') ? metadata : {};
         const nowIso = new Date().toISOString();
         const createdAt = raw.createdAt || fallbackTimestamp || nowIso;
+        const stableId = this._buildStableId(raw, hints, fallbackTimestamp);
         return {
             ...raw,
-            id: String(raw.id || randomUUID()),
+            id: String(raw.id || stableId || randomUUID()),
             type: typeof raw.type === 'string' && raw.type.trim() ? raw.type : 'general',
             source: typeof raw.source === 'string' && raw.source.trim() ? raw.source : 'memory',
             visible: raw.visible !== false,
@@ -299,7 +305,7 @@ class LanceDBProDriver {
         const seen = new Set();
 
         for (const item of items) {
-            const metadata = this._normalizeMetadata(item.metadata, item.timestamp);
+            const metadata = this._normalizeMetadata(item.metadata, item.timestamp, { text: item.text, timestamp: item.timestamp });
             const canonical = canonicalMap.get(metadata.id);
             const merged = canonical || {
                 id: metadata.id,
@@ -322,6 +328,16 @@ class LanceDBProDriver {
         if (!value) return 0;
         const n = Date.parse(value);
         return Number.isFinite(n) ? n : 0;
+    }
+
+    _buildStableId(raw = {}, hints = {}, fallbackTimestamp = null) {
+        const text = String(hints.text || '').trim();
+        const createdAt = String(raw.createdAt || hints.timestamp || fallbackTimestamp || '').trim();
+        const type = String(raw.type || '').trim();
+        const source = String(raw.source || '').trim();
+        if (!text && !createdAt) return '';
+        const seed = `${createdAt}|${type}|${source}|${text}`;
+        return crypto.createHash('sha1').update(seed).digest('hex').slice(0, 24);
     }
 
     _loadState() {

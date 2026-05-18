@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const { randomUUID } = require('crypto');
 const { KNOWLEDGE_BASE_DIR } = require('../../src/config');
 
@@ -152,7 +153,10 @@ class SystemNativeDriver {
                 if (!key) continue;
                 metadata[key] = this._coerceValue(valueRaw);
             }
-            const normalized = this._normalizeMetadata({ ...metadata, sourceFile: filename });
+            const normalized = this._normalizeMetadata(
+                { ...metadata, sourceFile: filename },
+                { text, sourceFile: filename }
+            );
             return {
                 id: normalized.id,
                 text,
@@ -168,13 +172,14 @@ class SystemNativeDriver {
         }
     }
 
-    _normalizeMetadata(metadata = {}) {
+    _normalizeMetadata(metadata = {}, hints = {}) {
         const raw = (metadata && typeof metadata === 'object') ? metadata : {};
         const nowIso = new Date().toISOString();
         const createdAt = raw.createdAt || raw.date || nowIso;
+        const stableId = this._buildStableId(raw, hints);
         return {
             ...raw,
-            id: String(raw.id || randomUUID()),
+            id: String(raw.id || stableId || randomUUID()),
             type: typeof raw.type === 'string' && raw.type.trim() ? raw.type : 'general',
             source: typeof raw.source === 'string' && raw.source.trim() ? raw.source : 'memory',
             visible: raw.visible !== false,
@@ -182,6 +187,17 @@ class SystemNativeDriver {
             createdAt,
             updatedAt: raw.updatedAt || nowIso
         };
+    }
+
+    _buildStableId(raw = {}, hints = {}) {
+        const sourceFile = typeof raw.sourceFile === 'string' && raw.sourceFile.trim()
+            ? raw.sourceFile.trim()
+            : (typeof hints.sourceFile === 'string' ? hints.sourceFile.trim() : '');
+        const createdAt = String(raw.createdAt || raw.date || hints.createdAt || '').trim();
+        const text = String(hints.text || '').trim();
+        if (!sourceFile && !createdAt && !text) return '';
+        const seed = `${sourceFile}|${createdAt}|${text}`;
+        return crypto.createHash('sha1').update(seed).digest('hex').slice(0, 24);
     }
 
     _coerceValue(input) {
