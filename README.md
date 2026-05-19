@@ -1,78 +1,119 @@
 <div align="center">
-  <img src="assets/logo.png" width="320" alt="Project Golem Logo" />
-  <h1>Project Golem v9.5</h1>
-  <p><strong>可長期陪跑的自主 AI 代理系統：Web Gemini、Ollama、LM Studio、多代理、技能、記憶與 Web Dashboard。</strong></p>
+  <img src="assets/logo.png" width="280" alt="Project Golem Logo" />
+  <h1>Project Golem</h1>
+  <p><strong>你的 AI 操作中樞：可對話、可行動、可記憶、可長期協作。</strong></p>
 
   <p>
-    <img src="https://img.shields.io/badge/Version-9.6.18-blue?style=for-the-badge" alt="Version">
-    <img src="https://img.shields.io/badge/Node.js-20--22-green?style=for-the-badge&logo=nodedotjs" alt="Node.js">
-    <img src="https://img.shields.io/badge/Backend-Gemini%20Web%20%7C%20Ollama%20%7C%20LM%20Studio-orange?style=for-the-badge" alt="Backends">
-    <img src="https://img.shields.io/badge/Dashboard-Next.js%2016-black?style=for-the-badge&logo=nextdotjs" alt="Dashboard">
-    <img src="https://img.shields.io/badge/License-Source--Available%20NC-red?style=for-the-badge" alt="License">
+    <img src="https://img.shields.io/badge/version-9.6.19-blue?style=for-the-badge" alt="version" />
+    <img src="https://img.shields.io/badge/node.js-20~22-3C873A?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="node" />
+    <img src="https://img.shields.io/badge/backend-gemini%20web%20%7C%20ollama%20%7C%20lmstudio-orange?style=for-the-badge" alt="backend" />
+    <img src="https://img.shields.io/badge/dashboard-next.js-black?style=for-the-badge&logo=nextdotjs" alt="dashboard" />
   </p>
 
   <p>
-    <a href="#這是什麼">這是什麼</a> ·
-    <a href="#核心能力">核心能力</a> ·
-    <a href="#快速開始">快速開始</a> ·
-    <a href="#設定重點">設定重點</a> ·
-    <a href="#文件地圖">文件地圖</a>
+    <a href="README.en.md"><strong>English README</strong></a> ·
+    <a href="docs/CONTRIBUTING.zh-TW.md">貢獻指南</a> ·
+    <a href="docs/AGENTS.md">開發代理指南</a>
   </p>
-
-  <p><strong>繁體中文</strong> | <a href="docs/README.en.md">English</a> | <a href="docs/CONTRIBUTING.zh-TW.md">貢獻指南</a></p>
 </div>
 
 ---
 
-## 這是什麼
+## Project Golem 是什麼
 
-Project Golem 是一套以 Node.js 驅動的自主 AI 代理系統。它可以透過 Playwright 操控 Web Gemini，也可以切換到 Ollama 或 LM Studio 走本機/私有模型路線；前端則提供 Web Dashboard，用來管理對話、技能、人格、記憶、MCP 工具、多代理會議與系統設定。
+Project Golem 不是單純聊天機器人，而是一套可運行的 AI 工作系統。
+它把「語言模型能力」和「實際操作能力」整合成同一個執行核心，讓你可以在一個 Dashboard 裡完成：
 
-這個專案目前比較像「個人 AI 作業系統」而不是單純 chatbot：它有長期記憶、任務隊列、指令安全防護、Telegram/Discord bridge、瀏覽器操作、排程自省、技能熱載入，以及一個能直接操作 Golem 的網頁控制台。
+- 即時對話與任務協作
+- 技能掛載與工具擴充（MCP / Skills）
+- 長期記憶管理與檢索
+- 多代理討論與共識彙整
+- RPG 劇情互動、股市看板、協作日曆、羈絆日記
+- 系統安全、設定、更新與維運
+
+你可以使用：
+
+- `Gemini Web`（Browser-in-the-Loop，透過 Playwright）
+- `Ollama`（本機/私有模型）
+- `LM Studio`（OpenAI-compatible local API）
+
+---
+
+## 為什麼它有價值
+
+多數 AI 工具在「一次對話」很強，但在「長期工作」會掉鏈。Project Golem 的設計重心是讓 AI 在真實環境裡持續可用：
+
+- 有狀態：保留長期上下文與記憶
+- 有行動：可透過工具與技能執行任務
+- 有邊界：具備安全控管與操作限制
+- 有介面：透過 Web Dashboard 做人機協作與治理
+
+---
+
+## 適合的使用場景
+
+| 場景 | Golem 可以做什麼 |
+| --- | --- |
+| 個人 AI 工作台 | 把對話、記憶、工具、設定集中到同一個 Dashboard，不需要在多個 AI 網頁之間切換。 |
+| 本機私有 AI | 使用 Ollama 或 LM Studio，讓模型推理與記憶資料留在自己的機器或私有網路內。 |
+| 長期專案陪跑 | 透過記憶核心、摘要與技能系統，讓 AI 累積專案背景，而不是每次都重新解釋。 |
+| 多代理決策 | 建立不同角色進行討論，例如產品、工程、安全、營運，再整理成可執行結論。 |
+| 工具型代理實驗 | 用 MCP 與 Skills 把搜尋、檔案、外部服務、專案工具逐步接進 AI 工作流。 |
+| 生活與創作陪伴 | 用文字 RPG、羈絆日記、協作日曆，把 AI 從工具延伸成可共同規劃、共同記錄的互動角色。 |
+| 金融資訊看板 | 透過台股/美股股市看板，整理行情、新聞、技術指標與 watchlist，交給 Golem 做分析上下文。 |
+
+---
 
 ## 核心能力
 
 | 能力 | 說明 |
 | --- | --- |
-| 多後端大腦 | `gemini` 使用 Browser-in-the-Loop 操控 Web Gemini；`ollama` 與 `lmstudio` 支援本機/私有部署模型。 |
-| Web Dashboard | 預設掛在 `http://localhost:3000/dashboard`，提供終端對話、技能管理、人格市場、記憶搜尋、MCP 管理、系統設定與更新入口。 |
-| 長期記憶 | 支援 `lancedb-pro` 向量記憶與原生記憶模式，並保留金字塔式摘要、日記 rotate、備份與還原流程。 |
-| 技能系統 | `src/skills/` 內建核心技能，可透過 Dashboard 開關、匯入、匯出與重新注入。 |
-| 多代理討論 | InteractiveMultiAgent 可召集多個角色進行圓桌討論，並產出共識摘要。 |
-| 外部通道 | 支援 Telegram 與 Discord；Telegram 預設走 grammY bridge，並有 circuit breaker 保護輪詢。 |
-| MCP 工具 | Dashboard 可新增、測試與檢視 stdio MCP server，供 Golem 擴充外部工具能力。 |
-| 安全控管 | 支援遠端登入、`SYSTEM_OP_TOKEN`、API rate limit、指令白名單與危險命令防護。 |
+| 多後端大腦 | 支援 `gemini`、`ollama`、`lmstudio`，可依成本、隱私、效能切換。 |
+| Web Dashboard | 預設 `http://localhost:3000/dashboard`，提供對話、監控、設定、技能、MCP、記憶管理。 |
+| 長期記憶 | 支援 `lancedb-pro` 與 `native` 記憶模式，含摘要壓縮與檢索流程。 |
+| 多代理協作 | Interactive Multi-Agent 模式可建立角色群組做討論與共識輸出。 |
+| 技能系統 | 可載入內建/自訂技能，支援安裝、啟用、測試與管理。 |
+| MCP 工具擴充 | 可接入標準 I/O MCP server，將外部能力接進 Golem 工作流。 |
+| 股市看板 | 支援台股/美股 watchlist、行情、K 線、技術指標、新聞脈絡與 Golem 分析快照。 |
+| 協作日曆 | Dashboard 行事曆可建立、更新、刪除行程，並提供 Golem 可讀取的協作排程資料。 |
+| 文字 RPG | 原生文字 RPG 模式，支援世界觀/角色建立、選項互動、會員回合數與外部通道綁定。 |
+| 羈絆日記 | 使用者日記、AI 日記、AI 想法、週摘要、羈絆等級、SQLite 備份與還原流程。 |
+| 外部通道 | 可選 Telegram / Discord bridge。 |
+| 安全治理 | 遠端存取保護、操作 token、風險命令防護、權限檢查。 |
+
+---
 
 ## 介面預覽
 
-<img src="assets/1.jpg" width="800" alt="Dashboard 首頁">
-<img src="assets/3.jpg" width="800" alt="Web Terminal">
-<img src="assets/4.jpg" width="800" alt="Skill Manager">
-<img src="assets/8.jpg" width="800" alt="Memory Core">
+<img src="assets/1.jpg" width="900" alt="Dashboard Overview" />
+<img src="assets/3.jpg" width="900" alt="Web Terminal" />
+<img src="assets/4.jpg" width="900" alt="Skill Manager" />
+<img src="assets/8.jpg" width="900" alt="Memory Core" />
+
+Dashboard 目前包含：
+
+- 戰術控制台：查看系統狀態、日誌、佇列、資源與核心運行概況
+- Web Terminal：和 Golem 直接對話、下指令、觀察回應
+- 股市分析：管理台股/美股 watchlist，查看行情、技術指標、新聞與 Golem 分析快照
+- 協作日曆：建立與管理行程，讓 Golem 可讀取排程並參與提醒/協作
+- 文字 RPG：在 Dashboard 或外部通道進行原生文字 RPG 互動
+- 羈絆日記：交換日記、AI 想法、週摘要、羈絆等級、備份與還原
+- 記憶核心：搜尋、編輯、封鎖、匯入、匯出長期記憶
+- 技能管理：檢視、安裝、啟用、測試技能
+- MCP 管理：新增、測試、檢視外部 MCP server
+- 系統設定：管理模型後端、安全設定、API key、更新與健康檢查
+
+---
 
 ## 快速開始
 
-### 環境需求
+### 1) 環境需求
 
 - Node.js `>=20 <23`
 - npm
-- Chromium 或 Google Chrome
-- 第一次使用 Web Gemini 時，需要可互動的瀏覽器畫面完成 Google 登入與授權
-- Telegram/Discord token 為選填；只用 Web Dashboard 可以先不設定
+- Chromium / Google Chrome（Gemini Web 模式需要）
 
-### 一鍵模式
-
-macOS / Linux 可直接使用啟動腳本：
-
-```bash
-chmod +x setup.sh
-./setup.sh --magic
-./setup.sh --start
-```
-
-也可以雙擊根目錄的 `Start-Golem.command`。Windows 使用者可用 `Start-Golem.bat`、`setup.bat`，或在 Git Bash 裡執行 `./setup.sh --magic`。
-
-### 手動模式
+### 2) 安裝與啟動
 
 ```bash
 npm install
@@ -87,17 +128,52 @@ npm run dashboard
 http://localhost:3000/dashboard
 ```
 
-如果只想跑主 runtime，也可以使用：
+### 3) 一鍵腳本（可選）
+
+macOS / Linux：
 
 ```bash
-npm start
+chmod +x setup.sh
+./setup.sh --magic
+./setup.sh --start
 ```
 
-## 設定重點
+Windows：可使用 `setup.bat` / `Start-Golem.bat`，或透過 Git Bash 執行 `./setup.sh --magic`。
 
-`.env.example` 已收錄主要設定。第一次啟動時若根目錄沒有 `.env`，系統會自動從 `.env.example` 複製一份。
+---
 
-### Web Gemini 預設模式
+## 最常用指令
+
+| 指令 | 說明 |
+| --- | --- |
+| `npm run dashboard` | 啟動 runtime + Web Dashboard |
+| `npm start` | 啟動核心 runtime |
+| `npm run dev` | 開發模式（nodemon） |
+| `npm run doctor` | 環境健康檢查 |
+| `npm run arch:check` | 架構邊界檢查 |
+| `npm test` | 執行測試 |
+
+### 常用對話指令
+
+| 指令 | 說明 |
+| --- | --- |
+| `/help` | 查看目前可用指令 |
+| `/new` | 開新對話並載入相關記憶 |
+| `/new_memory` | 重置底層記憶狀態 |
+| `/skills` | 查看已安裝技能 |
+| `/learn <功能>` | 讓 Golem 嘗試學習或生成新技能 |
+| `/stocks TSM NVDA 2330` | 建立即時股市分析上下文 |
+| `/stockboard` | 開啟股市看板式分析上下文 |
+| `/rpg start` | 啟動原生文字 RPG 模式 |
+| `/rpg bind` | 產生會員/外部通道綁定碼 |
+| `/install skill-gh <url>` | 從 GitHub 安裝技能 |
+| `/install mcp-url <url>` | 從 HTTPS JSON 安裝 MCP 設定 |
+
+---
+
+## 核心設定範例
+
+### Gemini Web（預設）
 
 ```env
 GOLEM_BACKEND=gemini
@@ -106,19 +182,7 @@ PLAYWRIGHT_STEALTH_ENABLED=true
 ALLOW_REMOTE_ACCESS=false
 ```
 
-第一次登入請不要開 headless：
-
-```env
-PLAYWRIGHT_HEADLESS=
-```
-
-等 Google session 寫入 `golem_memory/` 後，再視需求改成背景模式：
-
-```env
-PLAYWRIGHT_HEADLESS=true
-```
-
-### Ollama 本機模型
+### Ollama
 
 ```env
 GOLEM_BACKEND=ollama
@@ -137,163 +201,66 @@ GOLEM_LMSTUDIO_BRAIN_MODEL=local-model
 GOLEM_LMSTUDIO_API_KEY=
 ```
 
-### Dashboard 與遠端存取
+### 遠端管理安全建議
 
 ```env
-ENABLE_WEB_DASHBOARD=true
-DASHBOARD_PORT=3000
 ALLOW_REMOTE_ACCESS=false
 REMOTE_ACCESS_PASSWORD=
 SYSTEM_OP_TOKEN=
 ```
 
-若把 `ALLOW_REMOTE_ACCESS` 設為 `true`，請務必設定強密碼，並搭配防火牆、VPN 或反向代理權限控管。
+若要開放遠端，請務必同時設定強密碼、token，並搭配防火牆或 VPN。
 
-### Telegram / Discord
+---
 
-```env
-TELEGRAM_TOKEN=
-TG_AUTH_MODE=ADMIN
-ADMIN_ID=
-TG_CHAT_ID=
+## 部署方式
 
-DISCORD_TOKEN=
-DISCORD_ADMIN_ID=
-```
-
-Token 取得方式請看 [如何獲取 TG 或 DC 的 Token 及開啟權限](docs/如何獲取TG或DC的Token及開啟權限.md)。
-
-## 常用指令
-
-### npm scripts
-
-| 指令 | 說明 |
-| --- | --- |
-| `npm run dashboard` | 啟動 Golem runtime 與 Web Dashboard。 |
-| `npm start` | 啟動核心 runtime。 |
-| `npm run dev` | 使用 nodemon 啟動 Dashboard 模式。 |
-| `npm run doctor` | 檢查 Node、npm、`.env`、依賴、Playwright Chromium 與 Dashboard port。 |
-| `npm test` | 執行 Jest 測試。 |
-| `npm run test:coverage` | 執行測試並輸出 coverage。 |
-| `npm run test:security` | 執行安全相關測試。 |
-| `npm run arch:check` | 檢查架構分層邊界。 |
-| `npm run build` | 建置 `web-dashboard`。 |
-
-### 對話指令
-
-| 指令 | 說明 |
-| --- | --- |
-| `/help` | 查看可用指令。 |
-| `/new` | 重開 Gemini 對話視窗並載入相關記憶。 |
-| `/new_memory` | 清空底層記憶資料並重新開始。 |
-| `/sos` | 清除 DOM 快取，讓 DOM Doctor 重新掃描頁面。 |
-| `/model` | 操作 Web Gemini UI 切換模型。 |
-| `/skills` | 列出已安裝技能。 |
-| `/learn <功能>` | 讓 Golem 嘗試產生或學習新技能。 |
-| `/install skill <path>` | 從本機資料夾安裝技能套件（需含 `manifest.json`）。 |
-| `/install skill-gh <url>` | 從 GitHub repo/tree URL 安裝技能。 |
-| `/install mcp-file <path>` | 從本機 JSON 檔安裝或更新 MCP 伺服器設定。 |
-| `/install mcp-json <json>` | 直接貼單行 JSON 安裝或更新 MCP 伺服器設定。 |
-| `/install mcp-url <url>` | 從 HTTPS JSON URL 安裝或更新 MCP 伺服器設定。 |
-
-更多指令請看 [Golem 指令說明一覽表](docs/golem指令說明一覽表.md)。
-
-遠端安裝採開放來源模式（技能限 github.com、MCP 限 https URL）；安裝風險由使用者自行承擔。
-
-## Docker / VPS
-
-本專案提供 Docker Compose 與 noVNC/headless 相關設定。常用入口：
+本機開發與個人使用建議直接跑 Node.js。若要部署到伺服器或 VPS，可以使用 Docker Compose 或 headless/noVNC 流程。
 
 ```bash
 docker compose up -d --build
 ```
 
-或使用 setup 腳本：
+更多部署細節請看 [Docker 本機部署指南](docs/DOCKER-LOCAL.zh-TW.md) 與 [VPS VNC Setup Guide](docs/VPS_VNC_Setup_Guide.md)。
 
-```bash
-./setup.sh --deploy-docker
-./setup.sh --deploy-linux
-./setup.sh --headless-stop
-```
-
-詳細部署方式請看 [Docker 本機部署指南](docs/DOCKER-LOCAL.zh-TW.md) 與 [VPS Headless + VNC 指南](docs/VPS_VNC_Setup_Guide.md)。
+---
 
 ## 專案結構
 
 ```text
-project-golem-plus/
+project-golem/
 ├── apps/
-│   ├── runtime/              # 實際核心啟動入口
-│   └── dashboard/            # Dashboard app/plugin layer
-├── src/
-│   ├── core/                 # GolemBrain、ConversationManager、ActionQueue 等核心流程
-│   ├── managers/             # 記憶、技能、設定、日誌、自主行動等管理器
-│   ├── bridges/              # Telegram / Discord bridge
-│   ├── services/             # Ollama、LM Studio、DOM Doctor、Optic Nerve 等服務
-│   ├── mcp/                  # MCP client/manager
-│   └── skills/               # 核心技能與技能文件
-├── web-dashboard/            # Next.js Dashboard
-├── packages/                 # memory / protocol / security facade
-├── infra/                    # 架構治理與部署相關資料
-├── docs/                     # 使用、部署、架構與開發文件
-├── assets/                   # README 與 Dashboard 截圖素材
-├── index.js                  # 相容入口，轉交 apps/runtime
-└── dashboard.js              # 相容入口，啟動 Dashboard server
+│   ├── runtime/              # 核心啟動入口
+│   └── dashboard/            # Dashboard plugin / app layer
+├── src/                      # 核心邏輯（brain, manager, services, bridges）
+├── web-dashboard/            # Next.js Dashboard 與前端頁面
+├── packages/                 # memory / protocol / security 等共享模組
+├── docs/                     # 文件與指南
+├── assets/                   # README 截圖素材
+├── index.js                  # 相容入口（轉交 apps/runtime）
+└── dashboard.js              # 相容入口（Dashboard 啟動）
 ```
-
-新開發請優先參考 `apps/`、`src/`、`packages/` 的分層；提交前建議跑：
-
-```bash
-npm run arch:check
-npm test
-```
-
-## 文件地圖
-
-| 文件 | 用途 |
-| --- | --- |
-| [AI 編碼代理指南](docs/AGENTS.md) | 給開發者與 coding agent 的架構維護守則。 |
-| [Web Dashboard 使用說明](docs/Web-Dashboard-使用說明.md) | Dashboard 頁面、API、設定與操作說明。 |
-| [MCP 使用與開發指南](docs/MCP-使用與開發指南.md) | 新增與除錯 MCP server。 |
-| [記憶系統架構說明](docs/記憶系統架構說明.md) | 長期記憶、摘要與資料路徑。 |
-| [大型產品架構藍圖](docs/大型產品架構藍圖.md) | `apps + packages + infra` 分層與遷移策略。 |
-| [架構治理規範](infra/architecture/README.md) | 架構邊界規則與檢查工具。 |
-| [開發者實作指南](docs/開發者實作指南.md) | Skill 與 Golem Protocol 開發方式。 |
-| [Docker 本機部署指南](docs/DOCKER-LOCAL.zh-TW.md) | Docker Compose 本機部署。 |
-| [VPS Headless + VNC 指南](docs/VPS_VNC_Setup_Guide.md) | 無桌面 Linux / noVNC 部署。 |
-| [貢獻指南](docs/CONTRIBUTING.zh-TW.md) | 貢獻流程與注意事項。 |
-
-## 安全與隱私
-
-- `golem_memory/` 可能包含 Google session、對話記憶與私人資料，請不要提交或公開。
-- `.env` 可能包含 token、密碼與操作金鑰，請只提交 `.env.example`。
-- 不建議以 root/admin 身份長期運行 Golem。
-- 開放遠端 Dashboard 前，請先設定 `REMOTE_ACCESS_PASSWORD`、`SYSTEM_OP_TOKEN`，並使用可信網路邊界。
-- Golem 可執行本地指令與自動化流程，請謹慎啟用 `GOLEM_AUTO_APPROVE_ALL`。
-
-## 授權
-
-Project Golem 採用 [Source-Available Non-Commercial License](LICENSE)。
-
-- 個人使用、學習、研究、評估與非商業社群貢獻：允許。
-- 商業使用、公司/團隊生產環境、SaaS、代部署、顧問交付、商業整合、改版販售或盈利性服務：必須先取得 Arvincreator 的書面授權。
-- 商業授權與合作請參考 [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md)。
-
-注意：本專案過去已用 MIT 發佈的舊版本或舊副本，仍依取得當時的授權條款處理；本次授權變更後的新版本與新增內容適用目前的非商業授權。
-
-## 社群與支持
-
-如果 Project Golem 對你有幫助，歡迎 star 這個 repo，或請作者喝杯咖啡。
-
-<a href="https://www.buymeacoffee.com/arvincreator" target="_blank">
-  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50">
-</a>
-
-- [Line 社群：Project Golem AI 系統代理群](https://line.me/ti/g2/wqhJdXFKfarYxBTv34waWRpY_EXSfuYTbWc4OA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default)
-- [Discord 社群：Project Golem 官方頻道](https://discord.gg/bC6jtFQra)
 
 ---
 
-<div align="center">
-  <strong>Developed by Arvincreator and contributors.</strong>
-</div>
+## 文件地圖
+
+- [Web Dashboard 使用說明](docs/Web-Dashboard-使用說明.md)
+- [MCP 使用與開發指南](docs/MCP-使用與開發指南.md)
+- [記憶系統架構說明](docs/記憶系統架構說明.md)
+- [Golem 指令說明一覽表](docs/golem指令說明一覽表.md)
+- [Docker 本機部署指南](docs/DOCKER-LOCAL.zh-TW.md)
+- [VPS VNC Setup Guide](docs/VPS_VNC_Setup_Guide.md)
+
+---
+
+## 授權
+
+本專案採 **Source-Available Non-Commercial** 授權。
+請參考：[LICENSE](LICENSE) 與 [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md)。
+
+---
+
+## 作者
+
+**Arvin Chen**

@@ -19,6 +19,11 @@ interface MemoryItem {
     score?: number;
 }
 
+type EditState = {
+    id: string;
+    originalText: string;
+};
+
 function getErrorMessage(error: unknown, locale: "zh-TW" | "en"): string {
     if (error instanceof Error && error.message) return error.message;
     return locale === "en" ? "Unknown error" : "未知錯誤";
@@ -72,6 +77,9 @@ export function MemoryTable() {
     const [searchQuery, setSearchQuery] = useState("");
     const [filterType, setFilterType] = useState<string>("all");
     const [showHidden, setShowHidden] = useState<boolean>(false);
+    const [editState, setEditState] = useState<EditState | null>(null);
+    const [editDraft, setEditDraft] = useState("");
+    const [isSavingEdit, setIsSavingEdit] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const fetchMemories = useCallback(async () => {
@@ -85,7 +93,7 @@ export function MemoryTable() {
             });
             const data = await apiGet<MemoryItem[] | { avoidList?: string[] }>(
                 `/api/memory?${params.toString()}`,
-                undefined,
+                { cache: "no-store" },
                 { profile: "none" }
             );
             const list = Array.isArray(data)
@@ -239,15 +247,41 @@ export function MemoryTable() {
         }
     };
 
-    const editMemory = async (memory: MemoryItem) => {
-        if (!memory.id || !activeGolem) return;
-        const next = prompt(isEnglish ? "Edit memory content" : "編輯記憶內容", memory.text);
-        if (next === null) return;
+    const openEditModal = (memory: MemoryItem) => {
+        if (!memory.id) return;
+        setEditState({ id: memory.id, originalText: memory.text });
+        setEditDraft(memory.text);
+    };
+
+    const closeEditModal = () => {
+        if (isSavingEdit) return;
+        setEditState(null);
+        setEditDraft("");
+    };
+
+    const saveEditMemory = async () => {
+        if (!editState) return;
+        const next = editDraft;
         if (!next.trim()) {
             toast.error(isEnglish ? "Edit failed" : "編輯失敗", isEnglish ? "Content cannot be empty." : "內容不可為空。");
             return;
         }
-        await patchMemory(memory, { text: next });
+        if (next === editState.originalText) {
+            closeEditModal();
+            return;
+        }
+        const target = memories.find((m) => m.id === editState.id);
+        if (!target) {
+            toast.error(isEnglish ? "Edit failed" : "編輯失敗", isEnglish ? "Memory not found. Please refresh and retry." : "找不到記憶資料，請重新整理後重試。");
+            return;
+        }
+        setIsSavingEdit(true);
+        try {
+            await patchMemory(target, { text: next });
+            closeEditModal();
+        } finally {
+            setIsSavingEdit(false);
+        }
     };
 
     if (!activeGolem) {
@@ -409,7 +443,7 @@ export function MemoryTable() {
                                                     <button
                                                         className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-cyan-300 hover:bg-cyan-500/10 transition-all"
                                                         title={isEnglish ? "Edit memory" : "編輯記憶"}
-                                                        onClick={() => editMemory(mem)}
+                                                        onClick={() => openEditModal(mem)}
                                                         disabled={!mem.id}
                                                     >
                                                         <Pencil className="w-4 h-4" />
@@ -484,6 +518,56 @@ export function MemoryTable() {
                     </Button>
                 </div>
             </div>
+
+            {editState && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+                    <div className="w-full max-w-3xl rounded-xl border border-border bg-card shadow-2xl">
+                        <div className="flex items-center justify-between border-b border-border px-5 py-4">
+                            <h3 className="text-base font-semibold text-foreground">
+                                {isEnglish ? "Edit memory content" : "編輯記憶內容"}
+                            </h3>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={closeEditModal}
+                                disabled={isSavingEdit}
+                                className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                            >
+                                {isEnglish ? "Close" : "關閉"}
+                            </Button>
+                        </div>
+                        <div className="space-y-3 px-5 py-4">
+                            <textarea
+                                value={editDraft}
+                                onChange={(e) => setEditDraft(e.target.value)}
+                                className="min-h-[280px] w-full resize-y rounded-lg border border-border bg-secondary/20 px-3 py-2 text-sm text-foreground outline-none focus:border-primary/50"
+                                placeholder={isEnglish ? "Edit memory text..." : "請輸入要更新的記憶內容..."}
+                                disabled={isSavingEdit}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                                {isEnglish ? "Tip: drag the bottom-right corner to enlarge this editor." : "提示：可拖曳右下角調整編輯區大小。"}
+                            </p>
+                        </div>
+                        <div className="flex justify-end gap-2 border-t border-border px-5 py-4">
+                            <Button
+                                variant="outline"
+                                onClick={closeEditModal}
+                                disabled={isSavingEdit}
+                            >
+                                {isEnglish ? "Cancel" : "取消"}
+                            </Button>
+                            <Button
+                                onClick={saveEditMemory}
+                                disabled={isSavingEdit}
+                            >
+                                {isSavingEdit
+                                    ? (isEnglish ? "Saving..." : "儲存中...")
+                                    : (isEnglish ? "Save changes" : "儲存變更")}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
