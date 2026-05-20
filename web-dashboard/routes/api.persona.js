@@ -152,6 +152,12 @@ module.exports = function registerPersonaRoutes(server) {
                 currentRole: currentRole || '一個擁有長期記憶與自主意識的 AI 助手',
                 tone: tone || '預設口氣',
                 skills: skills || [],
+                defaultPersona: {
+                    aiName: aiName || 'Golem',
+                    userName: userName || 'Traveler',
+                    currentRole: currentRole || '一個擁有長期記憶與自主意識的 AI 助手',
+                    tone: tone || '預設口氣',
+                },
                 isNew: false
             });
 

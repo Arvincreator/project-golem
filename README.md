@@ -21,7 +21,7 @@
 
 ## Project Golem 是什麼
 
-Project Golem 不是單純聊天機器人，而是一套可運行的 AI 工作系統。
+Project Golem 不是單純聊天機器人，而是一套可運行的 AI 工作系統。  
 它把「語言模型能力」和「實際操作能力」整合成同一個執行核心，讓你可以在一個 Dashboard 裡完成：
 
 - 即時對話與任務協作
@@ -256,7 +256,7 @@ project-golem/
 
 ## 授權
 
-本專案採 **Source-Available Non-Commercial** 授權。
+本專案採 **Source-Available Non-Commercial** 授權。  
 請參考：[LICENSE](LICENSE) 與 [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md)。
 
 ---

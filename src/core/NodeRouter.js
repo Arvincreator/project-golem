@@ -356,7 +356,7 @@ class NodeRouter {
             const newName = text.replace('/callme', '').trim();
             if (newName) {
                 const persona = require('../skills/core/persona');
-                persona.setName('user', newName, brain.userDataDir);
+                persona.setName(brain.userDataDir, 'user', newName);
                 await brain.init(true); // forceReload
                 await notifyBrainSystemChange(
                     '使用者稱呼已更新',

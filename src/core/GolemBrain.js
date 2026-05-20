@@ -113,6 +113,8 @@ class GolemBrain {
         this._transportState = options.transportState || { queue: Promise.resolve() };
         this._toolVectorSyncPromise = null;
         this._toolVectorSyncQueued = false;
+        this._personaTurnContextCache = null;
+        this._personaTurnContextMtimeMs = 0;
 
         // ── [OpenHarness-inspired] Hook System ──────────────────
         // 全域單例，各模組可透過 brain.hookSystem 掛載 pre/post_tool_use handler
@@ -749,6 +751,51 @@ class GolemBrain {
         return lines.join('\n');
     }
 
+    _buildPersonaTurnContext() {
+        try {
+            const personaPath = path.resolve(this.userDataDir, 'persona.json');
+            const exists = fs.existsSync(personaPath);
+            if (!exists) return '';
+
+            const stat = fs.statSync(personaPath);
+            if (
+                this._personaTurnContextCache &&
+                Number.isFinite(stat.mtimeMs) &&
+                stat.mtimeMs === this._personaTurnContextMtimeMs
+            ) {
+                return this._personaTurnContextCache;
+            }
+
+            const personaManager = require('../skills/core/persona');
+            const persona = personaManager.get(this.userDataDir) || {};
+            const aiName = String(persona.aiName || 'Golem').trim();
+            const userName = String(persona.userName || 'Traveler').trim();
+            const role = String(persona.currentRole || '一個擁有長期記憶與自主意識的 AI 助手').trim();
+            const tone = String(persona.tone || '預設口氣').trim();
+            const skills = Array.isArray(persona.skills)
+                ? persona.skills.map((s) => String(s || '').trim()).filter(Boolean)
+                : [];
+
+            const lines = [
+                '<persona-turn-context>',
+                '[System note: 以下為本回合必須嚴格遵守的人格設定；若與你預設風格衝突，優先遵守此人格設定。]',
+                `ai_name=${aiName}`,
+                `user_name=${userName}`,
+                `persona_role=${role}`,
+                `persona_tone=${tone}`,
+                `persona_skills=${skills.length > 0 ? skills.join(', ') : '(none)'}`,
+                '</persona-turn-context>',
+            ];
+            const payload = lines.join('\n');
+            this._personaTurnContextCache = payload;
+            this._personaTurnContextMtimeMs = Number.isFinite(stat.mtimeMs) ? stat.mtimeMs : Date.now();
+            return payload;
+        } catch (e) {
+            console.warn(`[Persona][${this.golemId}] turn-context build failed: ${e.message}`);
+            return '';
+        }
+    }
+
     async _withToolRoutingHint(text, isSystem = false, options = {}) {
         if (options.disableToolRouting === true) return text;
         if (options._segmentedBypass === true) return text;
@@ -775,8 +822,11 @@ class GolemBrain {
             } else {
                 hint = this.toolRouter.buildRoutingHint(text);
             }
-            if (!hint) return `${runtimeContext}\n\n${text}`;
-            return `${runtimeContext}\n\n${hint}\n\n${text}`;
+            const personaContext = this._buildPersonaTurnContext();
+            const prefixBlocks = [runtimeContext];
+            if (personaContext) prefixBlocks.push(personaContext);
+            if (hint) prefixBlocks.push(hint);
+            return `${prefixBlocks.join('\n\n')}\n\n${text}`;
         } catch (e) {
             console.warn(`[ToolRouter][${this.golemId}] routing hint failed: ${e.message}`);
             return text;

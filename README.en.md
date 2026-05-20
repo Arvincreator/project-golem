@@ -21,7 +21,7 @@
 
 ## What is Project Golem?
 
-Project Golem is not just a chatbot. It is an executable AI work system.
+Project Golem is not just a chatbot. It is an executable AI work system.  
 It combines language model intelligence with operational tooling so you can run real workflows from a single dashboard:
 
 - Live conversations and task collaboration
@@ -255,7 +255,7 @@ project-golem/
 
 ## License
 
-This project is distributed under a **Source-Available Non-Commercial** license.
+This project is distributed under a **Source-Available Non-Commercial** license.  
 See [LICENSE](LICENSE) and [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md).
 
 ---
