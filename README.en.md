@@ -116,28 +116,6 @@ Current main dashboard routes (from `web-dashboard/src/app/dashboard`) include:
 - `/dashboard/reference-files`: Reference Files
 - `/dashboard/settings`: system settings summary
 
-### Requested new dashboard screenshots
-
-Please put screenshots under `assets/screenshots/` with these filenames:
-
-| Priority | Route | Suggested filename |
-| --- | --- | --- |
-| Required | `/dashboard/stocks` | `assets/screenshots/dashboard-stocks.png` |
-| Required | `/dashboard/calendar` | `assets/screenshots/dashboard-calendar.png` |
-| Required | `/dashboard/rpg` | `assets/screenshots/dashboard-rpg.png` |
-| Required | `/dashboard/memory` | `assets/screenshots/dashboard-memory-core.png` |
-| Required | `/dashboard/skills` | `assets/screenshots/dashboard-skills.png` |
-| Required | `/dashboard/mcp` | `assets/screenshots/dashboard-mcp.png` |
-| Required | `/dashboard/settings` | `assets/screenshots/dashboard-settings.png` |
-| Recommended | `/dashboard/prompt-pool` | `assets/screenshots/dashboard-prompt-pool.png` |
-| Recommended | `/dashboard/prompt-trends` | `assets/screenshots/dashboard-prompt-trends.png` |
-| Recommended | `/dashboard/action-gate` | `assets/screenshots/dashboard-action-gate.png` |
-| Recommended | `/dashboard/agents` | `assets/screenshots/dashboard-agents.png` |
-| Recommended | `/dashboard/office` | `assets/screenshots/dashboard-office.png` |
-| Recommended | `/dashboard/memory-firewall` | `assets/screenshots/dashboard-memory-firewall.png` |
-| Recommended | `/dashboard/persona` | `assets/screenshots/dashboard-persona.png` |
-
-After you add these images, I can produce a final polished README layout with grouped visual sections.
 
 ---
 
