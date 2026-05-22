@@ -164,6 +164,17 @@ class ResponseExtractor {
                                 return;
                             }
                         } else if (rawText !== oldText) {
+                            // ✨ [條件 3.5：只有 END 沒有 BEGIN]
+                            // 有些回合模型會漏掉 BEGIN，只留下 END。若文字已穩定，直接回收 END 前內容。
+                            if (endIndex !== -1 && stableCount > _stableThinking && !isLikelyGenerating) {
+                                const content = rawText.substring(0, endIndex).trim();
+                                resolve({
+                                    status: 'ENVELOPE_END_ONLY',
+                                    text: content,
+                                    attachments: attachments
+                                });
+                                return;
+                            }
                             // ✨ [條件 3：Thinking Mode] 還沒看到 BEGIN，可能在深思
                             // 若偵測仍在生成，延長容忍，避免慢回應被誤截斷
                             if (stableCount > _stableThinking && !isLikelyGenerating) {

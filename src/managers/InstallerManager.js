@@ -13,6 +13,7 @@ const CapabilityRegistry = require('./CapabilityRegistry');
 const ExampleSyncManager = require('./ExampleSyncManager');
 const execFileAsync = promisify(execFile);
 const REMOTE_INSTALL_MAX_BYTES = 5 * 1024 * 1024;
+const INSTALL_REGISTRY_FILE = 'install-registry.json';
 
 function ensureExists(filePath) {
   if (!fs.existsSync(filePath)) throw new Error(`Path not found: ${filePath}`);
@@ -156,7 +157,110 @@ async function postInstallSync(brain) {
   return syncResult;
 }
 
+function getUserDataDir(brain) {
+  return brain && brain.userDataDir ? brain.userDataDir : path.resolve(process.cwd(), 'golem_memory');
+}
+
 class InstallerManager {
+  _registryPath(brain) {
+    return path.join(getUserDataDir(brain), INSTALL_REGISTRY_FILE);
+  }
+
+  _readRegistry(brain) {
+    const target = this._registryPath(brain);
+    if (!fs.existsSync(target)) return { items: [] };
+    try {
+      const parsed = JSON.parse(fs.readFileSync(target, 'utf8'));
+      if (!parsed || typeof parsed !== 'object' || !Array.isArray(parsed.items)) return { items: [] };
+      return parsed;
+    } catch (_e) {
+      return { items: [] };
+    }
+  }
+
+  _writeRegistry(brain, payload) {
+    const target = this._registryPath(brain);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, JSON.stringify(payload, null, 2), 'utf8');
+  }
+
+  _upsertRegistryItem(brain, item) {
+    const registry = this._readRegistry(brain);
+    const key = `${item.type}:${item.id}`;
+    const now = new Date().toISOString();
+    const idx = registry.items.findIndex(v => `${v.type}:${v.id}` === key);
+    const next = { ...item, updatedAt: now };
+    if (idx >= 0) {
+      registry.items[idx] = { ...registry.items[idx], ...next };
+    } else {
+      registry.items.push({ ...next, createdAt: now });
+    }
+    this._writeRegistry(brain, registry);
+    return next;
+  }
+
+  _removeRegistryItem(brain, type, id) {
+    const registry = this._readRegistry(brain);
+    registry.items = registry.items.filter(v => !(v.type === type && v.id === id));
+    this._writeRegistry(brain, registry);
+  }
+
+  _flattenInstalled(brain) {
+    const userDataDir = getUserDataDir(brain);
+    const skills = SkillPackageRegistry.listSkillPackages({ userDataDir }).map(pkg => ({
+      type: 'skill',
+      id: pkg.id,
+      name: pkg.name || pkg.id,
+      path: pkg.dir,
+      sourceType: 'unknown',
+      source: '',
+      installed: true
+    }));
+    const mcp = MCPManager.getInstance().getServers().map(cfg => ({
+      type: 'mcp',
+      id: cfg.name,
+      name: cfg.name,
+      command: cfg.command,
+      enabled: cfg.enabled !== false,
+      sourceType: 'unknown',
+      source: '',
+      installed: true
+    }));
+    const installedMap = new Map();
+    for (const item of [...skills, ...mcp]) installedMap.set(`${item.type}:${item.id}`, item);
+    const registry = this._readRegistry(brain);
+    for (const item of registry.items) {
+      const key = `${item.type}:${item.id}`;
+      const merged = { ...(installedMap.get(key) || {}), ...item };
+      if (installedMap.has(key)) merged.installed = true;
+      installedMap.set(key, merged);
+    }
+    return [...installedMap.values()].sort((a, b) => `${a.type}:${a.id}`.localeCompare(`${b.type}:${b.id}`));
+  }
+
+  async listInstalled(brain) {
+    await MCPManager.getInstance().load();
+    return this._flattenInstalled(brain);
+  }
+
+  async searchInstalled(keyword, brain) {
+    const q = String(keyword || '').trim().toLowerCase();
+    const items = await this.listInstalled(brain);
+    if (!q) return items;
+    return items.filter(item => {
+      const bucket = [
+        item.type,
+        item.id,
+        item.name,
+        item.path,
+        item.command,
+        item.sourceType,
+        item.source
+      ].map(v => String(v || '').toLowerCase()).join(' ');
+      return bucket.includes(q);
+    });
+  }
+
   async installSkillFromPath(sourcePath, brain) {
     const sourceDir = normalizeSkillSourceDir(sourcePath);
     const manifest = loadSkillManifest(sourceDir);
@@ -177,6 +281,15 @@ class InstallerManager {
     }
 
     const syncResult = await postInstallSync(brain);
+    const normalizedSource = path.resolve(String(sourcePath || '').trim());
+    this._upsertRegistryItem(brain, {
+      type: 'skill',
+      id: loaded.id,
+      name: loaded.name || loaded.id,
+      path: destDir,
+      sourceType: 'path',
+      source: normalizedSource
+    });
     return {
       ok: true,
       type: 'skill',
@@ -208,6 +321,14 @@ class InstallerManager {
       branch: gh.branch,
       subdir: gh.subdir || ''
     };
+    this._upsertRegistryItem(brain, {
+      type: 'skill',
+      id: result.id,
+      name: result.name || result.id,
+      path: result.path,
+      sourceType: 'github',
+      source: repoUrl
+    });
     return result;
   }
 
@@ -239,6 +360,14 @@ class InstallerManager {
     }
 
     const syncResult = await postInstallSync(brain);
+    this._upsertRegistryItem(brain, {
+      type: 'mcp',
+      id: cfg.name,
+      name: cfg.name,
+      command: cfg.command,
+      sourceType: 'json',
+      source: JSON.stringify(configInput || {})
+    });
     return {
       ok: true,
       type: 'mcp',
@@ -253,12 +382,29 @@ class InstallerManager {
     const parsed = parseJsonFile(resolved);
     const result = await this.installMcpFromConfig(parsed, brain);
     result.source = resolved;
+    this._upsertRegistryItem(brain, {
+      type: 'mcp',
+      id: result.name,
+      name: result.name,
+      command: result.command,
+      sourceType: 'file',
+      source: resolved
+    });
     return result;
   }
 
   async installMcpFromJson(jsonText, brain) {
     const parsed = JSON.parse(String(jsonText || '').trim());
-    return this.installMcpFromConfig(parsed, brain);
+    const result = await this.installMcpFromConfig(parsed, brain);
+    this._upsertRegistryItem(brain, {
+      type: 'mcp',
+      id: result.name,
+      name: result.name,
+      command: result.command,
+      sourceType: 'json',
+      source: String(jsonText || '').trim()
+    });
+    return result;
   }
 
   async installMcpFromUrl(urlInput, brain) {
@@ -266,7 +412,79 @@ class InstallerManager {
     const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'golem-mcp-url-'));
     const destPath = path.join(tmpRoot, 'mcp-config.json');
     await downloadFile(parsed.toString(), destPath, REMOTE_INSTALL_MAX_BYTES);
-    return this.installMcpFromFile(destPath, brain);
+    const result = await this.installMcpFromFile(destPath, brain);
+    this._upsertRegistryItem(brain, {
+      type: 'mcp',
+      id: result.name,
+      name: result.name,
+      command: result.command,
+      sourceType: 'url',
+      source: parsed.toString()
+    });
+    return result;
+  }
+
+  async removeInstalled(typeInput, idInput, brain) {
+    const type = String(typeInput || '').trim().toLowerCase();
+    const id = String(idInput || '').trim();
+    if (!type || !id) throw new Error('remove requires: <skill|mcp> <id>');
+
+    await MCPManager.getInstance().load();
+    if (type === 'skill') {
+      const userSkillRoot = SkillPackageRegistry.getUserSkillPackageDir(getUserDataDir(brain));
+      const pkg = SkillPackageRegistry.listSkillPackages({ userDataDir: getUserDataDir(brain) })
+        .find(v => v.id === id);
+      if (!pkg) throw new Error(`Skill not found: ${id}`);
+      const normalizedDir = path.resolve(pkg.dir);
+      const normalizedRoot = path.resolve(userSkillRoot);
+      if (!normalizedDir.startsWith(normalizedRoot + path.sep) && normalizedDir !== normalizedRoot) {
+        throw new Error(`Refuse to remove non-user skill: ${id}`);
+      }
+      fs.rmSync(normalizedDir, { recursive: true, force: true });
+      const skillManager = require('./SkillManager');
+      if (skillManager && typeof skillManager.refresh === 'function') skillManager.refresh();
+      this._removeRegistryItem(brain, 'skill', id);
+      const syncResult = await postInstallSync(brain);
+      return { ok: true, type: 'skill', id, syncResult };
+    }
+
+    if (type === 'mcp') {
+      const manager = MCPManager.getInstance();
+      const existed = manager.getServer(id);
+      if (!existed) throw new Error(`MCP not found: ${id}`);
+      await manager.removeServer(id);
+      this._removeRegistryItem(brain, 'mcp', id);
+      const syncResult = await postInstallSync(brain);
+      return { ok: true, type: 'mcp', id, syncResult };
+    }
+    throw new Error(`Unsupported type for remove: ${type}`);
+  }
+
+  async updateInstalled(typeInput, idInput, brain) {
+    const type = String(typeInput || '').trim().toLowerCase();
+    const id = String(idInput || '').trim();
+    if (!type || !id) throw new Error('update requires: <skill|mcp> <id>');
+    await MCPManager.getInstance().load();
+
+    const registry = this._readRegistry(brain);
+    const record = registry.items.find(v => v.type === type && v.id === id);
+    if (!record) throw new Error(`No install record for ${type}:${id}`);
+    if (!record.sourceType || !record.source) {
+      throw new Error(`Install record missing source metadata for ${type}:${id}`);
+    }
+
+    if (type === 'skill') {
+      if (record.sourceType === 'github') return this.installSkillFromGithub(record.source, brain);
+      if (record.sourceType === 'path') return this.installSkillFromPath(record.source, brain);
+      throw new Error(`Unsupported skill source type: ${record.sourceType}`);
+    }
+    if (type === 'mcp') {
+      if (record.sourceType === 'url') return this.installMcpFromUrl(record.source, brain);
+      if (record.sourceType === 'file') return this.installMcpFromFile(record.source, brain);
+      if (record.sourceType === 'json') return this.installMcpFromJson(record.source, brain);
+      throw new Error(`Unsupported MCP source type: ${record.sourceType}`);
+    }
+    throw new Error(`Unsupported type for update: ${type}`);
   }
 }
 

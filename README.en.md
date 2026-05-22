@@ -4,7 +4,7 @@
   <p><strong>Your AI operations hub: chat, act, remember, and collaborate over the long run.</strong></p>
 
   <p>
-    <img src="https://img.shields.io/badge/version-9.6.22-blue?style=for-the-badge" alt="version" />
+    <img src="https://img.shields.io/badge/version-9.6.23-blue?style=for-the-badge" alt="version" />
     <img src="https://img.shields.io/badge/node.js-20~22-3C873A?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="node" />
     <img src="https://img.shields.io/badge/backend-gemini%20web%20%7C%20ollama%20%7C%20lmstudio-orange?style=for-the-badge" alt="backend" />
     <img src="https://img.shields.io/badge/dashboard-next.js-black?style=for-the-badge&logo=nextdotjs" alt="dashboard" />
@@ -90,18 +90,53 @@ Many AI tools are great for one-shot prompts, but weak for continuous work. Proj
 <img src="assets/4.jpg" width="900" alt="Skill Manager" />
 <img src="assets/8.jpg" width="900" alt="Memory Core" />
 
-The dashboard currently includes:
+Current main dashboard routes (from `web-dashboard/src/app/dashboard`) include:
 
-- Tactical dashboard: inspect system state, logs, queues, resources, and runtime health
-- Web Terminal: chat with Golem, send commands, and observe responses
-- Stock Analysis: manage Taiwan/US watchlists, quotes, indicators, news, and Golem analysis snapshots
-- Collab Calendar: create and manage events so Golem can read schedules and assist with reminders/collaboration
-- Text RPG: run native text RPG interactions from the dashboard or external channels
-- Bond Journal: exchange diaries, AI thoughts, weekly summaries, bond levels, backup, and restore
-- Memory Core: search, edit, block, import, and export long-term memory
-- Skill Manager: inspect, install, enable, and test skills
-- MCP Manager: add, test, and inspect external MCP servers
-- System Settings: manage model backend, security settings, API keys, updates, and health checks
+- `/dashboard`: Unified Console (overview + live status)
+- `/dashboard/chat`: chat workspace
+- `/dashboard/diary`: Bond Journal
+- `/dashboard/persona`: persona configuration
+- `/dashboard/prompt-pool`: Prompt Pool
+- `/dashboard/prompt-trends`: prompt trends analytics
+- `/dashboard/stocks`: stock board
+- `/dashboard/calendar`: collaborative calendar
+- `/dashboard/rpg`: text RPG
+- `/dashboard/skills`: skill management
+- `/dashboard/mcp`: MCP management
+- `/dashboard/action-gate`: Action Gate (approval flow for high-risk operations)
+- `/dashboard/agents`: agents list
+- `/dashboard/office`: Agent office / collaboration workspace
+- `/dashboard/memory`: Memory Core
+- `/dashboard/memory-firewall`: Memory Firewall
+- `/dashboard/reference-files`: Reference Files
+- `/dashboard/settings`: system settings summary
+
+### Requested new dashboard screenshots
+
+Please put screenshots under `assets/screenshots/` with these filenames:
+
+| Priority | Route | Suggested filename |
+| --- | --- | --- |
+| Required | `/dashboard` | `assets/screenshots/dashboard-overview.png` |
+| Required | `/dashboard/chat` | `assets/screenshots/dashboard-chat.png` |
+| Required | `/dashboard/stocks` | `assets/screenshots/dashboard-stocks.png` |
+| Required | `/dashboard/calendar` | `assets/screenshots/dashboard-calendar.png` |
+| Required | `/dashboard/rpg` | `assets/screenshots/dashboard-rpg.png` |
+| Required | `/dashboard/memory` | `assets/screenshots/dashboard-memory-core.png` |
+| Required | `/dashboard/skills` | `assets/screenshots/dashboard-skills.png` |
+| Required | `/dashboard/mcp` | `assets/screenshots/dashboard-mcp.png` |
+| Required | `/dashboard/settings` | `assets/screenshots/dashboard-settings.png` |
+| Recommended | `/dashboard/prompt-pool` | `assets/screenshots/dashboard-prompt-pool.png` |
+| Recommended | `/dashboard/prompt-trends` | `assets/screenshots/dashboard-prompt-trends.png` |
+| Recommended | `/dashboard/action-gate` | `assets/screenshots/dashboard-action-gate.png` |
+| Recommended | `/dashboard/agents` | `assets/screenshots/dashboard-agents.png` |
+| Recommended | `/dashboard/office` | `assets/screenshots/dashboard-office.png` |
+| Recommended | `/dashboard/memory-firewall` | `assets/screenshots/dashboard-memory-firewall.png` |
+| Recommended | `/dashboard/reference-files` | `assets/screenshots/dashboard-reference-files.png` |
+| Recommended | `/dashboard/diary` | `assets/screenshots/dashboard-diary.png` |
+| Recommended | `/dashboard/persona` | `assets/screenshots/dashboard-persona.png` |
+
+After you add these images, I can produce a final polished README layout with grouped visual sections.
 
 ---
 
