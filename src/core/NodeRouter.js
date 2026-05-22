@@ -78,6 +78,53 @@ function extractStockSymbolsFromText(text) {
     return Array.from(found).slice(0, 8);
 }
 
+function hasExampleSection(promptText) {
+    const text = String(promptText || '');
+    if (!text.trim()) return false;
+    if (/Action 格式|Runtime Action|連續操作範例|範例|Examples?/i.test(text)) return true;
+    if (/\{\s*"action"\s*:\s*"/.test(text)) return true;
+    return false;
+}
+
+function evaluateGeneratedSkillHealth(skillId, brain) {
+    const SkillPackageRegistry = require('../managers/SkillPackageRegistry');
+    const userDataDir = brain && brain.userDataDir ? brain.userDataDir : path.resolve(process.cwd(), 'golem_memory');
+    const pkg = SkillPackageRegistry.listSkillPackages({ userDataDir }).find((item) => item.id === String(skillId || '').toLowerCase());
+    const isRegistered = Boolean(pkg);
+
+    let isLoadable = false;
+    let loadError = '';
+    if (pkg && pkg.indexPath && fs.existsSync(pkg.indexPath)) {
+        try {
+            delete require.cache[require.resolve(pkg.indexPath)];
+            const mod = require(pkg.indexPath);
+            isLoadable = Boolean(mod && typeof mod.run === 'function');
+            if (!isLoadable) loadError = 'module loaded but missing run()';
+        } catch (error) {
+            isLoadable = false;
+            loadError = error && error.message ? error.message : String(error || 'load_failed');
+        }
+    }
+
+    let hasExamples = false;
+    if (pkg && pkg.promptPath && fs.existsSync(pkg.promptPath)) {
+        try {
+            const promptText = fs.readFileSync(pkg.promptPath, 'utf8');
+            hasExamples = hasExampleSection(promptText);
+        } catch (_) {
+            hasExamples = false;
+        }
+    }
+
+    return {
+        isRegistered,
+        isLoadable,
+        hasExamples,
+        loadError,
+        allGreen: isRegistered && isLoadable && hasExamples,
+    };
+}
+
 // ============================================================
 // ⚡ NodeRouter (反射層)
 // ============================================================
@@ -385,7 +432,11 @@ class NodeRouter {
                     '`/install skill-gh <github repo/tree url>`\n' +
                     '`/install mcp-file <本機 mcp json 路徑>`\n' +
                     '`/install mcp-json <單行 JSON>`\n' +
-                    '`/install mcp-url <https json url>`\n\n' +
+                    '`/install mcp-url <https json url>`\n' +
+                    '`/install list`\n' +
+                    '`/install search <keyword>`\n' +
+                    '`/install update <skill|mcp> <id>`\n' +
+                    '`/install remove <skill|mcp> <id>`\n\n' +
                     'MCP JSON 至少需包含：`name`, `command`'
                 );
             }
@@ -460,9 +511,69 @@ class NodeRouter {
                     );
                 }
 
+                if (subCmd === 'list') {
+                    const items = await InstallerManager.listInstalled(brain);
+                    if (!items.length) return await reply('ℹ️ 目前沒有已安裝項目。');
+                    const lines = items.slice(0, 50).map((item) => {
+                        const detail = item.type === 'skill'
+                            ? `path=${item.path || '-'}`
+                            : `cmd=${item.command || '-'} enabled=${item.enabled !== false ? 'yes' : 'no'}`;
+                        return `- [${item.type}] ${item.id} (${detail})`;
+                    });
+                    const truncated = items.length > 50 ? `\n... 共 ${items.length} 筆（僅顯示前 50 筆）` : '';
+                    return await reply(`📦 已安裝項目（${items.length}）\n${lines.join('\n')}${truncated}`);
+                }
+
+                if (subCmd === 'search') {
+                    if (!argText) return await reply('⚠️ 用法：`/install search <keyword>`');
+                    const items = await InstallerManager.searchInstalled(argText, brain);
+                    if (!items.length) return await reply(`ℹ️ 找不到關鍵字：\`${argText}\``);
+                    const lines = items.slice(0, 50).map((item) => {
+                        const source = item.sourceType && item.source ? `${item.sourceType}:${item.source}` : 'source:unknown';
+                        return `- [${item.type}] ${item.id} (${source})`;
+                    });
+                    const truncated = items.length > 50 ? `\n... 共 ${items.length} 筆（僅顯示前 50 筆）` : '';
+                    return await reply(`🔎 搜尋結果（${items.length}）\n${lines.join('\n')}${truncated}`);
+                }
+
+                if (subCmd === 'update') {
+                    const [type, ...idParts] = argText.split(/\s+/).filter(Boolean);
+                    const id = idParts.join(' ').trim();
+                    if (!type || !id) return await reply('⚠️ 用法：`/install update <skill|mcp> <id>`');
+                    const result = await InstallerManager.updateInstalled(type, id, brain);
+                    if (result.type === 'skill') {
+                        return await reply(
+                            `✅ 技能更新完成\n` +
+                            `- ID: ${result.id}\n` +
+                            `- Name: ${result.name}\n` +
+                            `- Path: \`${result.path}\`\n` +
+                            `- 新增範例: ${result.syncResult.added}`
+                        );
+                    }
+                    return await reply(
+                        `✅ MCP 更新完成\n` +
+                        `- Name: ${result.name}\n` +
+                        `- Command: \`${result.command}\`\n` +
+                        `- 新增範例: ${result.syncResult.added}`
+                    );
+                }
+
+                if (subCmd === 'remove') {
+                    const [type, ...idParts] = argText.split(/\s+/).filter(Boolean);
+                    const id = idParts.join(' ').trim();
+                    if (!type || !id) return await reply('⚠️ 用法：`/install remove <skill|mcp> <id>`');
+                    const result = await InstallerManager.removeInstalled(type, id, brain);
+                    return await reply(
+                        `✅ 移除完成\n` +
+                        `- Type: ${result.type}\n` +
+                        `- ID: ${result.id}\n` +
+                        `- 新增範例: ${result.syncResult.added}`
+                    );
+                }
+
                 return await reply(
                     `⚠️ 不支援的 install 子指令: \`${subCmd}\`\n` +
-                    '可用：`skill`, `skill-gh`, `mcp-file`, `mcp-json`, `mcp-url`'
+                    '可用：`skill`, `skill-gh`, `mcp-file`, `mcp-json`, `mcp-url`, `list`, `search`, `update`, `remove`'
                 );
             } catch (e) {
                 return await reply(`❌ 安裝失敗: ${e.message}`);
@@ -481,7 +592,49 @@ class NodeRouter {
             }
 
             try {
-                const result = await architect.designSkill(brain, intent, skillManager.listSkills());
+                const MAX_LEARN_REPAIR_RETRY = 2;
+                let result = null;
+                let health = null;
+                let repairFeedback = '';
+                for (let attempt = 0; attempt <= MAX_LEARN_REPAIR_RETRY; attempt += 1) {
+                    result = await architect.designSkill(brain, intent, skillManager.listSkills(), {
+                        attempt,
+                        repairFeedback
+                    });
+                    if (!result.success) break;
+
+                    const runtimeSkillId = String(
+                        result.id || require('path').basename(result.path || '', '.js')
+                    ).toLowerCase();
+
+                    try {
+                        skillManager.refresh();
+                    } catch (refreshError) {
+                        console.warn(`⚠️ [NodeRouter] SkillManager refresh failed after /learn: ${refreshError.message}`);
+                    }
+                    health = evaluateGeneratedSkillHealth(runtimeSkillId, brain);
+                    if (health.allGreen) {
+                        break;
+                    }
+
+                    repairFeedback = [
+                        `health_check_failed`,
+                        `isRegistered=${health.isRegistered}`,
+                        `isLoadable=${health.isLoadable}`,
+                        `hasExamples=${health.hasExamples}`,
+                        `loadError=${health.loadError || '(none)'}`,
+                        'Fix requirements:',
+                        '- Must export module with async run(ctx = {})',
+                        '- Must include valid URL/template strings in JS (no markdown link syntax)',
+                        '- skill.md must include executable action example JSON',
+                    ].join('\n');
+
+                    if (attempt < MAX_LEARN_REPAIR_RETRY && result.packagePath && fs.existsSync(result.packagePath)) {
+                        try {
+                            fs.rmSync(result.packagePath, { recursive: true, force: true });
+                        } catch (_) {}
+                    }
+                }
 
                 if (result.success) {
                     const runtimeSkillId = String(
@@ -505,6 +658,12 @@ class NodeRouter {
                         return await reply(
                             `❌ **學習失敗**: 技能已生成但未成功載入（action: \`${runtimeSkillId}\`）。為避免假技能，系統已阻止註冊。`
                         );
+                    }
+                    const finalHealth = evaluateGeneratedSkillHealth(runtimeSkillId, brain);
+                    if (!finalHealth.allGreen) {
+                        const reason = `技能健康檢查未達三綠（registered=${finalHealth.isRegistered}, loadable=${finalHealth.isLoadable}, examples=${finalHealth.hasExamples}${finalHealth.loadError ? `, error=${finalHealth.loadError}` : ''})`;
+                        await notifyLearnOutcome({ success: false, reason });
+                        return await reply(`❌ **學習失敗**: ${reason}`);
                     }
 
                     // 2) 直接寫入 SQLite 索引，讓 Dashboard 立即可見
@@ -564,7 +723,7 @@ class NodeRouter {
                 const response = result.success
                     ? `✅ **新技能編寫完成！**\n📜 **名稱**: \`${result.name}\`\n🧩 **Action**: \`${result.id || require('path').basename(result.path || '', '.js')}\`\n📝 **描述**: ${result.preview}\n📂 **檔案**: \`${require('path').basename(result.path)}\`\n\n` +
                       `建議呼叫格式：\n\`\`\`json\n{"action":"${result.id || require('path').basename(result.path || '', '.js')}","args":{"input":"..."}}\n\`\`\`\n` +
-                      `_現在可以直接命令我使用此功能，且已同步到 SQLite，可在 Dashboard 看見。_`
+                      `_現在可以直接命令我使用此功能，且已同步到 SQLite，可在 Dashboard 看見（技能健康檢查：三綠）。_`
                     : `❌ **學習失敗**: ${result.error}`;
 
                 if (result.success) {
@@ -781,6 +940,17 @@ class NodeRouter {
                 );
             } catch (e) {
                 return await reply(`❌ Example Validate 失敗: ${e.message}`);
+            }
+        }
+
+        if (text === '/refine' || text.startsWith('/refine ')) {
+            try {
+                const RefinePlanner = require('../managers/RefinePlanner');
+                const goal = text.replace(/^\/refine\s*/i, '').trim();
+                const plan = RefinePlanner.plan(brain.userDataDir, goal);
+                return await reply(RefinePlanner.format(plan));
+            } catch (e) {
+                return await reply(`❌ Refine 計劃生成失敗: ${e.message}`);
             }
         }
 

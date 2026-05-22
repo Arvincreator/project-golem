@@ -58,7 +58,11 @@ module.exports = [
             { name: 'skill-gh <url>', description: '由 GitHub repo/tree URL 安裝技能' },
             { name: 'mcp-file <path>', description: '由本機 MCP JSON 設定檔安裝/更新' },
             { name: 'mcp-json <json>', description: '貼上單行 JSON 安裝/更新 MCP 設定' },
-            { name: 'mcp-url <url>', description: '由 HTTPS JSON URL 安裝/更新 MCP 設定' }
+            { name: 'mcp-url <url>', description: '由 HTTPS JSON URL 安裝/更新 MCP 設定' },
+            { name: 'list', description: '列出目前已安裝的 skill/mcp 與主要資訊' },
+            { name: 'search <keyword>', description: '搜尋已安裝項目（id/name/source）' },
+            { name: 'update <skill|mcp> <id>', description: '依來源資訊重新安裝更新（github/url/file/json/path）' },
+            { name: 'remove <skill|mcp> <id>', description: '移除已安裝 skill 或 mcp 設定' }
         ]
     },
     { command: '/donate', description: '顯示贊助連結，支持 Project Golem 持續開發。' },
@@ -81,6 +85,13 @@ module.exports = [
         ]
     },
     { command: '/compress', description: '手動壓縮目前會話記憶，節省長對話上下文空間。' },
+    {
+        command: '/refine',
+        description: '產生半自動能力補強計劃（缺口分析 + 優先任務 + 驗證步驟，不直接改碼）。',
+        options: [
+            { name: '<目標描述>', description: '例如：/refine 強化股票分析與日曆協作的工具穩定性' }
+        ]
+    },
     {
         command: '/project',
         description: '讀取專案資料夾並分段注入上下文，可掃描、注入或執行專案分析任務。',

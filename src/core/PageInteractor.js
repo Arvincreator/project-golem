@@ -95,7 +95,8 @@ class PageInteractor {
             await this._clickSend(selectors.send, {
                 responseSelector: selectors.response,
                 baseline,
-                startTag
+                startTag,
+                payloadLength: String(payload || '').length
             });
 
             // 5. 若為系統訊息，延遲後直接返回
@@ -714,6 +715,11 @@ class PageInteractor {
 
         // 防止 Enter 太快，給予輸入框更新時間
         await new Promise(r => setTimeout(r, 500));
+        const dynamicTimeout = this._computeSendAcceptTimeout(options.payloadLength, options.sendAcceptTimeoutMs);
+        const sendOptions = {
+            ...options,
+            sendAcceptTimeoutMs: dynamicTimeout
+        };
         const sendTarget = await this._tryClickSendButton(sendSelector);
 
         if (!sendTarget || !sendTarget.clicked) {
@@ -724,7 +730,7 @@ class PageInteractor {
             await this._performSendClick(sendTarget);
         }
 
-        const accepted = await this._waitForSendAccepted(options);
+        const accepted = await this._waitForSendAccepted(sendOptions);
         if (!accepted) {
             console.warn("⚠️ [PageInteractor] Gemini 草稿尚未送出，進行第二次送出補強。");
             const retryTarget = await this._tryClickSendButton(sendSelector);
@@ -735,7 +741,7 @@ class PageInteractor {
                 await this._performSendClick(retryTarget);
                 await this._focusBestComposer(PageInteractor.getComposerSelectors().join(', ')).catch(() => null);
             }
-            const retryAccepted = await this._waitForSendAccepted(options);
+            const retryAccepted = await this._waitForSendAccepted(sendOptions);
             if (!retryAccepted) {
                 throw new Error("Gemini 草稿未送出：已植入文字，但送出按鈕沒有啟用或訊息沒有離開輸入框。");
             }
@@ -1047,6 +1053,24 @@ class PageInteractor {
                     ].filter(Boolean).join(' ').toLowerCase();
                     return label.includes('stop') || label.includes('停止') || label.includes('中斷') || label.includes('停止生成');
                 });
+                const hasDisabledSend = buttons.some((button) => {
+                    const label = [
+                        button.getAttribute('aria-label'),
+                        button.getAttribute('title'),
+                        button.innerText,
+                        button.textContent
+                    ].filter(Boolean).join(' ').toLowerCase();
+                    const looksLikeSend = label.includes('send message') ||
+                        label.includes('傳送訊息') ||
+                        label.includes('送出訊息') ||
+                        label.includes('發送訊息') ||
+                        label.includes('submit message') ||
+                        label.includes('send') ||
+                        label.includes('傳送') ||
+                        label.includes('送出');
+                    if (!looksLikeSend) return false;
+                    return button.disabled || button.getAttribute('aria-disabled') === 'true';
+                });
 
                 const isEditableNode = (el) => {
                     if (!el) return false;
@@ -1089,12 +1113,14 @@ class PageInteractor {
                 const responseSignal = responseChanged && responseFromNonEditable;
                 const matchedSignals =
                     (hasStop ? 1 : 0) +
+                    (hasDisabledSend ? 1 : 0) +
                     (responseSignal ? 1 : 0) +
                     (composerLikelyCleared ? 1 : 0);
 
                 return {
                     composerTextLength,
                     hasStop,
+                    hasDisabledSend,
                     responseChanged,
                     responseFromNonEditable,
                     responseSignal,
@@ -1108,6 +1134,7 @@ class PageInteractor {
             }).catch(() => ({
                 composerTextLength: 1,
                 hasStop: false,
+                hasDisabledSend: false,
                 responseChanged: false,
                 responseFromNonEditable: false,
                 responseSignal: false,
@@ -1118,6 +1145,7 @@ class PageInteractor {
             const safeState = state || {
                 composerTextLength: 1,
                 hasStop: false,
+                hasDisabledSend: false,
                 responseChanged: false,
                 responseFromNonEditable: false,
                 responseSignal: false,
@@ -1127,11 +1155,51 @@ class PageInteractor {
             if (safeState.hasStop) {
                 return true;
             }
+            if (safeState.hasDisabledSend && safeState.composerTextLength < 40) {
+                return true;
+            }
             if (safeState.matchedSignals >= 2) {
                 return true;
             }
             await new Promise(r => setTimeout(r, 300));
         }
+        return false;
+    }
+
+    _computeSendAcceptTimeout(payloadLength = 0, explicitTimeoutMs = null) {
+        if (Number.isFinite(Number(explicitTimeoutMs)) && Number(explicitTimeoutMs) > 0) {
+            return Number(explicitTimeoutMs);
+        }
+        const len = Number(payloadLength) || 0;
+        if (len >= 50000) return 12000;
+        if (len >= 25000) return 9000;
+        if (len >= 12000) return 7500;
+        if (len >= 5000) return 6500;
+        return 5000;
+    }
+
+    async clearComposerDraft() {
+        const editorSelector = PageInteractor.getComposerSelectors().join(', ');
+        for (let attempt = 0; attempt < 2; attempt++) {
+            try {
+                const focusedComposer = await this._focusBestComposer(editorSelector);
+                if (focusedComposer && focusedComposer.ok && Number.isFinite(focusedComposer.x) && Number.isFinite(focusedComposer.y) && this.page.mouse) {
+                    await this.page.mouse.click(focusedComposer.x, focusedComposer.y);
+                }
+                const isMac = process.platform === 'darwin';
+                await this.page.keyboard.press(isMac ? 'Meta+A' : 'Control+A').catch(() => {});
+                await new Promise(r => setTimeout(r, 70));
+                await this.page.keyboard.press('Backspace').catch(() => {});
+                await this.page.keyboard.press('Delete').catch(() => {});
+                await new Promise(r => setTimeout(r, 180));
+                const state = await this._inspectComposerDraftState('').catch(() => ({ hasDraft: true, length: 9999 }));
+                if (!state.hasDraft || state.length === 0) {
+                    console.log('🧹 [PageInteractor] 已清空 Gemini 草稿框。');
+                    return true;
+                }
+            } catch (_) { }
+        }
+        console.warn('⚠️ [PageInteractor] 草稿框清空失敗，可能需要使用者手動清除。');
         return false;
     }
 

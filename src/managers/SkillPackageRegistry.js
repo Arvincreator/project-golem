@@ -22,10 +22,19 @@ function getUserSkillPackageDir(userDataDir) {
 }
 
 function getPackageRoots(userDataDir) {
+    // Canonical source first: user-owned skill packages.
+    // Fallback: built-in src skills for backward compatibility.
     return [
-        ...DEFAULT_PACKAGE_DIRS,
         getUserSkillPackageDir(userDataDir),
+        ...DEFAULT_PACKAGE_DIRS,
     ];
+}
+
+function getRootPriority(rootPath, userDataDir) {
+    const userRoot = path.resolve(getUserSkillPackageDir(userDataDir));
+    const current = path.resolve(rootPath);
+    if (current === userRoot) return 0;
+    return 10;
 }
 
 function readJson(filePath) {
@@ -126,11 +135,12 @@ function loadPackage(dir) {
 function listSkillPackages(options = {}) {
     const roots = options.roots || getPackageRoots(options.userDataDir);
     const packages = [];
-    const seen = new Set();
+    const indexById = new Map();
 
     for (const root of roots) {
         if (!root || typeof fs.existsSync !== 'function' || !fs.existsSync(root)) continue;
         const entries = fs.readdirSync(root, { withFileTypes: true });
+        const rootPriority = getRootPriority(root, options.userDataDir);
         for (const entry of entries) {
             const entryName = typeof entry === 'string' ? entry : entry.name;
             let isDirectory = false;
@@ -145,16 +155,36 @@ function listSkillPackages(options = {}) {
             const dir = path.join(root, entryName);
             try {
                 const pkg = loadPackage(dir);
-                if (!pkg || seen.has(pkg.id)) continue;
-                seen.add(pkg.id);
-                packages.push(pkg);
+                if (!pkg) continue;
+                const candidate = {
+                    ...pkg,
+                    _sourceRoot: root,
+                    _sourcePriority: rootPriority
+                };
+                const prevIdx = indexById.get(pkg.id);
+                if (prevIdx === undefined) {
+                    indexById.set(pkg.id, packages.length);
+                    packages.push(candidate);
+                    continue;
+                }
+                const prev = packages[prevIdx];
+                if (candidate._sourcePriority < (prev._sourcePriority ?? 999)) {
+                    packages[prevIdx] = candidate;
+                }
             } catch (e) {
                 console.warn(`[SkillPackageRegistry] Failed to load ${dir}: ${e.message}`);
             }
         }
     }
 
-    return packages;
+    return packages
+        .map(pkg => {
+            const clean = { ...pkg };
+            delete clean._sourceRoot;
+            delete clean._sourcePriority;
+            return clean;
+        })
+        .sort((a, b) => a.id.localeCompare(b.id));
 }
 
 function readPackagePrompt(pkg) {

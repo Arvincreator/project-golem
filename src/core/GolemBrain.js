@@ -667,23 +667,55 @@ class GolemBrain {
             console.log(`📡 [Brain] 發送訊號: ${reqId} (含每回合強制洗腦引擎)${attachment ? ' 📎 含有附件' : ''}`);
 
             const interactor = new PageInteractor(this.page, this.doctor);
-
-            try {
-                return await interactor.interact(
-                    payload, this.selectors, isSystem, startTag, endTag, 0, attachment, options
-                );
-            } catch (e) {
-                // 處理 selector 修復觸發的重試
-                if (e.message && e.message.startsWith('SELECTOR_HEALED:')) {
-                    const [, type, newSelector] = e.message.split(':');
-                    this.selectors[type] = newSelector;
-                    this.doctor.saveSelectors(this.selectors);
+            const maxAutoRetry = Math.max(0, Number(options.webAutoRetryCount ?? 1));
+            let attempt = 0;
+            while (attempt <= maxAutoRetry) {
+                try {
                     return await interactor.interact(
-                        payload, this.selectors, isSystem, startTag, endTag, 1, attachment, options
+                        payload, this.selectors, isSystem, startTag, endTag, 0, attachment, options
                     );
+                } catch (e) {
+                    // 處理 selector 修復觸發的重試
+                    if (e.message && e.message.startsWith('SELECTOR_HEALED:')) {
+                        const [, type, newSelector] = e.message.split(':');
+                        this.selectors[type] = newSelector;
+                        this.doctor.saveSelectors(this.selectors);
+                        return await interactor.interact(
+                            payload, this.selectors, isSystem, startTag, endTag, 1, attachment, options
+                        );
+                    }
+
+                    const failure = await this._classifyWebFailure(e);
+                    this._logWebFailure(failure, {
+                        attempt,
+                        maxAutoRetry,
+                        reqId,
+                    });
+
+                    const isDraftUnsent = this._isDraftUnsentFailure(e, failure);
+
+                    const canRetry = attempt < maxAutoRetry
+                        && failure.retryable
+                        && !isDraftUnsent
+                        && options.disableWebAutoRetry !== true;
+                    if (!canRetry) {
+                        if (isDraftUnsent) {
+                            const recovered = await interactor.clearComposerDraft().catch(() => false);
+                            const fallback = this._buildDraftUnsentFallbackReply({
+                                cleared: recovered,
+                                pageUrl: failure.pageUrl
+                            });
+                            return { text: fallback, attachments: [], status: 'USER_ACTION_REQUIRED' };
+                        }
+                        e.webFailure = failure;
+                        throw e;
+                    }
+
+                    attempt += 1;
+                    await this._prepareWebRetry(failure);
                 }
-                throw e;
             }
+            throw new Error('web_interaction_failed_unknown');
         });
 
         // 📥 [v9.1.10] 處理 Gemini 回傳的附件，下載至本地伺服器
@@ -725,6 +757,91 @@ class GolemBrain {
         }
 
         return result;
+    }
+
+    async _classifyWebFailure(error) {
+        const message = String(error && error.message ? error.message : error || '').toLowerCase();
+        const pageUrl = this.page && typeof this.page.url === 'function' ? this.page.url() : '';
+        const category = (() => {
+            if (/timeout|等待回應超時|timed out|navigation timeout/.test(message)) return 'timeout';
+            if (/login|sign in|not logged|auth|unauthorized|403|forbidden/.test(message)) return 'auth_required';
+            if (/429|rate limit|too many requests|quota|captcha/.test(message)) return 'rate_limited';
+            if (/net::|network|econn|socket|connection|dns|aborted/.test(message)) return 'network';
+            if (/selector|editable-not-found|草稿未送出|輸入框|send button|dom/.test(message)) return 'ui_changed';
+            return 'unknown';
+        })();
+
+        const retryable = category === 'timeout' || category === 'network' || category === 'ui_changed';
+        return {
+            category,
+            retryable,
+            message: String(error && error.message ? error.message : error || ''),
+            pageUrl,
+            at: new Date().toISOString()
+        };
+    }
+
+    _isDraftUnsentFailure(error, failure = null) {
+        const message = String(error && error.message ? error.message : error || '').toLowerCase();
+        if (message.includes('草稿未送出')) return true;
+        if (message.includes('訊息沒有離開輸入框')) return true;
+        if (message.includes('送出按鈕沒有啟用')) return true;
+        if (failure && failure.category === 'ui_changed' && /send button|輸入框/.test(message)) return true;
+        return false;
+    }
+
+    _buildDraftUnsentFallbackReply({ cleared = false, pageUrl = '' } = {}) {
+        const actionText = cleared
+            ? '我已先清空輸入框避免卡住。'
+            : '我嘗試清空輸入框，但可能仍有殘留草稿。';
+        const urlLine = pageUrl ? `\n目前頁面：${pageUrl}` : '';
+        return [
+            '[GOLEM_REPLY]',
+            `系統偵測到 Gemini 草稿未成功送出。${actionText}`,
+            '請回覆「重送」讓我重試一次，或直接輸入下一步指令。' + urlLine,
+            '[/GOLEM_REPLY]'
+        ].join('\n');
+    }
+
+    _logWebFailure(failure, meta = {}) {
+        const payload = {
+            kind: 'web_gemini_failure',
+            category: failure.category,
+            retryable: failure.retryable,
+            attempt: meta.attempt,
+            maxAutoRetry: meta.maxAutoRetry,
+            reqId: meta.reqId,
+            pageUrl: failure.pageUrl,
+            message: failure.message,
+            at: failure.at
+        };
+        console.warn(`[WebGuard][${this.golemId}] ${JSON.stringify(payload)}`);
+    }
+
+    async _prepareWebRetry(failure) {
+        const category = String(failure && failure.category || 'unknown');
+        if (category === 'auth_required') return;
+
+        if (category === 'timeout' || category === 'network') {
+            await this._ensureBrowserHealth();
+            try {
+                await this.page.waitForLoadState('domcontentloaded', { timeout: 8000 });
+            } catch (_) { }
+            await new Promise(resolve => setTimeout(resolve, 400));
+            return;
+        }
+
+        if (category === 'ui_changed') {
+            try {
+                const html = await this.page.content();
+                const healedInput = await this.doctor.diagnose(html, 'input');
+                if (healedInput) this.selectors.input = PageInteractor.cleanSelector(healedInput);
+                const healedSend = await this.doctor.diagnose(html, 'send');
+                if (healedSend) this.selectors.send = PageInteractor.cleanSelector(healedSend);
+                this.doctor.saveSelectors(this.selectors);
+            } catch (_) { }
+            await new Promise(resolve => setTimeout(resolve, 300));
+        }
     }
 
     _buildRuntimeTurnContext(options = {}) {

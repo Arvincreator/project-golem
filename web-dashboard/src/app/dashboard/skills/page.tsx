@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast-provider";
 import { apiGet, apiPost, apiPostWrite } from "@/lib/api-client";
 import { useI18n } from "@/components/I18nProvider";
+import { useGolem } from "@/components/GolemContext";
 
 type InstalledSkill = {
     id: string;
@@ -777,6 +778,7 @@ const MARKET_CATEGORIES = [
 export default function SkillsPage() {
     const toast = useToast();
     const { locale } = useI18n();
+    const { activeGolem } = useGolem();
     const isEnglish = locale === "en";
     const [activeTab, setActiveTab] = useState<"installed" | "marketplace">("installed");
 
@@ -799,6 +801,11 @@ export default function SkillsPage() {
     const [isMarketLoading, setIsMarketLoading] = useState(false);
     const [marketCategoryCounts, setMarketCategoryCounts] = useState<Record<string, number>>({});
     const [installingId, setInstallingId] = useState<string | null>(null);
+    const [designerIntent, setDesignerIntent] = useState("");
+    const [designerRefs, setDesignerRefs] = useState("");
+    const [isDesigning, setIsDesigning] = useState(false);
+    const pendingDesignerBaselineIdsRef = useRef<Set<string> | null>(null);
+    const pendingDesignerFocusRef = useRef<{ active: boolean; attemptsLeft: number }>({ active: false, attemptsLeft: 0 });
 
     const [isInjecting, setIsInjecting] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -833,9 +840,30 @@ export default function SkillsPage() {
     const importFileInputRef = useRef<HTMLInputElement | null>(null);
 
     const loadSkills = useCallback(() => {
-        apiGet<InstalledSkill[]>("/api/skills")
+        const fetchOnce = () => apiGet<InstalledSkill[]>("/api/skills")
             .then((data) => {
                 if (Array.isArray(data)) {
+                    const baselineIds = pendingDesignerBaselineIdsRef.current;
+                    if (baselineIds && pendingDesignerFocusRef.current.active) {
+                        const newlyAdded = data.find((skill) => !baselineIds.has(skill.id));
+                        if (newlyAdded) {
+                            setSelectedSkill(newlyAdded);
+                            pendingDesignerBaselineIdsRef.current = null;
+                            pendingDesignerFocusRef.current = { active: false, attemptsLeft: 0 };
+                            toast.success("技能設計完成", `已自動聚焦到新技能：${newlyAdded.title || newlyAdded.id}`);
+                        } else if (pendingDesignerFocusRef.current.attemptsLeft <= 0) {
+                            pendingDesignerBaselineIdsRef.current = null;
+                            pendingDesignerFocusRef.current = { active: false, attemptsLeft: 0 };
+                        } else {
+                            pendingDesignerFocusRef.current = {
+                                active: true,
+                                attemptsLeft: pendingDesignerFocusRef.current.attemptsLeft - 1,
+                            };
+                            setTimeout(() => {
+                                fetchOnce().catch((err) => console.error(err));
+                            }, 2500);
+                        }
+                    }
                     setSkills(data);
                     setLastInjectedOptionalIds((prev) => {
                         if (prev.length > 0) return prev;
@@ -857,6 +885,7 @@ export default function SkillsPage() {
                 }
             })
             .catch((err) => console.error(err));
+        return fetchOnce();
     }, []);
 
     const loadSkillChecks = useCallback(async (ids?: string[]) => {
@@ -993,6 +1022,46 @@ export default function SkillsPage() {
             toast.error("安裝失敗", "技能安裝失敗，請稍後再試。");
         } finally {
             setInstallingId(null);
+        }
+    };
+
+    const handleDesignSkill = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const intent = designerIntent.trim();
+        if (!intent) {
+            toast.error("請先輸入技能需求", "請描述你想讓 Golem 設計的技能。");
+            return;
+        }
+        if (!activeGolem) {
+            toast.error("尚未選擇 Golem", "請先在側邊欄選擇可用的 Golem 節點。");
+            return;
+        }
+
+        const refs = designerRefs
+            .split(/\r?\n/)
+            .map((line) => line.trim())
+            .filter(Boolean);
+        const refBlock = refs.length > 0
+            ? `\n\n參考連結（請分析其做法並轉化為本專案可用技能，不要直接照抄外部平台格式）：\n${refs.map((r, idx) => `${idx + 1}. ${r}`).join('\n')}`
+            : "";
+        const message = `/learn ${intent}${refBlock}`;
+
+        setIsDesigning(true);
+        pendingDesignerBaselineIdsRef.current = new Set(skills.map((item) => item.id));
+        pendingDesignerFocusRef.current = { active: true, attemptsLeft: 6 };
+        try {
+            await apiPost("/api/chat", {
+                golemId: activeGolem,
+                message,
+            });
+            toast.success("已送出技能設計任務", "Golem 正在設計技能，請到聊天或稍後回到技能列表查看結果。");
+            setTimeout(() => loadSkills(), 3500);
+        } catch (error: unknown) {
+            pendingDesignerBaselineIdsRef.current = null;
+            pendingDesignerFocusRef.current = { active: false, attemptsLeft: 0 };
+            toast.error("送出失敗", getErrorMessage(error, "無法送出技能設計任務"));
+        } finally {
+            setIsDesigning(false);
         }
     };
 
@@ -1321,7 +1390,7 @@ export default function SkillsPage() {
                                     <p className="text-sm text-muted-foreground mt-0.5 flex items-center gap-1.5">
                                         {activeTab === "marketplace" ? (
                                             <>
-                                                {isEnglish ? "Data source:" : "數據來源："}
+                                                {isEnglish ? "Designer references:" : "設計師參考來源："}
                                                 <a
                                                     href="https://github.com/ComposioHQ/awesome-claude-skills"
                                                     target="_blank"
@@ -1356,7 +1425,7 @@ export default function SkillsPage() {
                                         }`}
                                 >
                                     <Store className="w-4 h-4" />
-                                    {isEnglish ? "Skill Market" : "技能市場"}
+                                    {isEnglish ? "Skill Designer" : "技能設計師"}
                                 </button>
                             </div>
                         </div>
@@ -1719,6 +1788,55 @@ export default function SkillsPage() {
                             </div>
                         ) : (
                             <div className="flex flex-col h-full space-y-6">
+                                <div className="bg-card/40 backdrop-blur-md border border-border p-4 rounded-2xl shadow-xl animate-in zoom-in-95 duration-500">
+                                    <div className="mb-3">
+                                        <h3 className="text-sm font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.8)]"></div>
+                                            {isEnglish ? "Skill Designer" : "技能設計師"}
+                                        </h3>
+                                        <p className="text-xs text-muted-foreground mt-1">
+                                            {isEnglish
+                                                ? "Describe capability goals, optionally attach reference links, then let Golem design a project-ready skill via /learn."
+                                                : "輸入技能需求，可附參考連結，交由 Golem 透過 /learn 設計可用技能。"}
+                                        </p>
+                                    </div>
+                                    <form onSubmit={handleDesignSkill} className="space-y-3">
+                                        <textarea
+                                            value={designerIntent}
+                                            onChange={(event) => setDesignerIntent(event.target.value)}
+                                            placeholder={isEnglish
+                                                ? "Example: Build a stock risk skill that summarizes trend, key support/resistance, and risk reminders."
+                                                : "例如：建立股票風險提示技能，輸出趨勢、支撐壓力位與風險提醒。"}
+                                            className="w-full min-h-[96px] bg-secondary/50 border border-border/50 rounded-xl px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-muted-foreground/60 shadow-inner resize-y"
+                                        />
+                                        <textarea
+                                            value={designerRefs}
+                                            onChange={(event) => setDesignerRefs(event.target.value)}
+                                            placeholder={isEnglish
+                                                ? "Optional references (one URL per line)"
+                                                : "可選參考連結（每行一個 URL）"}
+                                            className="w-full min-h-[72px] bg-secondary/50 border border-border/50 rounded-xl px-3 py-2.5 text-xs text-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-muted-foreground/60 shadow-inner resize-y"
+                                        />
+                                        <div className="flex items-center justify-between gap-3">
+                                            <p className="text-[11px] text-muted-foreground">
+                                                {isEnglish
+                                                    ? `Target Golem: ${activeGolem || "none"}`
+                                                    : `目標 Golem：${activeGolem || "未選擇"}`}
+                                            </p>
+                                            <button
+                                                type="submit"
+                                                disabled={isDesigning || !activeGolem}
+                                                className={`px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2 transition-all bg-primary text-primary-foreground border border-primary hover:bg-primary/90 ${(isDesigning || !activeGolem) ? "opacity-60 cursor-not-allowed" : ""}`}
+                                            >
+                                                <Zap className={`w-4 h-4 ${isDesigning ? "animate-pulse" : ""}`} />
+                                                {isDesigning
+                                                    ? (isEnglish ? "Designing..." : "設計中...")
+                                                    : (isEnglish ? "Design Skill" : "設計技能")}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
                                 {/* Marketplace Top Bar */}
                                 <div className="bg-card/40 backdrop-blur-md border border-border p-4 rounded-2xl shadow-xl flex flex-col md:flex-row gap-4 items-center animate-in zoom-in-95 duration-500">
                                     <form onSubmit={handleSearchSubmit} className="relative flex-1 group">
@@ -1727,7 +1845,7 @@ export default function SkillsPage() {
                                             type="text"
                                             value={marketSearchText}
                                             onChange={(e) => setMarketSearchText(e.target.value)}
-                                            placeholder={isEnglish ? "Search 5,000+ AI skills in the market..." : "搜尋市場中的 5,000+ 個 AI 技能..."}
+                                            placeholder={isEnglish ? "Search reference skills..." : "搜尋參考技能來源..."}
                                             className="w-full bg-secondary/50 border border-border/50 rounded-xl pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-muted-foreground/60 shadow-inner"
                                         />
                                     </form>
@@ -1776,18 +1894,18 @@ export default function SkillsPage() {
                                     </div>
                                 </div>
 
-                                {/* Marketplace Grid */}
+                                {/* Reference Marketplace Grid */}
                                 <div className="flex-1 overflow-hidden relative">
                                     <div className="absolute inset-0 overflow-y-auto pr-2 custom-scrollbar">
                                         {isMarketLoading ? (
                                             <div className="h-64 flex flex-col items-center justify-center text-muted-foreground gap-4">
                                                 <RefreshCcw className="w-8 h-8 animate-spin text-primary/50" />
-                                                <p className="text-sm font-medium animate-pulse">{isEnglish ? "Curating top skills..." : "正在精挑細選優質技能..."}</p>
+                                                <p className="text-sm font-medium animate-pulse">{isEnglish ? "Loading reference sources..." : "正在載入參考來源..."}</p>
                                             </div>
                                         ) : marketSkills.length === 0 ? (
                                             <div className="h-64 flex flex-col items-center justify-center text-muted-foreground/50 gap-4">
                                                 <Search className="w-12 h-12 opacity-10" />
-                                                <p className="text-sm">{isEnglish ? "No skills found in this category" : "在此類別中找不到相關技能"}</p>
+                                                <p className="text-sm">{isEnglish ? "No reference skills found" : "目前找不到可用參考來源"}</p>
                                             </div>
                                         ) : (
                                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-20">
