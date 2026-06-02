@@ -277,26 +277,29 @@ class ConversationManager {
                 finalInput = `【相關記憶】\n${memories.map(m => `• ${m.text}`).join('\n')}\n---\n${finalInput}`;
             }
             const isMentioned = task.ctx.isMentioned ? task.ctx.isMentioned(task.text) : false;
+            const isGroupReplyTrigger = task.options.groupReplyTriggered === true;
+            const effectiveTrigger = isMentioned || isGroupReplyTrigger;
+            const effectiveObserver = this.observerMode || task.options.forceObserver === true;
 
-            if (this.silentMode && !isMentioned) {
+            if (this.silentMode && !effectiveTrigger) {
                 console.log(`🤫 [Dialogue Queue:${this.golemId}] 完全靜默模式啟動中，且未被標記，跳過大腦處理。`);
                 this.isProcessing = false;
                 setTimeout(() => this._processQueue(), 500);
                 return;
             }
 
-            const shouldSuppressReply = this.observerMode && !isMentioned;
+            const shouldSuppressReply = (effectiveObserver && !effectiveTrigger) || task.options.suppressReply === true;
 
             if (shouldSuppressReply) {
                 console.log(`👁️ [Dialogue Queue:${this.golemId}] 觀察者模式監聽中 (背景同步上下文)...`);
             }
 
-            if (isMentioned && (this.silentMode || this.observerMode)) {
+            if (effectiveTrigger && (this.silentMode || effectiveObserver)) {
                 console.log(`📢 [Dialogue Queue:${this.golemId}] 模式中偵測到標記，強制恢復回應。`);
             }
 
             const brainResponse = await this.brain.sendMessage(finalInput, false, {
-                isObserver: this.observerMode,
+                isObserver: effectiveObserver,
                 interventionLevel: this.interventionLevel,
                 attachment: task.attachment,
                 isAdmin: task.ctx && task.ctx.isAdmin === true,
@@ -333,7 +336,7 @@ class ConversationManager {
             }).catch(e => console.error("[ConfidenceTracker] Record error:", e));
 
             await this.NeuroShunter.dispatch(task.ctx, brainResponse, this.brain, this.controller, {
-                suppressReply: shouldSuppressReply || task.options.suppressReply === true,
+                suppressReply: shouldSuppressReply,
                 attachments: responseAttachments,
                 isSystemFeedback: task.options.isSystemFeedback === true,
                 allowActions: task.options.allowActions === true,

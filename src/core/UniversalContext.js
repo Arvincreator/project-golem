@@ -71,6 +71,17 @@ class UniversalContext {
         return false;
     }
 
+    isReplyingToBot() {
+        if (this.platform === 'discord') {
+            const botId = this.instance.user?.id;
+            const repliedAuthorId = this.event.reference?.messageId
+                ? this.event.channel?.messages?.cache?.get(this.event.reference.messageId)?.author?.id
+                : null;
+            return Boolean(botId && repliedAuthorId && String(repliedAuthorId) === String(botId));
+        }
+        return false;
+    }
+
     get userId() {
         return this.platform === 'telegram' ? String(this.event.from?.id || this.event.user?.id) : this.event.user ? this.event.user.id : this.event.author?.id;
     }
@@ -102,6 +113,12 @@ class UniversalContext {
     get authMode() {
         if (this.platform === 'telegram' && this.instance.golemConfig && this.instance.golemConfig.tgAuthMode) {
             return String(this.instance.golemConfig.tgAuthMode).toUpperCase();
+        }
+        if (this.platform === 'discord' && this.instance.golemConfig && this.instance.golemConfig.dcAuthMode) {
+            return String(this.instance.golemConfig.dcAuthMode).toUpperCase();
+        }
+        if (this.platform === 'discord') {
+            return CONFIG.DISCORD_AUTH_MODE || 'ADMIN';
         }
         return CONFIG.TG_AUTH_MODE;
     }
@@ -187,12 +204,23 @@ class UniversalContext {
         if (this.platform === 'telegram' && this.instance.golemConfig && this.instance.golemConfig.chatId) {
             return String(this.instance.golemConfig.chatId);
         }
+        if (this.platform === 'discord' && this.instance.golemConfig && this.instance.golemConfig.dcChatId) {
+            return String(this.instance.golemConfig.dcChatId);
+        }
+        if (this.platform === 'discord') {
+            return CONFIG.DISCORD_CHAT_ID;
+        }
         return CONFIG.TG_CHAT_ID;
     }
 
     get adminIds() {
         if (this.platform === 'telegram' && this.instance.golemConfig && this.instance.golemConfig.adminId) {
             const adminCfg = this.instance.golemConfig.adminId;
+            const ids = Array.isArray(adminCfg) ? adminCfg : String(adminCfg).split(',');
+            return ids.map(id => String(id).trim()).filter(Boolean);
+        }
+        if (this.platform === 'discord' && this.instance.golemConfig && this.instance.golemConfig.dcAdminId) {
+            const adminCfg = this.instance.golemConfig.dcAdminId;
             const ids = Array.isArray(adminCfg) ? adminCfg : String(adminCfg).split(',');
             return ids.map(id => String(id).trim()).filter(Boolean);
         }
@@ -213,7 +241,16 @@ class UniversalContext {
             return ids.includes(String(this.userId));
         }
 
-        // Other platforms (Discord)
+        if (this.platform === 'discord') {
+            if (this.authMode === 'CHAT') {
+                return String(this.chatId) === String(this.targetChatId);
+            }
+
+            const ids = this.adminIds;
+            if (ids.length === 0) return true;
+            return ids.includes(String(this.userId));
+        }
+
         if (CONFIG.ADMIN_IDS.length === 0) return true;
         return CONFIG.ADMIN_IDS.includes(String(this.userId));
     }

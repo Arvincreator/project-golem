@@ -54,6 +54,9 @@ const CONFIG = {
     TG_AUTH_MODE: cleanEnv(process.env.TG_AUTH_MODE) || 'ADMIN',
     TG_CHAT_ID: cleanEnv(process.env.TG_CHAT_ID),
     DC_TOKEN: cleanEnv(process.env.DISCORD_TOKEN),
+    DISCORD_AUTH_MODE: cleanEnv(process.env.DISCORD_AUTH_MODE) || 'ADMIN',
+    DISCORD_CHAT_ID: cleanEnv(process.env.DISCORD_CHAT_ID),
+    DISCORD_CHAT_OBSERVE_ALL: parseBooleanEnv(process.env.DISCORD_CHAT_OBSERVE_ALL, true),
     PLAYWRIGHT_PROFILE: cleanEnv(process.env.PLAYWRIGHT_PROFILE || ''),
     USER_DATA_DIR: cleanEnv(process.env.USER_DATA_DIR || '', true),
     API_KEYS: (process.env.GEMINI_API_KEYS || '').split(',').map(k => cleanEnv(k)).filter(k => k),
@@ -118,6 +121,8 @@ if (CONFIG.TG_TOKEN || CONFIG.DC_TOKEN) {
         chatId: CONFIG.TG_CHAT_ID,
         adminId: CONFIG.ADMIN_ID,
         dcToken: CONFIG.DC_TOKEN,
+        dcAuthMode: CONFIG.DISCORD_AUTH_MODE,
+        dcChatId: CONFIG.DISCORD_CHAT_ID,
         dcAdminId: CONFIG.DISCORD_ADMIN_ID
     });
 }
@@ -158,6 +163,9 @@ const reloadConfig = () => {
     CONFIG.TG_AUTH_MODE = cleanEnv(process.env.TG_AUTH_MODE) || 'ADMIN';
     CONFIG.TG_CHAT_ID = cleanEnv(process.env.TG_CHAT_ID);
     CONFIG.DC_TOKEN = cleanEnv(process.env.DISCORD_TOKEN);
+    CONFIG.DISCORD_AUTH_MODE = cleanEnv(process.env.DISCORD_AUTH_MODE) || 'ADMIN';
+    CONFIG.DISCORD_CHAT_ID = cleanEnv(process.env.DISCORD_CHAT_ID);
+    CONFIG.DISCORD_CHAT_OBSERVE_ALL = parseBooleanEnv(process.env.DISCORD_CHAT_OBSERVE_ALL, true);
     CONFIG.PLAYWRIGHT_PROFILE = cleanEnv(process.env.PLAYWRIGHT_PROFILE || '');
     CONFIG.USER_DATA_DIR = cleanEnv(process.env.USER_DATA_DIR || '', true);
 
@@ -223,6 +231,8 @@ const reloadConfig = () => {
             chatId: CONFIG.TG_CHAT_ID,
             adminId: CONFIG.ADMIN_ID,
             dcToken: CONFIG.DC_TOKEN,
+            dcAuthMode: CONFIG.DISCORD_AUTH_MODE,
+            dcChatId: CONFIG.DISCORD_CHAT_ID,
             dcAdminId: CONFIG.DISCORD_ADMIN_ID
         });
     }

@@ -42,9 +42,9 @@ export default function CreateGolemPage() {
 
     // Discord
     const [dcToken, setDcToken] = useState("");
-    const [dcAuthMode] = useState<AuthMode>("ADMIN");
+    const [dcAuthMode, setDcAuthMode] = useState<AuthMode>("ADMIN");
     const [dcAdminId, setDcAdminId] = useState("");
-    const [dcChatId] = useState("");
+    const [dcChatId, setDcChatId] = useState("");
     const [showDcToken, setShowDcToken] = useState(false);
 
     const suggestId = () => {
@@ -120,9 +120,9 @@ export default function CreateGolemPage() {
                 tgAdminId: platforms.telegram && tgAuthMode === "ADMIN" ? tgAdminId.trim() : undefined,
                 tgChatId: platforms.telegram && tgAuthMode === "CHAT" ? tgChatId.trim() : undefined,
                 dcToken: platforms.discord ? dcToken.trim() || undefined : undefined,
-                dcAuthMode: platforms.discord ? "ADMIN" : undefined,
-                dcAdminId: platforms.discord ? dcAdminId.trim() : undefined,
-                dcChatId: undefined,
+                dcAuthMode: platforms.discord ? dcAuthMode : undefined,
+                dcAdminId: platforms.discord && dcAuthMode === "ADMIN" ? dcAdminId.trim() : undefined,
+                dcChatId: platforms.discord && dcAuthMode === "CHAT" ? dcChatId.trim() : undefined,
             });
 
             if (!data.success) {
@@ -426,20 +426,62 @@ export default function CreateGolemPage() {
                                         </div>
                                     </div>
 
-                                    <div className="animate-in fade-in slide-in-from-top-2">
-                                        <label className="block text-sm font-medium text-gray-400 mb-2">
-                                            Admin User ID <span className="text-red-400">*</span>
+                                    <div className="mb-5">
+                                        <label className="block text-sm font-medium text-gray-400 mb-3">
+                                            <Shield className="w-4 h-4 inline mr-1.5 text-gray-500" />
+                                            驗證模式 <span className="text-red-400">*</span>
                                         </label>
-                                        <input
-                                            id="dcAdminId"
-                                            type="text"
-                                            value={dcAdminId}
-                                            onChange={e => setDcAdminId(e.target.value)}
-                                            className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white font-mono focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500 transition-all"
-                                            placeholder="例如：123456789012345678"
-                                        />
-                                        <p className="text-xs text-gray-600 mt-1.5">開啟開發者模式後，右鍵點擊你的 Discord 帳號選擇「複製使用者 ID」</p>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {(["ADMIN", "CHAT"] as AuthMode[]).map(mode => (
+                                                <button
+                                                    key={`dc-${mode}`}
+                                                    type="button"
+                                                    onClick={() => setDcAuthMode(mode)}
+                                                    className={`p-3 rounded-xl border text-sm font-medium transition-all text-left ${dcAuthMode === mode
+                                                        ? "bg-violet-950/30 border-violet-600/50 text-violet-300"
+                                                        : "bg-gray-950 border-gray-800 text-gray-400 hover:border-gray-700"
+                                                        }`}
+                                                >
+                                                    <div className="font-bold mb-0.5">{mode}</div>
+                                                    <div className="text-xs font-normal opacity-70">
+                                                        {mode === "ADMIN" ? "限定個人 Admin ID 使用" : "限定特定頻道 Channel ID 使用"}
+                                                    </div>
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
+
+                                    {dcAuthMode === "ADMIN" ? (
+                                        <div className="animate-in fade-in slide-in-from-top-2">
+                                            <label className="block text-sm font-medium text-gray-400 mb-2">
+                                                Admin User ID <span className="text-red-400">*</span>
+                                            </label>
+                                            <input
+                                                id="dcAdminId"
+                                                type="text"
+                                                value={dcAdminId}
+                                                onChange={e => setDcAdminId(e.target.value)}
+                                                className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white font-mono focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500 transition-all"
+                                                placeholder="例如：123456789012345678"
+                                            />
+                                            <p className="text-xs text-gray-600 mt-1.5">開啟開發者模式後，右鍵點擊你的 Discord 帳號選擇「複製使用者 ID」</p>
+                                        </div>
+                                    ) : (
+                                        <div className="animate-in fade-in slide-in-from-top-2">
+                                            <label className="block text-sm font-medium text-gray-400 mb-2">
+                                                Channel ID <span className="text-red-400">*</span>
+                                            </label>
+                                            <input
+                                                id="dcChatId"
+                                                type="text"
+                                                value={dcChatId}
+                                                onChange={e => setDcChatId(e.target.value)}
+                                                className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-white font-mono focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500 transition-all"
+                                                placeholder="例如：123456789012345678"
+                                            />
+                                            <p className="text-xs text-gray-600 mt-1.5">請填入要共用 Golem 的 Discord 頻道 Channel ID，該頻道中的成員都可使用。</p>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>

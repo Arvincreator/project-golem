@@ -42,6 +42,15 @@ module.exports = [
         options: [{ name: '@username', description: '請輸入目標 Bot ID' }]
     },
     {
+        command: '/DC_observe_all',
+        description: '切換 Discord 多人群組模式是否要背景觀察未點名訊息。',
+        options: [
+            { name: 'on', description: '未 @ Golem 的訊息也同步進上下文，但不回覆' },
+            { name: 'off', description: '未 @ Golem 的訊息直接忽略，不進上下文' },
+            { name: 'status', description: '查看目前 Discord 群組觀察設定狀態' }
+        ]
+    },
+    {
         command: '/learn',
         description: '讓 Golem 學習新技能（輸入需求描述，自動生成可執行技能）。',
         options: [

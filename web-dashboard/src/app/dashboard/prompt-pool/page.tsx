@@ -116,7 +116,7 @@ function getCommandCategory(command: string): CommandCategory {
     if (command.startsWith("/@")) return "connectors";
     if (["/wiki", "/search", "/profile", "/compress", "/callme", "/skills", "/feedback"].includes(command)) return "memory";
     if (["/project", "/learn", "/export", "/patch", "/toolset"].includes(command)) return "project";
-    if (["/new", "/new_memory", "/model", "/sos", "/dashboard", "/level", "/update", "/reset", "/api", "/enable_silent", "/disable_silent", "/enable_observer", "/disable_observer"].includes(command)) return "system";
+    if (["/new", "/new_memory", "/model", "/sos", "/dashboard", "/level", "/update", "/reset", "/api", "/enable_silent", "/disable_silent", "/enable_observer", "/disable_observer", "/dc_observe_all"].includes(command)) return "system";
     if (["/stocks", "/stock", "/stockboard", "/stock-dashboard", "/crypto", "/cryptos", "/cryptoboard"].includes(command)) return "automation";
     return "core";
 }

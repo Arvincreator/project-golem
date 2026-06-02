@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
     HardDrive, Brain, AlertTriangle,
-    Sparkles, ExternalLink, CheckCircle2, ArrowRight, Lock
+    Sparkles, ExternalLink, CheckCircle2, ArrowRight, Lock, MessageSquare, Shield
 } from "lucide-react";
 import { useGolem } from "@/components/GolemContext";
 import { apiGet, apiPostWrite } from "@/lib/api-client";
@@ -14,8 +14,13 @@ type MemoryMode = "lancedb-pro" | "native";
 type BackendMode = "gemini" | "ollama" | "lmstudio";
 type EmbeddingProvider = "local" | "ollama";
 type SetupTestScope = "backend-ollama" | "backend-lmstudio" | "embedding-ollama";
+type AuthMode = "ADMIN" | "CHAT";
 type SystemConfigResponse = {
     userDataDir?: string;
+    discordToken?: string;
+    discordAuthMode?: string;
+    discordAdminId?: string;
+    discordChatId?: string;
     golemMemoryMode?: string;
     hasCustomMemoryMode?: boolean;
     golemBackend?: string;
@@ -114,6 +119,10 @@ export default function SystemSetupPage() {
     const [lmstudioApiKey, setLmstudioApiKey] = useState("");
     const [allowRemoteAccess, setAllowRemoteAccess] = useState(false);
     const [remoteAccessPassword, setRemoteAccessPassword] = useState("");
+    const [discordToken, setDiscordToken] = useState("");
+    const [discordAuthMode, setDiscordAuthMode] = useState<AuthMode>("ADMIN");
+    const [discordAdminId, setDiscordAdminId] = useState("");
+    const [discordChatId, setDiscordChatId] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -159,6 +168,10 @@ export default function SystemSetupPage() {
                 setLmstudioBrainModel(data.golemLmstudioBrainModel || "");
                 setLmstudioTimeoutMs(String(data.golemLmstudioTimeoutMs || "60000"));
                 setLmstudioApiKey(data.golemLmstudioApiKey || "");
+                setDiscordToken(data.discordToken || "");
+                setDiscordAuthMode(data.discordAuthMode === "CHAT" ? "CHAT" : "ADMIN");
+                setDiscordAdminId(data.discordAdminId || "");
+                setDiscordChatId(data.discordChatId || "");
                 setAllowRemoteAccess(data.allowRemoteAccess === true || data.allowRemoteAccess === "true");
             } catch (fetchError) {
                 console.error(fetchError);
@@ -321,6 +334,10 @@ export default function SystemSetupPage() {
                 golemLmstudioBrainModel: lmstudioBrainModel.trim(),
                 golemLmstudioTimeoutMs: lmstudioTimeoutMs.trim(),
                 golemLmstudioApiKey: lmstudioApiKey.trim(),
+                discordToken: discordToken.trim(),
+                discordAuthMode: discordAuthMode,
+                discordAdminId: discordAuthMode === "ADMIN" ? discordAdminId.trim() : "",
+                discordChatId: discordAuthMode === "CHAT" ? discordChatId.trim() : "",
                 golemMode: golemMode,
                 allowRemoteAccess: allowRemoteAccess,
                 remoteAccessPassword: remoteAccessPassword
@@ -713,6 +730,85 @@ export default function SystemSetupPage() {
                                 </div>
                             </div>
                         )}
+                    </div>
+
+                    <div className="bg-card/80 backdrop-blur-sm border border-border rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                        <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-violet-500 to-indigo-400 rounded-t-2xl" />
+
+                        <div className="flex items-center gap-2 mb-5">
+                            <MessageSquare className="w-5 h-5 text-violet-500" />
+                            <h2 className="text-base font-semibold text-foreground">Discord 預設設定</h2>
+                        </div>
+
+                        <p className="text-xs text-muted-foreground/70 mb-5 leading-relaxed">
+                            選填。若你現在就知道要讓 Golem 接到哪個 Discord 使用場景，可以先把預設模式寫進系統設定；之後仍可在建立頁或設定總表再調整。
+                        </p>
+
+                        <div className="space-y-5">
+                            <div>
+                                <label className="block text-sm font-medium text-muted-foreground mb-2">Discord Bot Token</label>
+                                <input
+                                    type="password"
+                                    value={discordToken}
+                                    onChange={e => setDiscordToken(e.target.value)}
+                                    className="w-full bg-secondary/40 border border-border rounded-xl px-4 py-3 text-foreground font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                                    placeholder="MTAy... (Discord Bot Token)"
+                                    autoComplete="new-password"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-muted-foreground mb-3">
+                                    <Shield className="w-3.5 h-3.5 inline mr-1.5 text-muted-foreground/70" />
+                                    Discord 驗證模式
+                                </label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {(["ADMIN", "CHAT"] as AuthMode[]).map((mode) => (
+                                        <button
+                                            key={`system-setup-discord-${mode}`}
+                                            type="button"
+                                            onClick={() => setDiscordAuthMode(mode)}
+                                            className={`p-3 rounded-xl border text-sm font-medium transition-all text-left ${
+                                                discordAuthMode === mode
+                                                    ? "bg-violet-950/20 border-violet-500/40 text-violet-300"
+                                                    : "bg-secondary/30 border-border text-muted-foreground hover:border-violet-400/30 hover:text-foreground"
+                                            }`}
+                                        >
+                                            <div className="font-bold mb-0.5">{mode}</div>
+                                            <div className="text-[11px] font-normal opacity-70">
+                                                {mode === "ADMIN" ? "單人模式：只允許指定 Discord 使用者" : "多人群組模式：允許指定頻道成員共用"}
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {discordAuthMode === "CHAT" ? (
+                                <div>
+                                    <label className="block text-sm font-medium text-muted-foreground mb-2">Discord Channel ID</label>
+                                    <input
+                                        type="text"
+                                        value={discordChatId}
+                                        onChange={e => setDiscordChatId(e.target.value)}
+                                        className="w-full bg-secondary/40 border border-border rounded-xl px-4 py-3 text-foreground font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                                        placeholder="例如：123456789012345678"
+                                    />
+                                    <p className="text-xs text-muted-foreground/60 mt-1.5">Golem 會把這個頻道視為共用對話空間，並可辨別不同成員的發言。</p>
+                                </div>
+                            ) : (
+                                <div>
+                                    <label className="block text-sm font-medium text-muted-foreground mb-2">Discord Admin User ID</label>
+                                    <input
+                                        type="text"
+                                        value={discordAdminId}
+                                        onChange={e => setDiscordAdminId(e.target.value)}
+                                        className="w-full bg-secondary/40 border border-border rounded-xl px-4 py-3 text-foreground font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                                        placeholder="例如：123456789012345678"
+                                    />
+                                    <p className="text-xs text-muted-foreground/60 mt-1.5">單人模式下，只有這個 Discord 使用者 ID 可以使用 Golem。</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Network Config */}

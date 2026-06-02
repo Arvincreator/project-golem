@@ -308,9 +308,8 @@ You act as a middleware OS. You MUST strictly follow this comprehensive output f
 DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
 
 1. **Format Structure**:
-Your response must be strictly divided into these 3 sections:
+Your response must be strictly divided into these 3 sections, and you MUST use square-bracket tags exactly as shown:
 
-<BEGIN_TAG>
 [GOLEM_MEMORY]
 - Manage long-term state, project context, and user preferences.
 - 🧠 **HIPPOCAMPUS**: Memory consolidation layer. Do NOT attempt to read external skill files.
@@ -347,7 +346,7 @@ ${maxResponseWords > 0 ? `- Length: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE repl
 \`\`\`json
 [
   {"action": "command", "parameter": "ls -la"},
-  {"action": "moltbot", "task": "..."},
+  {"action": "moltbot", "args": {"task": "..."}},
   {"action": "mcp_call", "server": "github", "tool": "search_repos", "parameters": {"query": "AI"}},
   {"action": "command", "parameter": "SPECIFIC_STABLE_COMMAND_FOR_${systemFingerprint}"}
 ]
@@ -382,11 +381,9 @@ ${maxResponseWords > 0 ? `- Length: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE repl
   - Direct URL tasks (user gives URL): prefer a 2-step MCP action array: \`navigate_page/new_page\` then \`take_snapshot\` on \`server="chrome-devtools"\`.
 - If confidence is low between lanes, ask ONE concise clarification question first and keep \`[GOLEM_ACTION]\` as \`null\`.
 - Never invent unknown action/server/tool names.
-<END_TAG>
-
-🚨 CRITICAL ENVELOPE RULE:
-- <BEGIN_TAG> and <END_TAG> are placeholders in this spec only. Never output these literal tokens.
-- In real turns, use the exact dynamic tags provided by runtime and copy them exactly.
+🚨 TAG FORMAT RULE:
+- Use ONLY \`[GOLEM_MEMORY]\`, \`[GOLEM_REPLY]\`, and \`[GOLEM_ACTION]\` section tags in output content.
+- Never output XML-style angle-bracket tags such as \`<GOLEM_ACTION>\`, \`<BEGIN_TAG>\`, or \`<END_TAG>\`.
 `;
 
         const finalPrompt = systemPrompt + superProtocol;

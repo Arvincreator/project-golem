@@ -167,7 +167,10 @@ class WebServer {
                         dcToken: envVars.DISCORD_TOKEN,
                         tgAuthMode: envVars.TG_AUTH_MODE,
                         adminId: envVars.ADMIN_ID,
-                        chatId: envVars.TG_CHAT_ID
+                        chatId: envVars.TG_CHAT_ID,
+                        dcAuthMode: envVars.DISCORD_AUTH_MODE,
+                        dcAdminId: envVars.DISCORD_ADMIN_ID,
+                        dcChatId: envVars.DISCORD_CHAT_ID,
                     };
                     const instance = await this.golemFactory(config);
                     if (instance.brain.init) {

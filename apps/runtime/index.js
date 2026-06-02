@@ -835,6 +835,40 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
         return;
     }
 
+    if (ctx.platform === 'discord' && ctx.authMode === 'CHAT' && ctx.isAdmin && ctx.text && ctx.text.trim().toLowerCase().startsWith('/dc_observe_all')) {
+        const lowerRaw = ctx.text.trim().toLowerCase();
+        const args = lowerRaw.split(/\s+/);
+        const mode = args[1] || '';
+        if (mode === 'status') {
+            const enabled = ConfigManager.CONFIG.DISCORD_CHAT_OBSERVE_ALL !== false;
+            const statusText = enabled
+                ? '目前為 `on`：未 @ Golem 的群組訊息會同步進上下文，但保持靜默不回覆。'
+                : '目前為 `off`：未 @ Golem 的群組訊息將直接忽略，不再同步進上下文。';
+            await ctx.reply(`👾 Discord 多人群組觀察設定狀態\n${statusText}`);
+            return;
+        }
+
+        if (mode !== 'on' && mode !== 'off') {
+            await ctx.reply('ℹ️ 用法：`/DC_observe_all on`、`/DC_observe_all off` 或 `/DC_observe_all status`');
+            return;
+        }
+
+        const nextValue = mode === 'on' ? 'true' : 'false';
+        const EnvManager = require('../src/utils/EnvManager');
+        EnvManager.updateEnv({ DISCORD_CHAT_OBSERVE_ALL: nextValue });
+        ConfigManager.reloadConfig();
+
+        const statusText = mode === 'on'
+            ? '已開啟：未 @ Golem 的群組訊息會同步進上下文，但保持靜默不回覆。'
+            : '已關閉：未 @ Golem 的群組訊息將直接忽略，不再同步進上下文。';
+        await ctx.reply(`👾 Discord 多人群組觀察設定已更新。\n${statusText}`);
+        await notifyBrainSystemChange(
+            'Discord 群組觀察設定已變更',
+            `discord_chat_observe_all=${mode}`
+        );
+        return;
+    }
+
     if (InteractiveMultiAgent.multiAgentListeners && InteractiveMultiAgent.multiAgentListeners.has(ctx.chatId)) {
         const callback = InteractiveMultiAgent.multiAgentListeners.get(ctx.chatId);
         callback(ctx.text);
@@ -852,7 +886,15 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
     const allowPromptShortcutForNonAdmin = ctx.platform === 'telegram' && Boolean(matchedPromptShortcut);
     if (!ctx.isAdmin && !allowPromptShortcutForNonAdmin) return;
 
-    if (ctx.isAdmin) {
+    const isDiscordChatMode = ctx.platform === 'discord' && ctx.authMode === 'CHAT';
+    const discordObserveAll = ConfigManager.CONFIG.DISCORD_CHAT_OBSERVE_ALL !== false;
+    const isDiscordMentionTrigger = isDiscordChatMode && Boolean(ctx.text && ctx.isMentioned && ctx.isMentioned(ctx.text));
+    const isDiscordReplyTrigger = isDiscordChatMode && Boolean(ctx.isReplyingToBot && ctx.isReplyingToBot());
+    const isDiscordActiveTrigger = !isDiscordChatMode || isDiscordMentionTrigger || isDiscordReplyTrigger;
+    const shouldObserveSilently = isDiscordChatMode && !isDiscordActiveTrigger;
+    if (shouldObserveSilently && !discordObserveAll) return;
+
+    if (ctx.isAdmin && !shouldObserveSilently) {
         if (await NodeRouter.handle(ctx, brain)) return;
 
         const lowerText = ctx.text ? ctx.text.toLowerCase() : '';
@@ -867,14 +909,18 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
         }
     }
 
-    await ctx.sendTyping();
+    if (!shouldObserveSilently) {
+        await ctx.sendTyping();
+    }
     try {
         const effectiveText = typeof ctx.textOverride === 'string' ? ctx.textOverride : ctx.text;
         let finalInput = effectiveText;
         const attachment = await ctx.getAttachment();
 
         // ✨ [群組模式身分與回覆注入]
-        const isGroupMode = ConfigManager.CONFIG.TG_AUTH_MODE === 'CHAT' && ctx.platform === 'telegram';
+        const isGroupMode =
+            (ctx.platform === 'telegram' && ctx.authMode === 'CHAT') ||
+            (ctx.platform === 'discord' && ctx.authMode === 'CHAT');
         let senderPrefix = isGroupMode ? `【發話者：${ctx.senderName}】\n` : "";
         if (ctx.replyToName) {
             senderPrefix += `【回覆給：${ctx.replyToName}】\n`;
@@ -920,13 +966,17 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
                 console.log("📎 [System] 偵測到原生附件，將直接交由 Golem 處理。");
                 finalInput = senderPrefix + (effectiveText || "");
             } else {
-                await ctx.reply("👁️ 正在透過 OpticNerve 分析檔案...");
+                if (!shouldObserveSilently) {
+                    await ctx.reply("👁️ 正在透過 OpticNerve 分析檔案...");
+                }
                 const apiKey = await brain.doctor.keyChain.getKey();
                 if (apiKey) {
                     const analysis = await OpticNerve.analyze(attachment.url, attachment.mimeType, apiKey);
                     finalInput = `${senderPrefix}【系統通知：視覺訊號】\n檔案類型：${attachment.mimeType}\n分析報告：\n${analysis}\n使用者訊息：${effectiveText || ""}\n請根據分析報告回應。`;
                 } else {
-                    await ctx.reply("⚠️ 視覺系統暫時過熱 (API Rate Limit)，無法分析圖片，將僅處理文字訊息。");
+                    if (!shouldObserveSilently) {
+                        await ctx.reply("⚠️ 視覺系統暫時過熱 (API Rate Limit)，無法分析圖片，將僅處理文字訊息。");
+                    }
                     finalInput = senderPrefix + (effectiveText || "");
                 }
             }
@@ -935,7 +985,12 @@ async function handleUnifiedMessage(ctx, forceTargetId = null) {
         }
 
         if (!finalInput && !attachment) return;
-        await convoManager.enqueue(ctx, finalInput, { attachment: attachment });
+        await convoManager.enqueue(ctx, finalInput, {
+            attachment: attachment,
+            suppressReply: shouldObserveSilently,
+            forceObserver: shouldObserveSilently,
+            groupReplyTriggered: isDiscordReplyTrigger
+        });
     } catch (e) {
         console.error(e);
         await ctx.reply(`❌ 錯誤: ${e.message}`);

@@ -4,7 +4,7 @@
   <p><strong>Your AI operations hub: chat, act, remember, and collaborate over the long run.</strong></p>
 
   <p>
-    <img src="https://img.shields.io/badge/version-9.7.5-blue?style=for-the-badge" alt="version" />
+    <img src="https://img.shields.io/badge/version-9.7.6-blue?style=for-the-badge" alt="version" />
     <img src="https://img.shields.io/badge/node.js-20~22-3C873A?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="node" />
     <img src="https://img.shields.io/badge/backend-gemini%20web%20%7C%20ollama%20%7C%20lmstudio-orange?style=for-the-badge" alt="backend" />
     <img src="https://img.shields.io/badge/dashboard-next.js-black?style=for-the-badge&logo=nextdotjs" alt="dashboard" />

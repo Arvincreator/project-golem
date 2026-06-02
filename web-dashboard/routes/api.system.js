@@ -151,6 +151,10 @@ module.exports = function registerSystemRoutes(server) {
             return res.json({
                 version,
                 userDataDir: envVars.USER_DATA_DIR || './golem_memory',
+                discordToken: envVars.DISCORD_TOKEN || '',
+                discordAuthMode: envVars.DISCORD_AUTH_MODE || 'ADMIN',
+                discordAdminId: envVars.DISCORD_ADMIN_ID || '',
+                discordChatId: envVars.DISCORD_CHAT_ID || '',
                 golemBackend: normalizeBackend(envVars.GOLEM_BACKEND),
                 golemMemoryMode: normalizeMemoryMode(rawMemoryMode),
                 hasCustomMemoryMode: rawMemoryMode.length > 0,
@@ -193,6 +197,10 @@ module.exports = function registerSystemRoutes(server) {
                 golemLmstudioBrainModel,
                 golemLmstudioTimeoutMs,
                 golemLmstudioApiKey,
+                discordToken,
+                discordAuthMode,
+                discordAdminId,
+                discordChatId,
                 allowRemoteAccess,
                 remoteAccessPassword
             } = req.body;
@@ -216,6 +224,13 @@ module.exports = function registerSystemRoutes(server) {
             if (golemLmstudioBrainModel !== undefined) updates.GOLEM_LMSTUDIO_BRAIN_MODEL = String(golemLmstudioBrainModel).trim();
             if (golemLmstudioTimeoutMs !== undefined) updates.GOLEM_LMSTUDIO_TIMEOUT_MS = String(golemLmstudioTimeoutMs).trim();
             if (golemLmstudioApiKey !== undefined) updates.GOLEM_LMSTUDIO_API_KEY = String(golemLmstudioApiKey).trim();
+            if (discordToken !== undefined) updates.DISCORD_TOKEN = String(discordToken).trim();
+            if (discordAuthMode !== undefined) updates.DISCORD_AUTH_MODE = String(discordAuthMode).trim().toUpperCase() === 'CHAT' ? 'CHAT' : 'ADMIN';
+            if (discordAdminId !== undefined || discordChatId !== undefined || discordAuthMode !== undefined) {
+                const normalizedDiscordAuthMode = updates.DISCORD_AUTH_MODE || 'ADMIN';
+                updates.DISCORD_ADMIN_ID = normalizedDiscordAuthMode === 'ADMIN' ? String(discordAdminId || '').trim() : '';
+                updates.DISCORD_CHAT_ID = normalizedDiscordAuthMode === 'CHAT' ? String(discordChatId || '').trim() : '';
+            }
             if (allowRemoteAccess !== undefined) updates.ALLOW_REMOTE_ACCESS = String(allowRemoteAccess);
             if (remoteAccessPassword !== undefined) updates.REMOTE_ACCESS_PASSWORD = String(remoteAccessPassword).trim();
             updates.GOLEM_MODE = 'SINGLE';

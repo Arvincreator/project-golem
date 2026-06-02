@@ -372,6 +372,8 @@ module.exports = function registerGolemRoutes(server) {
                 tgAdminId,
                 tgChatId,
                 dcToken,
+                dcAuthMode,
+                dcChatId,
                 dcAdminId
             } = req.body;
 
@@ -395,7 +397,9 @@ module.exports = function registerGolemRoutes(server) {
             }
             if (dcToken) {
                 updates.DISCORD_TOKEN = dcToken;
-                updates.DISCORD_ADMIN_ID = dcAdminId;
+                updates.DISCORD_AUTH_MODE = dcAuthMode || 'ADMIN';
+                updates.DISCORD_CHAT_ID = dcAuthMode === 'CHAT' ? (dcChatId || '') : '';
+                updates.DISCORD_ADMIN_ID = (!dcAuthMode || dcAuthMode === 'ADMIN') ? (dcAdminId || '') : '';
             }
 
             EnvManager.updateEnv(updates);
@@ -411,6 +415,8 @@ module.exports = function registerGolemRoutes(server) {
                     adminId: tgAdminId,
                     chatId: tgChatId,
                     dcToken,
+                    dcAuthMode: dcAuthMode || 'ADMIN',
+                    dcChatId,
                     dcAdminId,
                 };
 

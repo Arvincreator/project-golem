@@ -443,7 +443,7 @@ ${summaryContext || "（目前尚無對話摘要）"}
 
         // --- Discord Routing ---
         let dcTargetId = ConfigManager.CONFIG.DISCORD_ADMIN_ID;
-        let dcAuthMode = 'ADMIN';
+        let dcAuthMode = ConfigManager.CONFIG.DISCORD_AUTH_MODE || 'ADMIN';
         if (this.dcClient && this.dcClient.golemConfig) {
             const gCfg = this.dcClient.golemConfig;
             dcAuthMode = gCfg.dcAuthMode || dcAuthMode;
@@ -452,6 +452,8 @@ ${summaryContext || "（目前尚無對話摘要）"}
             } else if (gCfg.dcAdminId) {
                 dcTargetId = Array.isArray(gCfg.dcAdminId) ? gCfg.dcAdminId[0] : String(gCfg.dcAdminId).split(',')[0].trim();
             }
+        } else if (dcAuthMode === 'CHAT' && ConfigManager.CONFIG.DISCORD_CHAT_ID) {
+            dcTargetId = ConfigManager.CONFIG.DISCORD_CHAT_ID;
         }
 
         // --- Dispatch ---
