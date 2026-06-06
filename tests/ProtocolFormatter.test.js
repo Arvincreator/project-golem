@@ -61,6 +61,9 @@ describe('ProtocolFormatter', () => {
         expect(result).toContain('[[BEGIN:test]]');
         expect(result).toContain('[[END:test]]');
         expect(result).toContain('Hello');
+        expect(result).toContain('HOST TOOL ROUTING');
+        expect(result).not.toContain('LOCAL AGENT IDENTITY (NON-NEGOTIABLE)');
+        expect(result).not.toContain('CRITICAL PROTOCOL REMINDER');
     });
 
     test('buildEnvelope with CONSERVATIVE observer mode', () => {

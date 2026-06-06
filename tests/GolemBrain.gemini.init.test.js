@@ -95,6 +95,18 @@ describe('GolemBrain gemini bootstrap init', () => {
         ConfigManager.CONFIG.GOLEM_BACKEND = snapshot.backend;
     });
 
+    test('detects provider refusal during prompt injection', () => {
+        const brain = new GolemBrain({ golemId: 'gemini-refusal-test' });
+
+        expect(brain._isProviderRefusal('I cannot fulfill this request.')).toBe(true);
+        expect(brain._isProviderRefusal('I cannot fulfill this request. Please try something else.')).toBe(true);
+        expect(brain._isProviderRefusal('ACK')).toBe(false);
+        expect(() => brain._assertInjectionAccepted(
+            { text: 'I cannot fulfill this request.' },
+            'segment 1/3'
+        )).toThrow('Provider refused segment 1/3');
+    });
+
     test('init does not re-enter while injecting system prompt', async () => {
         const cdpSession = { send: jest.fn().mockResolvedValue() };
         const page = {

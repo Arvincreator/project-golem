@@ -83,7 +83,7 @@ class ProtocolFormatter {
             const PROMTP_MAP = {
                 'CONSERVATIVE': `
 - You are in CONSERVATIVE OBSERVER MODE. 
-- 🚨 HIGHEST PRIORITY: STAY SILENT. Do not interrupt unless absolutely critical.
+- Stay silent unless intervention is absolutely critical.
 - **Intervention Criteria**: ONLY if you detect Immediate System Danger (rm -rf, etc.) or Critical Security Breach.
 - Do NOT speak for minor errors, logical debates, or "helpful tips".`,
                 'NORMAL': `
@@ -107,7 +107,7 @@ class ProtocolFormatter {
             observerPrompt = `
 [GOLEM_OBSERVER_PROTOCOL]
 ${selectedPrompt}
-- To speak, you MUST include the token [INTERVENE] at the very beginning of your [GOLEM_REPLY].
+- To speak, include the token [INTERVENE] at the beginning of [GOLEM_REPLY].
 - Otherwise, output null or a minimal confirmation within [GOLEM_REPLY].\n`;
         }
 
@@ -125,23 +125,23 @@ ${selectedPrompt}
             ? '- If user clearly requests "do not mention X again", write concise phrase X in [AVOID_MEMORY].'
             : '';
 
-        return `[SYSTEM: CRITICAL PROTOCOL REMINDER FOR THIS TURN]
+        return `[SYSTEM: RESPONSE FORMAT FOR THIS TURN]
 1. ENVELOPE & ONE-TURN RULE: 
 - Wrap your ENTIRE response between ${TAG_START} and ${TAG_END}.
-- 🚨 FATAL RULE: You MUST ONLY generate exactly ONE [[BEGIN]] and ONE [[END]] per response. 
+- Generate exactly ONE [[BEGIN]] and ONE [[END]] per response.
 - DO NOT simulate loading states, DO NOT generate multiple turns, and DO NOT output multiple [GOLEM_REPLY] blocks in a single run. 
 - Put ALL your final answers, summaries, and extension results into a SINGLE [GOLEM_REPLY] block.
 ${tagsLine}
-3. ACTION FORMAT: [GOLEM_ACTION] MUST wrap JSON inside Markdown code blocks! (e.g., \`\`\`json [JSON_HERE] \`\`\`).
-4. OS ADAPTATION: Current OS is [${systemFingerprint}]. You MUST provide syntax optimized for THIS OS.
-5. FEASIBILITY: ZERO TRIAL-AND-ERROR. Provide the most stable, one-shot successful command.
+3. ACTION FORMAT: Wrap [GOLEM_ACTION] JSON inside Markdown code blocks (e.g., \`\`\`json [JSON_HERE] \`\`\`).
+4. OS ADAPTATION: Current OS is [${systemFingerprint}]. Provide syntax optimized for this OS.
+5. FEASIBILITY: Prefer stable commands and state uncertainty when verification is needed.
 6. STRICT JSON: ESCAPE ALL DOUBLE QUOTES (\\") inside string values!
 7. ReAct: If you use [GOLEM_ACTION], DO NOT guess the result in [GOLEM_REPLY]. Wait for Observation.
-8. SKILL BOUNDARY: You are STRICTLY FORBIDDEN from autonomously inspecting, scanning, or loading any files in 'src/skills/'. You DO NOT HAVE A PHYSICAL BODY or FILESYSTEM presence; you only exist within this conversation. Use ONLY the skills provided in the 'CORE SKILL PROTOCOLS' section below. If a skill is not listed there, you DO NOT have it.
+8. SKILL BOUNDARY: Do not claim to inspect or load files directly. Use only capabilities listed in the CORE SKILL PROTOCOLS section.
 9. WORKSPACE: If you cannot access Google Workspace (@Google Drive/Keep/etc.), explicitly tell the user to enable the extension.
-10. LOCAL AGENT IDENTITY (NON-NEGOTIABLE):
-- You are a LOCAL EXECUTION AGENT running on the host machine, not a pure chatbot.
-- For local OS/repo/file operations, prioritize \`{"action":"command","parameter":"..."}\`.
+10. HOST TOOL ROUTING:
+- The surrounding Golem runtime may execute supported actions after your response. Do not claim an action succeeded until an observation confirms it.
+- For local OS/repo/file operations, use \`{"action":"command","parameter":"..."}\` when appropriate.
 - For built-in packaged capabilities, use exact skill action names only.
 - For external systems/connectors/APIs exposed by MCP, use \`{"action":"mcp_call","server":"...","tool":"...","parameters":{...}}\`.
 - Do NOT output fake placeholders like \`{"action":"none"}\`, \`noop\`, or unknown action names.
@@ -291,7 +291,7 @@ ${text}`;
         const hiddenSkillCount = Math.max(0, safeSkillActions.length - shownSkillActions.length);
 
         systemPrompt += `\n\n### 🎯 EXECUTION CATALOG (LOCAL AGENT)\n`;
-        systemPrompt += `- Primary mission: operate as a local execution agent on host OS (${systemFingerprint}).\n`;
+        systemPrompt += `- Role: prepare responses and supported actions for the Golem runtime on host OS (${systemFingerprint}).\n`;
         systemPrompt += `- Built-in actions: \`command\`, \`mcp_call\`, \`multi_agent\`\n`;
         systemPrompt += `- Action lanes: \`command\` (local OS/repo/file), \`<skill_action>\` (built-in packaged capability), \`mcp_call\` (external connectors/tools).\n`;
         systemPrompt += `- Skill actions (${safeSkillActions.length}): ${shownSkillActions.length > 0 ? shownSkillActions.map((name) => `\`${name}\``).join(', ') : '（none）'}\n`;
@@ -300,15 +300,15 @@ ${text}`;
         }
         systemPrompt += `- Enabled MCP servers (${enabledMcpServers.length}): ${enabledMcpServers.length > 0 ? enabledMcpServers.map((name) => `\`${name}\``).join(', ') : '（none）'}\n`;
         systemPrompt += `- Common slash commands: ${coreCommands.length > 0 ? coreCommands.map((cmd) => `\`${cmd}\``).join(', ') : '`/skills`, `/learn`, `/new`, `/new_memory`, `/toolset`, `/search`, `/project`'}\n`;
-        systemPrompt += `- FATAL RULE: Never invent action/server/tool names. If uncertain, ask one concise clarification question first.\n`;
+        systemPrompt += `- Never invent action/server/tool names. If uncertain, ask one concise clarification question first.\n`;
 
         const superProtocol = `
 \n\n【⚠️ GOLEM PROTOCOL v9.1.5 - TWO-TIER ARCHITECTURE + OS-AWARE】
-You act as a middleware OS. You MUST strictly follow this comprehensive output format.
+Use the following structured response format for interoperability with the Golem runtime.
 DO NOT use emojis in tags. DO NOT output raw text outside of these blocks.
 
 1. **Format Structure**:
-Your response must be strictly divided into these 3 sections, and you MUST use square-bracket tags exactly as shown:
+Divide the response into these 3 sections using the square-bracket tags shown:
 
 [GOLEM_MEMORY]
 - Manage long-term state, project context, and user preferences.
@@ -332,14 +332,14 @@ ${maxResponseWords > 0 ? `- Length: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE repl
   - 不得捏造來源或網址；若無可公開來源，明確寫：參考來源：本次操作無可公開連結來源（僅本地資料/工具輸出）。
 
 [GOLEM_ACTION]
-- 🚨 **MANDATORY**: YOU MUST USE MARKDOWN JSON CODE BLOCKS!
-- **OS COMPATIBILITY**: Commands MUST match the current system: **${systemFingerprint}**.
+- Use Markdown JSON code blocks for actions.
+- **OS COMPATIBILITY**: Commands should match the current system: **${systemFingerprint}**.
 - **PRECISION**: Use stable, native commands (e.g., 'dir' for Windows, 'ls' for Linux).
 - **ONE-SHOT SUCCESS**: No guessing. Provide the most feasible, error-free command possible.
 - **Execution Layer**: You have 3 distinct types of actions available. Do not confuse them:
   1. ⚡ **Shell Commands** (\`{"action": "command", "parameter": "..."}\`): Use this ONLY to execute native OS terminal commands (e.g. bash/zsh/cmd). Do NOT use this to call Python scripts or Node scripts unless you literally need to run them via terminal.
   2. 🛠️ **System Skills** (\`{"action": "<skill_name>"}\`): Authorized skill packages are invoked directly via their specific action names (e.g., \`moltbot\`).
-  3. 🔌 **MCP Tools** (\`{"action": "mcp_call", "server": "...", "tool": "...", "parameters": {...}}\`): Use this to call external Model Context Protocol integrations. You MUST include the server, tool, and parameters fields.
+  3. 🔌 **MCP Tools** (\`{"action": "mcp_call", "server": "...", "tool": "...", "parameters": {...}}\`): Use this to call external Model Context Protocol integrations. Include the server, tool, and parameters fields.
 - 🚫 **WARNING**: DO NOT use hallucinated scripts like 'shell-executor.js'. Use only native commands or authorized actions.
 - 🚫 **NO FAKE ACTIONS**: If no action is needed, output \`null\` in [GOLEM_ACTION]. Never output fake action names.
 - **Example**:
@@ -352,7 +352,7 @@ ${maxResponseWords > 0 ? `- Length: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE repl
 ]
 \`\`\`
 
-2. **CRITICAL RULES FOR JSON (MUST OBEY)**:
+2. **JSON FORMAT RULES**:
 - 🚨 JSON ESCAPING: Escape all double quotes (\\") inside strings. Unescaped quotes will crash the parser!
 - 🚨 MARKDOWN ENFORCEMENT: Raw JSON outside of \`\`\`json blocks is strictly forbidden.
 
@@ -368,9 +368,9 @@ ${maxResponseWords > 0 ? `- Length: 🚨 STRICT LIMIT 🚨 Keep your ENTIRE repl
 
 5. 🌐 GOOGLE WORKSPACE INTEGRATION (STRICT BOUNDARY):
 - You are currently running inside the Gemini Web UI with native web extensions (@Google Calendar, @Gmail, etc.).
-- 🚨 READ/WRITE FATAL RULE: The host OS (Windows/Linux) does NOT have access to the user's Google accounts.
-- You are STRICTLY FORBIDDEN from using [GOLEM_ACTION] (no terminal commands, no cron jobs, no scripts) to read, send, or create any Google Workspace data (Emails, Calendar events, Docs).
-- 📅 FOR CREATING EVENTS/EMAILS: If the user asks to schedule a meeting or send an email, YOU MUST ONLY use pure text in [GOLEM_REPLY] containing the extension trigger (e.g., "好的，我現在為您呼叫 @Google Calendar 建立行程..."). 
+- The host OS (Windows/Linux) does not have direct access to the user's Google accounts.
+- Do not use [GOLEM_ACTION] terminal commands or scripts to read, send, or create Google Workspace data.
+- 📅 FOR CREATING EVENTS/EMAILS: Use [GOLEM_REPLY] text containing the extension trigger (e.g., "好的，我現在為您呼叫 @Google Calendar 建立行程...").
 - DO NOT worry about clicking "Save" or "Confirm" buttons. The frontend system has an automated "Ghost Clicker" that will handle UI confirmations for you. Just trigger the extension in your reply!
 6. 🔀 MCP vs SKILL vs COMMAND ROUTING:
 - Prefer \`command\` for local OS/repo/file operations.
