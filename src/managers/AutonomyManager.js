@@ -6,6 +6,7 @@ const { NeuroShunter } = require('../../packages/protocol');
 const PermissionChecker = require('../core/PermissionChecker'); // 🛡️ [OpenHarness-inspired]
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 
 class AutonomyManager {
     constructor(brain, controller, memory, options = {}) {
@@ -17,6 +18,7 @@ class AutonomyManager {
         this.dcClient = null;
         this.convoManager = null;
         this.pendingPatch = null;
+        this.reflectionInProgress = false;
     }
 
     setIntegrations(tgBot, dcClient, convoManager) {
@@ -394,15 +396,44 @@ class AutonomyManager {
         await this.run(`主動社交，傳訊息給主人。語氣自然，符合當下時間。可以聊聊關於「${selectedInterest}」的話題。`, "SpontaneousChat");
     }
     async performSelfReflection(triggerCtx = null) {
+        const isManualTrigger = Boolean(triggerCtx);
+        if (!isManualTrigger && ConfigManager.CONFIG.REFLECTION_ENABLED === false) {
+            console.log(`⏸️ [Autonomy][${this.golemId}] 自我反思已停用，跳過本次觸發。`);
+            return false;
+        }
+        if (this.reflectionInProgress) {
+            console.log(`⏳ [Autonomy][${this.golemId}] 自我反思仍在執行中，跳過重複觸發。`);
+            return false;
+        }
+
+        this.reflectionInProgress = true;
         console.log(`🧠 [Autonomy][${this.golemId}] 啟動自我反思程序...`);
 
-        // 1. 讀取最近的對話摘要 (Tier 1)
-        const logManager = this.brain.chatLogManager;
-        const recentSummaries = logManager ? await logManager.readTierAsync('daily', 3) : [];
-        const summaryContext = recentSummaries.map(s => `[${s.date}] ${s.content}`).join('\n\n');
+        try {
+            // 1. 讀取最近的對話摘要 (Tier 1)
+            const logManager = this.brain.chatLogManager;
+            const recentSummaries = logManager ? await logManager.readTierAsync('daily', 3) : [];
+            const summaryContext = recentSummaries.map(s => `[${s.date}] ${s.content}`).join('\n\n');
+            const summaryHash = crypto.createHash('sha256').update(summaryContext || '').digest('hex');
 
-        // 2. 建構反思 Prompt
-        const prompt = `【系統指令：自我反思】
+            if (!isManualTrigger) {
+                const state = this._readReflectionState();
+                const cooldownHours = Math.max(0, Number(ConfigManager.CONFIG.REFLECTION_COOLDOWN_HOURS) || 12);
+                const cooldownMs = cooldownHours * 60 * 60 * 1000;
+                const lastRunAt = Date.parse(state.lastRunAt || '');
+                if (Number.isFinite(lastRunAt) && cooldownMs > 0 && Date.now() - lastRunAt < cooldownMs) {
+                    const remainingMinutes = Math.ceil((cooldownMs - (Date.now() - lastRunAt)) / 60000);
+                    console.log(`⏳ [Autonomy][${this.golemId}] 自我反思冷卻中，約 ${remainingMinutes} 分鐘後可再次執行。`);
+                    return false;
+                }
+                if (state.lastSummaryHash && state.lastSummaryHash === summaryHash) {
+                    console.log(`♻️ [Autonomy][${this.golemId}] 最近摘要未變更，跳過重複反思。`);
+                    return false;
+                }
+            }
+
+            // 2. 建構反思 Prompt
+            const prompt = `【系統指令：自我反思】
 請回顧你最近 3 天的對話摘要，評估你的表現、使用者的滿意度，以及是否有任何需要優化的邏輯或需要記錄的學習。
 
 對話摘要：
@@ -411,16 +442,47 @@ ${summaryContext || "（目前尚無對話摘要）"}
 請根據 <Skill: REFLECTION> 的格式要求產出反思報告。
 如果你發現了具體的代碼 Bug 並有信心修復，請額外產生 [PATCH] 或建議透過 evolution 技能進行修復。`;
 
-        const adminCtx = await this.getAdminContext();
-        if (triggerCtx) {
-            // 如果是手動觸發，則透過 convoManager 進行
-            if (this.convoManager) {
-                await this.convoManager.enqueue(triggerCtx, prompt, { isPriority: true });
+            const adminCtx = await this.getAdminContext();
+            if (triggerCtx) {
+                // 如果是手動觸發，則透過 convoManager 進行
+                if (this.convoManager) {
+                    await this.convoManager.enqueue(triggerCtx, prompt, { isPriority: true });
+                }
+            } else {
+                // 如果是自動觸發
+                const raw = await this.brain.sendMessage(prompt);
+                await NeuroShunter.dispatch(adminCtx, raw, this.brain, this.controller);
+                this._writeReflectionState({
+                    lastRunAt: new Date().toISOString(),
+                    lastSummaryHash: summaryHash
+                });
             }
-        } else {
-            // 如果是自動觸發
-            const raw = await this.brain.sendMessage(prompt);
-            await NeuroShunter.dispatch(adminCtx, raw, this.brain, this.controller);
+            return true;
+        } finally {
+            this.reflectionInProgress = false;
+        }
+    }
+    _getReflectionStateFile() {
+        return path.join(ConfigManager.LOG_BASE_DIR, 'reflection_state.json');
+    }
+    _readReflectionState() {
+        try {
+            const stateFile = this._getReflectionStateFile();
+            if (!fs.existsSync(stateFile)) return {};
+            const raw = fs.readFileSync(stateFile, 'utf-8');
+            return raw.trim() ? JSON.parse(raw) : {};
+        } catch (e) {
+            console.warn(`⚠️ [Autonomy][${this.golemId}] 讀取反思狀態失敗: ${e.message}`);
+            return {};
+        }
+    }
+    _writeReflectionState(state) {
+        try {
+            const stateFile = this._getReflectionStateFile();
+            fs.mkdirSync(path.dirname(stateFile), { recursive: true });
+            fs.writeFileSync(stateFile, JSON.stringify(state, null, 2));
+        } catch (e) {
+            console.warn(`⚠️ [Autonomy][${this.golemId}] 儲存反思狀態失敗: ${e.message}`);
         }
     }
     async sendNotification(msgText, opts = {}) {

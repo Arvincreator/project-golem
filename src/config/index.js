@@ -79,6 +79,8 @@ const CONFIG = {
     AUTONOMY_ENABLED: parseBooleanEnv(process.env.GOLEM_AUTONOMY_ENABLED, true),
     AWAKE_INTERVAL_MIN: Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MIN)) || 10, // 預設最小 10 分鐘
     AWAKE_INTERVAL_MAX: Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MAX)) || 60, // 預設最大 60 分鐘
+    REFLECTION_ENABLED: parseBooleanEnv(process.env.GOLEM_REFLECTION_ENABLED, true),
+    REFLECTION_COOLDOWN_HOURS: Number(cleanEnv(process.env.GOLEM_REFLECTION_COOLDOWN_HOURS)) || 12,
     SLEEP_START: process.env.GOLEM_SLEEP_START !== undefined ? parseHourEnv(process.env.GOLEM_SLEEP_START, 1) : 1, // 預設凌晨 1 點
     SLEEP_END: process.env.GOLEM_SLEEP_END !== undefined ? parseHourEnv(process.env.GOLEM_SLEEP_END, 7) : 7, // 預設早上 7 點
     USER_INTERESTS: cleanEnv(process.env.USER_INTERESTS || '科技圈熱門話題,全球趣聞', true),
@@ -193,6 +195,8 @@ const reloadConfig = () => {
     CONFIG.AUTONOMY_ENABLED = parseBooleanEnv(process.env.GOLEM_AUTONOMY_ENABLED, true);
     CONFIG.AWAKE_INTERVAL_MIN = Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MIN)) || 10;
     CONFIG.AWAKE_INTERVAL_MAX = Number(cleanEnv(process.env.GOLEM_AWAKE_INTERVAL_MAX)) || 60;
+    CONFIG.REFLECTION_ENABLED = parseBooleanEnv(process.env.GOLEM_REFLECTION_ENABLED, true);
+    CONFIG.REFLECTION_COOLDOWN_HOURS = Number(cleanEnv(process.env.GOLEM_REFLECTION_COOLDOWN_HOURS)) || 12;
     CONFIG.SLEEP_START = process.env.GOLEM_SLEEP_START !== undefined ? parseHourEnv(process.env.GOLEM_SLEEP_START, 1) : 1;
     CONFIG.SLEEP_END = process.env.GOLEM_SLEEP_END !== undefined ? parseHourEnv(process.env.GOLEM_SLEEP_END, 7) : 7;
     CONFIG.USER_INTERESTS = cleanEnv(process.env.USER_INTERESTS || '科技圈熱門話題,全球趣聞', true);

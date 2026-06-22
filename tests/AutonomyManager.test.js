@@ -44,6 +44,7 @@ describe('AutonomyManager', () => {
                 dirs: { hourly: '/tmp/logs' },
                 _getYesterdayDateString: jest.fn().mockReturnValue('20240101'),
                 readTierAsync: jest.fn().mockResolvedValue([]),
+                countMessagesByDate: jest.fn().mockImplementation(async (date) => date === '20240101' ? 2 : 0),
             },
         };
 
@@ -52,6 +53,8 @@ describe('AutonomyManager', () => {
         ConfigManager.CONFIG.TG_TOKEN = 'test_token';
         ConfigManager.CONFIG.DC_TOKEN = '';
         ConfigManager.CONFIG.AUTONOMY_ENABLED = true;
+        ConfigManager.CONFIG.REFLECTION_ENABLED = true;
+        ConfigManager.CONFIG.REFLECTION_COOLDOWN_HOURS = 12;
         ConfigManager.CONFIG.ADMIN_IDS = ['123'];
         ConfigManager.CONFIG.TG_AUTH_MODE = 'ADMIN';
         ConfigManager.CONFIG.DISCORD_ADMIN_ID = '999';
@@ -131,7 +134,7 @@ describe('AutonomyManager', () => {
     });
 
     test('checkArchiveStatus skips archive when threshold is not met', async () => {
-        fs.readdirSync.mockReturnValue(['2024010100.log']);
+        mockBrain.chatLogManager.countMessagesByDate.mockResolvedValue(0);
         manager.sendNotification = jest.fn();
 
         await manager.checkArchiveStatus();
@@ -189,6 +192,58 @@ describe('AutonomyManager', () => {
 
         expect(mockBrain.sendMessage).toHaveBeenCalled();
         expect(NeuroShunter.dispatch).toHaveBeenCalled();
+        expect(fs.writeFileSync).toHaveBeenCalledWith(
+            '/tmp/logs/reflection_state.json',
+            expect.stringContaining('lastSummaryHash')
+        );
+    });
+
+    test('performSelfReflection skips automatic reflection when disabled', async () => {
+        ConfigManager.CONFIG.REFLECTION_ENABLED = false;
+
+        const result = await manager.performSelfReflection();
+
+        expect(result).toBe(false);
+        expect(mockBrain.sendMessage).not.toHaveBeenCalled();
+    });
+
+    test('performSelfReflection skips unchanged summaries', async () => {
+        mockBrain.chatLogManager.readTierAsync.mockResolvedValue([{ date: '2024', content: 'same summary' }]);
+        const crypto = require('crypto');
+        const summaryHash = crypto.createHash('sha256').update('[2024] same summary').digest('hex');
+        fs.existsSync.mockImplementation((file) => String(file).endsWith('reflection_state.json'));
+        fs.readFileSync.mockReturnValue(JSON.stringify({
+            lastRunAt: '2020-01-01T00:00:00.000Z',
+            lastSummaryHash: summaryHash
+        }));
+
+        const result = await manager.performSelfReflection();
+
+        expect(result).toBe(false);
+        expect(mockBrain.sendMessage).not.toHaveBeenCalled();
+    });
+
+    test('performSelfReflection skips during cooldown', async () => {
+        mockBrain.chatLogManager.readTierAsync.mockResolvedValue([{ date: '2024', content: 'new summary' }]);
+        fs.existsSync.mockImplementation((file) => String(file).endsWith('reflection_state.json'));
+        fs.readFileSync.mockReturnValue(JSON.stringify({
+            lastRunAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+            lastSummaryHash: 'different'
+        }));
+
+        const result = await manager.performSelfReflection();
+
+        expect(result).toBe(false);
+        expect(mockBrain.sendMessage).not.toHaveBeenCalled();
+    });
+
+    test('performSelfReflection skips while another reflection is running', async () => {
+        manager.reflectionInProgress = true;
+
+        const result = await manager.performSelfReflection();
+
+        expect(result).toBe(false);
+        expect(mockBrain.chatLogManager.readTierAsync).not.toHaveBeenCalled();
     });
 
     describe('sendNotification', () => {

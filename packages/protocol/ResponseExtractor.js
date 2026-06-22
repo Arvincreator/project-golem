@@ -136,10 +136,20 @@ class ResponseExtractor {
                         lastCheckText = rawText;
 
                         // 嘗試判斷目前是否仍在生成（避免慢回應被誤判截斷）
-                        const pageText = document.body ? (document.body.innerText || '') : '';
-                        const isLikelyGenerating =
-                            /(?:thinking|generating|processing|停止|停止生成|Stop generating|Continue generating)/i.test(pageText) ||
-                            !!document.querySelector('button[aria-label*=\"Stop\" i], button[aria-label*=\"停止\" i], [data-testid*=\"stop\" i]');
+                        const stopControls = Array.from(document.querySelectorAll(
+                            'button[aria-label*=\"Stop\" i], button[aria-label*=\"停止\" i], [data-testid*=\"stop\" i]'
+                        ));
+                        const isLikelyGenerating = stopControls.some((el) => {
+                            if (!el) return false;
+                            const style = window.getComputedStyle(el);
+                            const rect = el.getBoundingClientRect();
+                            return rect.width > 0 &&
+                                rect.height > 0 &&
+                                style.display !== 'none' &&
+                                style.visibility !== 'hidden' &&
+                                !el.disabled &&
+                                el.getAttribute('aria-disabled') !== 'true';
+                        });
 
                         if (startIndex !== -1) {
                             // ✨ [條件 2：已經開始回答] 看到 BEGIN，但遲遲沒看到 END (AI 忘記寫)
